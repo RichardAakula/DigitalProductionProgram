@@ -1,0 +1,1859 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="authority_10" xml:space="preserve">
+    <value />
+  </data>
+  <data name="print_Header_Protocol_Extrusion_Equipment" xml:space="preserve">
+    <value />
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="Line_Ok" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Line_Ok.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="authority_6" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label_Length" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Menu_Help_InstructionVideos_ManageAuthorities" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label_ProtocolTemplateName" xml:space="preserve">
+    <value />
+  </data>
+  <data name="rollingTips_3" xml:space="preserve">
+    <value />
+  </data>
+  <data name="checkLastOperations" xml:space="preserve">
+    <value />
+  </data>
+  <data name="processcardAlreadySigned" xml:space="preserve">
+    <value />
+  </data>
+  <data name="rb_FramtagningAvProcessfönster" xml:space="preserve">
+    <value />
+  </data>
+  <data name="validateData_Info_3_3" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label_DiscardZumbachMeasurement_Header" xml:space="preserve">
+    <value />
+  </data>
+  <data name="missingPartNumber_1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="zumbach_Info_7" xml:space="preserve">
+    <value />
+  </data>
+  <data name="measureprotocol_Info_7" xml:space="preserve">
+    <value />
+  </data>
+  <data name="images_folder" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\images-folder.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="authority_3" xml:space="preserve">
+    <value />
+  </data>
+  <data name="authority_Check_1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="chooseTip_Warning" xml:space="preserve">
+    <value />
+  </data>
+  <data name="saveProcesscard_Info_7_1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="zumbach_Info_6_3" xml:space="preserve">
+    <value />
+  </data>
+  <data name="startOrder_NoWorkoperation" xml:space="preserve">
+    <value />
+  </data>
+  <data name="preFab_Balance" xml:space="preserve">
+    <value />
+  </data>
+  <data name="warning_MonitorTestserver" xml:space="preserve">
+    <value />
+  </data>
+  <data name="login_Info_7" xml:space="preserve">
+    <value />
+  </data>
+  <data name="zumbach_Info_2" xml:space="preserve">
+    <value />
+  </data>
+  <data name="validateData_Info_7_2" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btn_EditBag" xml:space="preserve">
+    <value />
+  </data>
+  <data name="maintenanceWork_3" xml:space="preserve">
+    <value />
+  </data>
+  <data name="infotext_Info_1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="saveProcesscard_Info_4" xml:space="preserve">
+    <value />
+  </data>
+  <data name="authority_25" xml:space="preserve">
+    <value />
+  </data>
+  <data name="validateData_Info_2_2" xml:space="preserve">
+    <value />
+  </data>
+  <data name="tuneZumbachData_Measurepoints" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label_Info" xml:space="preserve">
+    <value />
+  </data>
+  <data name="measureprotocol_Info_1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="NewLogo_BW" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\NewLogo_BW2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="zumbachLoadData" xml:space="preserve">
+    <value />
+  </data>
+  <data name="authority_19" xml:space="preserve">
+    <value />
+  </data>
+  <data name="validateData_Info_9_2" xml:space="preserve">
+    <value />
+  </data>
+  <data name="delete" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Warning2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Warning2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="lbl_ChangeChargeNr_Info_Exit" xml:space="preserve">
+    <value />
+  </data>
+  <data name="editOrder" xml:space="preserve">
+    <value />
+  </data>
+  <data name="machine" xml:space="preserve">
+    <value />
+  </data>
+  <data name="confirmTransferPassword" xml:space="preserve">
+    <value />
+  </data>
+  <data name="statsProdLine_9" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btn_AddProfilePicture" xml:space="preserve">
+    <value />
+  </data>
+  <data name="settings_Page_General" xml:space="preserve">
+    <value />
+  </data>
+  <data name="orderNotDone_3" xml:space="preserve">
+    <value />
+  </data>
+  <data name="tuneZumbachData_Measurement" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btn_DeleteProcesscard" xml:space="preserve">
+    <value />
+  </data>
+  <data name="authority_8" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pictures2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\pictures2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="validateData_Info_6" xml:space="preserve">
+    <value />
+  </data>
+  <data name="form" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SELECT_OrderNr_ActiveOrdersForUser" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\SELECT_OrderNr_ActiveOrdersForUser.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;iso-8859-1</value>
+  </data>
+  <data name="Expand" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Down_Single1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="btn_GetDataOrder" xml:space="preserve">
+    <value />
+  </data>
+  <data name="partNrMaterial" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label_Info_ScreenPackage" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btn_ReloadPartNr" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btn_Workoperation_Abort" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label_Company" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btn_TransferMeasurement" xml:space="preserve">
+    <value />
+  </data>
+  <data name="authority_17" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label_Info_ProcesscardChange" xml:space="preserve">
+    <value />
+  </data>
+  <data name="zumbach_Info_6_1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="extrusionTEF_Info_6" xml:space="preserve">
+    <value />
+  </data>
+  <data name="chb_OnlyForZumbach" xml:space="preserve">
+    <value />
+  </data>
+  <data name="discardedMeasurement_Info_1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="statsProdLine_7" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btn_DeletePartNr" xml:space="preserve">
+    <value />
+  </data>
+  <data name="UP_Full1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\UP_Full1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="label_Language" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btn_Confirm_Equipment" xml:space="preserve">
+    <value />
+  </data>
+  <data name="authority_21" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label_ChooseItemInfo_1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Menu_Theme_Optinova" xml:space="preserve">
+    <value />
+  </data>
+  <data name="chb_OpenLastOrder" xml:space="preserve">
+    <value />
+  </data>
+  <data name="tuneZumbachData_5" xml:space="preserve">
+    <value />
+  </data>
+  <data name="update_Info_1_2" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lbl_EditUser" xml:space="preserve">
+    <value />
+  </data>
+  <data name="authoritiesHeader" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btn_PrintZumbach" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Medarebetare" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Medarebetare.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="label_RevNr" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lineClearance_Info_1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Photo_camera_icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Photo_camera_icon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="statsProdLine_Header" xml:space="preserve">
+    <value />
+  </data>
+  <data name="quickOpen_Info" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label_ProductionLines_Info" xml:space="preserve">
+    <value />
+  </data>
+  <data name="zumbach_Info_11" xml:space="preserve">
+    <value />
+  </data>
+  <data name="protocol_EquimentInfo_2" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btn_AuthoritiesAddWorkoperation" xml:space="preserve">
+    <value />
+  </data>
+  <data name="authority_14" xml:space="preserve">
+    <value />
+  </data>
+  <data name="changeProcesscard_Info_1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btn_HS_Machine_Exit" xml:space="preserve">
+    <value />
+  </data>
+  <data name="errorcode_Info_1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label_Settings_InfoZumbachCtr" xml:space="preserve">
+    <value />
+  </data>
+  <data name="tips_Info_1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="blowing" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label_ChooseCompany_Header" xml:space="preserve">
+    <value />
+  </data>
+  <data name="chb_SelectOrders" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btn_Workoperation_Choose" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label_DateFrom" xml:space="preserve">
+    <value />
+  </data>
+  <data name="zumbach_Info_14" xml:space="preserve">
+    <value />
+  </data>
+  <data name="equipment" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lineClearance_Info_2" xml:space="preserve">
+    <value />
+  </data>
+  <data name="mail_MissingMeasurePoints_2" xml:space="preserve">
+    <value />
+  </data>
+  <data name="monitorDeletedOrder" xml:space="preserve">
+    <value />
+  </data>
+  <data name="validateData_Info_4_1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Line_Info" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Line_Info.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="lbl_SaveMessage" xml:space="preserve">
+    <value />
+  </data>
+  <data name="signProcesscardPassword" xml:space="preserve">
+    <value />
+  </data>
+  <data name="validateData_Info_8" xml:space="preserve">
+    <value />
+  </data>
+  <data name="saveProcesscard_Info_8" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Halvfabrikat_Info_1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="statsProdLine_3" xml:space="preserve">
+    <value />
+  </data>
+  <data name="equipment_Info_2" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label_Inactive" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Collapse" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\UP_Single2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="validateData_Info_3_1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="validateData_Info_9_3" xml:space="preserve">
+    <value />
+  </data>
+  <data name="chb_LogData" xml:space="preserve">
+    <value />
+  </data>
+  <data name="errorCode" xml:space="preserve">
+    <value />
+  </data>
+  <data name="print_Header_MeasurementProtocol" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label_ProductionLines_Header" xml:space="preserve">
+    <value />
+  </data>
+  <data name="password_Info_1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label_ErrorExit" xml:space="preserve">
+    <value />
+  </data>
+  <data name="page" xml:space="preserve">
+    <value />
+  </data>
+  <data name="rb_Validated" xml:space="preserve">
+    <value />
+  </data>
+  <data name="equipment_Info_1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="authority_11" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Menu_Help_InstructionVideos_AddUser" xml:space="preserve">
+    <value />
+  </data>
+  <data name="maintenanceWork_hours" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btn_DeActivate_PartNr" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btn_AuthoritiesAddRole" xml:space="preserve">
+    <value />
+  </data>
+  <data name="zumbach_ShowPosition" xml:space="preserve">
+    <value />
+  </data>
+  <data name="zumbach_Info_3" xml:space="preserve">
+    <value />
+  </data>
+  <data name="login_Info_5" xml:space="preserve">
+    <value />
+  </data>
+  <data name="reportJira_Info_1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="spool_1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label_Settings_Add_Parts_Info" xml:space="preserve">
+    <value />
+  </data>
+  <data name="zumbach_Info_10" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btn_DeleteMeasurement" xml:space="preserve">
+    <value />
+  </data>
+  <data name="warning_Testdatabase" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Start" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Start21.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Down_Full1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Down_Full.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Down_Single" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Down_Single.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="missingLayer_3" xml:space="preserve">
+    <value />
+  </data>
+  <data name="measureprotocol_Info_3" xml:space="preserve">
+    <value />
+  </data>
+  <data name="monitorInfo_1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lbl_Abort" xml:space="preserve">
+    <value />
+  </data>
+  <data name="zumbach_Info_4" xml:space="preserve">
+    <value />
+  </data>
+  <data name="quickOpen_Info_3" xml:space="preserve">
+    <value />
+  </data>
+  <data name="workoperations_Info_2" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Menu_Protocol_ManageTemplates" xml:space="preserve">
+    <value />
+  </data>
+  <data name="authority_12" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btn_AuthoritiesAddFactory" xml:space="preserve">
+    <value />
+  </data>
+  <data name="customMail" xml:space="preserve">
+    <value />
+  </data>
+  <data name="copy" xml:space="preserve">
+    <value />
+  </data>
+  <data name="endDate" xml:space="preserve">
+    <value />
+  </data>
+  <data name="validateData_Info_7_3" xml:space="preserve">
+    <value />
+  </data>
+  <data name="chooseDie_Warning" xml:space="preserve">
+    <value />
+  </data>
+  <data name="validateData_Info_9_1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lbl_Settings_Add_ProdLine_Silduksbyte" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label_ErrorCodeHeader_2" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lbl_Add_Startup" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btn_ResetChart" xml:space="preserve">
+    <value />
+  </data>
+  <data name="validateData_Info_2_1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="measureinstrument_Info" xml:space="preserve">
+    <value />
+  </data>
+  <data name="mail_MissingMeasurePoints_1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="authority_13" xml:space="preserve">
+    <value />
+  </data>
+  <data name="saveProcesscard_Info_2_1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="authority_15" xml:space="preserve">
+    <value />
+  </data>
+  <data name="measureinstrument_Delete_4" xml:space="preserve">
+    <value />
+  </data>
+  <data name="maintenanceWork_4" xml:space="preserve">
+    <value />
+  </data>
+  <data name="authority_18" xml:space="preserve">
+    <value />
+  </data>
+  <data name="protocol_Info_2" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btn_AuthoritiesRemoveUser" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Menu_Help_InstructionVideos_RecentlyOpenedOrders" xml:space="preserve">
+    <value />
+  </data>
+  <data name="authority_22" xml:space="preserve">
+    <value />
+  </data>
+  <data name="browseProtocols_2" xml:space="preserve">
+    <value />
+  </data>
+  <data name="tuneZumbachData_6" xml:space="preserve">
+    <value />
+  </data>
+  <data name="manageTemplates" xml:space="preserve">
+    <value />
+  </data>
+  <data name="settings_Page_ProdLine" xml:space="preserve">
+    <value />
+  </data>
+  <data name="tuneZumbachData_7" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Menu_User_Authorities_CustomFactories" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label_DiscardUser" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label_ProcessCard_ExtraInfo" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btn_PreFab" xml:space="preserve">
+    <value />
+  </data>
+  <data name="empNr" xml:space="preserve">
+    <value />
+  </data>
+  <data name="settings_Page_Parts" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btn_EditAmount" xml:space="preserve">
+    <value />
+  </data>
+  <data name="dateTime" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label_ChangeChargeNr_Info_1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="authority_16" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btn_DiscardMeasurement" xml:space="preserve">
+    <value />
+  </data>
+  <data name="extrusionTEF_Info_7" xml:space="preserve">
+    <value />
+  </data>
+  <data name="anonym" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\anonym.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="label_Latest10Values_Info" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Line_Warning" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Line_Warning.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="loadingProductionlines_1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="statsProdLine_4" xml:space="preserve">
+    <value />
+  </data>
+  <data name="rollingTips_5" xml:space="preserve">
+    <value />
+  </data>
+  <data name="delete_user" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label_Workoperation" xml:space="preserve">
+    <value />
+  </data>
+  <data name="saveProcesscard_Info_1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ProcessCard" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ProcessCard.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="chooseExtruder" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btn_HS_Machine_NewColor" xml:space="preserve">
+    <value />
+  </data>
+  <data name="authority_9" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label_EstablishedBy" xml:space="preserve">
+    <value />
+  </data>
+  <data name="extraComments_Info_2" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label_InfoChooseDepartment" xml:space="preserve">
+    <value />
+  </data>
+  <data name="processcard_MissingInfo" xml:space="preserve">
+    <value />
+  </data>
+  <data name="name" xml:space="preserve">
+    <value />
+  </data>
+  <data name="measureprotocol_Info_10" xml:space="preserve">
+    <value />
+  </data>
+  <data name="protocol_EquimentInfo_3" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Line_Neutral" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Line_Neutral.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="login_Info_1_4" xml:space="preserve">
+    <value />
+  </data>
+  <data name="statsProdLine_2" xml:space="preserve">
+    <value />
+  </data>
+  <data name="validateData_Info_1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="rb_HistoricalData" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label_ChoosePC_Header" xml:space="preserve">
+    <value />
+  </data>
+  <data name="missingLayer_1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="role" xml:space="preserve">
+    <value />
+  </data>
+  <data name="startDate" xml:space="preserve">
+    <value />
+  </data>
+  <data name="browseProtocols" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Protocol_Extrusion_TEF" xml:space="preserve">
+    <value />
+  </data>
+  <data name="measureprotocol_Info_9" xml:space="preserve">
+    <value />
+  </data>
+  <data name="maintenanceWork_2" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btn_ClearProcessCard" xml:space="preserve">
+    <value />
+  </data>
+  <data name="finishedOrder" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label_ApprovedBy" xml:space="preserve">
+    <value />
+  </data>
+  <data name="info" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\info.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="orderNotDone_1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btn_AddUpdateUser" xml:space="preserve">
+    <value />
+  </data>
+  <data name="openProcessardManagementWarning" xml:space="preserve">
+    <value />
+  </data>
+  <data name="rollingTips_2" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label_EmpNr" xml:space="preserve">
+    <value />
+  </data>
+  <data name="expansionProcess" xml:space="preserve">
+    <value />
+  </data>
+  <data name="orderNotDone_5" xml:space="preserve">
+    <value />
+  </data>
+  <data name="chooseProcesscard_Info_1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btn_HS_Machine_Close" xml:space="preserve">
+    <value />
+  </data>
+  <data name="measureprotocol_Info_5" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btn_AuthoritiesRemoveRole" xml:space="preserve">
+    <value />
+  </data>
+  <data name="login_Info_1_1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label_ChooseItemInfo" xml:space="preserve">
+    <value />
+  </data>
+  <data name="measureprotocol_Info_8" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btn_Remove_Extruder" xml:space="preserve">
+    <value />
+  </data>
+  <data name="authority_Check_2" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btn_Save_Processcard" xml:space="preserve">
+    <value />
+  </data>
+  <data name="orderNotDone_4" xml:space="preserve">
+    <value />
+  </data>
+  <data name="yes" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label_ProdType" xml:space="preserve">
+    <value />
+  </data>
+  <data name="maintenanceWork_minutes" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label_PasswordUser" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lbl_Settings_Delete_ProdLine_Silduksbyte" xml:space="preserve">
+    <value />
+  </data>
+  <data name="print_Header_Protocol_HS" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label_Warning" xml:space="preserve">
+    <value />
+  </data>
+  <data name="changeBatchNr_Info_3" xml:space="preserve">
+    <value />
+  </data>
+  <data name="authority_5" xml:space="preserve">
+    <value />
+  </data>
+  <data name="validateData_Info_7_1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label_PasswordInfo" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label_MeasureInstrument_Header" xml:space="preserve">
+    <value />
+  </data>
+  <data name="protocol_OpenAnotherUser_2" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label_Ok" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Load_LineClearance" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\load_lineclearance.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="spool_2" xml:space="preserve">
+    <value />
+  </data>
+  <data name="orderNotDone_2" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label_Settings_InfoMeasureinstrument_Remove" xml:space="preserve">
+    <value />
+  </data>
+  <data name="preparedBy" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label_Discarded" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label_Factory" xml:space="preserve">
+    <value />
+  </data>
+  <data name="zumbach_Info_8" xml:space="preserve">
+    <value />
+  </data>
+  <data name="measureprotocol_Info_2" xml:space="preserve">
+    <value />
+  </data>
+  <data name="protocol_EquimentInfo_4" xml:space="preserve">
+    <value />
+  </data>
+  <data name="managePCNotLoggedIn" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lbl_LC_Name" xml:space="preserve">
+    <value />
+  </data>
+  <data name="zumbach_Info_5" xml:space="preserve">
+    <value />
+  </data>
+  <data name="rillat" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Users_Add_user_icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Users-Add-user-icon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ImagesIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ImagesIcon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="loadingProductionlines_2" xml:space="preserve">
+    <value />
+  </data>
+  <data name="zumbachCounter_2" xml:space="preserve">
+    <value />
+  </data>
+  <data name="multipleRevisionsMeasureTemnplate" xml:space="preserve">
+    <value />
+  </data>
+  <data name="removeStartup_1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Menu_User_Authorities_CustomMailAddresses" xml:space="preserve">
+    <value />
+  </data>
+  <data name="extraComments_Info_1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label_Measurement" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label_List_PartNr" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label_Workoperation_Header" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Menu_Help_InstructionVideos_SaveProcessCard" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btn_Add_Extruder" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label_ChangeChargeNr_Header" xml:space="preserve">
+    <value />
+  </data>
+  <data name="settings_Page_Department" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Menu_Settings_CalculateMaterial" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btn_AuthoritiesRemoveWorkoperation" xml:space="preserve">
+    <value />
+  </data>
+  <data name="chb_ChoosePC_AutoChoose" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Down_Full" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Down-Full.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="equipment_Info_8" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label_HS_Color_Info" xml:space="preserve">
+    <value />
+  </data>
+  <data name="slätt" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btn_TransferLengthMeasure" xml:space="preserve">
+    <value />
+  </data>
+  <data name="UP_Full2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\UP_Full2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="label_ChooseDepartment_Username" xml:space="preserve">
+    <value />
+  </data>
+  <data name="update_Info_1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="authority_Check_3" xml:space="preserve">
+    <value />
+  </data>
+  <data name="startOrder_NeedLogin" xml:space="preserve">
+    <value />
+  </data>
+  <data name="forming" xml:space="preserve">
+    <value />
+  </data>
+  <data name="browseProtocols_1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Menu_Help_InstructionVideos_SignIn" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label_Info_Prodline" xml:space="preserve">
+    <value />
+  </data>
+  <data name="orderDone_2" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label_Department" xml:space="preserve">
+    <value />
+  </data>
+  <data name="tuneZumbachData_8" xml:space="preserve">
+    <value />
+  </data>
+  <data name="zumbach_Info_9_2" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Info_KompetensMatris_Behörighet2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Info.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="zumbach_Info_13" xml:space="preserve">
+    <value />
+  </data>
+  <data name="print_Header_ExtraComments" xml:space="preserve">
+    <value />
+  </data>
+  <data name="zumbach_Info_1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btn_RemoveStartUp" xml:space="preserve">
+    <value />
+  </data>
+  <data name="missingMeasurePoints" xml:space="preserve">
+    <value />
+  </data>
+  <data name="changeProcesscard_Info_3" xml:space="preserve">
+    <value />
+  </data>
+  <data name="print_LineClearance_1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label_PasswordPassword" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btn_Clear_HelpInput_2" xml:space="preserve">
+    <value />
+  </data>
+  <data name="rollingTips_4" xml:space="preserve">
+    <value />
+  </data>
+  <data name="saveProcesscard_Info_2" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label_ChoosePC_Info_1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label_Settings_Info_Measureinstruments" xml:space="preserve">
+    <value />
+  </data>
+  <data name="login_AddUser" xml:space="preserve">
+    <value />
+  </data>
+  <data name="tuneZumbachData_2" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label_AddUser" xml:space="preserve">
+    <value />
+  </data>
+  <data name="orderProdtime" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label_Password" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btn_ProcesscardBasedOn" xml:space="preserve">
+    <value />
+  </data>
+  <data name="print_Header_Protocol" xml:space="preserve">
+    <value />
+  </data>
+  <data name="saveProcesscard_Info_3_2" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btn_Exit" xml:space="preserve">
+    <value />
+  </data>
+  <data name="zumbach_Info_9_3" xml:space="preserve">
+    <value />
+  </data>
+  <data name="maintenanceWork_days" xml:space="preserve">
+    <value />
+  </data>
+  <data name="validateData_Info_4_2" xml:space="preserve">
+    <value />
+  </data>
+  <data name="zumbachCounter_1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="customFactory" xml:space="preserve">
+    <value />
+  </data>
+  <data name="deleteOrder_Info_1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="login_Info_2" xml:space="preserve">
+    <value />
+  </data>
+  <data name="changeProcesscard_Info_2" xml:space="preserve">
+    <value />
+  </data>
+  <data name="unit" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Menu_User_Authorities_Roles" xml:space="preserve">
+    <value />
+  </data>
+  <data name="INSERT_Korprotokoll_Main" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\insert_korprotokoll_main.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="label_FirstName" xml:space="preserve">
+    <value />
+  </data>
+  <data name="authority_20" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btn_AuthoritiesAddUser" xml:space="preserve">
+    <value />
+  </data>
+  <data name="chb_HideInactive_PartNr" xml:space="preserve">
+    <value />
+  </data>
+  <data name="statsProdLine_5" xml:space="preserve">
+    <value />
+  </data>
+  <data name="login_Info_1_3" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Menu_Settings_ChangeColorHS_Machine" xml:space="preserve">
+    <value />
+  </data>
+  <data name="saveSetting_1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="tuneZumbachData_1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label_StartUps" xml:space="preserve">
+    <value />
+  </data>
+  <data name="missingPartNumber_2" xml:space="preserve">
+    <value />
+  </data>
+  <data name="chb_HS_Machine_InvertForeColor" xml:space="preserve">
+    <value />
+  </data>
+  <data name="authority_4" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label_AutomaticallyChooseWorkoperation" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label_Welcome" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label_ChooseUser" xml:space="preserve">
+    <value />
+  </data>
+  <data name="quickOpen_Info_2" xml:space="preserve">
+    <value />
+  </data>
+  <data name="activatePartNr" xml:space="preserve">
+    <value />
+  </data>
+  <data name="protocol_OpenAnotherUser_1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label_ProductionLines_Green" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label_LastName" xml:space="preserve">
+    <value />
+  </data>
+  <data name="measureinstrument_Delete_3" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Down_Single2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Down_Single2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="saveProcesscard_Info_7_2" xml:space="preserve">
+    <value />
+  </data>
+  <data name="extraComments" xml:space="preserve">
+    <value />
+  </data>
+  <data name="chb_OnlyForMeasurements" xml:space="preserve">
+    <value />
+  </data>
+  <data name="validateData_Info_3_2" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label_Role" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Menu_Order_QC_Feedback" xml:space="preserve">
+    <value />
+  </data>
+  <data name="measureprotocol_Info_4" xml:space="preserve">
+    <value />
+  </data>
+  <data name="monitorInfo_2" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btn_AddStartUp" xml:space="preserve">
+    <value />
+  </data>
+  <data name="authority_2" xml:space="preserve">
+    <value />
+  </data>
+  <data name="chooseWorkOp_Info_1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label_Settings_Info_ProdLine" xml:space="preserve">
+    <value />
+  </data>
+  <data name="zumbach_Info_6_2" xml:space="preserve">
+    <value />
+  </data>
+  <data name="dryer" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lbl_Remove_Startup" xml:space="preserve">
+    <value />
+  </data>
+  <data name="equipment_Error_1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="login_Info_6" xml:space="preserve">
+    <value />
+  </data>
+  <data name="transferDataExcel_1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="NewLogo" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\NewLogo.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="DELETE_Order" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\delete_order.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="dryingMaterial_3" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label_ChooseDepartment" xml:space="preserve">
+    <value />
+  </data>
+  <data name="date" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label_ErrorDiscard" xml:space="preserve">
+    <value />
+  </data>
+  <data name="authority_24" xml:space="preserve">
+    <value />
+  </data>
+  <data name="rollingTips_1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label_ErrorCodeHeader_1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label_ProductionLines_Red" xml:space="preserve">
+    <value />
+  </data>
+  <data name="measureinstrument_Delete_2" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lbl_ChangeChargeNr_Info_Change" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Menu_User_Authorities_CustomWorkoperations" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label_Comments" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Warning1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Warning1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="protocol_Info_1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="removeStartup_2_1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btn_OpenOrder" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label_NewPassword" xml:space="preserve">
+    <value />
+  </data>
+  <data name="statsProdLine_8" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Menu_Help_InstructionVideos" xml:space="preserve">
+    <value />
+  </data>
+  <data name="remove_Startup_2_2" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btn_Select" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lbl_NewUser" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Warning" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Warning.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="validateData_Info_7_4" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label_ProcesscardApprovedDate" xml:space="preserve">
+    <value />
+  </data>
+  <data name="maintenanceWork_1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btn_Discard" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label_ChooseProcesscardHeader" xml:space="preserve">
+    <value />
+  </data>
+  <data name="saveProcesscard_Info_6" xml:space="preserve">
+    <value />
+  </data>
+  <data name="authority_1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="print_Header_Protocol_Comments" xml:space="preserve">
+    <value />
+  </data>
+  <data name="saveProcesscard_Info_2_2" xml:space="preserve">
+    <value />
+  </data>
+  <data name="measureinstrument_Delete_1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label_Info_TotalLayer" xml:space="preserve">
+    <value />
+  </data>
+  <data name="extrusionTEF_Info_5" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Extrusion" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Extrusion.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="spool" xml:space="preserve">
+    <value />
+  </data>
+  <data name="statsProdLine_6" xml:space="preserve">
+    <value />
+  </data>
+  <data name="comments" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btn_AddPartNr" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label_PartNrNewName" xml:space="preserve">
+    <value />
+  </data>
+  <data name="tuneZumbachData_9" xml:space="preserve">
+    <value />
+  </data>
+  <data name="settings_Page_Measureinstruments" xml:space="preserve">
+    <value />
+  </data>
+  <data name="no" xml:space="preserve">
+    <value />
+  </data>
+  <data name="rollingTips_6" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label_LineClearance" xml:space="preserve">
+    <value />
+  </data>
+  <data name="update_Info_1_1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btn_Cancel" xml:space="preserve">
+    <value />
+  </data>
+  <data name="tuneZumbachData_4" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label_Settings_InfoMeasureinstrument_Add" xml:space="preserve">
+    <value />
+  </data>
+  <data name="validateData_Info_5_2" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btn_RemovePreFab" xml:space="preserve">
+    <value />
+  </data>
+  <data name="productInfo" xml:space="preserve">
+    <value />
+  </data>
+  <data name="zumbach_Info_12" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btn_AuthoritiesRemoveMail" xml:space="preserve">
+    <value />
+  </data>
+  <data name="orderRuntime" xml:space="preserve">
+    <value />
+  </data>
+  <data name="protocol_EquimentInfo_1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="dryingMaterial_2" xml:space="preserve">
+    <value />
+  </data>
+  <data name="camera2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\camera2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="extrusionTEF_Info_4" xml:space="preserve">
+    <value />
+  </data>
+  <data name="login_UpdateUser" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lbl_Exit" xml:space="preserve">
+    <value />
+  </data>
+  <data name="DPP" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\DPP New Icon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="validateData_Info_5_1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="validEmail" xml:space="preserve">
+    <value />
+  </data>
+  <data name="statsProdLine_1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="authority_23" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Menu_Arkiv_ManageDatabase" xml:space="preserve">
+    <value />
+  </data>
+  <data name="saveProcesscard_Info_5" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btn_DeleteSelectedData" xml:space="preserve">
+    <value />
+  </data>
+  <data name="chb_TempKalibCheck" xml:space="preserve">
+    <value />
+  </data>
+  <data name="workoperations_Info_1_2" xml:space="preserve">
+    <value />
+  </data>
+  <data name="extrusionTEF_Info_3" xml:space="preserve">
+    <value />
+  </data>
+  <data name="addStartUp" xml:space="preserve">
+    <value />
+  </data>
+  <data name="tuneZumbachData_3" xml:space="preserve">
+    <value />
+  </data>
+  <data name="deactivatePartNr" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lineClearance_Info_3" xml:space="preserve">
+    <value />
+  </data>
+  <data name="measureprotocol_Warning_1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label_RoomTempMoist" xml:space="preserve">
+    <value />
+  </data>
+  <data name="saveProcesscard_Info_3_1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="authority_7" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btn_Clear_HelpInput_1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="UP_Single" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\UP_Single.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="validateData_Info_9_4" xml:space="preserve">
+    <value />
+  </data>
+  <data name="rollingTips_FutureUpdate" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label_Settings_InfoBaudRate" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btn_TransferToExcel" xml:space="preserve">
+    <value />
+  </data>
+  <data name="login_Info_3" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label_DateTo" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btn_AuthoritiesAddEmail" xml:space="preserve">
+    <value />
+  </data>
+  <data name="chooseTemplate" xml:space="preserve">
+    <value />
+  </data>
+  <data name="missingLayer_2" xml:space="preserve">
+    <value />
+  </data>
+  <data name="customWorkoperation" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Up" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\UP_Single1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="dateStart" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Line_Bad" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Line_Bad.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="measureprotocol_Info_6" xml:space="preserve">
+    <value />
+  </data>
+  <data name="chb_AutoPosByte" xml:space="preserve">
+    <value />
+  </data>
+  <data name="login_Info_1_2" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Measurement_Protocol" xml:space="preserve">
+    <value />
+  </data>
+  <data name="workoperations_Info_1_1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="print_Header_Protocol_Extrusion" xml:space="preserve">
+    <value />
+  </data>
+  <data name="validateData_Info_9_5" xml:space="preserve">
+    <value />
+  </data>
+  <data name="protocol_OpenAnotherUser_3" xml:space="preserve">
+    <value />
+  </data>
+  <data name="print_Header_ZumbachProtocol" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btn_Edit_Equipment" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btn_AuthoritiesRemoveFactory" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label_Fail" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btn_AddPreFab" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lbl_DiscardUser" xml:space="preserve">
+    <value />
+  </data>
+  <data name="login_Info_4" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btn_GetDataPartNr" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label_Felskrivning" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label_ConfirmPassword" xml:space="preserve">
+    <value />
+  </data>
+  <data name="UP_Full" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\UP_Full.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="dryingMaterial_1" xml:space="preserve">
+    <value />
+    <comment>Drying material During Extrusion (D.E)</comment>
+  </data>
+  <data name="NewIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\NewIcon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="template" xml:space="preserve">
+    <value />
+  </data>
+  <data name="mainInfo_Missing" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label_InfoPassword_1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label_InfoPassword_2" xml:space="preserve">
+    <value />
+  </data>
+  <data name="otherUserIsLoggedIn" xml:space="preserve">
+    <value />
+  </data>
+  <data name="user_AlreadyInSystem" xml:space="preserve">
+    <value />
+  </data>
+  <data name="user_AddedInSystem" xml:space="preserve">
+    <value />
+  </data>
+  <data name="autoStart_Workoperation_1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="autoStart_Workoperation_2" xml:space="preserve">
+    <value />
+  </data>
+  <data name="autoStart_Workoperation_3" xml:space="preserve">
+    <value />
+  </data>
+  <data name="autoStart_Workoperation_4" xml:space="preserve">
+    <value />
+  </data>
+  <data name="delete_Processcard_1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="weeklyCalibration" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Menu_Protocol_ManageLineClearance_Templates" xml:space="preserve">
+    <value />
+  </data>
+  <data name="measureprotocol_Info_11" xml:space="preserve">
+    <value />
+  </data>
+  <data name="measureprotocol_Info_12" xml:space="preserve">
+    <value />
+  </data>
+  <data name="chooseProtocol_1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="chooseProtocol_2" xml:space="preserve">
+    <value />
+  </data>
+  <data name="chooseProtocol_3" xml:space="preserve">
+    <value />
+  </data>
+  <data name="authority_26" xml:space="preserve">
+    <value />
+  </data>
+  <data name="authority_27" xml:space="preserve">
+    <value />
+  </data>
+  <data name="changeBatchNr_Info_1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="changeBatchNr_Info_2" xml:space="preserve">
+    <value />
+  </data>
+  <data name="mail_Body_NotifyOrderStartCount_4to5" xml:space="preserve">
+    <value />
+  </data>
+  <data name="mail_Body" xml:space="preserve">
+    <value />
+  </data>
+  <data name="mail_Subject_NotifyOrderStartCount" xml:space="preserve">
+    <value />
+  </data>
+  <data name="mail_Body_NotifyOrderStartCount_6" xml:space="preserve">
+    <value />
+  </data>
+  <data name="mail_Body_NotifyOrderFinishedCount_3" xml:space="preserve">
+    <value />
+  </data>
+  <data name="mail_Subject_NotifyOrderFinishedCount" xml:space="preserve">
+    <value />
+  </data>
+  <data name="mail_NotifyCustomerServiceMissingMeasurePoints" xml:space="preserve">
+    <value />
+  </data>
+  <data name="notifyUserOrderStartCount_6" xml:space="preserve">
+    <value />
+  </data>
+  <data name="notifyDirectorOrderStartCount_7" xml:space="preserve">
+    <value />
+  </data>
+  <data name="notifyUserOrderStartCount_7" xml:space="preserve">
+    <value />
+  </data>
+  <data name="approve_Processcard_Ok" xml:space="preserve">
+    <value />
+  </data>
+  <data name="approve_Processcard_Error" xml:space="preserve">
+    <value />
+  </data>
+  <data name="saveProcesscard_Info_9" xml:space="preserve">
+    <value />
+  </data>
+  <data name="browseProtocols_3" xml:space="preserve">
+    <value />
+  </data>
+  <data name="browseProtocols_4" xml:space="preserve">
+    <value />
+  </data>
+  <data name="preFab_BestBefore" xml:space="preserve">
+    <value />
+  </data>
+  <data name="GuideLineClearanceTemplates" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Guide - LineClearance Templates.pdf;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="GuideTemplates" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Guide - Templates.pdf;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="Menu_Protocol_ManageMeasureProtocol_Templates" xml:space="preserve">
+    <value />
+  </data>
+  <data name="closeProtocols" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label_ProtocolTemplateRevision" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label_MeasureProtocolTemplateName" xml:space="preserve">
+    <value />
+  </data>
+  <data name="GuideMeasureprotocolTemplates" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Guide - MeasureprotocolTemplates.pdf;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="revisionInfo" xml:space="preserve">
+    <value />
+  </data>
+  <data name="isOkAddStartUp" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Menu_Order_ReLink_Protocol" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Menu_Order_ReLink_MeasureProtocol" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Menu_Order_LinkOrder" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Menu_Protocol_ManageTemplates_Protocols" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Menu_Protocol_ManageTemplates_LineClearance" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Menu_Protocol_ManageTemplates_MeasureProtocol" xml:space="preserve">
+    <value />
+  </data>
+  <data name="mail_ApproveProcesscard_2" xml:space="preserve">
+    <value />
+  </data>
+  <data name="mail_ApproveProcesscard_1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="mail_ApproveProcesscard" xml:space="preserve">
+    <value />
+  </data>
+  <data name="print_IsValueCritical" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Menu_Settings_ToolsCalculator" xml:space="preserve">
+    <value />
+  </data>
+  <data name="selectTemplateError" xml:space="preserve">
+    <value />
+  </data>
+  <data name="isOkAddStartUp_2" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Gollum" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Voicy_My Precious Gollum.mp3;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="btn_RefreshPriorityPlan" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="cell_Protocol_ToolTip_1" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="cell_Protocol_ToolTip_2" xml:space="preserve">
+    <value></value>
+  </data>
+</root>

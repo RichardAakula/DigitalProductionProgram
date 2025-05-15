@@ -1,0 +1,165 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <ApplicationIcon>NewIcon.ico</ApplicationIcon>
+    <AssemblyVersion>4.3.8.3</AssemblyVersion>
+    <FileVersion>4.3.8.3</FileVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="DataBaseSettings.json" />
+    <None Remove="Resources\Grades\1.png" />
+    <None Remove="Resources\Grades\10.png" />
+    <None Remove="Resources\Grades\11.png" />
+    <None Remove="Resources\Grades\12.png" />
+    <None Remove="Resources\Grades\13.png" />
+    <None Remove="Resources\Grades\14.png" />
+    <None Remove="Resources\Grades\15.png" />
+    <None Remove="Resources\Grades\16.png" />
+    <None Remove="Resources\Grades\17.png" />
+    <None Remove="Resources\Grades\18.png" />
+    <None Remove="Resources\Grades\19.png" />
+    <None Remove="Resources\Grades\2.png" />
+    <None Remove="Resources\Grades\20.png" />
+    <None Remove="Resources\Grades\21.png" />
+    <None Remove="Resources\Grades\22.png" />
+    <None Remove="Resources\Grades\23.png" />
+    <None Remove="Resources\Grades\24.png" />
+    <None Remove="Resources\Grades\25.png" />
+    <None Remove="Resources\Grades\26.png" />
+    <None Remove="Resources\Grades\27.png" />
+    <None Remove="Resources\Grades\28.png" />
+    <None Remove="Resources\Grades\29.png" />
+    <None Remove="Resources\Grades\3.png" />
+    <None Remove="Resources\Grades\30.png" />
+    <None Remove="Resources\Grades\31.png" />
+    <None Remove="Resources\Grades\32.png" />
+    <None Remove="Resources\Grades\33.png" />
+    <None Remove="Resources\Grades\4.png" />
+    <None Remove="Resources\Grades\5.png" />
+    <None Remove="Resources\Grades\6.png" />
+    <None Remove="Resources\Grades\7.png" />
+    <None Remove="Resources\Grades\8.png" />
+    <None Remove="Resources\Grades\9.png" />
+    <None Remove="Settings\appsettings.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <COMReference Include="MediaPlayer">
+      <WrapperTool>tlbimp</WrapperTool>
+      <VersionMinor>0</VersionMinor>
+      <VersionMajor>1</VersionMajor>
+      <Guid>22d6f304-b0f6-11d0-94ab-0080c74c7e95</Guid>
+      <Lcid>0</Lcid>
+      <Isolated>false</Isolated>
+      <EmbedInteropTypes>true</EmbedInteropTypes>
+      <Private>True</Private>
+    </COMReference>
+    <COMReference Include="WMPLib">
+      <WrapperTool>tlbimp</WrapperTool>
+      <VersionMinor>0</VersionMinor>
+      <VersionMajor>1</VersionMajor>
+      <Guid>6bf52a50-394a-11d3-b153-00c04f79faa6</Guid>
+      <Lcid>0</Lcid>
+      <Isolated>false</Isolated>
+      <EmbedInteropTypes>true</EmbedInteropTypes>
+      <Private>True</Private>
+    </COMReference>
+    <COMReference Include="AxWMPLib">
+      <WrapperTool>aximp</WrapperTool>
+      <VersionMinor>0</VersionMinor>
+      <VersionMajor>1</VersionMajor>
+      <Guid>6bf52a50-394a-11d3-b153-00c04f79faa6</Guid>
+      <Lcid>0</Lcid>
+      <Isolated>false</Isolated>
+      <Private>True</Private>
+    </COMReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="DataBaseSettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="NewIcon.ico" />
+    <Content Include="Settings\appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\Grades\1.png" />
+    <EmbeddedResource Include="Resources\Grades\10.png" />
+    <EmbeddedResource Include="Resources\Grades\11.png" />
+    <EmbeddedResource Include="Resources\Grades\12.png" />
+    <EmbeddedResource Include="Resources\Grades\13.png" />
+    <EmbeddedResource Include="Resources\Grades\14.png" />
+    <EmbeddedResource Include="Resources\Grades\15.png" />
+    <EmbeddedResource Include="Resources\Grades\16.png" />
+    <EmbeddedResource Include="Resources\Grades\17.png" />
+    <EmbeddedResource Include="Resources\Grades\18.png" />
+    <EmbeddedResource Include="Resources\Grades\19.png" />
+    <EmbeddedResource Include="Resources\Grades\2.png" />
+    <EmbeddedResource Include="Resources\Grades\20.png" />
+    <EmbeddedResource Include="Resources\Grades\21.png" />
+    <EmbeddedResource Include="Resources\Grades\22.png" />
+    <EmbeddedResource Include="Resources\Grades\23.png" />
+    <EmbeddedResource Include="Resources\Grades\24.png" />
+    <EmbeddedResource Include="Resources\Grades\25.png" />
+    <EmbeddedResource Include="Resources\Grades\26.png" />
+    <EmbeddedResource Include="Resources\Grades\27.png" />
+    <EmbeddedResource Include="Resources\Grades\28.png" />
+    <EmbeddedResource Include="Resources\Grades\29.png" />
+    <EmbeddedResource Include="Resources\Grades\3.png" />
+    <EmbeddedResource Include="Resources\Grades\30.png" />
+    <EmbeddedResource Include="Resources\Grades\31.png" />
+    <EmbeddedResource Include="Resources\Grades\32.png" />
+    <EmbeddedResource Include="Resources\Grades\33.png" />
+    <EmbeddedResource Include="Resources\Grades\4.png" />
+    <EmbeddedResource Include="Resources\Grades\5.png" />
+    <EmbeddedResource Include="Resources\Grades\6.png" />
+    <EmbeddedResource Include="Resources\Grades\7.png" />
+    <EmbeddedResource Include="Resources\Grades\8.png" />
+    <EmbeddedResource Include="Resources\Grades\9.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="EPPlus" Version="8.0.1" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="6.0.1" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.4" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.4" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="9.0.4" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.4" />
+    <PackageReference Include="Microsoft.Windows.Compatibility" Version="9.0.4" />
+    <PackageReference Include="NAudio" Version="2.2.1" />
+    <PackageReference Include="ncalc" Version="1.3.8" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="WinForms.DataVisualization" Version="1.10.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="LanguageManager.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Update="Properties\Settings.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <None Update="Resources\LinusPåLinjen.mp4">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

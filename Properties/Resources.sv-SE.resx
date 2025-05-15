@@ -1,0 +1,2278 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="BrowseOldMeasureprotocol" xml:space="preserve">
+    <value>F3-Bläddra i gamla Mätprotokoll</value>
+  </data>
+  <data name="BrowseOldOrders" xml:space="preserve">
+    <value>F4-Bläddra i gamla Ordrar</value>
+  </data>
+  <data name="Compound" xml:space="preserve">
+    <value>F5-Kompounderingsblankett</value>
+  </data>
+  <data name="Frequency_Marking" xml:space="preserve">
+    <value>F9-Frekvensmarkering</value>
+  </data>
+  <data name="Measureprotocol" xml:space="preserve">
+    <value>F1-Mätprotokoll</value>
+  </data>
+  <data name="stringRestartComputer" xml:space="preserve">
+    <value>Vänligen starta om programmet för att aktivera det nya språket.</value>
+  </data>
+  <data name="Menu_Arkiv" xml:space="preserve">
+    <value>Arkiv</value>
+  </data>
+  <data name="Menu_Arkiv_ChangeCompany" xml:space="preserve">
+    <value>Byt företag</value>
+  </data>
+  <data name="Menu_Arkiv_ChangeCompany_Godby" xml:space="preserve">
+    <value>Optinova Godby</value>
+  </data>
+  <data name="Menu_Arkiv_ChangeCompany_Holding" xml:space="preserve">
+    <value>Optinova Holding</value>
+  </data>
+  <data name="Menu_Arkiv_Exit" xml:space="preserve">
+    <value>Avsluta</value>
+  </data>
+  <data name="Menu_Arkiv_NewOrder" xml:space="preserve">
+    <value>Ny Order</value>
+  </data>
+  <data name="Menu_Arkiv_Open" xml:space="preserve">
+    <value>Öppna Order</value>
+  </data>
+  <data name="Menu_Arkiv_Preview" xml:space="preserve">
+    <value>Förhandsgranska</value>
+  </data>
+  <data name="Menu_Arkiv_Print" xml:space="preserve">
+    <value>Skriv ut Order (Endast kopia)</value>
+  </data>
+  <data name="Menu_Order" xml:space="preserve">
+    <value>Order</value>
+  </data>
+  <data name="Menu_Order_CreateTestOrder" xml:space="preserve">
+    <value>Skapa Testorder</value>
+  </data>
+  <data name="Menu_Order_DeleteOrder" xml:space="preserve">
+    <value>Radera Order</value>
+  </data>
+  <data name="Menu_Order_EditOrder" xml:space="preserve">
+    <value>Redigera en order</value>
+  </data>
+  <data name="Menu_Order_OpenRandomOrder" xml:space="preserve">
+    <value>Öppna Random Order</value>
+  </data>
+  <data name="Menu_Order_OrderDone" xml:space="preserve">
+    <value>Order Klar</value>
+  </data>
+  <data name="Menu_Order_ReportProblemProductionSupport" xml:space="preserve">
+    <value>Rapportera problem till produktionssupport</value>
+  </data>
+  <data name="Menu_Protocol" xml:space="preserve">
+    <value>Protokoll</value>
+  </data>
+  <data name="Menu_Order_ReLink_Processcard" xml:space="preserve">
+    <value>Till nytt Processkort</value>
+  </data>
+  <data name="Menu_Protocol_ManageProcesscards" xml:space="preserve">
+    <value>Hantera Processkort</value>
+  </data>
+  <data name="Menu_Protocol_Unlock_ValidatedProcesscard" xml:space="preserve">
+    <value>Lås upp Validerat Processkort</value>
+  </data>
+  <data name="Menu_Arkiv_ChangeCompany_Thailand" xml:space="preserve">
+    <value>Optinova Thailand</value>
+  </data>
+  <data name="Menu_Help" xml:space="preserve">
+    <value>Hjälp</value>
+  </data>
+  <data name="Menu_Help_ChangeLog" xml:space="preserve">
+    <value>Versionshistorik</value>
+  </data>
+  <data name="Menu_Help_ReportBug" xml:space="preserve">
+    <value>Rapportera in en bugg/förbättring</value>
+  </data>
+  <data name="Menu_Settings" xml:space="preserve">
+    <value>Verktyg</value>
+  </data>
+  <data name="Menu_Settings_Settings" xml:space="preserve">
+    <value>Inställningar</value>
+  </data>
+  <data name="Menu_Themes" xml:space="preserve">
+    <value>Teman</value>
+  </data>
+  <data name="Menu_User" xml:space="preserve">
+    <value>Användare</value>
+  </data>
+  <data name="Menu_User_Authorities" xml:space="preserve">
+    <value>Behörigheter</value>
+  </data>
+  <data name="Menu_User_CheckMyAnalysis" xml:space="preserve">
+    <value>Kolla min Analysis</value>
+  </data>
+  <data name="Menu_User_EditUser" xml:space="preserve">
+    <value>Redigera användare</value>
+  </data>
+  <data name="Menu_User_LogIn" xml:space="preserve">
+    <value>Logga in</value>
+  </data>
+  <data name="Menu_User_LogOut" xml:space="preserve">
+    <value>Logga ut</value>
+  </data>
+  <data name="Menu_User_LogOutUser" xml:space="preserve">
+    <value>Logga ut användare från Protokollet</value>
+  </data>
+  <data name="Menu_User_WhoIsLoggedIn" xml:space="preserve">
+    <value>Vem är inloggad?</value>
+  </data>
+  <data name="StartOrder" xml:space="preserve">
+    <value>Vill du starta Order:</value>
+  </data>
+  <data name="btn_No" xml:space="preserve">
+    <value>Nej</value>
+  </data>
+  <data name="btn_Yes" xml:space="preserve">
+    <value>Ja</value>
+  </data>
+  <data name="chartSerieMeasurepoints1" xml:space="preserve">
+    <value>Avg: Senaste Order</value>
+  </data>
+  <data name="chartSerieMeasurepoints2" xml:space="preserve">
+    <value>Avg: Artikel</value>
+  </data>
+  <data name="label_Amount" xml:space="preserve">
+    <value>Mängd:</value>
+  </data>
+  <data name="label_AnstNr" xml:space="preserve">
+    <value>Anst.Nr:</value>
+  </data>
+  <data name="label_Avdelning" xml:space="preserve">
+    <value>Avdelning:</value>
+  </data>
+  <data name="label_Befattning" xml:space="preserve">
+    <value>Befattning:</value>
+  </data>
+  <data name="Warning_OpenMeasureProtocol_1" xml:space="preserve">
+    <value>Stäng ner Bläddra gamla Körprotokoll före du försöker öppna Körprotokollet.</value>
+  </data>
+  <data name="Warning_OpenMeasureProtocol_2" xml:space="preserve">
+    <value>Du kan inte börja mäta före du valt vilken Krympslangsmaskin du använder på Körprotokollet.</value>
+  </data>
+  <data name="Warning_OpenMeasureProtocol_3" xml:space="preserve">
+    <value>Du kan inte göra mätningar före LineClearance är gjord samt godkänd av behörig personal i Körprotokollet.</value>
+  </data>
+  <data name="Warning_OpenMeasureProtocol_4" xml:space="preserve">
+    <value>Du kan inte göra mätningar före LineClearance är gjord i Körprotokollet.</value>
+  </data>
+  <data name="Warning_OpenMeasureProtocol_5" xml:space="preserve">
+    <value>Du måste starta ordern före du kan fylla i mätprotokollet.</value>
+  </data>
+  <data name="Zumbach" xml:space="preserve">
+    <value>F6-Zumbach</value>
+  </data>
+  <data name="Statistics" xml:space="preserve">
+    <value>F8-Statistik</value>
+  </data>
+  <data name="OverviewProdlines" xml:space="preserve">
+    <value>F7-Överblick Produktionslinjer</value>
+  </data>
+  <data name="Protocol" xml:space="preserve">
+    <value>F2-Körprotokoll</value>
+  </data>
+  <data name="label_Yellow" xml:space="preserve">
+    <value>Order Startad</value>
+  </data>
+  <data name="label_White" xml:space="preserve">
+    <value>Processkort saknas</value>
+  </data>
+  <data name="label_Blue" xml:space="preserve">
+    <value>Multipla processkort finns</value>
+  </data>
+  <data name="label_Brown" xml:space="preserve">
+    <value>Processkort under framarbetning, och processkort behöver fastslås.</value>
+  </data>
+  <data name="label_Customer" xml:space="preserve">
+    <value>Kund:</value>
+  </data>
+  <data name="label_Description" xml:space="preserve">
+    <value>Benämning:</value>
+  </data>
+  <data name="label_Filter" xml:space="preserve">
+    <value>Filtrera Arbetsoperationer</value>
+  </data>
+  <data name="label_Green" xml:space="preserve">
+    <value>Order OK att starta</value>
+  </data>
+  <data name="label_Operation" xml:space="preserve">
+    <value>Operation:</value>
+  </data>
+  <data name="label_Orange" xml:space="preserve">
+    <value>Processkort saknas och behöver upprättas.</value>
+  </data>
+  <data name="label_OrderNr" xml:space="preserve">
+    <value>OrderNr:</value>
+  </data>
+  <data name="label_OrderStartedBy" xml:space="preserve">
+    <value>Startad Av:</value>
+  </data>
+  <data name="label_PartNumber" xml:space="preserve">
+    <value>ArtikelNr:</value>
+  </data>
+  <data name="label_ProdGroup" xml:space="preserve">
+    <value>Prod.grupp:</value>
+  </data>
+  <data name="label_ProdLine" xml:space="preserve">
+    <value>Produktionslinje</value>
+  </data>
+  <data name="label_ProductionSchedule" xml:space="preserve">
+    <value>Körplanering</value>
+  </data>
+  <data name="label_QuickOpenOrder" xml:space="preserve">
+    <value>Öppna senast startade order</value>
+  </data>
+  <data name="label_Red" xml:space="preserve">
+    <value>Processkort ej godkänt av QA</value>
+  </data>
+  <data name="label_Sign" xml:space="preserve">
+    <value>Sign:</value>
+  </data>
+  <data name="label_SignedInMonitor" xml:space="preserve">
+    <value>Instämplad Monitor:</value>
+  </data>
+  <data name="label_Tips_Trix" xml:space="preserve">
+    <value>Tips&amp;Trix</value>
+  </data>
+  <data name="label_Start" xml:space="preserve">
+    <value>Start:</value>
+  </data>
+  <data name="label_Stop" xml:space="preserve">
+    <value>Stopp:</value>
+  </data>
+  <data name="label_TotalOrders" xml:space="preserve">
+    <value>Antal Ordrar:</value>
+  </data>
+  <data name="label_Measurepoints" xml:space="preserve">
+    <value>Mätpunkter</value>
+  </data>
+  <data name="label_MeasureInformation" xml:space="preserve">
+    <value>Mätinformation</value>
+  </data>
+  <data name="uploadPicture_1" xml:space="preserve">
+    <value>Starta/öppna en order före du försöker ladda upp en bild.</value>
+  </data>
+  <data name="uploadPicture_2" xml:space="preserve">
+    <value>Välj en bild som du vill ladda upp</value>
+  </data>
+  <data name="uploadPicture_3" xml:space="preserve">
+    <value>Bilden har nu sparats och kan ses varje gång denna artikel körs.</value>
+  </data>
+  <data name="label_Header_ActiveOrders" xml:space="preserve">
+    <value>Dina Aktiva Ordrar</value>
+  </data>
+  <data name="btnZumbach" xml:space="preserve">
+    <value>F6-Zumbach-mätning</value>
+  </data>
+  <data name="finishOrder_1" xml:space="preserve">
+    <value>Denna order är redan avslutad, du kan inte avsluta den igen.
+Kontakta Admin vid behov.</value>
+  </data>
+  <data name="finishOrder_2_1" xml:space="preserve">
+    <value>Du har gjort endast</value>
+  </data>
+  <data name="finishOrder_2_2" xml:space="preserve">
+    <value>mätningar. QC kräver att du gör minst 13 st längdmätningar</value>
+  </data>
+  <data name="finishOrder_3_1" xml:space="preserve">
+    <value>före du avslutar ordern.</value>
+  </data>
+  <data name="finishOrder_3_2" xml:space="preserve">
+    <value>Du har som</value>
+  </data>
+  <data name="finishOrder_3_3" xml:space="preserve">
+    <value>behörighet att avsluta ordern ändå.</value>
+  </data>
+  <data name="finishOrder_3_4" xml:space="preserve">
+    <value>Vill du fortsätta avsluta ordern?</value>
+  </data>
+  <data name="orderDone_1" xml:space="preserve">
+    <value>Fyll i</value>
+  </data>
+  <data name="finishOrder_4" xml:space="preserve">
+    <value>Logga in före du avslutar en order.</value>
+  </data>
+  <data name="finishOrder_MeasureEq_1" xml:space="preserve">
+    <value>Fyll i alla MätdonsNr i Mätprotokollet</value>
+  </data>
+  <data name="finishOrder_MeasureEq_2" xml:space="preserve">
+    <value>Fyll i MätdonsNr i Mätprotokollet</value>
+  </data>
+  <data name="m" xml:space="preserve">
+    <value>Du måste göra LineClearance</value>
+  </data>
+  <data name="Menu_Developer" xml:space="preserve">
+    <value>Utvecklare</value>
+  </data>
+  <data name="Menu_Developer_GetOrderInfo" xml:space="preserve">
+    <value>Get Order Info</value>
+  </data>
+  <data name="Menu_Theme_Beach" xml:space="preserve">
+    <value>Beach</value>
+  </data>
+  <data name="Menu_Theme_Forest" xml:space="preserve">
+    <value>Forest</value>
+  </data>
+  <data name="Menu_Theme_Sky" xml:space="preserve">
+    <value>Sky</value>
+  </data>
+  <data name="Menu_Theme_Sun" xml:space="preserve">
+    <value>Sun</value>
+  </data>
+  <data name="Menu_Theme_Water" xml:space="preserve">
+    <value>Water</value>
+  </data>
+  <data name="Menu_Theme_Winter" xml:space="preserve">
+    <value>Winter</value>
+  </data>
+  <data name="Menu_Theme_Black" xml:space="preserve">
+    <value>Black</value>
+  </data>
+  <data name="Menu_Theme_Light" xml:space="preserve">
+    <value>Light</value>
+  </data>
+  <data name="Menu_Theme_Pink" xml:space="preserve">
+    <value>Pink</value>
+  </data>
+  <data name="Menu_Theme_Cars" xml:space="preserve">
+    <value>Cars</value>
+  </data>
+  <data name="Menu_Theme_Animals" xml:space="preserve">
+    <value>Animals</value>
+  </data>
+  <data name="Menu_Theme_Music" xml:space="preserve">
+    <value>Music</value>
+  </data>
+  <data name="Menu_Theme_Houses" xml:space="preserve">
+    <value>Houses</value>
+  </data>
+  <data name="Menu_Theme_Nature" xml:space="preserve">
+    <value>Nature</value>
+  </data>
+  <data name="Menu_Theme_Dark" xml:space="preserve">
+    <value>Dark</value>
+  </data>
+  <data name="Menu_Theme_Discography" xml:space="preserve">
+    <value>Discography</value>
+  </data>
+  <data name="Menu_Equipment" xml:space="preserve">
+    <value>Utrustning</value>
+  </data>
+  <data name="Menu_Equipment_UseFilter" xml:space="preserve">
+    <value>Använd Filterhus</value>
+  </data>
+  <data name="Menu_Equipment_UseSilpaket" xml:space="preserve">
+    <value>Använd Silpaket</value>
+  </data>
+  <data name="finishOrder_Halvfabrikat_1" xml:space="preserve">
+    <value>Fyll i Halvfabrikatets batchnr i Körprotokollet</value>
+  </data>
+  <data name="finishOrder_Halvfabrikat_2_1" xml:space="preserve">
+    <value>Fyll i vilken Extruder som används för Halvfabrikatet med artikelnr</value>
+  </data>
+  <data name="finishOrder_Halvfabrikat_2_2" xml:space="preserve">
+    <value>i Körprotokollet</value>
+  </data>
+  <data name="finishOrder_RoomTemp" xml:space="preserve">
+    <value>Fyll i rumstemperatur i Körprotokollet före du avslutar ordern.</value>
+  </data>
+  <data name="finishOrder_RoomMoist" xml:space="preserve">
+    <value>Fyll i rummets luftfuktighet i Körprotokollet före du avslutar ordern.</value>
+  </data>
+  <data name="finishOrder_Comments" xml:space="preserve">
+    <value>Fyll i Kommentarer i Körprotokollet</value>
+  </data>
+  <data name="finishOrder_ExtruderCleaned" xml:space="preserve">
+    <value>Kryssa i Rengjort Extrudering på Körprotokollet</value>
+  </data>
+  <data name="label_FinishOrder_Header" xml:space="preserve">
+    <value>Ordern är nu klar</value>
+  </data>
+  <data name="chb_FinishOrder_PrintOrder" xml:space="preserve">
+    <value>Vill du skriva ut ordern?</value>
+  </data>
+  <data name="lbl_FinishOrder_Done" xml:space="preserve">
+    <value>Avsluta Order</value>
+  </data>
+  <data name="lbl_FinishOrder_Abort" xml:space="preserve">
+    <value>Avbryt</value>
+  </data>
+  <data name="Protocol_HeatShrink" xml:space="preserve">
+    <value>Körprotokoll / Processkort - Krympslangsblåsning, TEF</value>
+  </data>
+  <data name="label_LineClearance" xml:space="preserve">
+    <value>Operatör och iordningställd linje (line clearence)</value>
+  </data>
+  <data name="lbl_LC_Name" xml:space="preserve">
+    <value>Klicka här för Line Clearance...</value>
+  </data>
+  <data name="chb_TempKalibCheck" xml:space="preserve">
+    <value>Temperaturkalibrering utförd enligt Instruktion I392</value>
+  </data>
+  <data name="label_StartUps" xml:space="preserve">
+    <value>Uppstarter</value>
+  </data>
+  <data name="lbl_Add_Startup" xml:space="preserve">
+    <value>+ Uppstart</value>
+  </data>
+  <data name="lbl_Remove_Startup" xml:space="preserve">
+    <value>-Radera Uppstart</value>
+  </data>
+  <data name="btn_AddPreFab" xml:space="preserve">
+    <value>Lägg till Halvfabrikat</value>
+  </data>
+  <data name="btn_RemovePreFab" xml:space="preserve">
+    <value>Radera Halvfabrikat</value>
+  </data>
+  <data name="label_Comments" xml:space="preserve">
+    <value>Kommentarer:</value>
+  </data>
+  <data name="btn_ProcesscardBasedOn" xml:space="preserve">
+    <value>Processkortet är baserat på:</value>
+  </data>
+  <data name="label_ProcesscardApprovedDate" xml:space="preserve">
+    <value>Processkort godkänt den:</value>
+  </data>
+  <data name="label_RevNr" xml:space="preserve">
+    <value>RevisionNr:</value>
+  </data>
+  <data name="label_EstablishedBy" xml:space="preserve">
+    <value>Upprättat av: Sign./Anst.nr:</value>
+  </data>
+  <data name="label_ApprovedBy" xml:space="preserve">
+    <value>Godkänt av: Sign./Anst nr:</value>
+  </data>
+  <data name="rb_HistoricalData" xml:space="preserve">
+    <value>Historiska Data:</value>
+  </data>
+  <data name="rb_FramtagningAvProcessfönster" xml:space="preserve">
+    <value>Framtagning av Processfönster:</value>
+  </data>
+  <data name="btn_PreFab" xml:space="preserve">
+    <value>Halvfabrikat</value>
+  </data>
+  <data name="rb_Validated" xml:space="preserve">
+    <value>Validerat på dessa loter:</value>
+  </data>
+  <data name="Measurement_Protocol" xml:space="preserve">
+    <value>Mätprotokoll</value>
+  </data>
+  <data name="label_Ok" xml:space="preserve">
+    <value>Värde Ok</value>
+  </data>
+  <data name="label_Fail" xml:space="preserve">
+    <value>Värde utanför Spec.</value>
+  </data>
+  <data name="label_Warning" xml:space="preserve">
+    <value>Varning, värde utanför styrgräns</value>
+  </data>
+  <data name="label_Felskrivning" xml:space="preserve">
+    <value>Felskrivning?</value>
+  </data>
+  <data name="btn_Clear_HelpInput_1" xml:space="preserve">
+    <value>Töm</value>
+  </data>
+  <data name="btn_Clear_HelpInput_2" xml:space="preserve">
+    <value>Töm</value>
+  </data>
+  <data name="btn_TransferLengthMeasure" xml:space="preserve">
+    <value>Överför Längdmätning</value>
+  </data>
+  <data name="btn_TransferMeasurement" xml:space="preserve">
+    <value>Överför Mätning</value>
+  </data>
+  <data name="btn_EditBag" xml:space="preserve">
+    <value>Redigera PåseNr/SpoleNr</value>
+  </data>
+  <data name="btn_EditAmount" xml:space="preserve">
+    <value>Redigera Mängd</value>
+  </data>
+  <data name="btn_Discard" xml:space="preserve">
+    <value>Kassera</value>
+  </data>
+  <data name="btn_TransferToExcel" xml:space="preserve">
+    <value>Överför Mätningar till Excel</value>
+  </data>
+  <data name="label_Discarded" xml:space="preserve">
+    <value>Kasserad</value>
+  </data>
+  <data name="label_MeasureInstrument_Header" xml:space="preserve">
+    <value>Mätdon</value>
+  </data>
+  <data name="measureinstrument_Delete_1" xml:space="preserve">
+    <value>Är du säker på att du vill radera detta mätdon</value>
+  </data>
+  <data name="measureinstrument_Delete_2" xml:space="preserve">
+    <value>Datan som finns med i den kommer att raderas och går ej att återfå.</value>
+  </data>
+  <data name="measureinstrument_Delete_3" xml:space="preserve">
+    <value>Detta Mätdon </value>
+  </data>
+  <data name="measureinstrument_Delete_4" xml:space="preserve">
+    <value>tillhör mallen för denna Arbetsoperation och går ej att radera.</value>
+  </data>
+  <data name="measureinstrument_Info" xml:space="preserve">
+    <value>Klicka på + för att lägga till ett nytt mätdon, skriv INTE flera nummer i samma fält. 
+
+Om denna operation saknar någon Mätdonstyp från början går det att lägga till det i mallen i Inställningar under fliken Mätdon.</value>
+  </data>
+  <data name="measureprotocol_Info_1" xml:space="preserve">
+    <value>Denna order saknar av någon anledning en mätprotokollsrevision.
+Kontakta Admin för hjälp.</value>
+  </data>
+  <data name="measureprotocol_Info_2" xml:space="preserve">
+    <value>Bekräfta mätningen med ditt lösenord.</value>
+  </data>
+  <data name="measureprotocol_Info_3" xml:space="preserve">
+    <value>Välj en rad (mätning) före du försöker kassera en mätning.</value>
+  </data>
+  <data name="measureprotocol_Info_4" xml:space="preserve">
+    <value>Vänligen välj felkod före du kasserar en mätning.</value>
+  </data>
+  <data name="Warning" xml:space="preserve">
+    <value>Varning!</value>
+  </data>
+  <data name="measureprotocol_Info_5" xml:space="preserve">
+    <value>Data saknas</value>
+  </data>
+  <data name="measureprotocol_Info_6" xml:space="preserve">
+    <value>Fyll i alla fält före du överför en mätning.
+Tomma fält kan du dubbelklicka i för att göra dom N/A</value>
+  </data>
+  <data name="measureprotocol_Info_7" xml:space="preserve">
+    <value>Fyll i vilken position du mäter före du överför längdmätning.</value>
+  </data>
+  <data name="measureprotocol_Info_8" xml:space="preserve">
+    <value>Fyll i längd före du överför en längdmätning.</value>
+  </data>
+  <data name="measureprotocol_Info_9" xml:space="preserve">
+    <value>Du kan inte överföra en längdmätning om du har data inskrivet i något av dom övriga textrutorna.</value>
+  </data>
+  <data name="measureprotocol_Info_10" xml:space="preserve">
+    <value>Bekräfta längdmätning med ditt lösenord.</value>
+  </data>
+  <data name="login_Info_1_1" xml:space="preserve">
+    <value>Den senaste versionen du har läst information om är: </value>
+  </data>
+  <data name="login_Info_1_2" xml:space="preserve">
+    <value>och den som körs nu är:</value>
+  </data>
+  <data name="login_Info_1_3" xml:space="preserve">
+    <value>Vill du läsa information om senaste uppdateringarna?</value>
+  </data>
+  <data name="login_Info_1_4" xml:space="preserve">
+    <value>Versionshistorik</value>
+  </data>
+  <data name="login_Info_2" xml:space="preserve">
+    <value>Välj ditt namn i listan och skriv sedan i ditt lösenord och avsluta med Enter/Retur.
+Du kan oxå klicka på dina initialer/anställningsnr om dom finns med i rutan med namn. 
+Denna ruta fylls upp med dom namn som används på senaste tiden.
+
+Lägga till användare: (OBS! Behörighetskrav)
+Välj ditt namn i listan och skriv sedan i ditt lösenord men tryck INTE på Enter/Retur utan tryck sedan på lägg till användare.
+Fyll i alla uppgifter för den nya användaren och klicka sedan på lägg till användare.
+
+Radera en användare: (OBS! Behörighetskrav)
+Välj ditt namn i listan och skriv sedan i ditt lösenord men tryck INTE på Enter/Retur utan tryck sedan på lägg till användare.
+Välj sedan användare i rullgardinsmenyn under texten 'Radera användare' och klicka på ok.
+
+Redigera en användare:
+Välj ditt namn i listan och skriv sedan i ditt lösenord men tryck INTE på Enter/Retur utan tryck sedan på lägg till användare.
+Ändra dina uppgifter och spara genom att klicka på Uppdatera användare.</value>
+  </data>
+  <data name="login_Info_3" xml:space="preserve">
+    <value>Fyll i alla uppgifter före du lägger till användare:</value>
+  </data>
+  <data name="login_Info_4" xml:space="preserve">
+    <value>Fyll i alla uppgifter före du uppdaterar din profil:</value>
+  </data>
+  <data name="login_Info_5" xml:space="preserve">
+    <value>Din profil är nu uppdaterad, logga in på nytt för att se dina ändringar.</value>
+  </data>
+  <data name="login_Info_6" xml:space="preserve">
+    <value>Välj en profilbild som du vill använda.</value>
+  </data>
+  <data name="label_Welcome" xml:space="preserve">
+    <value>Välkommen</value>
+  </data>
+  <data name="label_AddUser" xml:space="preserve">
+    <value>Lägg till Användare:</value>
+  </data>
+  <data name="label_FirstName" xml:space="preserve">
+    <value>Förnamn:</value>
+  </data>
+  <data name="label_Department" xml:space="preserve">
+    <value>Avdelning:</value>
+  </data>
+  <data name="label_EmpNr" xml:space="preserve">
+    <value>Anst.Nr:</value>
+  </data>
+  <data name="label_Role" xml:space="preserve">
+    <value>Befattning:</value>
+  </data>
+  <data name="chb_OpenLastOrder" xml:space="preserve">
+    <value>Öppna senaste Order:</value>
+  </data>
+  <data name="label_ChooseUser" xml:space="preserve">
+    <value>Välj användare:</value>
+  </data>
+  <data name="label_ChooseDepartment" xml:space="preserve">
+    <value>Välj Avdelning:</value>
+  </data>
+  <data name="label_Password" xml:space="preserve">
+    <value>Lösenord:</value>
+  </data>
+  <data name="label_InfoChooseDepartment" xml:space="preserve">
+    <value>Om du inte hittar ditt namn i listan så kan du välja vilken Avdelning programmet skall hämta användare från.</value>
+  </data>
+  <data name="lbl_EditUser" xml:space="preserve">
+    <value>Redigera Användare</value>
+  </data>
+  <data name="lbl_NewUser" xml:space="preserve">
+    <value>Ny Användare</value>
+  </data>
+  <data name="lbl_Exit" xml:space="preserve">
+    <value>Avsluta</value>
+  </data>
+  <data name="label_NewPassword" xml:space="preserve">
+    <value>Lösenord:</value>
+  </data>
+  <data name="label_Company" xml:space="preserve">
+    <value>Företag:</value>
+  </data>
+  <data name="btn_AddProfilePicture" xml:space="preserve">
+    <value>Ladda upp profilbild</value>
+  </data>
+  <data name="btn_AddUpdateUser" xml:space="preserve">
+    <value>Lägg till Användare</value>
+  </data>
+  <data name="label_DiscardUser" xml:space="preserve">
+    <value>Radera Användare</value>
+  </data>
+  <data name="lbl_DiscardUser" xml:space="preserve">
+    <value>Radera Användare</value>
+  </data>
+  <data name="label_LastName" xml:space="preserve">
+    <value>Efternamn:</value>
+  </data>
+  <data name="label_ChooseItemInfo" xml:space="preserve">
+    <value>Filtrera listan genom att skriva i textrutan nedanför.</value>
+  </data>
+  <data name="login_AddUser" xml:space="preserve">
+    <value>Lägg till Användare</value>
+  </data>
+  <data name="login_UpdateUser" xml:space="preserve">
+    <value>Uppdatera Användare</value>
+  </data>
+  <data name="chb_LogData" xml:space="preserve">
+    <value>Starta Loggning</value>
+  </data>
+  <data name="zumbach_Info_1" xml:space="preserve">
+    <value>Fyll i vilka rör du använder i Körprotokollet före du börjar mäta me Zumbach. Om du inte har nåt rör i en position väljer du N/A istället.</value>
+  </data>
+  <data name="label_Measurement" xml:space="preserve">
+    <value>Mätning</value>
+  </data>
+  <data name="zumbach_Info_2" xml:space="preserve">
+    <value>Hämtar inställningar för COM-portar...</value>
+  </data>
+  <data name="zumbach_Info_3" xml:space="preserve">
+    <value>Laddar mätpunkter för Order...</value>
+  </data>
+  <data name="zumbach_Info_4" xml:space="preserve">
+    <value>Hämtar data till Ordern...</value>
+  </data>
+  <data name="btn_DeleteSelectedData" xml:space="preserve">
+    <value>Radera markerad data</value>
+  </data>
+  <data name="btn_DiscardMeasurement" xml:space="preserve">
+    <value>Kassera Mätning</value>
+  </data>
+  <data name="btn_DeleteMeasurement" xml:space="preserve">
+    <value>Radera Mätning</value>
+  </data>
+  <data name="btn_GetDataOrder" xml:space="preserve">
+    <value>Hämta data för hela Ordern</value>
+  </data>
+  <data name="btn_GetDataPartNr" xml:space="preserve">
+    <value>Hämtar data för hela ArtikelNr</value>
+  </data>
+  <data name="btn_ResetChart" xml:space="preserve">
+    <value>Återsäll Diagram</value>
+  </data>
+  <data name="btn_PrintZumbach" xml:space="preserve">
+    <value>Skriv ut Zumbachmätningar</value>
+  </data>
+  <data name="chb_AutoPosByte" xml:space="preserve">
+    <value>Automatiskt Positionsbyte</value>
+  </data>
+  <data name="zumbach_Info_5" xml:space="preserve">
+    <value>Det har redan registrerats data på denna position.</value>
+  </data>
+  <data name="zumbach_Info_6_1" xml:space="preserve">
+    <value>Denna mätning innehåller endast</value>
+  </data>
+  <data name="zumbach_Info_6_2" xml:space="preserve">
+    <value>mätpunkter.</value>
+  </data>
+  <data name="zumbach_Info_6_3" xml:space="preserve">
+    <value>Är du säker på att du vill spara denna mätning?</value>
+  </data>
+  <data name="zumbach_Info_7" xml:space="preserve">
+    <value>Du har inte mätit på alla positioner, är du säker att du vill byta mätning?</value>
+  </data>
+  <data name="zumbach_Info_8" xml:space="preserve">
+    <value>Är du säker att du vill radera alla mätningar från mätning</value>
+  </data>
+  <data name="zumbach_Info_9_2" xml:space="preserve">
+    <value>mätningar från position</value>
+  </data>
+  <data name="zumbach_Info_9_3" xml:space="preserve">
+    <value>mätning</value>
+  </data>
+  <data name="zumbach_Info_10" xml:space="preserve">
+    <value>Programmet kommer nu att jämna till kurvorna före utskrift. 
+Om det är många mätningar kan det ta ett litet tag samt att det kan komma lite frågor om programmet är osäker på om data skall raderas.</value>
+  </data>
+  <data name="Menu_Settings_CalculateMaterial" xml:space="preserve">
+    <value>Beräkna Material</value>
+  </data>
+  <data name="update_Info_1_1" xml:space="preserve">
+    <value>Det finns en ny uppdatering att hämta. Det är ingen kritiskt uppdatering så du behöver inte uppdatera nu.</value>
+  </data>
+  <data name="update_Info_1_2" xml:space="preserve">
+    <value>Om du vill uppdatera programmet så kan du starta om programmet.</value>
+  </data>
+  <data name="zumbach_ShowPosition" xml:space="preserve">
+    <value>Visa Pos.</value>
+  </data>
+  <data name="zumbach_Info_11" xml:space="preserve">
+    <value>Laddar ner data från hela Artikeln...</value>
+  </data>
+  <data name="tips_Info_1" xml:space="preserve">
+    <value>Här kan du skriva valfria kommentarer som tips och trix för just denna artikel.
+Texten kommer sedan att stå kvar nästa gång denna artikel startas.
+Du kan markera text och högerklicka på den för att ändra färg samt text.
+Klicka på texten 'Tips and Trix' för att minimera textrutan.</value>
+  </data>
+  <data name="zumbach_Info_12" xml:space="preserve">
+    <value>Du kan inte göra mätningar på en order som är avslutad.</value>
+  </data>
+  <data name="label_DiscardZumbachMeasurement_Header" xml:space="preserve">
+    <value>Välj vilka positioner du vill kassera:</value>
+  </data>
+  <data name="btn_Cancel" xml:space="preserve">
+    <value>Avsluta</value>
+  </data>
+  <data name="print_Header_Protocol" xml:space="preserve">
+    <value>Blankett: Digitalt protokoll för Krympslang.</value>
+  </data>
+  <data name="print_Header_ZumbachProtocol" xml:space="preserve">
+    <value>Blankett: Diagram för Krympslang</value>
+  </data>
+  <data name="lineClearance_Info_1" xml:space="preserve">
+    <value>Bekräfta Line Clerance med ditt lösenord.</value>
+  </data>
+  <data name="date" xml:space="preserve">
+    <value>Datum:</value>
+  </data>
+  <data name="name" xml:space="preserve">
+    <value>Namn:</value>
+  </data>
+  <data name="productInfo" xml:space="preserve">
+    <value>ProduktInformation:</value>
+  </data>
+  <data name="form" xml:space="preserve">
+    <value>Blankett:</value>
+  </data>
+  <data name="preparedBy" xml:space="preserve">
+    <value>Utarbetat av:</value>
+  </data>
+  <data name="settings_Page_General" xml:space="preserve">
+    <value>Allmänt</value>
+  </data>
+  <data name="settings_Page_Department" xml:space="preserve">
+    <value>Avdelning</value>
+  </data>
+  <data name="settings_Page_Parts" xml:space="preserve">
+    <value>Special Artiklar</value>
+  </data>
+  <data name="settings_Page_ProdLine" xml:space="preserve">
+    <value>Produktionslinje</value>
+  </data>
+  <data name="settings_Page_Measureinstruments" xml:space="preserve">
+    <value>Mätdon</value>
+  </data>
+  <data name="chb_OnlyForMeasurements" xml:space="preserve">
+    <value>Använda denna dator endast för manuella mätningar</value>
+  </data>
+  <data name="chb_OnlyForZumbach" xml:space="preserve">
+    <value>Använd denna dator för Zumbachmätningar</value>
+  </data>
+  <data name="label_Language" xml:space="preserve">
+    <value>Språk</value>
+  </data>
+  <data name="label_AutomaticallyChooseWorkoperation" xml:space="preserve">
+    <value>Här kan du välja vilken arbetsoperation du automatiskt vill öppna när du startar Hantering av Processkort.</value>
+  </data>
+  <data name="label_ChooseDepartment_Username" xml:space="preserve">
+    <value>Välj vilken avdelning du vill att programmet skall hämta användarnamn från där namn skall väljas</value>
+  </data>
+  <data name="label_Settings_InfoBaudRate" xml:space="preserve">
+    <value>(Om BaudRaten ändras måste oxå draghastigheten ändras. 9600 är standard och vid  gäller ca 2m/min)</value>
+  </data>
+  <data name="label_Settings_InfoZumbachCtr" xml:space="preserve">
+    <value>(Anger hur många mätpunkter programmet skall radera efter mätning för att ta bort eventuella felmätningar)</value>
+  </data>
+  <data name="label_Settings_Add_Parts_Info" xml:space="preserve">
+    <value>Välj först i den högra kolumnen vilken typ av artikelnummer du vill lägga till eller radera.
+Info om vilken lista artikelnumret hör till står sedan ovanför i grön text.</value>
+  </data>
+  <data name="btn_AddPartNr" xml:space="preserve">
+    <value>Lägg till Artikelnummer</value>
+  </data>
+  <data name="btn_DeletePartNr" xml:space="preserve">
+    <value>Radera Artikelnummer</value>
+  </data>
+  <data name="label_Settings_Info_ProdLine" xml:space="preserve">
+    <value>Lista på Produktionslinjer som skall byta silduk efter 3 veckor.</value>
+  </data>
+  <data name="lbl_Settings_Add_ProdLine_Silduksbyte" xml:space="preserve">
+    <value>Lägg till Produktionslinje</value>
+  </data>
+  <data name="lbl_Settings_Delete_ProdLine_Silduksbyte" xml:space="preserve">
+    <value>Radera Prodtuktionslinje</value>
+  </data>
+  <data name="label_Settings_Info_Measureinstruments" xml:space="preserve">
+    <value>Välj först Arbetsoperation och välj sedan vilka Mätdon som tillhör Arbetsoperationen</value>
+  </data>
+  <data name="label_Settings_InfoMeasureinstrument_Add" xml:space="preserve">
+    <value>Klicka på ett Mätdon för att lägga till det till aktiv Arbetsoperation.</value>
+  </data>
+  <data name="label_Settings_InfoMeasureinstrument_Remove" xml:space="preserve">
+    <value>Klicka på ett Mätdon för att radera det från aktiv Arbetsoperation.</value>
+  </data>
+  <data name="zumbach_Info_14" xml:space="preserve">
+    <value>Kassera Mätning:
+En kasserad mätning tar INTE bort datan utan döljer den endast.
+Om du vill kassera mätningen så klickar du på knappen och sedan välja vilken position du vill kassera.
+
+Hämta data från hela ordern:
+Hämtar data till diagrammet för hela ordern.
+
+Hämta data från hela artikeln:
+Hämtar data till diagrammet från alla ordrar från detta artikelNr.
+
+Zoom Out:
+Zoomar ut diagrammet om du har zoomat/markerat ett område tidigare.
+
+Skriv ut Zumbachmätningar:
+När ordern är klar skall diagrammet skrivas ut genom att trycka här.</value>
+  </data>
+  <data name="zumbach_Info_13" xml:space="preserve">
+    <value>Du måste logga in före du gör Zumbachmätningar.
+Fönstret kommer nu att stängas ner.</value>
+  </data>
+  <data name="print_LineClearance_1" xml:space="preserve">
+    <value>Datum / Namn:</value>
+  </data>
+  <data name="forming" xml:space="preserve">
+    <value>FORMNING</value>
+  </data>
+  <data name="finishedOrder" xml:space="preserve">
+    <value>Avslutat Order: Datum / Sign</value>
+  </data>
+  <data name="copy" xml:space="preserve">
+    <value>KOPIA</value>
+  </data>
+  <data name="print_Header_MeasurementProtocol" xml:space="preserve">
+    <value>Blankett: Mätprotokoll för Krympslang</value>
+  </data>
+  <data name="startDate" xml:space="preserve">
+    <value>Start-Datum:</value>
+  </data>
+  <data name="endDate" xml:space="preserve">
+    <value>Slut-Datum:</value>
+  </data>
+  <data name="delete" xml:space="preserve">
+    <value>Är du säker på att du vill radera</value>
+  </data>
+  <data name="authoritiesHeader" xml:space="preserve">
+    <value>Behörigheter/Roller</value>
+  </data>
+  <data name="reportJira_Info_1" xml:space="preserve">
+    <value>Du kan inte rapportera ett problem till Jira om du inte har en order öppen.</value>
+  </data>
+  <data name="deleteOrder_Info_1" xml:space="preserve">
+    <value>Du måste öppna en order före du försöker radera en.</value>
+  </data>
+  <data name="role" xml:space="preserve">
+    <value>Roll</value>
+  </data>
+  <data name="btn_AuthoritiesRemoveUser" xml:space="preserve">
+    <value>Ta bort Användare</value>
+  </data>
+  <data name="btn_AuthoritiesAddUser" xml:space="preserve">
+    <value>Lägg till en användare...</value>
+  </data>
+  <data name="btn_AuthoritiesRemoveRole" xml:space="preserve">
+    <value>Ta bort Roll</value>
+  </data>
+  <data name="label_ChooseProcesscardHeader" xml:space="preserve">
+    <value>Det finns flera processkort till detta artikelnummer, klicka på det du vill använda.</value>
+  </data>
+  <data name="chooseProcesscard_Info_1" xml:space="preserve">
+    <value>Kör utan Processkort</value>
+  </data>
+  <data name="Protocol_Extrusion_TEF" xml:space="preserve">
+    <value>Körprotokoll/Processkort -Extrudering, TEF</value>
+  </data>
+  <data name="label_ProdType" xml:space="preserve">
+    <value>Produkttyp:</value>
+  </data>
+  <data name="label_Length" xml:space="preserve">
+    <value>Längd:</value>
+  </data>
+  <data name="label_RoomTempMoist" xml:space="preserve">
+    <value>Rums Temp/Fukt</value>
+  </data>
+  <data name="password_Info_1" xml:space="preserve">
+    <value>Fel lösenord, vänligen försök igen.</value>
+  </data>
+  <data name="label_PasswordInfo" xml:space="preserve">
+    <value>Bekräfta ditt lösenord med Enter/Retur</value>
+  </data>
+  <data name="label_PasswordUser" xml:space="preserve">
+    <value>Användare:</value>
+  </data>
+  <data name="label_PasswordPassword" xml:space="preserve">
+    <value>Lösenord:</value>
+  </data>
+  <data name="btn_AddStartUp" xml:space="preserve">
+    <value>Lägg till Uppstart</value>
+  </data>
+  <data name="btn_RemoveStartUp" xml:space="preserve">
+    <value>Ta bort senaste Uppstart</value>
+  </data>
+  <data name="btn_Confirm_Equipment" xml:space="preserve">
+    <value>Bekräfta Utrustning</value>
+  </data>
+  <data name="btn_Add_Extruder" xml:space="preserve">
+    <value>Lägg till Extruder</value>
+  </data>
+  <data name="btn_Remove_Extruder" xml:space="preserve">
+    <value>Ta bort senaste Extruder</value>
+  </data>
+  <data name="extrusionTEF_Info_3" xml:space="preserve">
+    <value>Bekräfta utrustningen genom att ange ditt lösenord</value>
+  </data>
+  <data name="extrusionTEF_Info_4" xml:space="preserve">
+    <value>Du kan inte lägga till en ny uppstart före du har fyllt i utrustningen klart för Maskin</value>
+  </data>
+  <data name="equipment_Info_8" xml:space="preserve">
+    <value>Fyll i utrustningen för maskin</value>
+  </data>
+  <data name="equipment_Info_2" xml:space="preserve">
+    <value>före du bekräftar utrustningen.</value>
+  </data>
+  <data name="extrusionTEF_Info_7" xml:space="preserve">
+    <value>Laddar Körprotokoll/Processkort...</value>
+  </data>
+  <data name="extrusionTEF_Info_5" xml:space="preserve">
+    <value>på den tidigare uppstarten.</value>
+  </data>
+  <data name="extrusionTEF_Info_6" xml:space="preserve">
+    <value>Är du säker på att du vill radera Extruder #2
+Datan som finns med i den kommer att raderas och går ej att återfå.</value>
+  </data>
+  <data name="extraComments" xml:space="preserve">
+    <value>Extra Kommentarer:</value>
+  </data>
+  <data name="spool" xml:space="preserve">
+    <value>Spole/Påse:</value>
+  </data>
+  <data name="comments" xml:space="preserve">
+    <value>Kommentarer:</value>
+  </data>
+  <data name="extraComments_Info_1" xml:space="preserve">
+    <value>Du måste fylla i både Spole samt Kommentar för att uppdatera en Extra Kommentar</value>
+  </data>
+  <data name="extraComments_Info_2" xml:space="preserve">
+    <value>Fyll i både spole och kommentar för att spara raden, annars försvinner den helt.</value>
+  </data>
+  <data name="protocol_Info_1" xml:space="preserve">
+    <value>saknar FormTemplate. Kontakta Admin för att lösa detta.</value>
+  </data>
+  <data name="protocol_Info_2" xml:space="preserve">
+    <value>Uppstart</value>
+  </data>
+  <data name="yes" xml:space="preserve">
+    <value>Ja</value>
+  </data>
+  <data name="no" xml:space="preserve">
+    <value>Nej</value>
+  </data>
+  <data name="protocol_EquimentInfo_1" xml:space="preserve">
+    <value>Nej, samma material och utrustning som föreg. Order</value>
+  </data>
+  <data name="protocol_EquimentInfo_2" xml:space="preserve">
+    <value>Nej, samma material som föreg. uppstart</value>
+  </data>
+  <data name="protocol_EquimentInfo_3" xml:space="preserve">
+    <value>Nej, mjukt till hårt material</value>
+  </data>
+  <data name="protocol_EquimentInfo_4" xml:space="preserve">
+    <value>Nej, ljus till mörk färg</value>
+  </data>
+  <data name="slätt" xml:space="preserve">
+    <value>Slätt</value>
+  </data>
+  <data name="rillat" xml:space="preserve">
+    <value>Rillat</value>
+  </data>
+  <data name="checkLastOperations" xml:space="preserve">
+    <value>Kolla 10 senaste körningar...</value>
+  </data>
+  <data name="lineClearance_Info_2" xml:space="preserve">
+    <value>Du måste göra LineClearance före du fyller i Körprotokollet</value>
+  </data>
+  <data name="quickOpen_Info" xml:space="preserve">
+    <value>Detta är en lista med dom senast startade ordrarna.
+Tryck på valfri rad för att snabbt öppna en Order.</value>
+  </data>
+  <data name="btn_Exit" xml:space="preserve">
+    <value>Avsluta</value>
+  </data>
+  <data name="quickOpen_Info_2" xml:space="preserve">
+    <value>Vänligen stäng Zumbachfönstret före du öppnar en ny Order.</value>
+  </data>
+  <data name="quickOpen_Info_3" xml:space="preserve">
+    <value>Denna order har blivit raderad ur monitor, men du kan fortfarande öppna Ordern.</value>
+  </data>
+  <data name="changeProcesscard_Info_1" xml:space="preserve">
+    <value>Öppna eller starta en order före du försöker byta Processkort.</value>
+  </data>
+  <data name="changeProcesscard_Info_2" xml:space="preserve">
+    <value>Det finns inget Processkort kopplat till denna artikel.</value>
+  </data>
+  <data name="lineClearance_Info_3" xml:space="preserve">
+    <value>Line Clearance betyder att man iordningställer produktionslinjen eller arbetsstationen för nästa produktionsorder.
+Detta innebär att man eliminerar risken att blanda ihop material, verktyg, produkt, dokument, etiketter, mm från olika produktionsordrar med varandra.
+Det kan vara förödande för en kund om det finns risk för att olika produkter kan blandas ihop.</value>
+  </data>
+  <data name="Halvfabrikat_Info_1" xml:space="preserve">
+    <value>Om halvfabrikat saknas så kan du klicka på Lägg till Halvfabrikat så laddas halvfabrikatet från Monitor.
+Om du vill lägga till en extra rad med samma halvfabrikat markerar du först raden som du vill kopiera och sedan klick på Lägg till Halvfabrikat.
+Om du vill radera ett halvfabrikat så klicka du på den rad du vill ta bort 
+(OBS! klicka i raden under den första kolumnen), klicka sedan på Radera Halvfabrikat</value>
+  </data>
+  <data name="label_ErrorCodeHeader_1" xml:space="preserve">
+    <value>Välj felkod ur listan nedan och klicka på Kassera</value>
+  </data>
+  <data name="label_ErrorCodeHeader_2" xml:space="preserve">
+    <value>Fyll i en kommentar varför du kasserat mätningen</value>
+  </data>
+  <data name="label_ErrorDiscard" xml:space="preserve">
+    <value>Kassera</value>
+  </data>
+  <data name="label_ErrorExit" xml:space="preserve">
+    <value>Avbryt</value>
+  </data>
+  <data name="errorcode_Info_1" xml:space="preserve">
+    <value>Välj någon av felkoderna samt fyll i en kommentar.</value>
+  </data>
+  <data name="discardedMeasurement_Info_1" xml:space="preserve">
+    <value>Kasserad Mätning:</value>
+  </data>
+  <data name="workoperations_Info_1_1" xml:space="preserve">
+    <value>Denna Produktionslinje</value>
+  </data>
+  <data name="workoperations_Info_1_2" xml:space="preserve">
+    <value>saknar Arbetsoperation.
+Du får nu välja rätt Arbetsoperation för denna produktionslinje.
+Arbetsoperation hänvisar till rätt mallar som används för protokollen.</value>
+  </data>
+  <data name="workoperations_Info_2" xml:space="preserve">
+    <value>Detta processkort finns till flera Arbetsoperationer, välj nedan vilket du vill öppna.</value>
+  </data>
+  <data name="label_Workoperation_Header" xml:space="preserve">
+    <value>Välj Arbetsoperation</value>
+  </data>
+  <data name="btn_Workoperation_Choose" xml:space="preserve">
+    <value>Välj</value>
+  </data>
+  <data name="btn_Workoperation_Abort" xml:space="preserve">
+    <value>Exit</value>
+  </data>
+  <data name="label_ChooseCompany_Header" xml:space="preserve">
+    <value>Välj vilket Monitor-bolag denna dator skall användas mot</value>
+  </data>
+  <data name="validateData_Info_1" xml:space="preserve">
+    <value>Denna ruta går ej att skriva i, Högerklicka istället i rutan och välj från listan.</value>
+  </data>
+  <data name="infotext_Info_1" xml:space="preserve">
+    <value>Om inget av alternativen i listan passar kan du skriva i text i rutan nedanför och klicka på Enter/Retur</value>
+  </data>
+  <data name="label_ChooseItemInfo_1" xml:space="preserve">
+    <value>Filtrera listan genom att skriva i textrutan nedanför.</value>
+  </data>
+  <data name="label_ChoosePC_Header" xml:space="preserve">
+    <value>Hantering av Processkort</value>
+  </data>
+  <data name="label_ChoosePC_Info_1" xml:space="preserve">
+    <value>Här nedan kan du klicka på den arbetsoperation du vill gå till.</value>
+  </data>
+  <data name="label_Info" xml:space="preserve">
+    <value>Välj ArtikelNr och programmet väljer Arbetsoperation åt dig.</value>
+  </data>
+  <data name="chb_ChoosePC_AutoChoose" xml:space="preserve">
+    <value>Låt programmet i fortsättningen välja arbetsoperation beroende på vilken avdelning jag tillhör. Detta kan ändras i inställningarna senare.</value>
+  </data>
+  <data name="label_Workoperation" xml:space="preserve">
+    <value>Arbetsoperation:</value>
+  </data>
+  <data name="browseProtocols" xml:space="preserve">
+    <value>Bläddra i gamla Körprotokoll</value>
+  </data>
+  <data name="warning_Testdatabase" xml:space="preserve">
+    <value>VARNING!
+Du använder nu en Betaversion av programmet som är kopplat mot en testdatabas.
+Om du inte är en Betatestare så kontakta omedelbart Admin.</value>
+  </data>
+  <data name="warning_MonitorTestserver" xml:space="preserve">
+    <value>VARNING! 
+Programmet hämtar nu data från Monitors testserver. 
+Programmet skall INTE användas annat än för tester nu.
+Kontakta Admin omedelbart om du ser detta meddelande.</value>
+  </data>
+  <data name="chooseWorkOp_Info_1" xml:space="preserve">
+    <value>Ingenting</value>
+  </data>
+  <data name="chb_HideInactive_PartNr" xml:space="preserve">
+    <value>Dölj Inaktiva Artiklar</value>
+  </data>
+  <data name="label_List_PartNr" xml:space="preserve">
+    <value>List med ArtikelNr</value>
+  </data>
+  <data name="label_Inactive" xml:space="preserve">
+    <value>Inaktiv</value>
+  </data>
+  <data name="label_PartNrNewName" xml:space="preserve">
+    <value>Detta artikelnr har bytt namn till - </value>
+  </data>
+  <data name="label_Info_Prodline" xml:space="preserve">
+    <value>Det är väldigt viktigt att du väljer rätt Produktionslinje här, speciellt när multipla Processkort används. 
+Produktionslinjerna hämtas från Monitor.
+
+Om rätt linje saknas, kontakta Admin.</value>
+  </data>
+  <data name="label_Info_TotalLayer" xml:space="preserve">
+    <value>Antal lager på slangen. Processkortet uppdateras automatiskt när du ändrar antal.</value>
+  </data>
+  <data name="btn_Save_Processcard" xml:space="preserve">
+    <value>Spara Processkortet</value>
+  </data>
+  <data name="btn_DeActivate_PartNr" xml:space="preserve">
+    <value>Inaktivera Processkortet</value>
+  </data>
+  <data name="btn_ClearProcessCard" xml:space="preserve">
+    <value>Töm Processkortet</value>
+  </data>
+  <data name="btn_DeleteProcesscard" xml:space="preserve">
+    <value>Radera Processkortet</value>
+  </data>
+  <data name="activatePartNr" xml:space="preserve">
+    <value>Aktivera Processkortet</value>
+  </data>
+  <data name="deactivatePartNr" xml:space="preserve">
+    <value>Inaktivera Processkortet</value>
+  </data>
+  <data name="saveProcesscard_Info_1" xml:space="preserve">
+    <value>Produktionslinje måste fyllas i före du försöker spara ett processkort.
+Produktionslinje används för att separera processkorten om det finns multipla processkort för samma artikelnr.</value>
+  </data>
+  <data name="saveProcesscard_Info_2" xml:space="preserve">
+    <value>QA har redan signerat detta kort så du kan inte spara över denna revision. Byt revision och försök spara igen.</value>
+  </data>
+  <data name="saveProcesscard_Info_3_1" xml:space="preserve">
+    <value>Skapat nytt processkort för Artikelnr:</value>
+  </data>
+  <data name="saveProcesscard_Info_3_2" xml:space="preserve">
+    <value>Om detta Processkort behöver godkännas av QA måste du skapa ett ärende i Jira.</value>
+  </data>
+  <data name="saveProcesscard_Info_4" xml:space="preserve">
+    <value>Uppdaterat processkort för Artikelnr:</value>
+  </data>
+  <data name="saveProcesscard_Info_5" xml:space="preserve">
+    <value>Spara processkortet före du uppdaterar Antal lager på slangen.</value>
+  </data>
+  <data name="saveProcesscard_Info_6" xml:space="preserve">
+    <value>Något blev fel, kontrollera att du skrivit rätt. 
+Felkoden mailas nu till Admin.
+
+Kontakta Admin om du inte lyckas lösa problemet.</value>
+  </data>
+  <data name="saveProcesscard_Info_7_1" xml:space="preserve">
+    <value>Är du helt säker på att du vill radera detta processkort?</value>
+  </data>
+  <data name="saveProcesscard_Info_7_2" xml:space="preserve">
+    <value>Du skall INTE radera ett Processkort om det inte används längre utan då skall du inaktivera det.
+Radera endast ett Processkort om du skapat ett felaktigt i misstag.</value>
+  </data>
+  <data name="btn_AuthoritiesAddRole" xml:space="preserve">
+    <value>Lägga till en befattning...</value>
+  </data>
+  <data name="equipment_Info_1" xml:space="preserve">
+    <value>OBS! Du har inte bekräftat utrustningen.  
+Om du stänger ner Körprotokollet så kommer den senaste uppstarten att raderas för Utrustning.
+Vill du stänga ner Körprotokollet?              </value>
+  </data>
+  <data name="validateData_Info_2_1" xml:space="preserve">
+    <value>Du kör inte med samma värde som det Nominella värdet på</value>
+  </data>
+  <data name="validateData_Info_2_2" xml:space="preserve">
+    <value>och processkortet är baserat på Historiska data så extra prover skall tas ut samt QC skall meddelas.
+
+Du måste meddela din Arbetsledare eller Processtekniker att processkortet behöver uppdateras?</value>
+  </data>
+  <data name="validateData_Info_3_1" xml:space="preserve">
+    <value>Utanför Nominella värdet. - Historiska Data:</value>
+  </data>
+  <data name="validateData_Info_3_2" xml:space="preserve">
+    <value>är utanför Nominella värdet på ett Processkortet baserat på Historiska Data.</value>
+  </data>
+  <data name="validateData_Info_3_3" xml:space="preserve">
+    <value>Kolla igenom ordern och se om du anser att en ändring i processkortet är befogad.</value>
+  </data>
+  <data name="validateData_Info_4_1" xml:space="preserve">
+    <value>Du är utanför toleranserna på</value>
+  </data>
+  <data name="validateData_Info_4_2" xml:space="preserve">
+    <value>och processkortet är baserat på Historiska data så extra prover skall tas ut samt QC skall meddelas.
+
+Du måste meddela en Arbetsledare/Processtekniker/ProcessIngenjör att processkortetet behöver uppdateras?</value>
+  </data>
+  <data name="validateData_Info_5_1" xml:space="preserve">
+    <value>Utanför Toleranser - Historiska Data:</value>
+  </data>
+  <data name="validateData_Info_5_2" xml:space="preserve">
+    <value>är utanför gränserna på ett Processkortet baserat på Historiska Data.</value>
+  </data>
+  <data name="validateData_Info_6" xml:space="preserve">
+    <value>Detta är en Validerad körning och du får INTE köra utanför toleranserna.
+
+Processtekniker är meddelad att Processkortet behöver uppdateras.</value>
+  </data>
+  <data name="validateData_Info_7_1" xml:space="preserve">
+    <value>Du är utanför Nominella värdet på Processkortet men som</value>
+  </data>
+  <data name="validateData_Info_7_2" xml:space="preserve">
+    <value>kan du köra vidare på eget ansvar.
+
+Du måste meddela ansvarig personal att processkortet behöver uppdateras?</value>
+  </data>
+  <data name="validateData_Info_7_3" xml:space="preserve">
+    <value>Utanför Toleranser - Validerat Processkort:</value>
+  </data>
+  <data name="validateData_Info_7_4" xml:space="preserve">
+    <value>är utanför gränserna på ett Validerat Processkortet.</value>
+  </data>
+  <data name="validateData_Info_8" xml:space="preserve">
+    <value>Du är utanför processkortets gränser men som</value>
+  </data>
+  <data name="validateData_Info_9_1" xml:space="preserve">
+    <value>Du får INTE gå utanför det Nominella värdet på ett processkort som är Validerat.
+
+Du MÅSTE meddela din Arbetsledare/QA att processkortet behöver uppdateras!</value>
+  </data>
+  <data name="validateData_Info_9_2" xml:space="preserve">
+    <value>Utanför Nominella värdet på Validerat Processkort:</value>
+  </data>
+  <data name="validateData_Info_9_3" xml:space="preserve">
+    <value>är utanför Nominella värdet på ett Validerat Processkort.</value>
+  </data>
+  <data name="validateData_Info_9_4" xml:space="preserve">
+    <value>Du får INTE gå utanför toleranser på ett processkort som är Validerat.
+
+Du MÅSTE meddela ansvarig person att  Processkortet behöver uppdateras?</value>
+  </data>
+  <data name="validateData_Info_9_5" xml:space="preserve">
+    <value>är utanför gränserna på ett Validerat Processkort.</value>
+  </data>
+  <data name="label_ChangeChargeNr_Header" xml:space="preserve">
+    <value>OBS! Du får inte köra en order med två olika lotnr</value>
+  </data>
+  <data name="label_ChangeChargeNr_Info_1" xml:space="preserve">
+    <value>Skriv i en kommentar om varför du har bytt lotNr:</value>
+  </data>
+  <data name="lbl_ChangeChargeNr_Info_Change" xml:space="preserve">
+    <value>Byt ChargeNr</value>
+  </data>
+  <data name="lbl_ChangeChargeNr_Info_Exit" xml:space="preserve">
+    <value>Avbryt</value>
+  </data>
+  <data name="changeBatchNr_Info_3" xml:space="preserve">
+    <value>Du behöver skriva minst 5 bokstäver i kommentaren.</value>
+  </data>
+  <data name="dateTime" xml:space="preserve">
+    <value>Datum-Tid</value>
+  </data>
+  <data name="errorCode" xml:space="preserve">
+    <value>Felkod:</value>
+  </data>
+  <data name="empNr" xml:space="preserve">
+    <value>Anst.Nr</value>
+  </data>
+  <data name="loadingProductionlines_2" xml:space="preserve">
+    <value>Lägger till info om Produktionslinjer...</value>
+  </data>
+  <data name="label_ProductionLines_Info" xml:space="preserve">
+    <value>Klicka på Produktionslinjen för mera info</value>
+  </data>
+  <data name="label_ProductionLines_Green" xml:space="preserve">
+    <value>Grön = Produktionslinjen är aktiv</value>
+  </data>
+  <data name="loadingProductionlines_1" xml:space="preserve">
+    <value>Hämtar produktionslinjer...</value>
+  </data>
+  <data name="label_ProductionLines_Header" xml:space="preserve">
+    <value>Produktionslinjer</value>
+  </data>
+  <data name="label_ProductionLines_Red" xml:space="preserve">
+    <value>Röd = Produktionslinjen är inaktiv</value>
+  </data>
+  <data name="dateStart" xml:space="preserve">
+    <value>Datum Start:</value>
+  </data>
+  <data name="orderRuntime" xml:space="preserve">
+    <value>Order Körtid:</value>
+  </data>
+  <data name="orderProdtime" xml:space="preserve">
+    <value>Total Produktionstid:</value>
+  </data>
+  <data name="statsProdLine_Header" xml:space="preserve">
+    <value>Rubrik</value>
+  </data>
+  <data name="statsProdLine_1" xml:space="preserve">
+    <value>Vanligaste Kund</value>
+  </data>
+  <data name="statsProdLine_2" xml:space="preserve">
+    <value>Vanligaste ArtikelNr</value>
+  </data>
+  <data name="statsProdLine_3" xml:space="preserve">
+    <value>Vanligaste Halvfabrikat</value>
+  </data>
+  <data name="statsProdLine_4" xml:space="preserve">
+    <value>Antal Ordrar / År</value>
+  </data>
+  <data name="statsProdLine_5" xml:space="preserve">
+    <value>Antal Ordrar / Månad</value>
+  </data>
+  <data name="statsProdLine_6" xml:space="preserve">
+    <value>Operatör Line Clearance</value>
+  </data>
+  <data name="statsProdLine_7" xml:space="preserve">
+    <value>Mätningar i Linjen</value>
+  </data>
+  <data name="statsProdLine_8" xml:space="preserve">
+    <value>Medeltemp. Zoner</value>
+  </data>
+  <data name="statsProdLine_9" xml:space="preserve">
+    <value>Vanligaste storlek på slang</value>
+  </data>
+  <data name="label_Latest10Values_Info" xml:space="preserve">
+    <value>Klicka i fönstret för att stänga ner det.</value>
+  </data>
+  <data name="expansionProcess" xml:space="preserve">
+    <value>BLÅSNING</value>
+  </data>
+  <data name="saveSetting_1" xml:space="preserve">
+    <value>Fel vid hämtning av inställningar. 
+Kontakta Admin vid behov.</value>
+  </data>
+  <data name="monitorInfo_1" xml:space="preserve">
+    <value>Hittar inte detta ordernr i Monitor eller i Programmet.
+
+Kontakta Admin vid behov.</value>
+  </data>
+  <data name="monitorInfo_2" xml:space="preserve">
+    <value>Denna Order har blivit raderad eller finns ej i Monitor, du kan ändå öppna ordern och titta på den.</value>
+  </data>
+  <data name="dryingMaterial_1" xml:space="preserve">
+    <value>Torkar material under körningen (UK)</value>
+  </data>
+  <data name="dryingMaterial_2" xml:space="preserve">
+    <value>UK</value>
+  </data>
+  <data name="dryingMaterial_3" xml:space="preserve">
+    <value>Ange Tid</value>
+  </data>
+  <data name="signProcesscardPassword" xml:space="preserve">
+    <value>Fyll i ditt lösenord för att signera Processkortet</value>
+  </data>
+  <data name="confirmTransferPassword" xml:space="preserve">
+    <value>Bekräfta överföringen med ditt lösenord.</value>
+  </data>
+  <data name="print_Header_Protocol_HS" xml:space="preserve">
+    <value>Blankett: Processkort/Körprotokoll för Krympslang</value>
+  </data>
+  <data name="print_Header_Protocol_Extrusion_Equipment" xml:space="preserve">
+    <value>Blankett: Processkort/Körprotokoll för Extrudering - Utrustning</value>
+  </data>
+  <data name="equipment" xml:space="preserve">
+    <value>UTRUSTNING</value>
+  </data>
+  <data name="partNrMaterial" xml:space="preserve">
+    <value>ArtikelNr mtrl:</value>
+  </data>
+  <data name="print_Header_Protocol_Extrusion" xml:space="preserve">
+    <value>Blankett: Processkort/Körprotokoll för Extrudering</value>
+  </data>
+  <data name="unit" xml:space="preserve">
+    <value>ENHET</value>
+  </data>
+  <data name="dryer" xml:space="preserve">
+    <value>TORK</value>
+  </data>
+  <data name="page" xml:space="preserve">
+    <value>sida</value>
+  </data>
+  <data name="print_Header_Protocol_Comments" xml:space="preserve">
+    <value>Blankett: Kommentarer</value>
+  </data>
+  <data name="print_Header_ExtraComments" xml:space="preserve">
+    <value>Blankett: Extra Kommentarer</value>
+  </data>
+  <data name="spool_1" xml:space="preserve">
+    <value>Spole</value>
+  </data>
+  <data name="spool_2" xml:space="preserve">
+    <value>Påse</value>
+  </data>
+  <data name="blowing" xml:space="preserve">
+    <value>BLÅSNING</value>
+  </data>
+  <data name="monitorDeletedOrder" xml:space="preserve">
+    <value>Denna order kan ej hittas i Monitor, du kan ändå öppna ordern.</value>
+  </data>
+  <data name="authority_Check_1" xml:space="preserve">
+    <value>Du saknar behörighet för att</value>
+  </data>
+  <data name="authority_Check_2" xml:space="preserve">
+    <value>I menyn Användare-Behörigheter kan du se vem som har behörighet för detta.</value>
+  </data>
+  <data name="btn_ReloadPartNr" xml:space="preserve">
+    <value>Ladda om Artikelnr</value>
+  </data>
+  <data name="saveProcesscard_Info_2_1" xml:space="preserve">
+    <value>Du kan inte spara eller uppdatera detta processkort</value>
+  </data>
+  <data name="saveProcesscard_Info_2_2" xml:space="preserve">
+    <value>Det finns startade ordrar med detta RevisionsNr. 
+Ändra RevisionsNr och försök igen</value>
+  </data>
+  <data name="chooseExtruder" xml:space="preserve">
+    <value>Du måste välja extruder före du väljer typ av skruv.</value>
+  </data>
+  <data name="authority_Check_3" xml:space="preserve">
+    <value>För att ändra i dessa behörigheter krävs någon av dessa behörigheter:
+SuperAdmin
+Process Ingenjör
+KvalitetsDirektör
+KvalitetsIngenjör</value>
+  </data>
+  <data name="label_Info_ScreenPackage" xml:space="preserve">
+    <value>Välj Silduk...</value>
+  </data>
+  <data name="btn_Select" xml:space="preserve">
+    <value>Välj</value>
+  </data>
+  <data name="orderNotDone_1" xml:space="preserve">
+    <value>Du har startat Order </value>
+  </data>
+  <data name="orderNotDone_2" xml:space="preserve">
+    <value>för ca </value>
+  </data>
+  <data name="orderNotDone_3" xml:space="preserve">
+    <value>månader sedan.</value>
+  </data>
+  <data name="orderNotDone_4" xml:space="preserve">
+    <value>Om denna order är klar, vänligen öppna och avsluta den så att det inte ligger för många öppna ordrar i systemet.</value>
+  </data>
+  <data name="orderNotDone_5" xml:space="preserve">
+    <value>Vill du öppna denna order nu?</value>
+  </data>
+  <data name="managePCNotLoggedIn" xml:space="preserve">
+    <value>Du måste vara inloggad med rätt behörigheter för att kunna spara eller editera ett processkort.</value>
+  </data>
+  <data name="chooseDie_Warning" xml:space="preserve">
+    <value>Du måste välja typ av Munstycke före du väljer dimension.</value>
+  </data>
+  <data name="chooseTip_Warning" xml:space="preserve">
+    <value>Du måste välja typ av Kärna före du väljer dimension.</value>
+  </data>
+  <data name="label_ProcessCard_ExtraInfo" xml:space="preserve">
+    <value>Extra Info åt operatörerna som endast syns i programmet:</value>
+  </data>
+  <data name="login_Info_7" xml:space="preserve">
+    <value>Om du vill göra ändringar, vänligen logga in först.</value>
+  </data>
+  <data name="protocol_OpenAnotherUser_1" xml:space="preserve">
+    <value>Protokollet är just nu öppet av</value>
+  </data>
+  <data name="protocol_OpenAnotherUser_2" xml:space="preserve">
+    <value>på datorn</value>
+  </data>
+  <data name="protocol_OpenAnotherUser_3" xml:space="preserve">
+    <value>Du kan inte spara data i protokollet nu.
+I Menyn "Operatör" i huvudfönstret kan du logga ut</value>
+  </data>
+  <data name="preFab_Balance" xml:space="preserve">
+    <value>Saldo:</value>
+  </data>
+  <data name="lbl_Abort" xml:space="preserve">
+    <value>Avbryt</value>
+  </data>
+  <data name="label_Info_ProcesscardChange" xml:space="preserve">
+    <value>Fyll i information om varför du har gått utanför processkortets gränser.
+När ordern är klar kommer detta att mailas till den som är ansvarig för Processkort.</value>
+  </data>
+  <data name="lbl_SaveMessage" xml:space="preserve">
+    <value>Spara Meddelande</value>
+  </data>
+  <data name="startOrder_NeedLogin" xml:space="preserve">
+    <value>Du måste logga in före du försöker starta en ny Order.</value>
+  </data>
+  <data name="startOrder_NoWorkoperation" xml:space="preserve">
+    <value>Du har inte valt någon arbetsoperation och ingen order kan startas eller öppnas.</value>
+  </data>
+  <data name="missingLayer_1" xml:space="preserve">
+    <value>Detta artikelnr saknar information om hur många lager slangen har, fyll i nedan hur många lager slangen har.
+OBS! Det måste vara mellan 1 till 3 lager</value>
+  </data>
+  <data name="missingLayer_2" xml:space="preserve">
+    <value>Antal lager på slangen.</value>
+  </data>
+  <data name="missingLayer_3" xml:space="preserve">
+    <value>Felaktigt värde, försök igen.</value>
+  </data>
+  <data name="machine" xml:space="preserve">
+    <value>maskin</value>
+  </data>
+  <data name="multipleRevisionsMeasureTemnplate" xml:space="preserve">
+    <value>Detta artikelnr innehåler olika revisioner av Mätformuläret så du måste aktivt välja vilken revision du vill ladda ordrar från.</value>
+  </data>
+  <data name="Menu_Help_InstructionVideos" xml:space="preserve">
+    <value>Instruktionsfilmer</value>
+  </data>
+  <data name="Menu_Help_InstructionVideos_AddUser" xml:space="preserve">
+    <value>Lägg till Användare</value>
+  </data>
+  <data name="Menu_Help_InstructionVideos_SignIn" xml:space="preserve">
+    <value>Logga in</value>
+  </data>
+  <data name="Menu_Help_InstructionVideos_RecentlyOpenedOrders" xml:space="preserve">
+    <value>Senast startade Ordrar</value>
+  </data>
+  <data name="btn_AuthoritiesAddEmail" xml:space="preserve">
+    <value>Lägg till Email</value>
+  </data>
+  <data name="customMail" xml:space="preserve">
+    <value>Anpassade Mailadresser</value>
+  </data>
+  <data name="Menu_User_Authorities_CustomMailAddresses" xml:space="preserve">
+    <value>Anpassade Mailadresser</value>
+  </data>
+  <data name="btn_AuthoritiesRemoveMail" xml:space="preserve">
+    <value>Ta bort Email</value>
+  </data>
+  <data name="authority_1" xml:space="preserve">
+    <value>Godkänna Line Clearance för PTFE Kragning</value>
+  </data>
+  <data name="authority_2" xml:space="preserve">
+    <value>Hantera Processkort</value>
+  </data>
+  <data name="authority_3" xml:space="preserve">
+    <value>Radera Processkort</value>
+  </data>
+  <data name="authority_4" xml:space="preserve">
+    <value>Godkänna Processkort</value>
+  </data>
+  <data name="authority_5" xml:space="preserve">
+    <value>Ändra inställningar för Databaser</value>
+  </data>
+  <data name="authority_6" xml:space="preserve">
+    <value>Ändra dator till Mätdator</value>
+  </data>
+  <data name="authority_7" xml:space="preserve">
+    <value>Lägga till användare</value>
+  </data>
+  <data name="authority_8" xml:space="preserve">
+    <value>Radera Order</value>
+  </data>
+  <data name="authority_9" xml:space="preserve">
+    <value>Editera en avslutad Order</value>
+  </data>
+  <data name="authority_10" xml:space="preserve">
+    <value>Avsluta ofullständig Order</value>
+  </data>
+  <data name="authority_11" xml:space="preserve">
+    <value>Rapportera Problem till produktions support</value>
+  </data>
+  <data name="authority_12" xml:space="preserve">
+    <value>Skapa en testorder</value>
+  </data>
+  <data name="authority_13" xml:space="preserve">
+    <value>Ändra Artikel specifika listor</value>
+  </data>
+  <data name="authority_14" xml:space="preserve">
+    <value>Hantera Mätdonsmallar</value>
+  </data>
+  <data name="authority_15" xml:space="preserve">
+    <value>Starta Order som ej är godkänd av QA</value>
+  </data>
+  <data name="authority_16" xml:space="preserve">
+    <value>Starta 5e Order utan fastslaget Processkort</value>
+  </data>
+  <data name="authority_17" xml:space="preserve">
+    <value>Starta 7e Order utan fastslaget Processkort</value>
+  </data>
+  <data name="authority_18" xml:space="preserve">
+    <value>Redigera en Användare</value>
+  </data>
+  <data name="authority_19" xml:space="preserve">
+    <value>Radera Användare</value>
+  </data>
+  <data name="authority_20" xml:space="preserve">
+    <value>Konfigurera anpassade mail-adresser</value>
+  </data>
+  <data name="validEmail" xml:space="preserve">
+    <value>VARNING: Du har angett en ogiltig mailadress. 
+Var god försök igen, eller kontakta Admin vid behov.</value>
+  </data>
+  <data name="Menu_Help_InstructionVideos_ManageAuthorities" xml:space="preserve">
+    <value>Hantera Rättigheter</value>
+  </data>
+  <data name="Menu_Help_InstructionVideos_SaveProcessCard" xml:space="preserve">
+    <value>Spara Nytt Processkort</value>
+  </data>
+  <data name="delete_user" xml:space="preserve">
+    <value>från programmet?</value>
+  </data>
+  <data name="mail_MissingMeasurePoints_1" xml:space="preserve">
+    <value>Denna Order saknar Mätpunkter, ett mail skickas automatiskt till Customer Service så dom kan lägga in mätpunkterna i Monitor.</value>
+  </data>
+  <data name="mail_MissingMeasurePoints_2" xml:space="preserve">
+    <value>Mätpunkter saknas.</value>
+  </data>
+  <data name="processcard_MissingInfo" xml:space="preserve">
+    <value>Nödvändig information saknas på processkortet.</value>
+  </data>
+  <data name="saveProcesscard_Info_8" xml:space="preserve">
+    <value>Du måste fylla i Produktionstyp före du sparar proceskortet. 
+Produktionstyp används för att separera processkorten om det finns multipla processkort för samma artikelnr.</value>
+  </data>
+  <data name="openProcessardManagementWarning" xml:space="preserve">
+    <value>Du kan inte ha en order öppen när du hanterar processkort. Vänligen starta om programmet eller välj Ny order i menyn Arkiv och pröva igen.</value>
+  </data>
+  <data name="editOrder" xml:space="preserve">
+    <value>Denna order är inte avslutad och kan inte redigeras.</value>
+  </data>
+  <data name="label_ProtocolTemplateName" xml:space="preserve">
+    <value>Välj Template för Protokollet</value>
+  </data>
+  <data name="Menu_Settings_ChangeColorHS_Machine" xml:space="preserve">
+    <value>Ändra färg HS-Maskin</value>
+  </data>
+  <data name="label_HS_Color_Info" xml:space="preserve">
+    <value>Färgen på HS-Maskinen är viktig för att enkelt separera vilken linje som används när man har 
+flera program öppna på samma dator/skärm.
+Välj först HS-Maskin i listan nedan och ändra sedan färg och invertera färgen på texten om det blir svårt att läsa.</value>
+  </data>
+  <data name="btn_HS_Machine_NewColor" xml:space="preserve">
+    <value>Välj ny färg</value>
+  </data>
+  <data name="chb_HS_Machine_InvertForeColor" xml:space="preserve">
+    <value>Invertera färgen på texten</value>
+  </data>
+  <data name="btn_HS_Machine_Close" xml:space="preserve">
+    <value>Spara och Avsluta</value>
+  </data>
+  <data name="authority_21" xml:space="preserve">
+    <value>Ändra färg på HS-maskin</value>
+  </data>
+  <data name="maintenanceWork_1" xml:space="preserve">
+    <value>Arbete pågår och programmet kan INTE användas under denna tid. 
+Programmet kommer att stängas.
+Arbetet har pågått i</value>
+  </data>
+  <data name="maintenanceWork_hours" xml:space="preserve">
+    <value>timmar</value>
+  </data>
+  <data name="maintenanceWork_days" xml:space="preserve">
+    <value>dagar</value>
+  </data>
+  <data name="maintenanceWork_minutes" xml:space="preserve">
+    <value>minuter</value>
+  </data>
+  <data name="maintenanceWork_2" xml:space="preserve">
+    <value>, kommer ett underhållsarbete att påbörjas och programmet kommer inte att kunna användas under en tid.</value>
+  </data>
+  <data name="maintenanceWork_3" xml:space="preserve">
+    <value>Planerad tid för underhållsarbetet är ca </value>
+  </data>
+  <data name="maintenanceWork_4" xml:space="preserve">
+    <value>Om ca</value>
+  </data>
+  <data name="btn_HS_Machine_Exit" xml:space="preserve">
+    <value>Avsluta</value>
+  </data>
+  <data name="Menu_Theme_Optinova" xml:space="preserve">
+    <value>Optinova</value>
+  </data>
+  <data name="changeProcesscard_Info_3" xml:space="preserve">
+    <value>Välj vilket processkort du vill koppla din order mot.</value>
+  </data>
+  <data name="transferDataExcel_1" xml:space="preserve">
+    <value>Vill du öppna filen i Excel nu?</value>
+  </data>
+  <data name="browseProtocols_1" xml:space="preserve">
+    <value>Ta bort markerade ordrar från listan. (OBS, inget händer med ordern, nästa gång är den tillbaks igen)</value>
+  </data>
+  <data name="browseProtocols_2" xml:space="preserve">
+    <value>Om du markerar alternativet “Ladda inte order” så kan du klicka på ordrar i orderlistan utan att data laddas.</value>
+  </data>
+  <data name="chb_SelectOrders" xml:space="preserve">
+    <value>Ladda INTE OrderData</value>
+  </data>
+  <data name="Menu_Order_QC_Feedback" xml:space="preserve">
+    <value>Lämna feedback för denna körning</value>
+  </data>
+  <data name="authority_22" xml:space="preserve">
+    <value>Ge feedback från QC på en order</value>
+  </data>
+  <data name="authority_23" xml:space="preserve">
+    <value>Välja fritt från listor i Körprotokollet</value>
+  </data>
+  <data name="authority_24" xml:space="preserve">
+    <value>Ändra inställningar för Zumbach</value>
+  </data>
+  <data name="authority_25" xml:space="preserve">
+    <value>Radera markerad data i Zumbach</value>
+  </data>
+  <data name="tuneZumbachData_Measurement" xml:space="preserve">
+    <value>Mätning</value>
+  </data>
+  <data name="tuneZumbachData_1" xml:space="preserve">
+    <value>Innehåller endast</value>
+  </data>
+  <data name="tuneZumbachData_Measurepoints" xml:space="preserve">
+    <value>Mätpunkter</value>
+  </data>
+  <data name="tuneZumbachData_2" xml:space="preserve">
+    <value>Du bör överväga att skrota denna mätning eftersom datat ej är fullständig. (Positioner saknas)</value>
+  </data>
+  <data name="tuneZumbachData_3" xml:space="preserve">
+    <value>Vill du skrota denna mätning?</value>
+  </data>
+  <data name="tuneZumbachData_4" xml:space="preserve">
+    <value>Det finns identiska mätpunkter i en längre tid som troligen beror på att slangen har fastnat i dragarhjulen eller att dragaren har stannat. </value>
+  </data>
+  <data name="tuneZumbachData_5" xml:space="preserve">
+    <value>Vill du att jag raderar dessa mätpunkter?</value>
+  </data>
+  <data name="tuneZumbachData_6" xml:space="preserve">
+    <value>Jämnar till kurvorna i diagrammet. Mätning</value>
+  </data>
+  <data name="tuneZumbachData_8" xml:space="preserve">
+    <value>mätpunkter mellan positionerna. Vill du att jag skall fortsätta jämna till dessa kurvor</value>
+  </data>
+  <data name="tuneZumbachData_7" xml:space="preserve">
+    <value>Det skiljer</value>
+  </data>
+  <data name="tuneZumbachData_9" xml:space="preserve">
+    <value>Denna mätning kan jag tyvärr inte göra bättre...</value>
+  </data>
+  <data name="zumbachLoadData" xml:space="preserve">
+    <value>Laddar mätningar för ordern...</value>
+  </data>
+  <data name="rollingTips_FutureUpdate" xml:space="preserve">
+    <value>Kommande Uppdatering:</value>
+  </data>
+  <data name="zumbachCounter_1" xml:space="preserve">
+    <value>miljoner</value>
+  </data>
+  <data name="zumbachCounter_2" xml:space="preserve">
+    <value>miljarder</value>
+  </data>
+  <data name="rollingTips_1" xml:space="preserve">
+    <value>Du har gjort totalt </value>
+  </data>
+  <data name="rollingTips_2" xml:space="preserve">
+    <value>mätningar.</value>
+  </data>
+  <data name="rollingTips_3" xml:space="preserve">
+    <value>Du har loggat in</value>
+  </data>
+  <data name="rollingTips_4" xml:space="preserve">
+    <value>gånger.</value>
+  </data>
+  <data name="rollingTips_5" xml:space="preserve">
+    <value>ordrar kördes år</value>
+  </data>
+  <data name="rollingTips_6" xml:space="preserve">
+    <value>med DPP</value>
+  </data>
+  <data name="Menu_Arkiv_ManageDatabase" xml:space="preserve">
+    <value>Hantera Databasinställningar</value>
+  </data>
+  <data name="label_ConfirmPassword" xml:space="preserve">
+    <value>Bekräfta Lösenord:</value>
+  </data>
+  <data name="processcardAlreadySigned" xml:space="preserve">
+    <value>Processkortet är redan signerat och godkänt.</value>
+  </data>
+  <data name="missingMeasurePoints" xml:space="preserve">
+    <value>OBS!: 
+Det finns just nu inga mätpunkter för denna order, eller så är det problem med anslutningen till Monitor. 
+Vi ber dig att fylla i värdena själv.
+Se till att du skriver in rätt! 
+Om du är osäker eller behöver hjälp, kontakta admin.</value>
+  </data>
+  <data name="customWorkoperation" xml:space="preserve">
+    <value>Anpassade Arbetsoperation</value>
+  </data>
+  <data name="btn_AuthoritiesRemoveWorkoperation" xml:space="preserve">
+    <value>Ta bort Arbetsoperation</value>
+  </data>
+  <data name="btn_AuthoritiesAddWorkoperation" xml:space="preserve">
+    <value>Lägg till Arbetsoperation</value>
+  </data>
+  <data name="Menu_User_Authorities_Roles" xml:space="preserve">
+    <value>Behörigheter Roller</value>
+  </data>
+  <data name="Menu_User_Authorities_CustomWorkoperations" xml:space="preserve">
+    <value>Anpassade Arbetsoperationer</value>
+  </data>
+  <data name="label_DateTo" xml:space="preserve">
+    <value>Till Datum:</value>
+  </data>
+  <data name="label_DateFrom" xml:space="preserve">
+    <value>Från Datum:</value>
+  </data>
+  <data name="btn_OpenOrder" xml:space="preserve">
+    <value>Öppna Order</value>
+  </data>
+  <data name="missingPartNumber_1" xml:space="preserve">
+    <value>Detta artikelnummer</value>
+  </data>
+  <data name="missingPartNumber_2" xml:space="preserve">
+    <value>existerar inte i Monitor, vänligen kontrollera artikelnumret.</value>
+  </data>
+  <data name="measureprotocol_Warning_1" xml:space="preserve">
+    <value>En av dina mätningar är onormalt högt eller lågt under det nominella värdet, vänligen kontrollera alla mätningar och försök igen.</value>
+  </data>
+  <data name="customFactory" xml:space="preserve">
+    <value>Anpassade Fabriker</value>
+  </data>
+  <data name="label_Factory" xml:space="preserve">
+    <value>Fabrik:</value>
+  </data>
+  <data name="btn_AuthoritiesAddFactory" xml:space="preserve">
+    <value>Lägg till Fabrik</value>
+  </data>
+  <data name="Menu_User_Authorities_CustomFactories" xml:space="preserve">
+    <value>Anpassade Fabriker</value>
+  </data>
+  <data name="btn_AuthoritiesRemoveFactory" xml:space="preserve">
+    <value>Ta bort Fabrik</value>
+  </data>
+  <data name="Menu_Protocol_ManageTemplates" xml:space="preserve">
+    <value>Hantera Mallar...</value>
+  </data>
+  <data name="orderDone_2" xml:space="preserve">
+    <value>på Maskin #</value>
+  </data>
+  <data name="update_Info_1" xml:space="preserve">
+    <value>Det finns en VIKTIG uppdatering att hämta! Starta om programmet och uppdatera.
+Om du inte startar om finns det risk för att programmet inte kommer att fungera som det ska.</value>
+  </data>
+  <data name="removeStartup_1" xml:space="preserve">
+    <value>Du kan inte radera Uppstart #1.</value>
+  </data>
+  <data name="removeStartup_2_1" xml:space="preserve">
+    <value>Är du säker på att du vill radera uppstart</value>
+  </data>
+  <data name="remove_Startup_2_2" xml:space="preserve">
+    <value>Datan som finns med i den kommer att raderas och går ej att återfå.</value>
+  </data>
+  <data name="btn_Edit_Equipment" xml:space="preserve">
+    <value>Editera Utrustning</value>
+  </data>
+  <data name="addStartUp" xml:space="preserve">
+    <value>Du kan inte lägga till en ny uppstart före du fyllt i data i den tidigare uppstarten.</value>
+  </data>
+  <data name="manageTemplates" xml:space="preserve">
+    <value>Du måste vara inloggad med rätt behörighet för att kunna skapa/editera mallar för protokollen.</value>
+  </data>
+  <data name="equipment_Error_1" xml:space="preserve">
+    <value>Du kan inte editera utrustning som du själv inte har signerat.</value>
+  </data>
+  <data name="chooseTemplate" xml:space="preserve">
+    <value>Välj passande mall för denna order.</value>
+  </data>
+  <data name="template" xml:space="preserve">
+    <value>Mall</value>
+  </data>
+  <data name="mainInfo_Missing" xml:space="preserve">
+    <value>Mall för MainInfo saknas, kontakta Admin.</value>
+  </data>
+  <data name="label_InfoPassword_1" xml:space="preserve">
+    <value>Lösenordet måste vara 4 tecken eller flera.
+</value>
+  </data>
+  <data name="label_InfoPassword_2" xml:space="preserve">
+    <value>Lösenorden matchar inte varandra
+</value>
+  </data>
+  <data name="otherUserIsLoggedIn" xml:space="preserve">
+    <value>Du kan inte göra ändringar i protokollet just nu eftersom en annan användare använder det.</value>
+  </data>
+  <data name="user_AlreadyInSystem" xml:space="preserve">
+    <value>finns redan. Om användaren glömt sitt lösenord så raderar du först denna användare.</value>
+  </data>
+  <data name="user_AddedInSystem" xml:space="preserve">
+    <value>är nu tillagd.</value>
+  </data>
+  <data name="autoStart_Workoperation_1" xml:space="preserve">
+    <value>Vill du spara i din profil att</value>
+  </data>
+  <data name="autoStart_Workoperation_2" xml:space="preserve">
+    <value>automatiskt startas i fortsättningen?</value>
+  </data>
+  <data name="autoStart_Workoperation_3" xml:space="preserve">
+    <value>Denna inställning kan justeras i Inställningar efteråt vid behov.</value>
+  </data>
+  <data name="autoStart_Workoperation_4" xml:space="preserve">
+    <value>Spara Arbetsoperation</value>
+  </data>
+  <data name="delete_Processcard_1" xml:space="preserve">
+    <value>Det går inte att ta bort ett processkort som har ordrar kopplade till sig. Om processkortet inte längre ska användas, kan du istället inaktivera det.</value>
+  </data>
+  <data name="weeklyCalibration" xml:space="preserve">
+    <value>Du måste kryssa i att du gjort temperaturkalibrering före du fyller i protokollet.</value>
+  </data>
+  <data name="Menu_Protocol_ManageLineClearance_Templates" xml:space="preserve">
+    <value>Hantera Mallar för Line-Clearance</value>
+  </data>
+  <data name="measureprotocol_Info_11" xml:space="preserve">
+    <value>Vänligen fyll i en kommentar om varför du skrotat en mätning.</value>
+  </data>
+  <data name="measureprotocol_Info_12" xml:space="preserve">
+    <value>Ingen mätning blev skrotad.</value>
+  </data>
+  <data name="chooseProtocol_1" xml:space="preserve">
+    <value>Det finns flera mallar för detta artikelnr. Välj nedan vilken du vill öppna.</value>
+  </data>
+  <data name="chooseProtocol_2" xml:space="preserve">
+    <value>Godkänd av QA</value>
+  </data>
+  <data name="chooseProtocol_3" xml:space="preserve">
+    <value>Det finns flera processkort kopplat till denna Artikel. Välj nedan vilket du vill använda.</value>
+  </data>
+  <data name="authority_26" xml:space="preserve">
+    <value>Hantera inställningar för Arbetsoperationer</value>
+  </data>
+  <data name="authority_27" xml:space="preserve">
+    <value>Köra utanför processkort baserat på Validerade loter</value>
+  </data>
+  <data name="changeBatchNr_Info_1" xml:space="preserve">
+    <value>Ingen kommentar vald, du kan ej byta BatchNr.</value>
+  </data>
+  <data name="changeBatchNr_Info_2" xml:space="preserve">
+    <value>Bytt BatchNr för Halvfabrikat:</value>
+  </data>
+  <data name="mail_Body_NotifyOrderStartCount_4to5" xml:space="preserve">
+    <value>Upprätta Processkort:&lt;br /&gt;
+ArtikelNr {0} startades just för {1}e gången utan fastslaget processkort&lt;br /&gt;
+ProdLinje: {2}&lt;br /&gt;
+ProdGrupp: {3}&lt;br /&gt;
+Arbetsoperation: {4}&lt;br /&gt;</value>
+  </data>
+  <data name="mail_Body" xml:space="preserve">
+    <value>&lt;b&gt;Detta mail går INTE att svara på. &lt;br /&gt;&lt;br /&gt;
+Från: {0} - {1}&lt;br /&gt;&lt;br /&gt;{2}</value>
+  </data>
+  <data name="mail_Subject_NotifyOrderStartCount" xml:space="preserve">
+    <value>{0} startades för {1}e gången utan fastslaget processkort.</value>
+  </data>
+  <data name="mail_Body_NotifyOrderStartCount_6" xml:space="preserve">
+    <value>Upprätta Processkort:&lt;br /&gt;
+ArtikelNr {0} startades just för {1}e gången utan fastslaget processkort&lt;br /&gt;
+ProdLinje: {2}&lt;br /&gt;
+ProdGrupp: {3}&lt;br /&gt;
+Arbetsoperation: {4}&lt;br /&gt;
+&lt;br /&gt;
+&lt;br /&gt;
+&lt;b&gt;Viktigt!&lt;b&gt;&lt;br/&gt; 
+Processkort måste fastslås omedelbart. Nästa gång krävs godkännande från Kvalitetsdirektören eller Produktionsdirektören för att starta ordern.</value>
+  </data>
+  <data name="mail_Body_NotifyOrderFinishedCount_3" xml:space="preserve">
+    <value>Upprätta Processkort:&lt;br /&gt;
+ArtikelNr {0} avslutades just för 3e gången utan fastslaget processkort&lt;br /&gt;
+ProdLinje: {1}&lt;br /&gt;
+ProdGrupp: {2}&lt;br /&gt;
+Arbetsoperation: {3}&lt;br /&gt;
+OrdeNr-Operation: {4}-{5} &lt;br /&gt;</value>
+  </data>
+  <data name="mail_Subject_NotifyOrderFinishedCount" xml:space="preserve">
+    <value>{0} avslutades för 3e gången utan fastslaget processkort.</value>
+  </data>
+  <data name="mail_NotifyCustomerServiceMissingMeasurePoints" xml:space="preserve">
+    <value>Denna order saknar mätpunkter, vänligen lägg till dom i Monitor.&lt;br /&gt;&lt;br /&gt;
+Arbetsoperation: {0} &lt;br /&gt;
+OrderNr: {1} &lt;br /&gt;
+Operation: {2} &lt;br /&gt;
+Artikelnummer: {3} &lt;br /&gt;&lt;br /&gt;
+Vänligen kontakta {4} när mätpunkter är inlagda i Monitor.</value>
+  </data>
+  <data name="notifyUserOrderStartCount_6" xml:space="preserve">
+    <value>Artikelnr {0} har startats {1} gånger utan fastslaget processkort.
+Ordern kan ENDAST startas av någon med följande befattning:
+Skiftesledare,
+ProcessTekniker,
+ProcessIngenjör</value>
+  </data>
+  <data name="notifyDirectorOrderStartCount_7" xml:space="preserve">
+    <value>Varning! 
+Artikelnummer {0} har redan startats 6 av 6 tillåtna gånger utan fastslaget processkort.
+Processproblemen skall utredas och processkort skall fastslås innan ny order startas.</value>
+  </data>
+  <data name="notifyUserOrderStartCount_7" xml:space="preserve">
+    <value>Artikelnr {0} har startats {1} gånger utan fastslaget processkort.
+Processproblemen behöver utredas och ett processkort skall fastslås innan en ny order startas.
+Ordern kan ENDAST startas av någon med följande befattning:
+Kvalitetsdirektör,
+Produktionsdirektör</value>
+  </data>
+  <data name="approve_Processcard_Ok" xml:space="preserve">
+    <value>Processkortet är nu godkänt.</value>
+  </data>
+  <data name="approve_Processcard_Error" xml:space="preserve">
+    <value>Processkortet blev inte godkänt, kontakta Admin vid behov.</value>
+  </data>
+  <data name="saveProcesscard_Info_9" xml:space="preserve">
+    <value>Mallens revision får inte vara tom, välj revision och försök igen.</value>
+  </data>
+  <data name="browseProtocols_3" xml:space="preserve">
+    <value>Inaktivera markerad order för Orderräknaren.
+Denna order kommer därefter inte att inkluderas i statistiken över hur många gånger ett artikelnummer har startats utan processkort.</value>
+  </data>
+  <data name="browseProtocols_4" xml:space="preserve">
+    <value>Aktivera markerad Order.</value>
+  </data>
+  <data name="preFab_BestBefore" xml:space="preserve">
+    <value>Bäst Före:</value>
+  </data>
+  <data name="Menu_Protocol_ManageMeasureProtocol_Templates" xml:space="preserve">
+    <value>Hantera Mallar för Mätprotokoll</value>
+  </data>
+  <data name="closeProtocols" xml:space="preserve">
+    <value>Stäng ner Körprotokollet/Mätprotokoll före du bläddrar i gamla Körprotokoll.</value>
+  </data>
+  <data name="label_ProtocolTemplateRevision" xml:space="preserve">
+    <value>Välj Revision för Protokollets Mall</value>
+  </data>
+  <data name="label_MeasureProtocolTemplateName" xml:space="preserve">
+    <value>Välj Mall för Mätprotokollet</value>
+  </data>
+  <data name="revisionInfo" xml:space="preserve">
+    <value>Revisions Info:</value>
+  </data>
+  <data name="isOkAddStartUp" xml:space="preserve">
+    <value>Du måste fylla i alla värden i den senaste uppstarten före du försöker lägga till en ny uppstart.
+Om inget värde används kan du dubbelklicka i cellen för N/A.</value>
+  </data>
+  <data name="Menu_Order_ReLink_Protocol" xml:space="preserve">
+    <value>Till ny Mall för Protokollet</value>
+  </data>
+  <data name="Menu_Order_ReLink_MeasureProtocol" xml:space="preserve">
+    <value>Till ny Mall för Mätprotokollet</value>
+  </data>
+  <data name="Menu_Order_LinkOrder" xml:space="preserve">
+    <value>Länka Order</value>
+  </data>
+  <data name="Menu_Protocol_ManageTemplates_Protocols" xml:space="preserve">
+    <value>Protokoll</value>
+  </data>
+  <data name="Menu_Protocol_ManageTemplates_LineClearance" xml:space="preserve">
+    <value>Line Clearance</value>
+  </data>
+  <data name="Menu_Protocol_ManageTemplates_MeasureProtocol" xml:space="preserve">
+    <value>Mätprotokoll</value>
+  </data>
+  <data name="mail_ApproveProcesscard_2" xml:space="preserve">
+    <value>Godkänn Processkort:&lt;br /&gt;
+ArtikelNr: {0}&lt;br /&gt;
+RevNr: {1}&lt;br /&gt;
+ProdLinje: {2}&lt;br /&gt;
+ProdGrupp: {3}&lt;br /&gt;
+Arbetsoperation: {4}&lt;br /&gt;&lt;br /&gt;
+Vänligen godkänna detta processkort omgående&lt;br/&gt;&lt;br /&gt;
+Order {5} - {6} startades just med Revision {7}.
+</value>
+  </data>
+  <data name="mail_ApproveProcesscard_1" xml:space="preserve">
+    <value>Det finns en senare Revision av Processkortet som inte är godkänd av QA och du kör nu på Revision {0}
+OBS! Det är helt ok att köra på denna Revision och QA är nu meddelat att den nya Revisionen behöver godkännas.</value>
+  </data>
+  <data name="mail_ApproveProcesscard" xml:space="preserve">
+    <value>Påminnelse: QA-signering av processkort</value>
+  </data>
+  <data name="print_IsValueCritical" xml:space="preserve">
+    <value>Parametrar i fet stil = Kritiskt värde</value>
+  </data>
+  <data name="Menu_Settings_ToolsCalculator" xml:space="preserve">
+    <value>Verktygsberäkning</value>
+  </data>
+  <data name="selectTemplateError" xml:space="preserve">
+    <value>Du har inte valt mall för antingen Körprotokoll eller Mätprotokoll och ordern går ej att starta, vänligen försök igen.
+
+Kontaka Admin vid problem.</value>
+  </data>
+  <data name="isOkAddStartUp_2" xml:space="preserve">
+    <value>Modulen {0} saknar en eller flera parametrar.</value>
+  </data>
+  <data name="btn_RefreshPriorityPlan" xml:space="preserve">
+    <value>Ladda om Körplanering</value>
+  </data>
+  <data name="cell_Protocol_ToolTip_1" xml:space="preserve">
+    <value>Detta fält är kritiskt!</value>
+  </data>
+  <data name="cell_Protocol_ToolTip_2" xml:space="preserve">
+    <value>Detta fält är endast för referens och är ok att köra utanför gränserna.</value>
+  </data>
+</root>

@@ -1,0 +1,4 @@
+INSERT INTO [Order].MainData (WorkOperationID,MainTemplateID, ProtocolTemplateRevision, MeasureProtocolTemplateRevision, OrderID, OrderNr, Operation, PartID, PartNr, RevNr, ProdGroup, ProdLine, ProdType, Customer, Description, Amount, Unit, 
+                    Name_Start, Date_Start, Version, IsOrderDone, IsDeleted)
+                VALUES (@workoperationid, @maintemplateid, @korprotokolltemplaterevision, @measureprotocoltemplaterevision, @id, @ordernr, @operation, @partid, @partnr, @revNr, @prodgroup, @prodline, @prodtype, @customer, @description,  @amount, @unit, 
+                    @name_start, @date_start, @version, 'False', 'False')

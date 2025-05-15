@@ -1,0 +1,5 @@
+Operatör får starta order och fylla i samtliga fält i körprotokollet, 
+men ordern behöver granskas och godkännas av handledare i samband med orderavslut. 
+Handledare behöver även fylla i och godkänna Line clearence. 
+Det skall framkomma på de utskrivna dokumenten att ordern körts av en operatör under inskolning, 
+samt vilken handledare som granskat och godkänt körningen.

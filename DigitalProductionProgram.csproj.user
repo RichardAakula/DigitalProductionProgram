@@ -1,0 +1,362 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <_LastSelectedProfileId>C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram\Properties\PublishProfiles\Optinova Valley Forge.pubxml</_LastSelectedProfileId>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Update="Browse_Protocols\Browse_Protocols.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Browse_Protocols\OrderList.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="ControlsManagement\ProgressBar.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="ControlsManagement\TablessControll.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="DatabaseManagement\Database.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="eMail\Processcard_Changes.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Equipment\Choose_Item.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Equipment\Choose_Silduk.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Equipment\Inventera_Verktyg.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Help\InfoText.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Help\InfoText_Show_ImageVideo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Help\Jira.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Help\Warning.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Log\ChangeLog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="MainWindow\ActiveOrdersUser.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="MainWindow\AddTheme.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="MainWindow\Calendar.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="MainWindow\Main_AQL.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="MainWindow\Main_Buttons.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="MainWindow\Main_FilterQuickOpen.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="MainWindow\Main_Form.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="MainWindow\Main_Menu.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="MainWindow\Main_OrderInformation.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="MainWindow\Main_PriorityPlanning.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="MainWindow\Main_RollingInformation.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="MainWindow\MonitorUsers.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="MainWindow\ServerStatus.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="MainWindow\Statistics_DPP.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Measure\AddMeasurePointsManually.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Measure\BrowseMeasureProtocols.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Measure\ChooseErrorCode.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Measure\MainMeasureStatistics.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Measure\MeasureInstrument.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Measure\Measurement_Protocol.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Measure\MeasurePoints.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Measure\MätStatistik.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="OrderManagement\CreateTestOrder.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="OrderManagement\FinishOrder.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="OrderManagement\Manage_WorkOperation.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="OrderManagement\Open_Order.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="OrderManagement\Pictures.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="PrintingServices\Välj_Processkort.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Processcards\Choose_WorkOperation_BrowseProtocols_ManageProcesscards.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Processcards\Manage_Processcards.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Processcards\ProcesscardBasedOn.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Processcards\ProcesscardTemplateSelector.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Protocols\Blandning_PTFE\Blandning_PTFE.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Protocols\Blandning_PTFE\Journal_Blandning_PTFE.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Protocols\Blandning_PTFE\MainProtocol_Blandning_PTFE.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Protocols\Change_ChargeNr_AddComment.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Protocols\ExtraProtocols\Comments.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Protocols\ExtraProtocols\Extra_Comments.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Protocols\ExtraProtocols\FrequencyMarking.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Protocols\ExtraProtocols\MachineColor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Protocols\ExtraProtocols\PreFab.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Protocols\ExtraProtocols\Protocol_Compound.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Protocols\Kragning_TEF\KP_Kragning.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Protocols\Kragning_TEF\Kragning_TEF.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Protocols\Kragning_TEF\MainProtocol_Kragning_TEF.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Protocols\Kragning_TEF\PC_Kragning.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Protocols\Latest10Values.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Protocols\LineClearance\LineClearance.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Protocols\LineClearance\LineClearance_Extra.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Protocols\MainInfo\MainInfo_A.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Protocols\MainInfo\MainInfo_B.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Protocols\MainInfo\MainInfo_C.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Protocols\MainInfo\MainInfo_Description_Prodtype.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Protocols\MainInfo\Room_TempMoisture.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Protocols\Protocol\Machine.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Protocols\Protocol\MainProtocol.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Protocols\Protocol\Module.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Protocols\Skärmning_TEF\AddNewLine.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Protocols\Skärmning_TEF\MainProtocol_Skärmning_TEF.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Protocols\Skärmning_TEF\PC_Skärmning.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Protocols\Skärmning_TEF\Skärmning_TEF.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Protocols\Slipning_TEF\MainProtocol_Slipning_TEF.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Protocols\Slipning_TEF\Maskinparametrar_Slipning_TEF.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Protocols\Slipning_TEF\PC_Slipning_TEF.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Protocols\Slipning_TEF\Produktion_Slipning_TEF.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Protocols\Slipning_TEF\Slipning_TEF.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Protocols\Spolning_PTFE\Journal_Spolning_PTFE.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Protocols\Spolning_PTFE\MainProtocol_Spolning_PTFE.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Protocols\Spolning_PTFE\Spolning_PTFE.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Protocols\Svetsning_TEF\MainProtocol_Svetsning_TEF.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Protocols\Svetsning_TEF\PC_Svetsning_TEF.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Protocols\Svetsning_TEF\Svetsning_TEF.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="QC\FeedBackQC.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="QC\QC_Feedback.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Settings\Settings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Statistics\Overview_ProductionLines.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Statistics\ProductionLines.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Statistics\Statistics_ProdLine.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Statistics\Statistik_Övrigt.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Templates\Connect_Templates.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Templates\FormulaBuilder.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Templates\ItemsBuilder.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Templates\PreviewTemplate.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Templates\Templates_LineClearance.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Templates\Templates_MeasureProtocol.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Templates\Templates_Protocol.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="ToolManagement\ToolCalculator.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="User\Add_UserPoll.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="User\AuthorizationManager.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="User\Login.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="User\My_Analysis.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="User\PasswordManager.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="User\ProfileCard.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="User\UserPoll.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="User\WhoIsLoggedIn.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Zumbach\DiscardZumbachMeasurement.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Zumbach\MeasureWithZumbach.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Övrigt\Beräkna_Material_Blandning.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Övrigt\BlackBackground.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Övrigt\DatePicker.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Övrigt\EasterEgg_1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Övrigt\EasterEgg_2.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Övrigt\RevisionInfo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Övrigt\TipsAndTrix.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+  </ItemGroup>
+</Project>

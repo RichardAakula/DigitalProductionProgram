@@ -1069,15 +1069,15 @@ namespace DigitalProductionProgram.PrintingServices
                                 value = string.Empty;
                             else
                             {
-                                //var belowMin = MinValue > 0 && NumberValue < MinValue;
-                                //var aboveMax = MaxValue > 0 && NumberValue > MaxValue;
+                                var belowMin = MinValue > 0 && NumberValue < MinValue;
+                                var aboveMax = MaxValue > 0 && NumberValue > MaxValue;
 
-                                //if (belowMin || aboveMax)
-                                //    value = $"{Processcards.Processcard.Format_Value(NumberValue, decimals)}*";
-                                //else
+                                if (belowMin || aboveMax)
+                                    value = $"{Processcards.Processcard.Format_Value(NumberValue, decimals)}*";
+                                else
                                     value = Processcards.Processcard.Format_Value(NumberValue, decimals);
                             }
-                                
+                            
                             break;
                         case 1:
                             value = reader["TextValue"].ToString();

@@ -75,7 +75,7 @@ namespace DigitalProductionProgram.Protocols.Template_Management
                     break;
             }
         }
-        public void Update_Template(FlowLayoutPanel flp_Main)
+        public void Update_Template(FlowLayoutPanel? flp_Main)
         {
             DrawingControl.SuspendDrawing(this);
             Clear_All();

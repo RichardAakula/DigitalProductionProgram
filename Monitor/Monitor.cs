@@ -467,7 +467,7 @@ namespace DigitalProductionProgram.Monitor
             
         }
 
-        public static List<string> List_Operations(string? ordernr, List<string> ProdGroup)
+        public static List<string> List_Operations(string? ordernr, List<string>? ProdGroup)
         {
             List<string> list_Operations = new List<string>();
             if (ProdGroup != null) 
@@ -486,20 +486,18 @@ namespace DigitalProductionProgram.Monitor
 
             if (list_Operations.Count == 0)
             {
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    const string query = @"SELECT Operation, ProdLine AS Description, ProdGroup FROM [Order].MainData WHERE OrderNr = @orderNr";
+                using var con = new SqlConnection(Database.cs_Protocol);
+                const string query = @"SELECT Operation, ProdLine AS Description, ProdGroup FROM [Order].MainData WHERE OrderNr = @orderNr";
 
-                    var cmd = new SqlCommand(query, con);
-                    cmd.Parameters.AddWithValue("@orderNr", ordernr);
-                    con.Open();
-                    var reader = cmd.ExecuteReader();
-                    while (reader.Read())
-                    {
-                        list_Operations.Add($"{reader["Operation"]} - {reader["Description"]}");
-                        if (Main_OrderInformation.List_ProdGroup != null)
-                            Main_OrderInformation.List_ProdGroup.Add(reader["ProdGroup"].ToString());
-                    }
+                var cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@orderNr", ordernr);
+                con.Open();
+                var reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    list_Operations.Add($"{reader["Operation"]} - {reader["Description"]}");
+                    if (Main_OrderInformation.List_ProdGroup != null)
+                        Main_OrderInformation.List_ProdGroup.Add(reader["ProdGroup"].ToString());
                 }
             }
 

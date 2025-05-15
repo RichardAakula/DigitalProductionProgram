@@ -1,0 +1,27 @@
+# Ignore Visual Studio stuff
+.vs/
+*.user
+*.suo
+
+# Build output
+bin/
+obj/
+
+# NuGet
+*.nupkg
+packages/
+*.snupkg
+
+# Debug/Release config
+*.log
+*.tlog
+*.pdb
+
+# Others
+*.dbmdl
+*.bak
+*.tmp
+
+# Rider/ReSharper/etc (if ever)
+.idea/
+*.DotSettings.user

@@ -224,6 +224,7 @@ namespace DigitalProductionProgram.Övrigt
             dgv_Text.Name = "dgv_Text";
             dgv_Text.Size = new Size(370, 150);
             dgv_Text.TabIndex = 5;
+            dgv_Text.Visible = false;
             // 
             // Text
             // 

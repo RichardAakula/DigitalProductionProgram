@@ -1018,7 +1018,7 @@ namespace DigitalProductionProgram.MainWindow
         private ToolStripMenuItem Menu_Equipment;
         private ToolStripMenuItem Menu_Equipment_UseFilter;
         private ToolStripMenuItem Menu_Equipment_UseSilpaket;
-        private ToolStripMenuItem Menu_Developer_ChangeLog;
+        //private ToolStripMenuItem Menu_Developer_ChangeLog;
         private ToolStripMenuItem Menu_Help_ReportBug;
         private ToolStripMenuItem Menu_Order_OpenRandomOrder;
         private ToolStripMenuItem Menu_Developer_Timer_test;

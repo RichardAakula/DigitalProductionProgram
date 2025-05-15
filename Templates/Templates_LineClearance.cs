@@ -614,10 +614,10 @@ namespace DigitalProductionProgram.Templates
 
         public class TemplateControls
         {
-            private static FlowLayoutPanel flp;
+            private static FlowLayoutPanel? flp;
             private static PreviewTemplate previewTemplate;
 
-            public TemplateControls(FlowLayoutPanel flp_Main, PreviewTemplate preview)
+            public TemplateControls(FlowLayoutPanel? flp_Main, PreviewTemplate preview)
             {
                 flp = flp_Main;
                 previewTemplate = preview;

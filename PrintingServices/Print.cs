@@ -616,7 +616,7 @@ namespace DigitalProductionProgram.PrintingServices
                     e.Graphics.DrawString((string)text[x, 1, 0], CustomFonts.operatörFont, CustomFonts.parametrar_clr, (int)text[x, 1, 1], (int)text[x, 1, 2]);
                 }
             }
-            public static void Print_Chart(PrintPageEventArgs e, Chart chart)
+            public static void Print_Chart(PrintPageEventArgs e, Chart? chart)
             {
                 //Rectangle rect = new Rectangle(160, -800, 1000, 804);
                 var rect = new Rectangle(160, -800, 1000, 804);

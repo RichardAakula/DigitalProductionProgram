@@ -351,3 +351,4 @@ C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram
 C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram\obj\Debug\net8.0-windows\DigitalProductionProgram.pdb
 C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram\obj\Debug\net8.0-windows\DigitalProductionProgram.genruntimeconfig.cache
 C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram\obj\Debug\net8.0-windows\ref\DigitalProductionProgram.dll
+C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram\obj\Debug\net8.0-windows\DigitalProductionProgram.sourcelink.json

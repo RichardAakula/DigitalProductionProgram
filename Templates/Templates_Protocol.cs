@@ -777,14 +777,14 @@ namespace DigitalProductionProgram.Templates
                 dgv.Columns[0].Visible = false;
                 dgv.Columns[2].Visible = true;
             }
-            public static DataTable dt_CodeText;
+            public static DataTable? dt_CodeText;
 
         }
 
         public class TemplateControls
         {
-            private static FlowLayoutPanel flp;
-            private static PreviewTemplate previewTemplate;
+            private static FlowLayoutPanel? flp;
+            private static PreviewTemplate? previewTemplate;
             public static bool IsCodeTextExistInModule(DataGridView dgv, string codeText)
             {
                 if (dgv is null)
@@ -797,7 +797,7 @@ namespace DigitalProductionProgram.Templates
                 return false;
             }
 
-            public TemplateControls(FlowLayoutPanel flp_Main, PreviewTemplate preview)
+            public TemplateControls(FlowLayoutPanel? flp_Main, PreviewTemplate preview)
             {
                 flp = flp_Main;
                 previewTemplate = preview;
@@ -878,13 +878,13 @@ namespace DigitalProductionProgram.Templates
                 dgv.Columns.Add(col);
                 col.Visible = IsVisible;
             }
-            private static void CellClick_dgv(object sender, DataGridViewCellEventArgs e)
+            private static void CellClick_dgv(object? sender, DataGridViewCellEventArgs e)
             {
                 if (e.ColumnIndex > dgv_ProtocolsActive_Main.Columns.Count - 4)
                     TemplateButtons.IsOkUpdateTemplate = false;
             }
 
-            private static void RowsAdded_dgv(object sender, DataGridViewRowsAddedEventArgs e)
+            private static void RowsAdded_dgv(object? sender, DataGridViewRowsAddedEventArgs e)
             {
                 var dgv = (DataGridView)sender;
                 ChangePanelHeight(dgv);
@@ -892,7 +892,7 @@ namespace DigitalProductionProgram.Templates
                     return;
                 previewTemplate.Update_Template(flp);
             }
-            private static void RowsRemoved_dgv(object sender, DataGridViewRowsRemovedEventArgs e)
+            private static void RowsRemoved_dgv(object? sender, DataGridViewRowsRemovedEventArgs e)
             {
                 var dgv = (DataGridView)sender;
                 var parentControl = dgv.Parent;
@@ -900,7 +900,7 @@ namespace DigitalProductionProgram.Templates
                     panel_Active = panel;
                 ChangePanelHeight(dgv);
             }
-            private static void Enter_dgv(object sender, EventArgs e)
+            private static void Enter_dgv(object? sender, EventArgs e)
             {
                 var dgv = (DataGridView)sender;
                 dgv_ProtocolsActive_Main = dgv;
@@ -910,15 +910,15 @@ namespace DigitalProductionProgram.Templates
                 label_Active_ModuleName = panel_Active.Controls.OfType<Label>().FirstOrDefault();
 
             }
-            private static void RowEnter_dgv(object sender, DataGridViewCellEventArgs e)
+            private static void RowEnter_dgv(object? sender, DataGridViewCellEventArgs e)
             {
                 dgv_ProtocolsActive_Main.Rows[e.RowIndex].Cells["col_Codetext"].Style.BackColor = Color.Khaki;
             }
-            private static void RowLeave_dgv(object sender, DataGridViewCellEventArgs e)
+            private static void RowLeave_dgv(object? sender, DataGridViewCellEventArgs e)
             {
                 dgv_ProtocolsActive_Main.Rows[e.RowIndex].Cells["col_Codetext"].Style.BackColor = Color.White;
             }
-            private static void CopyFirstRow(object sender, DataGridViewCellMouseEventArgs e)
+            private static void CopyFirstRow(object? sender, DataGridViewCellMouseEventArgs e)
             {
                 if (e.ColumnIndex < 2)
                     return;
@@ -928,13 +928,13 @@ namespace DigitalProductionProgram.Templates
                     row.Cells[e.ColumnIndex].Value = value;
 
             }
-            public static void Update_PreviewTemplate(object sender, DataGridViewCellEventArgs e)
+            public static void Update_PreviewTemplate(object? sender, DataGridViewCellEventArgs e)
             {
                 if (flp is null || previewTemplate.IsDisposed)
                     return;
                 previewTemplate.Update_Template(flp);
             }
-            private static void CurrentCellDirtyStateChanged(object sender, EventArgs e)
+            private static void CurrentCellDirtyStateChanged(object? sender, EventArgs e)
             {
                 var dgv = (DataGridView)sender;
                 if (dgv.IsCurrentCellDirty)
@@ -942,7 +942,7 @@ namespace DigitalProductionProgram.Templates
                 if (dgv.CurrentCell is DataGridViewCheckBoxCell)
                     dgv.CommitEdit(DataGridViewDataErrorContexts.Commit);
             }
-            private static void Dgv_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+            private static void Dgv_CellValueChanged(object? sender, DataGridViewCellEventArgs e)
             {
                 var dgv = (DataGridView)sender;
                 if (e.RowIndex < 0 || e.ColumnIndex < 0)

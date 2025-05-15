@@ -1,8 +1,4 @@
-﻿using Microsoft.Data.SqlClient;
-using System.Drawing.Printing;
-using System.Globalization;
-using System.Text.RegularExpressions;
-using DigitalProductionProgram.DatabaseManagement;
+﻿using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Log;
 using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
@@ -13,6 +9,10 @@ using DigitalProductionProgram.Protocols.LineClearance;
 using DigitalProductionProgram.Protocols.Protocol;
 using DigitalProductionProgram.Templates;
 using DigitalProductionProgram.User;
+using Microsoft.Data.SqlClient;
+using System.Drawing.Printing;
+using System.Globalization;
+using System.Text.RegularExpressions;
 using static DigitalProductionProgram.PrintingServices.PrintVariables;
 using static DigitalProductionProgram.PrintingServices.Workoperation_Printouts.Print_Protocol.PrintOut;
 using FrequencyMarking = DigitalProductionProgram.Protocols.FrequencyMarking;
@@ -775,88 +775,86 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                 string[] codetext = { "ID", "OD", "WALL", "LENGTH" };
                 foreach (var text in codetext)
                 {
-                    using (var con = new SqlConnection(Database.cs_Protocol))
-                    {
-                        var query = @"
+                    // Fix for CS8602: Dereference of a possibly null reference.
+                    e.Graphics?.DrawString("Co-extrudering", CustomFonts.A8, CustomFonts.black, 50, 138);
+                    using var con = new SqlConnection(Database.cs_Protocol);
+                    var query = @"
                         SELECT Value FROM [Order].Data
                         WHERE OrderID = @id
                         AND ProtocolDescriptionID = 
 	                        (SELECT ID FROM Protocol.Description WHERE CodeText = @codetext)";
-                        con.Open();
-                        var cmd = new SqlCommand(query, con);
-                        cmd.Parameters.AddWithValue("@id", Order.OrderID);
-                        cmd.Parameters.AddWithValue("@codetext", text);
-                        var reader = cmd.ExecuteReader();
-                        while (reader.Read())
-                        {
-                            var value = reader["value"].ToString();
-                            e.Graphics.DrawString(text, CustomFonts.A8_BI, CustomFonts.black, x_codetext[ctr], 115);
-                            Print.Protocol_InfoText(e, value, false, x_Value[ctr], 115, 100, false, false);
-                            ctr++;
-                        }
+                    con.Open();
+                    var cmd = new SqlCommand(query, con);
+                    cmd.Parameters.AddWithValue("@id", Order.OrderID);
+                    cmd.Parameters.AddWithValue("@codetext", text);
+                    var reader = cmd.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        var value = reader["value"].ToString();
+                        e.Graphics?.DrawString(text, CustomFonts.A8_BI, CustomFonts.black, x_codetext[ctr], 115);
+                        Print.Protocol_InfoText(e, value, false, x_Value[ctr], 115, 100, false, false);
+                        ctr++;
                     }
                 }
             }
             public static void Extra_Info_FEP(PrintPageEventArgs e)
             {
                 Print.Thin_Rectangle(e, 30, 137, 15, 15);
-                e.Graphics.DrawString("Co-extrudering", CustomFonts.A8, CustomFonts.black, 50, 138);
+                e.Graphics?.DrawString("Co-extrudering", CustomFonts.A8, CustomFonts.black, 50, 138);
 
-                e.Graphics.DrawLine(CustomFonts.thinBlack, 138, 130, 138, 160);
-                e.Graphics.DrawString("Antal Stripes:", CustomFonts.A8, CustomFonts.black, 144, 138);
+                e.Graphics?.DrawLine(CustomFonts.thinBlack, 138, 130, 138, 160);
+                e.Graphics?.DrawString("Antal Stripes:", CustomFonts.A8, CustomFonts.black, 144, 138);
 
-                e.Graphics.DrawLine(CustomFonts.thinBlack, 274, 130, 274, 160);
+                e.Graphics?.DrawLine(CustomFonts.thinBlack, 274, 130, 274, 160);
                 Print.Thin_Rectangle(e, 280, 137, 15, 15);
-                e.Graphics.DrawString("Singel extrudering", CustomFonts.A8, CustomFonts.black, 300, 138);
+                e.Graphics?.DrawString("Singel extrudering", CustomFonts.A8, CustomFonts.black, 300, 138);
 
 
-                e.Graphics.DrawLine(CustomFonts.thinBlack, 430, 130, 430, 160);
+                e.Graphics?.DrawLine(CustomFonts.thinBlack, 430, 130, 430, 160);
                 Print.Thin_Rectangle(e, 435, 137, 15, 15);
-                e.Graphics.DrawString("Clear", CustomFonts.A8, CustomFonts.black, 455, 138);
+                e.Graphics?.DrawString("Clear", CustomFonts.A8, CustomFonts.black, 455, 138);
 
 
-                e.Graphics.DrawLine(CustomFonts.thinBlack, 530, 130, 530, 160);
+                e.Graphics?.DrawLine(CustomFonts.thinBlack, 530, 130, 530, 160);
                 Print.Thin_Rectangle(e, 535, 137, 15, 15);
-                e.Graphics.DrawString("Röntgen", CustomFonts.A8, CustomFonts.black, 555, 138);
+                e.Graphics?.DrawString("Röntgen", CustomFonts.A8, CustomFonts.black, 555, 138);
 
                 int[] ProtocolDescriptionID = { 251, 250, 247, 248, 252 };
                 int[] x = { 31, 218, 281, 436, 536 };
 
                 for (var i = 0; i < ProtocolDescriptionID.Length; i++)
                 {
-                    using (var con = new SqlConnection(Database.cs_Protocol))
+                    using var con = new SqlConnection(Database.cs_Protocol);
+                    const string query = "SELECT BoolValue, Value FROM [Order].Data WHERE OrderID = @orderid AND ProtocolDescriptionID = @protocoldescriptionid";
+                    con.Open();
+                    var cmd = new SqlCommand(query, con);
+                    cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
+                    cmd.Parameters.AddWithValue("@protocoldescriptionid", ProtocolDescriptionID[i]);
+                    var reader = cmd.ExecuteReader();
+                    while (reader.Read())
                     {
-                        var query = "SELECT BoolValue, Value FROM [Order].Data WHERE OrderID = @orderid AND ProtocolDescriptionID = @protocoldescriptionid";
-                        con.Open();
-                        var cmd = new SqlCommand(query, con);
-                        cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
-                        cmd.Parameters.AddWithValue("@protocoldescriptionid", ProtocolDescriptionID[i]);
-                        var reader = cmd.ExecuteReader();
-                        while (reader.Read())
+                        if (string.IsNullOrEmpty(reader[1].ToString()))
                         {
-                            if (string.IsNullOrEmpty(reader[1].ToString()))
-                            {
-                                if (!bool.TryParse(reader[0].ToString(), out var IsChecked))
-                                    continue;
-                                if (IsChecked)
-                                    e.Graphics.DrawString("\u2714", CustomFonts.operatörFont, CustomFonts.parametrar_clr, x[i], 139);
-                            }
-                            else
-                            {
-                                Print.Text_Operatör(e, reader[1].ToString(), x[i], 136, 500);
-                                e.Graphics.DrawString("st", CustomFonts.A8, CustomFonts.black, 235, 141);
-                            }
+                            if (!bool.TryParse(reader[0].ToString(), out var IsChecked))
+                                continue;
+                            if (IsChecked)
+                                e.Graphics.DrawString("\u2714", CustomFonts.operatörFont, CustomFonts.parametrar_clr, x[i], 139);
+                        }
+                        else
+                        {
+                            Print.Text_Operatör(e, reader[1].ToString(), x[i], 136, 500);
+                            e.Graphics?.DrawString("st", CustomFonts.A8, CustomFonts.black, 235, 141);
                         }
                     }
                 }
 
-                e.Graphics.DrawLine(CustomFonts.thinBlack, 605, 130, 605, 160);
+                e.Graphics?.DrawLine(CustomFonts.thinBlack, 605, 130, 605, 160);
             }
           
 
             public static void Line_Clearance(PrintPageEventArgs e)
             {
-                string LineClearanceTemplate = null;
+                string? LineClearanceTemplate;
                 using (var con = new SqlConnection(Database.cs_Protocol))
                 {
                     const string query = @"SELECT LineClearance_Template FROM Protocol.MainTemplate WHERE ID = @maintemplateid";
@@ -892,25 +890,27 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                 Y += 24;
 
                 var dt_Halvfabrikat = Protocols.ExtraProtocols.PreFab.DataTable_PreFab(Order.OrderID, true);
-                var antal_Halvfabrikat = 0;
-                if (dt_Halvfabrikat != null)
-                    antal_Halvfabrikat = dt_Halvfabrikat.Rows.Count;
-               
-                var columns = new Dictionary<string?, (int Width, string DataKey)>
+                var antal_Halvfabrikat = dt_Halvfabrikat.Rows.Count;
+
+                var partNrMaterialKey = LanguageManager.GetString("partNrMaterial") ?? "partNrMaterial";
+                var partNumberKey = LanguageManager.GetString("label_PartNumber") ?? "label_PartNumber";
+
+                var columns = new Dictionary<string, (int Width, string DataKey)>
                 {
-                    { LanguageManager.GetString("partNrMaterial"), (87, LanguageManager.GetString("label_PartNumber")) },
-                    { "Material", (308, LanguageManager.GetString("label_Description")) },
+                    { partNrMaterialKey, (87, partNumberKey) },
+                    { "Material", (321, LanguageManager.GetString("label_Description") ?? "label_Description") },
                     { "Extruder", (160, "Extruder:") },
                     { "Batch Nr", (110, "BatchNr:") },
-                    { LanguageManager.GetString("preFab_BestBefore"), (90, LanguageManager.GetString("preFab_BestBefore")) }
+                    { LanguageManager.GetString("preFab_BestBefore") ?? "preFab_BestBefore", (100, LanguageManager.GetString("preFab_BestBefore") ?? "preFab_BestBefore") }
                 };
 
+
                 // Draw headers
-                int currentX = LeftMargin;
+                var currentX = LeftMargin;
                 foreach (var entry in columns)
                 {
-                    e.Graphics.DrawRectangle(CustomFonts.thinBlack, currentX, Y - 2, entry.Value.Width, 18);
-                    e.Graphics.DrawString(entry.Key, CustomFonts.A9_I, CustomFonts.black, currentX + 2, Y);
+                    e.Graphics?.DrawRectangle(CustomFonts.thinBlack, currentX, Y - 2, entry.Value.Width, 18);
+                    e.Graphics?.DrawString(entry.Key, CustomFonts.A9_I, CustomFonts.black, currentX + 2, Y);
                     currentX += entry.Value.Width;
                 }
 
@@ -922,13 +922,13 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
 
                     foreach (var entry in columns)
                     {
-                        e.Graphics.DrawRectangle(CustomFonts.thinBlack, currentX, Y, entry.Value.Width, 18);
+                        e.Graphics?.DrawRectangle(CustomFonts.thinBlack, currentX, Y, entry.Value.Width, 18);
                         string? text;
-                        var value = dt_Halvfabrikat.Rows[i][entry.Value.DataKey];
+                        var value = dt_Halvfabrikat?.Rows[i][entry.Value.DataKey];
                         if (value is DateTime dateValue)
                             text = dateValue.ToShortDateString();
                         else
-                            text = dt_Halvfabrikat.Rows[i][entry.Value.DataKey].ToString();
+                            text = dt_Halvfabrikat?.Rows[i][entry.Value.DataKey].ToString();
 
                         Print.Text_Operatör(e, text, currentX + 2, Y + 4, entry.Value.Width - 4);
                         currentX += entry.Value.Width; // Move X to the next column

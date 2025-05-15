@@ -83,7 +83,7 @@ namespace DigitalProductionProgram.MainWindow
             timer_CheckForUpdate = new System.Windows.Forms.Timer(components);
             timer_Planerat_Stopp = new System.Windows.Forms.Timer(components);
             timer_Update_Körplanering = new System.Windows.Forms.Timer(components);
-            timer_Check_Mätpunkter = new System.Windows.Forms.Timer(components);
+            timer_Check_MeasurePoints = new System.Windows.Forms.Timer(components);
             timer_Check_If_Maintenance_Has_Started = new System.Windows.Forms.Timer(components);
             timer_ReLogin_Monitor = new System.Windows.Forms.Timer(components);
             Buttons = new Main_Buttons();
@@ -758,10 +758,10 @@ namespace DigitalProductionProgram.MainWindow
             // 
             timer_Update_Körplanering.Interval = 3600000;
             // 
-            // timer_Check_Mätpunkter
+            // timer_Check_MeasurePoints
             // 
-            timer_Check_Mätpunkter.Interval = 10000;
-            timer_Check_Mätpunkter.Tick += CheckMätpunkter_Tick;
+            timer_Check_MeasurePoints.Interval = 10000;
+            timer_Check_MeasurePoints.Tick += CheckMätpunkter_Tick;
             // 
             // timer_Check_If_Maintenance_Has_Started
             // 
@@ -946,7 +946,7 @@ namespace DigitalProductionProgram.MainWindow
         private PictureBox pb_Info_UserPoints;
         public TableLayoutPanel tlp_Top;
         public TableLayoutPanel tlp_ExtraInfo;
-        private System.Windows.Forms.Timer timer_Check_Mätpunkter;
+        private System.Windows.Forms.Timer timer_Check_MeasurePoints;
         public Panel panelChart;
         private System.Windows.Forms.Timer timer_Check_If_Maintenance_Has_Started;
         private Main_RollingInformation RollingInformation;

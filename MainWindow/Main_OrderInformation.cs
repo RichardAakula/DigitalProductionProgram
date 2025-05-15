@@ -22,8 +22,8 @@ namespace DigitalProductionProgram.MainWindow
 {
     public partial class Main_OrderInformation : UserControl
     {
-        public Main_Form mainForm;
-        public static List<string> List_ProdGroup;
+        public Main_Form? mainForm;
+        public static List<string>? List_ProdGroup;
 
 
         public Main_OrderInformation()
@@ -217,6 +217,20 @@ namespace DigitalProductionProgram.MainWindow
                 cb_Operation.Focus();
             }
         }
+
+        public void Set_Operation(string? operation)
+        {
+            var search = operation + " -";
+
+            for (var i = 0; i < cb_Operation.Items.Count; i++)
+            {
+                if (cb_Operation.Items[i].ToString().StartsWith(search))
+                {
+                    cb_Operation.SelectedIndex = i;
+                    break;
+                }
+            }
+        }
         private void ProdLine_Click(object sender, EventArgs e)
         {
             var black = new BlackBackground(string.Empty, 80);
@@ -225,7 +239,7 @@ namespace DigitalProductionProgram.MainWindow
             prod.ShowDialog();
             black.Close();
         }
-        public void OrderNr_Validated(object sender, EventArgs e)
+        public void OrderNr_Validated(object? sender, EventArgs e)
         {
             var ordernr = tb_OrderNr.Text;
             Clear();

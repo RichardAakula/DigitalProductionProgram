@@ -157,7 +157,7 @@ namespace DigitalProductionProgram.MainWindow
            
            
             //Login_Monitor.Login_API();
-            PriorityPlanning.dgv_PriorityPlanning.CellClick += Körplanering_CellClick;
+            PriorityPlanning.dgv_PriorityPlanning.CellClick += PriorityPlanning_OrderNr_CellClick;
             OrderInformation.cb_Operation.SelectedIndexChanged += Operation_SelectedIndexChanged;
 
             lbl_Company.Text = Monitor.Monitor.factory.ToString();
@@ -604,7 +604,7 @@ namespace DigitalProductionProgram.MainWindow
             
             MainMenu.Unlock_Korprotokoll_Menu();
         }
-        public void Operation_SelectedIndexChanged(object sender, EventArgs e)
+        public void Operation_SelectedIndexChanged(object? sender, EventArgs e)
         {
             if (OrderInformation.cb_Operation.SelectedIndex > -1 &! string.IsNullOrEmpty(OrderInformation.cb_Operation.Text) &! string.IsNullOrEmpty(OrderInformation.tb_OrderNr.Text))
             {
@@ -706,7 +706,7 @@ namespace DigitalProductionProgram.MainWindow
             
             timer_Update_Körplanering.Start();
         }
-        public void Körplanering_CellClick(object sender, DataGridViewCellEventArgs e)
+        public void PriorityPlanning_OrderNr_CellClick(object? sender, DataGridViewCellEventArgs e)
         {
             if (PriorityPlanning.dgv_PriorityPlanning.Columns[0].Name != "OrderNr")
                 return;
@@ -723,6 +723,7 @@ namespace DigitalProductionProgram.MainWindow
             OrderInformation.Fill_cb_Operation();
                
             Order.Operation = PriorityPlanning.dgv_PriorityPlanning.Rows[e.RowIndex].Cells["Operation"].Value.ToString();
+            OrderInformation.Set_Operation(Order.Operation);
 
             OrderInformation.tb_OrderNr.Enabled = true;
             OrderInformation.cb_Operation.Enabled = true;

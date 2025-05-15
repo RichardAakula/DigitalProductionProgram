@@ -51,23 +51,23 @@ namespace DigitalProductionProgram.Övrigt
         {
             if (Order.PartNumber is null)
                 return;
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                const string query = @"IF EXISTS (SELECT * FROM ArtikelNr_Tips_Trix WHERE ArtikelNr = @partnr AND WorkOperation = @workoperation)
+            using var con = new SqlConnection(Database.cs_Protocol);
+            const string query = @"IF EXISTS (SELECT * FROM ArtikelNr_Tips_Trix WHERE ArtikelNr = @partnr AND WorkOperation = @workoperation)
                                      UPDATE ArtikelNr_Tips_Trix SET Text = @text WHERE ArtikelNr = @partnr AND WorkOperation = @workoperation
                                      ELSE
                                      INSERT INTO ArtikelNr_Tips_Trix (ArtikelNr, Text, WorkOperation) VALUES (@partnr, @text, @workoperation)";
-                con.Open();
-                var cmd = new SqlCommand(query, con);
-                cmd.Parameters.AddWithValue("@partnr", Order.PartNumber);
-                cmd.Parameters.AddWithValue("@workoperation", Order.WorkOperation.ToString());
-                cmd.Parameters.AddWithValue("@text", rb_Text_Tips_Trix.Rtf);
-                cmd.ExecuteNonQuery();
-            }
+            con.Open();
+            var cmd = new SqlCommand(query, con);
+            cmd.Parameters.AddWithValue("@partnr", Order.PartNumber);
+            cmd.Parameters.AddWithValue("@workoperation", Order.WorkOperation.ToString());
+            cmd.Parameters.AddWithValue("@text", rb_Text_Tips_Trix.Rtf);
+            cmd.ExecuteNonQuery();
         }
        
         public void LoadData()
         {
+            if (string.IsNullOrEmpty(Order.PartNumber))
+                return;
             rb_Text_Tips_Trix.Text = string.Empty;
             using (var con = new SqlConnection(Database.cs_Protocol))
             {

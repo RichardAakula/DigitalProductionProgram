@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("DigitalProductionProgram")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("4.3.8.3")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3fc8fb72e7a1667c833ee55bfe88dd91342d8561")]
 [assembly: System.Reflection.AssemblyProductAttribute("DigitalProductionProgram")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DigitalProductionProgram")]
 [assembly: System.Reflection.AssemblyVersionAttribute("4.3.8.3")]

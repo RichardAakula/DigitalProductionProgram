@@ -217,6 +217,8 @@ C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram
 C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram\obj\Debug\net8.0-windows\DigitalProductionProgram.Browse_Protocols.OrderList.resources
 C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram\obj\Debug\net8.0-windows\DigitalProductionProgram.ControlsManagement.ProgressBar.resources
 C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram\obj\Debug\net8.0-windows\DigitalProductionProgram.DatabaseManagement.Database.resources
+C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram\obj\Debug\net8.0-windows\DigitalProductionProgram.Övrigt.EasterEgg_1.resources
+C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram\obj\Debug\net8.0-windows\DigitalProductionProgram.Övrigt.EasterEgg_2.resources
 C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram\obj\Debug\net8.0-windows\DigitalProductionProgram.eMail.Processcard_Changes.resources
 C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram\obj\Debug\net8.0-windows\DigitalProductionProgram.Equipment.Choose_Item.resources
 C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram\obj\Debug\net8.0-windows\DigitalProductionProgram.Equipment.Choose_Silduk.resources
@@ -330,8 +332,6 @@ C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram
 C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram\obj\Debug\net8.0-windows\DigitalProductionProgram.Övrigt.Beräkna_Material_Blandning.resources
 C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram\obj\Debug\net8.0-windows\DigitalProductionProgram.Övrigt.BlackBackground.resources
 C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram\obj\Debug\net8.0-windows\DigitalProductionProgram.Övrigt.DatePicker.resources
-C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram\obj\Debug\net8.0-windows\DigitalProductionProgram.Övrigt.EasterEgg_1.resources
-C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram\obj\Debug\net8.0-windows\DigitalProductionProgram.Övrigt.EasterEgg_2.resources
 C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram\obj\Debug\net8.0-windows\DigitalProductionProgram.Övrigt.RevisionInfo.resources
 C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram\obj\Debug\net8.0-windows\DigitalProductionProgram.Övrigt.TipsAndTrix.resources
 C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram\obj\Debug\net8.0-windows\DigitalProductionProgram.Properties.Resources.en-US.resources
@@ -342,6 +342,7 @@ C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram
 C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram\obj\Debug\net8.0-windows\DigitalProductionProgram.AssemblyInfoInputs.cache
 C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram\obj\Debug\net8.0-windows\DigitalProductionProgram.AssemblyInfo.cs
 C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram\obj\Debug\net8.0-windows\DigitalProductionProgram.csproj.CoreCompileInputs.cache
+C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram\obj\Debug\net8.0-windows\DigitalProductionProgram.sourcelink.json
 C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram\obj\Debug\net8.0-windows\en-US\DigitalProductionProgram.resources.dll
 C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram\obj\Debug\net8.0-windows\sv-SE\DigitalProductionProgram.resources.dll
 C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram\obj\Debug\net8.0-windows\th-TH\DigitalProductionProgram.resources.dll
@@ -351,4 +352,4 @@ C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram
 C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram\obj\Debug\net8.0-windows\DigitalProductionProgram.pdb
 C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram\obj\Debug\net8.0-windows\DigitalProductionProgram.genruntimeconfig.cache
 C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram\obj\Debug\net8.0-windows\ref\DigitalProductionProgram.dll
-C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram\obj\Debug\net8.0-windows\DigitalProductionProgram.sourcelink.json
+C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram\bin\Debug\net8.0-windows\Resources\EasterEgg.png

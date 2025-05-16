@@ -77,7 +77,7 @@ namespace DigitalProductionProgram.Properties {
                 return ResourceManager.GetString("addStartUp", resourceCulture);
             }
         }
-        
+       
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
@@ -2675,6 +2675,7 @@ namespace DigitalProductionProgram.Properties {
             }
         }
         
+
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>

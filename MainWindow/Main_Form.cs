@@ -6,6 +6,7 @@ using System;
 using Microsoft.Data.SqlClient;
 using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.DatabaseManagement;
+using DigitalProductionProgram.EasterEggs;
 using DigitalProductionProgram.eMail;
 using DigitalProductionProgram.Equipment;
 using DigitalProductionProgram.Help;
@@ -118,8 +119,12 @@ namespace DigitalProductionProgram.MainWindow
         // Denna rad måste finnas för utskrifterna
         private readonly Manage_PrintOuts print = new Manage_PrintOuts();
         private readonly BlackBackground black;
+        private FlyingEasterEgg? flyingEgg;
         public static ProgressBar pBar;
-
+        private Timer eggTimer;
+        private Bitmap easterEggImage;
+        private Point eggPosition;
+        private Random rand = new Random();
 
 
 
@@ -193,6 +198,7 @@ namespace DigitalProductionProgram.MainWindow
             Mail.AutoTestJira();
             CheckForMaintenanceWork();
         }
+       
         private async void MainForm_Load(object sender, EventArgs e)
         {
             if (IsAutoOpenOrder == false)
@@ -723,7 +729,9 @@ namespace DigitalProductionProgram.MainWindow
             OrderInformation.Fill_cb_Operation();
                
             Order.Operation = PriorityPlanning.dgv_PriorityPlanning.Rows[e.RowIndex].Cells["Operation"].Value.ToString();
-            OrderInformation.Set_Operation(Order.Operation);
+
+            int.TryParse(Order.Operation, out int operation);
+            OrderInformation.Set_Operation(operation);
 
             OrderInformation.tb_OrderNr.Enabled = true;
             OrderInformation.cb_Operation.Enabled = true;

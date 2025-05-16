@@ -148,7 +148,9 @@ namespace DigitalProductionProgram.ToolManagement
         private void Operation_MouseClick(object sender, MouseEventArgs e)
         {
             Control[] controls = { tb_Operation };
-            var chooseOperation = new Choose_Item(Monitor.Monitor.List_Operations(tb_OrderNr.Text, null), controls, false);
+            var ops = Monitor.Monitor.List_Operations(tb_OrderNr.Text, null);
+            var opsStrings = ops.Select(op => $"{op.Operation} - {op.Description}");
+            var chooseOperation = new Choose_Item(opsStrings, controls, false);
             chooseOperation.ShowDialog();
 
         }
@@ -159,10 +161,7 @@ namespace DigitalProductionProgram.ToolManagement
         }
         private void Abort_Click(object sender, EventArgs e)
         {
-            if (_cancellationTokenSource != null)
-            {
-                _cancellationTokenSource.Cancel(); // Trigger cancellation
-            }
+            _cancellationTokenSource.Cancel(); // Trigger cancellation
         }
         private void DieType_MouseClick(object sender, MouseEventArgs e)
         {

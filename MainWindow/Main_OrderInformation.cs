@@ -203,6 +203,8 @@ namespace DigitalProductionProgram.MainWindow
 
             cb_Operation.SelectedIndexChanged -= mainForm.Operation_SelectedIndexChanged!;
             cb_Operation.DataSource = Monitor.Monitor.List_Operations(Order.OrderNumber, List_ProdGroup);
+            cb_Operation.DisplayMember = "Display";
+            cb_Operation.ValueMember = "Operation";
             cb_Operation.SelectedIndexChanged += mainForm.Operation_SelectedIndexChanged!;
 
             //Monitor.Monitor.Fill_cb_Operation(cb_Operation, Order.OrderNumber);
@@ -218,18 +220,10 @@ namespace DigitalProductionProgram.MainWindow
             }
         }
 
-        public void Set_Operation(string? operation)
+        public void Set_Operation(int? operation)
         {
-            var search = operation + " -";
-
-            for (var i = 0; i < cb_Operation.Items.Count; i++)
-            {
-                if (cb_Operation.Items[i].ToString().StartsWith(search))
-                {
-                    cb_Operation.SelectedIndex = i;
-                    break;
-                }
-            }
+            cb_Operation.SelectedValue = operation;
+            return;
         }
         private void ProdLine_Click(object sender, EventArgs e)
         {
@@ -300,6 +294,14 @@ namespace DigitalProductionProgram.MainWindow
             var lbl = (Label)sender;
             if (lbl != null)
                 Clipboard.SetText(lbl.Text);
+        }
+
+        public class Operation_Description
+        {
+            public int Operation { get; set; }
+            public string Description { get; set; }
+
+            public string Display => $"{Operation} - {Description}";
         }
     }
 

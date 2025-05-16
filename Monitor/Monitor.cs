@@ -467,9 +467,9 @@ namespace DigitalProductionProgram.Monitor
             
         }
 
-        public static List<string> List_Operations(string? ordernr, List<string>? ProdGroup)
+        public static List<Main_OrderInformation.Operation_Description> List_Operations(string? ordernr, List<string>? ProdGroup)
         {
-            List<string> list_Operations = new List<string>();
+            List<Main_OrderInformation.Operation_Description> ops = new();
             if (ProdGroup != null) 
                 ProdGroup.Clear();
             if (Order != null)
@@ -478,13 +478,16 @@ namespace DigitalProductionProgram.Monitor
                 foreach (var operation in operations)
                 {
                     var prodline = Utilities.GetOneFromMonitor<Manufacturing.WorkCenters>($"filter=Id Eq'{operation.WorkCenterId}'");
-                    list_Operations.Add($"{operation.OperationNumber} - {prodline.Description}");
+                    //list_Operations.Add($"{operation.OperationNumber} - {prodline.Description}");
+                    ops.Add(new Main_OrderInformation.Operation_Description { Operation = operation.OperationNumber, Description = prodline.Description });
                     if (Main_OrderInformation.List_ProdGroup != null)
                         Main_OrderInformation.List_ProdGroup.Add(prodline.Number);
                 }
             }
 
-            if (list_Operations.Count == 0)
+
+            //if (list_Operations.Count == 0)
+            if (ops.Count == 0)
             {
                 using var con = new SqlConnection(Database.cs_Protocol);
                 const string query = @"SELECT Operation, ProdLine AS Description, ProdGroup FROM [Order].MainData WHERE OrderNr = @orderNr";
@@ -495,57 +498,19 @@ namespace DigitalProductionProgram.Monitor
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
-                    list_Operations.Add($"{reader["Operation"]} - {reader["Description"]}");
+                    int.TryParse(reader["Operation"].ToString(), out int operation);
+                    string description = reader["Description"]?.ToString() ?? "";
+                    ops.Add(new Main_OrderInformation.Operation_Description{Operation = operation, Description = description});
+
+                    //list_Operations.Add($"{reader["Operation"]} - {reader["Description"]}");
                     if (Main_OrderInformation.List_ProdGroup != null)
                         Main_OrderInformation.List_ProdGroup.Add(reader["ProdGroup"].ToString());
                 }
             }
 
-            return list_Operations;
-            }
-
-        public static void Fill_cb_Operation(ComboBox cb, string ordernr)
-        {
-            if (Main_OrderInformation.List_ProdGroup != null)
-                Main_OrderInformation.List_ProdGroup.Clear();
-            cb.Items.Clear();
-
-            if (Order != null)
-            {
-                var operations = Utilities.GetFromMonitor<Manufacturing.ManufacturingOrderOperations>($"filter=ManufacturingOrderId Eq'{Order.Id}'", "orderby=OperationNumber ASC");
-                foreach (var operation in operations)
-                {
-                    var prodline = Utilities.GetOneFromMonitor<Manufacturing.WorkCenters>($"filter=Id Eq'{operation.WorkCenterId}'");
-                    cb.Items.Add($"{operation.OperationNumber} - {prodline.Description}");
-                    if (Main_OrderInformation.List_ProdGroup != null)
-                        Main_OrderInformation.List_ProdGroup.Add(prodline.Number);
-                }
-            }
-
-            if (cb.Items.Count == 0)
-            {
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    const string query = @"SELECT Operation, ProdLine AS Description, ProdGroup FROM [Order].MainData WHERE OrderNr = @orderNr";
-
-                    var cmd = new SqlCommand(query, con);
-                    cmd.Parameters.AddWithValue("@orderNr", ordernr);
-                    con.Open();
-                    var reader = cmd.ExecuteReader();
-                    while (reader.Read())
-                    {
-                        cb.Items.Add($"{reader["Operation"]} - {reader["Description"]}");
-                        if (Main_OrderInformation.List_ProdGroup != null)
-                            Main_OrderInformation.List_ProdGroup.Add(reader["ProdGroup"].ToString());
-                    }
-                }
-            }
-
-            if (cb.Items.Count > 0)
-                return;
-            InfoText.Show(LanguageManager.GetString("monitorInfo_1"), CustomColors.InfoText_Color.Bad, "Warning", cb.Parent);
-            cb.BackColor = CustomColors.Bad_Back;
+            return ops;
         }
+
         public static void Fill_cb_Halvfabrikat_ArtikelNr(ComboBox cb)
         {
             if (Order is null)

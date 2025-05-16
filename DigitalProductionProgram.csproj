@@ -157,6 +157,9 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <None Update="Resources\EasterEgg.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Resources\LinusPåLinjen.mp4">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

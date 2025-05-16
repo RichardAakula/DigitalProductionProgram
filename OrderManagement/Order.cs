@@ -67,26 +67,25 @@ namespace DigitalProductionProgram.OrderManagement
         {
             get
             {
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    var query = @"
+                using var con = new SqlConnection(Database.cs_Protocol);
+                var query = @"
                     SELECT TOP(2) OrderID
                     FROM [Order].MainData
                     WHERE PartID = @partid
                     AND OrderID != @orderid
                     ORDER BY Date_Start DESC";
 
-                    var cmd = new SqlCommand(query, con);
-                    cmd.Parameters.AddWithValue("@partid", PartID);
-                    cmd.Parameters.AddWithValue("@orderid", OrderID);
-                    con.Open();
-                    var value = cmd.ExecuteScalar();
-                    if (value != null)
-                    {
-                        int.TryParse(value.ToString(), out var lastorderid);
-                        return lastorderid;
-                    }
+                var cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@partid", PartID);
+                cmd.Parameters.AddWithValue("@orderid", OrderID);
+                con.Open();
+                var value = cmd.ExecuteScalar();
+                if (value != null)
+                {
+                    int.TryParse(value.ToString(), out var lastorderid);
+                    return lastorderid;
                 }
+
                 return 0;
             }
         }

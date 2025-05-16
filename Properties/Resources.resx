@@ -1848,12 +1848,12 @@
     <value>..\Resources\Voicy_My Precious Gollum.mp3;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="btn_RefreshPriorityPlan" xml:space="preserve">
-    <value></value>
+    <value />
   </data>
   <data name="cell_Protocol_ToolTip_1" xml:space="preserve">
-    <value></value>
+    <value />
   </data>
   <data name="cell_Protocol_ToolTip_2" xml:space="preserve">
-    <value></value>
+    <value />
   </data>
 </root>

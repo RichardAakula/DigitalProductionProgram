@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Runtime.InteropServices;
 using DigitalProductionProgram.DatabaseManagement;
+using DigitalProductionProgram.EasterEggs;
 using DigitalProductionProgram.eMail;
 using DigitalProductionProgram.Help;
 using DigitalProductionProgram.Log;
@@ -118,7 +119,7 @@ namespace DigitalProductionProgram.MainWindow
             mainForm.measurePoints.ClearMeasurePoints();
             mainForm.measureStats.ClearData();
 
-            if (MainMeasureStatistics.Charts.chart != null &&  MainMeasureStatistics.Charts.chart.Series[0].Points.Count > 0)
+            if (MainMeasureStatistics.Charts.chart != null && MainMeasureStatistics.Charts.chart.Series[0].Points.Count > 0)
             {
                 MainMeasureStatistics.Charts.chart.Series[0].Points.Clear();
                 MainMeasureStatistics.Charts.chart.Series[1].Points.Clear();
@@ -360,11 +361,11 @@ namespace DigitalProductionProgram.MainWindow
             }
 
             Main_Form.Timer_UpdateChart.Stop();
-            var WorkOperation = new Choose_WorkOperation_BrowseProtocols_ManageProcesscards( true, false, LanguageManager.GetString("label_ChoosePC_Header"));
+            var WorkOperation = new Choose_WorkOperation_BrowseProtocols_ManageProcesscards(true, false, LanguageManager.GetString("label_ChoosePC_Header"));
             WorkOperation.ShowDialog();
         }
 
-        
+
         private void Menu_Protocol_ManageTemplates_Protocols_Click(object sender, EventArgs e)
         {
             if (Person.IsUserSignedIn(false) == false)
@@ -375,8 +376,8 @@ namespace DigitalProductionProgram.MainWindow
 
             //try
             //{
-                var newTemplate = new Templates_Protocol();
-                newTemplate.ShowDialog();
+            var newTemplate = new Templates_Protocol();
+            newTemplate.ShowDialog();
             //}
             //catch (Exception ex)
             //{
@@ -393,7 +394,7 @@ namespace DigitalProductionProgram.MainWindow
             var manage_MeasureProtocolTemplates = new Templates_MeasureProtocol();
             manage_MeasureProtocolTemplates.ShowDialog();
         }
-        
+
 
         //----------KÖRPROTOKOLL----------
         private void Menu_Protocol_UseFilter_Click(object sender, EventArgs e)
@@ -507,7 +508,7 @@ namespace DigitalProductionProgram.MainWindow
         {
             ToolCalculator toolCalculator = new ToolCalculator(mainForm.OrderInformation.tb_OrderNr.AutoCompleteCustomSource);
             toolCalculator.Show();
-            
+
         }
 
         //----------TEMAN----------
@@ -1338,7 +1339,7 @@ ORDER BY OrderID DESC ";
 
 
 
-     
+
 
         private void Menu_Developer_ChangeLog_Click(object sender, EventArgs e)
         {
@@ -1371,9 +1372,13 @@ ORDER BY OrderID DESC ";
             // Optionally reset the cursor to the original position
             SetCursorPos(startPos.X, startPos.Y);
             sw.Stop();
-            MessageBox.Show($"{repetitions} repetioner tog {sw.ElapsedMilliseconds} ms. {sw.ElapsedMilliseconds/repetitions} ms/Repetion");
+            MessageBox.Show($"{repetitions} repetioner tog {sw.ElapsedMilliseconds} ms. {sw.ElapsedMilliseconds / repetitions} ms/Repetion");
         }
 
-       
+        private void påskäggToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FlyingEasterEgg flying = new FlyingEasterEgg(mainForm);
+            flying.StartGame();
+        }
     }
 }

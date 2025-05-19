@@ -37,9 +37,25 @@ namespace DigitalProductionProgram.EasterEggs
             }
         }
 
+        public void SetHighlight(Color color)
+        {
+            this.BackColor = color;
+        }
+        public void ResetHighlight()
+        {
+            this.BackColor = Color.Transparent;
+        }
         protected override void OnMouseClick(MouseEventArgs e)
         {
-            base.OnClick(e);
+            base.OnMouseClick(e);
+            if (Parent is { } parentControl)
+            {
+                foreach (Control c in parentControl.Controls)
+                {
+                    if (c is CodeWheel wheel)
+                        wheel.ResetHighlight();
+                }
+            }
             if (e.Button == MouseButtons.Left)
             {
                 _index = (_index + 1) % _characters.Length;
@@ -54,7 +70,14 @@ namespace DigitalProductionProgram.EasterEggs
         protected override void OnMouseWheel(MouseEventArgs e)
         {
             base.OnMouseWheel(e);
-
+            if (Parent is { } parentControl)
+            {
+                foreach (Control c in parentControl.Controls)
+                {
+                    if (c is CodeWheel wheel)
+                        wheel.ResetHighlight();
+                }
+            }
             if (e.Delta > 0)
             {
                 // Scroll uppåt – framåt i listan

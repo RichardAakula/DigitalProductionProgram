@@ -31,294 +31,296 @@ namespace DigitalProductionProgram.Processcards
         /// </summary>
         private void InitializeComponent()
         {
-            this.label_RevNr = new System.Windows.Forms.Label();
-            this.label_EstablishedBy = new System.Windows.Forms.Label();
-            this.label_ProcesscardApprovedDate = new System.Windows.Forms.Label();
-            this.rb_HistoricalData = new System.Windows.Forms.RadioButton();
-            this.rb_Validated = new System.Windows.Forms.RadioButton();
-            this.tlp_Main = new System.Windows.Forms.TableLayoutPanel();
-            this.btn_ProcesscardBasedOn = new System.Windows.Forms.Button();
-            this.label_Empty_0 = new System.Windows.Forms.Label();
-            this.lbl_ApprovedDate = new System.Windows.Forms.Label();
-            this.tb_Validerade_Loter = new System.Windows.Forms.RichTextBox();
-            this.lbl_UpprättatAv_Sign_AnstNr = new System.Windows.Forms.Label();
-            this.lbl_RevNr = new System.Windows.Forms.Label();
-            this.label_ApprovedBy = new System.Windows.Forms.Label();
-            this.rb_FramtagningAvProcessfönster = new System.Windows.Forms.RadioButton();
-            this.lbl_QA_Sign = new System.Windows.Forms.Label();
-            this.tlp_Main.SuspendLayout();
-            this.SuspendLayout();
+            label_RevNr = new Label();
+            label_EstablishedBy = new Label();
+            label_ProcesscardApprovedDate = new Label();
+            rb_HistoricalData = new RadioButton();
+            rb_Validated = new RadioButton();
+            tlp_Main = new TableLayoutPanel();
+            btn_ProcesscardBasedOn = new Button();
+            label_Empty_0 = new Label();
+            lbl_ApprovedDate = new Label();
+            tb_Validerade_Loter = new RichTextBox();
+            lbl_UpprättatAv_Sign_AnstNr = new Label();
+            lbl_RevNr = new Label();
+            label_ApprovedBy = new Label();
+            rb_FramtagningAvProcessfönster = new RadioButton();
+            lbl_QA_Sign = new Label();
+            tlp_Main.SuspendLayout();
+            SuspendLayout();
             // 
             // label_RevNr
             // 
-            this.label_RevNr.AutoSize = true;
-            this.label_RevNr.BackColor = System.Drawing.Color.White;
-            this.label_RevNr.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label_RevNr.Font = new System.Drawing.Font("Arial", 7F);
-            this.label_RevNr.Location = new System.Drawing.Point(566, 28);
-            this.label_RevNr.Margin = new System.Windows.Forms.Padding(0);
-            this.label_RevNr.Name = "label_RevNr";
-            this.label_RevNr.Size = new System.Drawing.Size(135, 16);
-            this.label_RevNr.TabIndex = 873;
-            this.label_RevNr.Text = "RevisionsNr:";
-            this.label_RevNr.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            label_RevNr.AutoSize = true;
+            label_RevNr.BackColor = Color.White;
+            label_RevNr.Dock = DockStyle.Fill;
+            label_RevNr.Font = new Font("Arial", 7F);
+            label_RevNr.Location = new Point(515, 32);
+            label_RevNr.Margin = new Padding(0);
+            label_RevNr.Name = "label_RevNr";
+            label_RevNr.Size = new Size(142, 18);
+            label_RevNr.TabIndex = 873;
+            label_RevNr.Text = "RevisionsNr:";
+            label_RevNr.TextAlign = ContentAlignment.MiddleRight;
             // 
             // label_EstablishedBy
             // 
-            this.label_EstablishedBy.AutoSize = true;
-            this.label_EstablishedBy.BackColor = System.Drawing.Color.White;
-            this.label_EstablishedBy.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label_EstablishedBy.Font = new System.Drawing.Font("Arial", 7F);
-            this.label_EstablishedBy.Location = new System.Drawing.Point(566, 44);
-            this.label_EstablishedBy.Margin = new System.Windows.Forms.Padding(0);
-            this.label_EstablishedBy.Name = "label_EstablishedBy";
-            this.label_EstablishedBy.Size = new System.Drawing.Size(135, 16);
-            this.label_EstablishedBy.TabIndex = 840;
-            this.label_EstablishedBy.Text = "Upprättat av: Sign./Anst.nr:";
-            this.label_EstablishedBy.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            label_EstablishedBy.AutoSize = true;
+            label_EstablishedBy.BackColor = Color.White;
+            label_EstablishedBy.Dock = DockStyle.Fill;
+            label_EstablishedBy.Font = new Font("Arial", 7F);
+            label_EstablishedBy.Location = new Point(515, 50);
+            label_EstablishedBy.Margin = new Padding(0);
+            label_EstablishedBy.Name = "label_EstablishedBy";
+            label_EstablishedBy.Size = new Size(142, 18);
+            label_EstablishedBy.TabIndex = 840;
+            label_EstablishedBy.Text = "Upprättat av: Sign./Anst.nr:";
+            label_EstablishedBy.TextAlign = ContentAlignment.MiddleRight;
             // 
             // label_ProcesscardApprovedDate
             // 
-            this.label_ProcesscardApprovedDate.AutoSize = true;
-            this.label_ProcesscardApprovedDate.BackColor = System.Drawing.Color.White;
-            this.label_ProcesscardApprovedDate.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label_ProcesscardApprovedDate.Font = new System.Drawing.Font("Arial", 7F);
-            this.label_ProcesscardApprovedDate.ForeColor = System.Drawing.Color.Black;
-            this.label_ProcesscardApprovedDate.Location = new System.Drawing.Point(181, 28);
-            this.label_ProcesscardApprovedDate.Margin = new System.Windows.Forms.Padding(1, 0, 0, 1);
-            this.label_ProcesscardApprovedDate.Name = "label_ProcesscardApprovedDate";
-            this.label_ProcesscardApprovedDate.Size = new System.Drawing.Size(129, 15);
-            this.label_ProcesscardApprovedDate.TabIndex = 837;
-            this.label_ProcesscardApprovedDate.Text = "Processkort godkänt den:";
-            this.label_ProcesscardApprovedDate.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            label_ProcesscardApprovedDate.AutoSize = true;
+            label_ProcesscardApprovedDate.BackColor = Color.White;
+            label_ProcesscardApprovedDate.Dock = DockStyle.Fill;
+            label_ProcesscardApprovedDate.Font = new Font("Arial", 7F);
+            label_ProcesscardApprovedDate.ForeColor = Color.Black;
+            label_ProcesscardApprovedDate.Location = new Point(201, 32);
+            label_ProcesscardApprovedDate.Margin = new Padding(1, 0, 0, 1);
+            label_ProcesscardApprovedDate.Name = "label_ProcesscardApprovedDate";
+            label_ProcesscardApprovedDate.Size = new Size(178, 17);
+            label_ProcesscardApprovedDate.TabIndex = 837;
+            label_ProcesscardApprovedDate.Text = "Processkort godkänt den:";
+            label_ProcesscardApprovedDate.TextAlign = ContentAlignment.MiddleRight;
             // 
             // rb_HistoricalData
             // 
-            this.rb_HistoricalData.AutoSize = true;
-            this.rb_HistoricalData.BackColor = System.Drawing.Color.White;
-            this.rb_HistoricalData.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.rb_HistoricalData.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.rb_HistoricalData.Enabled = false;
-            this.rb_HistoricalData.Font = new System.Drawing.Font("Arial", 7F);
-            this.rb_HistoricalData.ForeColor = System.Drawing.Color.Black;
-            this.rb_HistoricalData.Location = new System.Drawing.Point(1, 28);
-            this.rb_HistoricalData.Margin = new System.Windows.Forms.Padding(1, 0, 0, 0);
-            this.rb_HistoricalData.Name = "rb_HistoricalData";
-            this.rb_HistoricalData.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
-            this.rb_HistoricalData.Size = new System.Drawing.Size(179, 16);
-            this.rb_HistoricalData.TabIndex = 838;
-            this.rb_HistoricalData.Text = "Historiska Data";
-            this.rb_HistoricalData.UseVisualStyleBackColor = false;
-            this.rb_HistoricalData.CheckedChanged += new System.EventHandler(this.HistoriskaData_CheckedChanged);
+            rb_HistoricalData.AutoSize = true;
+            rb_HistoricalData.BackColor = Color.White;
+            rb_HistoricalData.Cursor = Cursors.Hand;
+            rb_HistoricalData.Dock = DockStyle.Fill;
+            rb_HistoricalData.Enabled = false;
+            rb_HistoricalData.Font = new Font("Arial", 7F);
+            rb_HistoricalData.ForeColor = Color.Black;
+            rb_HistoricalData.Location = new Point(1, 32);
+            rb_HistoricalData.Margin = new Padding(1, 0, 0, 0);
+            rb_HistoricalData.Name = "rb_HistoricalData";
+            rb_HistoricalData.Padding = new Padding(6, 0, 0, 0);
+            rb_HistoricalData.Size = new Size(199, 18);
+            rb_HistoricalData.TabIndex = 838;
+            rb_HistoricalData.Text = "Historiska Data";
+            rb_HistoricalData.UseVisualStyleBackColor = false;
+            rb_HistoricalData.CheckedChanged += HistoriskaData_CheckedChanged;
             // 
             // rb_Validated
             // 
-            this.rb_Validated.AutoSize = true;
-            this.rb_Validated.BackColor = System.Drawing.Color.White;
-            this.rb_Validated.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.rb_Validated.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.rb_Validated.Enabled = false;
-            this.rb_Validated.Font = new System.Drawing.Font("Arial", 7F);
-            this.rb_Validated.ForeColor = System.Drawing.Color.Black;
-            this.rb_Validated.Location = new System.Drawing.Point(1, 44);
-            this.rb_Validated.Margin = new System.Windows.Forms.Padding(1, 0, 0, 0);
-            this.rb_Validated.Name = "rb_Validated";
-            this.rb_Validated.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
-            this.rb_Validated.Size = new System.Drawing.Size(179, 16);
-            this.rb_Validated.TabIndex = 838;
-            this.rb_Validated.Text = "Validerat på dessa loter:";
-            this.rb_Validated.UseVisualStyleBackColor = false;
-            this.rb_Validated.CheckedChanged += new System.EventHandler(this.Validerat_CheckedChanged);
+            rb_Validated.AutoSize = true;
+            rb_Validated.BackColor = Color.White;
+            rb_Validated.Cursor = Cursors.Hand;
+            rb_Validated.Dock = DockStyle.Fill;
+            rb_Validated.Enabled = false;
+            rb_Validated.Font = new Font("Arial", 7F);
+            rb_Validated.ForeColor = Color.Black;
+            rb_Validated.Location = new Point(1, 50);
+            rb_Validated.Margin = new Padding(1, 0, 0, 0);
+            rb_Validated.Name = "rb_Validated";
+            rb_Validated.Padding = new Padding(6, 0, 0, 0);
+            rb_Validated.Size = new Size(199, 18);
+            rb_Validated.TabIndex = 838;
+            rb_Validated.Text = "Validerat på dessa loter:";
+            rb_Validated.UseVisualStyleBackColor = false;
+            rb_Validated.CheckedChanged += Validerat_CheckedChanged;
             // 
             // tlp_Main
             // 
-            this.tlp_Main.BackColor = System.Drawing.Color.Transparent;
-            this.tlp_Main.ColumnCount = 5;
-            this.tlp_Main.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 180F));
-            this.tlp_Main.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 130F));
-            this.tlp_Main.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlp_Main.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 135F));
-            this.tlp_Main.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 70F));
-            this.tlp_Main.Controls.Add(this.btn_ProcesscardBasedOn, 0, 0);
-            this.tlp_Main.Controls.Add(this.label_Empty_0, 1, 3);
-            this.tlp_Main.Controls.Add(this.lbl_ApprovedDate, 2, 1);
-            this.tlp_Main.Controls.Add(this.tb_Validerade_Loter, 1, 2);
-            this.tlp_Main.Controls.Add(this.lbl_UpprättatAv_Sign_AnstNr, 4, 2);
-            this.tlp_Main.Controls.Add(this.lbl_RevNr, 4, 1);
-            this.tlp_Main.Controls.Add(this.label_RevNr, 3, 1);
-            this.tlp_Main.Controls.Add(this.rb_HistoricalData, 0, 1);
-            this.tlp_Main.Controls.Add(this.label_ApprovedBy, 3, 3);
-            this.tlp_Main.Controls.Add(this.rb_Validated, 0, 2);
-            this.tlp_Main.Controls.Add(this.label_EstablishedBy, 3, 2);
-            this.tlp_Main.Controls.Add(this.rb_FramtagningAvProcessfönster, 0, 3);
-            this.tlp_Main.Controls.Add(this.label_ProcesscardApprovedDate, 1, 1);
-            this.tlp_Main.Controls.Add(this.lbl_QA_Sign, 4, 3);
-            this.tlp_Main.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tlp_Main.Location = new System.Drawing.Point(0, 0);
-            this.tlp_Main.Name = "tlp_Main";
-            this.tlp_Main.RowCount = 4;
-            this.tlp_Main.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 28F));
-            this.tlp_Main.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tlp_Main.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tlp_Main.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tlp_Main.Size = new System.Drawing.Size(771, 77);
-            this.tlp_Main.TabIndex = 878;
+            tlp_Main.BackColor = Color.Transparent;
+            tlp_Main.ColumnCount = 5;
+            tlp_Main.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 200F));
+            tlp_Main.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            tlp_Main.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 136F));
+            tlp_Main.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 142F));
+            tlp_Main.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 80F));
+            tlp_Main.Controls.Add(btn_ProcesscardBasedOn, 0, 0);
+            tlp_Main.Controls.Add(label_Empty_0, 1, 3);
+            tlp_Main.Controls.Add(lbl_ApprovedDate, 2, 1);
+            tlp_Main.Controls.Add(tb_Validerade_Loter, 1, 2);
+            tlp_Main.Controls.Add(lbl_UpprättatAv_Sign_AnstNr, 4, 2);
+            tlp_Main.Controls.Add(lbl_RevNr, 4, 1);
+            tlp_Main.Controls.Add(label_RevNr, 3, 1);
+            tlp_Main.Controls.Add(rb_HistoricalData, 0, 1);
+            tlp_Main.Controls.Add(label_ApprovedBy, 3, 3);
+            tlp_Main.Controls.Add(rb_Validated, 0, 2);
+            tlp_Main.Controls.Add(label_EstablishedBy, 3, 2);
+            tlp_Main.Controls.Add(rb_FramtagningAvProcessfönster, 0, 3);
+            tlp_Main.Controls.Add(label_ProcesscardApprovedDate, 1, 1);
+            tlp_Main.Controls.Add(lbl_QA_Sign, 4, 3);
+            tlp_Main.Dock = DockStyle.Fill;
+            tlp_Main.Location = new Point(0, 0);
+            tlp_Main.Margin = new Padding(4, 3, 4, 3);
+            tlp_Main.Name = "tlp_Main";
+            tlp_Main.RowCount = 4;
+            tlp_Main.RowStyles.Add(new RowStyle(SizeType.Absolute, 32F));
+            tlp_Main.RowStyles.Add(new RowStyle(SizeType.Percent, 33.3333321F));
+            tlp_Main.RowStyles.Add(new RowStyle(SizeType.Percent, 33.3333321F));
+            tlp_Main.RowStyles.Add(new RowStyle(SizeType.Percent, 33.3333321F));
+            tlp_Main.Size = new Size(737, 89);
+            tlp_Main.TabIndex = 878;
             // 
             // btn_ProcesscardBasedOn
             // 
-            this.btn_ProcesscardBasedOn.BackColor = System.Drawing.Color.LightGray;
-            this.tlp_Main.SetColumnSpan(this.btn_ProcesscardBasedOn, 5);
-            this.btn_ProcesscardBasedOn.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btn_ProcesscardBasedOn.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btn_ProcesscardBasedOn.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(45)))), ((int)(((byte)(45)))));
-            this.btn_ProcesscardBasedOn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btn_ProcesscardBasedOn.Font = new System.Drawing.Font("Palatino Linotype", 10F);
-            this.btn_ProcesscardBasedOn.ForeColor = System.Drawing.Color.SaddleBrown;
-            this.btn_ProcesscardBasedOn.Location = new System.Drawing.Point(0, 0);
-            this.btn_ProcesscardBasedOn.Margin = new System.Windows.Forms.Padding(0);
-            this.btn_ProcesscardBasedOn.Name = "btn_ProcesscardBasedOn";
-            this.btn_ProcesscardBasedOn.Size = new System.Drawing.Size(771, 28);
-            this.btn_ProcesscardBasedOn.TabIndex = 915;
-            this.btn_ProcesscardBasedOn.Text = "Processkort är baserat på:";
-            this.btn_ProcesscardBasedOn.TextAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.btn_ProcesscardBasedOn.UseVisualStyleBackColor = false;
-            this.btn_ProcesscardBasedOn.Click += new System.EventHandler(this.ProcesscardBasedOn_MouseClick);
+            btn_ProcesscardBasedOn.BackColor = Color.LightGray;
+            tlp_Main.SetColumnSpan(btn_ProcesscardBasedOn, 5);
+            btn_ProcesscardBasedOn.Cursor = Cursors.Hand;
+            btn_ProcesscardBasedOn.Dock = DockStyle.Fill;
+            btn_ProcesscardBasedOn.FlatAppearance.MouseOverBackColor = Color.FromArgb(45, 45, 45);
+            btn_ProcesscardBasedOn.FlatStyle = FlatStyle.Flat;
+            btn_ProcesscardBasedOn.Font = new Font("Palatino Linotype", 10F);
+            btn_ProcesscardBasedOn.ForeColor = Color.SaddleBrown;
+            btn_ProcesscardBasedOn.Location = new Point(0, 0);
+            btn_ProcesscardBasedOn.Margin = new Padding(0);
+            btn_ProcesscardBasedOn.Name = "btn_ProcesscardBasedOn";
+            btn_ProcesscardBasedOn.Size = new Size(737, 32);
+            btn_ProcesscardBasedOn.TabIndex = 915;
+            btn_ProcesscardBasedOn.Text = "Processkort är baserat på:";
+            btn_ProcesscardBasedOn.TextAlign = ContentAlignment.TopLeft;
+            btn_ProcesscardBasedOn.UseVisualStyleBackColor = false;
+            btn_ProcesscardBasedOn.Click += ProcesscardBasedOn_MouseClick;
             // 
             // label_Empty_0
             // 
-            this.label_Empty_0.BackColor = System.Drawing.Color.White;
-            this.tlp_Main.SetColumnSpan(this.label_Empty_0, 2);
-            this.label_Empty_0.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label_Empty_0.Font = new System.Drawing.Font("Consolas", 8.25F);
-            this.label_Empty_0.ForeColor = System.Drawing.Color.DarkSlateGray;
-            this.label_Empty_0.Location = new System.Drawing.Point(180, 60);
-            this.label_Empty_0.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
-            this.label_Empty_0.Name = "label_Empty_0";
-            this.label_Empty_0.Size = new System.Drawing.Size(386, 16);
-            this.label_Empty_0.TabIndex = 914;
+            label_Empty_0.BackColor = Color.White;
+            tlp_Main.SetColumnSpan(label_Empty_0, 2);
+            label_Empty_0.Dock = DockStyle.Fill;
+            label_Empty_0.Font = new Font("Consolas", 8.25F);
+            label_Empty_0.ForeColor = Color.DarkSlateGray;
+            label_Empty_0.Location = new Point(200, 68);
+            label_Empty_0.Margin = new Padding(0, 0, 0, 1);
+            label_Empty_0.Name = "label_Empty_0";
+            label_Empty_0.Size = new Size(315, 20);
+            label_Empty_0.TabIndex = 914;
             // 
             // lbl_ApprovedDate
             // 
-            this.lbl_ApprovedDate.BackColor = System.Drawing.Color.White;
-            this.lbl_ApprovedDate.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lbl_ApprovedDate.Font = new System.Drawing.Font("Consolas", 8.25F);
-            this.lbl_ApprovedDate.ForeColor = System.Drawing.Color.Gray;
-            this.lbl_ApprovedDate.Location = new System.Drawing.Point(311, 28);
-            this.lbl_ApprovedDate.Margin = new System.Windows.Forms.Padding(1, 0, 1, 1);
-            this.lbl_ApprovedDate.Name = "lbl_ApprovedDate";
-            this.lbl_ApprovedDate.Size = new System.Drawing.Size(254, 15);
-            this.lbl_ApprovedDate.TabIndex = 912;
-            this.lbl_ApprovedDate.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            lbl_ApprovedDate.BackColor = Color.White;
+            lbl_ApprovedDate.Dock = DockStyle.Fill;
+            lbl_ApprovedDate.Font = new Font("Consolas", 8.25F);
+            lbl_ApprovedDate.ForeColor = Color.Gray;
+            lbl_ApprovedDate.Location = new Point(380, 32);
+            lbl_ApprovedDate.Margin = new Padding(1, 0, 1, 1);
+            lbl_ApprovedDate.Name = "lbl_ApprovedDate";
+            lbl_ApprovedDate.Size = new Size(134, 17);
+            lbl_ApprovedDate.TabIndex = 912;
+            lbl_ApprovedDate.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // tb_Validerade_Loter
             // 
-            this.tb_Validerade_Loter.BackColor = System.Drawing.Color.White;
-            this.tb_Validerade_Loter.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.tlp_Main.SetColumnSpan(this.tb_Validerade_Loter, 2);
-            this.tb_Validerade_Loter.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tb_Validerade_Loter.Font = new System.Drawing.Font("Consolas", 8.25F);
-            this.tb_Validerade_Loter.ForeColor = System.Drawing.Color.Gray;
-            this.tb_Validerade_Loter.Location = new System.Drawing.Point(181, 44);
-            this.tb_Validerade_Loter.Margin = new System.Windows.Forms.Padding(1, 0, 1, 1);
-            this.tb_Validerade_Loter.Name = "tb_Validerade_Loter";
-            this.tb_Validerade_Loter.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
-            this.tb_Validerade_Loter.Size = new System.Drawing.Size(384, 15);
-            this.tb_Validerade_Loter.TabIndex = 911;
-            this.tb_Validerade_Loter.Text = "";
+            tb_Validerade_Loter.BackColor = Color.White;
+            tb_Validerade_Loter.BorderStyle = BorderStyle.None;
+            tlp_Main.SetColumnSpan(tb_Validerade_Loter, 2);
+            tb_Validerade_Loter.Dock = DockStyle.Fill;
+            tb_Validerade_Loter.Font = new Font("Consolas", 8.25F);
+            tb_Validerade_Loter.ForeColor = Color.Gray;
+            tb_Validerade_Loter.Location = new Point(201, 50);
+            tb_Validerade_Loter.Margin = new Padding(1, 0, 1, 1);
+            tb_Validerade_Loter.Name = "tb_Validerade_Loter";
+            tb_Validerade_Loter.ScrollBars = RichTextBoxScrollBars.Vertical;
+            tb_Validerade_Loter.Size = new Size(313, 17);
+            tb_Validerade_Loter.TabIndex = 911;
+            tb_Validerade_Loter.Text = "";
             // 
             // lbl_UpprättatAv_Sign_AnstNr
             // 
-            this.lbl_UpprättatAv_Sign_AnstNr.BackColor = System.Drawing.Color.White;
-            this.lbl_UpprättatAv_Sign_AnstNr.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.lbl_UpprättatAv_Sign_AnstNr.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lbl_UpprättatAv_Sign_AnstNr.Font = new System.Drawing.Font("Consolas", 8.25F);
-            this.lbl_UpprättatAv_Sign_AnstNr.ForeColor = System.Drawing.Color.Gray;
-            this.lbl_UpprättatAv_Sign_AnstNr.Location = new System.Drawing.Point(702, 44);
-            this.lbl_UpprättatAv_Sign_AnstNr.Margin = new System.Windows.Forms.Padding(1, 0, 1, 1);
-            this.lbl_UpprättatAv_Sign_AnstNr.Name = "lbl_UpprättatAv_Sign_AnstNr";
-            this.lbl_UpprättatAv_Sign_AnstNr.Size = new System.Drawing.Size(68, 15);
-            this.lbl_UpprättatAv_Sign_AnstNr.TabIndex = 909;
-            this.lbl_UpprättatAv_Sign_AnstNr.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.lbl_UpprättatAv_Sign_AnstNr.Click += new System.EventHandler(this.UpprättatAv_Sign_AnstNr_Click);
+            lbl_UpprättatAv_Sign_AnstNr.BackColor = Color.White;
+            lbl_UpprättatAv_Sign_AnstNr.Cursor = Cursors.Hand;
+            lbl_UpprättatAv_Sign_AnstNr.Dock = DockStyle.Fill;
+            lbl_UpprättatAv_Sign_AnstNr.Font = new Font("Consolas", 8.25F);
+            lbl_UpprättatAv_Sign_AnstNr.ForeColor = Color.Gray;
+            lbl_UpprättatAv_Sign_AnstNr.Location = new Point(658, 50);
+            lbl_UpprättatAv_Sign_AnstNr.Margin = new Padding(1, 0, 1, 1);
+            lbl_UpprättatAv_Sign_AnstNr.Name = "lbl_UpprättatAv_Sign_AnstNr";
+            lbl_UpprättatAv_Sign_AnstNr.Size = new Size(78, 17);
+            lbl_UpprättatAv_Sign_AnstNr.TabIndex = 909;
+            lbl_UpprättatAv_Sign_AnstNr.TextAlign = ContentAlignment.MiddleCenter;
+            lbl_UpprättatAv_Sign_AnstNr.Click += UpprättatAv_Sign_AnstNr_Click;
             // 
             // lbl_RevNr
             // 
-            this.lbl_RevNr.BackColor = System.Drawing.Color.LightSteelBlue;
-            this.lbl_RevNr.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.lbl_RevNr.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lbl_RevNr.Font = new System.Drawing.Font("Consolas", 8.25F);
-            this.lbl_RevNr.ForeColor = System.Drawing.Color.Gray;
-            this.lbl_RevNr.Location = new System.Drawing.Point(702, 28);
-            this.lbl_RevNr.Margin = new System.Windows.Forms.Padding(1, 0, 1, 1);
-            this.lbl_RevNr.Name = "lbl_RevNr";
-            this.lbl_RevNr.Size = new System.Drawing.Size(68, 15);
-            this.lbl_RevNr.TabIndex = 908;
-            this.lbl_RevNr.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.lbl_RevNr.MouseDown += new System.Windows.Forms.MouseEventHandler(this.RevNr_MouseDown);
+            lbl_RevNr.BackColor = Color.LightSteelBlue;
+            lbl_RevNr.Cursor = Cursors.Hand;
+            lbl_RevNr.Dock = DockStyle.Fill;
+            lbl_RevNr.Font = new Font("Consolas", 8.25F);
+            lbl_RevNr.ForeColor = Color.Gray;
+            lbl_RevNr.Location = new Point(658, 32);
+            lbl_RevNr.Margin = new Padding(1, 0, 1, 1);
+            lbl_RevNr.Name = "lbl_RevNr";
+            lbl_RevNr.Size = new Size(78, 17);
+            lbl_RevNr.TabIndex = 908;
+            lbl_RevNr.TextAlign = ContentAlignment.MiddleCenter;
+            lbl_RevNr.MouseDown += RevNr_MouseDown;
             // 
             // label_ApprovedBy
             // 
-            this.label_ApprovedBy.AutoSize = true;
-            this.label_ApprovedBy.BackColor = System.Drawing.Color.White;
-            this.label_ApprovedBy.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label_ApprovedBy.Font = new System.Drawing.Font("Arial", 7F);
-            this.label_ApprovedBy.Location = new System.Drawing.Point(566, 60);
-            this.label_ApprovedBy.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
-            this.label_ApprovedBy.Name = "label_ApprovedBy";
-            this.label_ApprovedBy.Size = new System.Drawing.Size(135, 16);
-            this.label_ApprovedBy.TabIndex = 839;
-            this.label_ApprovedBy.Text = "Godkänt av: Sign./Anst nr:";
-            this.label_ApprovedBy.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            label_ApprovedBy.AutoSize = true;
+            label_ApprovedBy.BackColor = Color.White;
+            label_ApprovedBy.Dock = DockStyle.Fill;
+            label_ApprovedBy.Font = new Font("Arial", 7F);
+            label_ApprovedBy.Location = new Point(515, 68);
+            label_ApprovedBy.Margin = new Padding(0, 0, 0, 1);
+            label_ApprovedBy.Name = "label_ApprovedBy";
+            label_ApprovedBy.Size = new Size(142, 20);
+            label_ApprovedBy.TabIndex = 839;
+            label_ApprovedBy.Text = "Godkänt av: Sign./Anst nr:";
+            label_ApprovedBy.TextAlign = ContentAlignment.MiddleRight;
             // 
             // rb_FramtagningAvProcessfönster
             // 
-            this.rb_FramtagningAvProcessfönster.AutoSize = true;
-            this.rb_FramtagningAvProcessfönster.BackColor = System.Drawing.Color.White;
-            this.rb_FramtagningAvProcessfönster.Checked = true;
-            this.rb_FramtagningAvProcessfönster.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.rb_FramtagningAvProcessfönster.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.rb_FramtagningAvProcessfönster.Enabled = false;
-            this.rb_FramtagningAvProcessfönster.Font = new System.Drawing.Font("Arial", 7F);
-            this.rb_FramtagningAvProcessfönster.ForeColor = System.Drawing.Color.Black;
-            this.rb_FramtagningAvProcessfönster.Location = new System.Drawing.Point(1, 60);
-            this.rb_FramtagningAvProcessfönster.Margin = new System.Windows.Forms.Padding(1, 0, 0, 1);
-            this.rb_FramtagningAvProcessfönster.Name = "rb_FramtagningAvProcessfönster";
-            this.rb_FramtagningAvProcessfönster.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
-            this.rb_FramtagningAvProcessfönster.Size = new System.Drawing.Size(179, 16);
-            this.rb_FramtagningAvProcessfönster.TabIndex = 838;
-            this.rb_FramtagningAvProcessfönster.TabStop = true;
-            this.rb_FramtagningAvProcessfönster.Text = "Framtagning av Processfönster:";
-            this.rb_FramtagningAvProcessfönster.UseVisualStyleBackColor = false;
-            this.rb_FramtagningAvProcessfönster.CheckedChanged += new System.EventHandler(this.FramtagningAvProcessfönster_CheckedChanged);
+            rb_FramtagningAvProcessfönster.AutoSize = true;
+            rb_FramtagningAvProcessfönster.BackColor = Color.White;
+            rb_FramtagningAvProcessfönster.Checked = true;
+            rb_FramtagningAvProcessfönster.Cursor = Cursors.Hand;
+            rb_FramtagningAvProcessfönster.Dock = DockStyle.Fill;
+            rb_FramtagningAvProcessfönster.Enabled = false;
+            rb_FramtagningAvProcessfönster.Font = new Font("Arial", 7F);
+            rb_FramtagningAvProcessfönster.ForeColor = Color.Black;
+            rb_FramtagningAvProcessfönster.Location = new Point(1, 68);
+            rb_FramtagningAvProcessfönster.Margin = new Padding(1, 0, 0, 1);
+            rb_FramtagningAvProcessfönster.Name = "rb_FramtagningAvProcessfönster";
+            rb_FramtagningAvProcessfönster.Padding = new Padding(6, 0, 0, 0);
+            rb_FramtagningAvProcessfönster.Size = new Size(199, 20);
+            rb_FramtagningAvProcessfönster.TabIndex = 838;
+            rb_FramtagningAvProcessfönster.TabStop = true;
+            rb_FramtagningAvProcessfönster.Text = "Framtagning av Processfönster:";
+            rb_FramtagningAvProcessfönster.UseVisualStyleBackColor = false;
+            rb_FramtagningAvProcessfönster.CheckedChanged += FramtagningAvProcessfönster_CheckedChanged;
             // 
             // lbl_QA_Sign
             // 
-            this.lbl_QA_Sign.BackColor = System.Drawing.Color.White;
-            this.lbl_QA_Sign.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.lbl_QA_Sign.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lbl_QA_Sign.Enabled = false;
-            this.lbl_QA_Sign.Font = new System.Drawing.Font("Consolas", 8.25F);
-            this.lbl_QA_Sign.ForeColor = System.Drawing.Color.Gray;
-            this.lbl_QA_Sign.Location = new System.Drawing.Point(702, 60);
-            this.lbl_QA_Sign.Margin = new System.Windows.Forms.Padding(1, 0, 1, 1);
-            this.lbl_QA_Sign.Name = "lbl_QA_Sign";
-            this.lbl_QA_Sign.Size = new System.Drawing.Size(68, 16);
-            this.lbl_QA_Sign.TabIndex = 913;
-            this.lbl_QA_Sign.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.lbl_QA_Sign.Click += new System.EventHandler(this.QA_Sign_Click);
+            lbl_QA_Sign.BackColor = Color.White;
+            lbl_QA_Sign.Cursor = Cursors.Hand;
+            lbl_QA_Sign.Dock = DockStyle.Fill;
+            lbl_QA_Sign.Enabled = false;
+            lbl_QA_Sign.Font = new Font("Consolas", 8.25F);
+            lbl_QA_Sign.ForeColor = Color.Gray;
+            lbl_QA_Sign.Location = new Point(658, 68);
+            lbl_QA_Sign.Margin = new Padding(1, 0, 1, 1);
+            lbl_QA_Sign.Name = "lbl_QA_Sign";
+            lbl_QA_Sign.Size = new Size(78, 20);
+            lbl_QA_Sign.TabIndex = 913;
+            lbl_QA_Sign.TextAlign = ContentAlignment.MiddleCenter;
+            lbl_QA_Sign.Click += QA_Sign_Click;
             // 
             // ProcesscardBasedOn
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.Black;
-            this.Controls.Add(this.tlp_Main);
-            this.Name = "ProcesscardBasedOn";
-            this.Size = new System.Drawing.Size(771, 77);
-            this.MouseHover += new System.EventHandler(this.ProcesscardBasedOn_MouseClick);
-            this.tlp_Main.ResumeLayout(false);
-            this.tlp_Main.PerformLayout();
-            this.ResumeLayout(false);
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            BackColor = Color.Black;
+            Controls.Add(tlp_Main);
+            Margin = new Padding(4, 3, 4, 3);
+            Name = "ProcesscardBasedOn";
+            Size = new Size(737, 89);
+            MouseHover += ProcesscardBasedOn_MouseClick;
+            tlp_Main.ResumeLayout(false);
+            tlp_Main.PerformLayout();
+            ResumeLayout(false);
 
         }
 

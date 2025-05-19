@@ -4,7 +4,9 @@ using DigitalProductionProgram.Log;
 using DigitalProductionProgram.Övrigt;
 using Microsoft.Data.SqlClient;
 using System.ComponentModel;
+using DigitalProductionProgram.EasterEggs;
 using static DigitalProductionProgram.DatabaseManagement.Database;
+using DigitalProductionProgram.User;
 
 namespace DigitalProductionProgram.MainWindow
 {
@@ -100,6 +102,9 @@ namespace DigitalProductionProgram.MainWindow
                 cs.ShowDialog();
             }
 
+            //Person.Name = "Richard Aakula";
+            //Application.Run(new EasterEgg_Code());
+            //return;
             //Nedanstående är originalkoden som skall laddas
             var back = new BlackBackground("Initialising Digital Production Program.\nConnecting to Monitor and loading data from server, please wait.", 98, true)
             {

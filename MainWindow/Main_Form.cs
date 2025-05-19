@@ -33,11 +33,11 @@ namespace DigitalProductionProgram.MainWindow
         public static Timer Timer_UpdateChart = new Timer();
         public static Timer Timer_ChangeGrade = new Timer();
         public static Timer Timer_ReloginMonitor = new Timer();
-       
+
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
             Control ctrl;
-            
+
             switch (keyData)
             {
                 case Keys.F1:
@@ -137,9 +137,9 @@ namespace DigitalProductionProgram.MainWindow
             Settings.Settings.LoadData.Load_Settings();
             Activity.Start();
             InitializeComponent();
-           
+
             Translate_MainForm();
-            
+
             MainMenu.mainForm = this;
             OrderInformation.mainForm = this;
 
@@ -155,12 +155,12 @@ namespace DigitalProductionProgram.MainWindow
                 IsLoadingPriorityPlan = true;
                 IsLoadingMeasurePoints = true;
             }
-           
-            Login_Monitor.GiveUserWarningMonitorOnStageServer();
 
-            
-           
-           
+            Login_Monitor.GiveUserWarningMonitorOnStageServer();
+            Serverstatus.SetMainForm(this);
+
+
+
             //Login_Monitor.Login_API();
             PriorityPlanning.dgv_PriorityPlanning.CellClick += PriorityPlanning_OrderNr_CellClick;
             OrderInformation.cb_Operation.SelectedIndexChanged += Operation_SelectedIndexChanged;
@@ -177,7 +177,7 @@ namespace DigitalProductionProgram.MainWindow
                     OrderInformation.tb_OrderNr.AutoCompleteCustomSource = Monitor.Monitor.AutoFillOrdernr;
 
                 _ = Main_FilterQuickOpen.Load_ListAsync(dgv_QuickOpen);
-               // WindowState = FormWindowState.Normal;
+                // WindowState = FormWindowState.Normal;
             }
             OrderInformation.tb_OrderNr.Focus();
             dgv_QuickOpen.ClearSelection();
@@ -194,18 +194,18 @@ namespace DigitalProductionProgram.MainWindow
                     InfoText.Show(LanguageManager.GetString("warning_Testdatabase"), CustomColors.InfoText_Color.Bad, "Warning");
                 Change_GUI_BetaMode();
             }
-           
+
             Mail.AutoTestJira();
             CheckForMaintenanceWork();
         }
-       
+
         private async void MainForm_Load(object sender, EventArgs e)
         {
             if (IsAutoOpenOrder == false)
             {
                 Monitor.Monitor.Load_WorkCenters();
                 PriorityPlanning.Load_ProdGrupp();
-               
+
                 if (Settings.Settings.MeasuringComputerOnly)
                     Change_GUI_Mätdator();
 
@@ -232,8 +232,8 @@ namespace DigitalProductionProgram.MainWindow
             }
             base.SetVisibleCore(value);
         }
-        
-       
+
+
 
         private void AUTOLOGIN_SUPERADMIN()
         {
@@ -299,7 +299,7 @@ namespace DigitalProductionProgram.MainWindow
             MainMenu.Visible = true;
             MainMenu.menuStrip.Visible = true;
         }
-       
+
         private void Initialize_Timers()
         {
             Timer_UpdateChart.Tick += UpdateChart_Tick;
@@ -309,14 +309,14 @@ namespace DigitalProductionProgram.MainWindow
             Timer_UpdateChart.Interval = 300000;
             Timer_ChangeGrade.Interval = 600000;
             Timer_ReloginMonitor.Interval = 60000;
-            
+
             timer_CheckForUpdate.Start();
-            
+
             Timer_Update_Körplanering_Start();
 
             timer_Planerat_Stopp.Start();
         }
-        
+
 
         //----------- CHANGE GUI-----------------------
         public void Change_GUI_MainForm()
@@ -372,7 +372,7 @@ namespace DigitalProductionProgram.MainWindow
         }
         private void Set_GUI_Theme_Krympslang()
         {
-            Control[] textLabels = {lbl_Company, label_EmpNr, lbl_EmpNr, label_Sign, lbl_Sign, label_Role, lbl_Role, lbl_Percent,  ActiveOrdersUser.label_Header_ActiveOrders };//Weather.lbl_Location, Weather.lbl_Temp, Weather.lbl_Wind,
+            Control[] textLabels = { lbl_Company, label_EmpNr, lbl_EmpNr, label_Sign, lbl_Sign, label_Role, lbl_Role, lbl_Percent, ActiveOrdersUser.label_Header_ActiveOrders };//Weather.lbl_Location, Weather.lbl_Temp, Weather.lbl_Wind,
             if (string.IsNullOrEmpty(Equipment.Equipment.HS_Machine) == false)
             {
                 MachineColor.Set_HeatShrink_Color();
@@ -389,7 +389,7 @@ namespace DigitalProductionProgram.MainWindow
 
         public void Translate_MainForm()
         {
-            var controls = new Control[] {TipsAndTrix.label_Tips_Trix, label_EmpNr, label_Sign, label_Role, label_Filter, label_QuickOpenOrder };
+            var controls = new Control[] { TipsAndTrix.label_Tips_Trix, label_EmpNr, label_Sign, label_Role, label_Filter, label_QuickOpenOrder };
             LanguageManager.TranslationHelper.TranslateControls(controls);
             LanguageManager.TranslationHelper.TranslateMainMenu(MainMenu.menuStrip);
             Buttons.Translate_Form();
@@ -405,7 +405,7 @@ namespace DigitalProductionProgram.MainWindow
             AQL.Visible = false;
             TipsAndTrix.Visible = false;
             tlp_MainWindow.BackgroundImage = null;
-           
+
             measurePoints.tlp_Main.BackColor = measureStats.BackColor = panelChart.BackColor = tlp_ExtraInfo.BackColor = panelChart.BackColor = Color.Transparent;
 
             tlp_Left.BackColor = Color.FromArgb(100, 20, 44, 20);
@@ -416,7 +416,7 @@ namespace DigitalProductionProgram.MainWindow
             MainMenu.Change_GUI_OrderFinished();
             PriorityPlanning.Visible = false;
             Buttons.Change_GUI_OrderFinished();
-           
+
             if (!string.IsNullOrEmpty(Order.Rating))
             {
                 lbl_Rating.Visible = true;
@@ -446,10 +446,10 @@ namespace DigitalProductionProgram.MainWindow
             Buttons.Change_GUI_Mätdator();
             MainMenu.Change_GUI_Mätdator();
             PriorityPlanning.Visible = false;
-           
+
             Size = new Size(1250, 600);
         }
-       
+
         private void Change_GUI_ExtraInfo()
         {
             if (!string.IsNullOrEmpty(lbl_ExtraInfo.Text))
@@ -482,7 +482,7 @@ namespace DigitalProductionProgram.MainWindow
             panel_Grade_Percent.Visible = true;
             lbl_Percent.Visible = true;
 
-            panel_Grade_Percent.Height = (int) (pb_GradBeteckning.Height * Grade.percent_Grade(Grade.grade));
+            panel_Grade_Percent.Height = (int)(pb_GradBeteckning.Height * Grade.percent_Grade(Grade.grade));
             panel_Grade_Percent.Top = pb_GradBeteckning.Bottom - panel_Grade_Percent.Height;
 
             lbl_Percent.Text = $"{Convert.ToInt32(Grade.percent_Grade(Grade.grade) * 100)} %";
@@ -491,7 +491,7 @@ namespace DigitalProductionProgram.MainWindow
         private void Change_GUI_BetaMode()
         {
             tlp_Left.BackColor = OrderInformation.BackColor = panel_Right.BackColor = Color.Pink;
-           
+
             var lbl_Beta = new Label
             {
                 Text = "BETA Mode",
@@ -501,27 +501,27 @@ namespace DigitalProductionProgram.MainWindow
                 Font = new Font("Palatino LinoType", 50),
                 TextAlign = ContentAlignment.MiddleCenter
             };
-            tlp_MainWindow.Controls.Add(lbl_Beta, 3,3);
+            tlp_MainWindow.Controls.Add(lbl_Beta, 3, 3);
         }
-       
+
         public void Change_Theme()
         {
             if (Order.IsOrderDone)
                 return;
-            
+
             tlp_MainWindow.BackgroundImage = Teman.rndBackPic;
-              
+
             tlp_MainWindow.BackColor = Teman.backColor_Main;
             tlp_Top.BackColor = Teman.backColor_Menu;
             tlp_QuickOpen.BackColor = Teman.backColor_Panels;
-           
+
             if (IsBetaMode == false)
             {
                 panel_Right.BackColor = Teman.backColor_RightPanel;
                 tlp_Left.BackColor = Teman.backColor_LeftPanel;
                 BeginInvoke(new Action(() => OrderInformation.Change_Theme()));
             }
-            
+
             panelChart.BackColor = Teman.backColor_Chart;
             tlp_ExtraInfo.BackColor = TipsAndTrix.label_Tips_Trix.BackColor = TipsAndTrix.pb_Info_Tips_Trix.BackColor = Teman.backColor_ExtraInfo;
             lbl_ExtraInfo.ForeColor = Teman.foreColor_ExtraInfo;
@@ -541,7 +541,7 @@ namespace DigitalProductionProgram.MainWindow
             Set_GUI_Theme_Krympslang();
             _ = Activity.Stop(Teman.Theme.ToString());
         }
-        
+
 
         //---------------------------------------------STARTA ORDER---------------------------------------------
         public void StartOrLoadOrder(bool IsOperationOk)
@@ -566,9 +566,9 @@ namespace DigitalProductionProgram.MainWindow
 
             Order.Load_OrderInformation();
             Monitor.Monitor.Load_OrderInformation();
-           
+
             var IsOkStartOrder = true;
-           
+
             if (Order.IsOrder_Exist(Order.OrderNumber, Order.Operation))
                 Open();
             else
@@ -587,32 +587,32 @@ namespace DigitalProductionProgram.MainWindow
             else
                 FeedBackQC.Visible = false;
             Close_Open_Forms();
-            
+
             lbl_ExtraInfo.Text = Part.ExtraInfo_Part;
-            
+
             if (IsAutoOpenOrder == false)
                 Task.Run(Change_Theme);
             Task.Run(Change_GUI_MainForm);
-            
+
             Change_GUI_ExtraInfo();
             Timer_UpdateChart.Start();
             Order.Set_NumberOfLayers();
             Load_MeasurePoints();
-            
+
             Task.Factory.StartNew(() => measureStats.Add_MeasureInformation_MainForm(panelChart, tlp_MainWindow));
-            
+
             Tools.Load_HSPipes();
-            
+
             if (Order.IsOrderDone)
                 Change_GUI_OrderKlar();
             else
                 Change_GUI_OrderEjKlar();
-            
+
             MainMenu.Unlock_Korprotokoll_Menu();
         }
         public void Operation_SelectedIndexChanged(object? sender, EventArgs e)
         {
-            if (OrderInformation.cb_Operation.SelectedIndex > -1 &! string.IsNullOrEmpty(OrderInformation.cb_Operation.Text) &! string.IsNullOrEmpty(OrderInformation.tb_OrderNr.Text))
+            if (OrderInformation.cb_Operation.SelectedIndex > -1 & !string.IsNullOrEmpty(OrderInformation.cb_Operation.Text) & !string.IsNullOrEmpty(OrderInformation.tb_OrderNr.Text))
             {
                 OrderInformation.cb_Operation.BackColor = Color.White;
                 StartOrLoadOrder(false);
@@ -629,14 +629,14 @@ namespace DigitalProductionProgram.MainWindow
                 Change_GUI_Mätdator();
 
             Order.Is_PrintOutCopy = true;
-            
+
             OrderInformation.tb_OrderNr.Enabled = false;
             //Stänger eventuella öppna Körprotokoll
             Close_Open_Forms();
-            
-           
+
+
             Buttons.panel_Pictures.Visible = true;
-            
+
             ProgressBar.close();
             Activate();
             OrderInformation.tb_OrderNr.SelectionLength = 0;
@@ -665,8 +665,8 @@ namespace DigitalProductionProgram.MainWindow
             gallup.ShowDialog();
             bg.Close();
         }
-       
-       
+
+
 
         //---------------------------------------------MÄTPUNKTER--------------------------------------------------
         public void Load_MeasurePoints()
@@ -676,7 +676,7 @@ namespace DigitalProductionProgram.MainWindow
             Monitor.Monitor.Load_DataTable_Measurpoints(Order.OrderNumber, Order.Operation, true);
             measurePoints.AddMeasurePointsMainForm();
         }
-        
+
 
 
 
@@ -709,12 +709,12 @@ namespace DigitalProductionProgram.MainWindow
         //---------------------------------------------KÖRPLANERING-------------------------------------------
         private void Timer_Update_Körplanering_Start()
         {
-            
+
             timer_Update_Körplanering.Start();
         }
         public void PriorityPlanning_OrderNr_CellClick(object? sender, DataGridViewCellEventArgs e)
         {
-            if (PriorityPlanning.dgv_PriorityPlanning.Columns[0].Name != "OrderNr")
+            if (PriorityPlanning.dgv_PriorityPlanning.Columns[0].Name != "OrderNr" || e.RowIndex < 0)
                 return;
             if (IsZumbachÖppet)
             {
@@ -722,12 +722,12 @@ namespace DigitalProductionProgram.MainWindow
                     CustomColors.InfoText_Color.Warning, "Varning!");
                 return;
             }
-            
+
             OrderInformation.tb_OrderNr.Enabled = true;
             OrderInformation.tb_OrderNr.Text = PriorityPlanning.dgv_PriorityPlanning.Rows[e.RowIndex].Cells["OrderNr"].Value.ToString();
-                
+
             OrderInformation.Fill_cb_Operation();
-               
+
             Order.Operation = PriorityPlanning.dgv_PriorityPlanning.Rows[e.RowIndex].Cells["Operation"].Value.ToString();
 
             int.TryParse(Order.Operation, out int operation);
@@ -747,7 +747,7 @@ namespace DigitalProductionProgram.MainWindow
                 return;
             Clear_Mainform();
             Order.WorkOperation = Manage_WorkOperation.WorkOperations.Nothing;
-            var dgv = (DataGridView) sender;
+            var dgv = (DataGridView)sender;
             OrderInformation.cb_Operation.SelectedIndexChanged -= Operation_SelectedIndexChanged;
             OrderInformation.tb_OrderNr.Validated -= OrderInformation.OrderNr_Validated;
 
@@ -795,7 +795,7 @@ namespace DigitalProductionProgram.MainWindow
 
 
 
-        
+
         //---------------------------------------------INLOGGNING---------------------------------------------
         public void SignIn()
         {
@@ -826,7 +826,7 @@ namespace DigitalProductionProgram.MainWindow
 
             panel_Profile.Visible = true;
             ActiveOrdersUser.Visible = true;
-            
+
             Change_GUI_Grade();
 
             pbOperatör.Image = Person.ProfilePicture(Person.Name);
@@ -873,7 +873,7 @@ namespace DigitalProductionProgram.MainWindow
                 Order.Operation = operation;
                 Order.Load_OrderID(ordernr, operation);
                 Order.Load_ProdLine();
-                Order.WorkOperation = Manage_WorkOperation.Load_WorkOperation(); 
+                Order.WorkOperation = Manage_WorkOperation.Load_WorkOperation();
                 StartOrLoadOrder(true);
             }
 
@@ -882,7 +882,7 @@ namespace DigitalProductionProgram.MainWindow
 
             MainMenu.Unlock_Menu();
             RollingInformation.Load_list_Tips();
-            
+
             Task.Run(() => { ActiveOrdersUser.Load_OrderNr(OrderInformation); });
         }
         public void SignOut()
@@ -960,7 +960,7 @@ namespace DigitalProductionProgram.MainWindow
                     Manage_PrintOuts.Print_Pictures.Print();
             }
         }
-       
+
 
 
         //---------------------------------------------KNAPPAR------------------------------------------------
@@ -970,48 +970,24 @@ namespace DigitalProductionProgram.MainWindow
             InfoText.Show(LanguageManager.GetString("quickOpen_Info"), CustomColors.InfoText_Color.Info, "Info", this);
         }
         private void EasterEgg_1_Click(object sender, EventArgs e)
-        {//Gradbeteckning
-            if (string.IsNullOrEmpty(Person.Name))
-                return;
-            var antal_Spelare = EasterEgg_1.Antal_Spelare_Som_Spelat;
-            var antal_Gånger_Spelare_Spelat_Idag = EasterEgg_1.Antal_Spel;
-            if (antal_Gånger_Spelare_Spelat_Idag > 1)
+        {
+            if (EasterEgg_HighScore.IsOkStartGame("Easter Egg 1", this))
             {
-                InfoText.Show("Öpp öpp, inga någgi mera idag. Nu jobbar vi lite.\n" +
-                              "Nya tag imorrn.", CustomColors.InfoText_Color.Bad, "Hold your horses!", this);
-                return;
+                var game = new EasterEgg_1();
+                game.ShowDialog();
             }
-
-            InfoText.Question($"Du är Nr:{antal_Spelare + 1} att hitta detta påskägg. Vill du fortsätta och öppna det?",
-                CustomColors.InfoText_Color.Info, "popåsskokägoggog", this);
-            if (InfoText.answer == InfoText.Answer.No)
-                return;
-
-
-            var game = new EasterEgg_1();
-            game.ShowDialog();
 
         }
         private void EasterEgg_2_Click(object sender, EventArgs e)
-        {//Optinova Logo
-            var antal_Spelare = EasterEgg_2.Antal_Spelare_Som_Spelat;
-            var antal_Gånger_Spelare_Spelat_Idag = EasterEgg_2.Antal_Spel;
-            if (antal_Gånger_Spelare_Spelat_Idag > 1)
+        {
+            if (EasterEgg_HighScore.IsOkStartGame("Easter Egg 2", this))
             {
-                InfoText.Show("Öpp öpp, inga någgi mera idag. Nu jobbar vi lite.\n" +
-                              "Nya tag imorrn.", CustomColors.InfoText_Color.Bad, "Hold your horses!", this);
-                return;
+                var game = new EasterEgg_2();
+                game.ShowDialog();
+
             }
-
-            InfoText.Question($"Du är Nr:{antal_Spelare + 1} att hitta påskägg #2. Vill du fortsätta och öppna det?",
-                CustomColors.InfoText_Color.Info, "popåsskokägoggog", this);
-            if (InfoText.answer == InfoText.Answer.No)
-                return;
-
-
-            var game = new EasterEgg_2();
-            game.ShowDialog();
         }
+       
         private void Info_Poäng_Click(object sender, EventArgs e)
         {
             Points.Add_Points(1, "Klickat på Infoknapp om poäng.");
@@ -1046,9 +1022,9 @@ namespace DigitalProductionProgram.MainWindow
             if (ChangeLog.LatestVersion is null)
                 return;
 
-            if (ChangeLog.LatestVersion.CompareTo(value: ChangeLog.CurrentVersion) <= 0) 
+            if (ChangeLog.LatestVersion.CompareTo(value: ChangeLog.CurrentVersion) <= 0)
                 return;
-            
+
 
             timer_CheckForUpdate.Stop();
             if (Program.IsUpdateCritical)
@@ -1084,7 +1060,7 @@ namespace DigitalProductionProgram.MainWindow
                 timer_Planerat_Stopp.Interval = 1000;
                 SignOut();
             }
-                
+
 
         }
         private void CheckMätpunkter_Tick(object sender, EventArgs e)
@@ -1099,7 +1075,7 @@ namespace DigitalProductionProgram.MainWindow
         private void UpdateChart_Tick(object sender, EventArgs e)
         {
             // 5 minut
-            Task.Factory.StartNew(() => measureStats.Add_MeasureInformation_MainForm(panelChart, tlp_MainWindow)); 
+            Task.Factory.StartNew(() => measureStats.Add_MeasureInformation_MainForm(panelChart, tlp_MainWindow));
             if (Monitor.Monitor.status == Monitor.Monitor.Status.Bad || Monitor.Monitor.status == Monitor.Monitor.Status.Warning)
                 Task.Factory.StartNew(() => Login_Monitor.Login_API());
 
@@ -1162,7 +1138,7 @@ namespace DigitalProductionProgram.MainWindow
             if (ctr_Info_Planerat_Stopp > 1)
                 timer_Planerat_Stopp.Stop();
         }
-        
+
 
 
 
@@ -1179,6 +1155,7 @@ namespace DigitalProductionProgram.MainWindow
             SignOut();
         }
 
+        
     }
 }
 

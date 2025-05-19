@@ -217,8 +217,6 @@ C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram
 C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram\obj\Debug\net8.0-windows\DigitalProductionProgram.Browse_Protocols.OrderList.resources
 C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram\obj\Debug\net8.0-windows\DigitalProductionProgram.ControlsManagement.ProgressBar.resources
 C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram\obj\Debug\net8.0-windows\DigitalProductionProgram.DatabaseManagement.Database.resources
-C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram\obj\Debug\net8.0-windows\DigitalProductionProgram.Övrigt.EasterEgg_1.resources
-C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram\obj\Debug\net8.0-windows\DigitalProductionProgram.Övrigt.EasterEgg_2.resources
 C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram\obj\Debug\net8.0-windows\DigitalProductionProgram.eMail.Processcard_Changes.resources
 C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram\obj\Debug\net8.0-windows\DigitalProductionProgram.Equipment.Choose_Item.resources
 C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram\obj\Debug\net8.0-windows\DigitalProductionProgram.Equipment.Choose_Silduk.resources
@@ -353,3 +351,9 @@ C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram
 C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram\obj\Debug\net8.0-windows\DigitalProductionProgram.genruntimeconfig.cache
 C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram\obj\Debug\net8.0-windows\ref\DigitalProductionProgram.dll
 C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram\bin\Debug\net8.0-windows\Resources\EasterEgg.png
+C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram\obj\Debug\net8.0-windows\DigitalProductionProgram.EasterEggs.EasterEgg_2.resources
+C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram\obj\Debug\net8.0-windows\DigitalProductionProgram.EasterEggs.CodeWheel.resources
+C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram\obj\Debug\net8.0-windows\DigitalProductionProgram.EasterEggs.EasterEgg_Code.resources
+C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram\obj\Debug\net8.0-windows\DigitalProductionProgram.EasterEggs.EasterEgg_1.resources
+C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram\bin\Debug\net8.0-windows\Resources\CodeWheel.png
+C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram\bin\Debug\net8.0-windows\Resources\Code_Background.jpg

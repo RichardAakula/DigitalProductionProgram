@@ -1377,8 +1377,8 @@ ORDER BY OrderID DESC ";
 
         private void påskäggToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            FlyingEasterEgg flying = new FlyingEasterEgg(mainForm);
-            flying.StartGame();
+            EasterEgg_Code easterEgg = new EasterEgg_Code();
+            easterEgg.ShowDialog();
         }
     }
 }

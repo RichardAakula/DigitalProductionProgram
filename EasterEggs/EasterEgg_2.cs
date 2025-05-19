@@ -1,15 +1,12 @@
-﻿using System;
-using Microsoft.Data.SqlClient;
-using System.Drawing;
-using System.Threading;
-using System.Windows.Forms;
-using DigitalProductionProgram.ControlsManagement;
+﻿using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Help;
 using DigitalProductionProgram.PrintingServices;
 using DigitalProductionProgram.User;
+using Microsoft.Data.SqlClient;
+using System.Data;
 
-namespace DigitalProductionProgram.Övrigt
+namespace DigitalProductionProgram.EasterEggs
 {
     public partial class EasterEgg_2 : Form
     {
@@ -43,18 +40,16 @@ namespace DigitalProductionProgram.Övrigt
         {
             get
             {
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    var query = "SELECT COUNT(*) FROM Easter_Egg_Points WHERE Namn = @namn AND CAST (Datum AS date) = @date AND Game = 'Easter Egg 2'";
-                    var cmd = new SqlCommand(query, con);
-                    cmd.Parameters.AddWithValue("@namn", Person.Name);
-                    cmd.Parameters.AddWithValue("@date", DateTime.Now.ToString("yyyy-MM-dd"));
-                    con.Open();
-                    var value = cmd.ExecuteScalar();
-                    if (value is null)
-                        return 0;
-                    return (int)value;
-                }
+                using var con = new SqlConnection(Database.cs_Protocol);
+                var query = "SELECT COUNT(*) FROM Easter_Egg_Points WHERE Namn = @namn AND CAST (Datum AS date) = @date AND Game = 'Easter Egg 2'";
+                var cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@namn", Person.Name);
+                cmd.Parameters.AddWithValue("@date", DateTime.Now.ToString("yyyy-MM-dd"));
+                con.Open();
+                var value = cmd.ExecuteScalar();
+                if (value is null)
+                    return 0;
+                return (int)value;
             }
         }
         public static int Antal_Spelare_Som_Spelat
@@ -118,13 +113,14 @@ namespace DigitalProductionProgram.Övrigt
 
             Blink_Pixel();
 
-            InfoText.Show($"Du missade totalt med {totalDistance} pixlar\n\n" +
+            InfoText.Show($"Du missade punkten med {totalDistance} pixlar\n\n" +
                           $"Du fick {Points(totalDistance)} poäng\n" +
                           $"{Comment(totalDistance)}", CustomColors.InfoText_Color.Warning, null, this);
 
-            Save_Points(Points(totalDistance));
+            EasterEgg_HighScore.Save_Score(Antal_Spelare_Som_Spelat, Points(totalDistance), "Easter Egg 2");
+            
             Show_Highscore();
-            Close();
+            //Close();
         }
 
         private void Blink_Pixel()
@@ -138,43 +134,46 @@ namespace DigitalProductionProgram.Övrigt
                 Top = Y,
             };
             Controls.Add(panel);
-            ControlValidator.SoftBlink(panel, Color.Red, Color.Black, 300, 3000);
+            ControlValidator.SoftBlink(panel, Color.Red, Color.Yellow, 200, 3000);
             Thread.Sleep(3000);
             panel.Dispose();
         }
         private void Show_Highscore()
         {
-            var message = "Top 20:\n\n";
-            using (var con = new SqlConnection(Database.cs_Protocol))
+            dgv_HighScore.Visible = true;
+            const string query = @"
+            SELECT Namn, Datum, Points
+            FROM Easter_Egg_Points
+            WHERE Game = 'Easter Egg 2'
+            ORDER BY Points DESC";
+
+            using var con = new SqlConnection(Database.cs_Protocol);
+            using var cmd = new SqlCommand(query, con);
+            using var adapter = new SqlDataAdapter(cmd);
+            var table = new DataTable();
+
+            try
             {
-                var query = "SELECT Namn, Datum, Points FROM Easter_Egg_Points WHERE Game = 'Easter Egg 2' ORDER BY Points DESC";
-                var cmd = new SqlCommand(query, con);
                 con.Open();
-                var reader = cmd.ExecuteReader();
-                while (reader.Read())
+                adapter.Fill(table);
+
+                // Formatera datumkolumnen
+                foreach (DataRow row in table.Rows)
                 {
-                    var date = DateTime.Parse(reader["Datum"].ToString());
-                    message += $"{reader["Namn"]} - {date:yyyy-MM-dd HH:mm}:      {reader["Points"]}\n";
+                    if (DateTime.TryParse(row["Datum"]?.ToString(), out var dt))
+                    {
+                        row["Datum"] = dt.ToString("yyyy-MM-dd HH:mm");
+                    }
                 }
 
-                InfoText.Show(message, CustomColors.InfoText_Color.Info, "Info", this);
-            }
-        }
-        private static void Save_Points(int points)
-        {
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query = "INSERT INTO Easter_Egg_Points VALUES( @game, @namn, @datum, NULL, @points)";
-                var cmd = new SqlCommand(query, con);
-                cmd.Parameters.AddWithValue("@game", "Easter Egg 2");
-                cmd.Parameters.AddWithValue("@namn", Person.Name);
-                cmd.Parameters.AddWithValue("@datum", DateTime.Now);
-                cmd.Parameters.AddWithValue("@points", points);
-                
+                dgv_HighScore.DataSource = table;
 
-                con.Open();
-                cmd.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Fel vid hämtning av highscore: {ex.Message}", "Fel", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
     }
 }

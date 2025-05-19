@@ -527,11 +527,12 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
             if (totalPrintOuts != null) 
                 PageHeader(e, Templates_Protocol.MainTemplate.Name, totalPrintOuts.TotalPages);
             Order_INFO(e);
-            e.Graphics?.DrawString(LanguageManager.GetString("print_IsValueCritical"), CustomFonts.parametrarFont_Bold, CustomFonts.black, LeftMargin, 135);
+            e.Graphics?.DrawString(LanguageManager.GetString("print_IsValueCritical"), CustomFonts.parametrarFont_Bold, CustomFonts.black, LeftMargin, 130);
+            e.Graphics?.DrawString(LanguageManager.GetString("print_OutOfTolerance"), CustomFonts.parametrarFont_Bold, CustomFonts.black, LeftMargin, 141);
 
             PageWidth = e.PageBounds.Width;
             PageHeight = e.PageBounds.Height;
-            var y = 150;
+            var y = 153;
        
             var totalrows = 0;
             foreach (var formtemplateid in Active_FormTemplates)

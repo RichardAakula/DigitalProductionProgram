@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel;
-using System.Windows.Forms;
 
-namespace DigitalProductionProgram.Övrigt
+namespace DigitalProductionProgram.EasterEggs
 {
     partial class EasterEgg_1
     {

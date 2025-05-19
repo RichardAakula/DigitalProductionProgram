@@ -2282,4 +2282,7 @@ Contact Admin if necessary.</value>
   <data name="btnZumbach" xml:space="preserve">
     <value>F6-Zumbach-measurement</value>
   </data>
+  <data name="print_OutOfTolerance" xml:space="preserve">
+    <value>* = Out of spec</value>
+  </data>
 </root>

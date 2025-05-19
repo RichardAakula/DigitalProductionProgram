@@ -2275,4 +2275,7 @@ Kontakta Admin vid behov.</value>
   <data name="btnZumbach" xml:space="preserve">
     <value>F6-Zumbach-mätning</value>
   </data>
+  <data name="print_OutOfTolerance" xml:space="preserve">
+    <value>* = Värde Utanför toleransgränser</value>
+  </data>
 </root>

@@ -1,16 +1,22 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
+using DigitalProductionProgram.EasterEggs;
 
 namespace DigitalProductionProgram.MainWindow
 {
     public partial class ServerStatus : UserControl
     {
-        public static string DPP_ServerStatus;
+        public static string? DPP_ServerStatus;
+        private Main_Form? mainForm;
 
         public ServerStatus()
         {
             InitializeComponent();
+        }
+        public void SetMainForm(Main_Form form)
+        {
+            mainForm = form;
         }
         public static void DrawPanelMonitorStatus(Panel panel, Color color)
         {
@@ -100,7 +106,16 @@ namespace DigitalProductionProgram.MainWindow
                 ReshowDelay = 500,
                 ShowAlways = true
             };
-            tooltip.SetToolTip(lbl_DPP_Status,DPP_ServerStatus);
+            tooltip.SetToolTip(lbl_DPP_Status, DPP_ServerStatus);
+        }
+
+        private void lbl_MonitorStatus_Click(object sender, EventArgs e)
+        {
+            if (mainForm != null && EasterEgg_HighScore.IsOkStartGame("Flying Easter Egg", mainForm))
+            {
+                FlyingEasterEgg flying = new FlyingEasterEgg(mainForm);
+                flying.StartGame();
+            }
         }
     }
 }

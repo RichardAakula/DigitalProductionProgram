@@ -1,16 +1,14 @@
-﻿using System;
-using System.Configuration;
-using System.Data;
-using Microsoft.Data.SqlClient;
+﻿using System.Data;
+using System.Drawing.Drawing2D;
+using AxWMPLib;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Help;
 using DigitalProductionProgram.PrintingServices;
 using DigitalProductionProgram.User;
-using System.Drawing.Drawing2D;
-using AxWMPLib;
+using Microsoft.Data.SqlClient;
 using Timer = System.Windows.Forms.Timer;
 
-namespace DigitalProductionProgram.Övrigt
+namespace DigitalProductionProgram.EasterEggs
 {
     public partial class EasterEgg_1 : Form
     {
@@ -56,39 +54,7 @@ namespace DigitalProductionProgram.Övrigt
         private int end_x;
         private int end_y;
         private int line_Thickness = 6;
-        public static int Antal_Spel
-        {
-            get
-            {
-                using var con = new SqlConnection(Database.cs_Protocol);
-                var query = "SELECT COUNT(*) FROM Easter_Egg_Points WHERE Namn = @namn AND CAST (Datum AS date) = @date AND Game = 'Easter Egg 1'";
-                var cmd = new SqlCommand(query, con);
-                cmd.Parameters.AddWithValue("@namn", Person.Name);
-                cmd.Parameters.AddWithValue("@date", DateTime.Now.ToString("yyyy-MM-dd"));
-                con.Open();
-                var value = cmd.ExecuteScalar();
-                if (value is null)
-                    return 0;
-                return (int)value;
-            }
-        }
-        public static int Antal_Spelare_Som_Spelat
-        {
-            get
-            {
-                var ctr = 0;
-                using var con = new SqlConnection(Database.cs_Protocol);
-                const string query = "SELECT DISTINCT Namn FROM Easter_Egg_Points WHERE Namn <> @namn AND Game = 'Easter Egg 1'";
-                var cmd = new SqlCommand(query, con);
-                cmd.Parameters.AddWithValue("@namn", Person.Name);
-                con.Open();
-
-                var reader = cmd.ExecuteReader();
-                while (reader.Read())
-                    ctr++;
-                return ctr;
-            }
-        }
+        
         private AxWindowsMediaPlayer mediaPlayer = null!;
         private readonly Timer? startTimer;
         private bool isFirstMove = true;
@@ -104,7 +70,7 @@ namespace DigitalProductionProgram.Övrigt
             startTimer.Tick += StartTimer_Tick!;
 
             Load_HighScore();
-            antal_Spel = Antal_Spel;
+            antal_Spel = EasterEgg_HighScore.TotalGamesToday("Easter Egg 1");
         }
 
 
@@ -333,7 +299,7 @@ namespace DigitalProductionProgram.Övrigt
 
             if (total_Points > 0)
             {
-                Save_Score();
+                EasterEgg_HighScore.Save_Score(level, total_Points, "Easter Egg 1");
                 antal_Spel++;
             }
             Load_HighScore();
@@ -405,22 +371,7 @@ namespace DigitalProductionProgram.Övrigt
             Next_Level();
         }
 
-        private void Save_Score()
-        {
-            if (Person.Name == "Richard Aakula")
-                return;
-            using var con = new SqlConnection(Database.cs_Protocol);
-            var query = "INSERT INTO Easter_Egg_Points VALUES(@game, @namn, @datum, @level, @points)";
-            var cmd = new SqlCommand(query, con);
-            cmd.Parameters.AddWithValue("@namn", Person.Name);
-            cmd.Parameters.AddWithValue("@datum", DateTime.Now);
-            cmd.Parameters.AddWithValue("@level", level);
-            cmd.Parameters.AddWithValue("@points", total_Points);
-            cmd.Parameters.AddWithValue("@game", "Easter Egg 1");
-
-            con.Open();
-            cmd.ExecuteNonQuery();
-        }
+       
         private void Load_HighScore()
         {
             var dt = new DataTable();

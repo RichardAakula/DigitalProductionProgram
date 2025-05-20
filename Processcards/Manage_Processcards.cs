@@ -718,24 +718,21 @@ namespace DigitalProductionProgram.Processcards
             ActiveTemplateRevision = Templates_Protocol.MainTemplate.Revision;
 
             AddMachine(0, 1, ref width);
-            // this.Refresh();
             if (Machine.Is_MultipleMachines)
             {
                 tlp_Machines.ColumnCount++;
                
                 for (var i = 0; i < tlp_Machines.ColumnCount; i++)
                     tlp_Machines.ColumnStyles[i] = new ColumnStyle(SizeType.Percent, 100f / tlp_Machines.ColumnCount);
-              //  this.Refresh();
                 AddMachine(1, 2, ref width);
-                //this.Refresh();
             }
             //tlp_Main.ColumnStyles[0].Width = width + 26;
-            //this.Refresh();
             if (dataTables_ProcessData.Count > 0)
             {
                 InfoText.Show("Laddar data från tidigare mall till den nya mallen", CustomColors.InfoText_Color.Info, string.Empty,this);
                 Load_ProcessDataFromOldTemplateRevision();
             }
+            Change_Width();
         }
 
 
@@ -758,6 +755,41 @@ namespace DigitalProductionProgram.Processcards
             tlp_Machines.SetCellPosition(machine, new TableLayoutPanelCellPosition(columnIndex, 0));
            
         }
+
+        private void Change_Width()
+        {
+            var totalWidth = 0;
+            var colCounter = 0;
+            foreach (Machine machine in tlp_Machines.Controls)
+            {
+                var width = 0;
+                // Hämta första modulen i denna maskin
+                var firstModule = machine.tlp_Machine.Controls
+                    .OfType<Module>()
+                    .FirstOrDefault();
+
+                if (firstModule == null)
+                    continue;
+
+                foreach (DataGridView dgv in firstModule.Controls.OfType<DataGridView>())
+                {
+                    foreach (DataGridViewColumn col in dgv.Columns.Cast<DataGridViewColumn>().Where(c => c.Visible))
+                        //if (col.Visible)
+                    {
+                        width += col.Width;
+                        colCounter++;
+                    }
+                }
+               // firstModule.Width = 50; //width
+                totalWidth += width;
+            }
+
+            //MessageBox.Show($"Width = {width}");
+            //MessageBox.Show($"colCounter = {colCounter}");
+            tlp_Machines.ColumnStyles[0].Width = 150; //totalWidth + 15;
+            // width innehåller nu summan av kolumnbredder för första modulen i varje maskin
+        }
+
 
         private readonly List<DataTable> dataTables_ProcessData = new List<DataTable>();
         private void CopyProcessDataToNewTemplateRevision()

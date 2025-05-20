@@ -327,7 +327,7 @@ namespace DigitalProductionProgram.User
                     @employeenumber, 
                     'False', 
                     @password, 
-                    (SELECT RoleID FROM [Users].Roles WHERE RoleName = @role)
+                    (SELECT RoleID FROM [User].Roles WHERE RoleName = @role),
                     @mail, 
                     @createddate, 
                     @lastreadchangelogversion, 

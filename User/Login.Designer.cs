@@ -31,673 +31,700 @@ namespace DigitalProductionProgram.User
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Login));
-            this.label_Welcome = new System.Windows.Forms.Label();
-            this.label_ChooseUser = new System.Windows.Forms.Label();
-            this.tb_Password = new System.Windows.Forms.TextBox();
-            this.label_Password = new System.Windows.Forms.Label();
-            this.panel_Background = new System.Windows.Forms.Panel();
-            this.tlp_AddUser = new System.Windows.Forms.TableLayoutPanel();
-            this.label_InfoPassword_1 = new System.Windows.Forms.Label();
-            this.tb_ConfirmPassword = new System.Windows.Forms.TextBox();
-            this.label_ConfirmPassword = new System.Windows.Forms.Label();
-            this.label_Mail = new System.Windows.Forms.Label();
-            this.btn_AddUpdateUser = new System.Windows.Forms.Button();
-            this.tb_Sign = new System.Windows.Forms.TextBox();
-            this.label_AddUser = new System.Windows.Forms.Label();
-            this.cb_Role = new System.Windows.Forms.ComboBox();
-            this.label_NewPassword = new System.Windows.Forms.Label();
-            this.label_Sign = new System.Windows.Forms.Label();
-            this.tb_AnstNr = new System.Windows.Forms.TextBox();
-            this.label_EmpNr = new System.Windows.Forms.Label();
-            this.label_FirstName = new System.Windows.Forms.Label();
-            this.tb_Förnamn = new System.Windows.Forms.TextBox();
-            this.label_LastName = new System.Windows.Forms.Label();
-            this.tb_Efternamn = new System.Windows.Forms.TextBox();
-            this.tb_Mail = new System.Windows.Forms.TextBox();
-            this.label_Role = new System.Windows.Forms.Label();
-            this.tb_NewPassword = new System.Windows.Forms.TextBox();
-            this.btn_AddProfilePicture = new System.Windows.Forms.Button();
-            this.label_InfoPassword_2 = new System.Windows.Forms.Label();
-            this.flp_Users = new System.Windows.Forms.FlowLayoutPanel();
-            this.panel_Bottom = new System.Windows.Forms.Panel();
-            this.tlp_Bottom = new System.Windows.Forms.TableLayoutPanel();
-            this.lbl_Exit = new System.Windows.Forms.Label();
-            this.lbl_NewUser = new System.Windows.Forms.Label();
-            this.lbl_EditUser = new System.Windows.Forms.Label();
-            this.lbl_User = new System.Windows.Forms.Label();
-            this.panel_Top = new System.Windows.Forms.Panel();
-            this.pb_Info = new System.Windows.Forms.PictureBox();
-            this.lbl_Date = new System.Windows.Forms.Label();
-            this.lbl_Weather = new System.Windows.Forms.Label();
-            this.lbl_Temp = new System.Windows.Forms.Label();
-            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.timer_UpdateTime = new System.Windows.Forms.Timer(this.components);
-            this.ProfileCard = new DigitalProductionProgram.User.ProfileCard();
-            this.panel_Background.SuspendLayout();
-            this.tlp_AddUser.SuspendLayout();
-            this.panel_Bottom.SuspendLayout();
-            this.tlp_Bottom.SuspendLayout();
-            this.panel_Top.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pb_Info)).BeginInit();
-            this.SuspendLayout();
+            components = new Container();
+            ComponentResourceManager resources = new ComponentResourceManager(typeof(Login));
+            label_Welcome = new Label();
+            label_ChooseUser = new Label();
+            tb_Password = new TextBox();
+            label_Password = new Label();
+            panel_Background = new Panel();
+            ProfileCard = new ProfileCard();
+            tlp_AddUser = new TableLayoutPanel();
+            label_InfoPassword_1 = new Label();
+            tb_ConfirmPassword = new TextBox();
+            label_ConfirmPassword = new Label();
+            label_Mail = new Label();
+            btn_AddUpdateUser = new Button();
+            tb_Sign = new TextBox();
+            label_AddUser = new Label();
+            cb_Role = new ComboBox();
+            label_NewPassword = new Label();
+            label_Sign = new Label();
+            tb_AnstNr = new TextBox();
+            label_EmpNr = new Label();
+            label_FirstName = new Label();
+            tb_Förnamn = new TextBox();
+            label_LastName = new Label();
+            tb_Efternamn = new TextBox();
+            tb_Mail = new TextBox();
+            label_Role = new Label();
+            tb_NewPassword = new TextBox();
+            btn_AddProfilePicture = new Button();
+            label_InfoPassword_2 = new Label();
+            flp_Users = new FlowLayoutPanel();
+            panel_Bottom = new Panel();
+            tlp_Bottom = new TableLayoutPanel();
+            lbl_Exit = new Label();
+            lbl_NewUser = new Label();
+            lbl_EditUser = new Label();
+            lbl_User = new Label();
+            panel_Top = new Panel();
+            pb_Info = new PictureBox();
+            lbl_Date = new Label();
+            lbl_Weather = new Label();
+            lbl_Temp = new Label();
+            toolTip1 = new ToolTip(components);
+            timer_UpdateTime = new System.Windows.Forms.Timer(components);
+            panel_Background.SuspendLayout();
+            tlp_AddUser.SuspendLayout();
+            panel_Bottom.SuspendLayout();
+            tlp_Bottom.SuspendLayout();
+            panel_Top.SuspendLayout();
+            ((ISupportInitialize)pb_Info).BeginInit();
+            SuspendLayout();
             // 
             // label_Welcome
             // 
-            this.label_Welcome.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(150)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-            this.label_Welcome.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label_Welcome.ForeColor = System.Drawing.Color.White;
-            this.label_Welcome.Location = new System.Drawing.Point(54, 8);
-            this.label_Welcome.Name = "label_Welcome";
-            this.label_Welcome.Size = new System.Drawing.Size(123, 29);
-            this.label_Welcome.TabIndex = 1;
-            this.label_Welcome.Text = "Välkommen";
+            label_Welcome.BackColor = Color.FromArgb(150, 80, 80, 80);
+            label_Welcome.Font = new Font("Segoe UI", 15.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label_Welcome.ForeColor = Color.White;
+            label_Welcome.Location = new Point(63, 9);
+            label_Welcome.Margin = new Padding(4, 0, 4, 0);
+            label_Welcome.Name = "label_Welcome";
+            label_Welcome.Size = new Size(144, 33);
+            label_Welcome.TabIndex = 1;
+            label_Welcome.Text = "Välkommen";
             // 
             // label_ChooseUser
             // 
-            this.label_ChooseUser.AutoSize = true;
-            this.label_ChooseUser.BackColor = System.Drawing.Color.Transparent;
-            this.label_ChooseUser.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label_ChooseUser.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label_ChooseUser.ForeColor = System.Drawing.Color.White;
-            this.label_ChooseUser.Location = new System.Drawing.Point(3, 0);
-            this.label_ChooseUser.Name = "label_ChooseUser";
-            this.label_ChooseUser.Size = new System.Drawing.Size(171, 21);
-            this.label_ChooseUser.TabIndex = 3;
-            this.label_ChooseUser.Text = "Välj användare...";
+            label_ChooseUser.AutoSize = true;
+            label_ChooseUser.BackColor = Color.Transparent;
+            label_ChooseUser.Dock = DockStyle.Fill;
+            label_ChooseUser.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label_ChooseUser.ForeColor = Color.White;
+            label_ChooseUser.Location = new Point(4, 0);
+            label_ChooseUser.Margin = new Padding(4, 0, 4, 0);
+            label_ChooseUser.Name = "label_ChooseUser";
+            label_ChooseUser.Size = new Size(198, 24);
+            label_ChooseUser.TabIndex = 3;
+            label_ChooseUser.Text = "Välj användare...";
             // 
             // tb_Password
             // 
-            this.tb_Password.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tb_Password.Location = new System.Drawing.Point(6, 72);
-            this.tb_Password.Margin = new System.Windows.Forms.Padding(6, 3, 3, 3);
-            this.tb_Password.Name = "tb_Password";
-            this.tb_Password.Size = new System.Drawing.Size(168, 20);
-            this.tb_Password.TabIndex = 4;
-            this.tb_Password.UseSystemPasswordChar = true;
-            this.tb_Password.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Password_KeyDown);
+            tb_Password.Dock = DockStyle.Fill;
+            tb_Password.Location = new Point(7, 82);
+            tb_Password.Margin = new Padding(7, 3, 4, 3);
+            tb_Password.Name = "tb_Password";
+            tb_Password.Size = new Size(195, 23);
+            tb_Password.TabIndex = 4;
+            tb_Password.UseSystemPasswordChar = true;
+            tb_Password.KeyDown += Password_KeyDown;
             // 
             // label_Password
             // 
-            this.label_Password.AutoSize = true;
-            this.label_Password.BackColor = System.Drawing.Color.Transparent;
-            this.label_Password.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label_Password.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label_Password.ForeColor = System.Drawing.Color.White;
-            this.label_Password.Location = new System.Drawing.Point(3, 47);
-            this.label_Password.Name = "label_Password";
-            this.label_Password.Size = new System.Drawing.Size(171, 22);
-            this.label_Password.TabIndex = 5;
-            this.label_Password.Text = "Lösenord:";
+            label_Password.AutoSize = true;
+            label_Password.BackColor = Color.Transparent;
+            label_Password.Dock = DockStyle.Fill;
+            label_Password.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label_Password.ForeColor = Color.White;
+            label_Password.Location = new Point(4, 54);
+            label_Password.Margin = new Padding(4, 0, 4, 0);
+            label_Password.Name = "label_Password";
+            label_Password.Size = new Size(198, 25);
+            label_Password.TabIndex = 5;
+            label_Password.Text = "Lösenord:";
             // 
             // panel_Background
             // 
-            this.panel_Background.BackColor = System.Drawing.Color.Transparent;
-            this.panel_Background.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.panel_Background.Controls.Add(this.ProfileCard);
-            this.panel_Background.Controls.Add(this.tlp_AddUser);
-            this.panel_Background.Controls.Add(this.flp_Users);
-            this.panel_Background.Controls.Add(this.panel_Bottom);
-            this.panel_Background.Controls.Add(this.label_Welcome);
-            this.panel_Background.Controls.Add(this.panel_Top);
-            this.panel_Background.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel_Background.Location = new System.Drawing.Point(0, 0);
-            this.panel_Background.Name = "panel_Background";
-            this.panel_Background.Size = new System.Drawing.Size(690, 673);
-            this.panel_Background.TabIndex = 0;
-            // 
-            // tlp_AddUser
-            // 
-            this.tlp_AddUser.ColumnCount = 2;
-            this.tlp_AddUser.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 122F));
-            this.tlp_AddUser.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 203F));
-            this.tlp_AddUser.Controls.Add(this.label_InfoPassword_1, 0, 9);
-            this.tlp_AddUser.Controls.Add(this.tb_ConfirmPassword, 1, 8);
-            this.tlp_AddUser.Controls.Add(this.label_ConfirmPassword, 0, 8);
-            this.tlp_AddUser.Controls.Add(this.label_Mail, 0, 4);
-            this.tlp_AddUser.Controls.Add(this.btn_AddUpdateUser, 1, 12);
-            this.tlp_AddUser.Controls.Add(this.tb_Sign, 1, 6);
-            this.tlp_AddUser.Controls.Add(this.label_AddUser, 0, 0);
-            this.tlp_AddUser.Controls.Add(this.cb_Role, 1, 3);
-            this.tlp_AddUser.Controls.Add(this.label_NewPassword, 0, 7);
-            this.tlp_AddUser.Controls.Add(this.label_Sign, 0, 6);
-            this.tlp_AddUser.Controls.Add(this.tb_AnstNr, 1, 5);
-            this.tlp_AddUser.Controls.Add(this.label_EmpNr, 0, 5);
-            this.tlp_AddUser.Controls.Add(this.label_FirstName, 0, 1);
-            this.tlp_AddUser.Controls.Add(this.tb_Förnamn, 1, 1);
-            this.tlp_AddUser.Controls.Add(this.label_LastName, 0, 2);
-            this.tlp_AddUser.Controls.Add(this.tb_Efternamn, 1, 2);
-            this.tlp_AddUser.Controls.Add(this.tb_Mail, 1, 4);
-            this.tlp_AddUser.Controls.Add(this.label_Role, 0, 3);
-            this.tlp_AddUser.Controls.Add(this.tb_NewPassword, 1, 7);
-            this.tlp_AddUser.Controls.Add(this.btn_AddProfilePicture, 1, 11);
-            this.tlp_AddUser.Controls.Add(this.label_InfoPassword_2, 0, 10);
-            this.tlp_AddUser.Location = new System.Drawing.Point(351, 64);
-            this.tlp_AddUser.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
-            this.tlp_AddUser.Name = "tlp_AddUser";
-            this.tlp_AddUser.RowCount = 14;
-            this.tlp_AddUser.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
-            this.tlp_AddUser.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 22F));
-            this.tlp_AddUser.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 22F));
-            this.tlp_AddUser.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 22F));
-            this.tlp_AddUser.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 22F));
-            this.tlp_AddUser.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 22F));
-            this.tlp_AddUser.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 22F));
-            this.tlp_AddUser.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 22F));
-            this.tlp_AddUser.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 22F));
-            this.tlp_AddUser.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 31F));
-            this.tlp_AddUser.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 21F));
-            this.tlp_AddUser.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 90F));
-            this.tlp_AddUser.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 29F));
-            this.tlp_AddUser.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 12F));
-            this.tlp_AddUser.Size = new System.Drawing.Size(325, 410);
-            this.tlp_AddUser.TabIndex = 52;
-            this.tlp_AddUser.Visible = false;
-            // 
-            // label_InfoPassword_1
-            // 
-            this.label_InfoPassword_1.AutoSize = true;
-            this.label_InfoPassword_1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(199)))), ((int)(((byte)(206)))));
-            this.tlp_AddUser.SetColumnSpan(this.label_InfoPassword_1, 2);
-            this.label_InfoPassword_1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label_InfoPassword_1.Font = new System.Drawing.Font("Lucida Sans", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label_InfoPassword_1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(156)))), ((int)(((byte)(0)))), ((int)(((byte)(6)))));
-            this.label_InfoPassword_1.Location = new System.Drawing.Point(3, 216);
-            this.label_InfoPassword_1.Margin = new System.Windows.Forms.Padding(3, 10, 0, 0);
-            this.label_InfoPassword_1.Name = "label_InfoPassword_1";
-            this.label_InfoPassword_1.Size = new System.Drawing.Size(322, 21);
-            this.label_InfoPassword_1.TabIndex = 66;
-            this.label_InfoPassword_1.Text = "Lösenordet måste vara 4 tecken eller flera.\r\n";
-            this.label_InfoPassword_1.Visible = false;
-            // 
-            // tb_ConfirmPassword
-            // 
-            this.tb_ConfirmPassword.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.tb_ConfirmPassword.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tb_ConfirmPassword.Font = new System.Drawing.Font("Courier New", 9.25F);
-            this.tb_ConfirmPassword.Location = new System.Drawing.Point(122, 184);
-            this.tb_ConfirmPassword.Margin = new System.Windows.Forms.Padding(0);
-            this.tb_ConfirmPassword.Multiline = true;
-            this.tb_ConfirmPassword.Name = "tb_ConfirmPassword";
-            this.tb_ConfirmPassword.PasswordChar = '*';
-            this.tb_ConfirmPassword.Size = new System.Drawing.Size(203, 22);
-            this.tb_ConfirmPassword.TabIndex = 65;
-            this.tb_ConfirmPassword.TextChanged += new System.EventHandler(this.Password_TextChanged);
-            // 
-            // label_ConfirmPassword
-            // 
-            this.label_ConfirmPassword.AutoSize = true;
-            this.label_ConfirmPassword.BackColor = System.Drawing.Color.Transparent;
-            this.label_ConfirmPassword.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label_ConfirmPassword.ForeColor = System.Drawing.SystemColors.Info;
-            this.label_ConfirmPassword.Location = new System.Drawing.Point(3, 184);
-            this.label_ConfirmPassword.Name = "label_ConfirmPassword";
-            this.label_ConfirmPassword.Size = new System.Drawing.Size(116, 22);
-            this.label_ConfirmPassword.TabIndex = 64;
-            this.label_ConfirmPassword.Text = "Bekräfta Lösenord:";
-            this.label_ConfirmPassword.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // label_Mail
-            // 
-            this.label_Mail.AutoSize = true;
-            this.label_Mail.BackColor = System.Drawing.Color.Transparent;
-            this.label_Mail.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label_Mail.ForeColor = System.Drawing.SystemColors.Info;
-            this.label_Mail.Location = new System.Drawing.Point(3, 96);
-            this.label_Mail.Name = "label_Mail";
-            this.label_Mail.Size = new System.Drawing.Size(116, 22);
-            this.label_Mail.TabIndex = 60;
-            this.label_Mail.Text = "eMail:";
-            this.label_Mail.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // btn_AddUpdateUser
-            // 
-            this.btn_AddUpdateUser.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(198)))), ((int)(((byte)(239)))), ((int)(((byte)(206)))));
-            this.btn_AddUpdateUser.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btn_AddUpdateUser.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btn_AddUpdateUser.Enabled = false;
-            this.btn_AddUpdateUser.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btn_AddUpdateUser.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold);
-            this.btn_AddUpdateUser.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(97)))), ((int)(((byte)(0)))));
-            this.btn_AddUpdateUser.Location = new System.Drawing.Point(122, 348);
-            this.btn_AddUpdateUser.Margin = new System.Windows.Forms.Padding(0);
-            this.btn_AddUpdateUser.Name = "btn_AddUpdateUser";
-            this.btn_AddUpdateUser.Size = new System.Drawing.Size(203, 29);
-            this.btn_AddUpdateUser.TabIndex = 50;
-            this.btn_AddUpdateUser.Text = "Lägg till Användare";
-            this.btn_AddUpdateUser.UseVisualStyleBackColor = false;
-            // 
-            // tb_Sign
-            // 
-            this.tb_Sign.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.tb_Sign.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tb_Sign.Location = new System.Drawing.Point(122, 140);
-            this.tb_Sign.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
-            this.tb_Sign.Multiline = true;
-            this.tb_Sign.Name = "tb_Sign";
-            this.tb_Sign.Size = new System.Drawing.Size(203, 21);
-            this.tb_Sign.TabIndex = 8;
-            this.tb_Sign.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.Sign_KeyPress);
-            // 
-            // label_AddUser
-            // 
-            this.label_AddUser.BackColor = System.Drawing.Color.Transparent;
-            this.tlp_AddUser.SetColumnSpan(this.label_AddUser, 2);
-            this.label_AddUser.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label_AddUser.Font = new System.Drawing.Font("Times New Roman", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label_AddUser.ForeColor = System.Drawing.Color.Firebrick;
-            this.label_AddUser.Location = new System.Drawing.Point(0, 0);
-            this.label_AddUser.Margin = new System.Windows.Forms.Padding(0);
-            this.label_AddUser.Name = "label_AddUser";
-            this.label_AddUser.Size = new System.Drawing.Size(325, 30);
-            this.label_AddUser.TabIndex = 56;
-            this.label_AddUser.Text = "Lägg till användare:";
-            this.label_AddUser.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            // 
-            // cb_Role
-            // 
-            this.cb_Role.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
-            this.cb_Role.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
-            this.cb_Role.BackColor = System.Drawing.SystemColors.Menu;
-            this.cb_Role.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cb_Role.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cb_Role.FormattingEnabled = true;
-            this.cb_Role.Location = new System.Drawing.Point(122, 74);
-            this.cb_Role.Margin = new System.Windows.Forms.Padding(0);
-            this.cb_Role.Name = "cb_Role";
-            this.cb_Role.Size = new System.Drawing.Size(203, 21);
-            this.cb_Role.TabIndex = 5;
-            // 
-            // label_NewPassword
-            // 
-            this.label_NewPassword.AutoSize = true;
-            this.label_NewPassword.BackColor = System.Drawing.Color.Transparent;
-            this.label_NewPassword.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label_NewPassword.ForeColor = System.Drawing.SystemColors.Info;
-            this.label_NewPassword.Location = new System.Drawing.Point(3, 162);
-            this.label_NewPassword.Name = "label_NewPassword";
-            this.label_NewPassword.Size = new System.Drawing.Size(116, 22);
-            this.label_NewPassword.TabIndex = 48;
-            this.label_NewPassword.Text = "Lösenord:";
-            this.label_NewPassword.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // label_Sign
-            // 
-            this.label_Sign.AutoSize = true;
-            this.label_Sign.BackColor = System.Drawing.Color.Transparent;
-            this.label_Sign.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label_Sign.ForeColor = System.Drawing.SystemColors.Info;
-            this.label_Sign.Location = new System.Drawing.Point(3, 140);
-            this.label_Sign.Name = "label_Sign";
-            this.label_Sign.Size = new System.Drawing.Size(116, 22);
-            this.label_Sign.TabIndex = 54;
-            this.label_Sign.Text = "Signatur:";
-            this.label_Sign.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // tb_AnstNr
-            // 
-            this.tb_AnstNr.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.tb_AnstNr.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tb_AnstNr.Location = new System.Drawing.Point(122, 118);
-            this.tb_AnstNr.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
-            this.tb_AnstNr.Multiline = true;
-            this.tb_AnstNr.Name = "tb_AnstNr";
-            this.tb_AnstNr.Size = new System.Drawing.Size(203, 21);
-            this.tb_AnstNr.TabIndex = 7;
-            this.tb_AnstNr.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.AnstNr_KeyPress);
-            this.tb_AnstNr.Leave += new System.EventHandler(this.AnstNr_Leave);
-            // 
-            // label_EmpNr
-            // 
-            this.label_EmpNr.AutoSize = true;
-            this.label_EmpNr.BackColor = System.Drawing.Color.Transparent;
-            this.label_EmpNr.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label_EmpNr.ForeColor = System.Drawing.SystemColors.Info;
-            this.label_EmpNr.Location = new System.Drawing.Point(3, 118);
-            this.label_EmpNr.Name = "label_EmpNr";
-            this.label_EmpNr.Size = new System.Drawing.Size(116, 22);
-            this.label_EmpNr.TabIndex = 41;
-            this.label_EmpNr.Text = "AnstNr:";
-            this.label_EmpNr.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // label_FirstName
-            // 
-            this.label_FirstName.AutoSize = true;
-            this.label_FirstName.BackColor = System.Drawing.Color.Transparent;
-            this.label_FirstName.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label_FirstName.ForeColor = System.Drawing.SystemColors.Info;
-            this.label_FirstName.Location = new System.Drawing.Point(3, 30);
-            this.label_FirstName.Name = "label_FirstName";
-            this.label_FirstName.Size = new System.Drawing.Size(116, 22);
-            this.label_FirstName.TabIndex = 40;
-            this.label_FirstName.Text = "Förnamn:";
-            this.label_FirstName.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // tb_Förnamn
-            // 
-            this.tb_Förnamn.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.tb_Förnamn.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-            this.tb_Förnamn.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tb_Förnamn.Location = new System.Drawing.Point(122, 30);
-            this.tb_Förnamn.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
-            this.tb_Förnamn.Multiline = true;
-            this.tb_Förnamn.Name = "tb_Förnamn";
-            this.tb_Förnamn.Size = new System.Drawing.Size(203, 21);
-            this.tb_Förnamn.TabIndex = 1;
-            this.tb_Förnamn.Leave += new System.EventHandler(this.Name_Leave);
-            // 
-            // label_LastName
-            // 
-            this.label_LastName.AutoSize = true;
-            this.label_LastName.BackColor = System.Drawing.Color.Transparent;
-            this.label_LastName.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label_LastName.ForeColor = System.Drawing.SystemColors.Info;
-            this.label_LastName.Location = new System.Drawing.Point(3, 52);
-            this.label_LastName.Name = "label_LastName";
-            this.label_LastName.Size = new System.Drawing.Size(116, 22);
-            this.label_LastName.TabIndex = 44;
-            this.label_LastName.Text = "Efternamn:";
-            this.label_LastName.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // tb_Efternamn
-            // 
-            this.tb_Efternamn.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.tb_Efternamn.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-            this.tb_Efternamn.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tb_Efternamn.Location = new System.Drawing.Point(122, 52);
-            this.tb_Efternamn.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
-            this.tb_Efternamn.Multiline = true;
-            this.tb_Efternamn.Name = "tb_Efternamn";
-            this.tb_Efternamn.Size = new System.Drawing.Size(203, 21);
-            this.tb_Efternamn.TabIndex = 2;
-            this.tb_Efternamn.Leave += new System.EventHandler(this.Name_Leave);
-            // 
-            // tb_Mail
-            // 
-            this.tb_Mail.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.tb_Mail.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tb_Mail.Location = new System.Drawing.Point(122, 96);
-            this.tb_Mail.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
-            this.tb_Mail.Multiline = true;
-            this.tb_Mail.Name = "tb_Mail";
-            this.tb_Mail.Size = new System.Drawing.Size(203, 21);
-            this.tb_Mail.TabIndex = 6;
-            this.tb_Mail.Leave += new System.EventHandler(this.Mail_Leave);
-            // 
-            // label_Role
-            // 
-            this.label_Role.AutoSize = true;
-            this.label_Role.BackColor = System.Drawing.Color.Transparent;
-            this.label_Role.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label_Role.ForeColor = System.Drawing.SystemColors.Info;
-            this.label_Role.Location = new System.Drawing.Point(3, 74);
-            this.label_Role.Name = "label_Role";
-            this.label_Role.Size = new System.Drawing.Size(116, 22);
-            this.label_Role.TabIndex = 60;
-            this.label_Role.Text = "Befattning:";
-            this.label_Role.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // tb_NewPassword
-            // 
-            this.tb_NewPassword.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.tb_NewPassword.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tb_NewPassword.Font = new System.Drawing.Font("Courier New", 9.25F);
-            this.tb_NewPassword.Location = new System.Drawing.Point(122, 162);
-            this.tb_NewPassword.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
-            this.tb_NewPassword.Multiline = true;
-            this.tb_NewPassword.Name = "tb_NewPassword";
-            this.tb_NewPassword.PasswordChar = '*';
-            this.tb_NewPassword.Size = new System.Drawing.Size(203, 21);
-            this.tb_NewPassword.TabIndex = 9;
-            this.tb_NewPassword.TextChanged += new System.EventHandler(this.Password_TextChanged);
-            // 
-            // btn_AddProfilePicture
-            // 
-            this.btn_AddProfilePicture.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(198)))), ((int)(((byte)(239)))), ((int)(((byte)(206)))));
-            this.btn_AddProfilePicture.Dock = System.Windows.Forms.DockStyle.Top;
-            this.btn_AddProfilePicture.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btn_AddProfilePicture.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold);
-            this.btn_AddProfilePicture.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(97)))), ((int)(((byte)(0)))));
-            this.btn_AddProfilePicture.Location = new System.Drawing.Point(125, 261);
-            this.btn_AddProfilePicture.Name = "btn_AddProfilePicture";
-            this.btn_AddProfilePicture.Size = new System.Drawing.Size(197, 27);
-            this.btn_AddProfilePicture.TabIndex = 63;
-            this.btn_AddProfilePicture.Text = "Ladda upp profilbild";
-            this.btn_AddProfilePicture.UseVisualStyleBackColor = false;
-            this.btn_AddProfilePicture.Click += new System.EventHandler(this.AddProfilePicture_Click);
-            // 
-            // label_InfoPassword_2
-            // 
-            this.label_InfoPassword_2.AutoSize = true;
-            this.label_InfoPassword_2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(199)))), ((int)(((byte)(206)))));
-            this.tlp_AddUser.SetColumnSpan(this.label_InfoPassword_2, 2);
-            this.label_InfoPassword_2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label_InfoPassword_2.Font = new System.Drawing.Font("Lucida Sans", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label_InfoPassword_2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(156)))), ((int)(((byte)(0)))), ((int)(((byte)(6)))));
-            this.label_InfoPassword_2.Location = new System.Drawing.Point(3, 237);
-            this.label_InfoPassword_2.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
-            this.label_InfoPassword_2.Name = "label_InfoPassword_2";
-            this.label_InfoPassword_2.Size = new System.Drawing.Size(322, 21);
-            this.label_InfoPassword_2.TabIndex = 66;
-            this.label_InfoPassword_2.Text = "Lösenorden matchar inte varandra.";
-            this.label_InfoPassword_2.Visible = false;
-            // 
-            // flp_Users
-            // 
-            this.flp_Users.BackColor = System.Drawing.Color.Transparent;
-            this.flp_Users.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.flp_Users.Location = new System.Drawing.Point(0, 480);
-            this.flp_Users.Name = "flp_Users";
-            this.flp_Users.Size = new System.Drawing.Size(690, 90);
-            this.flp_Users.TabIndex = 51;
-            // 
-            // panel_Bottom
-            // 
-            this.panel_Bottom.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(150)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-            this.panel_Bottom.Controls.Add(this.tlp_Bottom);
-            this.panel_Bottom.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel_Bottom.Location = new System.Drawing.Point(0, 570);
-            this.panel_Bottom.Name = "panel_Bottom";
-            this.panel_Bottom.Size = new System.Drawing.Size(690, 103);
-            this.panel_Bottom.TabIndex = 47;
-            // 
-            // tlp_Bottom
-            // 
-            this.tlp_Bottom.ColumnCount = 3;
-            this.tlp_Bottom.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 177F));
-            this.tlp_Bottom.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 327F));
-            this.tlp_Bottom.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlp_Bottom.Controls.Add(this.label_ChooseUser, 0, 0);
-            this.tlp_Bottom.Controls.Add(this.lbl_Exit, 2, 3);
-            this.tlp_Bottom.Controls.Add(this.tb_Password, 0, 3);
-            this.tlp_Bottom.Controls.Add(this.lbl_NewUser, 2, 1);
-            this.tlp_Bottom.Controls.Add(this.lbl_EditUser, 2, 0);
-            this.tlp_Bottom.Controls.Add(this.label_Password, 0, 2);
-            this.tlp_Bottom.Controls.Add(this.lbl_User, 0, 1);
-            this.tlp_Bottom.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tlp_Bottom.Location = new System.Drawing.Point(0, 0);
-            this.tlp_Bottom.Name = "tlp_Bottom";
-            this.tlp_Bottom.RowCount = 4;
-            this.tlp_Bottom.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 21F));
-            this.tlp_Bottom.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 26F));
-            this.tlp_Bottom.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 22F));
-            this.tlp_Bottom.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 31F));
-            this.tlp_Bottom.Size = new System.Drawing.Size(690, 103);
-            this.tlp_Bottom.TabIndex = 49;
-            // 
-            // lbl_Exit
-            // 
-            this.lbl_Exit.AutoSize = true;
-            this.lbl_Exit.BackColor = System.Drawing.Color.Transparent;
-            this.lbl_Exit.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.lbl_Exit.Dock = System.Windows.Forms.DockStyle.Left;
-            this.lbl_Exit.Font = new System.Drawing.Font("Segoe UI", 12.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbl_Exit.ForeColor = System.Drawing.Color.Aquamarine;
-            this.lbl_Exit.Location = new System.Drawing.Point(507, 69);
-            this.lbl_Exit.Name = "lbl_Exit";
-            this.lbl_Exit.Size = new System.Drawing.Size(69, 34);
-            this.lbl_Exit.TabIndex = 48;
-            this.lbl_Exit.Text = "Avsluta";
-            this.lbl_Exit.Click += new System.EventHandler(this.Exit_Click);
-            this.lbl_Exit.MouseLeave += new System.EventHandler(this.Buttons_MouseLeave);
-            this.lbl_Exit.MouseHover += new System.EventHandler(this.Buttons_MouseEnter);
-            // 
-            // lbl_NewUser
-            // 
-            this.lbl_NewUser.AutoSize = true;
-            this.lbl_NewUser.BackColor = System.Drawing.Color.Transparent;
-            this.lbl_NewUser.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.lbl_NewUser.Dock = System.Windows.Forms.DockStyle.Left;
-            this.lbl_NewUser.Font = new System.Drawing.Font("Segoe UI", 12.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbl_NewUser.ForeColor = System.Drawing.Color.Aquamarine;
-            this.lbl_NewUser.Location = new System.Drawing.Point(507, 21);
-            this.lbl_NewUser.Name = "lbl_NewUser";
-            this.tlp_Bottom.SetRowSpan(this.lbl_NewUser, 2);
-            this.lbl_NewUser.Size = new System.Drawing.Size(125, 48);
-            this.lbl_NewUser.TabIndex = 48;
-            this.lbl_NewUser.Text = "Ny Användare";
-            this.lbl_NewUser.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.lbl_NewUser.MouseDown += new System.Windows.Forms.MouseEventHandler(this.NyAnvändare_MouseDown);
-            this.lbl_NewUser.MouseLeave += new System.EventHandler(this.Buttons_MouseLeave);
-            this.lbl_NewUser.MouseHover += new System.EventHandler(this.Buttons_MouseEnter);
-            // 
-            // lbl_EditUser
-            // 
-            this.lbl_EditUser.AutoSize = true;
-            this.lbl_EditUser.BackColor = System.Drawing.Color.Transparent;
-            this.lbl_EditUser.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.lbl_EditUser.Dock = System.Windows.Forms.DockStyle.Left;
-            this.lbl_EditUser.Font = new System.Drawing.Font("Segoe UI", 12.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbl_EditUser.ForeColor = System.Drawing.Color.Aquamarine;
-            this.lbl_EditUser.Location = new System.Drawing.Point(507, 0);
-            this.lbl_EditUser.Name = "lbl_EditUser";
-            this.lbl_EditUser.Size = new System.Drawing.Size(173, 21);
-            this.lbl_EditUser.TabIndex = 48;
-            this.lbl_EditUser.Text = "Redigera Användare";
-            this.lbl_EditUser.MouseDown += new System.Windows.Forms.MouseEventHandler(this.RedigeraAnvändare_MouseDown);
-            this.lbl_EditUser.MouseLeave += new System.EventHandler(this.Buttons_MouseLeave);
-            this.lbl_EditUser.MouseHover += new System.EventHandler(this.Buttons_MouseEnter);
-            // 
-            // lbl_User
-            // 
-            this.lbl_User.AutoSize = true;
-            this.lbl_User.BackColor = System.Drawing.Color.White;
-            this.lbl_User.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.lbl_User.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lbl_User.Location = new System.Drawing.Point(6, 23);
-            this.lbl_User.Margin = new System.Windows.Forms.Padding(6, 2, 3, 5);
-            this.lbl_User.Name = "lbl_User";
-            this.lbl_User.Padding = new System.Windows.Forms.Padding(0, 0, 0, 4);
-            this.lbl_User.Size = new System.Drawing.Size(168, 19);
-            this.lbl_User.TabIndex = 52;
-            this.lbl_User.TextChanged += new System.EventHandler(this.User_TextChanged);
-            this.lbl_User.Click += new System.EventHandler(this.Users_Click);
-            // 
-            // panel_Top
-            // 
-            this.panel_Top.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(150)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-            this.panel_Top.Controls.Add(this.pb_Info);
-            this.panel_Top.Controls.Add(this.lbl_Date);
-            this.panel_Top.Controls.Add(this.lbl_Weather);
-            this.panel_Top.Controls.Add(this.lbl_Temp);
-            this.panel_Top.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel_Top.Location = new System.Drawing.Point(0, 0);
-            this.panel_Top.Name = "panel_Top";
-            this.panel_Top.Size = new System.Drawing.Size(690, 47);
-            this.panel_Top.TabIndex = 46;
-            // 
-            // pb_Info
-            // 
-            this.pb_Info.BackColor = System.Drawing.Color.Transparent;
-            this.pb_Info.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("pb_Info.BackgroundImage")));
-            this.pb_Info.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.pb_Info.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.pb_Info.Location = new System.Drawing.Point(4, 4);
-            this.pb_Info.Name = "pb_Info";
-            this.pb_Info.Size = new System.Drawing.Size(35, 34);
-            this.pb_Info.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pb_Info.TabIndex = 870;
-            this.pb_Info.TabStop = false;
-            this.pb_Info.Click += new System.EventHandler(this.Info_Click);
-            // 
-            // lbl_Date
-            // 
-            this.lbl_Date.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lbl_Date.AutoSize = true;
-            this.lbl_Date.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(150)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-            this.lbl_Date.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbl_Date.ForeColor = System.Drawing.Color.Maroon;
-            this.lbl_Date.Location = new System.Drawing.Point(405, 11);
-            this.lbl_Date.Name = "lbl_Date";
-            this.lbl_Date.Size = new System.Drawing.Size(57, 21);
-            this.lbl_Date.TabIndex = 6;
-            this.lbl_Date.Text = "Datum";
-            // 
-            // lbl_Weather
-            // 
-            this.lbl_Weather.AutoSize = true;
-            this.lbl_Weather.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(150)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-            this.lbl_Weather.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbl_Weather.ForeColor = System.Drawing.Color.Gold;
-            this.lbl_Weather.Location = new System.Drawing.Point(239, 11);
-            this.lbl_Weather.Name = "lbl_Weather";
-            this.lbl_Weather.Size = new System.Drawing.Size(119, 21);
-            this.lbl_Weather.TabIndex = 10;
-            this.lbl_Weather.Text = "Moustly Cloudy";
-            this.lbl_Weather.Visible = false;
-            // 
-            // lbl_Temp
-            // 
-            this.lbl_Temp.AutoSize = true;
-            this.lbl_Temp.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(150)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-            this.lbl_Temp.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbl_Temp.ForeColor = System.Drawing.Color.Gold;
-            this.lbl_Temp.Location = new System.Drawing.Point(364, 11);
-            this.lbl_Temp.Name = "lbl_Temp";
-            this.lbl_Temp.Size = new System.Drawing.Size(35, 21);
-            this.lbl_Temp.TabIndex = 10;
-            this.lbl_Temp.Text = "9°C";
-            this.lbl_Temp.Visible = false;
-            // 
-            // timer_UpdateTime
-            // 
-            this.timer_UpdateTime.Enabled = true;
-            this.timer_UpdateTime.Interval = 1000;
-            this.timer_UpdateTime.Tick += new System.EventHandler(this.UpdateTime_Tick);
+            panel_Background.BackColor = Color.Transparent;
+            panel_Background.BackgroundImageLayout = ImageLayout.Stretch;
+            panel_Background.Controls.Add(ProfileCard);
+            panel_Background.Controls.Add(tlp_AddUser);
+            panel_Background.Controls.Add(flp_Users);
+            panel_Background.Controls.Add(panel_Bottom);
+            panel_Background.Controls.Add(label_Welcome);
+            panel_Background.Controls.Add(panel_Top);
+            panel_Background.Dock = DockStyle.Fill;
+            panel_Background.Location = new Point(0, 0);
+            panel_Background.Margin = new Padding(4, 3, 4, 3);
+            panel_Background.Name = "panel_Background";
+            panel_Background.Size = new Size(805, 826);
+            panel_Background.TabIndex = 0;
             // 
             // ProfileCard
             // 
-            this.ProfileCard.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(180)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.ProfileCard.Location = new System.Drawing.Point(12, 64);
-            this.ProfileCard.Name = "ProfileCard";
-            this.ProfileCard.Size = new System.Drawing.Size(346, 228);
-            this.ProfileCard.TabIndex = 53;
+            ProfileCard.BackColor = Color.FromArgb(180, 0, 0, 0);
+            ProfileCard.Location = new Point(14, 74);
+            ProfileCard.Margin = new Padding(5, 3, 5, 3);
+            ProfileCard.Name = "ProfileCard";
+            ProfileCard.Size = new Size(404, 263);
+            ProfileCard.TabIndex = 53;
+            // 
+            // tlp_AddUser
+            // 
+            tlp_AddUser.ColumnCount = 2;
+            tlp_AddUser.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 142F));
+            tlp_AddUser.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 237F));
+            tlp_AddUser.Controls.Add(label_InfoPassword_1, 0, 10);
+            tlp_AddUser.Controls.Add(tb_ConfirmPassword, 1, 8);
+            tlp_AddUser.Controls.Add(label_ConfirmPassword, 0, 8);
+            tlp_AddUser.Controls.Add(label_Mail, 0, 4);
+            tlp_AddUser.Controls.Add(btn_AddUpdateUser, 1, 13);
+            tlp_AddUser.Controls.Add(tb_Sign, 1, 6);
+            tlp_AddUser.Controls.Add(label_AddUser, 0, 0);
+            tlp_AddUser.Controls.Add(cb_Role, 1, 3);
+            tlp_AddUser.Controls.Add(label_NewPassword, 0, 7);
+            tlp_AddUser.Controls.Add(label_Sign, 0, 6);
+            tlp_AddUser.Controls.Add(tb_AnstNr, 1, 5);
+            tlp_AddUser.Controls.Add(label_EmpNr, 0, 5);
+            tlp_AddUser.Controls.Add(label_FirstName, 0, 1);
+            tlp_AddUser.Controls.Add(tb_Förnamn, 1, 1);
+            tlp_AddUser.Controls.Add(label_LastName, 0, 2);
+            tlp_AddUser.Controls.Add(tb_Efternamn, 1, 2);
+            tlp_AddUser.Controls.Add(tb_Mail, 1, 4);
+            tlp_AddUser.Controls.Add(label_Role, 0, 3);
+            tlp_AddUser.Controls.Add(tb_NewPassword, 1, 7);
+            tlp_AddUser.Controls.Add(btn_AddProfilePicture, 1, 12);
+            tlp_AddUser.Controls.Add(label_InfoPassword_2, 0, 11);
+            tlp_AddUser.Location = new Point(410, 74);
+            tlp_AddUser.Margin = new Padding(0, 3, 0, 3);
+            tlp_AddUser.Name = "tlp_AddUser";
+            tlp_AddUser.RowCount = 15;
+            tlp_AddUser.RowStyles.Add(new RowStyle(SizeType.Absolute, 35F));
+            tlp_AddUser.RowStyles.Add(new RowStyle(SizeType.Absolute, 25F));
+            tlp_AddUser.RowStyles.Add(new RowStyle(SizeType.Absolute, 25F));
+            tlp_AddUser.RowStyles.Add(new RowStyle(SizeType.Absolute, 25F));
+            tlp_AddUser.RowStyles.Add(new RowStyle(SizeType.Absolute, 25F));
+            tlp_AddUser.RowStyles.Add(new RowStyle(SizeType.Absolute, 25F));
+            tlp_AddUser.RowStyles.Add(new RowStyle(SizeType.Absolute, 25F));
+            tlp_AddUser.RowStyles.Add(new RowStyle(SizeType.Absolute, 25F));
+            tlp_AddUser.RowStyles.Add(new RowStyle(SizeType.Absolute, 31F));
+            tlp_AddUser.RowStyles.Add(new RowStyle(SizeType.Absolute, 28F));
+            tlp_AddUser.RowStyles.Add(new RowStyle(SizeType.Absolute, 25F));
+            tlp_AddUser.RowStyles.Add(new RowStyle(SizeType.Absolute, 25F));
+            tlp_AddUser.RowStyles.Add(new RowStyle(SizeType.Absolute, 141F));
+            tlp_AddUser.RowStyles.Add(new RowStyle(SizeType.Absolute, 34F));
+            tlp_AddUser.RowStyles.Add(new RowStyle(SizeType.Absolute, 8F));
+            tlp_AddUser.Size = new Size(379, 523);
+            tlp_AddUser.TabIndex = 52;
+            tlp_AddUser.Visible = false;
+            // 
+            // label_InfoPassword_1
+            // 
+            label_InfoPassword_1.AutoSize = true;
+            label_InfoPassword_1.BackColor = Color.FromArgb(255, 199, 206);
+            tlp_AddUser.SetColumnSpan(label_InfoPassword_1, 2);
+            label_InfoPassword_1.Dock = DockStyle.Fill;
+            label_InfoPassword_1.Font = new Font("Lucida Sans", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label_InfoPassword_1.ForeColor = Color.FromArgb(156, 0, 6);
+            label_InfoPassword_1.Location = new Point(4, 269);
+            label_InfoPassword_1.Margin = new Padding(4, 0, 0, 0);
+            label_InfoPassword_1.Name = "label_InfoPassword_1";
+            label_InfoPassword_1.Size = new Size(375, 25);
+            label_InfoPassword_1.TabIndex = 66;
+            label_InfoPassword_1.Text = "Lösenordet måste vara 4 tecken eller flera.\r\n";
+            label_InfoPassword_1.Visible = false;
+            // 
+            // tb_ConfirmPassword
+            // 
+            tb_ConfirmPassword.BorderStyle = BorderStyle.None;
+            tb_ConfirmPassword.Dock = DockStyle.Fill;
+            tb_ConfirmPassword.Font = new Font("Courier New", 9.25F);
+            tb_ConfirmPassword.Location = new Point(142, 210);
+            tb_ConfirmPassword.Margin = new Padding(0);
+            tb_ConfirmPassword.Multiline = true;
+            tb_ConfirmPassword.Name = "tb_ConfirmPassword";
+            tb_ConfirmPassword.PasswordChar = '*';
+            tb_ConfirmPassword.Size = new Size(237, 31);
+            tb_ConfirmPassword.TabIndex = 10;
+            tb_ConfirmPassword.TextChanged += Password_TextChanged;
+            // 
+            // label_ConfirmPassword
+            // 
+            label_ConfirmPassword.AutoSize = true;
+            label_ConfirmPassword.BackColor = Color.Transparent;
+            label_ConfirmPassword.Dock = DockStyle.Fill;
+            label_ConfirmPassword.ForeColor = SystemColors.Info;
+            label_ConfirmPassword.Location = new Point(4, 210);
+            label_ConfirmPassword.Margin = new Padding(4, 0, 4, 0);
+            label_ConfirmPassword.Name = "label_ConfirmPassword";
+            label_ConfirmPassword.Size = new Size(134, 31);
+            label_ConfirmPassword.TabIndex = 64;
+            label_ConfirmPassword.Text = "Bekräfta Lösenord:";
+            label_ConfirmPassword.TextAlign = ContentAlignment.MiddleRight;
+            // 
+            // label_Mail
+            // 
+            label_Mail.AutoSize = true;
+            label_Mail.BackColor = Color.Transparent;
+            label_Mail.Dock = DockStyle.Fill;
+            label_Mail.ForeColor = SystemColors.Info;
+            label_Mail.Location = new Point(4, 110);
+            label_Mail.Margin = new Padding(4, 0, 4, 0);
+            label_Mail.Name = "label_Mail";
+            label_Mail.Size = new Size(134, 25);
+            label_Mail.TabIndex = 60;
+            label_Mail.Text = "eMail:";
+            label_Mail.TextAlign = ContentAlignment.MiddleRight;
+            // 
+            // btn_AddUpdateUser
+            // 
+            btn_AddUpdateUser.BackColor = Color.FromArgb(198, 239, 206);
+            btn_AddUpdateUser.Cursor = Cursors.Hand;
+            btn_AddUpdateUser.Dock = DockStyle.Fill;
+            btn_AddUpdateUser.Enabled = false;
+            btn_AddUpdateUser.FlatStyle = FlatStyle.Flat;
+            btn_AddUpdateUser.Font = new Font("Microsoft Sans Serif", 10F, FontStyle.Bold);
+            btn_AddUpdateUser.ForeColor = Color.FromArgb(0, 97, 0);
+            btn_AddUpdateUser.Location = new Point(142, 460);
+            btn_AddUpdateUser.Margin = new Padding(0);
+            btn_AddUpdateUser.Name = "btn_AddUpdateUser";
+            btn_AddUpdateUser.Size = new Size(237, 34);
+            btn_AddUpdateUser.TabIndex = 50;
+            btn_AddUpdateUser.Text = "Lägg till Användare";
+            btn_AddUpdateUser.UseVisualStyleBackColor = false;
+            // 
+            // tb_Sign
+            // 
+            tb_Sign.BorderStyle = BorderStyle.None;
+            tb_Sign.Dock = DockStyle.Fill;
+            tb_Sign.Location = new Point(142, 160);
+            tb_Sign.Margin = new Padding(0, 0, 0, 1);
+            tb_Sign.Multiline = true;
+            tb_Sign.Name = "tb_Sign";
+            tb_Sign.Size = new Size(237, 24);
+            tb_Sign.TabIndex = 8;
+            tb_Sign.KeyPress += Sign_KeyPress;
+            // 
+            // label_AddUser
+            // 
+            label_AddUser.BackColor = Color.Transparent;
+            tlp_AddUser.SetColumnSpan(label_AddUser, 2);
+            label_AddUser.Dock = DockStyle.Fill;
+            label_AddUser.Font = new Font("Times New Roman", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label_AddUser.ForeColor = Color.Firebrick;
+            label_AddUser.Location = new Point(0, 0);
+            label_AddUser.Margin = new Padding(0);
+            label_AddUser.Name = "label_AddUser";
+            label_AddUser.Size = new Size(379, 35);
+            label_AddUser.TabIndex = 56;
+            label_AddUser.Text = "Lägg till användare:";
+            label_AddUser.TextAlign = ContentAlignment.TopCenter;
+            // 
+            // cb_Role
+            // 
+            cb_Role.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
+            cb_Role.AutoCompleteSource = AutoCompleteSource.ListItems;
+            cb_Role.BackColor = SystemColors.Menu;
+            cb_Role.Dock = DockStyle.Fill;
+            cb_Role.DropDownStyle = ComboBoxStyle.DropDownList;
+            cb_Role.FormattingEnabled = true;
+            cb_Role.Location = new Point(142, 85);
+            cb_Role.Margin = new Padding(0);
+            cb_Role.Name = "cb_Role";
+            cb_Role.Size = new Size(237, 23);
+            cb_Role.TabIndex = 5;
+            // 
+            // label_NewPassword
+            // 
+            label_NewPassword.AutoSize = true;
+            label_NewPassword.BackColor = Color.Transparent;
+            label_NewPassword.Dock = DockStyle.Fill;
+            label_NewPassword.ForeColor = SystemColors.Info;
+            label_NewPassword.Location = new Point(4, 185);
+            label_NewPassword.Margin = new Padding(4, 0, 4, 0);
+            label_NewPassword.Name = "label_NewPassword";
+            label_NewPassword.Size = new Size(134, 25);
+            label_NewPassword.TabIndex = 48;
+            label_NewPassword.Text = "Lösenord:";
+            label_NewPassword.TextAlign = ContentAlignment.MiddleRight;
+            // 
+            // label_Sign
+            // 
+            label_Sign.AutoSize = true;
+            label_Sign.BackColor = Color.Transparent;
+            label_Sign.Dock = DockStyle.Fill;
+            label_Sign.ForeColor = SystemColors.Info;
+            label_Sign.Location = new Point(4, 160);
+            label_Sign.Margin = new Padding(4, 0, 4, 0);
+            label_Sign.Name = "label_Sign";
+            label_Sign.Size = new Size(134, 25);
+            label_Sign.TabIndex = 54;
+            label_Sign.Text = "Signatur:";
+            label_Sign.TextAlign = ContentAlignment.MiddleRight;
+            // 
+            // tb_AnstNr
+            // 
+            tb_AnstNr.BorderStyle = BorderStyle.None;
+            tb_AnstNr.Dock = DockStyle.Fill;
+            tb_AnstNr.Location = new Point(142, 135);
+            tb_AnstNr.Margin = new Padding(0, 0, 0, 1);
+            tb_AnstNr.Multiline = true;
+            tb_AnstNr.Name = "tb_AnstNr";
+            tb_AnstNr.Size = new Size(237, 24);
+            tb_AnstNr.TabIndex = 7;
+            tb_AnstNr.KeyPress += AnstNr_KeyPress;
+            tb_AnstNr.Leave += AnstNr_Leave;
+            // 
+            // label_EmpNr
+            // 
+            label_EmpNr.AutoSize = true;
+            label_EmpNr.BackColor = Color.Transparent;
+            label_EmpNr.Dock = DockStyle.Fill;
+            label_EmpNr.ForeColor = SystemColors.Info;
+            label_EmpNr.Location = new Point(4, 135);
+            label_EmpNr.Margin = new Padding(4, 0, 4, 0);
+            label_EmpNr.Name = "label_EmpNr";
+            label_EmpNr.Size = new Size(134, 25);
+            label_EmpNr.TabIndex = 41;
+            label_EmpNr.Text = "AnstNr:";
+            label_EmpNr.TextAlign = ContentAlignment.MiddleRight;
+            // 
+            // label_FirstName
+            // 
+            label_FirstName.AutoSize = true;
+            label_FirstName.BackColor = Color.Transparent;
+            label_FirstName.Dock = DockStyle.Fill;
+            label_FirstName.ForeColor = SystemColors.Info;
+            label_FirstName.Location = new Point(4, 35);
+            label_FirstName.Margin = new Padding(4, 0, 4, 0);
+            label_FirstName.Name = "label_FirstName";
+            label_FirstName.Size = new Size(134, 25);
+            label_FirstName.TabIndex = 40;
+            label_FirstName.Text = "Förnamn:";
+            label_FirstName.TextAlign = ContentAlignment.MiddleRight;
+            // 
+            // tb_Förnamn
+            // 
+            tb_Förnamn.BorderStyle = BorderStyle.None;
+            tb_Förnamn.CharacterCasing = CharacterCasing.Upper;
+            tb_Förnamn.Dock = DockStyle.Fill;
+            tb_Förnamn.Location = new Point(142, 35);
+            tb_Förnamn.Margin = new Padding(0, 0, 0, 1);
+            tb_Förnamn.Multiline = true;
+            tb_Förnamn.Name = "tb_Förnamn";
+            tb_Förnamn.Size = new Size(237, 24);
+            tb_Förnamn.TabIndex = 1;
+            tb_Förnamn.Leave += Name_Leave;
+            // 
+            // label_LastName
+            // 
+            label_LastName.AutoSize = true;
+            label_LastName.BackColor = Color.Transparent;
+            label_LastName.Dock = DockStyle.Fill;
+            label_LastName.ForeColor = SystemColors.Info;
+            label_LastName.Location = new Point(4, 60);
+            label_LastName.Margin = new Padding(4, 0, 4, 0);
+            label_LastName.Name = "label_LastName";
+            label_LastName.Size = new Size(134, 25);
+            label_LastName.TabIndex = 44;
+            label_LastName.Text = "Efternamn:";
+            label_LastName.TextAlign = ContentAlignment.MiddleRight;
+            // 
+            // tb_Efternamn
+            // 
+            tb_Efternamn.BorderStyle = BorderStyle.None;
+            tb_Efternamn.CharacterCasing = CharacterCasing.Upper;
+            tb_Efternamn.Dock = DockStyle.Fill;
+            tb_Efternamn.Location = new Point(142, 60);
+            tb_Efternamn.Margin = new Padding(0, 0, 0, 1);
+            tb_Efternamn.Multiline = true;
+            tb_Efternamn.Name = "tb_Efternamn";
+            tb_Efternamn.Size = new Size(237, 24);
+            tb_Efternamn.TabIndex = 2;
+            tb_Efternamn.Leave += Name_Leave;
+            // 
+            // tb_Mail
+            // 
+            tb_Mail.BorderStyle = BorderStyle.None;
+            tb_Mail.Dock = DockStyle.Fill;
+            tb_Mail.Location = new Point(142, 110);
+            tb_Mail.Margin = new Padding(0, 0, 0, 1);
+            tb_Mail.Multiline = true;
+            tb_Mail.Name = "tb_Mail";
+            tb_Mail.Size = new Size(237, 24);
+            tb_Mail.TabIndex = 6;
+            tb_Mail.Leave += Mail_Leave;
+            // 
+            // label_Role
+            // 
+            label_Role.AutoSize = true;
+            label_Role.BackColor = Color.Transparent;
+            label_Role.Dock = DockStyle.Fill;
+            label_Role.ForeColor = SystemColors.Info;
+            label_Role.Location = new Point(4, 85);
+            label_Role.Margin = new Padding(4, 0, 4, 0);
+            label_Role.Name = "label_Role";
+            label_Role.Size = new Size(134, 25);
+            label_Role.TabIndex = 60;
+            label_Role.Text = "Befattning:";
+            label_Role.TextAlign = ContentAlignment.MiddleRight;
+            // 
+            // tb_NewPassword
+            // 
+            tb_NewPassword.BorderStyle = BorderStyle.None;
+            tb_NewPassword.Dock = DockStyle.Fill;
+            tb_NewPassword.Font = new Font("Courier New", 9.25F);
+            tb_NewPassword.Location = new Point(142, 185);
+            tb_NewPassword.Margin = new Padding(0, 0, 0, 1);
+            tb_NewPassword.Multiline = true;
+            tb_NewPassword.Name = "tb_NewPassword";
+            tb_NewPassword.PasswordChar = '*';
+            tb_NewPassword.Size = new Size(237, 24);
+            tb_NewPassword.TabIndex = 9;
+            tb_NewPassword.TextChanged += Password_TextChanged;
+            // 
+            // btn_AddProfilePicture
+            // 
+            btn_AddProfilePicture.BackColor = Color.FromArgb(198, 239, 206);
+            btn_AddProfilePicture.Dock = DockStyle.Top;
+            btn_AddProfilePicture.FlatStyle = FlatStyle.Flat;
+            btn_AddProfilePicture.Font = new Font("Microsoft Sans Serif", 10F, FontStyle.Bold);
+            btn_AddProfilePicture.ForeColor = Color.FromArgb(0, 97, 0);
+            btn_AddProfilePicture.Location = new Point(146, 322);
+            btn_AddProfilePicture.Margin = new Padding(4, 3, 4, 3);
+            btn_AddProfilePicture.Name = "btn_AddProfilePicture";
+            btn_AddProfilePicture.Size = new Size(229, 31);
+            btn_AddProfilePicture.TabIndex = 63;
+            btn_AddProfilePicture.Text = "Ladda upp profilbild";
+            btn_AddProfilePicture.UseVisualStyleBackColor = false;
+            btn_AddProfilePicture.Click += AddProfilePicture_Click;
+            // 
+            // label_InfoPassword_2
+            // 
+            label_InfoPassword_2.AutoSize = true;
+            label_InfoPassword_2.BackColor = Color.FromArgb(255, 199, 206);
+            tlp_AddUser.SetColumnSpan(label_InfoPassword_2, 2);
+            label_InfoPassword_2.Dock = DockStyle.Fill;
+            label_InfoPassword_2.Font = new Font("Lucida Sans", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label_InfoPassword_2.ForeColor = Color.FromArgb(156, 0, 6);
+            label_InfoPassword_2.Location = new Point(4, 294);
+            label_InfoPassword_2.Margin = new Padding(4, 0, 0, 0);
+            label_InfoPassword_2.Name = "label_InfoPassword_2";
+            label_InfoPassword_2.Size = new Size(375, 25);
+            label_InfoPassword_2.TabIndex = 66;
+            label_InfoPassword_2.Text = "Lösenorden matchar inte varandra.";
+            label_InfoPassword_2.Visible = false;
+            // 
+            // flp_Users
+            // 
+            flp_Users.BackColor = Color.Transparent;
+            flp_Users.Dock = DockStyle.Bottom;
+            flp_Users.Location = new Point(0, 603);
+            flp_Users.Margin = new Padding(4, 3, 4, 3);
+            flp_Users.Name = "flp_Users";
+            flp_Users.Size = new Size(805, 104);
+            flp_Users.TabIndex = 51;
+            // 
+            // panel_Bottom
+            // 
+            panel_Bottom.BackColor = Color.FromArgb(150, 80, 80, 80);
+            panel_Bottom.Controls.Add(tlp_Bottom);
+            panel_Bottom.Dock = DockStyle.Bottom;
+            panel_Bottom.Location = new Point(0, 707);
+            panel_Bottom.Margin = new Padding(4, 3, 4, 3);
+            panel_Bottom.Name = "panel_Bottom";
+            panel_Bottom.Size = new Size(805, 119);
+            panel_Bottom.TabIndex = 47;
+            // 
+            // tlp_Bottom
+            // 
+            tlp_Bottom.ColumnCount = 3;
+            tlp_Bottom.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 206F));
+            tlp_Bottom.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 382F));
+            tlp_Bottom.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            tlp_Bottom.Controls.Add(label_ChooseUser, 0, 0);
+            tlp_Bottom.Controls.Add(lbl_Exit, 2, 3);
+            tlp_Bottom.Controls.Add(tb_Password, 0, 3);
+            tlp_Bottom.Controls.Add(lbl_NewUser, 2, 1);
+            tlp_Bottom.Controls.Add(lbl_EditUser, 2, 0);
+            tlp_Bottom.Controls.Add(label_Password, 0, 2);
+            tlp_Bottom.Controls.Add(lbl_User, 0, 1);
+            tlp_Bottom.Dock = DockStyle.Fill;
+            tlp_Bottom.Location = new Point(0, 0);
+            tlp_Bottom.Margin = new Padding(4, 3, 4, 3);
+            tlp_Bottom.Name = "tlp_Bottom";
+            tlp_Bottom.RowCount = 4;
+            tlp_Bottom.RowStyles.Add(new RowStyle(SizeType.Absolute, 24F));
+            tlp_Bottom.RowStyles.Add(new RowStyle(SizeType.Absolute, 30F));
+            tlp_Bottom.RowStyles.Add(new RowStyle(SizeType.Absolute, 25F));
+            tlp_Bottom.RowStyles.Add(new RowStyle(SizeType.Absolute, 36F));
+            tlp_Bottom.Size = new Size(805, 119);
+            tlp_Bottom.TabIndex = 49;
+            // 
+            // lbl_Exit
+            // 
+            lbl_Exit.AutoSize = true;
+            lbl_Exit.BackColor = Color.Transparent;
+            lbl_Exit.Cursor = Cursors.Hand;
+            lbl_Exit.Dock = DockStyle.Left;
+            lbl_Exit.Font = new Font("Segoe UI", 12.75F, FontStyle.Bold | FontStyle.Italic, GraphicsUnit.Point, 0);
+            lbl_Exit.ForeColor = Color.Aquamarine;
+            lbl_Exit.Location = new Point(592, 79);
+            lbl_Exit.Margin = new Padding(4, 0, 4, 0);
+            lbl_Exit.Name = "lbl_Exit";
+            lbl_Exit.Size = new Size(69, 40);
+            lbl_Exit.TabIndex = 48;
+            lbl_Exit.Text = "Avsluta";
+            lbl_Exit.Click += Exit_Click;
+            lbl_Exit.MouseLeave += Buttons_MouseLeave;
+            lbl_Exit.MouseHover += Buttons_MouseEnter;
+            // 
+            // lbl_NewUser
+            // 
+            lbl_NewUser.AutoSize = true;
+            lbl_NewUser.BackColor = Color.Transparent;
+            lbl_NewUser.Cursor = Cursors.Hand;
+            lbl_NewUser.Dock = DockStyle.Left;
+            lbl_NewUser.Font = new Font("Segoe UI", 12.75F, FontStyle.Bold | FontStyle.Italic, GraphicsUnit.Point, 0);
+            lbl_NewUser.ForeColor = Color.Aquamarine;
+            lbl_NewUser.Location = new Point(592, 24);
+            lbl_NewUser.Margin = new Padding(4, 0, 4, 0);
+            lbl_NewUser.Name = "lbl_NewUser";
+            tlp_Bottom.SetRowSpan(lbl_NewUser, 2);
+            lbl_NewUser.Size = new Size(125, 55);
+            lbl_NewUser.TabIndex = 48;
+            lbl_NewUser.Text = "Ny Användare";
+            lbl_NewUser.TextAlign = ContentAlignment.MiddleLeft;
+            lbl_NewUser.MouseDown += NyAnvändare_MouseDown;
+            lbl_NewUser.MouseLeave += Buttons_MouseLeave;
+            lbl_NewUser.MouseHover += Buttons_MouseEnter;
+            // 
+            // lbl_EditUser
+            // 
+            lbl_EditUser.AutoSize = true;
+            lbl_EditUser.BackColor = Color.Transparent;
+            lbl_EditUser.Cursor = Cursors.Hand;
+            lbl_EditUser.Dock = DockStyle.Left;
+            lbl_EditUser.Font = new Font("Segoe UI", 12.75F, FontStyle.Bold | FontStyle.Italic, GraphicsUnit.Point, 0);
+            lbl_EditUser.ForeColor = Color.Aquamarine;
+            lbl_EditUser.Location = new Point(592, 0);
+            lbl_EditUser.Margin = new Padding(4, 0, 4, 0);
+            lbl_EditUser.Name = "lbl_EditUser";
+            lbl_EditUser.Size = new Size(173, 24);
+            lbl_EditUser.TabIndex = 48;
+            lbl_EditUser.Text = "Redigera Användare";
+            lbl_EditUser.MouseDown += RedigeraAnvändare_MouseDown;
+            lbl_EditUser.MouseLeave += Buttons_MouseLeave;
+            lbl_EditUser.MouseHover += Buttons_MouseEnter;
+            // 
+            // lbl_User
+            // 
+            lbl_User.AutoSize = true;
+            lbl_User.BackColor = Color.White;
+            lbl_User.Cursor = Cursors.Hand;
+            lbl_User.Dock = DockStyle.Fill;
+            lbl_User.Location = new Point(7, 26);
+            lbl_User.Margin = new Padding(7, 2, 4, 6);
+            lbl_User.Name = "lbl_User";
+            lbl_User.Padding = new Padding(0, 0, 0, 5);
+            lbl_User.Size = new Size(195, 22);
+            lbl_User.TabIndex = 52;
+            lbl_User.TextChanged += User_TextChanged;
+            lbl_User.Click += Users_Click;
+            // 
+            // panel_Top
+            // 
+            panel_Top.BackColor = Color.FromArgb(150, 80, 80, 80);
+            panel_Top.Controls.Add(pb_Info);
+            panel_Top.Controls.Add(lbl_Date);
+            panel_Top.Controls.Add(lbl_Weather);
+            panel_Top.Controls.Add(lbl_Temp);
+            panel_Top.Dock = DockStyle.Top;
+            panel_Top.Location = new Point(0, 0);
+            panel_Top.Margin = new Padding(4, 3, 4, 3);
+            panel_Top.Name = "panel_Top";
+            panel_Top.Size = new Size(805, 54);
+            panel_Top.TabIndex = 46;
+            // 
+            // pb_Info
+            // 
+            pb_Info.BackColor = Color.Transparent;
+            pb_Info.BackgroundImage = (Image)resources.GetObject("pb_Info.BackgroundImage");
+            pb_Info.BackgroundImageLayout = ImageLayout.Stretch;
+            pb_Info.Cursor = Cursors.Hand;
+            pb_Info.Location = new Point(5, 5);
+            pb_Info.Margin = new Padding(4, 3, 4, 3);
+            pb_Info.Name = "pb_Info";
+            pb_Info.Size = new Size(41, 39);
+            pb_Info.SizeMode = PictureBoxSizeMode.Zoom;
+            pb_Info.TabIndex = 870;
+            pb_Info.TabStop = false;
+            pb_Info.Click += Info_Click;
+            // 
+            // lbl_Date
+            // 
+            lbl_Date.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            lbl_Date.AutoSize = true;
+            lbl_Date.BackColor = Color.FromArgb(150, 80, 80, 80);
+            lbl_Date.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lbl_Date.ForeColor = Color.Maroon;
+            lbl_Date.Location = new Point(472, 13);
+            lbl_Date.Margin = new Padding(4, 0, 4, 0);
+            lbl_Date.Name = "lbl_Date";
+            lbl_Date.Size = new Size(57, 21);
+            lbl_Date.TabIndex = 6;
+            lbl_Date.Text = "Datum";
+            // 
+            // lbl_Weather
+            // 
+            lbl_Weather.AutoSize = true;
+            lbl_Weather.BackColor = Color.FromArgb(150, 80, 80, 80);
+            lbl_Weather.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lbl_Weather.ForeColor = Color.Gold;
+            lbl_Weather.Location = new Point(279, 13);
+            lbl_Weather.Margin = new Padding(4, 0, 4, 0);
+            lbl_Weather.Name = "lbl_Weather";
+            lbl_Weather.Size = new Size(119, 21);
+            lbl_Weather.TabIndex = 10;
+            lbl_Weather.Text = "Moustly Cloudy";
+            lbl_Weather.Visible = false;
+            // 
+            // lbl_Temp
+            // 
+            lbl_Temp.AutoSize = true;
+            lbl_Temp.BackColor = Color.FromArgb(150, 80, 80, 80);
+            lbl_Temp.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lbl_Temp.ForeColor = Color.Gold;
+            lbl_Temp.Location = new Point(425, 13);
+            lbl_Temp.Margin = new Padding(4, 0, 4, 0);
+            lbl_Temp.Name = "lbl_Temp";
+            lbl_Temp.Size = new Size(35, 21);
+            lbl_Temp.TabIndex = 10;
+            lbl_Temp.Text = "9°C";
+            lbl_Temp.Visible = false;
+            // 
+            // timer_UpdateTime
+            // 
+            timer_UpdateTime.Enabled = true;
+            timer_UpdateTime.Interval = 1000;
+            timer_UpdateTime.Tick += UpdateTime_Tick;
             // 
             // Login
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(1)))), ((int)(((byte)(1)))), ((int)(((byte)(1)))));
-            this.ClientSize = new System.Drawing.Size(690, 673);
-            this.Controls.Add(this.panel_Background);
-            this.DoubleBuffered = true;
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-            this.Name = "Login";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Login";
-            this.TransparencyKey = System.Drawing.Color.FromArgb(((int)(((byte)(1)))), ((int)(((byte)(1)))), ((int)(((byte)(1)))));
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Login_Ny_FormClosing);
-            this.panel_Background.ResumeLayout(false);
-            this.tlp_AddUser.ResumeLayout(false);
-            this.tlp_AddUser.PerformLayout();
-            this.panel_Bottom.ResumeLayout(false);
-            this.tlp_Bottom.ResumeLayout(false);
-            this.tlp_Bottom.PerformLayout();
-            this.panel_Top.ResumeLayout(false);
-            this.panel_Top.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pb_Info)).EndInit();
-            this.ResumeLayout(false);
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            BackColor = Color.FromArgb(1, 1, 1);
+            ClientSize = new Size(805, 826);
+            Controls.Add(panel_Background);
+            DoubleBuffered = true;
+            FormBorderStyle = FormBorderStyle.None;
+            Margin = new Padding(4, 3, 4, 3);
+            Name = "Login";
+            StartPosition = FormStartPosition.CenterScreen;
+            Text = "Login";
+            TransparencyKey = Color.FromArgb(1, 1, 1);
+            FormClosing += Login_Ny_FormClosing;
+            panel_Background.ResumeLayout(false);
+            tlp_AddUser.ResumeLayout(false);
+            tlp_AddUser.PerformLayout();
+            panel_Bottom.ResumeLayout(false);
+            tlp_Bottom.ResumeLayout(false);
+            tlp_Bottom.PerformLayout();
+            panel_Top.ResumeLayout(false);
+            panel_Top.PerformLayout();
+            ((ISupportInitialize)pb_Info).EndInit();
+            ResumeLayout(false);
 
         }
 

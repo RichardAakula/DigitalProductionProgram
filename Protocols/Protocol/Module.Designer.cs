@@ -28,251 +28,239 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
-            this.dgv_Module = new System.Windows.Forms.DataGridView();
-            this.label_LEFT = new System.Windows.Forms.Label();
-            this.col_IsValueCritical = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.col_IsList_Protocol = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.col_IsList_Processcard = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.col_IsOkWriteText = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.col_ProtocolDescriptionID = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.col_DataType = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.col_CodeText = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.col_Unit = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.col_MIN = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.col_NOM = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.col_MAX = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.col_StartUp_1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            ((System.ComponentModel.ISupportInitialize)(this.dgv_Module)).BeginInit();
-            this.SuspendLayout();
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle7 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle5 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle6 = new DataGridViewCellStyle();
+            dgv_Module = new DataGridView();
+            label_LEFT = new Label();
+            col_IsValueCritical = new DataGridViewCheckBoxColumn();
+            col_IsList_Protocol = new DataGridViewCheckBoxColumn();
+            col_IsList_Processcard = new DataGridViewCheckBoxColumn();
+            col_IsOkWriteText = new DataGridViewTextBoxColumn();
+            col_ProtocolDescriptionID = new DataGridViewTextBoxColumn();
+            col_DataType = new DataGridViewTextBoxColumn();
+            col_CodeText = new DataGridViewTextBoxColumn();
+            col_Unit = new DataGridViewTextBoxColumn();
+            col_MIN = new DataGridViewTextBoxColumn();
+            col_NOM = new DataGridViewTextBoxColumn();
+            col_MAX = new DataGridViewTextBoxColumn();
+            col_StartUp_1 = new DataGridViewTextBoxColumn();
+            ((System.ComponentModel.ISupportInitialize)dgv_Module).BeginInit();
+            SuspendLayout();
             // 
             // dgv_Module
             // 
-            this.dgv_Module.AllowUserToAddRows = false;
-            this.dgv_Module.AllowUserToDeleteRows = false;
-            this.dgv_Module.AllowUserToResizeColumns = false;
-            this.dgv_Module.AllowUserToResizeRows = false;
-            this.dgv_Module.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
-            this.dgv_Module.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.dgv_Module.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle1.BackColor = System.Drawing.Color.Bisque;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.Color.ForestGreen;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.Color.Bisque;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.Color.ForestGreen;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgv_Module.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
-            this.dgv_Module.ColumnHeadersHeight = 20;
-            this.dgv_Module.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-            this.dgv_Module.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.col_IsValueCritical,
-            this.col_IsList_Protocol,
-            this.col_IsList_Processcard,
-            this.col_IsOkWriteText,
-            this.col_ProtocolDescriptionID,
-            this.col_DataType,
-            this.col_CodeText,
-            this.col_Unit,
-            this.col_MIN,
-            this.col_NOM,
-            this.col_MAX,
-            this.col_StartUp_1});
-            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle7.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle7.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle7.ForeColor = System.Drawing.Color.DarkSlateGray;
-            dataGridViewCellStyle7.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle7.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle7.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgv_Module.DefaultCellStyle = dataGridViewCellStyle7;
-            this.dgv_Module.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgv_Module.EnableHeadersVisualStyles = false;
-            this.dgv_Module.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
-            this.dgv_Module.Location = new System.Drawing.Point(17, 0);
-            this.dgv_Module.Margin = new System.Windows.Forms.Padding(0);
-            this.dgv_Module.MultiSelect = false;
-            this.dgv_Module.Name = "dgv_Module";
-            this.dgv_Module.RowHeadersVisible = false;
-            this.dgv_Module.RowTemplate.Height = 16;
-            this.dgv_Module.ScrollBars = System.Windows.Forms.ScrollBars.None;
-            this.dgv_Module.Size = new System.Drawing.Size(659, 412);
-            this.dgv_Module.TabIndex = 898;
-            this.dgv_Module.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.Protocol_CellDoubleClick);
-            this.dgv_Module.CellEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.Module_CellEnter);
-            this.dgv_Module.CellLeave += new System.Windows.Forms.DataGridViewCellEventHandler(this.Module_CellLeave);
-            this.dgv_Module.CellMouseDown += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.Module_ShowSpecialItems_CellRightMouseDown);
-            this.dgv_Module.CellMouseEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.Module_CellMouseEnter);
-            this.dgv_Module.EditingControlShowing += new System.Windows.Forms.DataGridViewEditingControlShowingEventHandler(this.EditingControlShowing);
-            this.dgv_Module.RowEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.Module_RowEnter);
-            this.dgv_Module.Leave += new System.EventHandler(this.Module_Leave);
+            dgv_Module.AllowUserToAddRows = false;
+            dgv_Module.AllowUserToDeleteRows = false;
+            dgv_Module.AllowUserToResizeColumns = false;
+            dgv_Module.AllowUserToResizeRows = false;
+            dgv_Module.BackgroundColor = Color.FromArgb(25, 25, 25);
+            dgv_Module.BorderStyle = BorderStyle.None;
+            dgv_Module.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
+            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle1.BackColor = Color.Bisque;
+            dataGridViewCellStyle1.Font = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle1.ForeColor = Color.ForestGreen;
+            dataGridViewCellStyle1.SelectionBackColor = Color.Bisque;
+            dataGridViewCellStyle1.SelectionForeColor = Color.ForestGreen;
+            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
+            dgv_Module.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dgv_Module.ColumnHeadersHeight = 20;
+            dgv_Module.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            dgv_Module.Columns.AddRange(new DataGridViewColumn[] { col_IsValueCritical, col_IsList_Protocol, col_IsList_Processcard, col_IsOkWriteText, col_ProtocolDescriptionID, col_DataType, col_CodeText, col_Unit, col_MIN, col_NOM, col_MAX, col_StartUp_1 });
+            dataGridViewCellStyle7.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle7.BackColor = SystemColors.Window;
+            dataGridViewCellStyle7.Font = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle7.ForeColor = Color.DarkSlateGray;
+            dataGridViewCellStyle7.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle7.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle7.WrapMode = DataGridViewTriState.False;
+            dgv_Module.DefaultCellStyle = dataGridViewCellStyle7;
+            dgv_Module.Dock = DockStyle.Fill;
+            dgv_Module.EnableHeadersVisualStyles = false;
+            dgv_Module.GridColor = Color.FromArgb(30, 30, 30);
+            dgv_Module.Location = new Point(20, 0);
+            dgv_Module.Margin = new Padding(0);
+            dgv_Module.MultiSelect = false;
+            dgv_Module.Name = "dgv_Module";
+            dgv_Module.RowHeadersVisible = false;
+            dgv_Module.RowTemplate.Height = 16;
+            dgv_Module.ScrollBars = ScrollBars.None;
+            dgv_Module.Size = new Size(769, 475);
+            dgv_Module.TabIndex = 898;
+            dgv_Module.CellDoubleClick += Protocol_CellDoubleClick;
+            dgv_Module.CellEnter += Module_CellEnter;
+            dgv_Module.CellLeave += Module_CellLeave;
+            dgv_Module.CellMouseDown += Module_ShowSpecialItems_CellRightMouseDown;
+            dgv_Module.CellMouseEnter += Module_CellMouseEnter;
+            dgv_Module.EditingControlShowing += EditingControlShowing;
+            dgv_Module.RowEnter += Module_RowEnter;
+            dgv_Module.Leave += Module_Leave;
             // 
             // label_LEFT
             // 
-            this.label_LEFT.BackColor = System.Drawing.Color.White;
-            this.label_LEFT.Dock = System.Windows.Forms.DockStyle.Left;
-            this.label_LEFT.Location = new System.Drawing.Point(0, 0);
-            this.label_LEFT.Margin = new System.Windows.Forms.Padding(0);
-            this.label_LEFT.Name = "label_LEFT";
-            this.label_LEFT.Size = new System.Drawing.Size(17, 412);
-            this.label_LEFT.TabIndex = 899;
-            this.label_LEFT.Paint += new System.Windows.Forms.PaintEventHandler(this.Label_LEFT_Paint);
+            label_LEFT.BackColor = Color.White;
+            label_LEFT.Dock = DockStyle.Left;
+            label_LEFT.Location = new Point(0, 0);
+            label_LEFT.Margin = new Padding(0);
+            label_LEFT.Name = "label_LEFT";
+            label_LEFT.Size = new Size(20, 475);
+            label_LEFT.TabIndex = 899;
+            label_LEFT.Paint += Label_LEFT_Paint;
             // 
             // col_IsValueCritical
             // 
-            this.col_IsValueCritical.Frozen = true;
-            this.col_IsValueCritical.HeaderText = "IsValueCritical";
-            this.col_IsValueCritical.Name = "col_IsValueCritical";
-            this.col_IsValueCritical.Visible = false;
-            this.col_IsValueCritical.Width = 5;
+            col_IsValueCritical.Frozen = true;
+            col_IsValueCritical.HeaderText = "IsValueCritical";
+            col_IsValueCritical.Name = "col_IsValueCritical";
+            col_IsValueCritical.Visible = false;
+            col_IsValueCritical.Width = 5;
             // 
             // col_IsList_Protocol
             // 
-            this.col_IsList_Protocol.Frozen = true;
-            this.col_IsList_Protocol.HeaderText = "IsListProtocol";
-            this.col_IsList_Protocol.Name = "col_IsList_Protocol";
-            this.col_IsList_Protocol.Visible = false;
-            this.col_IsList_Protocol.Width = 5;
+            col_IsList_Protocol.Frozen = true;
+            col_IsList_Protocol.HeaderText = "IsListProtocol";
+            col_IsList_Protocol.Name = "col_IsList_Protocol";
+            col_IsList_Protocol.Visible = false;
+            col_IsList_Protocol.Width = 5;
             // 
             // col_IsList_Processcard
             // 
-            this.col_IsList_Processcard.Frozen = true;
-            this.col_IsList_Processcard.HeaderText = "IsListProcesscard";
-            this.col_IsList_Processcard.Name = "col_IsList_Processcard";
-            this.col_IsList_Processcard.Visible = false;
+            col_IsList_Processcard.Frozen = true;
+            col_IsList_Processcard.HeaderText = "IsListProcesscard";
+            col_IsList_Processcard.Name = "col_IsList_Processcard";
+            col_IsList_Processcard.Visible = false;
             // 
             // col_IsOkWriteText
             // 
-            this.col_IsOkWriteText.Frozen = true;
-            this.col_IsOkWriteText.HeaderText = "IsOkWriteText";
-            this.col_IsOkWriteText.Name = "col_IsOkWriteText";
-            this.col_IsOkWriteText.Visible = false;
+            col_IsOkWriteText.Frozen = true;
+            col_IsOkWriteText.HeaderText = "IsOkWriteText";
+            col_IsOkWriteText.Name = "col_IsOkWriteText";
+            col_IsOkWriteText.Visible = false;
             // 
             // col_ProtocolDescriptionID
             // 
-            this.col_ProtocolDescriptionID.Frozen = true;
-            this.col_ProtocolDescriptionID.HeaderText = "ProtocolDescriptionID";
-            this.col_ProtocolDescriptionID.Name = "col_ProtocolDescriptionID";
-            this.col_ProtocolDescriptionID.Visible = false;
+            col_ProtocolDescriptionID.Frozen = true;
+            col_ProtocolDescriptionID.HeaderText = "ProtocolDescriptionID";
+            col_ProtocolDescriptionID.Name = "col_ProtocolDescriptionID";
+            col_ProtocolDescriptionID.Visible = false;
             // 
             // col_DataType
             // 
-            this.col_DataType.Frozen = true;
-            this.col_DataType.HeaderText = "Type";
-            this.col_DataType.Name = "col_DataType";
-            this.col_DataType.Visible = false;
+            col_DataType.Frozen = true;
+            col_DataType.HeaderText = "Type";
+            col_DataType.Name = "col_DataType";
+            col_DataType.Visible = false;
             // 
             // col_CodeText
             // 
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.Color.White;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Arial", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.DodgerBlue;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.Color.White;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.Color.DodgerBlue;
-            this.col_CodeText.DefaultCellStyle = dataGridViewCellStyle2;
-            this.col_CodeText.Frozen = true;
-            this.col_CodeText.HeaderText = "";
-            this.col_CodeText.Name = "col_CodeText";
-            this.col_CodeText.ReadOnly = true;
-            this.col_CodeText.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.col_CodeText.Width = 160;
+            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = Color.White;
+            dataGridViewCellStyle2.Font = new Font("Arial", 6.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle2.ForeColor = Color.DodgerBlue;
+            dataGridViewCellStyle2.SelectionBackColor = Color.White;
+            dataGridViewCellStyle2.SelectionForeColor = Color.DodgerBlue;
+            col_CodeText.DefaultCellStyle = dataGridViewCellStyle2;
+            col_CodeText.Frozen = true;
+            col_CodeText.HeaderText = "";
+            col_CodeText.Name = "col_CodeText";
+            col_CodeText.ReadOnly = true;
+            col_CodeText.SortMode = DataGridViewColumnSortMode.NotSortable;
+            col_CodeText.Width = 160;
             // 
             // col_Unit
             // 
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle3.BackColor = System.Drawing.Color.Bisque;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Arial", 7F, System.Drawing.FontStyle.Bold);
-            dataGridViewCellStyle3.ForeColor = System.Drawing.Color.Black;
-            this.col_Unit.DefaultCellStyle = dataGridViewCellStyle3;
-            this.col_Unit.Frozen = true;
-            this.col_Unit.HeaderText = "Unit";
-            this.col_Unit.Name = "col_Unit";
-            this.col_Unit.ReadOnly = true;
-            this.col_Unit.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.col_Unit.Width = 48;
+            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle3.BackColor = Color.Bisque;
+            dataGridViewCellStyle3.Font = new Font("Arial", 7F, FontStyle.Bold);
+            dataGridViewCellStyle3.ForeColor = Color.Black;
+            col_Unit.DefaultCellStyle = dataGridViewCellStyle3;
+            col_Unit.Frozen = true;
+            col_Unit.HeaderText = "Unit";
+            col_Unit.Name = "col_Unit";
+            col_Unit.ReadOnly = true;
+            col_Unit.SortMode = DataGridViewColumnSortMode.NotSortable;
+            col_Unit.Width = 48;
             // 
             // col_MIN
             // 
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(60)))), ((int)(((byte)(60)))));
-            dataGridViewCellStyle4.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle4.ForeColor = System.Drawing.Color.DodgerBlue;
-            this.col_MIN.DefaultCellStyle = dataGridViewCellStyle4;
-            this.col_MIN.Frozen = true;
-            this.col_MIN.HeaderText = "MIN";
-            this.col_MIN.Name = "col_MIN";
-            this.col_MIN.ReadOnly = true;
-            this.col_MIN.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            dataGridViewCellStyle4.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle4.BackColor = Color.FromArgb(60, 60, 60);
+            dataGridViewCellStyle4.Font = new Font("Consolas", 8.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle4.ForeColor = Color.DodgerBlue;
+            col_MIN.DefaultCellStyle = dataGridViewCellStyle4;
+            col_MIN.Frozen = true;
+            col_MIN.HeaderText = "MIN";
+            col_MIN.Name = "col_MIN";
+            col_MIN.ReadOnly = true;
+            col_MIN.SortMode = DataGridViewColumnSortMode.NotSortable;
             // 
             // col_NOM
             // 
-            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(60)))), ((int)(((byte)(60)))));
-            dataGridViewCellStyle5.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle5.ForeColor = System.Drawing.Color.ForestGreen;
-            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.col_NOM.DefaultCellStyle = dataGridViewCellStyle5;
-            this.col_NOM.Frozen = true;
-            this.col_NOM.HeaderText = "NOM";
-            this.col_NOM.Name = "col_NOM";
-            this.col_NOM.ReadOnly = true;
-            this.col_NOM.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            dataGridViewCellStyle5.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle5.BackColor = Color.FromArgb(60, 60, 60);
+            dataGridViewCellStyle5.Font = new Font("Consolas", 8.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle5.ForeColor = Color.ForestGreen;
+            dataGridViewCellStyle5.WrapMode = DataGridViewTriState.True;
+            col_NOM.DefaultCellStyle = dataGridViewCellStyle5;
+            col_NOM.Frozen = true;
+            col_NOM.HeaderText = "NOM";
+            col_NOM.Name = "col_NOM";
+            col_NOM.ReadOnly = true;
+            col_NOM.SortMode = DataGridViewColumnSortMode.NotSortable;
             // 
             // col_MAX
             // 
-            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle6.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(60)))), ((int)(((byte)(60)))));
-            dataGridViewCellStyle6.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle6.ForeColor = System.Drawing.Color.DodgerBlue;
-            this.col_MAX.DefaultCellStyle = dataGridViewCellStyle6;
-            this.col_MAX.Frozen = true;
-            this.col_MAX.HeaderText = "MAX";
-            this.col_MAX.Name = "col_MAX";
-            this.col_MAX.ReadOnly = true;
-            this.col_MAX.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            dataGridViewCellStyle6.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle6.BackColor = Color.FromArgb(60, 60, 60);
+            dataGridViewCellStyle6.Font = new Font("Consolas", 8.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle6.ForeColor = Color.DodgerBlue;
+            col_MAX.DefaultCellStyle = dataGridViewCellStyle6;
+            col_MAX.Frozen = true;
+            col_MAX.HeaderText = "MAX";
+            col_MAX.Name = "col_MAX";
+            col_MAX.ReadOnly = true;
+            col_MAX.SortMode = DataGridViewColumnSortMode.NotSortable;
             // 
             // col_StartUp_1
             // 
-            this.col_StartUp_1.HeaderText = "1";
-            this.col_StartUp_1.Name = "col_StartUp_1";
-            this.col_StartUp_1.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.col_StartUp_1.Width = 120;
+            col_StartUp_1.HeaderText = "1";
+            col_StartUp_1.Name = "col_StartUp_1";
+            col_StartUp_1.SortMode = DataGridViewColumnSortMode.NotSortable;
+            col_StartUp_1.Width = 120;
             // 
             // Module
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.dgv_Module);
-            this.Controls.Add(this.label_LEFT);
-            this.Margin = new System.Windows.Forms.Padding(0);
-            this.Name = "Module";
-            this.Size = new System.Drawing.Size(676, 412);
-            ((System.ComponentModel.ISupportInitialize)(this.dgv_Module)).EndInit();
-            this.ResumeLayout(false);
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            Controls.Add(dgv_Module);
+            Controls.Add(label_LEFT);
+            Margin = new Padding(0);
+            Name = "Module";
+            Size = new Size(789, 475);
+            ((System.ComponentModel.ISupportInitialize)dgv_Module).EndInit();
+            ResumeLayout(false);
 
         }
 
         #endregion
         public System.Windows.Forms.DataGridView dgv_Module;
         public System.Windows.Forms.Label label_LEFT;
-        private System.Windows.Forms.DataGridViewCheckBoxColumn col_IsValueCritical;
-        private System.Windows.Forms.DataGridViewCheckBoxColumn col_IsList_Protocol;
-        private System.Windows.Forms.DataGridViewCheckBoxColumn col_IsList_Processcard;
-        private System.Windows.Forms.DataGridViewTextBoxColumn col_IsOkWriteText;
-        private System.Windows.Forms.DataGridViewTextBoxColumn col_ProtocolDescriptionID;
-        private System.Windows.Forms.DataGridViewTextBoxColumn col_DataType;
-        private System.Windows.Forms.DataGridViewTextBoxColumn col_CodeText;
-        private System.Windows.Forms.DataGridViewTextBoxColumn col_Unit;
-        private System.Windows.Forms.DataGridViewTextBoxColumn col_MIN;
-        private System.Windows.Forms.DataGridViewTextBoxColumn col_NOM;
-        private System.Windows.Forms.DataGridViewTextBoxColumn col_MAX;
-        private System.Windows.Forms.DataGridViewTextBoxColumn col_StartUp_1;
+        private DataGridViewCheckBoxColumn col_IsValueCritical;
+        private DataGridViewCheckBoxColumn col_IsList_Protocol;
+        private DataGridViewCheckBoxColumn col_IsList_Processcard;
+        private DataGridViewTextBoxColumn col_IsOkWriteText;
+        private DataGridViewTextBoxColumn col_ProtocolDescriptionID;
+        private DataGridViewTextBoxColumn col_DataType;
+        private DataGridViewTextBoxColumn col_CodeText;
+        private DataGridViewTextBoxColumn col_Unit;
+        private DataGridViewTextBoxColumn col_MIN;
+        private DataGridViewTextBoxColumn col_NOM;
+        private DataGridViewTextBoxColumn col_MAX;
+        private DataGridViewTextBoxColumn col_StartUp_1;
     }
 }

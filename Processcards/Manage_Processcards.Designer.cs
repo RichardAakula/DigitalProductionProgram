@@ -234,7 +234,7 @@ namespace DigitalProductionProgram.Processcards
             panel_RevisionInfo.BackColor = Color.Transparent;
             panel_RevisionInfo.Controls.Add(dgv_Revision);
             panel_RevisionInfo.Controls.Add(panel_RevInfo_Kommentarer);
-            panel_RevisionInfo.Location = new Point(782, 3);
+            panel_RevisionInfo.Location = new Point(753, 3);
             panel_RevisionInfo.MinimumSize = new Size(675, 0);
             panel_RevisionInfo.Name = "panel_RevisionInfo";
             panel_RevisionInfo.Size = new Size(700, 815);
@@ -346,7 +346,7 @@ namespace DigitalProductionProgram.Processcards
             tlp_Main_Processkort.RowCount = 2;
             tlp_Main_Processkort.RowStyles.Add(new RowStyle(SizeType.Absolute, 25F));
             tlp_Main_Processkort.RowStyles.Add(new RowStyle(SizeType.Absolute, 173F));
-            tlp_Main_Processkort.Size = new Size(773, 1055);
+            tlp_Main_Processkort.Size = new Size(744, 1055);
             tlp_Main_Processkort.TabIndex = 947;
             // 
             // tab_Main
@@ -361,7 +361,7 @@ namespace DigitalProductionProgram.Processcards
             tab_Main.Margin = new Padding(0);
             tab_Main.Name = "tab_Main";
             tab_Main.SelectedIndex = 0;
-            tab_Main.Size = new Size(773, 1030);
+            tab_Main.Size = new Size(744, 1030);
             tab_Main.TabIndex = 874;
             // 
             // tp_Kragning
@@ -371,7 +371,7 @@ namespace DigitalProductionProgram.Processcards
             tp_Kragning.Location = new Point(4, 24);
             tp_Kragning.Name = "tp_Kragning";
             tp_Kragning.Padding = new Padding(3);
-            tp_Kragning.Size = new Size(765, 1002);
+            tp_Kragning.Size = new Size(736, 1002);
             tp_Kragning.TabIndex = 2;
             tp_Kragning.Text = "Krag";
             // 
@@ -381,7 +381,7 @@ namespace DigitalProductionProgram.Processcards
             Processkort_Kragning.Location = new Point(3, 3);
             Processkort_Kragning.Margin = new Padding(4, 3, 4, 3);
             Processkort_Kragning.Name = "Processkort_Kragning";
-            Processkort_Kragning.Size = new Size(759, 180);
+            Processkort_Kragning.Size = new Size(730, 180);
             Processkort_Kragning.TabIndex = 0;
             // 
             // tp_Skärmning
@@ -429,7 +429,7 @@ namespace DigitalProductionProgram.Processcards
             tp_Svetsning.Location = new Point(4, 24);
             tp_Svetsning.Name = "tp_Svetsning";
             tp_Svetsning.Padding = new Padding(3);
-            tp_Svetsning.Size = new Size(765, 1002);
+            tp_Svetsning.Size = new Size(192, 72);
             tp_Svetsning.TabIndex = 6;
             tp_Svetsning.Text = "Svets";
             // 
@@ -439,7 +439,7 @@ namespace DigitalProductionProgram.Processcards
             Processkort_Svetsning.Location = new Point(3, 3);
             Processkort_Svetsning.Margin = new Padding(0);
             Processkort_Svetsning.Name = "Processkort_Svetsning";
-            Processkort_Svetsning.Size = new Size(759, 996);
+            Processkort_Svetsning.Size = new Size(186, 66);
             Processkort_Svetsning.TabIndex = 0;
             // 
             // tp_Protocol
@@ -448,7 +448,7 @@ namespace DigitalProductionProgram.Processcards
             tp_Protocol.Location = new Point(4, 24);
             tp_Protocol.Name = "tp_Protocol";
             tp_Protocol.Padding = new Padding(3);
-            tp_Protocol.Size = new Size(765, 1002);
+            tp_Protocol.Size = new Size(192, 72);
             tp_Protocol.TabIndex = 20;
             tp_Protocol.Text = "Protocol";
             tp_Protocol.UseVisualStyleBackColor = true;
@@ -465,7 +465,7 @@ namespace DigitalProductionProgram.Processcards
             tlp_Machines.Name = "tlp_Machines";
             tlp_Machines.RowCount = 1;
             tlp_Machines.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            tlp_Machines.Size = new Size(759, 996);
+            tlp_Machines.Size = new Size(186, 66);
             tlp_Machines.TabIndex = 903;
             // 
             // tlp_Processkort_Top
@@ -485,7 +485,7 @@ namespace DigitalProductionProgram.Processcards
             tlp_Processkort_Top.Name = "tlp_Processkort_Top";
             tlp_Processkort_Top.RowCount = 1;
             tlp_Processkort_Top.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
-            tlp_Processkort_Top.Size = new Size(773, 24);
+            tlp_Processkort_Top.Size = new Size(744, 24);
             tlp_Processkort_Top.TabIndex = 947;
             // 
             // label_ProductType
@@ -545,7 +545,7 @@ namespace DigitalProductionProgram.Processcards
             tb_ProdType.Margin = new Padding(1, 0, 0, 0);
             tb_ProdType.Multiline = true;
             tb_ProdType.Name = "tb_ProdType";
-            tb_ProdType.Size = new Size(546, 24);
+            tb_ProdType.Size = new Size(517, 24);
             tb_ProdType.TabIndex = 877;
             tb_ProdType.Click += ProdType_Click;
             tb_ProdType.TextChanged += ProdType_TextChanged;
@@ -1038,7 +1038,7 @@ namespace DigitalProductionProgram.Processcards
             // 
             tlp_Main.AutoScroll = true;
             tlp_Main.ColumnCount = 2;
-            tlp_Main.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 779F));
+            tlp_Main.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 750F));
             tlp_Main.ColumnStyles.Add(new ColumnStyle());
             tlp_Main.Controls.Add(panel_RevisionInfo, 1, 0);
             tlp_Main.Controls.Add(tlp_Main_Processkort, 0, 0);

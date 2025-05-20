@@ -56,7 +56,7 @@ namespace DigitalProductionProgram.User
                     InfoText.Show("Välj användare före du försöker låsa upp adminrättigheter.", CustomColors.InfoText_Color.Warning, "Warning!", this);
                     return false;
                 }
-        
+
                 if (PasswordManager.IsPasswordOK(tb_Password.Text) == false)
                 {
                     InfoText.Show(LanguageManager.GetString("password_Info_1"), CustomColors.InfoText_Color.Bad, "Warning!", this);
@@ -67,31 +67,31 @@ namespace DigitalProductionProgram.User
             }
         }
         public bool IsUserDataFilled =>
-            !string.IsNullOrEmpty(tb_Förnamn.Text) && !string.IsNullOrEmpty(tb_Efternamn.Text) && !string.IsNullOrEmpty(cb_Role.Text) && 
+            !string.IsNullOrEmpty(tb_Förnamn.Text) && !string.IsNullOrEmpty(tb_Efternamn.Text) && !string.IsNullOrEmpty(cb_Role.Text) &&
             !string.IsNullOrEmpty(tb_AnstNr.Text) && !string.IsNullOrEmpty(tb_Sign.Text) && !string.IsNullOrEmpty(tb_NewPassword.Text) && !string.IsNullOrEmpty(tb_Mail.Text);
         private bool IsInEditMode;
 
         [DllImport("Gdi32.dll", EntryPoint = "CreateRoundRectRgn")]
         private static extern IntPtr CreateRoundRectRgn(int nLeftRect, int nTopRect, int nRightRect, int nBottomRect, int nWidthEllipse, int nHeightEllipse);
-                
+
         public Login()
         {
             SuspendLayout();
             InitializeComponent();
             Translate_Form();
-            
+
             LoadBackground();
             timer_UpdateTime.Start();
             Fill_ComboBoxes();
-            
+
             HideObjects();
             ResumeLayout();
-           
+
             Region = Region.FromHrgn(CreateRoundRectRgn(0, 0, Width, Height, 40, 40));
 
             Load_flp_Users();
             tlp_AddUser.BackColor = Color.FromArgb(180, Color.Black);
-           
+
             panel_Background.BackColor = Color.FromArgb(150, Color.Black);
 
             tb_NewPassword.PasswordChar = '*';
@@ -101,10 +101,10 @@ namespace DigitalProductionProgram.User
         {
             cb_Role.DataSource = Person.List_Roles;
         }
-         
+
         private void Translate_Form()
         {
-            Control[] controls = {label_Welcome, label_AddUser, label_FirstName, label_ChooseUser,  label_Password, label_ConfirmPassword, lbl_NewUser, lbl_EditUser, lbl_Exit, 
+            Control[] controls = {label_Welcome, label_AddUser, label_FirstName, label_ChooseUser,  label_Password, label_ConfirmPassword, lbl_NewUser, lbl_EditUser, lbl_Exit,
                 label_FirstName, label_LastName, label_Role,  label_EmpNr, label_Sign, label_NewPassword, btn_AddProfilePicture, btn_AddUpdateUser, label_InfoPassword_1, label_InfoPassword_2 };
             LanguageManager.TranslationHelper.TranslateControls(controls);
 
@@ -126,7 +126,7 @@ namespace DigitalProductionProgram.User
                 JOIN [User].Roles as roles
                     ON person.RoleID = roles.RoleID
                 WHERE Name = @name";
-                
+
                 var cmd = new SqlCommand(query, con);
                 cmd.Parameters.AddWithValue("@name", lbl_User.Text);
                 con.Open();
@@ -134,7 +134,7 @@ namespace DigitalProductionProgram.User
                 while (reader.Read())
                 {
                     var namn = reader["Name"].ToString().Split(' ');
-                    
+
                     tb_Förnamn.Text = namn[0];
                     tb_Efternamn.Text = namn[1];
                     cb_Role.Text = reader["RoleName"].ToString();
@@ -199,7 +199,7 @@ namespace DigitalProductionProgram.User
                     Dock = DockStyle.Fill,
                     Cursor = Cursors.Hand,
                     TextAlign = ContentAlignment.MiddleCenter
-                    
+
                 };
                 panel.Controls.Add(lbl);
                 lbl.Click += click_User_Label;
@@ -209,7 +209,7 @@ namespace DigitalProductionProgram.User
         private void click_User_Label(object sender, EventArgs e)
         {
             Log.Activity.Start();
-            
+
             var lbl = (Label)sender;
             var anstNr = Regex.Replace(lbl.Text, @"\t|\n|\r|\D", string.Empty);
 
@@ -248,7 +248,7 @@ namespace DigitalProductionProgram.User
             tb_Mail.Enabled = false;
             IsInEditMode = true;
         }
-        
+
         private void Clear_All()
         {
             tb_Förnamn.Clear();
@@ -257,6 +257,7 @@ namespace DigitalProductionProgram.User
             tb_AnstNr.Clear();
             tb_Sign.Clear();
             tb_NewPassword.Clear();
+            tb_ConfirmPassword.Clear();
             tb_Förnamn.SelectAll();
             tb_Mail.Clear();
         }
@@ -269,7 +270,7 @@ namespace DigitalProductionProgram.User
                 var changeLog = new ChangeLog(Version.Parse("1.0.0.0"));
                 changeLog.ShowDialog();
                 //await Person.UpdateLastReadChangelogVersion(lbl_User.Text);
-                return; 
+                return;
             }
 
             if (lastVersion != ChangeLog.CurrentVersion)
@@ -303,7 +304,7 @@ namespace DigitalProductionProgram.User
         {
             InfoText.Show(LanguageManager.GetString("login_Info_2"), CustomColors.InfoText_Color.Info, "Log in:");
         }
-        private void Add_User_Click(object sender, EventArgs e)
+        private void Add_User_Click(object? sender, EventArgs e)
         {
             var namn = tb_Förnamn.Text + " " + tb_Efternamn.Text;
 
@@ -332,7 +333,7 @@ namespace DigitalProductionProgram.User
                 cmd.Parameters.AddWithValue("@password", PasswordManager.ConvertToHashedPassword(tb_NewPassword.Text));
                 cmd.Parameters.AddWithValue("@userID", Person.UserID);
                 con.Open();
-                cmd.ExecuteScalar();     
+                cmd.ExecuteScalar();
             }
             InfoText.Show(LanguageManager.GetString("login_Info_5"), CustomColors.InfoText_Color.Ok, "Updated Profile");
             Clear_All();
@@ -388,7 +389,7 @@ namespace DigitalProductionProgram.User
         private void Users_Click(object sender, EventArgs e)
         {
             var ctrl = (Control)sender;
-            var choose_Item = new Choose_Item(Person.List_Users(false),new[] { ctrl }, false);
+            var choose_Item = new Choose_Item(Person.List_Users(false), new[] { ctrl }, false);
             choose_Item.ShowDialog();
         }
         private void AnstNr_KeyPress(object sender, KeyPressEventArgs e)
@@ -411,7 +412,7 @@ namespace DigitalProductionProgram.User
             {
                 Log.Activity.Start();
 
-                if (PasswordManager.IsPasswordOK(tb_Password.Text) == false ||string.IsNullOrEmpty(lbl_User.Text))
+                if (PasswordManager.IsPasswordOK(tb_Password.Text) == false || string.IsNullOrEmpty(lbl_User.Text))
                 {
                     Shake(this);
                     InfoText.Show(LanguageManager.GetString("password_Info_1"), CustomColors.InfoText_Color.Bad, "Warning!", this);
@@ -455,17 +456,17 @@ namespace DigitalProductionProgram.User
             {
                 Person.Role = string.Empty;
                 Person.EmployeeNr = string.Empty;
-                
+
                 Person.Name = string.Empty;
                 ProfileCard.pb_Image.Image = Person.ProfilePicture(null);
                 Person.Sign = null;
                 SvarÖppnaOrder = false;
                 Points.TotalPoints = 0;
             }
-           
+
         }
-       
-      
+
+
         private void User_TextChanged(object sender, EventArgs e)
         {
             if (lbl_User.Text != string.Empty)
@@ -490,12 +491,12 @@ namespace DigitalProductionProgram.User
                         Person.Password = reader["Password"].ToString();
                         Person.Mail = reader["Mail"].ToString();
                         Points.TotalPoints = int.Parse(reader["Points"].ToString());
-                        ProfileCard.lbl_Role.Text = Person.Role  = reader["RoleName"].ToString();
+                        ProfileCard.lbl_Role.Text = Person.Role = reader["RoleName"].ToString();
                     }
                 }
                 ProfileCard.pb_Image.Image = Person.ProfilePicture(lbl_User.Text);
-                   
-              
+
+
                 ProfileCard.label_Name.Text = lbl_User.Text;
                 lbl_NewUser.Cursor = Cursors.Hand;
                 lbl_NewUser.Enabled = true;
@@ -505,27 +506,27 @@ namespace DigitalProductionProgram.User
                 tb_Password.Focus();
             }
         }
-       
+
         private void Buttons_MouseEnter(object sender, EventArgs e)
         {
             var lbl = (Label)sender;
             lbl.ForeColor = Color.Azure;
-            
+
         }
         private void Buttons_MouseLeave(object sender, EventArgs e)
         {
             var lbl = (Label)sender;
             lbl.ForeColor = Color.Aquamarine;
-            
-        }
-        
 
-       
-        
+        }
+
+
+
+
 
         private void UpdateTime_Tick(object sender, EventArgs e)
         {
-             lbl_Date.Text = DateTime.Now.ToString("dddd dd-MMMM-yyy HH:mm:ss");
+            lbl_Date.Text = DateTime.Now.ToString("dddd dd-MMMM-yyy HH:mm:ss");
         }
 
 
@@ -556,7 +557,7 @@ namespace DigitalProductionProgram.User
                 label_InfoPassword_1.Visible = true;
                 IsOk = false;
             }
-                
+
 
             if (tb_NewPassword.Text == tb_ConfirmPassword.Text && tb_NewPassword.Text.Length > 3)
             {
@@ -568,25 +569,25 @@ namespace DigitalProductionProgram.User
                 label_InfoPassword_2.Visible = true;
                 IsOk = false;
             }
-                
+
 
             if (IsOk)
             {
                 btn_AddUpdateUser.BackColor = CustomColors.Ok_Back;
                 btn_AddUpdateUser.ForeColor = CustomColors.Ok_Front;
                 btn_AddUpdateUser.Enabled = true;
-                
+
                 return;
             }
             btn_AddUpdateUser.BackColor = CustomColors.Bad_Back;
             btn_AddUpdateUser.ForeColor = CustomColors.Bad_Front;
             btn_AddUpdateUser.Enabled = false;
-           
+
         }
 
 
-        
-        
+
+
         private void AnstNr_Leave(object sender, EventArgs e)
         {
             int.TryParse(tb_AnstNr.Text, out var employeeNumber);
@@ -610,5 +611,6 @@ namespace DigitalProductionProgram.User
             }
         }
 
+        
     }
 }

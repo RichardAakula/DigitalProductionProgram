@@ -540,7 +540,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
             if (dgv_Module == null || IsOkToSave == false)
                 return;
             var row = e.RowIndex;
-            dgv_Module.Rows[row].Cells["col_CodeText"].Style.BackColor = Color.White;
+            dgv_Module.Rows[row].Cells["col_CodeText"].Style.BackColor = Color.FromArgb(252, 250, 235);
         }
         private void Protocol_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {

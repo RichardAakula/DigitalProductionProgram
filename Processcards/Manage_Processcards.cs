@@ -50,19 +50,18 @@ namespace DigitalProductionProgram.Processcards
             {
                 var Parameters = new List<SqlParameter>
                 {
-                    new SqlParameter("@revNr", ProcesscardBasedOn.lbl_RevNr.Text),
-                    new SqlParameter("@partnr", tb_NewPartNr.Text),
-                    new SqlParameter("@maintemplateid", Templates_Protocol.MainTemplate.ID),
-                    new SqlParameter("@workoperation", Order.WorkOperation.ToString()),
-                    new SqlParameter("@extraInfo", tb_ExtraInfo.Text),
-                    new SqlParameter("@revÄndratDatum", DateTime.Now.ToString("yyyy-MM-dd")),
-                    new SqlParameter("@upprättatAvSign", ProcesscardBasedOn.lbl_UpprättatAv_Sign_AnstNr.Text),
-                    new SqlParameter("@revInfo", tb_RevInfo.Text),
-                    new SqlParameter("@histData", ProcesscardBasedOn.rb_HistoricalData.Checked),
-                    new SqlParameter("@validerat", ProcesscardBasedOn.rb_Validated.Checked),
-                    new SqlParameter("@framtagning_Processfönster",
-                        ProcesscardBasedOn.rb_FramtagningAvProcessfönster.Checked),
-                    new SqlParameter("@validerade_Loter", ProcesscardBasedOn.tb_Validerade_Loter.Text),
+                    new("@revNr", ProcesscardBasedOn.lbl_RevNr.Text),
+                    new ("@partnr", tb_NewPartNr.Text),
+                    new ("@maintemplateid", Templates_Protocol.MainTemplate.ID),
+                    new ("@workoperation", Order.WorkOperation.ToString()),
+                    new ("@extraInfo", tb_ExtraInfo.Text),
+                    new ("@revÄndratDatum", DateTime.Now.ToString("yyyy-MM-dd")),
+                    new ("@upprättatAvSign", ProcesscardBasedOn.lbl_UpprättatAv_Sign_AnstNr.Text),
+                    new ("@revInfo", tb_RevInfo.Text),
+                    new ("@histData", ProcesscardBasedOn.rb_HistoricalData.Checked),
+                    new ("@validerat", ProcesscardBasedOn.rb_Validated.Checked),
+                    new ("@framtagning_Processfönster", ProcesscardBasedOn.rb_FramtagningAvProcessfönster.Checked),
+                    new ("@validerade_Loter", ProcesscardBasedOn.tb_Validerade_Loter.Text),
 
                 };
 
@@ -719,16 +718,19 @@ namespace DigitalProductionProgram.Processcards
             ActiveTemplateRevision = Templates_Protocol.MainTemplate.Revision;
 
             AddMachine(0, 1, ref width);
+            // this.Refresh();
             if (Machine.Is_MultipleMachines)
             {
                 tlp_Machines.ColumnCount++;
                
                 for (var i = 0; i < tlp_Machines.ColumnCount; i++)
                     tlp_Machines.ColumnStyles[i] = new ColumnStyle(SizeType.Percent, 100f / tlp_Machines.ColumnCount);
-
+              //  this.Refresh();
                 AddMachine(1, 2, ref width);
+                //this.Refresh();
             }
-            tlp_Main.ColumnStyles[0].Width = width + 26;
+            //tlp_Main.ColumnStyles[0].Width = width + 26;
+            //this.Refresh();
             if (dataTables_ProcessData.Count > 0)
             {
                 InfoText.Show("Laddar data från tidigare mall till den nya mallen", CustomColors.InfoText_Color.Info, string.Empty,this);
@@ -751,7 +753,7 @@ namespace DigitalProductionProgram.Processcards
             };
             //Tar bort Uppstart eftersom det inte skall användas vid processkortshantering
             machine.Remove_StartUp();
-            
+            width -= 180;
             tlp_Machines.Controls.Add(machine);
             tlp_Machines.SetCellPosition(machine, new TableLayoutPanelCellPosition(columnIndex, 0));
            

@@ -79,9 +79,8 @@ namespace DigitalProductionProgram.Protocols.Protocol
         {
             if (Templates_Protocol.MainTemplate.ID is 0)
                 return;
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                const string query = @"
+            using var con = new SqlConnection(Database.cs_Protocol);
+            const string query = @"
                     SELECT FormTemplateID, ModuleName, IsHeaderVisible, Processcard_ColWidth, RunProtocol_ColWidth, IsUsingPreFab, IsAuthenticationNeeded
                     FROM Protocol.FormTemplate as formtemplate
                     JOIN Protocol.MainTemplate as template
@@ -90,55 +89,53 @@ namespace DigitalProductionProgram.Protocols.Protocol
                         AND TemplateOrder IS NOT NULL
                         AND MachineIndex = @machineindex
                     ORDER BY TemplateOrder";
-                var cmd = new SqlCommand(query, con);
-                cmd.Parameters.AddWithValue("@maintemplateID", Templates_Protocol.MainTemplate.ID);
-                cmd.Parameters.AddWithValue("@machineindex", machineIndex);
-                con.Open();
-                var reader = cmd.ExecuteReader();
-                var ctr = 0;
-                while (reader.Read())
+            var cmd = new SqlCommand(query, con);
+            cmd.Parameters.AddWithValue("@maintemplateID", Templates_Protocol.MainTemplate.ID);
+            cmd.Parameters.AddWithValue("@machineindex", machineIndex);
+            con.Open();
+            var reader = cmd.ExecuteReader();
+            var ctr = 0;
+            while (reader.Read())
+            {
+                int.TryParse(reader["FormTemplateID"].ToString(), out var formtemplateid);
+                int.TryParse(reader["Processcard_ColWidth"].ToString(), out var processcardColWidth);
+                int.TryParse(reader["RunProtocol_ColWidth"].ToString(), out var runprotocolColWidth);
+                bool.TryParse(reader["IsHeaderVisible"].ToString(), out var isHeaderVisible);
+                if (isAutheticationNeeded != true)
+                    bool.TryParse(reader["IsAuthenticationNeeded"].ToString(), out isAutheticationNeeded);
+
+                var leftHeader = reader["ModuleName"].ToString();
+                var module = new Module
                 {
-                    int.TryParse(reader["FormTemplateID"].ToString(), out var formtemplateid);
-                    int.TryParse(reader["Processcard_ColWidth"].ToString(), out var processcardColWidth);
-                    int.TryParse(reader["RunProtocol_ColWidth"].ToString(), out var runprotocolColWidth);
-                    bool.TryParse(reader["IsHeaderVisible"].ToString(), out var isHeaderVisible);
-                    if (isAutheticationNeeded != true)
-                        bool.TryParse(reader["IsAuthenticationNeeded"].ToString(), out isAutheticationNeeded);
-
-                    var leftHeader = reader["ModuleName"].ToString();
-                    var module = new Module
-                    {
-                        LeftHeader = leftHeader,
-                        Margin = new Padding(0, 0, 0, 0),
-                        FormTemplateID = formtemplateid,
-                        RunprotocolWidth = runprotocolColWidth,
+                    LeftHeader = leftHeader,
+                    Margin = new Padding(0, 0, 0, 0),
+                    FormTemplateID = formtemplateid,
+                    RunprotocolWidth = runprotocolColWidth,
                         
-                        Dock = DockStyle.Fill,
-                        MachineIndex = machineIndex
-                    };
+                    Dock = DockStyle.Fill,
+                    MachineIndex = machineIndex
+                };
                     
-                    module.LoadTemplate(isHeaderVisible, processcardColWidth, runprotocolColWidth, isOkChangeProcessdata);
-                    module.load_processcard.Load_ProcessData(formtemplateid);
-                    if (Order.OrderID is null == false)
-                        module.Load_Data(formtemplateid);
+                module.LoadTemplate(isHeaderVisible, processcardColWidth, runprotocolColWidth, isOkChangeProcessdata);
+                module.load_processcard.Load_ProcessData(formtemplateid);
+                if (Order.OrderID is null == false)
+                    module.Load_Data(formtemplateid);
 
-                    tlp_Machine.RowCount++;
-                    tlp_Machine.RowStyles.Add(new RowStyle(SizeType.Absolute, 1));
-                    tlp_Machine.Controls.Add(module);
-                    tlp_Machine.SetCellPosition(module, new TableLayoutPanelCellPosition(0, tlp_Machine.RowCount - 2));
-                    tlp_Machine.RowStyles[tlp_Machine.RowCount - 2].Height = module.TotalModuleHeight;
-                    modules.Add(module);
-                    module.dgv_Module.MouseWheel += Korprotokoll_MouseWheel;
-                    if (ctr == 0)
-                        //width += (int)module.tlp_Module.ColumnStyles[0].Width;
-                        width += 18;
+                tlp_Machine.RowCount++;
+                tlp_Machine.RowStyles.Add(new RowStyle(SizeType.Absolute, 1));
+                tlp_Machine.Controls.Add(module);
+                tlp_Machine.SetCellPosition(module, new TableLayoutPanelCellPosition(0, tlp_Machine.RowCount - 2));
+                tlp_Machine.RowStyles[tlp_Machine.RowCount - 2].Height = module.TotalModuleHeight;
+                modules.Add(module);
+                module.dgv_Module.MouseWheel += Korprotokoll_MouseWheel;
+                if (ctr == 0)
+                    //width += (int)module.tlp_Module.ColumnStyles[0].Width;
+                    width += 18;
 
-                    if (ctr == 0)
-                        width += 208 + processcardColWidth * 3;
+                if (ctr == 0)
+                    width += 208 + processcardColWidth * 3;
                         
-                    ctr++;
-                }
-                
+                ctr++;
             }
         }
 

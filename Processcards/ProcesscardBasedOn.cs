@@ -83,42 +83,39 @@ namespace DigitalProductionProgram.Processcards
                     FROM Processcard.MainData WHERE PartID = @partid";
 
 
-            using (var con = new SqlConnection(Database.cs_Protocol))
+            using var con = new SqlConnection(Database.cs_Protocol);
+            var cmd = new SqlCommand(query, con);
+            SQL_Parameter.NullableINT(cmd.Parameters, "@partid", Order.PartID);
+
+            con.Open();
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
             {
-                var cmd = new SqlCommand(query, con);
-                SQL_Parameter.NullableINT(cmd.Parameters, "@partid", Order.PartID);
+                bool.TryParse(reader["Historiska_Data"].ToString(), out IsHistoricalData);
+                rb_HistoricalData.Checked = IsHistoricalData;
+                bool.TryParse(reader["Validerat"].ToString(), out IsValidated);
+                rb_Validated.Checked = IsValidated;
+                bool.TryParse(reader["Framtagning_Processfönster"].ToString(), out IsUnderDevelopment);
+                rb_FramtagningAvProcessfönster.Checked = IsUnderDevelopment;
 
-                con.Open();
-                var reader = cmd.ExecuteReader();
-                while (reader.Read())
+
+
+                if (DateTime.TryParse(reader["GodkäntDatum"].ToString(), out var date))
                 {
-                    bool.TryParse(reader["Historiska_Data"].ToString(), out IsHistoricalData);
-                    rb_HistoricalData.Checked = IsHistoricalData;
-                    bool.TryParse(reader["Validerat"].ToString(), out IsValidated);
-                    rb_Validated.Checked = IsValidated;
-                    bool.TryParse(reader["Framtagning_Processfönster"].ToString(), out IsUnderDevelopment);
-                    rb_FramtagningAvProcessfönster.Checked = IsUnderDevelopment;
-
-
-
-                    if (DateTime.TryParse(reader["GodkäntDatum"].ToString(), out var date))
-                    {
-                        var dateTimeFormat = CultureInfo.CurrentCulture.DateTimeFormat;
-                        var formattedDate = date.ToString($"{dateTimeFormat.ShortDatePattern}", CultureInfo.CurrentCulture);
-                        lbl_ApprovedDate.Text = formattedDate;
-                    }
-                    else
-                        lbl_ApprovedDate.Text = "N/A";
-
-                    tb_Validerade_Loter.Text = reader["Validerade_Loter"].ToString();
-                    lbl_RevNr.Text = reader["RevNr"].ToString();
-                    lbl_UpprättatAv_Sign_AnstNr.Text = reader["UpprättatAv_Sign_AnstNr"].ToString();
-                    lbl_QA_Sign.Text = reader["QA_sign"].ToString();
-
+                    var dateTimeFormat = CultureInfo.CurrentCulture.DateTimeFormat;
+                    var formattedDate = date.ToString($"{dateTimeFormat.ShortDatePattern}", CultureInfo.CurrentCulture);
+                    lbl_ApprovedDate.Text = formattedDate;
                 }
-                reader.Close();
-               
+                else
+                    lbl_ApprovedDate.Text = "N/A";
+
+                tb_Validerade_Loter.Text = reader["Validerade_Loter"].ToString();
+                lbl_RevNr.Text = reader["RevNr"].ToString();
+                lbl_UpprättatAv_Sign_AnstNr.Text = reader["UpprättatAv_Sign_AnstNr"].ToString();
+                lbl_QA_Sign.Text = reader["QA_sign"].ToString();
+
             }
+            reader.Close();
         }
 
         private void FramtagningAvProcessfönster_CheckedChanged(object sender, EventArgs e)

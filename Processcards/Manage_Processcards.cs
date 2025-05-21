@@ -276,6 +276,7 @@ namespace DigitalProductionProgram.Processcards
             Set_Height_tlp_Protocol();
 
             ProcesscardBasedOn.lbl_RevNr.Click += RevNrChanged;
+            this.SizeChanged += (s, e) => Change_Width();
         }
 
        
@@ -693,7 +694,29 @@ namespace DigitalProductionProgram.Processcards
         {
             tlp_Machines.Controls.Clear();
             if (tlp_Machines.ColumnCount > 1)
+            {
+                int columnToRemove = tlp_Machines.ColumnCount - 1;
+
+                // 1. Ta bort kontroller i kolumnen
+                for (int i = tlp_Machines.Controls.Count - 1; i >= 0; i--)
+                {
+                    var control = tlp_Machines.Controls[i];
+                    var position = tlp_Machines.GetColumn(control);
+                    if (position == columnToRemove)
+                    {
+                        tlp_Machines.Controls.RemoveAt(i);
+                    }
+                }
+
+                // 2. Ta bort ColumnStyle
+                if (tlp_Machines.ColumnStyles.Count > columnToRemove)
+                    tlp_Machines.ColumnStyles.RemoveAt(columnToRemove);
+
+                // 3. Sänk ColumnCount
                 tlp_Machines.ColumnCount--;
+
+            }
+
         }
         private void LoadTemplate()
         {
@@ -721,9 +744,9 @@ namespace DigitalProductionProgram.Processcards
             if (Machine.Is_MultipleMachines)
             {
                 tlp_Machines.ColumnCount++;
-               
-                for (var i = 0; i < tlp_Machines.ColumnCount; i++)
-                    tlp_Machines.ColumnStyles[i] = new ColumnStyle(SizeType.Percent, 100f / tlp_Machines.ColumnCount);
+                tlp_Machines.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 50));
+                //for (var i = 0; i < tlp_Machines.ColumnCount; i++)
+                // tlp_Machines.ColumnStyles[i] = new ColumnStyle(SizeType.Absolute, 100f / tlp_Machines.ColumnCount);
                 AddMachine(1, 2, ref width);
             }
             //tlp_Main.ColumnStyles[0].Width = width + 26;
@@ -750,44 +773,39 @@ namespace DigitalProductionProgram.Processcards
             };
             //Tar bort Uppstart eftersom det inte skall användas vid processkortshantering
             machine.Remove_StartUp();
-            width -= 180;
             tlp_Machines.Controls.Add(machine);
             tlp_Machines.SetCellPosition(machine, new TableLayoutPanelCellPosition(columnIndex, 0));
-           
+
         }
 
         private void Change_Width()
         {
             var totalWidth = 0;
-            var colCounter = 0;
+            var ctr = 0;
             foreach (Machine machine in tlp_Machines.Controls)
             {
-                var width = 0;
                 // Hämta första modulen i denna maskin
                 var firstModule = machine.tlp_Machine.Controls
                     .OfType<Module>()
                     .FirstOrDefault();
-
                 if (firstModule == null)
                     continue;
 
-                foreach (DataGridView dgv in firstModule.Controls.OfType<DataGridView>())
-                {
-                    foreach (DataGridViewColumn col in dgv.Columns.Cast<DataGridViewColumn>().Where(c => c.Visible))
-                        //if (col.Visible)
-                    {
-                        width += col.Width;
-                        colCounter++;
-                    }
-                }
-               // firstModule.Width = 50; //width
+                var width = firstModule.Controls.
+                    OfType<DataGridView>().
+                    Sum(dgv => dgv.Columns.
+                        Cast<DataGridViewColumn>().
+                        Where(c => c.Visible).
+                        Sum(col => col.Width));
+                if (machine.tlp_Machine.VerticalScroll.Visible)
+                    width += SystemInformation.VerticalScrollBarWidth;
+                width += 20; //LabelLeftHeader
+                tlp_Machines.ColumnStyles[ctr].Width = width;
                 totalWidth += width;
+                ctr++;
             }
 
-            //MessageBox.Show($"Width = {width}");
-            //MessageBox.Show($"colCounter = {colCounter}");
-            tlp_Machines.ColumnStyles[0].Width = 150; //totalWidth + 15;
-            // width innehåller nu summan av kolumnbredder för första modulen i varje maskin
+            tlp_Main.ColumnStyles[0].Width = totalWidth + 16;
         }
 
 

@@ -188,27 +188,62 @@ namespace DigitalProductionProgram.Protocols.Protocol
         {
             foreach (var module in modules)
             {
-
                 var dgv = module.Controls.OfType<DataGridView>().FirstOrDefault();
-                int firstDisplayedColumnIndex = dgv.FirstDisplayedScrollingColumnIndex;
-                if (firstDisplayedColumnIndex < dgv.Columns.Count - 1)
+                if (dgv == null) continue;
+
+                int currentIndex = dgv.FirstDisplayedScrollingColumnIndex;
+
+                int nextIndex = -1;
+                for (int i = currentIndex + 1; i < dgv.Columns.Count; i++)
                 {
-                    dgv.FirstDisplayedScrollingColumnIndex = firstDisplayedColumnIndex + 1;
+                    var col = dgv.Columns[i];
+                    if (col.Visible && !col.Frozen)
+                    {
+                        nextIndex = i;
+                        break;
+                    }
+                }
+
+                if (nextIndex != -1)
+                {
+                    dgv.FirstDisplayedScrollingColumnIndex = nextIndex;
                 }
             }
         }
+
+
         private void ScrollLeft()
         {
             foreach (var module in modules)
             {
                 var dgv = module.Controls.OfType<DataGridView>().FirstOrDefault();
-                var firstDisplayedColumnIndex = dgv.FirstDisplayedScrollingColumnIndex;
-                var lastcolumn = dgv.Columns["col_MAX"].Index + 1;
-                if (firstDisplayedColumnIndex > lastcolumn)
+                if (dgv == null) continue;
+
+                int currentIndex = dgv.FirstDisplayedScrollingColumnIndex;
+
+                // col_MAX används som stopp, annars 0
+                int stopIndex = dgv.Columns.Contains("col_MAX")
+                    ? dgv.Columns["col_MAX"].Index + 1
+                    : 0;
+
+                int prevIndex = -1;
+
+                for (int i = currentIndex - 1; i >= stopIndex; i--)
                 {
-                    dgv.FirstDisplayedScrollingColumnIndex = firstDisplayedColumnIndex - 1;
+                    var col = dgv.Columns[i];
+                    if (col.Visible && !col.Frozen)
+                    {
+                        prevIndex = i;
+                        break;
+                    }
+                }
+
+                if (prevIndex != -1)
+                {
+                    dgv.FirstDisplayedScrollingColumnIndex = prevIndex;
                 }
             }
         }
+
     }
 }

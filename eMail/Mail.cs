@@ -136,21 +136,19 @@ namespace DigitalProductionProgram.eMail
                         $"ProdGroup: {Order.ProdGroup}<br />" +
                         $"WorkOperation: {Order.WorkOperation}<br /><br />";
 
-                using (var con = new SqlConnection(Database.cs_Protocol))
+                using var con = new SqlConnection(Database.cs_Protocol);
+                const string query = "SELECT * FROM Processcard.ProposedChanges WHERE OrderID = @orderid ORDER BY Datum";
+                con.Open();
+                var cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
+                var reader = cmd.ExecuteReader();
+                if (reader.HasRows == false)
+                    return;
+                while (reader.Read())
                 {
-                    const string query = "SELECT * FROM Processcard.ProposedChanges WHERE OrderID = @orderid ORDER BY Datum";
-                    con.Open();
-                    var cmd = new SqlCommand(query, con);
-                    cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
-                    var reader = cmd.ExecuteReader();
-                    if (reader.HasRows == false)
-                        return;
-                    while (reader.Read())
-                    {
-                        Body += $"{reader["Rubrik"]}</b> <br />" +
-                                $"{reader["Meddelande"]}" +
-                                "<br /><br />";
-                    }
+                    Body += $"{reader["Rubrik"]}</b> <br />" +
+                            $"{reader["Meddelande"]}" +
+                            "<br /><br />";
                 }
             }
 

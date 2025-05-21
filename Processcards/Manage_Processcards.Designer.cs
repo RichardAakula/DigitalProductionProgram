@@ -448,7 +448,7 @@ namespace DigitalProductionProgram.Processcards
             tp_Protocol.Location = new Point(4, 24);
             tp_Protocol.Name = "tp_Protocol";
             tp_Protocol.Padding = new Padding(3);
-            tp_Protocol.Size = new Size(192, 72);
+            tp_Protocol.Size = new Size(736, 1002);
             tp_Protocol.TabIndex = 20;
             tp_Protocol.Text = "Protocol";
             tp_Protocol.UseVisualStyleBackColor = true;
@@ -458,14 +458,14 @@ namespace DigitalProductionProgram.Processcards
             tlp_Machines.AutoScroll = true;
             tlp_Machines.BackColor = Color.FromArgb(60, 60, 60);
             tlp_Machines.ColumnCount = 1;
-            tlp_Machines.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
-            tlp_Machines.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 20F));
+            tlp_Machines.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 150F));
             tlp_Machines.Dock = DockStyle.Fill;
             tlp_Machines.Location = new Point(3, 3);
+            tlp_Machines.Margin = new Padding(0);
             tlp_Machines.Name = "tlp_Machines";
             tlp_Machines.RowCount = 1;
             tlp_Machines.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            tlp_Machines.Size = new Size(186, 66);
+            tlp_Machines.Size = new Size(730, 996);
             tlp_Machines.TabIndex = 903;
             // 
             // tlp_Processkort_Top

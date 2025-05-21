@@ -49,15 +49,13 @@ namespace DigitalProductionProgram.OrderManagement
             {
                 if (WorkOperation == WorkOperations.Nothing)
                     return 0;
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    const string query = "SELECT ID FROM Workoperation.Names WHERE Name = @workoperation AND ID IS NOT NULL";
-                    con.Open();
-                    var cmd = new SqlCommand(query, con);
-                    cmd.Parameters.AddWithValue("@workoperation", WorkOperation.ToString());
-                    var value = cmd.ExecuteScalar();
-                    return int.Parse(value.ToString());
-                }
+                using var con = new SqlConnection(Database.cs_Protocol);
+                const string query = "SELECT ID FROM Workoperation.Names WHERE Name = @workoperation AND ID IS NOT NULL";
+                con.Open();
+                var cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@workoperation", WorkOperation.ToString());
+                var value = cmd.ExecuteScalar();
+                return int.Parse(value.ToString());
             }
         }
         public static string? OrderNumber { get; set; }
@@ -689,9 +687,8 @@ namespace DigitalProductionProgram.OrderManagement
 
         public static void DELETE_Order()
         {
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                const string query = @"
+            using var con = new SqlConnection(Database.cs_Protocol);
+            const string query = @"
                     BEGIN TRANSACTION
                         DELETE FROM [Order].Compound WHERE OrderID = @id
                         DELETE FROM [Order].Compound_Main WHERE OrderID = @id
@@ -713,11 +710,10 @@ namespace DigitalProductionProgram.OrderManagement
                         DELETE FROM Zumbach.Measurements WHERE OrderID = @id
                     COMMIT TRANSACTION";
 
-                var cmd = new SqlCommand(query, con);
-                cmd.Parameters.AddWithValue("@id", OrderID);
-                con.Open();
-                cmd.ExecuteNonQuery();
-            }
+            var cmd = new SqlCommand(query, con);
+            cmd.Parameters.AddWithValue("@id", OrderID);
+            con.Open();
+            cmd.ExecuteNonQuery();
         }
 
 

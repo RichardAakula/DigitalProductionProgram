@@ -13,11 +13,11 @@ using System.Reflection;
 
 [assembly: System.Reflection.AssemblyCompanyAttribute("DigitalProductionProgram")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
-[assembly: System.Reflection.AssemblyFileVersionAttribute("4.3.8.3")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0c0ec0f0ee990e52c98f75cde1034ba12c265fc1")]
+[assembly: System.Reflection.AssemblyFileVersionAttribute("4.3.8.6")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+fb3139d7253c31bcd88077380614c95fafbcac73")]
 [assembly: System.Reflection.AssemblyProductAttribute("DigitalProductionProgram")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DigitalProductionProgram")]
-[assembly: System.Reflection.AssemblyVersionAttribute("4.3.8.3")]
+[assembly: System.Reflection.AssemblyVersionAttribute("4.3.8.6")]
 [assembly: System.Runtime.Versioning.TargetPlatformAttribute("Windows7.0")]
 [assembly: System.Runtime.Versioning.SupportedOSPlatformAttribute("Windows7.0")]
 

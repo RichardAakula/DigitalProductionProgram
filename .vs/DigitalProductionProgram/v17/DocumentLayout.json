@@ -3,36 +3,28 @@
   "WorkspaceRootPath": "C:\\Users\\RICHARDA\\Documents\\Visual Studio 2022\\Projects\\DigitalProductionProgram\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{6674A660-9B6A-4413-B538-229C62AEBB35}|DigitalProductionProgram.csproj|c:\\users\\richarda\\documents\\visual studio 2022\\projects\\digitalproductionprogram\\processcards\\manage_processcards.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{6674A660-9B6A-4413-B538-229C62AEBB35}|DigitalProductionProgram.csproj|solutionrelative:processcards\\manage_processcards.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{6674A660-9B6A-4413-B538-229C62AEBB35}|DigitalProductionProgram.csproj|c:\\users\\richarda\\documents\\visual studio 2022\\projects\\digitalproductionprogram\\processcards\\processcardtemplateselector.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6674A660-9B6A-4413-B538-229C62AEBB35}|DigitalProductionProgram.csproj|solutionrelative:processcards\\processcardtemplateselector.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{6674A660-9B6A-4413-B538-229C62AEBB35}|DigitalProductionProgram.csproj|c:\\users\\richarda\\documents\\visual studio 2022\\projects\\digitalproductionprogram\\eastereggs\\easteregg_code.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
-      "RelativeMoniker": "D:0:0:{6674A660-9B6A-4413-B538-229C62AEBB35}|DigitalProductionProgram.csproj|solutionrelative:eastereggs\\easteregg_code.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+      "AbsoluteMoniker": "D:0:0:{6674A660-9B6A-4413-B538-229C62AEBB35}|DigitalProductionProgram.csproj|c:\\users\\richarda\\documents\\visual studio 2022\\projects\\digitalproductionprogram\\processcards\\processcardtemplateselector.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{6674A660-9B6A-4413-B538-229C62AEBB35}|DigitalProductionProgram.csproj|solutionrelative:processcards\\processcardtemplateselector.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{6674A660-9B6A-4413-B538-229C62AEBB35}|DigitalProductionProgram.csproj|c:\\users\\richarda\\documents\\visual studio 2022\\projects\\digitalproductionprogram\\processcards\\manage_processcards.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "AbsoluteMoniker": "D:0:0:{6674A660-9B6A-4413-B538-229C62AEBB35}|DigitalProductionProgram.csproj|c:\\users\\richarda\\documents\\visual studio 2022\\projects\\digitalproductionprogram\\mainwindow\\main_menu.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6674A660-9B6A-4413-B538-229C62AEBB35}|DigitalProductionProgram.csproj|solutionrelative:mainwindow\\main_menu.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6674A660-9B6A-4413-B538-229C62AEBB35}|DigitalProductionProgram.csproj|c:\\users\\richarda\\documents\\visual studio 2022\\projects\\digitalproductionprogram\\mainwindow\\main_menu.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{6674A660-9B6A-4413-B538-229C62AEBB35}|DigitalProductionProgram.csproj|solutionrelative:mainwindow\\main_menu.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6674A660-9B6A-4413-B538-229C62AEBB35}|DigitalProductionProgram.csproj|C:\\Users\\RICHARDA\\Documents\\Visual Studio 2022\\Projects\\DigitalProductionProgram\\processcards\\manage_processcards.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
       "RelativeMoniker": "D:0:0:{6674A660-9B6A-4413-B538-229C62AEBB35}|DigitalProductionProgram.csproj|solutionrelative:processcards\\manage_processcards.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{6674A660-9B6A-4413-B538-229C62AEBB35}|DigitalProductionProgram.csproj|c:\\users\\richarda\\documents\\visual studio 2022\\projects\\digitalproductionprogram\\eastereggs\\codewheel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{6674A660-9B6A-4413-B538-229C62AEBB35}|DigitalProductionProgram.csproj|solutionrelative:eastereggs\\codewheel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{6674A660-9B6A-4413-B538-229C62AEBB35}|DigitalProductionProgram.csproj|c:\\users\\richarda\\documents\\visual studio 2022\\projects\\digitalproductionprogram\\protocols\\protocol\\module.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
-      "RelativeMoniker": "D:0:0:{6674A660-9B6A-4413-B538-229C62AEBB35}|DigitalProductionProgram.csproj|solutionrelative:protocols\\protocol\\module.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{6674A660-9B6A-4413-B538-229C62AEBB35}|DigitalProductionProgram.csproj|c:\\users\\richarda\\documents\\visual studio 2022\\projects\\digitalproductionprogram\\protocols\\protocol\\machine.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
-      "RelativeMoniker": "D:0:0:{6674A660-9B6A-4413-B538-229C62AEBB35}|DigitalProductionProgram.csproj|solutionrelative:protocols\\protocol\\machine.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{6674A660-9B6A-4413-B538-229C62AEBB35}|DigitalProductionProgram.csproj|c:\\users\\richarda\\documents\\visual studio 2022\\projects\\digitalproductionprogram\\mainwindow\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{6674A660-9B6A-4413-B538-229C62AEBB35}|DigitalProductionProgram.csproj|solutionrelative:mainwindow\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{6674A660-9B6A-4413-B538-229C62AEBB35}|DigitalProductionProgram.csproj|c:\\users\\richarda\\documents\\visual studio 2022\\projects\\digitalproductionprogram\\eastereggs\\codewheel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
-      "RelativeMoniker": "D:0:0:{6674A660-9B6A-4413-B538-229C62AEBB35}|DigitalProductionProgram.csproj|solutionrelative:eastereggs\\codewheel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+      "AbsoluteMoniker": "D:0:0:{6674A660-9B6A-4413-B538-229C62AEBB35}|DigitalProductionProgram.csproj|c:\\users\\richarda\\documents\\visual studio 2022\\projects\\digitalproductionprogram\\processcards\\manage_processcards.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6674A660-9B6A-4413-B538-229C62AEBB35}|DigitalProductionProgram.csproj|solutionrelative:processcards\\manage_processcards.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{6674A660-9B6A-4413-B538-229C62AEBB35}|DigitalProductionProgram.csproj|c:\\users\\richarda\\documents\\visual studio 2022\\projects\\digitalproductionprogram\\eastereggs\\easteregg_code.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -41,6 +33,26 @@
     {
       "AbsoluteMoniker": "D:0:0:{6674A660-9B6A-4413-B538-229C62AEBB35}|DigitalProductionProgram.csproj|c:\\users\\richarda\\documents\\visual studio 2022\\projects\\digitalproductionprogram\\mainwindow\\main_form.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{6674A660-9B6A-4413-B538-229C62AEBB35}|DigitalProductionProgram.csproj|solutionrelative:mainwindow\\main_form.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6674A660-9B6A-4413-B538-229C62AEBB35}|DigitalProductionProgram.csproj|c:\\users\\richarda\\documents\\visual studio 2022\\projects\\digitalproductionprogram\\mainwindow\\main_orderinformation.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6674A660-9B6A-4413-B538-229C62AEBB35}|DigitalProductionProgram.csproj|solutionrelative:mainwindow\\main_orderinformation.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6674A660-9B6A-4413-B538-229C62AEBB35}|DigitalProductionProgram.csproj|c:\\users\\richarda\\documents\\visual studio 2022\\projects\\digitalproductionprogram\\eastereggs\\codewheel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6674A660-9B6A-4413-B538-229C62AEBB35}|DigitalProductionProgram.csproj|solutionrelative:eastereggs\\codewheel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6674A660-9B6A-4413-B538-229C62AEBB35}|DigitalProductionProgram.csproj|C:\\Users\\RICHARDA\\Documents\\Visual Studio 2022\\Projects\\DigitalProductionProgram\\eastereggs\\easteregg_code.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{6674A660-9B6A-4413-B538-229C62AEBB35}|DigitalProductionProgram.csproj|solutionrelative:eastereggs\\easteregg_code.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6674A660-9B6A-4413-B538-229C62AEBB35}|DigitalProductionProgram.csproj|c:\\users\\richarda\\documents\\visual studio 2022\\projects\\digitalproductionprogram\\mainwindow\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6674A660-9B6A-4413-B538-229C62AEBB35}|DigitalProductionProgram.csproj|solutionrelative:mainwindow\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6674A660-9B6A-4413-B538-229C62AEBB35}|DigitalProductionProgram.csproj|C:\\Users\\RICHARDA\\Documents\\Visual Studio 2022\\Projects\\DigitalProductionProgram\\eastereggs\\codewheel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{6674A660-9B6A-4413-B538-229C62AEBB35}|DigitalProductionProgram.csproj|solutionrelative:eastereggs\\codewheel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     }
   ],
   "DocumentGroupContainers": [
@@ -54,7 +66,7 @@
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 10,
               "Title": "EasterEgg_Code.cs [Design]",
               "DocumentMoniker": "C:\\Users\\RICHARDA\\Documents\\Visual Studio 2022\\Projects\\DigitalProductionProgram\\EasterEggs\\EasterEgg_Code.cs",
               "RelativeDocumentMoniker": "EasterEggs\\EasterEgg_Code.cs",
@@ -67,13 +79,13 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 6,
               "Title": "EasterEgg_Code.cs",
               "DocumentMoniker": "C:\\Users\\RICHARDA\\Documents\\Visual Studio 2022\\Projects\\DigitalProductionProgram\\EasterEggs\\EasterEgg_Code.cs",
               "RelativeDocumentMoniker": "EasterEggs\\EasterEgg_Code.cs",
               "ToolTip": "C:\\Users\\RICHARDA\\Documents\\Visual Studio 2022\\Projects\\DigitalProductionProgram\\EasterEggs\\EasterEgg_Code.cs",
               "RelativeToolTip": "EasterEggs\\EasterEgg_Code.cs",
-              "ViewState": "AgIAAA8AAAAAAAAAAAAowDQAAAAJAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACgAAAAsAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-05-19T09:55:47.605Z",
               "IsPinned": true,
@@ -81,7 +93,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 12,
               "Title": "CodeWheel.cs [Design]",
               "DocumentMoniker": "C:\\Users\\RICHARDA\\Documents\\Visual Studio 2022\\Projects\\DigitalProductionProgram\\EasterEggs\\CodeWheel.cs",
               "RelativeDocumentMoniker": "EasterEggs\\CodeWheel.cs",
@@ -89,97 +101,132 @@
               "RelativeToolTip": "EasterEggs\\CodeWheel.cs [Design]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-05-19T09:49:41.186Z",
-              "IsPinned": true,
-              "EditorCaption": " [Design]"
+              "IsPinned": true
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 9,
               "Title": "CodeWheel.cs",
               "DocumentMoniker": "C:\\Users\\RICHARDA\\Documents\\Visual Studio 2022\\Projects\\DigitalProductionProgram\\EasterEggs\\CodeWheel.cs",
               "RelativeDocumentMoniker": "EasterEggs\\CodeWheel.cs",
               "ToolTip": "C:\\Users\\RICHARDA\\Documents\\Visual Studio 2022\\Projects\\DigitalProductionProgram\\EasterEggs\\CodeWheel.cs",
               "RelativeToolTip": "EasterEggs\\CodeWheel.cs",
-              "ViewState": "AgIAAAcAAAAAAAAAAAAQwC8AAAA+AAAAAAAAAA==",
+              "ViewState": "AgIAAAcAAAAAAAAAAAAQwEEAAAA+AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-05-19T09:49:44.241Z",
-              "IsPinned": true,
+              "IsPinned": true
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "ProcesscardTemplateSelector.cs [Design]",
+              "DocumentMoniker": "C:\\Users\\RICHARDA\\Documents\\Visual Studio 2022\\Projects\\DigitalProductionProgram\\Processcards\\ProcesscardTemplateSelector.cs",
+              "RelativeDocumentMoniker": "Processcards\\ProcesscardTemplateSelector.cs",
+              "ToolTip": "C:\\Users\\RICHARDA\\Documents\\Visual Studio 2022\\Projects\\DigitalProductionProgram\\Processcards\\ProcesscardTemplateSelector.cs [Design]*",
+              "RelativeToolTip": "Processcards\\ProcesscardTemplateSelector.cs [Design]*",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-22T07:09:21.504Z",
+              "EditorCaption": " [Design]"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "ProcesscardTemplateSelector.cs",
+              "DocumentMoniker": "C:\\Users\\RICHARDA\\Documents\\Visual Studio 2022\\Projects\\DigitalProductionProgram\\Processcards\\ProcesscardTemplateSelector.cs",
+              "RelativeDocumentMoniker": "Processcards\\ProcesscardTemplateSelector.cs",
+              "ToolTip": "C:\\Users\\RICHARDA\\Documents\\Visual Studio 2022\\Projects\\DigitalProductionProgram\\Processcards\\ProcesscardTemplateSelector.cs*",
+              "RelativeToolTip": "Processcards\\ProcesscardTemplateSelector.cs*",
+              "ViewState": "AgIAADIAAAAAAAAAAAAgwKcAAAAcAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-22T07:09:06.127Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
+              "Title": "Main_Menu.cs",
+              "DocumentMoniker": "C:\\Users\\RICHARDA\\Documents\\Visual Studio 2022\\Projects\\DigitalProductionProgram\\MainWindow\\Main_Menu.cs",
+              "RelativeDocumentMoniker": "MainWindow\\Main_Menu.cs",
+              "ToolTip": "C:\\Users\\RICHARDA\\Documents\\Visual Studio 2022\\Projects\\DigitalProductionProgram\\MainWindow\\Main_Menu.cs",
+              "RelativeToolTip": "MainWindow\\Main_Menu.cs",
+              "ViewState": "AgIAAEUAAAAAAAAAAAAgwCgBAAAMAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-22T06:51:05.876Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Main_Menu.cs [Design]",
+              "DocumentMoniker": "C:\\Users\\RICHARDA\\Documents\\Visual Studio 2022\\Projects\\DigitalProductionProgram\\MainWindow\\Main_Menu.cs",
+              "RelativeDocumentMoniker": "MainWindow\\Main_Menu.cs",
+              "ToolTip": "C:\\Users\\RICHARDA\\Documents\\Visual Studio 2022\\Projects\\DigitalProductionProgram\\MainWindow\\Main_Menu.cs [Design]",
+              "RelativeToolTip": "MainWindow\\Main_Menu.cs [Design]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-22T06:50:50.214Z",
+              "EditorCaption": " [Design]"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "Manage_Processcards.cs",
+              "DocumentMoniker": "C:\\Users\\RICHARDA\\Documents\\Visual Studio 2022\\Projects\\DigitalProductionProgram\\Processcards\\Manage_Processcards.cs",
+              "RelativeDocumentMoniker": "Processcards\\Manage_Processcards.cs",
+              "ToolTip": "C:\\Users\\RICHARDA\\Documents\\Visual Studio 2022\\Projects\\DigitalProductionProgram\\Processcards\\Manage_Processcards.cs",
+              "RelativeToolTip": "Processcards\\Manage_Processcards.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACgBAAB9AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-22T06:18:18.868Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
               "Title": "Manage_Processcards.cs [Design]",
               "DocumentMoniker": "C:\\Users\\RICHARDA\\Documents\\Visual Studio 2022\\Projects\\DigitalProductionProgram\\Processcards\\Manage_Processcards.cs",
               "RelativeDocumentMoniker": "Processcards\\Manage_Processcards.cs",
-              "ToolTip": "C:\\Users\\RICHARDA\\Documents\\Visual Studio 2022\\Projects\\DigitalProductionProgram\\Processcards\\Manage_Processcards.cs [Design]*",
-              "RelativeToolTip": "Processcards\\Manage_Processcards.cs [Design]*",
+              "ToolTip": "C:\\Users\\RICHARDA\\Documents\\Visual Studio 2022\\Projects\\DigitalProductionProgram\\Processcards\\Manage_Processcards.cs [Design]",
+              "RelativeToolTip": "Processcards\\Manage_Processcards.cs [Design]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-05-21T09:20:05.235Z",
               "EditorCaption": " [Design]"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "Manage_Processcards.cs",
-              "DocumentMoniker": "C:\\Users\\RICHARDA\\Documents\\Visual Studio 2022\\Projects\\DigitalProductionProgram\\Processcards\\Manage_Processcards.cs",
-              "RelativeDocumentMoniker": "Processcards\\Manage_Processcards.cs",
-              "ToolTip": "C:\\Users\\RICHARDA\\Documents\\Visual Studio 2022\\Projects\\DigitalProductionProgram\\Processcards\\Manage_Processcards.cs*",
-              "RelativeToolTip": "Processcards\\Manage_Processcards.cs*",
-              "ViewState": "AgIAAAUDAAAAAAAAAAAkwCgDAAAJAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-20T06:18:43.587Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "Machine.cs [Design]",
-              "DocumentMoniker": "C:\\Users\\RICHARDA\\Documents\\Visual Studio 2022\\Projects\\DigitalProductionProgram\\Protocols\\Protocol\\Machine.cs",
-              "RelativeDocumentMoniker": "Protocols\\Protocol\\Machine.cs",
-              "ToolTip": "C:\\Users\\RICHARDA\\Documents\\Visual Studio 2022\\Projects\\DigitalProductionProgram\\Protocols\\Protocol\\Machine.cs [Design]",
-              "RelativeToolTip": "Protocols\\Protocol\\Machine.cs [Design]",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-21T10:18:03.109Z",
-              "EditorCaption": " [Design]"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "Module.cs [Design]",
-              "DocumentMoniker": "C:\\Users\\RICHARDA\\Documents\\Visual Studio 2022\\Projects\\DigitalProductionProgram\\Protocols\\Protocol\\Module.cs",
-              "RelativeDocumentMoniker": "Protocols\\Protocol\\Module.cs",
-              "ToolTip": "C:\\Users\\RICHARDA\\Documents\\Visual Studio 2022\\Projects\\DigitalProductionProgram\\Protocols\\Protocol\\Module.cs [Design]",
-              "RelativeToolTip": "Protocols\\Protocol\\Module.cs [Design]",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-21T10:18:05.249Z",
-              "EditorCaption": " [Design]"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 11,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\RICHARDA\\Documents\\Visual Studio 2022\\Projects\\DigitalProductionProgram\\MainWindow\\Program.cs",
               "RelativeDocumentMoniker": "MainWindow\\Program.cs",
               "ToolTip": "C:\\Users\\RICHARDA\\Documents\\Visual Studio 2022\\Projects\\DigitalProductionProgram\\MainWindow\\Program.cs",
               "RelativeToolTip": "MainWindow\\Program.cs",
-              "ViewState": "AgIAABcAAAAAAAAAAAAAAG0AAAAnAAAAAAAAAA==",
+              "ViewState": "AgIAABcAAAAAAAAAAAAAAGsAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-21T09:10:57.952Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-21T09:10:57.952Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 7,
               "Title": "Main_Form.cs",
               "DocumentMoniker": "C:\\Users\\RICHARDA\\Documents\\Visual Studio 2022\\Projects\\DigitalProductionProgram\\MainWindow\\Main_Form.cs",
               "RelativeDocumentMoniker": "MainWindow\\Main_Form.cs",
               "ToolTip": "C:\\Users\\RICHARDA\\Documents\\Visual Studio 2022\\Projects\\DigitalProductionProgram\\MainWindow\\Main_Form.cs",
               "RelativeToolTip": "MainWindow\\Main_Form.cs",
-              "ViewState": "AgIAAI8DAAAAAAAAAAAAAM4DAAANAAAAAAAAAA==",
+              "ViewState": "AgIAAFYDAAAAAAAAAAApwHkDAAAtAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-05-19T07:47:00.435Z",
               "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "Main_OrderInformation.cs",
+              "DocumentMoniker": "C:\\Users\\RICHARDA\\Documents\\Visual Studio 2022\\Projects\\DigitalProductionProgram\\MainWindow\\Main_OrderInformation.cs",
+              "RelativeDocumentMoniker": "MainWindow\\Main_OrderInformation.cs",
+              "ToolTip": "C:\\Users\\RICHARDA\\Documents\\Visual Studio 2022\\Projects\\DigitalProductionProgram\\MainWindow\\Main_OrderInformation.cs",
+              "RelativeToolTip": "MainWindow\\Main_OrderInformation.cs",
+              "ViewState": "AgIAAB0BAAAAAAAAAAApwDcBAAAIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-21T11:52:32.163Z"
             }
           ]
         }

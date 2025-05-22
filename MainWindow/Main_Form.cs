@@ -121,8 +121,8 @@ namespace DigitalProductionProgram.MainWindow
         private readonly BlackBackground black;
         private FlyingEasterEgg? flyingEgg;
         public static ProgressBar pBar;
-        private Timer eggTimer;
-        private Bitmap easterEggImage;
+        private Timer? eggTimer;
+        private Bitmap? easterEggImage;
         private Point eggPosition;
         private Random rand = new Random();
 
@@ -197,6 +197,7 @@ namespace DigitalProductionProgram.MainWindow
 
             Mail.AutoTestJira();
             CheckForMaintenanceWork();
+           
         }
 
         private async void MainForm_Load(object sender, EventArgs e)
@@ -238,8 +239,8 @@ namespace DigitalProductionProgram.MainWindow
         private void AUTOLOGIN_SUPERADMIN()
         {
             IsLoadingPriorityPlan = true;
-            IsLoadingMeasurePoints = true;
-
+            
+            
             //if (Database.IsGodby____ + Database.IsGodbyBeta + Database.IsGodbyThai + Database.IsThai_____ > 1)
 
             Person.Name = "Richard Aakula";
@@ -295,6 +296,8 @@ namespace DigitalProductionProgram.MainWindow
             //Calender.Fill_OnlineMonitorUsers();
 
             Task.Run(() => { ActiveOrdersUser.Load_OrderNr(OrderInformation); });
+            _ = EasterEgg_Code.IsGameStarted;
+
 
             MainMenu.Visible = true;
             MainMenu.menuStrip.Visible = true;
@@ -884,6 +887,7 @@ namespace DigitalProductionProgram.MainWindow
             RollingInformation.Load_list_Tips();
 
             Task.Run(() => { ActiveOrdersUser.Load_OrderNr(OrderInformation); });
+            _ = EasterEgg_Code.IsGameStarted;
         }
         public void SignOut()
         {

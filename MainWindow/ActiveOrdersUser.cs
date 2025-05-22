@@ -11,11 +11,11 @@ namespace DigitalProductionProgram.MainWindow
 {
     public partial class ActiveOrdersUser :  UserControl
     {
-        private Main_OrderInformation orderInformation;
+        private Main_OrderInformation? orderInformation;
 
         private class OrderLabel : Label
         {
-            public string OrderID { get; set; }
+            public string? OrderID { get; init; }
         }
 
         public ActiveOrdersUser()
@@ -47,15 +47,14 @@ namespace DigitalProductionProgram.MainWindow
             foreach (var lbl in labels.Where(lbl => lbl != label_Header_ActiveOrders))
                 lbl.Invoke(new Action(() => DisposeControl(lbl)));
         }
-        public void Load_OrderNr(Main_OrderInformation OrderInformation)
+        public void Load_OrderNr(Main_OrderInformation? OrderInformation)
         {
            
             Clear_OrderNr();
             var ctr = 0;
             orderInformation = OrderInformation;
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                const string query = @"
+            using var con = new SqlConnection(Database.cs_Protocol);
+            const string query = @"
                     SELECT DISTINCT TOP(5) OrderNr, Operation, mp.OrderID,  Back_Red, Back_Green, Back_Blue, Fore_Red, Fore_Green, Fore_Blue
                     FROM Measureprotocol.MainData AS mp
                 JOIN[Order].MainData as main
@@ -104,42 +103,35 @@ namespace DigitalProductionProgram.MainWindow
 
                 ON main.WorkoperationID = workoperation.ID
                 WHERE AnstNr = @employeenumber AND main.IsOrderDone = 'False'";
-
-
-
-
-
-                var cmd = new SqlCommand(query, con);
-                con.Open();
-                cmd.Parameters.AddWithValue("@employeenumber", Person.EmployeeNr);
-                var thisyear = DateTime.Now.ToString("yyyy");
-                cmd.Parameters.AddWithValue("@thisyear", DateTime.Now.ToString("yyyy"));
-                var reader = cmd.ExecuteReader();
-                while (reader.Read())
+            var cmd = new SqlCommand(query, con);
+            con.Open();
+            cmd.Parameters.AddWithValue("@employeenumber", Person.EmployeeNr);
+            var thisyear = DateTime.Now.ToString("yyyy");
+            cmd.Parameters.AddWithValue("@thisyear", DateTime.Now.ToString("yyyy"));
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                var lbl = new OrderLabel
                 {
-                    var lbl = new OrderLabel
-                    {
-                        ForeColor = Color.FromArgb(int.Parse(reader["Fore_Red"].ToString()), int.Parse(reader["Fore_Green"].ToString()), int.Parse(reader["Fore_Blue"].ToString())),
-                        BackColor = Color.FromArgb(int.Parse(reader["Back_Red"].ToString()), int.Parse(reader["Back_Green"].ToString()), int.Parse(reader["Back_Blue"].ToString())),
-                        Text = $"{reader["OrderNr"]} - {reader["Operation"]}",
-                        OrderID = reader["OrderID"].ToString(),
-                        TextAlign = ContentAlignment.MiddleLeft,
-                        Padding = new Padding(5,0,0,0),
-                        Margin = new Padding(25, 0, 0, 1),
-                        AutoSize = false,
-                        Width = 180,
-                        Cursor = Cursors.Hand,
-                        Font = new Font("Arial", 10),
+                    ForeColor = Color.FromArgb(int.Parse(reader["Fore_Red"].ToString()), int.Parse(reader["Fore_Green"].ToString()), int.Parse(reader["Fore_Blue"].ToString())),
+                    BackColor = Color.FromArgb(int.Parse(reader["Back_Red"].ToString()), int.Parse(reader["Back_Green"].ToString()), int.Parse(reader["Back_Blue"].ToString())),
+                    Text = $"{reader["OrderNr"]} - {reader["Operation"]}",
+                    OrderID = reader["OrderID"].ToString(),
+                    TextAlign = ContentAlignment.MiddleLeft,
+                    Padding = new Padding(5,0,0,0),
+                    Margin = new Padding(25, 0, 0, 1),
+                    AutoSize = false,
+                    Width = 120,
+                    Cursor = Cursors.Hand,
+                    Font = new Font("Arial", 10),
                         
-                    };
-                    lbl.Click += OpenOrder_Click;
-                    flp_Main.Invoke(new Action(() => flp_Main.Controls.Add(lbl)));
-                    ctr++;
-                    if (ctr == 5)
-                        return;
-                }
+                };
+                lbl.Click += OpenOrder_Click;
+                flp_Main.Invoke(new Action(() => flp_Main.Controls.Add(lbl)));
+                ctr++;
+                if (ctr == 5)
+                    return;
             }
-
         }
         public void OpenOrder_Click(object sender, EventArgs e)
         {

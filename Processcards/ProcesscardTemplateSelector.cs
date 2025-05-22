@@ -103,7 +103,7 @@ namespace DigitalProductionProgram.Processcards
             if (totalLabels == 0)
                 _ = Activity.Stop("Problem - Välj ProduktionsLinje");
 
-            SetFormHeight();
+           
         }
         public ProcesscardTemplateSelector(TemplateType template)
         {
@@ -116,7 +116,7 @@ namespace DigitalProductionProgram.Processcards
                     label_Header.Text = "Välj mall för Körprotokoll/Processkort:\n" +
                                         "Detta Artikelnummer har ingen mall för Protokollet kopplat, det finns flera mallar som passar denna operation.";
                     Add_ProtocolTemplates();
-                break;
+                    break;
                 case TemplateType.TemplateMeasureProtocol:
                     tlp_InfoLabels.Visible = false;
                     label_Header.Text = "Välj mall för Mätprotokollet:\n" +
@@ -132,7 +132,7 @@ namespace DigitalProductionProgram.Processcards
             }
             SetFormHeight();
         }
-        
+
         private void ProcesscardTemplateSelector_Load(object sender, EventArgs e)
         {
             if (totalLabels == 1)
@@ -161,17 +161,20 @@ namespace DigitalProductionProgram.Processcards
             //    if (allSameWorkoperation)
             //        allButtons.First().PerformClick();
             //}
-                
-        }
 
+        }
+        private void ProcesscardTemplateSelector_Shown(object sender, EventArgs e)
+        {
+            SetFormHeight();
+        }
         private void Translate_Form()
         {
-            Control[] controls = { label_Header, label_Green, label_Brown, label_Orange, label_Red};
+            Control[] controls = { label_Header, label_Green, label_Brown, label_Orange, label_Red };
             LanguageManager.TranslationHelper.TranslateControls(controls);
         }
         private void Load_Processcard(bool IsOkSelectLatestRev)
         {
-            switch(Order.WorkOperation)
+            switch (Order.WorkOperation)
             {
                 case Manage_WorkOperation.WorkOperations.Hackning_TEF:
                 case Manage_WorkOperation.WorkOperations.Kragning_TEF:
@@ -201,15 +204,14 @@ namespace DigitalProductionProgram.Processcards
             }
         }
 
-       
 
-       
+
+
 
         private void Add_MultipleProcesscards(bool IsOkSelectLatestRev)
         {
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                const string query = @"
+            using var con = new SqlConnection(Database.cs_Protocol);
+            const string query = @"
                 WITH OrderedRevisions AS 
                 (
                     SELECT 
@@ -260,28 +262,27 @@ namespace DigitalProductionProgram.Processcards
                 ))
                 ORDER BY PartGroupID, RevNr DESC;";
 
-                var cmd = new SqlCommand(query, con);
-                cmd.Parameters.Add("@partnr", SqlDbType.NVarChar).Value = Order.PartNumber;
-                cmd.Parameters.Add("@workoperation", SqlDbType.NVarChar).Value = Order.WorkOperation.ToString();
-                cmd.Parameters.Add("@IsOkSelectLatestRev", SqlDbType.Bit).Value = IsOkSelectLatestRev;
+            var cmd = new SqlCommand(query, con);
+            cmd.Parameters.Add("@partnr", SqlDbType.NVarChar).Value = Order.PartNumber;
+            cmd.Parameters.Add("@workoperation", SqlDbType.NVarChar).Value = Order.WorkOperation.ToString();
+            cmd.Parameters.Add("@IsOkSelectLatestRev", SqlDbType.Bit).Value = IsOkSelectLatestRev;
 
-                con.Open();
-                var reader = cmd.ExecuteReader();
-                while (reader.Read())
-                {
-                    var text = $"{reader["ProdLine"]} / {reader["ProdType"]}";
-                    int.TryParse(reader["PartID"].ToString(), out var partid);
-                    int.TryParse(reader["PartGroupID"].ToString(), out var partGroupID);
-                    var prodType = reader["ProdType"].ToString();
-                    var prodLine = reader["ProdLine"].ToString();
-                    var revNr = reader["RevNr"].ToString();
-                    var latestRevNr = reader["LatestRev"].ToString();
-                    var isLatestRevNrSelected = Convert.ToBoolean(reader["LatestRevSelected"]);
-                 
-                    Add_Button_Processcard(text, Order.WorkOperation.ToString(), prodType, prodLine, revNr, partid, partGroupID, !IsOperatorStartingOrder, true, latestRevNr, isLatestRevNrSelected);
-                }
-                Add_Button_Processcard("Processkort saknas", Order.WorkOperation.ToString(), null, null, null, null, null,true,false, null, true);
+            con.Open();
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                var text = $"{reader["ProdLine"]} / {reader["ProdType"]}";
+                int.TryParse(reader["PartID"].ToString(), out var partid);
+                int.TryParse(reader["PartGroupID"].ToString(), out var partGroupID);
+                var prodType = reader["ProdType"].ToString();
+                var prodLine = reader["ProdLine"].ToString();
+                var revNr = reader["RevNr"].ToString();
+                var latestRevNr = reader["LatestRev"].ToString();
+                var isLatestRevNrSelected = Convert.ToBoolean(reader["LatestRevSelected"]);
+
+                Add_Button_Processcard(text, Order.WorkOperation.ToString(), prodType, prodLine, revNr, partid, partGroupID, !IsOperatorStartingOrder, true, latestRevNr, isLatestRevNrSelected);
             }
+            Add_Button_Processcard("Processkort saknas", Order.WorkOperation.ToString(), null, null, null, null, null, true, false, null, true);
         }
         private void Add_Workoperations()
         {
@@ -320,12 +321,12 @@ namespace DigitalProductionProgram.Processcards
                 FROM RankedRevisions
                 WHERE RevisionRank = 1
                 ORDER BY Name;";
-                    
+
                 var cmd = new SqlCommand(query, con);
                 cmd.Parameters.AddWithValue("@workoperationid", Order.WorkoperationID);
                 con.Open();
                 var reader = cmd.ExecuteReader();
-                
+
                 while (reader.Read())
                 {
                     var templatename = reader["Name"].ToString();
@@ -370,13 +371,13 @@ namespace DigitalProductionProgram.Processcards
                     var templatename = reader["Name"].ToString();
                     int.TryParse(reader["MeasureProtocolMainTemplateID"].ToString(), out var id);
                     var revision = reader["Revision"].ToString();
-                    Add_Button_MeasureprotocolTemplate(templatename,  revision,id);
+                    Add_Button_MeasureprotocolTemplate(templatename, revision, id);
                 }
             }
         }
         private void Add_TemplateName()
         {
-           // var org_Arbetsoperation = Order.WorkOperation;
+            // var org_Arbetsoperation = Order.WorkOperation;
             using (var con = new SqlConnection(Database.cs_Protocol))
             {
                 var query = @"
@@ -446,7 +447,7 @@ namespace DigitalProductionProgram.Processcards
             flp_Buttons.Controls.Add(btn);
             Height += btn.Height + 3;
         }
-        
+
         private void SetForeColor_Label(Button btn, int? partID)
         {
             if (btn.Text == $"{LanguageManager.GetString("chooseProcesscard_Info_1")} / ")
@@ -459,7 +460,7 @@ namespace DigitalProductionProgram.Processcards
             //Om Processkort under Framarbetning och mindre än tre ordrar körda
             if (IsDevelopmentOfProcessCard(partID) && Part.TotalOrders_PartID(partID) > 2)
             {
-               // IsProcesscardOkStart[i] = true;
+                // IsProcesscardOkStart[i] = true;
                 btn.ForeColor = Color.DarkOrange;
                 btn.BackColor = Color.Brown;
             }
@@ -467,20 +468,20 @@ namespace DigitalProductionProgram.Processcards
             //Godkänd av QA eller under framtagning av Processkort och körd under 3 gånger
             else if (Processcard.IsApproved_By_QA(partID) || (IsDevelopmentOfProcessCard(partID) && Part.TotalOrders_PartID(partID) < 3))
             {
-               // IsProcesscardOkStart[i] = true;
+                // IsProcesscardOkStart[i] = true;
                 btn.ForeColor = CustomColors.Ok_Front;
                 btn.BackColor = CustomColors.Ok_Back;
             }
             //Ej godkänd av QA
             else
             {
-               // IsProcesscardOkStart[i] = false;
+                // IsProcesscardOkStart[i] = false;
                 btn.ForeColor = CustomColors.Bad_Front;
                 btn.BackColor = CustomColors.Bad_Back;
             }
             if (Order.WorkOperation == Manage_WorkOperation.WorkOperations.Nothing)
             {
-               // IsProcesscardOkStart[i] = true;
+                // IsProcesscardOkStart[i] = true;
                 btn.ForeColor = Color.Gray;
                 btn.BackColor = Color.Transparent;
             }
@@ -516,7 +517,7 @@ namespace DigitalProductionProgram.Processcards
             Order.ProdType = lbl.ProdType;
             Order.ProdLine = lbl.ProdLine;
             Order.RevNr = lbl.RevNr;
-            
+
             if (lbl.IsLatestRevNrSelected == false && IsOperatorStartingOrder)
                 Mail.NotifyQAPartNumberNeedApproval(lbl.LatestRevNr);
 
@@ -558,7 +559,7 @@ namespace DigitalProductionProgram.Processcards
             if (Enum.TryParse(lbl.Workoperation, out Manage_WorkOperation.WorkOperations workOperation))
                 Order.WorkOperation = workOperation;
 
-            _ =  Activity.Stop($"TemplateSelector: Valde Arbetsoperation {lbl.Text}");
+            _ = Activity.Stop($"TemplateSelector: Valde Arbetsoperation {lbl.Text}");
             IsOkClose = true;
             Close();
         }
@@ -584,7 +585,6 @@ namespace DigitalProductionProgram.Processcards
             Order.PartNumber = null;
         }
 
-
-
+        
     }
 }

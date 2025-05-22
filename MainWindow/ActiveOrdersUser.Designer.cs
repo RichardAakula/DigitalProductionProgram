@@ -31,46 +31,47 @@ namespace DigitalProductionProgram.MainWindow
         /// </summary>
         private void InitializeComponent()
         {
-            this.flp_Main = new System.Windows.Forms.FlowLayoutPanel();
-            this.label_Header_ActiveOrders = new System.Windows.Forms.Label();
-            this.flp_Main.SuspendLayout();
-            this.SuspendLayout();
+            flp_Main = new FlowLayoutPanel();
+            label_Header_ActiveOrders = new Label();
+            flp_Main.SuspendLayout();
+            SuspendLayout();
             // 
             // flp_Main
             // 
-            this.flp_Main.BackColor = System.Drawing.Color.Transparent;
-            this.flp_Main.Controls.Add(this.label_Header_ActiveOrders);
-            this.flp_Main.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flp_Main.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flp_Main.Location = new System.Drawing.Point(0, 0);
-            this.flp_Main.Margin = new System.Windows.Forms.Padding(0);
-            this.flp_Main.Name = "flp_Main";
-            this.flp_Main.Size = new System.Drawing.Size(224, 207);
-            this.flp_Main.TabIndex = 0;
+            flp_Main.BackColor = Color.Transparent;
+            flp_Main.Controls.Add(label_Header_ActiveOrders);
+            flp_Main.Dock = DockStyle.Fill;
+            flp_Main.FlowDirection = FlowDirection.TopDown;
+            flp_Main.Location = new Point(0, 0);
+            flp_Main.Margin = new Padding(0);
+            flp_Main.Name = "flp_Main";
+            flp_Main.Size = new Size(300, 239);
+            flp_Main.TabIndex = 0;
             // 
             // label_Header_ActiveOrders
             // 
-            this.label_Header_ActiveOrders.BackColor = System.Drawing.Color.Transparent;
-            this.label_Header_ActiveOrders.Font = new System.Drawing.Font("Palatino Linotype", 14.25F);
-            this.label_Header_ActiveOrders.ForeColor = System.Drawing.Color.Moccasin;
-            this.label_Header_ActiveOrders.Location = new System.Drawing.Point(0, 0);
-            this.label_Header_ActiveOrders.Margin = new System.Windows.Forms.Padding(0);
-            this.label_Header_ActiveOrders.Name = "label_Header_ActiveOrders";
-            this.label_Header_ActiveOrders.Size = new System.Drawing.Size(224, 26);
-            this.label_Header_ActiveOrders.TabIndex = 1;
-            this.label_Header_ActiveOrders.Text = "Dina aktiva Ordrar";
-            this.label_Header_ActiveOrders.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            label_Header_ActiveOrders.BackColor = Color.Transparent;
+            label_Header_ActiveOrders.Font = new Font("Palatino Linotype", 14.25F);
+            label_Header_ActiveOrders.ForeColor = Color.Moccasin;
+            label_Header_ActiveOrders.Location = new Point(0, 0);
+            label_Header_ActiveOrders.Margin = new Padding(0);
+            label_Header_ActiveOrders.Name = "label_Header_ActiveOrders";
+            label_Header_ActiveOrders.Size = new Size(261, 30);
+            label_Header_ActiveOrders.TabIndex = 1;
+            label_Header_ActiveOrders.Text = "Dina aktiva Ordrar";
+            label_Header_ActiveOrders.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // ActiveOrdersUser
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(60)))), ((int)(((byte)(60)))));
-            this.Controls.Add(this.flp_Main);
-            this.Name = "ActiveOrdersUser";
-            this.Size = new System.Drawing.Size(224, 207);
-            this.flp_Main.ResumeLayout(false);
-            this.ResumeLayout(false);
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            BackColor = Color.FromArgb(60, 60, 60);
+            Controls.Add(flp_Main);
+            Margin = new Padding(4, 3, 4, 3);
+            Name = "ActiveOrdersUser";
+            Size = new Size(300, 239);
+            flp_Main.ResumeLayout(false);
+            ResumeLayout(false);
 
         }
 

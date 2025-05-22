@@ -221,7 +221,7 @@ namespace DigitalProductionProgram.OrderManagement
         private static string? Temp_Customer;
         private static string? Temp_ProdType;
         private static string Temp_ProdGroup;
-        private static string Temp_TemplateRevision;
+        private static string? Temp_TemplateRevision;
         private static int? Temp_LineClearanceMainTemplateID;
         private static int Temp_MeasureProtocolMainTemplateID;
 

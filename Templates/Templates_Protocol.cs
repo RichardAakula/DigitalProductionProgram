@@ -1002,7 +1002,7 @@ namespace DigitalProductionProgram.Templates
         {
             public static string? Name { get; set; }
             public static int ID { get; set; }
-            public static string Revision { get; set; }
+            public static string? Revision { get; set; }
             public static bool IsUsingOven { get; set; }
 
             public static bool IsProcesscardUsingProdline

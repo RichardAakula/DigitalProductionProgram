@@ -236,6 +236,7 @@ namespace DigitalProductionProgram.MainWindow
             label_PartNumber.TabIndex = 38;
             label_PartNumber.Text = "ArtikelNr:";
             label_PartNumber.TextAlign = ContentAlignment.MiddleLeft;
+            label_PartNumber.Click += label_PartNumber_Click;
             // 
             // label_Customer
             // 

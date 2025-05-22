@@ -115,7 +115,7 @@ namespace DigitalProductionProgram.Protocols
                 }
             }
 
-            public static string NewOrder
+            public static string? NewOrder
             {
                 get
                 {
@@ -139,7 +139,7 @@ namespace DigitalProductionProgram.Protocols
                 }
             }
 
-            public static string OrderNr(int? orderID)
+            public static string? OrderNr(int? orderID)
             {
                 if (orderID == null)
                     return null;
@@ -172,7 +172,7 @@ namespace DigitalProductionProgram.Protocols
 
                 }
             }
-            public static string PartNumber
+            public static string? PartNumber
             {
                 get
                 {
@@ -191,7 +191,7 @@ namespace DigitalProductionProgram.Protocols
                 }
             }
 
-            public static string Latest(int FormTemplateID)
+            public static string? Latest(int FormTemplateID)
             {
                 if (FormTemplateID == 0)
                     return null;

@@ -8,19 +8,54 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Help;
 using DigitalProductionProgram.PrintingServices;
+using DigitalProductionProgram.User;
+using Microsoft.Data.SqlClient;
 
 namespace DigitalProductionProgram.EasterEggs
 {
     public partial class EasterEgg_Code : Form
     {
         private const string GameName = "Easter Egg Code";
-
         readonly List<CodeWheel> wheels = new();
+
+        public static string Riddle_H =>
+            "I am the start of hope, and the start of home.\r\n" +
+            "In the alphabet’s heart, I stand first alone. \r\n" +
+            "Without me, questions wander lost and awry—\r\n" +
+            "What letter am I? Come on, give it a try.\r\n\n" +
+            "This riddle holds the key, the first mark you’ll feel,\r\n" +
+            "The opening symbol on The Cipher Wheel.";
+
+
+        private static bool? isGameStarted;
+        public static bool IsGameStarted
+        {
+            get
+            {
+                if (isGameStarted.HasValue)
+                    return isGameStarted.Value;
+                using var con = new SqlConnection(Database.cs_Protocol);
+                var query = "SELECT COUNT(*) FROM Easter_Egg_Points WHERE Namn = @name AND Game = @game";
+                var cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@name", Person.Name);
+                cmd.Parameters.AddWithValue("@game", GameName);
+
+                con.Open();
+                int count = (int)cmd.ExecuteScalar();
+                isGameStarted = count > 0;
+                return isGameStarted.Value;
+            }
+        }
+        
+        
         public EasterEgg_Code()
         {
             InitializeComponent();
+
+            isGameStarted = true;
             for (int i = 0; i < 8; i++)
             {
                 var wheel = new CodeWheel { Left = 100 + i * 200, Top = 100 };
@@ -47,13 +82,13 @@ namespace DigitalProductionProgram.EasterEggs
 
         private void btn_TestCode_Click(object sender, EventArgs e)
         {
-            string enteredPassword = string.Concat(wheels.Select(w => w.SelectedChar));
-            string Password = "BENNY123";
+            var enteredPassword = string.Concat(wheels.Select(w => w.SelectedChar));
+            const string Password = "H4PPYEGG";
 
             for (int i = 0; i < wheels.Count; i++)
             {
-                char selected = wheels[i].SelectedChar;
-                char correct = Password[i];
+                var selected = wheels[i].SelectedChar;
+                var correct = Password[i];
 
                 if (selected == correct)
                     wheels[i].SetHighlight(Color.FromArgb(50, 198,239,206)); // Rätt plats, rätt bokstav

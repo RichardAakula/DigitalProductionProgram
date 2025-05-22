@@ -35,15 +35,18 @@
             // btn_TestCode
             // 
             btn_TestCode.BackColor = Color.Transparent;
-            btn_TestCode.Dock = DockStyle.Bottom;
+            btn_TestCode.BackgroundImage = (Image)resources.GetObject("btn_TestCode.BackgroundImage");
+            btn_TestCode.BackgroundImageLayout = ImageLayout.Zoom;
+            btn_TestCode.FlatAppearance.BorderSize = 0;
+            btn_TestCode.FlatAppearance.MouseOverBackColor = Color.FromArgb(70, 40, 40, 40);
             btn_TestCode.FlatStyle = FlatStyle.Flat;
             btn_TestCode.Font = new Font("Segoe UI", 18F);
             btn_TestCode.ForeColor = Color.Gold;
-            btn_TestCode.Location = new Point(0, 460);
+            btn_TestCode.Location = new Point(811, 424);
+            btn_TestCode.Margin = new Padding(0);
             btn_TestCode.Name = "btn_TestCode";
-            btn_TestCode.Size = new Size(1790, 40);
+            btn_TestCode.Size = new Size(184, 76);
             btn_TestCode.TabIndex = 0;
-            btn_TestCode.Text = "Test Code";
             btn_TestCode.UseVisualStyleBackColor = false;
             btn_TestCode.Click += btn_TestCode_Click;
             // 

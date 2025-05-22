@@ -277,6 +277,11 @@ namespace DigitalProductionProgram.MainWindow
         }
         private void Menu_Order_Relink_Processcard_Click(object sender, EventArgs e)
         {
+            if (Order.IsOrderDone)
+            {
+                InfoText.Show(LanguageManager.GetString("changeProcesscard_Info_4"), CustomColors.InfoText_Color.Bad, "Warning", this);
+                return;
+            }
             if (string.IsNullOrEmpty(Order.OrderNumber))
             {
                 InfoText.Show(LanguageManager.GetString("changeProcesscard_Info_1"), CustomColors.InfoText_Color.Bad, "Warning", this);
@@ -315,40 +320,55 @@ namespace DigitalProductionProgram.MainWindow
         }
         private void Menu_Order_Relink_Protocol_Click(object sender, EventArgs e)
         {
+            if (Order.IsOrderDone)
+            {
+                InfoText.Show(LanguageManager.GetString("changeProtocol_Info_1"), CustomColors.InfoText_Color.Bad, "Warning", this);
+                return;
+            }
+            if (string.IsNullOrEmpty(Order.OrderNumber))
+            {
+                InfoText.Show(LanguageManager.GetString("changeProtocol_Info_2"), CustomColors.InfoText_Color.Bad, "Warning", this);
+                return;
+            }
             var changeTemplate = new ProcesscardTemplateSelector(ProcesscardTemplateSelector.TemplateType.TemplateProtocol);
             changeTemplate.ShowDialog();
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query = @"
+            using var con = new SqlConnection(Database.cs_Protocol);
+            var query = @"
                         UPDATE [Order].MainData
                             SET ProtocolMainTemplateID = @protocolmaintemplateid
                         WHERE OrderID = @orderid";
-                var cmd = new SqlCommand(query, con);
-                cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
-                cmd.Parameters.AddWithValue("@protocolmaintemplateid", Templates_Protocol.MainTemplate.ID);
+            var cmd = new SqlCommand(query, con);
+            cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
+            cmd.Parameters.AddWithValue("@protocolmaintemplateid", Templates_Protocol.MainTemplate.ID);
 
-                con.Open();
-                cmd.ExecuteNonQuery();
-            }
-
+            con.Open();
+            cmd.ExecuteNonQuery();
         }
         private void Menu_Order_Relink_MeasureProtocol_Click(object sender, EventArgs e)
         {
+            if (Order.IsOrderDone)
+            {
+                InfoText.Show(LanguageManager.GetString("changeMeasureProtocol_Info_1"), CustomColors.InfoText_Color.Bad, "Warning", this);
+                return;
+            }
+            if (string.IsNullOrEmpty(Order.OrderNumber))
+            {
+                InfoText.Show(LanguageManager.GetString("changeMeasureProtocol_Info_2"), CustomColors.InfoText_Color.Bad, "Warning", this);
+                return;
+            }
             var changeTemplate = new ProcesscardTemplateSelector(ProcesscardTemplateSelector.TemplateType.TemplateMeasureProtocol);
             changeTemplate.ShowDialog();
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query = @"
+            using var con = new SqlConnection(Database.cs_Protocol);
+            var query = @"
                         UPDATE [Order].MainData
                             SET MeasureProtocolMainTemplateID = @measureprotocolmaintemplateid
                         WHERE OrderID = @orderid";
-                var cmd = new SqlCommand(query, con);
-                cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
-                cmd.Parameters.AddWithValue("@measureprotocolmaintemplateid", Templates_MeasureProtocol.MainTemplate.ID);
+            var cmd = new SqlCommand(query, con);
+            cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
+            cmd.Parameters.AddWithValue("@measureprotocolmaintemplateid", Templates_MeasureProtocol.MainTemplate.ID);
 
-                con.Open();
-                cmd.ExecuteNonQuery();
-            }
+            con.Open();
+            cmd.ExecuteNonQuery();
         }
 
         //----------PROTOKOLL/PROTOCOL----------

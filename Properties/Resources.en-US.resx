@@ -2285,4 +2285,19 @@ Contact Admin if necessary.</value>
   <data name="print_OutOfTolerance" xml:space="preserve">
     <value>* = Out of spec</value>
   </data>
+  <data name="changeProcesscard_Info_4" xml:space="preserve">
+    <value>You cannot change the process card on an order that is completed.</value>
+  </data>
+  <data name="changeProtocol_Info_1" xml:space="preserve">
+    <value>You cannot change the template for the protocol on an order that is completed.</value>
+  </data>
+  <data name="changeProtocol_Info_2" xml:space="preserve">
+    <value>You cannot change the template for the protocol before you have started/opened an order.</value>
+  </data>
+  <data name="changeMeasureProtocol_Info_1" xml:space="preserve">
+    <value>You cannot change the template for the measureprotocol on an order that is completed.</value>
+  </data>
+  <data name="changeMeasureProtocol_Info_2" xml:space="preserve">
+    <value>You cannot change the template for the measureprotocol before you have started/opened an order.</value>
+  </data>
 </root>

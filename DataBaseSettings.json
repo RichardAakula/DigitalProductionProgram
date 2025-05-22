@@ -14,18 +14,18 @@
 
 
   //-------OGO-------
-  //"ConnectionStrings": {
-  //  "csProtocol": "Data Source=GOD-S1-SQL01;Initial Catalog=Korprotokoll;Persist Security Info=True;User ID=korprotokoll;Password=GOD-Stout4-Gladiator-Gazing-Retail-Pegboard;Connect Timeout=1000;Encrypt=True;TrustServerCertificate=True;",
-  //  "csToolregister": "Data Source=GOD-S1-SQL01;Initial Catalog=Verktygsprogram;Persist Security Info=True;User ID=korprotokoll;Password=GOD-Stout4-Gladiator-Gazing-Retail-Pegboard;Connect Timeout=1000;Encrypt=True;TrustServerCertificate=True;",
-  //  "MonitorCompany": "001.1",
-  //  "MonitorHost": "optig5"
+  "ConnectionStrings": {
+    "csProtocol": "Data Source=GOD-S1-SQL01;Initial Catalog=Korprotokoll;Persist Security Info=True;User ID=korprotokoll;Password=GOD-Stout4-Gladiator-Gazing-Retail-Pegboard;Connect Timeout=1000;Encrypt=True;TrustServerCertificate=True;",
+    "csToolregister": "Data Source=GOD-S1-SQL01;Initial Catalog=Verktygsprogram;Persist Security Info=True;User ID=korprotokoll;Password=GOD-Stout4-Gladiator-Gazing-Retail-Pegboard;Connect Timeout=1000;Encrypt=True;TrustServerCertificate=True;",
+    "MonitorCompany": "001.1",
+    "MonitorHost": "optig5"
 
   //-------OVF-------
-  "ConnectionStrings": {
-    "csProtocol": "Data Source=OVF-S1-SQL;Initial Catalog=DPP_OVF;Persist Security Info=True;User ID=korprotokoll;Password=korprotokoll;Connect Timeout=1000;Encrypt=True;TrustServerCertificate=True;",
-    "csToolregister": "Data Source=OVF-S1-SQL;Initial Catalog=Toolregister_OVF;Persist Security Info=True;User ID=korprotokoll;Password=korprotokoll;Connect Timeout=1000;Encrypt=True;TrustServerCertificate=True;",
-    "MonitorHost": "optig5",
-    "MonitorCompany": "012.1"
+  //"ConnectionStrings": {
+  //  "csProtocol": "Data Source=OVF-S1-SQL;Initial Catalog=DPP_OVF;Persist Security Info=True;User ID=korprotokoll;Password=korprotokoll;Connect Timeout=1000;Encrypt=True;TrustServerCertificate=True;",
+  //  "csToolregister": "Data Source=OVF-S1-SQL;Initial Catalog=Toolregister_OVF;Persist Security Info=True;User ID=korprotokoll;Password=korprotokoll;Connect Timeout=1000;Encrypt=True;TrustServerCertificate=True;",
+  //  "MonitorHost": "optig5",
+  //  "MonitorCompany": "012.1"
 
   //-------OTH-------
   //"ConnectionStrings": {

@@ -7,6 +7,7 @@ using System.Drawing;
 using System.Globalization;
 using System.Windows.Forms;
 using DigitalProductionProgram.DatabaseManagement;
+using DigitalProductionProgram.EasterEggs;
 using DigitalProductionProgram.Help;
 using DigitalProductionProgram.Log;
 using DigitalProductionProgram.OrderManagement;
@@ -173,7 +174,7 @@ namespace DigitalProductionProgram.MainWindow
         {
             //Startar ny Order
             lbl_ArtikelNr.Text = Order.PartNumber = Monitor.Monitor.Part.PartNumber;
-            Part.Load_PartID(Order.PartNumber, true, false,Order.WorkOperation.ToString());
+            Part.Load_PartID(Order.PartNumber, true, false, Order.WorkOperation.ToString());
             lbl_Antal.Text = $"{Monitor.Monitor.Operations.PlannedQuantity:0}";
             Order.Amount = Parse(lbl_Antal.Text);
             lbl_ProdGroup.Text = Monitor.Monitor.WorkCenter.Number;
@@ -272,7 +273,7 @@ namespace DigitalProductionProgram.MainWindow
                     }
                 }
                 Fill_cb_Operation();
-               // cb_Operation.SelectedIndexChanged += mainForm.Operation_SelectedIndexChanged!;
+                // cb_Operation.SelectedIndexChanged += mainForm.Operation_SelectedIndexChanged!;
                 for (var i = 0; i < cb_Operation.Items.Count; i++)
                 {
                     if (cb_Operation.Items[i].ToString().Substring(0, 5).Contains(operation))
@@ -288,7 +289,7 @@ namespace DigitalProductionProgram.MainWindow
         }
 
 
-       
+
         private void Label_MouseClick(object sender, MouseEventArgs e)
         {
             var lbl = (Label)sender;
@@ -302,6 +303,12 @@ namespace DigitalProductionProgram.MainWindow
             public string Description { get; set; }
 
             public string Display => $"{Operation} - {Description}";
+        }
+
+        private void label_PartNumber_Click(object sender, EventArgs e)
+        {
+            if (EasterEgg_Code.IsGameStarted)
+                InfoText.Show(EasterEgg_Code.Riddle_H, CustomColors.InfoText_Color.Info, "The Cipher Wheel", this);
         }
     }
 

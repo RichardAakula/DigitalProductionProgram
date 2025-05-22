@@ -27,7 +27,7 @@ namespace DigitalProductionProgram.Processcards
     public partial class Manage_Processcards : Form
     {
         private int ActiveMainTemplateID;
-        private string ActiveTemplateRevision;
+        private string? ActiveTemplateRevision;
 
 
         public static string INSERT_INTO_Processkort_Main =>
@@ -294,7 +294,7 @@ namespace DigitalProductionProgram.Processcards
             LanguageManager.TranslationHelper.TranslateControls(new Control[]
             {
                btn_ReloadPartNr, chb_HideInactive_PartNr,label_List_PartNr, label_Inactive,  label_ProdLine, label_Info_Prodline, label_Info_TotalLayer, btn_Save_Processcard, btn_DeActivate_PartNr, btn_ClearProcessCard, 
-               btn_DeleteProcesscard, label_ProcessCard_ExtraInfo, label_ProtocolTemplateName
+               btn_DeleteProcesscard, label_ProcessCard_ExtraInfo, label_ProtocolTemplateName, label_ProtocolTemplateRevision, label_MeasureProtocolTemplateName
             });
             ProcesscardBasedOn.Translate_Form();
 
@@ -809,7 +809,7 @@ namespace DigitalProductionProgram.Processcards
         }
 
 
-        private readonly List<DataTable> dataTables_ProcessData = new List<DataTable>();
+        private readonly List<DataTable> dataTables_ProcessData = new();
         private void CopyProcessDataToNewTemplateRevision()
         {
             foreach (var machine in tlp_Machines.Controls.OfType<Machine>())

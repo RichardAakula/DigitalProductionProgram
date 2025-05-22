@@ -18,10 +18,8 @@ namespace DigitalProductionProgram.EasterEggs
     {
         public static int TotalGames(string game)
         {
-
-            return 0 ;
             using var con = new SqlConnection(Database.cs_Protocol);
-            var query = "SELECT COUNT(*) FROM Easter_Egg_Points WHERE Namn = @namn AND Game = @game";
+            const string query = "SELECT COUNT(*) FROM Easter_Egg_Points WHERE Namn = @namn AND Game = @game";
             var cmd = new SqlCommand(query, con);
             cmd.Parameters.AddWithValue("@namn", Person.Name);
             cmd.Parameters.AddWithValue("@game", game);

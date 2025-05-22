@@ -105,13 +105,6 @@ namespace DigitalProductionProgram.MainWindow
                 cs.ShowDialog();
             }
 
-            Person.Name = "Richard Aakula";
-            Order.PartNumber = "MLPX113454";
-            Person.Role = "SuperAdmin";
-            Order.WorkOperation = Manage_WorkOperation.WorkOperations.Extrudering_Termo;
-            Templates_Protocol.MainTemplate.ID = 11;
-            Application.Run(new Manage_Processcards("MLPX113454"));
-
             //Application.Run(new EasterEgg_Code());
             //return;
             //Nedanstående är originalkoden som skall laddas

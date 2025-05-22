@@ -57,13 +57,9 @@ namespace DigitalProductionProgram.EasterEggs
                 }
             }
             if (e.Button == MouseButtons.Left)
-            {
                 _index = (_index + 1) % _characters.Length;
-            }
             else if (e.Button == MouseButtons.Right)
-            {
                 _index = (_index - 1) % _characters.Length;
-            }
             
             this.Invalidate(); // Tvinga omritning
         }
@@ -79,15 +75,11 @@ namespace DigitalProductionProgram.EasterEggs
                 }
             }
             if (e.Delta > 0)
-            {
                 // Scroll uppåt – framåt i listan
                 _index = (_index + 1) % _characters.Length;
-            }
             else if (e.Delta < 0)
-            {
                 // Scroll nedåt – bakåt i listan
                 _index = (_index - 1 + _characters.Length) % _characters.Length;
-            }
 
             this.Invalidate(); // Rita om
         }

@@ -127,6 +127,7 @@ namespace DigitalProductionProgram.MainWindow
             }
 
             mainForm.Change_GUI_OrderEjKlar();
+            _ = Log.Activity.Stop("Användare klickar på Ny Order");
         }
         private void Menu_Arkiv_Öppna_Click(object sender, EventArgs e)
         {

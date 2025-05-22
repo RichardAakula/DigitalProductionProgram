@@ -168,41 +168,37 @@ namespace DigitalProductionProgram.Processcards
             var list = new List<string>();
             if (IsProcesscard)
             {
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    con.Open();
-                    const string query = @"
+                using var con = new SqlConnection(Database.cs_Protocol);
+                con.Open();
+                const string query = @"
                     SELECT DISTINCT PartNr FROM Processcard.MainData                       
                     ORDER BY PartNr DESC";
-                    var cmd = new SqlCommand(query, con);
-                    var reader = cmd.ExecuteReader();
+                var cmd = new SqlCommand(query, con);
+                var reader = cmd.ExecuteReader();
 
-                    while (reader.Read())
-                    {
-                        if (reader[0].ToString() == "1234567") continue;
-                        if (!list.Contains(reader[0].ToString()))
-                            list.Add(reader[0].ToString());
-                    }
+                while (reader.Read())
+                {
+                    if (reader[0].ToString() == "1234567") continue;
+                    if (!list.Contains(reader[0].ToString()))
+                        list.Add(reader[0].ToString());
                 }
             }
             else
             {
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    con.Open();
-                    const string query = @"SELECT DISTINCT PartNr FROM [Order].MainData  
+                using var con = new SqlConnection(Database.cs_Protocol);
+                con.Open();
+                const string query = @"SELECT DISTINCT PartNr FROM [Order].MainData  
                                     ORDER BY PartNr DESC";
-                    var cmd = new SqlCommand(query, con);
-                    var reader = cmd.ExecuteReader();
+                var cmd = new SqlCommand(query, con);
+                var reader = cmd.ExecuteReader();
 
-                    while (reader.Read())
-                    {
-                        if (reader[0].ToString() == "1234567") continue; //PartNr 1234567 används när man förhandsgranskar ett tomt processkort och bör inte visas i listan
-                        if (!list.Contains(reader[0].ToString()))
-                            list.Add(reader[0].ToString());
-                    }
-                    reader.Close();
+                while (reader.Read())
+                {
+                    if (reader[0].ToString() == "1234567") continue; //PartNr 1234567 används när man förhandsgranskar ett tomt processkort och bör inte visas i listan
+                    if (!list.Contains(reader[0].ToString()))
+                        list.Add(reader[0].ToString());
                 }
+                reader.Close();
             }
 
             var choose_Item = new Choose_Item(list, new Control[] { tb_PartNr }, false);

@@ -66,11 +66,7 @@ namespace DigitalProductionProgram.Protocols
                 cmd.Parameters.AddWithValue("@partnr", Order.PartNumber);
                 cmd.Parameters.AddWithValue("@partID", Order.PartID);
                 cmd.Parameters.AddWithValue("@codetext", codetext);
-                if (!string.IsNullOrEmpty(Part.ArtikelNr_Old))
-                    cmd.Parameters.AddWithValue("@partnr_Gammal", Part.ArtikelNr_Old);
-                else
-                    cmd.Parameters.AddWithValue("@partnr_Gammal", DBNull.Value);
-
+                
                 SqlDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {

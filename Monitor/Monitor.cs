@@ -533,14 +533,8 @@ namespace DigitalProductionProgram.Monitor
             var list_WorkCenterId = new List<long>();
             var list_Items = new List<string>();
 
-            string filter;
-            if (string.IsNullOrEmpty(OrderManagement.Part.ArtikelNr_Old))
-                filter = $"Eq'{artikelNr}'";
-            else
-                filter = $"Eq'{artikelNr}' Or Eq'{OrderManagement.Part.ArtikelNr_Old}'";
-
             
-            var part = Utilities.GetOneFromMonitor<Inventory.Parts>("select=Id", $"filter=PartNumber {filter}");
+            var part = Utilities.GetOneFromMonitor<Inventory.Parts>("select=Id", $"filter=PartNumber Eq'{artikelNr}'");
             var art_id = part.Id.ToString();
 
             var operations = Utilities.GetFromMonitor<Manufacturing.ManufacturingOrderOperations>("select=OperationNumber,WorkCenterId", $"filter=PartId Eq'{art_id}'", "orderby=OperationNumber");

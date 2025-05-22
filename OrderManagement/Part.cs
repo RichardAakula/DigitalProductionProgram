@@ -12,42 +12,8 @@ namespace DigitalProductionProgram.OrderManagement
 {
     internal class Part
     {
-        public static string ArtikelNr_Old
-        {
-            get
-            {
-                if (string.IsNullOrEmpty(Order.PartNumber))
-                    return string.Empty;
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    var query = "SELECT ArtikelNr_Gammal FROM Artikelkonvertering WHERE ArtikelNr_Ny = @partnr_Ny";
-                    con.Open();
-                    var cmd = new SqlCommand(query, con);
-                    cmd.Parameters.AddWithValue("@partnr_Ny", Order.PartNumber);
-                    var artikelNr = (string)cmd.ExecuteScalar();
-
-                    if (string.IsNullOrEmpty(artikelNr))
-                        artikelNr = ArtikelNr_New;
-                    return string.IsNullOrEmpty(artikelNr) ? string.Empty : artikelNr;
-                }
-            }
-        }
-        public static string ArtikelNr_New
-        {
-            get
-            {
-                if (string.IsNullOrEmpty(Order.PartNumber))
-                    return null;
-                using var con = new SqlConnection(Database.cs_Protocol);
-                var query = "SELECT ArtikelNr_Ny FROM Artikelkonvertering WHERE ArtikelNr_Gammal = @partnr_gammal";
-                con.Open();
-                var cmd = new SqlCommand(query, con);
-                cmd.Parameters.AddWithValue("@partnr_gammal", Order.PartNumber);
-                var artikelNr = (string)cmd.ExecuteScalar();
-                   
-                return artikelNr;
-            }
-        }
+       
+       
         public static string ExtraInfo_Part
         {
             get
@@ -191,6 +157,8 @@ namespace DigitalProductionProgram.OrderManagement
             //IsOnlyProcessCard - Letar endast efter mallar i Processkorten
             //IsOperatorStartingOrder - Då görs en kontroll när användare klickar på Processkortet om det är ok att starta ordern
             //IsOkSelectLatestRevNr - Används vid hantering av Processkort där senaste Revisionen av processkortet är ok att ladda trots att Revisionen ej är godkänd
+            if (string.IsNullOrWhiteSpace(PartNr))
+                return;
 
             if (WorkOperation is null || WorkOperation == WorkOperations.Nothing.ToString())
             {
@@ -276,32 +244,28 @@ namespace DigitalProductionProgram.OrderManagement
 
 
             con.Open();
-            using (var cmd = new SqlCommand(query.ToString(), con))
+            using var cmd = new SqlCommand(query.ToString(), con);
+            cmd.Parameters.AddWithValue("@partnr", PartNr);
+            cmd.Parameters.AddWithValue("@workoperation", WorkOperation);
+            SQL_Parameter.String(cmd.Parameters, "@prodline", Order.ProdLine);
+            SQL_Parameter.String(cmd.Parameters, "@prodtyp", Order.ProdType);
+
+            using SqlDataReader reader = cmd.ExecuteReader();
+            while (reader.Read())
             {
-                cmd.Parameters.AddWithValue("@partnr", PartNr);
-                cmd.Parameters.AddWithValue("@workoperation", WorkOperation);
-                SQL_Parameter.String(cmd.Parameters, "@prodline", Order.ProdLine);
-                SQL_Parameter.String(cmd.Parameters, "@prodtyp", Order.ProdType);
-                    
-                using (SqlDataReader reader = cmd.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        int.TryParse(reader["PartID"].ToString(), out int partID);
-                        Order.PartID = partID;
-                        var latestRevNr = reader["LatestRev"].ToString();
-                        Order.RevNr = reader["RevNr"].ToString();
+                int.TryParse(reader["PartID"].ToString(), out int partID);
+                Order.PartID = partID;
+                var latestRevNr = reader["LatestRev"].ToString();
+                Order.RevNr = reader["RevNr"].ToString();
                             
-                        var isLastRevNrSelected = Convert.ToBoolean(reader["LatestRevSelected"]);
+                var isLastRevNrSelected = Convert.ToBoolean(reader["LatestRevSelected"]);
 
-                        if (isLastRevNrSelected == false && IsOperatorStartingOrder)
-                            Mail.NotifyQAPartNumberNeedApproval(latestRevNr);
-                    }
-                }
-
-                //var value = cmd.ExecuteScalar();
-                //Order.PartID = value as int?;
+                if (isLastRevNrSelected == false && IsOperatorStartingOrder)
+                    Mail.NotifyQAPartNumberNeedApproval(latestRevNr);
             }
+
+            //var value = cmd.ExecuteScalar();
+            //Order.PartID = value as int?;
         }
         public static int? Get_PartID(string? PartNr, WorkOperations WorkOperation)
         {

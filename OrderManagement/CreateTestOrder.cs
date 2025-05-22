@@ -118,19 +118,17 @@ namespace DigitalProductionProgram.OrderManagement
                 artikelNr = "A1PX112875";
             Monitor.Monitor.Fill_ComboBox_Operation_Description(cb_Operation, artikelNr, Operation);
 
-            using (var con = new SqlConnection(Database.cs_Protocol))
+            using var con = new SqlConnection(Database.cs_Protocol);
+            var query = "SELECT DISTINCT RevNr FROM Processcard.MainData WHERE PartNr = @partnr AND WorkOperationID = (SELECT ID FROM Workoperation.Names WHERE Name = @workoperation AND ID IS NOT NULL) ORDER BY RevNr";
+            con.Open();
+            var cmd = new SqlCommand(query, con);
+            cmd.Parameters.AddWithValue("@partnr", tb_ArtikelNr.Text);
+            SQL_Parameter.String(cmd.Parameters, "@workoperation", cb_ArbetsOperation.Text);
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
             {
-                var query = "SELECT DISTINCT RevNr FROM Processcard.MainData WHERE PartNr = @partnr AND WorkOperationID = (SELECT ID FROM Workoperation.Names WHERE Name = @workoperation AND ID IS NOT NULL) ORDER BY RevNr";
-                con.Open();
-                var cmd = new SqlCommand(query, con);
-                cmd.Parameters.AddWithValue("@partnr", tb_ArtikelNr.Text);
-                SQL_Parameter.String(cmd.Parameters, "@workoperation", cb_ArbetsOperation.Text);
-                var reader = cmd.ExecuteReader();
-                while (reader.Read())
-                {
-                    if (!cb_RevNr.Items.Contains(reader[0].ToString()))
-                        cb_RevNr.Items.Add(reader[0].ToString());
-                }
+                if (!cb_RevNr.Items.Contains(reader[0].ToString()))
+                    cb_RevNr.Items.Add(reader[0].ToString());
             }
         }
       

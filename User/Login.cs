@@ -1,15 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using Microsoft.Data.SqlClient;
+﻿using Microsoft.Data.SqlClient;
 using System.Diagnostics;
-using System.Drawing;
-using System.IO;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.eMail;
 using DigitalProductionProgram.Equipment;
@@ -18,34 +10,16 @@ using DigitalProductionProgram.Log;
 using DigitalProductionProgram.MainWindow;
 
 using DigitalProductionProgram.OrderManagement;
-using DigitalProductionProgram.Övrigt;
 using DigitalProductionProgram.Övrigt.PlaySounds;
 using DigitalProductionProgram.PrintingServices;
-using NAudio.Wave;
 
 namespace DigitalProductionProgram.User
 {
     public partial class Login : Form
     {
 
-        private byte[] ProfilePicture;
-        public Image Bild;
-        public static Image RandomBackPic
-        {
-            get
-            {
-                using var con = new SqlConnection(Database.cs_Protocol);
-                var query = "SELECT TOP(1) Image FROM [Settings].Themes ORDER BY NEWID()";
-                con.Open();
-                var cmd = new SqlCommand(query, con);
-                var value = cmd.ExecuteScalar();
-                if (value is null)
-                    return Properties.Resources.anonym;
-                var img = (byte[])value;
-                var ms = new MemoryStream(img);
-                return Image.FromStream(ms);
-            }
-        }
+        private byte[]? ProfilePicture;
+        
         public bool SvarÖppnaOrder;
         public bool IsOkEdit_Mode
         {
@@ -80,7 +54,6 @@ namespace DigitalProductionProgram.User
             InitializeComponent();
             Translate_Form();
 
-            LoadBackground();
             timer_UpdateTime.Start();
             Fill_ComboBoxes();
 
@@ -105,44 +78,37 @@ namespace DigitalProductionProgram.User
         private void Translate_Form()
         {
             Control[] controls = {label_Welcome, label_AddUser, label_FirstName, label_ChooseUser,  label_Password, label_ConfirmPassword, lbl_NewUser, lbl_EditUser, lbl_Exit,
-                label_FirstName, label_LastName, label_Role,  label_EmpNr, label_Sign, label_NewPassword, btn_AddProfilePicture, btn_AddUpdateUser, label_InfoPassword_1, label_InfoPassword_2 };
+                label_FirstName, label_LastName, label_Role, label_EmpNr, label_Sign, label_NewPassword, btn_AddProfilePicture, btn_AddUpdateUser, label_InfoPassword_1, label_InfoPassword_2 };
             LanguageManager.TranslationHelper.TranslateControls(controls);
 
             ProfileCard.Translate_Form();
         }
-        private void LoadBackground()
-        {
-            if (Environment.MachineName == "OH-ID61")
-                return;
-            panel_Background.BackgroundImage = RandomBackPic;
-        }
+       
         private void Load_User_Info()
         {
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                const string query = @"
+            using var con = new SqlConnection(Database.cs_Protocol);
+            const string query = @"
                 SELECT Name, roles.RoleName, Mail, EmployeeNumber, Signature, UserID 
                 FROM [User].Person as person
                 JOIN [User].Roles as roles
                     ON person.RoleID = roles.RoleID
                 WHERE Name = @name";
 
-                var cmd = new SqlCommand(query, con);
-                cmd.Parameters.AddWithValue("@name", lbl_User.Text);
-                con.Open();
-                var reader = cmd.ExecuteReader();
-                while (reader.Read())
-                {
-                    var namn = reader["Name"].ToString().Split(' ');
+            var cmd = new SqlCommand(query, con);
+            cmd.Parameters.AddWithValue("@name", lbl_User.Text);
+            con.Open();
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                var namn = reader["Name"].ToString().Split(' ');
 
-                    tb_Förnamn.Text = namn[0];
-                    tb_Efternamn.Text = namn[1];
-                    cb_Role.Text = reader["RoleName"].ToString();
-                    tb_Mail.Text = reader["Mail"].ToString();
-                    tb_AnstNr.Text = reader["EmployeeNumber"].ToString();
-                    tb_Sign.Text = reader["Signature"].ToString();
-                    Person.UserID = int.Parse(reader["UserID"].ToString());
-                }
+                tb_Förnamn.Text = namn[0];
+                tb_Efternamn.Text = namn[1];
+                cb_Role.Text = reader["RoleName"].ToString();
+                tb_Mail.Text = reader["Mail"].ToString();
+                tb_AnstNr.Text = reader["EmployeeNumber"].ToString();
+                tb_Sign.Text = reader["Signature"].ToString();
+                Person.UserID = int.Parse(reader["UserID"].ToString());
             }
         }
         private void Load_flp_Users()
@@ -261,22 +227,21 @@ namespace DigitalProductionProgram.User
             tb_Förnamn.SelectAll();
             tb_Mail.Clear();
         }
-        private async Task CheckVersion()
+        private Task CheckVersion()
         {
-            var lastVersion = Person.LastReadChangeLogVersion(lbl_User.Text);
+            var lastReadVersion = Person.LastReadChangeLogVersion(lbl_User.Text);
 
-            if (lastVersion == new Version("0.0.0.0"))
+            if (lastReadVersion == new Version("0.0.0.0"))
             {
                 var changeLog = new ChangeLog(Version.Parse("1.0.0.0"));
                 changeLog.ShowDialog();
-                //await Person.UpdateLastReadChangelogVersion(lbl_User.Text);
-                return;
+                return Task.CompletedTask;
             }
 
-            if (lastVersion != ChangeLog.CurrentVersion)
+            if (lastReadVersion < ChangeLog.CurrentVersion)
             {
                 InfoText.Question(
-                    $"{LanguageManager.GetString("login_Info_1_1")} {lastVersion} {LanguageManager.GetString("login_Info_1_2")} {ChangeLog.CurrentVersion}\n" +
+                    $"{LanguageManager.GetString("login_Info_1_1")} {lastReadVersion} {LanguageManager.GetString("login_Info_1_2")} {ChangeLog.CurrentVersion}\n" +
                     $"{LanguageManager.GetString("login_Info_1_3")}", CustomColors.InfoText_Color.Info, LanguageManager.GetString("login_Info_1_4"), this);
 
                 if (InfoText.answer == InfoText.Answer.Yes)
@@ -284,7 +249,7 @@ namespace DigitalProductionProgram.User
                     var watch = new Stopwatch();
                     watch.Start();
 
-                    var changeLog = new ChangeLog(lastVersion);
+                    var changeLog = new ChangeLog(lastReadVersion);
                     changeLog.ShowDialog();
 
                     watch.Stop();
@@ -293,6 +258,8 @@ namespace DigitalProductionProgram.User
                     //await Activity.AddTimeUserRead(lastVersion.ToString(), time);
                 }
             }
+
+            return Task.CompletedTask;
         }
 
 

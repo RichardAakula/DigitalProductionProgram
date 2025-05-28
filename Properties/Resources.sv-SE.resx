@@ -1869,6 +1869,24 @@ Kontaka Admin vid problem.</value>
   <data name="cell_Protocol_ToolTip_2" xml:space="preserve">
     <value>Detta fält är endast för referens och är ok att köra utanför gränserna.</value>
   </data>
+  <data name="print_OutOfTolerance" xml:space="preserve">
+    <value>* = Värde Utanför toleransgränser</value>
+  </data>
+  <data name="changeProcesscard_Info_4" xml:space="preserve">
+    <value>Du kan inte ändra processkort på en order som är avslutad.</value>
+  </data>
+  <data name="changeProtocol_Info_1" xml:space="preserve">
+    <value>Du kan inte byta mall för Protokollet på en order som är avslutad.</value>
+  </data>
+  <data name="changeProtocol_Info_2" xml:space="preserve">
+    <value>Du kan inte byta mall för Protokollet före du startat/öppnat en order.</value>
+  </data>
+  <data name="changeMeasureProtocol_Info_1" xml:space="preserve">
+    <value>Du kan inte byta mall för Mätprotokollet på en order som är avslutad.</value>
+  </data>
+  <data name="changeMeasureProtocol_Info_2" xml:space="preserve">
+    <value>Du kan inte byta mall för Mätprotokollet före du startat/öppnat en order.</value>
+  </data>
   <data name="BrowseOldMeasureprotocol" xml:space="preserve">
     <value>F3-Bläddra i gamla Mätprotokoll</value>
   </data>
@@ -2274,23 +2292,5 @@ Kontakta Admin vid behov.</value>
   </data>
   <data name="btnZumbach" xml:space="preserve">
     <value>F6-Zumbach-mätning</value>
-  </data>
-  <data name="print_OutOfTolerance" xml:space="preserve">
-    <value>* = Värde Utanför toleransgränser</value>
-  </data>
-  <data name="changeProcesscard_Info_4" xml:space="preserve">
-    <value>Du kan inte ändra processkort på en order som är avslutad.</value>
-  </data>
-  <data name="changeProtocol_Info_1" xml:space="preserve">
-    <value>Du kan inte byta mall för Protokollet på en order som är avslutad.</value>
-  </data>
-  <data name="changeProtocol_Info_2" xml:space="preserve">
-    <value>Du kan inte byta mall för Protokollet före du startat/öppnat en order.</value>
-  </data>
-  <data name="changeMeasureProtocol_Info_1" xml:space="preserve">
-    <value>Du kan inte byta mall för Mätprotokollet på en order som är avslutad.</value>
-  </data>
-  <data name="changeMeasureProtocol_Info_2" xml:space="preserve">
-    <value>Du kan inte byta mall för Mätprotokollet före du startat/öppnat en order.</value>
   </data>
 </root>

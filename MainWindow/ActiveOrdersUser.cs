@@ -6,11 +6,15 @@ using System.Linq;
 using System.Windows.Forms;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.User;
+using DigitalProductionProgram.EasterEggs;
+using System.Reflection;
+using static Azure.Core.HttpHeader;
 
 namespace DigitalProductionProgram.MainWindow
 {
-    public partial class ActiveOrdersUser :  UserControl
+    public partial class ActiveOrdersUser : UserControl
     {
+       
         private Main_OrderInformation? orderInformation;
 
         private class OrderLabel : Label
@@ -49,7 +53,7 @@ namespace DigitalProductionProgram.MainWindow
         }
         public void Load_OrderNr(Main_OrderInformation? OrderInformation)
         {
-           
+
             Clear_OrderNr();
             var ctr = 0;
             orderInformation = OrderInformation;
@@ -118,13 +122,13 @@ namespace DigitalProductionProgram.MainWindow
                     Text = $"{reader["OrderNr"]} - {reader["Operation"]}",
                     OrderID = reader["OrderID"].ToString(),
                     TextAlign = ContentAlignment.MiddleLeft,
-                    Padding = new Padding(5,0,0,0),
+                    Padding = new Padding(5, 0, 0, 0),
                     Margin = new Padding(25, 0, 0, 1),
                     AutoSize = false,
                     Width = 120,
                     Cursor = Cursors.Hand,
                     Font = new Font("Arial", 10),
-                        
+
                 };
                 lbl.Click += OpenOrder_Click;
                 flp_Main.Invoke(new Action(() => flp_Main.Controls.Add(lbl)));
@@ -154,8 +158,15 @@ namespace DigitalProductionProgram.MainWindow
                 ctr++;
             }
 
-            
+
         }
+
+        private void KnockKnock_EasterEggCode(object sender, MouseEventArgs e)
+        {
+            EasterEgg_Code.Level_2.KnockKnock(this, e.Location);
+        }
+
+     
     }
 
 

@@ -1068,14 +1068,7 @@ namespace DigitalProductionProgram.OrderManagement
                         case WorkOperations.Extrusion_HS:
                             return Is_Protocol_Done(formTemplateIDs()) && Is_MeasureEquipmentFilledIn && Is_CompoundForm_Done && Is_RoomClimate_Done && Is_Halvfabrikat_Done && IsCommentsDone;
                             
-                        case WorkOperations.Hackning_TEF:
-                        case WorkOperations.Hackning_PTFE:
-                        case WorkOperations.Slitting_PTFE:
-                        case WorkOperations.Spolning_PTFE:
-                        case WorkOperations.Bump_PTFE:
-                        case WorkOperations.Kragning_PTFE:
-                        case WorkOperations.Kragning_K22_PTFE:
-                        case WorkOperations.Synergy_PTFE:
+                        default:
                             return Is_Protocol_Done(formTemplateIDs()) && Is_MeasureEquipmentFilledIn && IsCommentsDone;
 
                         case WorkOperations.Kragning_TEF:
@@ -1437,37 +1430,33 @@ namespace DigitalProductionProgram.OrderManagement
             }
             private static bool Is_ValueReportedAndOkToLeaveEmpty(int protocolDescriptionID)
             {
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    var query = @"
+                using var con = new SqlConnection(Database.cs_Protocol);
+                var query = @"
                         SELECT 1 
                         FROM [Processcard].ProposedChanges 
                         WHERE OrderID = @orderid 
                             AND ProtocolDescriptionID = @protocoldescriptionid";
-                    var cmd = new SqlCommand(query, con);
-                    cmd.Parameters.AddWithValue("@orderid", OrderID);
-                    cmd.Parameters.AddWithValue("@protocoldescriptionid", protocolDescriptionID);
-                    con.Open();
-                    var value = cmd.ExecuteScalar();
-                    return value != null;
-                }
+                var cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@orderid", OrderID);
+                cmd.Parameters.AddWithValue("@protocoldescriptionid", protocolDescriptionID);
+                con.Open();
+                var value = cmd.ExecuteScalar();
+                return value != null;
             }
             private static bool Is_Korprotokoll_Value_Discarded(int uppstart)
             {
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    var query = @"SELECT BoolValue FROM [Order].Data WHERE OrderID = @orderid AND uppstart = @row AND ProtocolDescriptionID = @protocoldescriptionid";
-                    var cmd = new SqlCommand(query, con);
-                    cmd.Parameters.AddWithValue("@orderid", OrderID);
-                    cmd.Parameters.AddWithValue("@protocoldescriptionid", 174);//174 = Kasserad
-                    cmd.Parameters.AddWithValue("@row", uppstart);
-                    con.Open();
-                    var value = cmd.ExecuteScalar();
-                    if (value != null)
-                        return bool.TryParse(value.ToString(), out var IsDiscarded) && IsDiscarded;
+                using var con = new SqlConnection(Database.cs_Protocol);
+                var query = @"SELECT BoolValue FROM [Order].Data WHERE OrderID = @orderid AND uppstart = @row AND ProtocolDescriptionID = @protocoldescriptionid";
+                var cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@orderid", OrderID);
+                cmd.Parameters.AddWithValue("@protocoldescriptionid", 174);//174 = Kasserad
+                cmd.Parameters.AddWithValue("@row", uppstart);
+                con.Open();
+                var value = cmd.ExecuteScalar();
+                if (value != null)
+                    return bool.TryParse(value.ToString(), out var IsDiscarded) && IsDiscarded;
 
-                    return false;
-                }
+                return false;
             }
 
             private static bool ShowMessage(string? Text)

@@ -155,6 +155,7 @@ namespace DigitalProductionProgram.Log
                     SELECT Tags, Version, DescriptionHeader, Description, HowToDo, ReleaseDate 
                     FROM [Log].ChangeLog
                     WHERE VisibleToUser = 'True'
+                    AND ReleaseDate IS NOT NULL
                     ORDER BY ID";
 
             var cmd = new SqlCommand(query, con);

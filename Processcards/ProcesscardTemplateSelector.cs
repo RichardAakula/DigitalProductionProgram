@@ -49,20 +49,20 @@ namespace DigitalProductionProgram.Processcards
         {
             public string? TemplateName { get; set; }
             public int TemplateID { get; set; }
-            public string TemplateRevision { get; set; }
+            public string? TemplateRevision { get; set; }
             public string? ProdType { get; set; }
             public string? ProdLine { get; set; }
             public string? RevNr { get; set; }
-            public string Workoperation { get; set; }
+            public string? Workoperation { get; set; }
             public int WorkoperationID { get; set; }
             public int? PartID { get; set; }
             public int? PartGroupID { get; set; }
             public bool IsProcesscardOkToStart { get; set; }
-            public string LatestRevNr { get; set; }
+            public string? LatestRevNr { get; set; }
             public bool IsLatestRevNrSelected { get; set; }
 
         }
-        private HeaderButton CreateButton(string text, EventHandler clickEvent, int? id = null, string workoperation = null, string revNr = null, string prodtype = null, string prodline = null, int? partid = null, int? partGroupID = null, bool isProcesscardOkToStart = false, bool isLatestRevNrSelected = true, string latestRevNr = null)
+        private static HeaderButton CreateButton(string text, EventHandler clickEvent, int? id = null, string? workoperation = null, string? revNr = null, string? prodtype = null, string? prodline = null, int? partid = null, int? partGroupID = null, bool isProcesscardOkToStart = false, bool isLatestRevNrSelected = true, string? latestRevNr = null)
         {
             var button = new HeaderButton
             {

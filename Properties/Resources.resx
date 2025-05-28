@@ -1857,21 +1857,21 @@
     <value />
   </data>
   <data name="print_OutOfTolerance" xml:space="preserve">
-    <value></value>
+    <value />
   </data>
   <data name="changeProcesscard_Info_4" xml:space="preserve">
-    <value></value>
+    <value />
   </data>
   <data name="changeProtocol_Info_1" xml:space="preserve">
-    <value></value>
+    <value />
   </data>
   <data name="changeProtocol_Info_2" xml:space="preserve">
-    <value></value>
+    <value />
   </data>
   <data name="changeMeasureProtocol_Info_1" xml:space="preserve">
-    <value></value>
+    <value />
   </data>
   <data name="changeMeasureProtocol_Info_2" xml:space="preserve">
-    <value></value>
+    <value />
   </data>
 </root>

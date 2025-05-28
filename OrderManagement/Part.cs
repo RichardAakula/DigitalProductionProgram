@@ -6,14 +6,81 @@ using DigitalProductionProgram.eMail;
 using DigitalProductionProgram.Övrigt;
 using DigitalProductionProgram.Processcards;
 using static DigitalProductionProgram.OrderManagement.Manage_WorkOperation;
+using System.Data;
 
 
 namespace DigitalProductionProgram.OrderManagement
 {
     internal class Part
     {
-       
-       
+
+        private static string BuildProcesscardQuery(string workOperation, string partNr)
+        {
+            bool isMultiple = Processcard.IsMultiple_Processcard(Order.WorkOperation, partNr);
+            var q = new StringBuilder(@"
+        WITH OrderedRevisions AS (
+            SELECT 
+                PartID, 
+                PartGroupID,
+                RevNr,
+                QA_sign,
+                Framtagning_Processfönster,");
+
+            if (isMultiple)
+            {
+                if (!string.IsNullOrEmpty(Order.ProdLine))
+                    q.Append("ProdLine, ");
+                if (!string.IsNullOrEmpty(Order.ProdType))
+                    q.Append("ProdType, ");
+            }
+
+            q.Append(@"
+                ROW_NUMBER() OVER (PARTITION BY PartGroupID ORDER BY RevNr DESC) AS RowNum,
+                COUNT(*) OVER (PARTITION BY PartGroupID) AS TotalRevisions,
+                MIN(RevNr) OVER (PARTITION BY PartGroupID) AS FirstRev,
+                MAX(RevNr) OVER (PARTITION BY PartGroupID) AS LatestRev,
+                MAX(CASE WHEN Framtagning_Processfönster = 'True' THEN RevNr END) OVER (PARTITION BY PartGroupID) AS LatestFramtagningRev,
+                MAX(CASE WHEN QA_sign IS NOT NULL THEN RevNr END) OVER (PARTITION BY PartGroupID) AS LatestApprovedRev
+            FROM Processcard.MainData
+            WHERE PartNr = @partnr
+            AND WorkOperationID = (SELECT ID FROM Workoperation.Names WHERE Name = @workoperation AND ID IS NOT NULL)
+            AND Aktiv = 'True'");
+
+            if (isMultiple)
+            {
+                if (!string.IsNullOrEmpty(Order.ProdLine))
+                    q.Append(" AND ProdLine = @prodline ");
+
+                if (!string.IsNullOrEmpty(Order.ProdType))
+                    q.Append(" AND ProdType = @prodtyp ");
+            }
+
+            q.Append(@"
+        ),
+        CheckAllNulls AS (
+            SELECT PartGroupID
+            FROM OrderedRevisions
+            GROUP BY PartGroupID
+            HAVING COUNT(*) = COUNT(CASE WHEN QA_sign IS NULL THEN 1 END)
+        )
+        SELECT 
+            PartID,
+            RevNr,
+            LatestRev,
+            CASE WHEN RevNr = LatestRev THEN 1 ELSE 0 END AS LatestRevSelected
+        FROM OrderedRevisions
+        WHERE 
+            RevNr = LatestApprovedRev
+            OR (RevNr = FirstRev AND PartGroupID IN (SELECT PartGroupID FROM CheckAllNulls) AND Framtagning_Processfönster = 'False')
+            OR (RevNr = LatestFramtagningRev AND PartGroupID IN (SELECT PartGroupID FROM CheckAllNulls) 
+                AND EXISTS (SELECT 1 FROM OrderedRevisions AS innerR 
+                            WHERE innerR.PartGroupID = OrderedRevisions.PartGroupID 
+                            AND Framtagning_Processfönster = 'True'))
+        ORDER BY PartGroupID, RevNr DESC");
+
+            return q.ToString();
+        }
+
         public static string ExtraInfo_Part
         {
             get
@@ -152,7 +219,70 @@ namespace DigitalProductionProgram.OrderManagement
             }
         }
 
-        public static void Load_PartID(string? PartNr, bool IsOperatorStartingOrder, bool IsOnlyProcessCard, string WorkOperation = null)
+        private record ProcesscardRevision(int PartID, string RevNr, string LatestRev, bool IsLatestRevSelected);
+        private static ProcesscardRevision? GetProcesscardRevision(string query, string partNr, string workOperation)
+        {
+            using var con = new SqlConnection(Database.cs_Protocol);
+            using var cmd = new SqlCommand(query, con);
+
+            cmd.Parameters.Add("@partnr", SqlDbType.VarChar).Value = partNr;
+            cmd.Parameters.Add("@workoperation", SqlDbType.VarChar).Value = workOperation;
+            SQL_Parameter.String(cmd.Parameters, "@prodline", Order.ProdLine);
+            SQL_Parameter.String(cmd.Parameters, "@prodtyp", Order.ProdType);
+
+            con.Open();
+            using var reader = cmd.ExecuteReader();
+
+            if (!reader.Read())
+                return null;
+
+            int partId = reader.GetInt32(reader.GetOrdinal("PartID"));
+            string revNr = reader.GetString(reader.GetOrdinal("RevNr"));
+            string latestRev = reader.GetString(reader.GetOrdinal("LatestRev"));
+            bool isLatest = reader.GetBoolean(reader.GetOrdinal("LatestRevSelected"));
+
+            return new ProcesscardRevision(partId, revNr, latestRev, isLatest);
+        }
+
+        public static void Load_PartID(string? partNr, bool isOperatorStartingOrder, bool isOnlyProcessCard, string? workOperation = null)
+        {
+            if (string.IsNullOrWhiteSpace(partNr))
+                return;
+
+            var resolvedWorkOperation = ResolveWorkOperation(workOperation, isOnlyProcessCard, isOperatorStartingOrder);
+            if (string.IsNullOrWhiteSpace(resolvedWorkOperation))
+                return;
+
+            var query = BuildProcesscardQuery(resolvedWorkOperation, partNr);
+            var revision = GetProcesscardRevision(query, partNr, resolvedWorkOperation);
+
+            if (revision is null)
+                return;
+
+            Order.PartID = revision.PartID;
+            Order.RevNr = revision.RevNr;
+
+            if (!revision.IsLatestRevSelected && isOperatorStartingOrder)
+                Mail.NotifyQAPartNumberNeedApproval(revision.LatestRev);
+        }
+        private static string? ResolveWorkOperation(string? workOperation, bool isOnlyProcessCard, bool isOperatorStartingOrder)
+        {
+            if (!string.IsNullOrWhiteSpace(workOperation) && workOperation != WorkOperations.Nothing.ToString())
+                return workOperation;
+
+            Order.WorkOperation = WorkOperations.Nothing;
+
+            using var black = new BlackBackground("", 70);
+            using var chooser = new ProcesscardTemplateSelector(isOperatorStartingOrder, isOnlyProcessCard, false);
+
+            black.Show();
+            chooser.ShowDialog();
+            black.Close();
+
+            return chooser.IsAborted ? null : Order.WorkOperation.ToString();
+        }
+
+        public static void Load_PartID2(string? PartNr, bool IsOperatorStartingOrder, bool IsOnlyProcessCard, string? WorkOperation = null)
         {
             //IsOnlyProcessCard - Letar endast efter mallar i Processkorten
             //IsOperatorStartingOrder - Då görs en kontroll när användare klickar på Processkortet om det är ok att starta ordern

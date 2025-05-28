@@ -10,6 +10,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.MainWindow;
 
 namespace DigitalProductionProgram.EasterEggs
@@ -70,8 +71,9 @@ namespace DigitalProductionProgram.EasterEggs
                 return false;
             }
 
-            InfoText.Question($"Du är Nr:{TotalPlayers(game) + 1} att hitta detta påskägg. Vill du fortsätta och öppna det?",
-                CustomColors.InfoText_Color.Info, "popåsskokägoggog", form);
+            InfoText.Question($"You are the {ControlManager.FormatOrdinal(TotalPlayers(game) + 1)} to uncover this hidden Easter egg.\n" +
+                              $"Do you dare to open it... or leave its secrets buried?",
+                CustomColors.InfoText_Color.Info, "EASostoteroregoggog", form, true);
             if (InfoText.answer == InfoText.Answer.No)
                 return false;
             return true;

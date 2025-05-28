@@ -294,7 +294,7 @@ namespace DigitalProductionProgram.User
             Mail = null;
             Points.TotalPoints = 0;
         }
-        public static void Add(string name, string sign, string anstNr, string password, string roleName, string mail, byte[] img)
+        public static void Add(string name, string sign, string anstNr, string password, string roleName, string mail, byte[]? img)
         {
             using (var con = new SqlConnection(Database.cs_Protocol))
             {
@@ -380,7 +380,7 @@ namespace DigitalProductionProgram.User
         }
 
 
-        public static void Save_ProfilePicture(byte[] img, string name)
+        public static void Save_ProfilePicture(byte[]? img, string name)
         {
             using var con = new SqlConnection(Database.cs_Protocol);
             const string query = @"

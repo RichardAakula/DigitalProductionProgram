@@ -37,6 +37,7 @@
             btn_TestCode.BackColor = Color.Transparent;
             btn_TestCode.BackgroundImage = (Image)resources.GetObject("btn_TestCode.BackgroundImage");
             btn_TestCode.BackgroundImageLayout = ImageLayout.Zoom;
+            btn_TestCode.Cursor = Cursors.Hand;
             btn_TestCode.FlatAppearance.BorderSize = 0;
             btn_TestCode.FlatAppearance.MouseOverBackColor = Color.FromArgb(70, 40, 40, 40);
             btn_TestCode.FlatStyle = FlatStyle.Flat;

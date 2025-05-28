@@ -51,6 +51,7 @@ namespace DigitalProductionProgram.MainWindow
             // label_Header_ActiveOrders
             // 
             label_Header_ActiveOrders.BackColor = Color.Transparent;
+            label_Header_ActiveOrders.Cursor = Cursors.Hand;
             label_Header_ActiveOrders.Font = new Font("Palatino Linotype", 14.25F);
             label_Header_ActiveOrders.ForeColor = Color.Moccasin;
             label_Header_ActiveOrders.Location = new Point(0, 0);
@@ -60,6 +61,7 @@ namespace DigitalProductionProgram.MainWindow
             label_Header_ActiveOrders.TabIndex = 1;
             label_Header_ActiveOrders.Text = "Dina aktiva Ordrar";
             label_Header_ActiveOrders.TextAlign = ContentAlignment.MiddleCenter;
+            label_Header_ActiveOrders.MouseDown += KnockKnock_EasterEggCode;
             // 
             // ActiveOrdersUser
             // 

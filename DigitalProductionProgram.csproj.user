@@ -91,7 +91,7 @@
     <Compile Update="MainWindow\ServerStatus.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Update="MainWindow\Statistics_DPP.cs">
+    <Compile Update="Statistics\Statistics_DPP.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Update="Measure\AddMeasurePointsManually.cs">

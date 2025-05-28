@@ -3,6 +3,7 @@ using DigitalProductionProgram.Equipment;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.Övrigt;
 using DigitalProductionProgram.PrintingServices;
+using static DigitalProductionProgram.MainWindow.Main_RollingInformation;
 using Timer = System.Timers.Timer;
 
 namespace DigitalProductionProgram.Help
@@ -10,6 +11,9 @@ namespace DigitalProductionProgram.Help
 
     public partial class InfoText : Form
     {
+       
+
+
         private TextBox? tb_Return_Text;
         private NumericUpDown? num_Return_Value;
 
@@ -26,23 +30,24 @@ namespace DigitalProductionProgram.Help
         public static int return_Value;
         private static bool IsQuestion;
         private static List<string>? InputTextList;
-        public static Control form { get; set; } = null!;
+        public static Control? form { get; set; } = null!;
 
         public InfoText()
         {
             InitializeComponent();
-            
-            tlp_Main.BackColor = Color.FromArgb(50, Color.Black);
-            timer_Second_ctr = new System.Timers.Timer();
-            timer_close = new System.Timers.Timer();
+            //this.DoubleBuffered = true;
+            SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint, true);
+
+            timer_Second_ctr = new Timer();
+            timer_close = new Timer();
 
             lbl_Message.ForeColor = clr_Fore;
             pb_Line_Top.Image = pb_Line_Bottom.Image = img_Line;
         }
 
-       
 
-        public static void Show(string? message, CustomColors.InfoText_Color färg, string? header, Control Form = null)
+
+        public static void Show(string? message, CustomColors.InfoText_Color färg, string? header, Control? Form = null, bool IsSpecialText = false)
         {
             Change_GUI_BackColor(färg);
             IsQuestion = false;
@@ -52,25 +57,42 @@ namespace DigitalProductionProgram.Help
             {
                 TopMost = true,
             };
+            typeof(TableLayoutPanel).InvokeMember("DoubleBuffered",
+                System.Reflection.BindingFlags.SetProperty |
+                System.Reflection.BindingFlags.Instance |
+                System.Reflection.BindingFlags.NonPublic,
+                null, infoText.lbl_Message, new object[] { true });
 
             Change_GUI_Header(header);
-            infoText.lbl_Message.Text = message;
-            Translate_Form();
-
             infoText.tlp_Main.RowStyles[2].Height = 10;
             infoText.tlp_Main.RowStyles[3].Height = 0;
             infoText.btn_Yes.Visible = infoText.btn_No.Visible = false;
+            infoText.lbl_Message.MaximumSize = new Size(infoText.tlp_Main.Width - 40, 0); // radbryt
+            Translate_Form();
 
-            Change_GUI_Size();
+            Change_GUI_Size(message);
+
+            if (IsSpecialText)
+                SpecialText(infoText.lbl_Message, message);
+            else
+                infoText.lbl_Message.Text = message;
+
+            
+
+            // Vänta på att användaren stänger rutan
             infoText.ShowDialog();
         }
-        public static void Question(string? Question, CustomColors.InfoText_Color color, string? header, Control Form = null)
+
+        public static void Question(string? Question, CustomColors.InfoText_Color color, string? header, Control? Form = null, bool IsSpecialText = false)
         {
             Change_GUI_BackColor(color);
             form = Form;
             infoText = new InfoText();
             infoText.TopMost = true;
-            infoText.lbl_Message.Text = Question;
+            if (IsSpecialText) 
+                SpecialText(infoText.lbl_Message, Question);
+            else
+                infoText.lbl_Message.Text = Question;
             infoText.tlp_Main.RowStyles[2].Height = 10;
             infoText.tlp_Main.RowStyles[3].Height = 0;
 
@@ -78,10 +100,34 @@ namespace DigitalProductionProgram.Help
             Change_GUI_Header(header);
             Change_GUI_Question(true);
             Change_GUI_QuestionText(null);
-            Change_GUI_Size();
+            Change_GUI_Size(Question);
             infoText.ShowDialog();
         }
-        public static void PromptForText(string Question, CustomColors.InfoText_Color color, string? header, Control Form, List<string> list_Items)
+
+
+        private static void SpecialText(Control ctrl, string? text)
+        {
+            int i = 0;
+            ctrl.Text = string.Empty;
+
+            // Inaktivera redraw
+
+            System.Windows.Forms.Timer t = new System.Windows.Forms.Timer { Interval = 30 }; // snäppet snabbare
+            t.Tick += (s, e) =>
+            {
+                if (i < text.Length)
+                    ctrl.Text += text[i++];
+                else
+                {
+                    t.Stop();
+                    // Aktivera redraw och tvinga omritning
+                    ctrl.Invalidate();
+                }
+            };
+            t.Start();
+        }
+
+        public static void PromptForText(string Question, CustomColors.InfoText_Color color, string? header, Control? Form, List<string> list_Items)
         {
             Change_GUI_BackColor(color);
             form = Form;
@@ -95,10 +141,10 @@ namespace DigitalProductionProgram.Help
             Translate_Form();
             Change_GUI_Header(header);
             Change_GUI_Return_Text(true);
-            Change_GUI_Size();
+            Change_GUI_Size(Question);
             infoText.ShowDialog();
         }
-        public static void PromptForValue(string Question, CustomColors.InfoText_Color color, string? header, Control Form, Image img)
+        public static void PromptForValue(string Question, CustomColors.InfoText_Color color, string? header, Control? Form, Image img)
         {
             Change_GUI_BackColor(color);
             form = Form;
@@ -118,7 +164,7 @@ namespace DigitalProductionProgram.Help
             }
             
             Change_GUI_Return_Value();
-            Change_GUI_Size();
+            Change_GUI_Size(Question);
             infoText.ShowDialog();
         }
 
@@ -272,15 +318,39 @@ namespace DigitalProductionProgram.Help
             if (img == null && url_Video == null)
                 infoText.tlp_Main.ColumnStyles[2].Width = 0;
         }
-        private static void Change_GUI_Size()
+        private static void Change_GUI_Size(string? text)
         {
-            var height = (int)infoText.tlp_Main.RowStyles[0].Height + (int)infoText.tlp_Main.RowStyles[1].Height + infoText.lbl_Message.Height + (int)infoText.tlp_Main.RowStyles[3].Height + (int)infoText.tlp_Main.RowStyles[4].Height + (int)infoText.tlp_Main.RowStyles[5].Height;
+            var maxWidth = infoText.tlp_Main.Width - 40; // Lite padding
+            var size = TextRenderer.MeasureText(text, infoText.lbl_Message.Font, new Size(maxWidth, 0), TextFormatFlags.WordBreak);
+
+            infoText.lbl_Message.MaximumSize = new Size(maxWidth, 0); // så den faktiskt radbryts
+            infoText.lbl_Message.Height = size.Height;
+
+            // Om rad 1 är autosize – tvinga den till rätt höjd
+            infoText.tlp_Main.RowStyles[1].Height = size.Height;
+
+           // infoText.tlp_Main.PerformLayout();
+
+            int height = infoText.tlp_Main.PreferredSize.Height;
 
             if (height > 800)
                 height = 800;
+
             infoText.Height = height + 50;
-            
-            infoText.Width = form is null ? Screen.PrimaryScreen.Bounds.Width : Screen.FromControl(form).Bounds.Width;
+            infoText.Width = form is null
+                ? Screen.PrimaryScreen.Bounds.Width
+                : Screen.FromControl(form).Bounds.Width;
+
+
+
+
+            //var height = (int)infoText.tlp_Main.RowStyles[0].Height + (int)infoText.tlp_Main.RowStyles[1].Height + infoText.lbl_Message.Height + (int)infoText.tlp_Main.RowStyles[3].Height + (int)infoText.tlp_Main.RowStyles[4].Height + (int)infoText.tlp_Main.RowStyles[5].Height;
+
+            //if (height > 800)
+            //    height = 800;
+            //infoText.Height = height + 50;
+
+            //infoText.Width = form is null ? Screen.PrimaryScreen.Bounds.Width : Screen.FromControl(form).Bounds.Width;
         }
         
         private static void Change_GUI_QuestionText(string?[] text)

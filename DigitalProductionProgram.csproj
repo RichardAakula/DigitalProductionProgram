@@ -15,6 +15,7 @@
     <None Remove="DataBaseSettings.json" />
     <None Remove="Resources\CodeWheel.png" />
     <None Remove="Resources\Code_Background.jpg" />
+    <None Remove="Resources\EggCursor.cur" />
     <None Remove="Resources\Grades\1.png" />
     <None Remove="Resources\Grades\10.png" />
     <None Remove="Resources\Grades\11.png" />
@@ -98,6 +99,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\Code_Background.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\EggCursor.cur">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\Grades\1.png" />

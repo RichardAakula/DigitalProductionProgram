@@ -29,7 +29,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                 }
                 using (var con = new SqlConnection(Database.cs_Protocol))
                 {
-                    var query = @"SELECT TOP(1) *
+                    const string query = @"SELECT TOP(1) *
                             FROM [Order].MainData
                             WHERE OrderID = @orderid";
 
@@ -166,7 +166,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
             for (var i = 0; i < TotalExtraPrintOuts + 0; i++)
             {
                 PrintVariables.Active_PrintOut++;
-                Measureprotocol.FirstRowMeasurment = Measureprotocol.LastRowMeasurement;
+                Measureprotocol.FirstRowMeasurment = Measureprotocol.LastRowMeasurement + 1;
                 Measureprotocol.LastRowMeasurement = Measureprotocol.FirstRowMeasurment + TotalRowsExtraPrintOut;
                 if (IsPrinting)
                     Print_Protocol_ExtraPage.Print();
@@ -205,9 +205,9 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
             PrintOut.Print_MaskinParametrar(e);
 
             PrintVariables.Y += 20;
-            PrintOut.Print_Produktion_Svetsning_Rubriker_Rutor(e);
+            PrintOut.Print_MeasureProtocol_HeadersAndSquares(e);
             PrintVariables.Y += 110;
-            PrintOut.Print_Produktion_Svetsning_Parametrar(e);
+            PrintOut.Print_MeasureProtocol_Values(e);
             PrintVariables.Y += 10;
             PrintOut.PrintPreFab(e);
 
@@ -221,9 +221,9 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
             PageHeader(e, "Protokoll för sammanfogning av slang, Svetsning", totalPrintOuts.TotalPages);
             Order_INFO(e);
             PrintVariables.Y = 135;
-            PrintOut.Print_Produktion_Svetsning_Rubriker_Rutor(e);
+            PrintOut.Print_MeasureProtocol_HeadersAndSquares(e);
             PrintVariables.Y += 110;
-            PrintOut.Print_Produktion_Svetsning_Parametrar(e);
+            PrintOut.Print_MeasureProtocol_Values(e);
         }
 
         public class PrintOut
@@ -384,7 +384,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                 }
                
             }
-            public static void Print_Produktion_Svetsning_Rubriker_Rutor(PrintPageEventArgs e)
+            public static void Print_MeasureProtocol_HeadersAndSquares(PrintPageEventArgs e)
             {
                 var margin = PrintVariables.LeftMargin;
                 Print.Rubrik(e, "Produktion / Svetsning", margin, PrintVariables.Y, PrintVariables.MaxPaperWidth - margin);
@@ -434,14 +434,13 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
 
                // e.Graphics.DrawLine(CustomFonts.mediumBlack, 368, Variables.Y + 111, 368, antalRader);
             }
-            public static void Print_Produktion_Svetsning_Parametrar(PrintPageEventArgs e)
+            public static void Print_MeasureProtocol_Values(PrintPageEventArgs e)
             {
                 if (Order.OrderID is null)
                     return;
                 const int RowHeight = 17;
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    var query = $@"
+                using var con = new SqlConnection(Database.cs_Protocol);
+                const string query = $@"
                         SELECT  Inledande_OrderNr,      24 AS x, 67 AS width, 
                                 Inledande_Påse,         91,      37, 
                                 Inledande_UppmättPinne, 128,     60, 
@@ -458,35 +457,35 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                         FROM(SELECT *, ROW_NUMBER() OVER(ORDER BY Datum, TID) AS RowNum
                             FROM Korprotokoll_Svetsning_Parametrar WHERE OrderID = @orderid) AS MyDerivedTable 
                             WHERE MyDerivedTable.RowNum BETWEEN @start and @slut";
-                    var cmd = new SqlCommand(query, con);
-                    cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
-                    cmd.Parameters.AddWithValue("@start", Measureprotocol.FirstRowMeasurment);
-                    cmd.Parameters.AddWithValue("@slut", Measureprotocol.LastRowMeasurement);
-                    con.Open();
-                    var reader = cmd.ExecuteReader();
-                    while (reader.Read())
+                var cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
+                cmd.Parameters.AddWithValue("@start", Measureprotocol.FirstRowMeasurment);
+                cmd.Parameters.AddWithValue("@slut", Measureprotocol.LastRowMeasurement);
+                con.Open();
+                var reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                        
+                    for (var i = 0; i < reader.FieldCount - 1; i += 3)
                     {
-                        
-                        for (var i = 0; i < reader.FieldCount - 1; i += 3)
-                        {
-                            var x = int.Parse(reader[i + 1].ToString());
-                            var maxWidth = int.Parse(reader[i + 2].ToString());
-                            Print.Thin_Rectangle(e, x, PrintVariables.Y, maxWidth, RowHeight);
+                        var x = int.Parse(reader[i + 1].ToString());
+                        var maxWidth = int.Parse(reader[i + 2].ToString());
+                        Print.Thin_Rectangle(e, x, PrintVariables.Y, maxWidth, RowHeight);
 
-                            if (i == 18 || i == 21) //Om kolumn = Utsida/Insida(boolean)
-                            {
-                                if ((bool)reader[i])
-                                    Print.Text_Operatör(e, "✓", (x + int.Parse(reader[i + 2].ToString()) / 2 + 1), PrintVariables.Y + 2, maxWidth, true);
-                            }
-                            else
-                                Print.Text_Operatör(e, reader[i].ToString(), x + maxWidth / 2 + 1, PrintVariables.Y, maxWidth, true);
+                        if (i == 18 || i == 21) //Om kolumn = Utsida/Insida(boolean)
+                        {
+                            if ((bool)reader[i])
+                                Print.Text_Operatör(e, "✓", (x + int.Parse(reader[i + 2].ToString()) / 2 + 1), PrintVariables.Y + 2, maxWidth, true);
                         }
-                        
-                        if ((bool)reader["Kasserad"])
-                            e.Graphics.DrawLine(CustomFonts.thickBlack, 30, PrintVariables.Y + 6, 755, PrintVariables.Y + 6);
-                        PrintVariables.Y += RowHeight;
+                        else
+                            Print.Text_Operatör(e, reader[i].ToString(), x + maxWidth / 2 + 1, PrintVariables.Y, maxWidth, true);
                     }
+                        
+                    if ((bool)reader["Kasserad"])
+                        e.Graphics.DrawLine(CustomFonts.thickBlack, 30, PrintVariables.Y + 6, 755, PrintVariables.Y + 6);
+                    PrintVariables.Y += RowHeight;
                 }
+
                 //if (!string.IsNullOrEmpty(Order.OrderNumber) && ctr_antalRader < antal_Rader)
                 //    e.Graphics.DrawLine(CustomFonts.thinBlack, 30, PrintVariables.Y, 767, (PrintVariables.Y - ctr_antalRader * RowHeight) + antal_Rader * RowHeight - 4 + RowHeight);
             }

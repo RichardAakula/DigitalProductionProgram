@@ -106,11 +106,23 @@ namespace DigitalProductionProgram.ControlsManagement
             cell.Style.ForeColor = Color.Red;
             cell.Style.BackColor = Color.White;
         }
-       
-       
-        
-        
-        
+        public static string FormatOrdinal(int number)
+        {
+            if (number % 100 >= 11 && number % 100 <= 13)
+                return number + "th";
+
+            return number + (number % 10) switch
+            {
+                1 => "ˢᵗ",
+                2 => "ⁿᵈ",
+                3 => "ʳᵈ",
+                _ => "ᵗʰ"
+            };
+        }
+
+
+
+
         public class Save
         {
             public static void Protocol_Main(object sender, EventArgs e)
@@ -127,29 +139,27 @@ namespace DigitalProductionProgram.ControlsManagement
                     var kolumn = ctrl.Name;
                     var dataType = Database.DataType(kolumn, "[Order].MainData");
 
-                    using (var con = new SqlConnection(Database.cs_Protocol))
+                    using var con = new SqlConnection(Database.cs_Protocol);
+                    var query =
+                        $"UPDATE [Order].MainData SET {kolumn} = @kolumn {Queries.WHERE_OrderID}";
+                    con.Open();
+                    var cmd = new SqlCommand(query, con);
+                    cmd.Parameters.AddWithValue("@id", Order.OrderID);
+                    switch (Type.GetTypeCode(dataType))
                     {
-                        var query =
-                            $"UPDATE [Order].MainData SET {kolumn} = @kolumn {Queries.WHERE_OrderID}";
-                        con.Open();
-                        var cmd = new SqlCommand(query, con);
-                        cmd.Parameters.AddWithValue("@id", Order.OrderID);
-                        switch (Type.GetTypeCode(dataType))
-                        {
-                            case TypeCode.Boolean:
-                                cmd.Parameters.AddWithValue("@kolumn", is_Flag);
-                                break;
-                            case TypeCode.Decimal:
-                                SQL_Parameter.Double(cmd.Parameters, "@kolumn", ctrl.Text);
-                                break;
-                            case TypeCode.String:
-                            case TypeCode.DateTime:
-                                cmd.Parameters.AddWithValue("@kolumn", ctrl.Text);
-                                break;
-                        }
-
-                        cmd.ExecuteNonQuery();
+                        case TypeCode.Boolean:
+                            cmd.Parameters.AddWithValue("@kolumn", is_Flag);
+                            break;
+                        case TypeCode.Decimal:
+                            SQL_Parameter.Double(cmd.Parameters, "@kolumn", ctrl.Text);
+                            break;
+                        case TypeCode.String:
+                        case TypeCode.DateTime:
+                            cmd.Parameters.AddWithValue("@kolumn", ctrl.Text);
+                            break;
                     }
+
+                    cmd.ExecuteNonQuery();
                 }
             }
         }

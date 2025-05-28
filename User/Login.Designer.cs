@@ -656,7 +656,7 @@ namespace DigitalProductionProgram.User
             // 
             lbl_Date.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             lbl_Date.AutoSize = true;
-            lbl_Date.BackColor = Color.FromArgb(150, 80, 80, 80);
+            lbl_Date.BackColor = Color.Transparent;
             lbl_Date.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lbl_Date.ForeColor = Color.Maroon;
             lbl_Date.Location = new Point(472, 13);

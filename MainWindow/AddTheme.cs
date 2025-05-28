@@ -48,19 +48,17 @@ namespace DigitalProductionProgram.MainWindow
                     BackgroundImage = Image.FromStream(ms);
                     Thread.Sleep(1000);
                     Refresh();
-                    using (var con = new SqlConnection(Database.cs_Protocol))
-                    {
-                        var query = @"
+                    using var con = new SqlConnection(Database.cs_Protocol);
+                    var query = @"
                    
                         INSERT INTO [Settings].Themes (Theme, Image)
                         VALUES (@theme, @image)";
-                        con.Open();
-                        var cmd = new SqlCommand(query, con);
-                        cmd.Parameters.AddWithValue("@image", ProfilePicture);
-                        cmd.Parameters.AddWithValue("@theme", cb_Theme.Text);
+                    con.Open();
+                    var cmd = new SqlCommand(query, con);
+                    cmd.Parameters.AddWithValue("@image", ProfilePicture);
+                    cmd.Parameters.AddWithValue("@theme", cb_Theme.Text);
 
-                        cmd.ExecuteNonQuery();
-                    }
+                    cmd.ExecuteNonQuery();
                 }
 
                 MessageBox.Show("Alla bilder är uppladdade.");

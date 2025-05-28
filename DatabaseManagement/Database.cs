@@ -116,14 +116,23 @@ namespace DigitalProductionProgram.DatabaseManagement
             if (string.IsNullOrEmpty(cs_Protocol))
                 return;
 
-            if (cs_Protocol.Equals(csDPP_OGO, StringComparison.OrdinalIgnoreCase))
-                cb_DPP.Text = "Godby";
-            else if (cs_Protocol.Equals(csDPP_Beta, StringComparison.OrdinalIgnoreCase))
-                cb_DPP.Text = "Godby Test";
-            else if (cs_Protocol.Equals(csDPP_OTH, StringComparison.OrdinalIgnoreCase))
-                cb_DPP.Text = "Thailand";
-            else if (cs_Protocol.Equals(csDPP_OVF, StringComparison.OrdinalIgnoreCase))
-                cb_DPP.Text = "Valley Forge";
+            //if (cs_Protocol.Equals(csDPP_OGO, StringComparison.OrdinalIgnoreCase))
+            //    cb_DPP.Text = "Godby";
+            //else if (cs_Protocol.Equals(csDPP_Beta, StringComparison.OrdinalIgnoreCase))
+            //    cb_DPP.Text = "Godby Test";
+            //else if (cs_Protocol.Equals(csDPP_OTH, StringComparison.OrdinalIgnoreCase))
+            //    cb_DPP.Text = "Thailand";
+            //else if (cs_Protocol.Equals(csDPP_OVF, StringComparison.OrdinalIgnoreCase))
+            //    cb_DPP.Text = "Valley Forge";
+            cb_DPP.Text = cs_Protocol switch
+            {
+                string s when s.Contains("GOD_DPP_DEV", StringComparison.OrdinalIgnoreCase) => "Godby Test",
+                string s when s.Contains(ServerOGO, StringComparison.OrdinalIgnoreCase) => "Godby",
+                string s when s.Contains(ServerOTH, StringComparison.OrdinalIgnoreCase) => "Thailand",
+                string s when s.Contains(ServerOVF, StringComparison.OrdinalIgnoreCase) => "Valley Forge",
+                _ => "Okänd plats"
+            };
+
 
 
             if (cs_Protocol.Equals(csToolRegisterGodby, StringComparison.OrdinalIgnoreCase))

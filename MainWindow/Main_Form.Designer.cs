@@ -2,6 +2,7 @@
 using System.Windows.Forms;
 
 using DigitalProductionProgram.Measure;
+using DigitalProductionProgram.Statistics;
 
 namespace DigitalProductionProgram.MainWindow
 {
@@ -52,7 +53,6 @@ namespace DigitalProductionProgram.MainWindow
             panel_Right = new Panel();
             FeedBackQC = new DigitalProductionProgram.QC.FeedBackQC();
             TipsAndTrix = new DigitalProductionProgram.Övrigt.TipsAndTrix();
-            Statistics_DPP = new Statistics_DPP();
             tlp_Top = new TableLayoutPanel();
             RollingInformation = new Main_RollingInformation();
             MainMenu = new Main_Menu();
@@ -92,6 +92,7 @@ namespace DigitalProductionProgram.MainWindow
             spitContainer_Bottom = new SplitContainer();
             splitContainer_Right = new SplitContainer();
             tlp_MainWindow = new TableLayoutPanel();
+            Statistics_DPP = new Statistics_DPP();
             ((ISupportInitialize)pb_Info_UserPoints).BeginInit();
             tlp_ExtraInfo.SuspendLayout();
             panel_Right.SuspendLayout();
@@ -172,7 +173,7 @@ namespace DigitalProductionProgram.MainWindow
             tlp_ExtraInfo.RowCount = 2;
             tlp_ExtraInfo.RowStyles.Add(new RowStyle(SizeType.Absolute, 29F));
             tlp_ExtraInfo.RowStyles.Add(new RowStyle());
-            tlp_ExtraInfo.Size = new Size(471, 158);
+            tlp_ExtraInfo.Size = new Size(207, 158);
             tlp_ExtraInfo.TabIndex = 906;
             tlp_ExtraInfo.Visible = false;
             // 
@@ -186,7 +187,7 @@ namespace DigitalProductionProgram.MainWindow
             lbl_ExtraInfo.Location = new Point(0, 29);
             lbl_ExtraInfo.Margin = new Padding(0);
             lbl_ExtraInfo.Name = "lbl_ExtraInfo";
-            lbl_ExtraInfo.Size = new Size(471, 129);
+            lbl_ExtraInfo.Size = new Size(207, 129);
             lbl_ExtraInfo.TabIndex = 0;
             lbl_ExtraInfo.Text = "Extra Info";
             // 
@@ -199,7 +200,7 @@ namespace DigitalProductionProgram.MainWindow
             label_ExtraInfo.Location = new Point(0, 0);
             label_ExtraInfo.Margin = new Padding(0);
             label_ExtraInfo.Name = "label_ExtraInfo";
-            label_ExtraInfo.Size = new Size(471, 29);
+            label_ExtraInfo.Size = new Size(207, 29);
             label_ExtraInfo.TabIndex = 892;
             label_ExtraInfo.Text = "Extrainformation:";
             label_ExtraInfo.TextAlign = ContentAlignment.MiddleCenter;
@@ -213,7 +214,7 @@ namespace DigitalProductionProgram.MainWindow
             panelChart.Location = new Point(6, 361);
             panelChart.Margin = new Padding(6, 2, 0, 0);
             panelChart.Name = "panelChart";
-            panelChart.Size = new Size(990, 464);
+            panelChart.Size = new Size(990, 345);
             panelChart.TabIndex = 913;
             panelChart.Visible = false;
             // 
@@ -258,7 +259,7 @@ namespace DigitalProductionProgram.MainWindow
             AQL.Margin = new Padding(0, 3, 4, 23);
             AQL.Name = "AQL";
             tlp_MainWindow.SetRowSpan(AQL, 3);
-            AQL.Size = new Size(283, 169);
+            AQL.Size = new Size(211, 169);
             AQL.TabIndex = 919;
             AQL.Visible = false;
             // 
@@ -270,7 +271,7 @@ namespace DigitalProductionProgram.MainWindow
             panel_Right.Location = new Point(0, 0);
             panel_Right.Margin = new Padding(2, 3, 4, 3);
             panel_Right.Name = "panel_Right";
-            panel_Right.Size = new Size(337, 825);
+            panel_Right.Size = new Size(280, 706);
             panel_Right.TabIndex = 921;
             // 
             // FeedBackQC
@@ -281,7 +282,7 @@ namespace DigitalProductionProgram.MainWindow
             FeedBackQC.Margin = new Padding(0);
             FeedBackQC.MinimumSize = new Size(350, 0);
             FeedBackQC.Name = "FeedBackQC";
-            FeedBackQC.Size = new Size(350, 501);
+            FeedBackQC.Size = new Size(350, 382);
             FeedBackQC.TabIndex = 913;
             FeedBackQC.Visible = false;
             // 
@@ -292,20 +293,9 @@ namespace DigitalProductionProgram.MainWindow
             TipsAndTrix.Location = new Point(0, 0);
             TipsAndTrix.Margin = new Padding(5, 3, 5, 3);
             TipsAndTrix.Name = "TipsAndTrix";
-            TipsAndTrix.Size = new Size(337, 324);
+            TipsAndTrix.Size = new Size(280, 324);
             TipsAndTrix.TabIndex = 914;
             TipsAndTrix.Visible = false;
-            // 
-            // Statistics_DPP
-            // 
-            Statistics_DPP.BackColor = Color.Transparent;
-            tlp_MainWindow.SetColumnSpan(Statistics_DPP, 2);
-            Statistics_DPP.Dock = DockStyle.Fill;
-            Statistics_DPP.Location = new Point(1001, 362);
-            Statistics_DPP.Margin = new Padding(5, 3, 5, 3);
-            Statistics_DPP.Name = "Statistics_DPP";
-            Statistics_DPP.Size = new Size(577, 460);
-            Statistics_DPP.TabIndex = 922;
             // 
             // tlp_Top
             // 
@@ -323,7 +313,7 @@ namespace DigitalProductionProgram.MainWindow
             tlp_Top.Name = "tlp_Top";
             tlp_Top.RowCount = 1;
             tlp_Top.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            tlp_Top.Size = new Size(2245, 43);
+            tlp_Top.Size = new Size(1924, 43);
             tlp_Top.TabIndex = 912;
             // 
             // RollingInformation
@@ -333,7 +323,7 @@ namespace DigitalProductionProgram.MainWindow
             RollingInformation.Location = new Point(670, 5);
             RollingInformation.Margin = new Padding(5);
             RollingInformation.Name = "RollingInformation";
-            RollingInformation.Size = new Size(1465, 33);
+            RollingInformation.Size = new Size(1144, 33);
             RollingInformation.TabIndex = 893;
             // 
             // MainMenu
@@ -349,7 +339,7 @@ namespace DigitalProductionProgram.MainWindow
             // 
             // Serverstatus
             // 
-            Serverstatus.Location = new Point(2145, 3);
+            Serverstatus.Location = new Point(1824, 3);
             Serverstatus.Margin = new Padding(5, 3, 5, 3);
             Serverstatus.Name = "Serverstatus";
             Serverstatus.Size = new Size(95, 37);
@@ -375,7 +365,7 @@ namespace DigitalProductionProgram.MainWindow
             tlp_Left.RowStyles.Add(new RowStyle(SizeType.Absolute, 338F));
             tlp_Left.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
             tlp_Left.RowStyles.Add(new RowStyle(SizeType.Absolute, 332F));
-            tlp_Left.Size = new Size(318, 1181);
+            tlp_Left.Size = new Size(318, 1018);
             tlp_Left.TabIndex = 920;
             // 
             // panel_Profile
@@ -585,7 +575,7 @@ namespace DigitalProductionProgram.MainWindow
             tlp_QuickOpen.Controls.Add(dgv_QuickOpen, 0, 3);
             tlp_QuickOpen.Controls.Add(label_QuickOpenOrder, 0, 2);
             tlp_QuickOpen.Dock = DockStyle.Left;
-            tlp_QuickOpen.Location = new Point(2, 852);
+            tlp_QuickOpen.Location = new Point(2, 689);
             tlp_QuickOpen.Margin = new Padding(2, 3, 0, 0);
             tlp_QuickOpen.Name = "tlp_QuickOpen";
             tlp_QuickOpen.RowCount = 4;
@@ -734,14 +724,13 @@ namespace DigitalProductionProgram.MainWindow
             // 
             // ActiveOrdersUser
             // 
-            ActiveOrdersUser.BackColor = Color.FromArgb(25, 25, 25);
+            ActiveOrdersUser.BackColor = Color.FromArgb(60, 60, 60);
             ActiveOrdersUser.Dock = DockStyle.Fill;
-            ActiveOrdersUser.Location = new Point(5, 476);
-            ActiveOrdersUser.Margin = new Padding(5);
+            ActiveOrdersUser.Location = new Point(4, 474);
+            ActiveOrdersUser.Margin = new Padding(4, 3, 4, 3);
             ActiveOrdersUser.Name = "ActiveOrdersUser";
-            ActiveOrdersUser.Size = new Size(308, 368);
-            ActiveOrdersUser.TabIndex = 867;
-            ActiveOrdersUser.Visible = false;
+            ActiveOrdersUser.Size = new Size(310, 209);
+            ActiveOrdersUser.TabIndex = 866;
             // 
             // timer_CheckForUpdate
             // 
@@ -781,7 +770,7 @@ namespace DigitalProductionProgram.MainWindow
             Buttons.Location = new Point(318, 43);
             Buttons.Margin = new Padding(0);
             Buttons.Name = "Buttons";
-            Buttons.Size = new Size(1927, 45);
+            Buttons.Size = new Size(1606, 45);
             Buttons.TabIndex = 917;
             // 
             // PriorityPlanning
@@ -792,7 +781,7 @@ namespace DigitalProductionProgram.MainWindow
             PriorityPlanning.Margin = new Padding(0);
             PriorityPlanning.Name = "PriorityPlanning";
             PriorityPlanning.Padding = new Padding(0, 0, 10, 0);
-            PriorityPlanning.Size = new Size(1927, 304);
+            PriorityPlanning.Size = new Size(1606, 260);
             PriorityPlanning.TabIndex = 14;
             // 
             // panel_Bottom
@@ -802,7 +791,7 @@ namespace DigitalProductionProgram.MainWindow
             panel_Bottom.Location = new Point(0, 0);
             panel_Bottom.Margin = new Padding(4, 3, 4, 3);
             panel_Bottom.Name = "panel_Bottom";
-            panel_Bottom.Size = new Size(1927, 304);
+            panel_Bottom.Size = new Size(1606, 260);
             panel_Bottom.TabIndex = 0;
             // 
             // spitContainer_Bottom
@@ -820,8 +809,8 @@ namespace DigitalProductionProgram.MainWindow
             // spitContainer_Bottom.Panel2
             // 
             spitContainer_Bottom.Panel2.Controls.Add(panel_Bottom);
-            spitContainer_Bottom.Size = new Size(1927, 1136);
-            spitContainer_Bottom.SplitterDistance = 825;
+            spitContainer_Bottom.Size = new Size(1606, 973);
+            spitContainer_Bottom.SplitterDistance = 706;
             spitContainer_Bottom.SplitterWidth = 7;
             spitContainer_Bottom.TabIndex = 922;
             // 
@@ -839,8 +828,8 @@ namespace DigitalProductionProgram.MainWindow
             // splitContainer_Right.Panel2
             // 
             splitContainer_Right.Panel2.Controls.Add(panel_Right);
-            splitContainer_Right.Size = new Size(1927, 825);
-            splitContainer_Right.SplitterDistance = 1583;
+            splitContainer_Right.Size = new Size(1606, 706);
+            splitContainer_Right.SplitterDistance = 1319;
             splitContainer_Right.SplitterWidth = 7;
             splitContainer_Right.TabIndex = 0;
             // 
@@ -857,11 +846,11 @@ namespace DigitalProductionProgram.MainWindow
             tlp_MainWindow.Controls.Add(tlp_ExtraInfo, 4, 3);
             tlp_MainWindow.Controls.Add(lbl_Rating, 2, 2);
             tlp_MainWindow.Controls.Add(AQL, 4, 0);
-            tlp_MainWindow.Controls.Add(Statistics_DPP, 3, 4);
             tlp_MainWindow.Controls.Add(panelChart, 0, 4);
             tlp_MainWindow.Controls.Add(OrderInformation, 0, 0);
             tlp_MainWindow.Controls.Add(measurePoints, 0, 3);
             tlp_MainWindow.Controls.Add(measureStats, 1, 3);
+            tlp_MainWindow.Controls.Add(Statistics_DPP, 4, 4);
             tlp_MainWindow.Dock = DockStyle.Fill;
             tlp_MainWindow.Location = new Point(0, 0);
             tlp_MainWindow.Margin = new Padding(4, 3, 3, 3);
@@ -872,8 +861,18 @@ namespace DigitalProductionProgram.MainWindow
             tlp_MainWindow.RowStyles.Add(new RowStyle(SizeType.Absolute, 72F));
             tlp_MainWindow.RowStyles.Add(new RowStyle(SizeType.Absolute, 164F));
             tlp_MainWindow.RowStyles.Add(new RowStyle(SizeType.Absolute, 87F));
-            tlp_MainWindow.Size = new Size(1583, 825);
+            tlp_MainWindow.Size = new Size(1319, 706);
             tlp_MainWindow.TabIndex = 0;
+            // 
+            // Statistics_DPP
+            // 
+            Statistics_DPP.BackColor = Color.Transparent;
+            Statistics_DPP.Dock = DockStyle.Fill;
+            Statistics_DPP.Location = new Point(1108, 362);
+            Statistics_DPP.Margin = new Padding(4, 3, 4, 3);
+            Statistics_DPP.Name = "Statistics_DPP";
+            Statistics_DPP.Size = new Size(207, 341);
+            Statistics_DPP.TabIndex = 920;
             // 
             // Main_Form
             // 
@@ -881,7 +880,7 @@ namespace DigitalProductionProgram.MainWindow
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(25, 25, 25);
             BackgroundImageLayout = ImageLayout.Stretch;
-            ClientSize = new Size(2245, 1224);
+            ClientSize = new Size(1924, 1061);
             Controls.Add(spitContainer_Bottom);
             Controls.Add(Buttons);
             Controls.Add(tlp_Left);
@@ -971,7 +970,6 @@ namespace DigitalProductionProgram.MainWindow
         private Label lbl_Company;
         private Panel panel_Background_OptinovaLogo;
         private PictureBox pBox_OptinovaLogo;
-        private ActiveOrdersUser ActiveOrdersUser;
         public Main_Menu MainMenu;
         private TableLayoutPanel tlp_UserInfo;
         private System.Windows.Forms.Timer timer_ReLogin_Monitor;
@@ -979,7 +977,6 @@ namespace DigitalProductionProgram.MainWindow
         private QC.FeedBackQC FeedBackQC;
         private Övrigt.TipsAndTrix TipsAndTrix;
         private Panel panel_Right;
-        private Statistics_DPP Statistics_DPP;
         public TableLayoutPanel tlp_QuickOpen;
         private Label label_Filter;
         private PictureBox pb_Info_Snabböppna;
@@ -989,5 +986,7 @@ namespace DigitalProductionProgram.MainWindow
         public Main_Priorityplanning PriorityPlanning;
         private SplitContainer spitContainer_Bottom;
         private SplitContainer splitContainer_Right;
+        private ActiveOrdersUser ActiveOrdersUser;
+        private Statistics_DPP Statistics_DPP;
     }
 }

@@ -239,7 +239,6 @@ C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram
 C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram\obj\Debug\net8.0-windows\DigitalProductionProgram.MainWindow.Main_RollingInformation.resources
 C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram\obj\Debug\net8.0-windows\DigitalProductionProgram.MainWindow.MonitorUsers.resources
 C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram\obj\Debug\net8.0-windows\DigitalProductionProgram.MainWindow.ServerStatus.resources
-C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram\obj\Debug\net8.0-windows\DigitalProductionProgram.MainWindow.Statistics_DPP.resources
 C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram\obj\Debug\net8.0-windows\DigitalProductionProgram.Measure.AddMeasurePointsManually.resources
 C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram\obj\Debug\net8.0-windows\DigitalProductionProgram.Measure.BrowseMeasureProtocols.resources
 C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram\obj\Debug\net8.0-windows\DigitalProductionProgram.Measure.ChooseErrorCode.resources
@@ -357,3 +356,5 @@ C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram
 C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram\obj\Debug\net8.0-windows\DigitalProductionProgram.EasterEggs.EasterEgg_1.resources
 C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram\bin\Debug\net8.0-windows\Resources\CodeWheel.png
 C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram\bin\Debug\net8.0-windows\Resources\Code_Background.jpg
+C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram\obj\Debug\net8.0-windows\DigitalProductionProgram.Statistics.Statistics_DPP.resources
+C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram\bin\Debug\net8.0-windows\Resources\EggCursor.cur

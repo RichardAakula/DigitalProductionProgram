@@ -219,7 +219,7 @@ namespace DigitalProductionProgram.eMail
             Send(string.Format(LanguageManager.GetString("mail_Subject_NotifyOrderStartCount"), Order.PartNumber, 6), 4);
         }
 
-        public static void NotifyQAPartNumberNeedApproval(string latestRevNr)
+        public static void NotifyQAPartNumberNeedApproval(string? latestRevNr)
         {
             if (Browse_Protocols.Browse_Protocols.Is_BrowsingProtocols)
                 return;
@@ -243,8 +243,8 @@ namespace DigitalProductionProgram.eMail
                     MessageBox.Show($"Epostadressen {reader[0]} är inte giltig, vänligen kontrollera den i databasen [User].Person");
 
             mailMessage.From = new MailAddress("DigitalProductionProgram@optinova.com");
-            mailMessage.Body = "DPP behöver installeras om för att få tillgång till den senaste versionen.<br />" +
-                                  "Versionen 4.3.7.4 kommer att fungera ett tag till, men rekommenderas att göra detta så fort som möjligt<br /><br />" +
+            mailMessage.Body = "Efter klockan 14:00 på fredag behöver DPP installeras om för att få tillgång till den senaste versionen.<br />" +
+                               "Den gamla versionen kommer ej att fungera längre.<br /><br />" +
                                   "1. Avinstallera först det gamla programmet. (Högerklicka på ikonen för DPP och välj Avinstallera/Uninstall)<br />" +
                                   "2. Gå till utforskaren och gå till V:\\Elektroniska Körprotokoll\\V.3.0 och dubbelklicka på filen setup.exe<br />" +
                                   "3. Klart<br /><br />" +

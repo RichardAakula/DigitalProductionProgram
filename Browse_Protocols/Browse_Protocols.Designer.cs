@@ -44,7 +44,7 @@ namespace DigitalProductionProgram.Browse_Protocols
             this.tlp_Main = new System.Windows.Forms.TableLayoutPanel();
             this.tlp_Machines = new System.Windows.Forms.TableLayoutPanel();
             this.Processcard_BasedOn = new DigitalProductionProgram.Processcards.ProcesscardBasedOn();
-            this.Comments = new DigitalProductionProgram.Protocols.Comments();
+            this.Comments = new Comments();
             this.Prefab = new PreFab();
             this.chb_SelectOrders = new System.Windows.Forms.CheckBox();
             this.panel_Top = new System.Windows.Forms.Panel();

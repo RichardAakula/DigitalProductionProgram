@@ -1495,9 +1495,6 @@
   <data name="lbl_Exit" xml:space="preserve">
     <value />
   </data>
-  <data name="DPP" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\DPP New Icon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="validateData_Info_5_1" xml:space="preserve">
     <value />
   </data>
@@ -1657,9 +1654,6 @@
   <data name="dryingMaterial_1" xml:space="preserve">
     <value />
     <comment>Drying material During Extrusion (D.E)</comment>
-  </data>
-  <data name="NewIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\NewIcon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="template" xml:space="preserve">
     <value />

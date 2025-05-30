@@ -4,6 +4,7 @@ using Microsoft.Data.SqlClient;
 using System.Drawing;
 using System.Globalization;
 using System.Windows.Forms;
+using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.Övrigt;

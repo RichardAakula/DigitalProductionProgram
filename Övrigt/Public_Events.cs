@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Globalization;
 using System.Windows.Forms;
+using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.Help;
 using DigitalProductionProgram.PrintingServices;
 

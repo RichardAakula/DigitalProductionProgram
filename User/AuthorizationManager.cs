@@ -4,6 +4,7 @@ using System.Configuration;
 using Microsoft.Data.SqlClient;
 using System.Linq;
 using System.Windows.Forms;
+using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Equipment;
 

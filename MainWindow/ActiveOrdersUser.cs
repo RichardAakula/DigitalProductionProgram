@@ -8,6 +8,7 @@ using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.User;
 using DigitalProductionProgram.EasterEggs;
 using System.Reflection;
+using DigitalProductionProgram.ControlsManagement;
 using static Azure.Core.HttpHeader;
 
 namespace DigitalProductionProgram.MainWindow

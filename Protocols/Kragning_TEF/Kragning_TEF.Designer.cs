@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Windows.Forms;
 using DigitalProductionProgram.Processcards;
+using DigitalProductionProgram.Protocols.ExtraProtocols;
 
 namespace DigitalProductionProgram.Protocols.Kragning_TEF
 {

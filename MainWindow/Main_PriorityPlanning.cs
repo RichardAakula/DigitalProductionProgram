@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data;
+using DigitalProductionProgram.ControlsManagement;
 using Microsoft.Data.SqlClient;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Equipment;

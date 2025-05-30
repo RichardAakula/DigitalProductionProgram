@@ -13,6 +13,7 @@ using Microsoft.Data.SqlClient;
 using System.Drawing.Printing;
 using System.Globalization;
 using System.Text.RegularExpressions;
+using DigitalProductionProgram.ControlsManagement;
 using static DigitalProductionProgram.PrintingServices.PrintVariables;
 using static DigitalProductionProgram.PrintingServices.Workoperation_Printouts.Print_Protocol.PrintOut;
 using FrequencyMarking = DigitalProductionProgram.Protocols.FrequencyMarking;

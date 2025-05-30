@@ -1,14 +1,10 @@
-﻿using System;
-using System.Configuration;
-using Microsoft.Data.SqlClient;
-using System.Windows.Forms;
+﻿using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.DatabaseManagement;
-
 using DigitalProductionProgram.OrderManagement;
-
 using DigitalProductionProgram.Protocols.Protocol;
+using Microsoft.Data.SqlClient;
 
-namespace DigitalProductionProgram.Protocols
+namespace DigitalProductionProgram.Protocols.ExtraProtocols
 {
     public partial class Comments : UserControl
     {
@@ -28,18 +24,15 @@ namespace DigitalProductionProgram.Protocols
             if (tb_Comments.Enabled == false || Module.IsOkToSave == false)
                 return;
 
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                con.Open();
-                var query =
-                    @"UPDATE [Order].MainData SET Comments = @comments WHERE OrderID = @orderid";
-                var cmd = new SqlCommand(query, con);
-                cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
-                cmd.Parameters.AddWithValue("@comments", tb_Comments.Text);
+            using var con = new SqlConnection(Database.cs_Protocol);
+            con.Open();
+            var query =
+                @"UPDATE [Order].MainData SET Comments = @comments WHERE OrderID = @orderid";
+            var cmd = new SqlCommand(query, con);
+            cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
+            cmd.Parameters.AddWithValue("@comments", tb_Comments.Text);
 
-                cmd.ExecuteNonQuery();
-            }
-            
+            cmd.ExecuteNonQuery();
         }
         public void Load_Data(int? orderID = null)
         {

@@ -5,9 +5,9 @@ using System.Linq;
 using System.Net;
 using System.Net.Mail;
 using System.Threading.Tasks;
+using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Help;
-using DigitalProductionProgram.MainWindow;
 
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.PrintingServices;
@@ -17,7 +17,7 @@ namespace DigitalProductionProgram.eMail
 {
     internal class Mail
     {
-        public static string Body;
+        public static string? Body;
 
         private static bool IsAutoTestJiraMailSentToday
         {
@@ -57,7 +57,7 @@ namespace DigitalProductionProgram.eMail
             return mailMessage;
         }
 
-        public static bool IsValidEmail(string email)
+        public static bool IsValidEmail(string? email)
         {
             try
             {
@@ -75,7 +75,7 @@ namespace DigitalProductionProgram.eMail
 
             msg.From = new MailAddress("digitalprocessprogram@optinova.com");
             msg.Subject = subject;
-            msg.Body = string.Format(LanguageManager.GetString("mail_Body"), Person.Name, Person.Mail, Body);
+            msg.Body = string.Format(LanguageManager.GetString("mail_Body") ?? string.Empty, Person.Name, Person.Mail, Body);
             msg.IsBodyHtml = true;
             var client = new SmtpClient
             {
@@ -169,7 +169,7 @@ namespace DigitalProductionProgram.eMail
                 await Log.Activity.Stop("Autotest Jira");
             }
         }
-        public static void Inform_SuperAdmin_Error(string text)
+        public static void Inform_SuperAdmin_Error(string? text)
         {
             Body = text;
             Send("Allmänt fel", 6);
@@ -182,18 +182,16 @@ namespace DigitalProductionProgram.eMail
 
             Body = string.Format(LanguageManager.GetString("mail_NotifyCustomerServiceMissingMeasurePoints"), Order.WorkOperation, Order.OrderNumber, Order.Operation, Order.PartNumber, Person.Name);
             Send($"{LanguageManager.GetString("mail_MissingMeasurePoints_2")}", 5);
-           
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                const string query = @"INSERT INTO Parts.PartNrSpecial (PartNr, PartNrDescriptionID )
+
+            using var con = new SqlConnection(Database.cs_Protocol);
+            const string query = @"INSERT INTO Parts.PartNrSpecial (PartNr, PartNrDescriptionID )
                                VALUES (@partNr, 3)";
-                var cmd = new SqlCommand(query, con);
-                cmd.Parameters.AddWithValue("@partNr", Order.PartNumber);
-                con.Open();
-                cmd.ExecuteNonQuery();
-            }
+            var cmd = new SqlCommand(query, con);
+            cmd.Parameters.AddWithValue("@partNr", Order.PartNumber);
+            con.Open();
+            cmd.ExecuteNonQuery();
         }
-        public static void NotifyFannyHanssonWrongMeasurePoints(string text)
+        public static void NotifyFannyHanssonWrongMeasurePoints(string? text)
         {
             Body = text;
             Send("Fel i Mätpunkter", 7);
@@ -240,7 +238,7 @@ namespace DigitalProductionProgram.eMail
                 if (IsValidEmail(reader[0].ToString()))
                     mailMessage.To.Add(reader[0].ToString() ?? string.Empty);
                 else
-                    MessageBox.Show($"Epostadressen {reader[0]} är inte giltig, vänligen kontrollera den i databasen [User].Person");
+                    MessageBox.Show($@"Epostadressen {reader[0]} är inte giltig, vänligen kontrollera den i databasen [User].Person");
 
             mailMessage.From = new MailAddress("DigitalProductionProgram@optinova.com");
             mailMessage.Body = "Efter klockan 14:00 på fredag behöver DPP installeras om för att få tillgång till den senaste versionen.<br />" +

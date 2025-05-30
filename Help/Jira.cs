@@ -86,7 +86,7 @@ namespace DigitalProductionProgram.Help
                 return $"{Math.Floor(days)} dagar {Math.Floor(hours)} h {Math.Floor(mins)} min";
             }
         }
-        private string mail_Meddelande
+        private string? mail_Meddelande
         {
             get
             {

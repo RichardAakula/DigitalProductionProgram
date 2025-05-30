@@ -28,36 +28,37 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
-            this.Main_Calendar = new DigitalProductionProgram.MainWindow.MonitorUsers();
-            this.timer_UpdateUsers = new System.Windows.Forms.Timer(this.components);
-            this.SuspendLayout();
+            components = new System.ComponentModel.Container();
+            Main_Calendar = new MonitorUsers();
+            timer_UpdateUsers = new System.Windows.Forms.Timer(components);
+            SuspendLayout();
             // 
             // Main_Calendar
             // 
-            this.Main_Calendar.BackColor = System.Drawing.Color.Transparent;
-            this.Main_Calendar.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.Main_Calendar.Location = new System.Drawing.Point(0, 0);
-            this.Main_Calendar.Margin = new System.Windows.Forms.Padding(0);
-            this.Main_Calendar.Name = "Main_Calendar";
-            this.Main_Calendar.Size = new System.Drawing.Size(1037, 709);
-            this.Main_Calendar.TabIndex = 0;
+            Main_Calendar.BackColor = Color.Transparent;
+            Main_Calendar.Dock = DockStyle.Fill;
+            Main_Calendar.Location = new Point(0, 0);
+            Main_Calendar.Margin = new Padding(0);
+            Main_Calendar.Name = "Main_Calendar";
+            Main_Calendar.Size = new Size(1210, 818);
+            Main_Calendar.TabIndex = 0;
             // 
             // timer_UpdateUsers
             // 
-            this.timer_UpdateUsers.Interval = 60000;
-            this.timer_UpdateUsers.Tick += new System.EventHandler(this.Timer_UpdateUsers_Tick);
+            timer_UpdateUsers.Interval = 60000;
+            timer_UpdateUsers.Tick += Timer_UpdateUsers_Tick;
             // 
             // LoggedInUsers
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1037, 709);
-            this.Controls.Add(this.Main_Calendar);
-            this.Name = "LoggedInUsers";
-            this.Text = "Logged In Users";
-            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.LoggedInUsers_FormClosed);
-            this.ResumeLayout(false);
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            ClientSize = new Size(1210, 818);
+            Controls.Add(Main_Calendar);
+            Margin = new Padding(4, 3, 4, 3);
+            Name = "LoggedInUsers";
+            Text = "Logged In Users";
+            FormClosed += LoggedInUsers_FormClosed;
+            ResumeLayout(false);
 
         }
 

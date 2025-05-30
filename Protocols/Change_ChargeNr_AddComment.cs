@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
+using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.Help;
 using DigitalProductionProgram.PrintingServices;
 
@@ -7,8 +8,8 @@ namespace DigitalProductionProgram.Protocols
 {
     public partial class Change_ChargeNr_AddComment : Form
     {
-        private string kommentar { get; set; }
-        public string Kommentar
+        private string? kommentar { get; set; }
+        public string? Kommentar
         {
             get => kommentar;
             set => kommentar = value;

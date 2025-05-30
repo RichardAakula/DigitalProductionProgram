@@ -8,11 +8,23 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <ApplicationIcon>NewIcon.ico</ApplicationIcon>
     <AssemblyVersion>4.3.8.6</AssemblyVersion>
-    <FileVersion>4.3.8.6</FileVersion>
+    <FileVersion>4.3.8.6</FileVersion><ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
   </PropertyGroup>
 
   <ItemGroup>
     <None Remove="DataBaseSettings.json" />
+    <None Remove="Icons\DPP_Icon16.png" />
+    <None Remove="Icons\DPP_Icon176.png" />
+    <None Remove="Icons\DPP_Icon24.png" />
+    <None Remove="Icons\DPP_Icon256.ico" />
+    <None Remove="Icons\DPP_Icon256.png" />
+    <None Remove="Icons\DPP_Icon32.png" />
+    <None Remove="Icons\DPP_Icon44.png" />
+    <None Remove="Icons\DPP_Icon48.png" />
+    <None Remove="Icons\DPP_Icon55.png" />
+    <None Remove="Icons\DPP_Icon66.png" />
+    <None Remove="Icons\DPP_Icon88.png" />
+    <None Remove="Icons\SplashScreen.png" />
     <None Remove="Resources\CodeWheel.png" />
     <None Remove="Resources\Code_Background.jpg" />
     <None Remove="Resources\EggCursor.cur" />
@@ -49,6 +61,8 @@
     <None Remove="Resources\Grades\7.png" />
     <None Remove="Resources\Grades\8.png" />
     <None Remove="Resources\Grades\9.png" />
+    <None Remove="Resources\NewIcon.ico" />
+    <None Remove="Resources\NewIcon.png" />
     <None Remove="Settings\appsettings.json" />
   </ItemGroup>
 
@@ -58,16 +72,6 @@
       <VersionMinor>0</VersionMinor>
       <VersionMajor>1</VersionMajor>
       <Guid>22d6f304-b0f6-11d0-94ab-0080c74c7e95</Guid>
-      <Lcid>0</Lcid>
-      <Isolated>false</Isolated>
-      <EmbedInteropTypes>true</EmbedInteropTypes>
-      <Private>True</Private>
-    </COMReference>
-    <COMReference Include="WMPLib">
-      <WrapperTool>tlbimp</WrapperTool>
-      <VersionMinor>0</VersionMinor>
-      <VersionMajor>1</VersionMajor>
-      <Guid>6bf52a50-394a-11d3-b153-00c04f79faa6</Guid>
       <Lcid>0</Lcid>
       <Isolated>false</Isolated>
       <EmbedInteropTypes>true</EmbedInteropTypes>
@@ -88,7 +92,45 @@
     <Content Include="DataBaseSettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Icons\DPP_Icon16.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Icons\DPP_Icon176.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Icons\DPP_Icon24.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Icons\DPP_Icon256.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Icons\DPP_Icon256.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Icons\DPP_Icon32.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Icons\DPP_Icon44.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Icons\DPP_Icon48.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Icons\DPP_Icon55.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Icons\DPP_Icon66.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Icons\DPP_Icon88.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Icons\SplashScreen.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="NewIcon.ico" />
+    <Content Include="Resources\NewIcon.ico" />
+    <Content Include="Resources\NewIcon.png" />
     <Content Include="Settings\appsettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -154,8 +196,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="LanguageManager.cs">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <Compile Update="ControlsManagement\LanguageManager.cs">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Compile>
     <Compile Update="Properties\Settings.Designer.cs">
       <DesignTimeSharedInput>True</DesignTimeSharedInput>

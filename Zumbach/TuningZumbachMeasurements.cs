@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using Microsoft.Data.SqlClient;
 using System.Windows.Forms.DataVisualization.Charting;
+using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.OrderManagement;
 
 namespace DigitalProductionProgram.Zumbach

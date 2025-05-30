@@ -3,6 +3,7 @@ using Microsoft.Data.SqlClient;
 using System.Diagnostics;
 using System.Globalization;
 using System.Text;
+using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Help;
 using DigitalProductionProgram.Monitor;

@@ -1,8 +1,6 @@
-﻿
-using System.ComponentModel;
-using System.Windows.Forms;
+﻿using System.ComponentModel;
 
-namespace DigitalProductionProgram.Protocols
+namespace DigitalProductionProgram.Protocols.ExtraProtocols
 {
     partial class Comments
     {

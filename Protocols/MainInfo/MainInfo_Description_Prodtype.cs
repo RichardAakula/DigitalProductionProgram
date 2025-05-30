@@ -1,6 +1,7 @@
 ﻿using System.Configuration;
 using Microsoft.Data.SqlClient;
 using System.Windows.Forms;
+using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.DatabaseManagement;
 
 namespace DigitalProductionProgram.Protocols.MainInfo
@@ -19,24 +20,22 @@ namespace DigitalProductionProgram.Protocols.MainInfo
         }
         public void Load_Data(int? OrderID)
         {
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                const string query = @"SELECT OrderNr, PartNr, Description, Customer, ProdType, Amount FROM [Order].MainData WHERE OrderID = @id";
+            using var con = new SqlConnection(Database.cs_Protocol);
+            const string query = @"SELECT OrderNr, PartNr, Description, Customer, ProdType, Amount FROM [Order].MainData WHERE OrderID = @id";
 
-                con.Open();
-                var cmd = new SqlCommand(query, con);
-                cmd.Parameters.AddWithValue("@id", OrderID);
-                var reader = cmd.ExecuteReader();
+            con.Open();
+            var cmd = new SqlCommand(query, con);
+            cmd.Parameters.AddWithValue("@id", OrderID);
+            var reader = cmd.ExecuteReader();
+            {
+                while (reader.Read())
                 {
-                    while (reader.Read())
-                    {
-                        lbl_OrderNr.Text = reader["OrderNr"].ToString();
-                        lbl_ArtikelNr.Text = reader["PartNr"].ToString();
-                        lbl_Description.Text = reader["Description"].ToString();
-                        lbl_Customer.Text = reader["Customer"].ToString();
-                        lbl_Prodtype.Text = reader["ProdType"].ToString();
-                        lbl_Total.Text = reader["Amount"].ToString();
-                    }
+                    lbl_OrderNr.Text = reader["OrderNr"].ToString();
+                    lbl_ArtikelNr.Text = reader["PartNr"].ToString();
+                    lbl_Description.Text = reader["Description"].ToString();
+                    lbl_Customer.Text = reader["Customer"].ToString();
+                    lbl_Prodtype.Text = reader["ProdType"].ToString();
+                    lbl_Total.Text = reader["Amount"].ToString();
                 }
             }
         }

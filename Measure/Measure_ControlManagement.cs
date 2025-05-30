@@ -10,6 +10,7 @@ using System.Globalization;
 using System.Text.RegularExpressions;
 using DigitalProductionProgram.Log;
 using System.Diagnostics;
+using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.Templates;
 using Microsoft.Data.SqlClient;
 

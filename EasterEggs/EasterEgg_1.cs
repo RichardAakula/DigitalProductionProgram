@@ -355,7 +355,7 @@ namespace DigitalProductionProgram.EasterEggs
         }
         private void MediaPlayerOnClick(object? sender, EventArgs e)
         {
-            mediaPlayer.Ctlcontrols.stop();
+           // mediaPlayer.Ctlcontrols.stop();
         }
         private void Goal()
         {

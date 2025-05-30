@@ -9,6 +9,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using DigitalProductionProgram.Protocols.Protocol;
 using System.Globalization;
+using DigitalProductionProgram.ControlsManagement;
 
 namespace DigitalProductionProgram.Protocols
 {

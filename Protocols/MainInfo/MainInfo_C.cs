@@ -2,6 +2,7 @@
 using System.Configuration;
 using Microsoft.Data.SqlClient;
 using System.Windows.Forms;
+using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.Protocols.Protocol;
@@ -44,26 +45,24 @@ namespace DigitalProductionProgram.Protocols.MainInfo
         public void Load_Data(int? OrderID)
         {
             Translate_Form();
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                const string query = @"SELECT OrderNr, PartNr, ProdType, Customer, Amount FROM [Order].MainData WHERE OrderID = @orderid";
+            using var con = new SqlConnection(Database.cs_Protocol);
+            const string query = @"SELECT OrderNr, PartNr, ProdType, Customer, Amount FROM [Order].MainData WHERE OrderID = @orderid";
 
-                con.Open();
-                var cmd = new SqlCommand(query, con);
-                cmd.Parameters.AddWithValue("@orderid", OrderID);
-                var reader = cmd.ExecuteReader();
+            con.Open();
+            var cmd = new SqlCommand(query, con);
+            cmd.Parameters.AddWithValue("@orderid", OrderID);
+            var reader = cmd.ExecuteReader();
+            {
+                while (reader.Read())
                 {
-                    while (reader.Read())
-                    {
-                        lbl_OrderNr.Text = reader["OrderNr"].ToString();
-                        lbl_ArtikelNr.Text = reader["PartNr"].ToString();
-                        lbl_ProdType.Text = reader["ProdType"].ToString();
-                        lbl_Customer.Text = reader["Customer"].ToString();
-                        lbl_Antal.Text = reader["Amount"].ToString();
-                    }
+                    lbl_OrderNr.Text = reader["OrderNr"].ToString();
+                    lbl_ArtikelNr.Text = reader["PartNr"].ToString();
+                    lbl_ProdType.Text = reader["ProdType"].ToString();
+                    lbl_Customer.Text = reader["Customer"].ToString();
+                    lbl_Antal.Text = reader["Amount"].ToString();
                 }
-                chb_TempKalibCheck.Checked = Is_TempKalibChecked;
             }
+            chb_TempKalibCheck.Checked = Is_TempKalibChecked;
         }
         private void TempKalibCheck_CheckedChanged(object sender, EventArgs e)
         {

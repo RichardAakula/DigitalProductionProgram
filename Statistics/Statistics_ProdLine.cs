@@ -11,6 +11,7 @@ using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.User;
 using System.Windows.Forms.DataVisualization;
 using System.Windows.Forms.DataVisualization.Charting;
+using DigitalProductionProgram.ControlsManagement;
 
 namespace DigitalProductionProgram.Statistics
 {

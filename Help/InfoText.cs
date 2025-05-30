@@ -1,4 +1,5 @@
 ﻿using System;
+using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.Equipment;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.Övrigt;

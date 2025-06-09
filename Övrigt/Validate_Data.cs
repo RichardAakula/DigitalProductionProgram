@@ -430,8 +430,8 @@ namespace DigitalProductionProgram.Övrigt
             {
                 ctrl.BackColor = CustomColors.Bad_Back;
                 ctrl.ForeColor = CustomColors.Bad_Front;
-                SendMessage_Error(codetext, protocolDescriptionID, maskin, uppstart, false);
-                if (Processcard_Changes.IsMessageSaved == false && Module.IsOkToSave)
+                SendMessage_Error(codetext, protocolDescriptionID, maskin, uppstart);
+                if (Processcard_Changes.IsMessageSaved == false && Module.IsOkToSave || CheckAuthority.IsRoleAuthorized(CheckAuthority.TemplateAuthorities.ExceedToleranceProcesscard, false) == false)
                     ctrl.Text = string.Empty;
             }
 
@@ -492,8 +492,8 @@ namespace DigitalProductionProgram.Övrigt
             {
                 cell.Style.BackColor = CustomColors.Bad_Back;
                 cell.Style.ForeColor = CustomColors.Bad_Front;
-                SendMessage_Error(codetext, protocolDescriptionID, maskin, uppstart, false);
-                if (Module.IsOkToSave) // && Processcard_Changes.IsMessageSaved == false
+                SendMessage_Error(codetext, protocolDescriptionID, maskin, uppstart);
+                if (Processcard_Changes.IsMessageSaved == false && Module.IsOkToSave || CheckAuthority.IsRoleAuthorized(CheckAuthority.TemplateAuthorities.ExceedToleranceProcesscard, false) == false)
                     cell.Value = string.Empty;
             }
 
@@ -556,7 +556,7 @@ namespace DigitalProductionProgram.Övrigt
             save_Meddelande.ShowDialog();
 
         }
-        private static void SendMessage_Error(string codetext, int protocolDescriptionID, int maskin, int uppstart, bool is_OnlyNomValue)
+        private static void SendMessage_Error(string codetext, int protocolDescriptionID, int maskin, int uppstart)
         {
             //Om körprotokollet öppnas skippas detta.
             //Om Fältet är meddelat sen tidigare så skippas detta.
@@ -570,23 +570,12 @@ namespace DigitalProductionProgram.Övrigt
 
             if (CheckAuthority.IsRoleAuthorized(CheckAuthority.TemplateAuthorities.ExceedToleranceProcesscard, false))
             {
-                string? text;
-                string rubrik;
-                if (is_OnlyNomValue)
-                {
-                    text = $"{LanguageManager.GetString("validateData_Info_7_1")} {Person.Role} {LanguageManager.GetString("validateData_Info_7_2")}";
-                    rubrik = $"{LanguageManager.GetString("validateData_Info_7_3")} <br />" +
-                             $"{CodeName(codetext, uppstart, maskin)} {LanguageManager.GetString("validateData_Info_7_4")} <br />" +
-                             $"{LanguageManager.GetString("validateData_Info_3_3")}";
-                }
-                else
-                {
-                    text = $"{LanguageManager.GetString("validateData_Info_8")} {Person.Role} {LanguageManager.GetString("validateData_Info_7_2")}";
-                    rubrik = $"{LanguageManager.GetString("validateData_Info_7_3")} <br />" +
-                             $"{CodeName(codetext, uppstart, maskin)} {LanguageManager.GetString("validateData_Info_7_4")} <br />" +
-                             $"{LanguageManager.GetString("validateData_Info_3_3")}";
-                }
-                InfoText.Question(text, CustomColors.InfoText_Color.Bad, "Warning", null);
+                var text = string.Format($"{LanguageManager.GetString("validateData_Info_8")}", Person.Role);
+                var rubrik = $"{LanguageManager.GetString("validateData_Info_7_3")} <br />" +
+                                 $"{CodeName(codetext, uppstart, maskin)} {LanguageManager.GetString("validateData_Info_7_4")} <br />" +
+                                 $"{LanguageManager.GetString("validateData_Info_3_3")}";
+                
+                InfoText.Question(text, CustomColors.InfoText_Color.Bad, "Warning");
                 if (InfoText.answer == InfoText.Answer.Yes)
                 {
                     Points.Add_Points(8, "Meddelar Processtekniker att man kört utanför Processkortets gränser.");
@@ -594,26 +583,16 @@ namespace DigitalProductionProgram.Övrigt
                     var save_Meddelande = new Processcard_Changes(rubrik, protocolDescriptionID);
                     save_Meddelande.ShowDialog();
                 }
+                else
+                    Processcard_Changes.IsMessageSaved = false;
             }
             else
             {
-                string? text;
-                string rubrik;
-
-                if (is_OnlyNomValue)
-                {
-                    text = $"{LanguageManager.GetString("validateData_Info_9_1")}";
-                    rubrik = $"{LanguageManager.GetString("validateData_Info_9_2")} <br />" +
-                             $"{CodeName(codetext, uppstart, maskin)} {LanguageManager.GetString("validateData_Info_9_3")} <br />" +
-                             $"{LanguageManager.GetString("validateData_Info_3_3")}";
-                }
-                else
-                {
-                    text = $"{LanguageManager.GetString("validateData_Info_9_4")}";
-                    rubrik = $"{LanguageManager.GetString("validateData_Info_7_3")} <br />" +
-                             $"{CodeName(codetext, uppstart, maskin)} {LanguageManager.GetString("validateData_Info_9_5")} <br />" +
-                             $"{LanguageManager.GetString("validateData_Info_3_3")}";
-                }
+                var text = $"{LanguageManager.GetString("validateData_Info_9_1")}";
+                var rubrik = $"{LanguageManager.GetString("validateData_Info_9_2")} <br />" +
+                                 $"{CodeName(codetext, uppstart, maskin)} {LanguageManager.GetString("validateData_Info_9_3")} <br />" +
+                                 $"{LanguageManager.GetString("validateData_Info_3_3")}";
+               
 
                 InfoText.Show(text, CustomColors.InfoText_Color.Bad, "Warning!");
 

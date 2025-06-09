@@ -237,7 +237,7 @@ Kontakta Admin för hjälp.</value>
     <value>Radera Användare</value>
   </data>
   <data name="validateData_Info_9_2" xml:space="preserve">
-    <value>Utanför Nominella värdet på Validerat Processkort:</value>
+    <value>Utanför toleranser på Validerat processkort:</value>
   </data>
   <data name="delete" xml:space="preserve">
     <value>Är du säker på att du vill radera</value>
@@ -463,7 +463,12 @@ När ordern är klar skall diagrammet skrivas ut genom att trycka här.</value>
     <value>Fyll i ditt lösenord för att signera Processkortet</value>
   </data>
   <data name="validateData_Info_8" xml:space="preserve">
-    <value>Du är utanför processkortets gränser men som</value>
+    <value>Varning: Avvikelse på ett validerat Processkort!
+
+Du får inte gå utanför toleranserna på ett validerat processkort.
+Men du är som  {0} behörig att göra undantag - exempelvis om det finns ett uppenbart fel i processkortet.
+
+Efter att du stänger detta meddelande kommer du får möjlighet att meddela ansvarig Processingenjör om att processkortet behöver granskas och uppdateras vid behov.</value>
   </data>
   <data name="saveProcesscard_Info_8" xml:space="preserve">
     <value>Du måste fylla i Produktionstyp före du sparar proceskortet. 
@@ -613,9 +618,13 @@ Kontakta Admin vid behov.</value>
     <value>Du måste välja typ av Munstycke före du väljer dimension.</value>
   </data>
   <data name="validateData_Info_9_1" xml:space="preserve">
-    <value>Du får INTE gå utanför det Nominella värdet på ett processkort som är Validerat.
+    <value>Varning! Avvikelse på ett validerat Processkort!
 
-Du MÅSTE meddela din Arbetsledare/QA att processkortet behöver uppdateras!</value>
+Du får inte gå utan toleranserna på ett validerat processkort.
+
+Endast behörig person får göra undantag - exempelvis om det finns fel i processkortet.
+
+Efter att du stänger detta meddelande kommer du får möjlighet att meddela ansvarig Processingenjör om att processkortet behöver granskas och uppdateras vid behov.</value>
   </data>
   <data name="lbl_Settings_Add_ProdLine_Silduksbyte" xml:space="preserve">
     <value>Lägg till Produktionslinje</value>
@@ -2281,10 +2290,10 @@ Kontakta Admin vid behov.</value>
   <data name="chb_FinishOrder_PrintOrder" xml:space="preserve">
     <value>Vill du skriva ut ordern?</value>
   </data>
-  <data name="lbl_FinishOrder_Done" xml:space="preserve">
+  <data name="btn_FinishOrder" xml:space="preserve">
     <value>Avsluta Order</value>
   </data>
-  <data name="lbl_FinishOrder_Abort" xml:space="preserve">
+  <data name="btn_Abort" xml:space="preserve">
     <value>Avbryt</value>
   </data>
   <data name="Protocol_HeatShrink" xml:space="preserve">

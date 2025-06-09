@@ -40,12 +40,12 @@ namespace DigitalProductionProgram.OrderManagement
                 if (CheckAuthority.IsRoleAuthorized(CheckAuthority.TemplateAuthorities.FinishIncompleteOrder, false))
                     return true;
                 if (CheckAuthority.IsWorkoperationAuthorized(CheckAuthority.TemplateWorkoperation.SetPointsForMaterial) && Order.IsPointsSetForOrder == false)
-                    return Controls.OfType<CheckBox>().Any(chb => chb.Checked);
-                        
+                    return panel_Points.Controls.OfType<CheckBox>().Any(chb => chb.Checked);
+
                 return true;
             }
         }
-        private CheckBox lastChecked;
+        private CheckBox? lastChecked;
 
 
 
@@ -53,7 +53,7 @@ namespace DigitalProductionProgram.OrderManagement
         public FinishOrder()
         {
             InitializeComponent();
-            
+
             Initialize_Form();
             TranslateForm();
         }
@@ -64,7 +64,7 @@ namespace DigitalProductionProgram.OrderManagement
             {   //Kontrollera om Skriv ut skall synas eller ej
                 if (Person.Role == "SuperAdmin")
                     chb_FinishOrder_PrintOrder.Visible = true;
-                
+
             }
             if (Order.IsOrderDone_Before)
                 chb_FinishOrder_PrintOrder.Visible = true;
@@ -76,20 +76,20 @@ namespace DigitalProductionProgram.OrderManagement
 
             //Kontrollera om Poängen skall visas eller ej
             if (CheckAuthority.IsWorkoperationAuthorized(CheckAuthority.TemplateWorkoperation.SetPointsForMaterial) && Order.IsPointsSetForOrder == false)
-                Height = 470;
+                panel_Points.Visible = true;
             else
             {
-                panel_Poäng.Visible = false;
+                panel_Points.Visible = false;
                 Height = 150;
             }
-                
+
         }
         private void TranslateForm()
         {
-            Control[] controls = {label_FinishOrder_Header, chb_FinishOrder_PrintOrder, lbl_FinishOrder_Done, lbl_FinishOrder_Abort };
+            Control[] controls = { label_FinishOrder_Header, chb_FinishOrder_PrintOrder, btn_FinishOrder, btn_Abort };
             LanguageManager.TranslationHelper.TranslateControls(controls);
         }
-        
+
         private void Klar_Click(object sender, EventArgs e)
         {
             if (Is_OkToFinish)
@@ -100,7 +100,7 @@ namespace DigitalProductionProgram.OrderManagement
                 if (chb_Rapportera_Jira.Checked)
                 {
                     var jira = new Jira();
-                    var black = new BlackBackground("",85);
+                    var black = new BlackBackground("", 85);
                     black.Show();
                     jira.ShowDialog();
                     black.Close();
@@ -133,5 +133,7 @@ namespace DigitalProductionProgram.OrderManagement
                 "Endast problem som varit specifikt med körningen skall rapporteras till Jira.", CustomColors.InfoText_Color.Warning, "Warning!", this);
 
         }
+
+       
     }
 }

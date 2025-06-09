@@ -409,7 +409,7 @@ namespace DigitalProductionProgram.Processcards
             }
 
             panel_ProductionLine.Visible = Templates_Protocol.MainTemplate.IsProcesscardUsingProdline;
-            dgv_Revision.BackgroundColor = flp_Left.BackColor = tlp_Machines.BackColor = tp_Protocol.BackColor = CustomColors.Load_BackColor_WorkOperation(Order.WorkOperation.ToString());
+            dgv_Revision.BackgroundColor = flp_Left.BackColor = tp_Protocol.BackColor = CustomColors.Load_BackColor_WorkOperation(Order.WorkOperation.ToString());// tlp_Machines.BackColor =
         }
 
         private void Change_UI_Inactive_ArtikelNr()
@@ -690,34 +690,53 @@ namespace DigitalProductionProgram.Processcards
         }
 
 
+        //private void ClearTemplate()
+        //{
+        //    tlp_Machines.Controls.Clear();
+        //    if (tlp_Machines.ColumnCount > 1)
+        //    {
+        //        int columnToRemove = tlp_Machines.ColumnCount - 1;
+
+        //        // 1. Ta bort kontroller i kolumnen
+        //        for (int i = tlp_Machines.Controls.Count - 1; i >= 0; i--)
+        //        {
+        //            var control = tlp_Machines.Controls[i];
+        //            var position = tlp_Machines.GetColumn(control);
+        //            if (position == columnToRemove)
+        //            {
+        //                tlp_Machines.Controls.RemoveAt(i);
+        //            }
+        //        }
+
+        //        // 2. Ta bort ColumnStyle
+        //        if (tlp_Machines.ColumnStyles.Count > columnToRemove)
+        //            tlp_Machines.ColumnStyles.RemoveAt(columnToRemove);
+
+        //        // 3. Sänk ColumnCount
+        //        tlp_Machines.ColumnCount--;
+
+        //    }
+
+        //}
         private void ClearTemplate()
         {
+            // 1. Rensa alla kontroller
             tlp_Machines.Controls.Clear();
-            if (tlp_Machines.ColumnCount > 1)
-            {
-                int columnToRemove = tlp_Machines.ColumnCount - 1;
 
-                // 1. Ta bort kontroller i kolumnen
-                for (int i = tlp_Machines.Controls.Count - 1; i >= 0; i--)
-                {
-                    var control = tlp_Machines.Controls[i];
-                    var position = tlp_Machines.GetColumn(control);
-                    if (position == columnToRemove)
-                    {
-                        tlp_Machines.Controls.RemoveAt(i);
-                    }
-                }
+            // 2. Rensa alla rader och kolumnstilar
+            tlp_Machines.RowStyles.Clear();
+            tlp_Machines.ColumnStyles.Clear();
 
-                // 2. Ta bort ColumnStyle
-                if (tlp_Machines.ColumnStyles.Count > columnToRemove)
-                    tlp_Machines.ColumnStyles.RemoveAt(columnToRemove);
+            // 3. Återställ layouten till exakt 1 kolumn och 1 rad (om du vill)
+            tlp_Machines.ColumnCount = 1;
+            tlp_Machines.RowCount = 1;
 
-                // 3. Sänk ColumnCount
-                tlp_Machines.ColumnCount--;
-
-            }
-
+            // 4. Lägg till default style (valfritt)
+            tlp_Machines.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
+            tlp_Machines.RowStyles.Add(new RowStyle(SizeType.AutoSize));
         }
+
+
         private void LoadTemplate()
         {
             if (Templates_Protocol.MainTemplate.ID == ActiveMainTemplateID && Templates_Protocol.MainTemplate.Revision == ActiveTemplateRevision)
@@ -740,19 +759,30 @@ namespace DigitalProductionProgram.Processcards
             ActiveMainTemplateID = Templates_Protocol.MainTemplate.ID;
             ActiveTemplateRevision = Templates_Protocol.MainTemplate.Revision;
 
-            AddMachine(0, 1, ref width);
-            if (Machine.Is_MultipleMachines)
+            for (int i = 0; i < Machine.TotalMachines; i++)
             {
-                tlp_Machines.ColumnCount++;
-                tlp_Machines.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 50));
-                //for (var i = 0; i < tlp_Machines.ColumnCount; i++)
-                // tlp_Machines.ColumnStyles[i] = new ColumnStyle(SizeType.Absolute, 100f / tlp_Machines.ColumnCount);
-                AddMachine(1, 2, ref width);
+                if (i > 0)
+                {
+                    tlp_Machines.ColumnCount++;
+                    tlp_Machines.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 50));
+                }
+                AddMachine(i, i + 1, ref width);
             }
-            //tlp_Main.ColumnStyles[0].Width = width + 26;
+
+
+            //AddMachine(0, 1, ref width);
+            //if (Machine.Is_MultipleMachines)
+            //{
+            //    tlp_Machines.ColumnCount++;
+            //    tlp_Machines.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 50));
+            //    //for (var i = 0; i < tlp_Machines.ColumnCount; i++)
+            //    // tlp_Machines.ColumnStyles[i] = new ColumnStyle(SizeType.Absolute, 100f / tlp_Machines.ColumnCount);
+            //    AddMachine(1, 2, ref width);
+            //}
+            tlp_Main.ColumnStyles[0].Width = width + 26;
             if (dataTables_ProcessData.Count > 0)
             {
-                InfoText.Show("Laddar data från tidigare mall till den nya mallen", CustomColors.InfoText_Color.Info, string.Empty,this);
+                //InfoText.Show("Laddar data från tidigare mall till den nya mallen", CustomColors.InfoText_Color.Info, string.Empty,this);
                 Load_ProcessDataFromOldTemplateRevision();
             }
             Change_Width();
@@ -760,7 +790,7 @@ namespace DigitalProductionProgram.Processcards
 
 
         
-        private void AddMachine(int columnIndex, byte machineIndex, ref int width)
+        private void AddMachine(int columnIndex, int machineIndex, ref int width)
         {
           //  var isUsingPrefab = false;
             var isAutheticationNeeded = false;
@@ -1069,8 +1099,6 @@ namespace DigitalProductionProgram.Processcards
 
             }
         }
-        
-
         public static void Execute_cmd(IDbCommand cmd, ref bool IsOk)
         {
             try
@@ -1205,15 +1233,26 @@ namespace DigitalProductionProgram.Processcards
         private void TemplateName_SelectedIndexChanged(object sender, EventArgs e)
         {
             Fill_cb_ProtocolTemplateRevision();
+            //Templates_Protocol.MainTemplate.Load_MainTemplateID(cb_ProtocolTemplateName.Text, cb_TemplateRevision.Text);
+            //Templates_Protocol.MainTemplate.Revision = cb_TemplateRevision.Text;
+
+            //LoadTemplate();
+
             Templates_Protocol.MainTemplate.Load_MainTemplateID(cb_ProtocolTemplateName.Text, cb_TemplateRevision.Text);
             Templates_Protocol.MainTemplate.Revision = cb_TemplateRevision.Text;
-           
-            //LoadTemplate();
+
+            CopyProcessDataToNewTemplateRevision();
+            LoadTemplate();
         }
         private void TemplateName_SelectionChangeCommitted(object sender, EventArgs e)
         {
-            CopyProcessDataToNewTemplateRevision();
-            LoadTemplate();
+            string test1 = cb_ProtocolTemplateName.Text;
+            string tst2 = cb_TemplateRevision.SelectedValue?.ToString() ?? string.Empty;
+            //Templates_Protocol.MainTemplate.Load_MainTemplateID(cb_ProtocolTemplateName.Text, cb_TemplateRevision.Text);
+            //Templates_Protocol.MainTemplate.Revision = cb_TemplateRevision.Text;
+
+            //CopyProcessDataToNewTemplateRevision();
+            //LoadTemplate();
         }
         private bool suppressSelectionChanged;
         private void RevNrChanged(object sender, EventArgs e)

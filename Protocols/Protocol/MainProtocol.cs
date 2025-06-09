@@ -1,17 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.Data.SqlClient;
-using System.Drawing;
-using System.Linq;
-using System.Windows.Forms;
+﻿using Microsoft.Data.SqlClient;
 using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.DatabaseManagement;
+using DigitalProductionProgram.Equipment;
 using DigitalProductionProgram.Help;
 using DigitalProductionProgram.Log;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.PrintingServices;
 using DigitalProductionProgram.Protocols.ExtraProtocols;
-using DigitalProductionProgram.Protocols.Template_Management;
 using DigitalProductionProgram.Templates;
 using DigitalProductionProgram.User;
 
@@ -21,71 +16,70 @@ namespace DigitalProductionProgram.Protocols.Protocol
     {
         public static string FormTemplateName(int formTemplateID)
         {
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                const string query = @"
+            using var con = new SqlConnection(Database.cs_Protocol);
+            const string query = @"
                     SELECT ModuleName 
                     FROM Protocol.FormTemplate WHERE FormTemplateID = @formtemplateid";
 
-                con.Open();
-                var cmd = new SqlCommand(query, con);
-                cmd.Parameters.AddWithValue("@formtemplateid", formTemplateID);
-                var value = cmd.ExecuteScalar();
-                if (value != DBNull.Value)
-                    return (string)value;
-            }
+            con.Open();
+            var cmd = new SqlCommand(query, con);
+            cmd.Parameters.AddWithValue("@formtemplateid", formTemplateID);
+            var value = cmd.ExecuteScalar();
+            if (value != DBNull.Value)
+                return (string)value;
 
             return null;
         }
+
         public static bool IsUsingMultipleColumnsStartUp
         {
             get
             {
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    const string query = @"
+                using var con = new SqlConnection(Database.cs_Protocol);
+                const string query = @"
                     SELECT IsMultipleColumnsStartup FROM Protocol.FormTemplate WHERE MainTemplateID = @maintemplateID";
-                    var cmd = new SqlCommand(query, con);
-                    cmd.Parameters.AddWithValue("@maintemplateID", Templates_Protocol.MainTemplate.ID);
-                    con.Open();
-                    var reader = cmd.ExecuteReader();
-                    while (reader.Read())
-                    {
-                        if (bool.TryParse(reader["IsMultipleColumnsStartup"].ToString(), out var isUsingMultipleColumnsStartUp))
-                            if (isUsingMultipleColumnsStartUp)
-                                return true;
-                    }
+                var cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@maintemplateID", Templates_Protocol.MainTemplate.ID);
+                con.Open();
+                var reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    if (bool.TryParse(reader["IsMultipleColumnsStartup"].ToString(), out var isUsingMultipleColumnsStartUp))
+                        if (isUsingMultipleColumnsStartUp)
+                            return true;
                 }
+
                 return false;
             }
         }
+
         public static bool IsUsingStartUpDates
         {
             get
             {
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    const string query = @"
+                using var con = new SqlConnection(Database.cs_Protocol);
+                const string query = @"
                     SELECT IsStartUpDates FROM Protocol.FormTemplate WHERE MainTemplateID = @maintemplateID";
-                    var cmd = new SqlCommand(query, con);
-                    cmd.Parameters.AddWithValue("@maintemplateID", Templates_Protocol.MainTemplate.ID);
-                    con.Open();
-                    var reader = cmd.ExecuteReader();
-                    while (reader.Read())
-                    {
-                        if (bool.TryParse(reader["IsStartUpDates"].ToString(), out var isUsingStartUpDates))
-                            if (isUsingStartUpDates)
-                                return true;
-                    }
+                var cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@maintemplateID", Templates_Protocol.MainTemplate.ID);
+                con.Open();
+                var reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    if (bool.TryParse(reader["IsStartUpDates"].ToString(), out var isUsingStartUpDates))
+                        if (isUsingStartUpDates)
+                            return true;
                 }
+
                 return false;
             }
         }
+
         private bool IsOkAddStartUp
         {
             get
             {
-                foreach (var module in tlp_Machines.Controls.OfType<Machine>().SelectMany(machine => machine.tlp_Machine.Controls.OfType<Module>()))
+                foreach (var module in flp_Machines.Controls.OfType<Machine>().SelectMany(machine => machine.tlp_Machine.Controls.OfType<Module>()))
                 {
                     if (module.IsAuthenticationNeeded == false)
                     {
@@ -111,6 +105,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                 return true;
             }
         }
+
         private Extra_Comments? extraComments;
         public static List<DataGridView>? Module_dataGridViews;
 
@@ -128,16 +123,25 @@ namespace DigitalProductionProgram.Protocols.Protocol
             AddMainInfo();
             LoadData();
 
-            AddMachine(1);
-            if (Machine.Is_MultipleMachines)
+            // tlp_Machines.ColumnCount = Machine.TotalMachines;
+            // tlp_Machines.ColumnStyles.Clear();
+            float percent = 100f / Machine.TotalMachines;
+            for (int i = 0; i < Machine.TotalMachines; i++)
             {
-                tlp_Machines.ColumnCount = 2;
-                tlp_Machines.ColumnStyles[0] = new ColumnStyle(SizeType.Percent, 60);
-                tlp_Machines.ColumnStyles[1] = new ColumnStyle(SizeType.Percent, 40);
-                AddMachine(2);
-
-                tlp_Main.ColumnStyles[1].Width = 400;
+                //   tlp_Machines.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, percent));
+                AddMachine(i + 1);
             }
+
+            //AddMachine(1);
+            //if (Machine.Is_MultipleMachines)
+            //{
+            //    tlp_Machines.ColumnCount = 2;
+            //    tlp_Machines.ColumnStyles[0] = new ColumnStyle(SizeType.Percent, 60);
+            //    tlp_Machines.ColumnStyles[1] = new ColumnStyle(SizeType.Percent, 40);
+            //    AddMachine(2);
+
+            //    tlp_Main.ColumnStyles[1].Width = 400;
+            //}
 
             //LoadData();//Flyttat denna längre upp pga ProcesscardBasedOn behöver laddas före datan annars valideras ej datan rätt
 
@@ -160,10 +164,12 @@ namespace DigitalProductionProgram.Protocols.Protocol
             // SetSize_MainForm();
 
         }
+
         private void MainProtocol_Load(object sender, EventArgs e)
         {
             Module.IsOkToSave = true;
         }
+
         public void Translate_Form()
         {
             LanguageManager.TranslationHelper.TranslateControls(new Control[] { btn_AddStartUp, btn_RemoveStartUp, btn_Confirm_Equipment, btn_Edit_Equipment });
@@ -179,39 +185,34 @@ namespace DigitalProductionProgram.Protocols.Protocol
             if (PreFab.IsUsingPreFab)
                 PreFab.Load_Data();
         }
+
         private void SetProtocolLockState(bool IsLock)
         {
             PreFab.btn_AddPreFab.Enabled = PreFab.btn_RemovePreFab.Enabled = PreFab.dgv.Enabled = btn_AddStartUp.Enabled = btn_RemoveStartUp.Enabled = btn_Confirm_Equipment.Enabled = btn_Edit_Equipment.Enabled = btn_Add_Oven.Enabled = btn_RemoveOven.Enabled = !IsLock;
 
             Module.IsOkShowList = !IsLock;
 
-            foreach (var module in tlp_Machines.Controls.OfType<Machine>().SelectMany(machine => machine.tlp_Machine.Controls.OfType<Module>()))
+            foreach (var module in flp_Machines.Controls.OfType<Machine>().SelectMany(machine => machine.tlp_Machine.Controls.OfType<Module>()))
                 module.dgv_Module.ReadOnly = IsLock;
-
-
-            //foreach (Control machineControl in tlp_Machines.Controls)
-            //{
-            //    if (machineControl is Machine machine)
-            //        foreach (Control moduleControl in machine.tlp_Machine.Controls)
-            //            if (moduleControl is Module module)
-            //                module.dgv_Module.ReadOnly = IsLock;
-            //}
-
 
             Line_Clearance.Enabled = IsLock;
             Comments.tb_Comments.ReadOnly = IsLock;
         }
+
         private void AddMachine(int machineIndex)
         {
             var isUsingEquipment = false;
             var width = 0;
             var machine = new Machine(machineIndex, ref isUsingEquipment, ref width, false)
             {
-                Dock = DockStyle.Fill,
+                Size = new Size(width, flp_Machines.Height - 20),
                 Name = machineIndex.ToString(),
+                Anchor = AnchorStyles.Top | AnchorStyles.Left
             };
-            tlp_Machines.Controls.Add(machine, machineIndex - 1, 0);
-            //tlp_Machines.SetCellPosition(machine, new TableLayoutPanelCellPosition(machineIndex - 1, 0));
+            this.PerformLayout();
+            //machine.Width = flp_Machines.Width / Machine.TotalMachines - 10; // Adjust width based on total machines
+            flp_Machines.Controls.Add(machine);
+
 
             _ = Activity.Stop($"IsUsingPreFab = {PreFab.IsUsingPreFab}");
             if (PreFab.IsUsingPreFab == false)
@@ -228,6 +229,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
             PreFab.Visible = false;
             tlp_Right.RowStyles[1].Height = 0;
         }
+
         private void Hide_Equipment()
         {
             btn_Confirm_Equipment.Visible = btn_Edit_Equipment.Visible = false;
@@ -317,11 +319,15 @@ namespace DigitalProductionProgram.Protocols.Protocol
             Module.IsOkToSave = false;
             var NextStartup = Module.TotalStartUps + 1;
 
-            foreach (Machine machine in tlp_Machines.Controls)
+            foreach (Machine machine in flp_Machines.Controls)
+            {
                 machine.Add_StartUp(NextStartup);
+            }
+
 
             Module.IsOkToSave = true;
         }
+
         private void RemoveStartup_Click(object sender, EventArgs e)
         {
             var startup = Module.TotalStartUps;
@@ -330,14 +336,15 @@ namespace DigitalProductionProgram.Protocols.Protocol
                 InfoText.Show(LanguageManager.GetString("removeStartup_1"), CustomColors.InfoText_Color.Bad, "Warning", this);
                 return;
             }
+
             InfoText.Question($"{LanguageManager.GetString("removeStartup_2_1")} #{startup}?\n" +
-                          LanguageManager.GetString("remove_Startup_2_2"), CustomColors.InfoText_Color.Warning, "Warning!", this);
+                              LanguageManager.GetString("remove_Startup_2_2"), CustomColors.InfoText_Color.Warning, "Warning!", this);
             if (InfoText.answer == InfoText.Answer.No)
                 return;
 
             Module.DatabaseManagement.Delete_StartUp(startup);
 
-            foreach (Machine machine in tlp_Machines.Controls)
+            foreach (Machine machine in flp_Machines.Controls)
                 machine.Remove_StartUp();
 
             _ = Activity.Stop($"Uppstart: {startup} raderades.");
@@ -349,7 +356,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
             var isOKToConfirm = false;
             var list_Module = new List<Module>();
 
-            foreach (var machine in tlp_Machines.Controls.OfType<Machine>())
+            foreach (var machine in flp_Machines.Controls.OfType<Machine>())
             {
                 int.TryParse(machine.Name, out var machineIndex);
                 foreach (var tlp in machine.Controls.OfType<TableLayoutPanel>())
@@ -372,6 +379,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                 _ = Activity.Stop("Operatör har slagit in fel lösenord före överföring av utrustning");
                 return;
             }
+
             foreach (var module in list_Module)
                 module.equipment.ConfirmEquipment(module.dgv_Module);
         }
@@ -379,7 +387,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
         {
             Module.IsOkToSave = false;
 
-            foreach (Machine machine in tlp_Machines.Controls)
+            foreach (Machine machine in flp_Machines.Controls)
             {
                 foreach (var tlp in machine.Controls.OfType<TableLayoutPanel>())
                 {
@@ -419,7 +427,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
 
             Module.DatabaseManagement.Delete_Oven(startup, oven);
 
-            foreach (Machine machine in tlp_Machines.Controls)
+            foreach (Machine machine in flp_Machines.Controls)
             {
                 foreach (var tlp in machine.Controls.OfType<TableLayoutPanel>())
                 {
@@ -432,11 +440,12 @@ namespace DigitalProductionProgram.Protocols.Protocol
 
                 machine.Divide_Startups(false);
             }
+
             _ = Activity.Stop($"Ugn: {oven} Uppstart: {startup} raderades.");
         }
         private void Edit_Equipment_Click(object sender, EventArgs e)
         {
-            foreach (var machine in tlp_Machines.Controls.OfType<Machine>())
+            foreach (var machine in flp_Machines.Controls.OfType<Machine>())
             {
                 foreach (var tlp in machine.Controls.OfType<TableLayoutPanel>())
                 {
@@ -471,7 +480,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
         {
             isOkToCloseForm = true;
             var isQuestionAnswered = false;
-            foreach (Machine machine in tlp_Machines.Controls.OfType<Machine>())
+            foreach (Machine machine in flp_Machines.Controls.OfType<Machine>())
             {
                 foreach (var tlp in machine.Controls.OfType<TableLayoutPanel>())
                     foreach (var module in tlp.Controls.OfType<Module>())
@@ -498,11 +507,13 @@ namespace DigitalProductionProgram.Protocols.Protocol
             tlp_Right.RowStyles[2].Height = 100;
             tlp_Main.ColumnStyles[1].Width = 650;
         }
+
         public void Show_PreFab()
         {
             tlp_Right.RowStyles[1].Height = 150;
             tlp_Main.ColumnStyles[1].Width = 600;
         }
+
         public void Hide_ExtraControls()
         {
             tlp_Right.RowStyles[1].Height = 28;
@@ -510,6 +521,12 @@ namespace DigitalProductionProgram.Protocols.Protocol
             tlp_Main.ColumnStyles[1].Width = 412;
         }
 
-        
+        private void flp_Machines_SizeChanged(object sender, EventArgs e)
+        {
+            foreach (Machine machine in flp_Machines.Controls)
+            {
+                 machine.Width = Machine.TotalMachines > 0 ? (flp_Machines.Width / Machine.TotalMachines) - 10 : flp_Machines.Width - 10;
+            }
+        }
     }
 }

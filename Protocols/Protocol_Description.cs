@@ -10,21 +10,19 @@ namespace DigitalProductionProgram.Protocols
     {
         public static int? Protocol_Description_ID_Row(int row, int formtemplateid)
         {
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                const string query = @"
+            using var con = new SqlConnection(Database.cs_Protocol);
+            const string query = @"
                     SELECT ProtocolDescriptionID FROM Protocol.Template
                     WHERE FormTemplateID = @formtemplateid
                         AND RowIndex = @rowIndex";
 
-                var cmd = new SqlCommand(query, con);
-                cmd.Parameters.AddWithValue("@formtemplateid", formtemplateid);
-                cmd.Parameters.AddWithValue("@rowIndex", row);
-                cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
-                con.Open();
-                var value = cmd.ExecuteScalar();
-                return (int?)value;
-            }
+            var cmd = new SqlCommand(query, con);
+            cmd.Parameters.AddWithValue("@formtemplateid", formtemplateid);
+            cmd.Parameters.AddWithValue("@rowIndex", row);
+            cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
+            con.Open();
+            var value = cmd.ExecuteScalar();
+            return (int?)value;
         }
         public static int? Protocol_Description_ID_Col(int col, int formtemplateid)
         {

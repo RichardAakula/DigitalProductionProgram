@@ -238,7 +238,7 @@ Please, contact Admin for help.</value>
     <value>Delete user</value>
   </data>
   <data name="validateData_Info_9_2" xml:space="preserve">
-    <value>Outside the nominal value for a validated process card:</value>
+    <value>Outside the Tolerances for a validated process card:</value>
   </data>
   <data name="delete" xml:space="preserve">
     <value>Are you sure you want to delete</value>
@@ -464,7 +464,12 @@ When the order is finished you need to print out the zumbach-measurements from h
     <value>Enter your password to Sign the Process card.</value>
   </data>
   <data name="validateData_Info_8" xml:space="preserve">
-    <value>You are outside the limits of process card, but as </value>
+    <value>Warning: Deviation on a Validated Process card!
+
+You are not allowed to exceed the tolerances on a validated process card.
+However, as a {0}, you are authorized to make exceptions – for example, if there is an obvious error in the process card.
+
+After closing this message, you will have the opportunity to notify the responsible Process Engineer that the process card needs to be reviewed and updated if necessary.</value>
   </data>
   <data name="saveProcesscard_Info_8" xml:space="preserve">
     <value>You must fill in the Production Type before you save the process card.
@@ -616,9 +621,13 @@ Please contact Admin if necessary.</value>
     <value>You have to choose the type of Die before you choose the dimension.</value>
   </data>
   <data name="validateData_Info_9_1" xml:space="preserve">
-    <value>You may NOT go outside the nominal value for a validated process card.
+    <value>Warning! Deviation on a validated Process card!
 
-You must inform your supervisor/QA that the process card needs to be updated?</value>
+You are not allowed to operate outside the tolerances in a validated process card.
+
+Only authorized personnel may grant exceptions – for example, if there are errors in the process card.
+
+After closing this message, you will have the opportunity to notify the responsible Process Engineer that the process card needs to be reviewed and updated if necessary.</value>
   </data>
   <data name="lbl_Settings_Add_ProdLine_Silduksbyte" xml:space="preserve">
     <value>Add Production Line</value>
@@ -2288,10 +2297,10 @@ Contact Admin if necessary.</value>
   <data name="chb_FinishOrder_PrintOrder" xml:space="preserve">
     <value>Do you want to print the order?</value>
   </data>
-  <data name="lbl_FinishOrder_Done" xml:space="preserve">
+  <data name="btn_FinishOrder" xml:space="preserve">
     <value>Finish Order</value>
   </data>
-  <data name="lbl_FinishOrder_Abort" xml:space="preserve">
+  <data name="btn_Abort" xml:space="preserve">
     <value>Abort</value>
   </data>
   <data name="Protocol_HeatShrink" xml:space="preserve">

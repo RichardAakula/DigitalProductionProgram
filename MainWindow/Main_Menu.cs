@@ -568,7 +568,11 @@ namespace DigitalProductionProgram.MainWindow
         }
         private void Menu_Help_RapporteraFel_Click(object sender, EventArgs e)
         {
-            Process.Start("https://optinova.atlassian.net/servicedesk/customer/portal/22");
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = "https://optinova.atlassian.net/servicedesk/customer/portal/22",
+                UseShellExecute = true
+            });
         }
         private void Menu_Help_Versionshistorik_Click(object sender, EventArgs e)
         {

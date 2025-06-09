@@ -50,10 +50,8 @@ namespace DigitalProductionProgram.Measure
                 try
                 {
                     // Open a FileStream and load the Bitmap from it, ensuring it's closed properly
-                    using (var stream = new FileStream(imagePath, FileMode.Open, FileAccess.Read, FileShare.Read))
-                    {
-                        return new Bitmap(stream);
-                    }
+                    using var stream = new FileStream(imagePath, FileMode.Open, FileAccess.Read, FileShare.Read);
+                    return new Bitmap(stream);
                 }
                 catch (Exception ex)
                 {

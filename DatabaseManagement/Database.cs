@@ -80,6 +80,7 @@ namespace DigitalProductionProgram.DatabaseManagement
             
         }
 
+
         public static void Load_DatabaseSettings()
         {
             cs_Protocol = null;
@@ -87,12 +88,26 @@ namespace DigitalProductionProgram.DatabaseManagement
             MonitorHost = null;
             MonitorCompany = null;
 
-            var json = File.ReadAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "DataBaseSettings.json"));
+            // Försök läsa från användarmappen
+            string settingsPath = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                "DigitalProductionProgram",
+                "DatabaseSettings.json");
+
+            // Fallback till installationsmappen om filen inte finns
+            if (!File.Exists(settingsPath))
+            {
+                settingsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "DatabaseSettings.json");
+            }
+
+            var json = File.ReadAllText(settingsPath);
             var jObject = JObject.Parse(json);
-            cs_Protocol = jObject["ConnectionStrings"]["csProtocol"].ToString();
-            cs_ToolRegister = jObject["ConnectionStrings"]["csToolregister"].ToString();
-            MonitorHost = jObject["ConnectionStrings"]["MonitorHost"].ToString();
-            MonitorCompany = jObject["ConnectionStrings"]["MonitorCompany"].ToString();
+
+            cs_Protocol = jObject["ConnectionStrings"]["csProtocol"]?.ToString();
+            cs_ToolRegister = jObject["ConnectionStrings"]["csToolregister"]?.ToString();
+            MonitorHost = jObject["ConnectionStrings"]["MonitorHost"]?.ToString();
+            MonitorCompany = jObject["ConnectionStrings"]["MonitorCompany"]?.ToString();
+
             switch (MonitorCompany)
             {
                 case "001.1":
@@ -107,10 +122,40 @@ namespace DigitalProductionProgram.DatabaseManagement
                 case "012.1":
                     Monitor.Monitor.factory = Monitor.Monitor.Factory.ValleyForge;
                     break;
-
             }
-
         }
+
+        //public static void Load_DatabaseSettings()
+        //{
+        //    cs_Protocol = null;
+        //    cs_ToolRegister = null;
+        //    MonitorHost = null;
+        //    MonitorCompany = null;
+
+        //    var json = File.ReadAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "DataBaseSettings.json"));
+        //    var jObject = JObject.Parse(json);
+        //    cs_Protocol = jObject["ConnectionStrings"]["csProtocol"].ToString();
+        //    cs_ToolRegister = jObject["ConnectionStrings"]["csToolregister"].ToString();
+        //    MonitorHost = jObject["ConnectionStrings"]["MonitorHost"].ToString();
+        //    MonitorCompany = jObject["ConnectionStrings"]["MonitorCompany"].ToString();
+        //    switch (MonitorCompany)
+        //    {
+        //        case "001.1":
+        //            Monitor.Monitor.factory = Monitor.Monitor.Factory.Godby;
+        //            break;
+        //        case "003.1":
+        //            Monitor.Monitor.factory = Monitor.Monitor.Factory.Holding;
+        //            break;
+        //        case "010.1":
+        //            Monitor.Monitor.factory = Monitor.Monitor.Factory.Thailand;
+        //            break;
+        //        case "012.1":
+        //            Monitor.Monitor.factory = Monitor.Monitor.Factory.ValleyForge;
+        //            break;
+
+        //    }
+
+        //}
         private void Load_Databases()
         {
             if (string.IsNullOrEmpty(cs_Protocol))
@@ -295,18 +340,31 @@ namespace DigitalProductionProgram.DatabaseManagement
 
         private void Save_XmlFile()
         {
-            var json = File.ReadAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "DataBaseSettings.json"));
+            string settingsPath = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                "DigitalProductionProgram",
+                "DatabaseSettings.json");
+            Directory.CreateDirectory(Path.GetDirectoryName(settingsPath)); // Säkerställ att mappen finns
+
+            if (!File.Exists(settingsPath))
+            {
+                MessageBox.Show("DatabaseSettings.json hittades inte.", "Fel", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            var json = File.ReadAllText(settingsPath);
             var jObject = JObject.Parse(json);
 
-            // Update the connection strings
+            // Uppdatera anslutningssträngarna
             jObject["ConnectionStrings"]["csProtocol"] = building_csProtocol;
             jObject["ConnectionStrings"]["csToolregister"] = building_csToolRegister;
             jObject["ConnectionStrings"]["MonitorHost"] = MonitorHost = cb_MonitorHost.Text;
             jObject["ConnectionStrings"]["MonitorCompany"] = MonitorCompany = cb_MonitorCompany.Text;
 
-            // Save the updated settings back to the file
-            File.WriteAllText("DatabaseSettings.json", jObject.ToString());
+            // Spara till samma sökväg
+            File.WriteAllText(settingsPath, jObject.ToString());
         }
+
 
 
         public class DataBaseType
@@ -323,18 +381,47 @@ namespace DigitalProductionProgram.DatabaseManagement
         };
         public static Monitor_API_Credentials LoadCredentials()
         {
+            string settingsPath = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                "DigitalProductionProgram",
+                "DatabaseSettings.json");
+
+            // Fallback till original om filen inte finns i AppData
+            if (!File.Exists(settingsPath))
+            {
+                settingsPath = Path.Combine(AppContext.BaseDirectory, "DatabaseSettings.json");
+            }
+
             var config = new ConfigurationBuilder()
-                .SetBasePath(AppContext.BaseDirectory)
-                .AddJsonFile("DatabaseSettings.json", optional: false, reloadOnChange: true)
+                .SetBasePath(Path.GetDirectoryName(settingsPath)!)
+                .AddJsonFile(Path.GetFileName(settingsPath), optional: false, reloadOnChange: true)
                 .Build();
 
             var credentials = config.GetSection("ApiCredentials").Get<Monitor_API_Credentials>();
+
+            if (credentials == null)
+                throw new Exception("Kunde inte läsa API credentials från konfigurationen.");
 
             // Dekryptera lösenordet
             credentials.Password = AesEncryption.Decrypt(credentials.Password);
 
             return credentials;
         }
+
+        //public static Monitor_API_Credentials LoadCredentials()
+        //{
+        //    var config = new ConfigurationBuilder()
+        //        .SetBasePath(AppContext.BaseDirectory)
+        //        .AddJsonFile("DatabaseSettings.json", optional: false, reloadOnChange: true)
+        //        .Build();
+
+        //    var credentials = config.GetSection("ApiCredentials").Get<Monitor_API_Credentials>();
+
+        //    // Dekryptera lösenordet
+        //    credentials.Password = AesEncryption.Decrypt(credentials.Password);
+
+        //    return credentials;
+        //}
         public class Monitor_API_Credentials
         {
             public string Username { get; set; }

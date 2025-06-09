@@ -60,10 +60,10 @@ namespace DigitalProductionProgram.EasterEggs
             panel.Paint += OverlayPanel_Paint;
             panel.MouseClick += Egg_MouseClick;
 
-            //var imagePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "NewIcon.png");
-            //using var original = new Bitmap(imagePath);
-            //image = new Bitmap(original, new Size(40, 70)); // Skala ner
-            image = new Bitmap(Properties.Resources.NewIcon, new Size(40, 70)); // Skala ner
+            var imagePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "NewIcon.png");
+            using var original = new Bitmap(imagePath);
+            image = new Bitmap(original, new Size(40, 70)); // Skala ner
+            //image = new Bitmap(Properties.Resources.NewIcon, new Size(40, 70)); // Skala ner
 
             //StartLevel(level);
             timer = new System.Windows.Forms.Timer { Interval = 40 }; // 60 FPS ~16 ms

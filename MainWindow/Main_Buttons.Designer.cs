@@ -198,6 +198,7 @@ namespace DigitalProductionProgram.MainWindow
             Frequency_Marking.TabIndex = 886;
             Frequency_Marking.Text = "F9-Frekvens-markering";
             Frequency_Marking.UseVisualStyleBackColor = true;
+            Frequency_Marking.Click += F9_FrequencyMarking_Click;
             // 
             // panel_Pictures
             // 

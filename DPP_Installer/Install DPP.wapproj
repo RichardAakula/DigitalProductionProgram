@@ -57,7 +57,7 @@
     <AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
     <NoWarn>$(NoWarn);NU1702</NoWarn>
     <EntryPointProjectUniqueName>..\DigitalProductionProgram.csproj</EntryPointProjectUniqueName>
-    <PackageCertificateThumbprint>6CD62CE89FC172764A5B7B56034D0A7C81455B64</PackageCertificateThumbprint>
+    <PackageCertificateThumbprint>A07F00AF144092A3A910F8A6BFA41999BDC8802F</PackageCertificateThumbprint>
     <GenerateAppInstallerFile>True</GenerateAppInstallerFile>
     <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
     <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
@@ -65,7 +65,7 @@
     <AppxBundlePlatforms>x86</AppxBundlePlatforms>
     <AppInstallerUri>\\optifil\DPP</AppInstallerUri>
     <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
-    <AppxPackageDir>\\optifil\DPP\</AppxPackageDir>
+    <AppxPackageDir>\\optifil\DPP</AppxPackageDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <AppxBundle>Always</AppxBundle>
@@ -115,7 +115,6 @@
     <Content Include="Square44x44Logo.targetsize-48.png" />
     <Content Include="Square44x44Logo.targetsize-48_altform-lightunplated.png" />
     <Content Include="Square44x44Logo.targetsize-48_altform-unplated.png" />
-    <None Include="DPP_Installer_TemporaryKey.pfx" />
     <Content Include="Images\SplashScreen.scale-200.png" />
     <Content Include="Images\LockScreenLogo.scale-200.png" />
     <Content Include="Images\Square150x150Logo.scale-200.png" />

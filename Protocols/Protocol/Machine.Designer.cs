@@ -28,32 +28,38 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.tlp_Machine = new System.Windows.Forms.TableLayoutPanel();
-            this.SuspendLayout();
+            tlp_Machine = new TableLayoutPanel();
+            SuspendLayout();
             // 
             // tlp_Machine
             // 
-            this.tlp_Machine.AutoScroll = true;
-            this.tlp_Machine.BackColor = System.Drawing.Color.Black;
-            this.tlp_Machine.ColumnCount = 1;
-            this.tlp_Machine.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlp_Machine.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tlp_Machine.Location = new System.Drawing.Point(0, 0);
-            this.tlp_Machine.Name = "tlp_Machine";
-            this.tlp_Machine.RowCount = 1;
-            this.tlp_Machine.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 724F));
-            this.tlp_Machine.Size = new System.Drawing.Size(629, 724);
-            this.tlp_Machine.TabIndex = 0;
+            tlp_Machine.AutoScroll = true;
+            tlp_Machine.AutoSize = true;
+            tlp_Machine.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            tlp_Machine.BackColor = Color.FromArgb(65, 65, 65);
+            tlp_Machine.ColumnCount = 1;
+            tlp_Machine.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            tlp_Machine.Dock = DockStyle.Top;
+            tlp_Machine.Location = new Point(0, 0);
+            tlp_Machine.Margin = new Padding(4, 3, 4, 3);
+            tlp_Machine.Name = "tlp_Machine";
+            tlp_Machine.RowCount = 1;
+            tlp_Machine.RowStyles.Add(new RowStyle(SizeType.Absolute, 835F));
+            tlp_Machine.Size = new Size(734, 835);
+            tlp_Machine.TabIndex = 0;
             // 
             // Machine
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.Black;
-            this.Controls.Add(this.tlp_Machine);
-            this.Name = "Machine";
-            this.Size = new System.Drawing.Size(629, 724);
-            this.ResumeLayout(false);
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            AutoScroll = true;
+            BackColor = Color.Black;
+            Controls.Add(tlp_Machine);
+            Margin = new Padding(4, 3, 4, 3);
+            Name = "Machine";
+            Size = new Size(734, 835);
+            ResumeLayout(false);
+            PerformLayout();
 
         }
 

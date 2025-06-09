@@ -4,12 +4,10 @@ using DigitalProductionProgram.Log;
 using DigitalProductionProgram.Övrigt;
 using Microsoft.Data.SqlClient;
 using System.ComponentModel;
-using DigitalProductionProgram.EasterEggs;
+using System.Data.Odbc;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.Processcards;
-using DigitalProductionProgram.Templates;
 using static DigitalProductionProgram.DatabaseManagement.Database;
-using DigitalProductionProgram.User;
 
 namespace DigitalProductionProgram.MainWindow
 {
@@ -105,7 +103,11 @@ namespace DigitalProductionProgram.MainWindow
                 cs.ShowDialog();
             }
 
-            //Application.Run(new EasterEgg_Code());
+            //Order.WorkOperation = Manage_WorkOperation.WorkOperations.Extrudering_Termo;
+
+            //User.Person.Name = "Richard Aakula";
+            //User.Person.Role = "SuperAdmin";
+            //Application.Run(new Manage_Processcards());
             //return;
             //Nedanstående är originalkoden som skall laddas
             var back = new BlackBackground("Initialising Digital Production Program.\nConnecting to Monitor and loading data from server, please wait.", 98, true)

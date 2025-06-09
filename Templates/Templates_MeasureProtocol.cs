@@ -34,7 +34,7 @@ namespace DigitalProductionProgram.Templates
                     con.Open();
                     cmd.Parameters.AddWithValue("@maintemplateid", MainTemplate.ID);
                     var value = cmd.ExecuteScalar();
-                    return value == null ? 0 : int.Parse(value.ToString());
+                    return value == null ? 0 : int.Parse(value.ToString() ?? string.Empty);
                 }
 
             }
@@ -51,7 +51,7 @@ namespace DigitalProductionProgram.Templates
                     con.Open();
                     cmd.Parameters.AddWithValue("@maintemplateid", MainTemplate.ID);
                     var value = cmd.ExecuteScalar();
-                    return value == null ? 0 : int.Parse(value.ToString());
+                    return value == null ? 0 : int.Parse(value.ToString() ?? string.Empty);
                 }
 
             }
@@ -76,7 +76,7 @@ namespace DigitalProductionProgram.Templates
                 }
             }
 
-            public static event Action<bool> OnUpdateTemplateModeChanged;
+            public static event Action<bool>? OnUpdateTemplateModeChanged;
 
         }
 
@@ -660,7 +660,7 @@ namespace DigitalProductionProgram.Templates
         }
 
 
-        private void Template_Name_SelectedIndexChanged(object sender, EventArgs e)
+        private void Template_Name_SelectedIndexChanged(object? sender, EventArgs e)
         {
             cb_Revision.SelectedIndexChanged -= Template_RevisionNr_SelectedIndexChanged;
 
@@ -780,7 +780,7 @@ namespace DigitalProductionProgram.Templates
         {
             internal static string? Name { get; set; }
             public static int ID { get; set; }
-            internal static string Revision { get; set; }
+            internal static string? Revision { get; set; }
             internal static string TemplateMonitor { get; set; }
             internal static bool IsAmountEditable { get; set; }
             internal static bool IsExtraInputBoxesEnabled { get; set; }

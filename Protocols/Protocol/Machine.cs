@@ -65,16 +65,23 @@ namespace DigitalProductionProgram.Protocols.Protocol
             }
         }
 
-        public Machine(int machineIndex, ref bool isAutheticationNeeded, ref int width,  bool isOkChangeProcessdata)
+        public Machine(int machineIndex, ref bool isAutheticationNeeded, ref int width, bool isOkChangeProcessdata)
         {
             InitializeComponent();
-            Load_Templates(machineIndex,  ref isAutheticationNeeded, ref width, isOkChangeProcessdata);
+            Load_Templates(machineIndex, ref isAutheticationNeeded, ref width, isOkChangeProcessdata);
             if (MainProtocol.IsUsingMultipleColumnsStartUp)
                 Divide_Startups(false);
-        }
-        
 
-        
+            Add_Events();
+        }
+
+        private void Add_Events()
+        {
+            foreach (var dgv in modules.Select(module => module.Controls.OfType<DataGridView>().FirstOrDefault()).Where(dgv => dgv != null))
+                dgv.KeyDown += dgv_KeyDown;
+        }
+
+
 
         public void Load_Templates(int machineIndex, ref bool isAutheticationNeeded, ref int width, bool isOkChangeProcessdata)
         {
@@ -112,11 +119,11 @@ namespace DigitalProductionProgram.Protocols.Protocol
                     Margin = new Padding(0, 0, 0, 0),
                     FormTemplateID = formtemplateid,
                     RunprotocolWidth = runprotocolColWidth,
-                        
+
                     Dock = DockStyle.Fill,
                     MachineIndex = machineIndex
                 };
-                    
+
                 module.LoadTemplate(isHeaderVisible, processcardColWidth, runprotocolColWidth, isOkChangeProcessdata);
                 module.load_processcard.Load_ProcessData(formtemplateid);
                 if (Order.OrderID is null == false)
@@ -135,7 +142,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
 
                 if (ctr == 0)
                     width += 208 + processcardColWidth * 3;
-                        
+
                 ctr++;
             }
         }
@@ -144,7 +151,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
         {
             foreach (Module module in tlp_Machine.Controls)
             {
-                if (IsOkAddStartUp(StartUp(module.dgv_Module.Columns[module.dgv_Module.Columns.Count -1].HeaderText)))
+                if (IsOkAddStartUp(StartUp(module.dgv_Module.Columns[module.dgv_Module.Columns.Count - 1].HeaderText)))
                 {
                     if (module.IsModuleUsedWithMultipleColumnsStartup)
                         module.AddStartup(NextStartup, 1);
@@ -157,7 +164,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                 else
                     InfoText.Show(LanguageManager.GetString("addStartUp"), CustomColors.InfoText_Color.Bad, "Warning!", this);
             }
-            
+
 
         }
         public void Remove_StartUp()
@@ -185,6 +192,20 @@ namespace DigitalProductionProgram.Protocols.Protocol
             else
                 ScrollRight();
         }
+        private void dgv_KeyDown(object? sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Right)
+            {
+                ScrollRight();
+                e.Handled = true;  // Förhindra standardbeteende om det behövs
+            }
+            else if (e.KeyCode == Keys.Left)
+            {
+                ScrollLeft();
+                e.Handled = true;
+            }
+        }
+
         private void ScrollRight()
         {
             foreach (var module in modules)
@@ -192,9 +213,9 @@ namespace DigitalProductionProgram.Protocols.Protocol
                 var dgv = module.Controls.OfType<DataGridView>().FirstOrDefault();
                 if (dgv == null) continue;
 
-                int currentIndex = dgv.FirstDisplayedScrollingColumnIndex;
+                var currentIndex = dgv.FirstDisplayedScrollingColumnIndex;
 
-                int nextIndex = -1;
+                var nextIndex = -1;
                 for (int i = currentIndex + 1; i < dgv.Columns.Count; i++)
                 {
                     var col = dgv.Columns[i];
@@ -212,7 +233,6 @@ namespace DigitalProductionProgram.Protocols.Protocol
             }
         }
 
-
         private void ScrollLeft()
         {
             foreach (var module in modules)
@@ -220,16 +240,16 @@ namespace DigitalProductionProgram.Protocols.Protocol
                 var dgv = module.Controls.OfType<DataGridView>().FirstOrDefault();
                 if (dgv == null) continue;
 
-                int currentIndex = dgv.FirstDisplayedScrollingColumnIndex;
+                var currentIndex = dgv.FirstDisplayedScrollingColumnIndex;
 
                 // col_MAX används som stopp, annars 0
-                int stopIndex = dgv.Columns.Contains("col_MAX")
+                var stopIndex = dgv.Columns.Contains("col_MAX")
                     ? dgv.Columns["col_MAX"].Index + 1
                     : 0;
 
-                int prevIndex = -1;
+                var prevIndex = -1;
 
-                for (int i = currentIndex - 1; i >= stopIndex; i--)
+                for (var i = currentIndex - 1; i >= stopIndex; i--)
                 {
                     var col = dgv.Columns[i];
                     if (col.Visible && !col.Frozen)

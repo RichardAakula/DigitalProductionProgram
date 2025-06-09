@@ -8,8 +8,8 @@
 
   <Identity
     Name="com.Optinova.digitalproductionprogram"
-    Publisher="CN=RichardAakula"
-    Version="4.3.8.6" />
+    Publisher="CN=Richard Aakula, OU=OIC, OU=Holding, OU=AX, OU=Sympa, OU=Users, OU=Optinova, DC=OPTINOVA, DC=FI"
+    Version="4.3.9.6" />
 
   <Properties>
     <DisplayName>Digital Production Program</DisplayName>
@@ -32,7 +32,7 @@
       EntryPoint="Windows.FullTrustApplication">
       <uap:VisualElements
         DisplayName="Digital Production Program"
-        Description="DPP_Installer"
+        Description="Install DPP"
         BackgroundColor="transparent"
         Square150x150Logo="Images\Square150x150Logo.png" Square44x44Logo="Images\Square44x44Logo.png">
         <uap:DefaultTile Wide310x150Logo="Images\Wide310x150Logo.png" />

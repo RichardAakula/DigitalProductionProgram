@@ -31,7 +31,7 @@ namespace DigitalProductionProgram.Help
         public static int return_Value;
         private static bool IsQuestion;
         private static List<string>? InputTextList;
-        public static Control? form { get; set; } = null!;
+       // public static Control? form { get; set; } = null!;
 
         public InfoText()
         {
@@ -52,7 +52,7 @@ namespace DigitalProductionProgram.Help
         {
             Change_GUI_BackColor(färg);
             IsQuestion = false;
-            form = Form;
+           // form = Form;
             IsQuestion = false;
             infoText = new InfoText
             {
@@ -78,7 +78,6 @@ namespace DigitalProductionProgram.Help
             else
                 infoText.lbl_Message.Text = message;
 
-            
 
             // Vänta på att användaren stänger rutan
             infoText.ShowDialog();
@@ -87,7 +86,7 @@ namespace DigitalProductionProgram.Help
         public static void Question(string? Question, CustomColors.InfoText_Color color, string? header, Control? Form = null, bool IsSpecialText = false)
         {
             Change_GUI_BackColor(color);
-            form = Form;
+           // form = Form;
             infoText = new InfoText();
             infoText.TopMost = true;
             if (IsSpecialText) 
@@ -131,7 +130,7 @@ namespace DigitalProductionProgram.Help
         public static void PromptForText(string Question, CustomColors.InfoText_Color color, string? header, Control? Form, List<string> list_Items)
         {
             Change_GUI_BackColor(color);
-            form = Form;
+          //  form = Form;
             infoText = new InfoText
             {
                 TopMost = true
@@ -148,7 +147,7 @@ namespace DigitalProductionProgram.Help
         public static void PromptForValue(string Question, CustomColors.InfoText_Color color, string? header, Control? Form, Image img)
         {
             Change_GUI_BackColor(color);
-            form = Form;
+          //  form = Form;
             infoText = new InfoText
             {
                 TopMost = true
@@ -338,9 +337,13 @@ namespace DigitalProductionProgram.Help
                 height = 800;
 
             infoText.Height = height + 50;
-            infoText.Width = form is null
-                ? Screen.PrimaryScreen.Bounds.Width
-                : Screen.FromControl(form).Bounds.Width;
+            Screen screen = Screen.FromPoint(Cursor.Position);
+            infoText.Width = screen.Bounds.Width;
+
+
+            //infoText.Width = form is null
+            //    ? Screen.PrimaryScreen.Bounds.Width
+            //    : Screen.FromControl(form).Bounds.Width;
 
 
 

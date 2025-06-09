@@ -36,7 +36,6 @@
             DataGridViewCellStyle dataGridViewCellStyle5 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle6 = new DataGridViewCellStyle();
             dgv_Module = new DataGridView();
-            label_LEFT = new Label();
             col_IsValueCritical = new DataGridViewCheckBoxColumn();
             col_IsList_Protocol = new DataGridViewCheckBoxColumn();
             col_IsList_Processcard = new DataGridViewCheckBoxColumn();
@@ -49,6 +48,7 @@
             col_NOM = new DataGridViewTextBoxColumn();
             col_MAX = new DataGridViewTextBoxColumn();
             col_StartUp_1 = new DataGridViewTextBoxColumn();
+            label_LEFT = new Label();
             ((System.ComponentModel.ISupportInitialize)dgv_Module).BeginInit();
             SuspendLayout();
             // 
@@ -58,7 +58,7 @@
             dgv_Module.AllowUserToDeleteRows = false;
             dgv_Module.AllowUserToResizeColumns = false;
             dgv_Module.AllowUserToResizeRows = false;
-            dgv_Module.BackgroundColor = Color.FromArgb(25, 25, 25);
+            dgv_Module.BackgroundColor = Color.FromArgb(65, 65, 65);
             dgv_Module.BorderStyle = BorderStyle.None;
             dgv_Module.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
             dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleCenter;
@@ -100,17 +100,6 @@
             dgv_Module.EditingControlShowing += EditingControlShowing;
             dgv_Module.RowEnter += Module_RowEnter;
             dgv_Module.Leave += Module_Leave;
-            // 
-            // label_LEFT
-            // 
-            label_LEFT.BackColor = Color.White;
-            label_LEFT.Dock = DockStyle.Left;
-            label_LEFT.Location = new Point(0, 0);
-            label_LEFT.Margin = new Padding(0);
-            label_LEFT.Name = "label_LEFT";
-            label_LEFT.Size = new Size(20, 475);
-            label_LEFT.TabIndex = 899;
-            label_LEFT.Paint += Label_LEFT_Paint;
             // 
             // col_IsValueCritical
             // 
@@ -233,6 +222,17 @@
             col_StartUp_1.SortMode = DataGridViewColumnSortMode.NotSortable;
             col_StartUp_1.Width = 120;
             // 
+            // label_LEFT
+            // 
+            label_LEFT.BackColor = Color.White;
+            label_LEFT.Dock = DockStyle.Left;
+            label_LEFT.Location = new Point(0, 0);
+            label_LEFT.Margin = new Padding(0);
+            label_LEFT.Name = "label_LEFT";
+            label_LEFT.Size = new Size(20, 475);
+            label_LEFT.TabIndex = 899;
+            label_LEFT.Paint += Label_LEFT_Paint;
+            // 
             // Module
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -242,6 +242,7 @@
             Margin = new Padding(0);
             Name = "Module";
             Size = new Size(789, 475);
+            Load += Module_Load;
             ((System.ComponentModel.ISupportInitialize)dgv_Module).EndInit();
             ResumeLayout(false);
 

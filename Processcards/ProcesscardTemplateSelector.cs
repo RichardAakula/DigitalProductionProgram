@@ -63,7 +63,7 @@ namespace DigitalProductionProgram.Processcards
             public bool IsLatestRevNrSelected { get; set; }
 
         }
-        private static HeaderButton CreateButton(string text, EventHandler clickEvent, int? id = null, string? workoperation = null, string? revNr = null, string? prodtype = null, string? prodline = null, int? partid = null, int? partGroupID = null, bool isProcesscardOkToStart = false, bool isLatestRevNrSelected = true, string? latestRevNr = null)
+        private static HeaderButton CreateButton(string? text, EventHandler clickEvent, int? id = null, string? workoperation = null, string? revNr = null, string? prodtype = null, string? prodline = null, int? partid = null, int? partGroupID = null, bool isProcesscardOkToStart = false, bool isLatestRevNrSelected = true, string? latestRevNr = null)
         {
             var button = new HeaderButton
             {
@@ -287,31 +287,28 @@ namespace DigitalProductionProgram.Processcards
         }
         private void Add_Workoperations()
         {
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                const string query = @"
+            using var con = new SqlConnection(Database.cs_Protocol);
+            const string query = @"
                     SELECT WorkoperationID, Name
                     FROM Workoperation.ProductionLines as prodlines
                     JOIN Workoperation.Names as names
 	                    ON prodlines.WorkoperationID = names.ID
                     WHERE ProductionLine = @prodline";
-                var cmd = new SqlCommand(query, con);
-                SQL_Parameter.String(cmd.Parameters, "@prodline", Order.ProdLine);
-                con.Open();
-                var reader = cmd.ExecuteReader();
-                while (reader.Read())
-                {
-                    var workoperation = reader["Name"].ToString();
-                    int.TryParse(reader["WorkoperationID"].ToString(), out var workoperationID);
-                    Add_Button_Workoperations(workoperation, workoperationID);
-                }
+            var cmd = new SqlCommand(query, con);
+            SQL_Parameter.String(cmd.Parameters, "@prodline", Order.ProdLine);
+            con.Open();
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                var workoperation = reader["Name"].ToString();
+                int.TryParse(reader["WorkoperationID"].ToString(), out var workoperationID);
+                Add_Button_Workoperations(workoperation, workoperationID);
             }
         }
         private void Add_ProtocolTemplates()
         {
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                const string query = @"
+            using var con = new SqlConnection(Database.cs_Protocol);
+            const string query = @"
                 WITH RankedRevisions AS (
                     SELECT Name, Revision, ID,
                     ROW_NUMBER() OVER (PARTITION BY Name ORDER BY Revision DESC) AS RevisionRank
@@ -323,24 +320,22 @@ namespace DigitalProductionProgram.Processcards
                 WHERE RevisionRank = 1
                 ORDER BY Name;";
 
-                var cmd = new SqlCommand(query, con);
-                cmd.Parameters.AddWithValue("@workoperationid", Order.WorkoperationID);
-                con.Open();
-                var reader = cmd.ExecuteReader();
+            var cmd = new SqlCommand(query, con);
+            cmd.Parameters.AddWithValue("@workoperationid", Order.WorkoperationID);
+            con.Open();
+            var reader = cmd.ExecuteReader();
 
-                while (reader.Read())
-                {
-                    var templatename = reader["Name"].ToString();
-                    int.TryParse(reader["ID"].ToString(), out var id);
-                    Add_Button_ProtocolTemplate(templatename, templatename, id);
-                }
+            while (reader.Read())
+            {
+                var templatename = reader["Name"].ToString();
+                int.TryParse(reader["ID"].ToString(), out var id);
+                Add_Button_ProtocolTemplate(templatename, templatename, id);
             }
         }
         private void Add_MeasureProtocolTemplates()
         {
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                const string query = @"
+            using var con = new SqlConnection(Database.cs_Protocol);
+            const string query = @"
                     WITH RankedTemplates AS 
                         (
                             SELECT 
@@ -362,26 +357,24 @@ namespace DigitalProductionProgram.Processcards
 	                      AND WorkoperationID = @workoperationid
                     ORDER BY Name ";
 
-                var cmd = new SqlCommand(query, con);
-                cmd.Parameters.AddWithValue("@workoperationid", Order.WorkoperationID);
-                con.Open();
-                var reader = cmd.ExecuteReader();
+            var cmd = new SqlCommand(query, con);
+            cmd.Parameters.AddWithValue("@workoperationid", Order.WorkoperationID);
+            con.Open();
+            var reader = cmd.ExecuteReader();
 
-                while (reader.Read())
-                {
-                    var templatename = reader["Name"].ToString();
-                    int.TryParse(reader["MeasureProtocolMainTemplateID"].ToString(), out var id);
-                    var revision = reader["Revision"].ToString();
-                    Add_Button_MeasureprotocolTemplate(templatename, revision, id);
-                }
+            while (reader.Read())
+            {
+                var templatename = reader["Name"].ToString();
+                int.TryParse(reader["MeasureProtocolMainTemplateID"].ToString(), out var id);
+                var revision = reader["Revision"].ToString();
+                Add_Button_MeasureprotocolTemplate(templatename, revision, id);
             }
         }
         private void Add_TemplateName()
         {
             // var org_Arbetsoperation = Order.WorkOperation;
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query = @"
+            using var con = new SqlConnection(Database.cs_Protocol);
+            var query = @"
                     SELECT DISTINCT maintemplate.Name, workoperation.Name
                     FROM Processcard.MainData AS processcard
                         LEFT JOIN Protocol.MainTemplate AS maintemplate
@@ -389,8 +382,8 @@ namespace DigitalProductionProgram.Processcards
                         LEFT JOIN Workoperation.Names AS workoperation
                             ON maintemplate.WorkoperationID = workoperation.ID
                     WHERE processcard.PartNr = @partnumber ";
-                if (IsOnlyProcesscard == false)
-                    query +=
+            if (IsOnlyProcesscard == false)
+                query +=
                     @"UNION
                     SELECT DISTINCT maintemplate.Name, workoperation.Name
                     FROM [Order].MainData AS protocol
@@ -400,20 +393,19 @@ namespace DigitalProductionProgram.Processcards
                             ON maintemplate.WorkoperationID = workoperation.ID
                     WHERE protocol.PartNr = @partnumber
                     ORDER BY maintemplate.Name";
-                var cmd = new SqlCommand(query, con);
-                cmd.Parameters.AddWithValue("@partnumber", Order.PartNumber);
-                con.Open();
-                var reader = cmd.ExecuteReader();
-                while (reader.Read())
-                {
-                    var templatename = reader[0].ToString();
-                    var workoperation = reader[1].ToString();
-                    Add_Button_ProtocolTemplate(templatename, templatename, 0, workoperation, null, null, Order.PartID, Order.PartGroupID, true);
-                }
+            var cmd = new SqlCommand(query, con);
+            cmd.Parameters.AddWithValue("@partnumber", Order.PartNumber);
+            con.Open();
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                var templatename = reader[0].ToString();
+                var workoperation = reader[1].ToString();
+                if (workoperation != null) Add_Button_ProtocolTemplate(templatename, templatename, 0, workoperation, null, null, Order.PartID, Order.PartGroupID, true);
             }
         }
 
-        private void Add_Button_Processcard(string text, string workoperation, string prodtype, string prodline, string revNr, int? partid, int? partGroupID, bool isProcesscardOkToStart, bool isOkCheckPartNumber, string latestRevNr, bool isLatestRevNrSelected)
+        private void Add_Button_Processcard(string? text, string workoperation, string? prodtype, string? prodline, string? revNr, int? partid, int? partGroupID, bool isProcesscardOkToStart, bool isOkCheckPartNumber, string? latestRevNr, bool isLatestRevNrSelected)
         {
             totalLabels++;
             var btn = CreateButton(text, Button_Processcard_MouseClick, null, workoperation, revNr, prodtype, prodline, partid, partGroupID, isProcesscardOkToStart, isLatestRevNrSelected, latestRevNr);
@@ -423,7 +415,7 @@ namespace DigitalProductionProgram.Processcards
             if (isOkCheckPartNumber && IsOperatorStartingOrder)
                 SetForeColor_Label(btn, partid);
         }
-        private void Add_Button_ProtocolTemplate(string templatename, string text, int id, string workoperation = null, string prodtype = null, string prodline = null, int? partid = null, int? partGroupID = null, bool isProcesscardOkToStart = false, bool isOkCheckPartNumber = false)
+        private void Add_Button_ProtocolTemplate(string? templatename, string? text, int id, string? workoperation = null, string? prodtype = null, string? prodline = null, int? partid = null, int? partGroupID = null, bool isProcesscardOkToStart = false, bool isOkCheckPartNumber = false)
         {
             totalLabels++;
             var btn = CreateButton(templatename, Button_ProtocolTemplate_MouseClick, id, workoperation, null, prodtype, prodline, partid, partGroupID, isProcesscardOkToStart);
@@ -431,7 +423,7 @@ namespace DigitalProductionProgram.Processcards
             flp_Buttons.Controls.Add(btn);
             Height += btn.Height + 3;
         }
-        private void Add_Button_Workoperations(string workoperation, int workoperationID)
+        private void Add_Button_Workoperations(string? workoperation, int workoperationID)
         {
             totalLabels++;
             var btn = CreateButton(workoperation, Button_Workoperation_MouseClick, workoperationID);
@@ -439,7 +431,7 @@ namespace DigitalProductionProgram.Processcards
             flp_Buttons.Controls.Add(btn);
             Height += btn.Height + 3;
         }
-        private void Add_Button_MeasureprotocolTemplate(string measureProtocolTemplateName, string revision, int id)
+        private void Add_Button_MeasureprotocolTemplate(string? measureProtocolTemplateName, string? revision, int id)
         {
             totalLabels++;
             var btn = CreateButton(measureProtocolTemplateName, Button_MeasureProtocolTemplate_MouseClick, id);
@@ -501,11 +493,11 @@ namespace DigitalProductionProgram.Processcards
             this.Height = totalHeight;
         }
 
-        private void Button_Processcard_MouseClick(object sender, EventArgs e)
+        private void Button_Processcard_MouseClick(object? sender, EventArgs e)
         {
-            var lbl = (HeaderButton)sender;
+            var lbl = sender as HeaderButton;
 
-            if (Enum.TryParse(lbl.Workoperation, out Manage_WorkOperation.WorkOperations workOperation))
+            if (Enum.TryParse(lbl?.Workoperation, out Manage_WorkOperation.WorkOperations workOperation))
                 Order.WorkOperation = workOperation;
 
             //Vad är detta för något????
@@ -513,54 +505,62 @@ namespace DigitalProductionProgram.Processcards
             //    if (CheckAuthority.IsRoleAuthorized(CheckAuthority.TemplateAuthorities.StartOrderWithoutQA_sign) == false)
             //        return;
 
-            Order.PartID = lbl.PartID;
-            Order.PartGroupID = lbl.PartGroupID;
-            Order.ProdType = lbl.ProdType;
-            Order.ProdLine = lbl.ProdLine;
-            Order.RevNr = lbl.RevNr;
+            Order.PartID = lbl?.PartID;
+            Order.PartGroupID = lbl?.PartGroupID;
+            Order.ProdType = lbl?.ProdType;
+            Order.ProdLine = lbl?.ProdLine;
+            Order.RevNr = lbl?.RevNr;
 
-            if (lbl.IsLatestRevNrSelected == false && IsOperatorStartingOrder)
+            if (lbl?.IsLatestRevNrSelected == false && IsOperatorStartingOrder)
                 Mail.NotifyQAPartNumberNeedApproval(lbl.LatestRevNr);
 
-            _ = Activity.Stop($"TemplateSelector: Valde Processkort {lbl.Text}");
+            _ = Activity.Stop($"TemplateSelector: Valde Processkort {lbl?.Text}");
             IsAborted = false;
             IsOkClose = true;
             Close();
         }
-        private void Button_MeasureProtocolTemplate_MouseClick(object sender, EventArgs e)
+        private void Button_MeasureProtocolTemplate_MouseClick(object? sender, EventArgs e)
         {
-            var lbl = (HeaderButton)sender;
-            Templates_MeasureProtocol.MainTemplate.Name = lbl.TemplateName;
-            Templates_MeasureProtocol.MainTemplate.ID = lbl.TemplateID;
-            Templates_MeasureProtocol.MainTemplate.Revision = lbl.TemplateRevision;
+            var lbl = sender as HeaderButton;
+            Templates_MeasureProtocol.MainTemplate.Name = lbl?.TemplateName;
+            if (lbl != null)
+            {
+                Templates_MeasureProtocol.MainTemplate.ID = lbl.TemplateID;
+                Templates_MeasureProtocol.MainTemplate.Revision = lbl.TemplateRevision;
 
-            _ = Activity.Stop($"TemplateSelector: Valde Mätprotokoll {lbl.Text}");
+                _ = Activity.Stop($"TemplateSelector: Valde Mätprotokoll {lbl.Text}");
+            }
+
             IsAborted = false;
             IsOkClose = true;
             Close();
         }
-        private void Button_ProtocolTemplate_MouseClick(object sender, EventArgs e)
+        private void Button_ProtocolTemplate_MouseClick(object? sender, EventArgs e)
         {
-            var lbl = (HeaderButton)sender;
-            Templates_Protocol.MainTemplate.Name = lbl.TemplateName;
-            Templates_Protocol.MainTemplate.ID = lbl.TemplateID;
-            if (Enum.TryParse(lbl.Workoperation, out Manage_WorkOperation.WorkOperations workOperation))
+            var lbl = sender as HeaderButton;
+            Templates_Protocol.MainTemplate.Name = lbl?.TemplateName;
+            if (lbl != null)
+            {
+                Templates_Protocol.MainTemplate.ID = lbl.TemplateID;
+                if (Enum.TryParse(lbl.Workoperation, out Manage_WorkOperation.WorkOperations workOperation))
+                    Order.WorkOperation = workOperation;
+
+                _ = Activity.Stop($"TemplateSelector: Valde Protokoll-mall {lbl.Text}");
+            }
+
+            IsAborted = false;
+            IsOkClose = true;
+            Close();
+
+        }
+        private void Button_Workoperation_MouseClick(object? sender, EventArgs e)
+        {
+            var lbl = sender as HeaderButton;
+
+            if (Enum.TryParse(lbl?.Workoperation, out Manage_WorkOperation.WorkOperations workOperation))
                 Order.WorkOperation = workOperation;
 
-            _ = Activity.Stop($"TemplateSelector: Valde Protokoll-mall {lbl.Text}");
-            IsAborted = false;
-            IsOkClose = true;
-            Close();
-
-        }
-        private void Button_Workoperation_MouseClick(object sender, EventArgs e)
-        {
-            var lbl = (HeaderButton)sender;
-
-            if (Enum.TryParse(lbl.Workoperation, out Manage_WorkOperation.WorkOperations workOperation))
-                Order.WorkOperation = workOperation;
-
-            _ = Activity.Stop($"TemplateSelector: Valde Arbetsoperation {lbl.Text}");
+            _ = Activity.Stop($"TemplateSelector: Valde Arbetsoperation {lbl?.Text}");
             IsOkClose = true;
             Close();
         }

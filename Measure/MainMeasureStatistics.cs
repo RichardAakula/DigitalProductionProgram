@@ -220,9 +220,17 @@ namespace DigitalProductionProgram.Measure
                 }
             }
 
-          
-            Charts.Add_Mätdata_Chart_MainForm(panel, ChartCodename, ChartCodeText);
 
+            if (!string.IsNullOrEmpty(ChartCodename))
+            {
+                Charts.Add_Mätdata_Chart_MainForm(panel, ChartCodename, ChartCodeText);
+            }
+            else
+            {
+                _ = Log.Activity.Stop($"Felsökning rött kryss över chart: ChartCodeName={ChartCodename}");
+                _ = Log.Activity.Stop($"Felsökning rött kryss över chart: ChartCodeName={ChartCodeText}");
+
+            }
             tlp_MainWindow.Invoke(new Action<TableLayoutPanel>(SetHeight), tlp_MainWindow);
             
             // Invoke(new Action(() => Height = MeasureStatsHeight));

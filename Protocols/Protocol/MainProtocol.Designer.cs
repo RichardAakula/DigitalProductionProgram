@@ -42,11 +42,12 @@ namespace DigitalProductionProgram.Protocols.Protocol
             btn_RemoveOven = new Button();
             btn_Confirm_Equipment = new Button();
             btn_Edit_Equipment = new Button();
+            button1 = new Button();
             btn_ExtraComments = new Button();
             ProcesscardBasedOn = new DigitalProductionProgram.Processcards.ProcesscardBasedOn();
             PreFab = new PreFab();
-            tlp_Machines = new TableLayoutPanel();
             panel_MainInfo = new Panel();
+            flp_Machines = new FlowLayoutPanel();
             tlp_Main.SuspendLayout();
             panel_LineClearance.SuspendLayout();
             tlp_Right.SuspendLayout();
@@ -60,8 +61,8 @@ namespace DigitalProductionProgram.Protocols.Protocol
             tlp_Main.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 481F));
             tlp_Main.Controls.Add(panel_LineClearance, 0, 1);
             tlp_Main.Controls.Add(tlp_Right, 1, 2);
-            tlp_Main.Controls.Add(tlp_Machines, 0, 2);
             tlp_Main.Controls.Add(panel_MainInfo, 0, 0);
+            tlp_Main.Controls.Add(flp_Machines, 0, 2);
             tlp_Main.Dock = DockStyle.Fill;
             tlp_Main.GrowStyle = TableLayoutPanelGrowStyle.AddColumns;
             tlp_Main.Location = new Point(0, 0);
@@ -136,6 +137,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
             flp_Buttons.Controls.Add(btn_RemoveOven);
             flp_Buttons.Controls.Add(btn_Confirm_Equipment);
             flp_Buttons.Controls.Add(btn_Edit_Equipment);
+            flp_Buttons.Controls.Add(button1);
             flp_Buttons.Dock = DockStyle.Fill;
             flp_Buttons.FlowDirection = FlowDirection.TopDown;
             flp_Buttons.Location = new Point(0, 0);
@@ -255,6 +257,15 @@ namespace DigitalProductionProgram.Protocols.Protocol
             btn_Edit_Equipment.Visible = false;
             btn_Edit_Equipment.Click += Edit_Equipment_Click;
             // 
+            // button1
+            // 
+            button1.Location = new Point(264, 3);
+            button1.Name = "button1";
+            button1.Size = new Size(75, 23);
+            button1.TabIndex = 4;
+            button1.Text = "button1";
+            button1.UseVisualStyleBackColor = true;
+            // 
             // btn_ExtraComments
             // 
             btn_ExtraComments.BackColor = Color.LightGray;
@@ -295,22 +306,6 @@ namespace DigitalProductionProgram.Protocols.Protocol
             PreFab.Size = new Size(474, 31);
             PreFab.TabIndex = 1;
             // 
-            // tlp_Machines
-            // 
-            tlp_Machines.AutoScroll = true;
-            tlp_Machines.BackColor = Color.FromArgb(60, 60, 60);
-            tlp_Machines.ColumnCount = 1;
-            tlp_Machines.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
-            tlp_Machines.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 23F));
-            tlp_Machines.Dock = DockStyle.Fill;
-            tlp_Machines.Location = new Point(4, 146);
-            tlp_Machines.Margin = new Padding(4, 3, 4, 3);
-            tlp_Machines.Name = "tlp_Machines";
-            tlp_Machines.RowCount = 1;
-            tlp_Machines.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            tlp_Machines.Size = new Size(2148, 1075);
-            tlp_Machines.TabIndex = 902;
-            // 
             // panel_MainInfo
             // 
             panel_MainInfo.BackColor = Color.Black;
@@ -321,6 +316,18 @@ namespace DigitalProductionProgram.Protocols.Protocol
             panel_MainInfo.Name = "panel_MainInfo";
             panel_MainInfo.Size = new Size(2637, 68);
             panel_MainInfo.TabIndex = 904;
+            // 
+            // flp_Machines
+            // 
+            flp_Machines.AutoScroll = true;
+            flp_Machines.BackColor = Color.FromArgb(65, 65, 65);
+            flp_Machines.Dock = DockStyle.Fill;
+            flp_Machines.Location = new Point(3, 146);
+            flp_Machines.Name = "flp_Machines";
+            flp_Machines.Size = new Size(2150, 1075);
+            flp_Machines.TabIndex = 906;
+            flp_Machines.WrapContents = false;
+            flp_Machines.SizeChanged += flp_Machines_SizeChanged;
             // 
             // MainProtocol
             // 
@@ -346,7 +353,6 @@ namespace DigitalProductionProgram.Protocols.Protocol
         }
 
         #endregion
-        private System.Windows.Forms.TableLayoutPanel tlp_Machines;
         private Comments Comments;
         private System.Windows.Forms.FlowLayoutPanel flp_Buttons;
         private System.Windows.Forms.Button btn_AddStartUp;
@@ -363,5 +369,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
         private System.Windows.Forms.Panel panel_MainInfo;
         private System.Windows.Forms.Panel panel_LineClearance;
         private LineClearance.LineClearance Line_Clearance;
+        private FlowLayoutPanel flp_Machines;
+        private Button button1;
     }
 }

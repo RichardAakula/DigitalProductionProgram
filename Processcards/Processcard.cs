@@ -88,17 +88,15 @@ namespace DigitalProductionProgram.Processcards
         {
             get
             {
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    var query = "SELECT * FROM Processcard.MainData WHERE PartNr = @partnr";
-                    con.Open();
-                    var cmd = new SqlCommand(query, con);
-                    cmd.Parameters.AddWithValue("@partnr", Order.PartNumber);
-                    var value = cmd.ExecuteScalar();
-                    if (value != null)
-                        return true;
-                    return false; 
-                }
+                using var con = new SqlConnection(Database.cs_Protocol);
+                var query = "SELECT * FROM Processcard.MainData WHERE PartNr = @partnr";
+                con.Open();
+                var cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@partnr", Order.PartNumber);
+                var value = cmd.ExecuteScalar();
+                if (value != null)
+                    return true;
+                return false;
             }
         }
         public static bool IsApproved_By_QA(int? partID)

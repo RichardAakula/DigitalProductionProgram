@@ -31,303 +31,359 @@ namespace DigitalProductionProgram.OrderManagement
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FinishOrder));
-            this.label_FinishOrder_Header = new System.Windows.Forms.Label();
-            this.chb_FinishOrder_PrintOrder = new System.Windows.Forms.CheckBox();
-            this.label_Info = new System.Windows.Forms.Label();
-            this.chb_0 = new System.Windows.Forms.CheckBox();
-            this.chb_1 = new System.Windows.Forms.CheckBox();
-            this.chb_2 = new System.Windows.Forms.CheckBox();
-            this.chb_3 = new System.Windows.Forms.CheckBox();
-            this.chb_4 = new System.Windows.Forms.CheckBox();
-            this.chb_5 = new System.Windows.Forms.CheckBox();
-            this.label_Info_0 = new System.Windows.Forms.Label();
-            this.label_Info_1 = new System.Windows.Forms.Label();
-            this.label_Info_2 = new System.Windows.Forms.Label();
-            this.label_Info_3 = new System.Windows.Forms.Label();
-            this.label_Info_4 = new System.Windows.Forms.Label();
-            this.label_Info_5 = new System.Windows.Forms.Label();
-            this.lbl_FinishOrder_Done = new System.Windows.Forms.Label();
-            this.lbl_FinishOrder_Abort = new System.Windows.Forms.Label();
-            this.chb_Rapportera_Jira = new System.Windows.Forms.CheckBox();
-            this.panel_Poäng = new System.Windows.Forms.Panel();
-            this.pb_Info_Jira = new System.Windows.Forms.PictureBox();
-            this.panel_Poäng.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pb_Info_Jira)).BeginInit();
-            this.SuspendLayout();
+            ComponentResourceManager resources = new ComponentResourceManager(typeof(FinishOrder));
+            label_FinishOrder_Header = new Label();
+            chb_FinishOrder_PrintOrder = new CheckBox();
+            label_Info = new Label();
+            chb_0 = new CheckBox();
+            chb_1 = new CheckBox();
+            chb_2 = new CheckBox();
+            chb_3 = new CheckBox();
+            chb_4 = new CheckBox();
+            chb_5 = new CheckBox();
+            label_Info_0 = new Label();
+            label_Info_1 = new Label();
+            label_Info_2 = new Label();
+            label_Info_3 = new Label();
+            label_Info_4 = new Label();
+            label_Info_5 = new Label();
+            chb_Rapportera_Jira = new CheckBox();
+            panel_Points = new Panel();
+            pb_Info_Jira = new PictureBox();
+            panel_Info = new Panel();
+            tlp_Buttons = new TableLayoutPanel();
+            btn_FinishOrder = new Button();
+            btn_Abort = new Button();
+            panel_Points.SuspendLayout();
+            ((ISupportInitialize)pb_Info_Jira).BeginInit();
+            panel_Info.SuspendLayout();
+            tlp_Buttons.SuspendLayout();
+            SuspendLayout();
             // 
             // label_FinishOrder_Header
             // 
-            this.label_FinishOrder_Header.Dock = System.Windows.Forms.DockStyle.Top;
-            this.label_FinishOrder_Header.Font = new System.Drawing.Font("Arial", 16F, System.Drawing.FontStyle.Bold);
-            this.label_FinishOrder_Header.ForeColor = System.Drawing.Color.Black;
-            this.label_FinishOrder_Header.Location = new System.Drawing.Point(0, 0);
-            this.label_FinishOrder_Header.Name = "label_FinishOrder_Header";
-            this.label_FinishOrder_Header.Size = new System.Drawing.Size(450, 30);
-            this.label_FinishOrder_Header.TabIndex = 0;
-            this.label_FinishOrder_Header.Text = "Ordern är nu klar";
-            this.label_FinishOrder_Header.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
+            label_FinishOrder_Header.BackColor = Color.Transparent;
+            label_FinishOrder_Header.Dock = DockStyle.Top;
+            label_FinishOrder_Header.Font = new Font("Arial", 16F, FontStyle.Bold);
+            label_FinishOrder_Header.ForeColor = Color.FromArgb(171, 150, 85);
+            label_FinishOrder_Header.Location = new Point(0, 0);
+            label_FinishOrder_Header.Margin = new Padding(4, 0, 4, 0);
+            label_FinishOrder_Header.Name = "label_FinishOrder_Header";
+            label_FinishOrder_Header.Size = new Size(540, 38);
+            label_FinishOrder_Header.TabIndex = 0;
+            label_FinishOrder_Header.Text = "Ordern är nu klar";
+            label_FinishOrder_Header.TextAlign = ContentAlignment.BottomCenter;
             // 
             // chb_FinishOrder_PrintOrder
             // 
-            this.chb_FinishOrder_PrintOrder.AutoSize = true;
-            this.chb_FinishOrder_PrintOrder.Checked = true;
-            this.chb_FinishOrder_PrintOrder.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chb_FinishOrder_PrintOrder.Font = new System.Drawing.Font("Consolas", 10.25F);
-            this.chb_FinishOrder_PrintOrder.ForeColor = System.Drawing.Color.Black;
-            this.chb_FinishOrder_PrintOrder.Location = new System.Drawing.Point(50, 46);
-            this.chb_FinishOrder_PrintOrder.Name = "chb_FinishOrder_PrintOrder";
-            this.chb_FinishOrder_PrintOrder.Size = new System.Drawing.Size(227, 21);
-            this.chb_FinishOrder_PrintOrder.TabIndex = 1;
-            this.chb_FinishOrder_PrintOrder.Text = "Vill du skriva ut ordern?";
-            this.chb_FinishOrder_PrintOrder.UseVisualStyleBackColor = true;
-            this.chb_FinishOrder_PrintOrder.Visible = false;
+            chb_FinishOrder_PrintOrder.AutoSize = true;
+            chb_FinishOrder_PrintOrder.Checked = true;
+            chb_FinishOrder_PrintOrder.CheckState = CheckState.Checked;
+            chb_FinishOrder_PrintOrder.Font = new Font("Consolas", 10.25F);
+            chb_FinishOrder_PrintOrder.ForeColor = Color.FromArgb(239, 228, 177);
+            chb_FinishOrder_PrintOrder.Location = new Point(77, 6);
+            chb_FinishOrder_PrintOrder.Margin = new Padding(4, 3, 4, 3);
+            chb_FinishOrder_PrintOrder.Name = "chb_FinishOrder_PrintOrder";
+            chb_FinishOrder_PrintOrder.Size = new Size(227, 21);
+            chb_FinishOrder_PrintOrder.TabIndex = 1;
+            chb_FinishOrder_PrintOrder.Text = "Vill du skriva ut ordern?";
+            chb_FinishOrder_PrintOrder.UseVisualStyleBackColor = true;
+            chb_FinishOrder_PrintOrder.Visible = false;
             // 
             // label_Info
             // 
-            this.label_Info.AutoSize = true;
-            this.label_Info.Font = new System.Drawing.Font("Arial", 12.25F);
-            this.label_Info.Location = new System.Drawing.Point(3, 12);
-            this.label_Info.Name = "label_Info";
-            this.label_Info.Size = new System.Drawing.Size(380, 19);
-            this.label_Info.TabIndex = 1;
-            this.label_Info.Text = "Betygsätt ordern baserat på hur materialet har gått.";
+            label_Info.AutoSize = true;
+            label_Info.Font = new Font("Arial", 12.25F);
+            label_Info.ForeColor = Color.FromArgb(239, 228, 177);
+            label_Info.Location = new Point(4, 14);
+            label_Info.Margin = new Padding(4, 0, 4, 0);
+            label_Info.Name = "label_Info";
+            label_Info.Size = new Size(380, 19);
+            label_Info.TabIndex = 1;
+            label_Info.Text = "Betygsätt ordern baserat på hur materialet har gått.";
             // 
             // chb_0
             // 
-            this.chb_0.AutoSize = true;
-            this.chb_0.Font = new System.Drawing.Font("Courier New", 30F);
-            this.chb_0.ForeColor = System.Drawing.Color.LemonChiffon;
-            this.chb_0.Location = new System.Drawing.Point(7, 47);
-            this.chb_0.Name = "chb_0";
-            this.chb_0.Size = new System.Drawing.Size(61, 46);
-            this.chb_0.TabIndex = 3;
-            this.chb_0.Text = "0";
-            this.chb_0.UseVisualStyleBackColor = true;
-            this.chb_0.CheckedChanged += new System.EventHandler(this.CheckedChanged);
+            chb_0.AutoSize = true;
+            chb_0.Font = new Font("Courier New", 30F);
+            chb_0.ForeColor = Color.LemonChiffon;
+            chb_0.Location = new Point(8, 54);
+            chb_0.Margin = new Padding(4, 3, 4, 3);
+            chb_0.Name = "chb_0";
+            chb_0.Size = new Size(61, 46);
+            chb_0.TabIndex = 3;
+            chb_0.Text = "0";
+            chb_0.UseVisualStyleBackColor = true;
+            chb_0.CheckedChanged += CheckedChanged;
             // 
             // chb_1
             // 
-            this.chb_1.AutoSize = true;
-            this.chb_1.Font = new System.Drawing.Font("Courier New", 30F);
-            this.chb_1.ForeColor = System.Drawing.Color.LemonChiffon;
-            this.chb_1.Location = new System.Drawing.Point(7, 92);
-            this.chb_1.Name = "chb_1";
-            this.chb_1.Size = new System.Drawing.Size(61, 46);
-            this.chb_1.TabIndex = 3;
-            this.chb_1.Text = "1";
-            this.chb_1.UseVisualStyleBackColor = true;
-            this.chb_1.CheckedChanged += new System.EventHandler(this.CheckedChanged);
+            chb_1.AutoSize = true;
+            chb_1.Font = new Font("Courier New", 30F);
+            chb_1.ForeColor = Color.FromArgb(239, 228, 177);
+            chb_1.Location = new Point(8, 106);
+            chb_1.Margin = new Padding(4, 3, 4, 3);
+            chb_1.Name = "chb_1";
+            chb_1.Size = new Size(61, 46);
+            chb_1.TabIndex = 3;
+            chb_1.Text = "1";
+            chb_1.UseVisualStyleBackColor = true;
+            chb_1.CheckedChanged += CheckedChanged;
             // 
             // chb_2
             // 
-            this.chb_2.AutoSize = true;
-            this.chb_2.Font = new System.Drawing.Font("Courier New", 30F);
-            this.chb_2.ForeColor = System.Drawing.Color.LemonChiffon;
-            this.chb_2.Location = new System.Drawing.Point(7, 137);
-            this.chb_2.Name = "chb_2";
-            this.chb_2.Size = new System.Drawing.Size(61, 46);
-            this.chb_2.TabIndex = 3;
-            this.chb_2.Text = "2";
-            this.chb_2.UseVisualStyleBackColor = true;
-            this.chb_2.CheckedChanged += new System.EventHandler(this.CheckedChanged);
+            chb_2.AutoSize = true;
+            chb_2.Font = new Font("Courier New", 30F);
+            chb_2.ForeColor = Color.FromArgb(239, 228, 177);
+            chb_2.Location = new Point(8, 158);
+            chb_2.Margin = new Padding(4, 3, 4, 3);
+            chb_2.Name = "chb_2";
+            chb_2.Size = new Size(61, 46);
+            chb_2.TabIndex = 3;
+            chb_2.Text = "2";
+            chb_2.UseVisualStyleBackColor = true;
+            chb_2.CheckedChanged += CheckedChanged;
             // 
             // chb_3
             // 
-            this.chb_3.AutoSize = true;
-            this.chb_3.Font = new System.Drawing.Font("Courier New", 30F);
-            this.chb_3.ForeColor = System.Drawing.Color.LemonChiffon;
-            this.chb_3.Location = new System.Drawing.Point(7, 182);
-            this.chb_3.Name = "chb_3";
-            this.chb_3.Size = new System.Drawing.Size(61, 46);
-            this.chb_3.TabIndex = 3;
-            this.chb_3.Text = "3";
-            this.chb_3.UseVisualStyleBackColor = true;
-            this.chb_3.CheckedChanged += new System.EventHandler(this.CheckedChanged);
+            chb_3.AutoSize = true;
+            chb_3.Font = new Font("Courier New", 30F);
+            chb_3.ForeColor = Color.FromArgb(239, 228, 177);
+            chb_3.Location = new Point(8, 210);
+            chb_3.Margin = new Padding(4, 3, 4, 3);
+            chb_3.Name = "chb_3";
+            chb_3.Size = new Size(61, 46);
+            chb_3.TabIndex = 3;
+            chb_3.Text = "3";
+            chb_3.UseVisualStyleBackColor = true;
+            chb_3.CheckedChanged += CheckedChanged;
             // 
             // chb_4
             // 
-            this.chb_4.AutoSize = true;
-            this.chb_4.Font = new System.Drawing.Font("Courier New", 30F);
-            this.chb_4.ForeColor = System.Drawing.Color.LemonChiffon;
-            this.chb_4.Location = new System.Drawing.Point(7, 227);
-            this.chb_4.Name = "chb_4";
-            this.chb_4.Size = new System.Drawing.Size(61, 46);
-            this.chb_4.TabIndex = 3;
-            this.chb_4.Text = "4";
-            this.chb_4.UseVisualStyleBackColor = true;
-            this.chb_4.CheckedChanged += new System.EventHandler(this.CheckedChanged);
+            chb_4.AutoSize = true;
+            chb_4.Font = new Font("Courier New", 30F);
+            chb_4.ForeColor = Color.FromArgb(239, 228, 177);
+            chb_4.Location = new Point(8, 262);
+            chb_4.Margin = new Padding(4, 3, 4, 3);
+            chb_4.Name = "chb_4";
+            chb_4.Size = new Size(61, 46);
+            chb_4.TabIndex = 3;
+            chb_4.Text = "4";
+            chb_4.UseVisualStyleBackColor = true;
+            chb_4.CheckedChanged += CheckedChanged;
             // 
             // chb_5
             // 
-            this.chb_5.AutoSize = true;
-            this.chb_5.Font = new System.Drawing.Font("Courier New", 30F);
-            this.chb_5.ForeColor = System.Drawing.Color.LemonChiffon;
-            this.chb_5.Location = new System.Drawing.Point(7, 272);
-            this.chb_5.Name = "chb_5";
-            this.chb_5.Size = new System.Drawing.Size(61, 46);
-            this.chb_5.TabIndex = 3;
-            this.chb_5.Text = "5";
-            this.chb_5.UseVisualStyleBackColor = true;
-            this.chb_5.CheckedChanged += new System.EventHandler(this.CheckedChanged);
+            chb_5.AutoSize = true;
+            chb_5.Font = new Font("Courier New", 30F);
+            chb_5.ForeColor = Color.FromArgb(239, 228, 177);
+            chb_5.Location = new Point(8, 314);
+            chb_5.Margin = new Padding(4, 3, 4, 3);
+            chb_5.Name = "chb_5";
+            chb_5.Size = new Size(61, 46);
+            chb_5.TabIndex = 3;
+            chb_5.Text = "5";
+            chb_5.UseVisualStyleBackColor = true;
+            chb_5.CheckedChanged += CheckedChanged;
             // 
             // label_Info_0
             // 
-            this.label_Info_0.Font = new System.Drawing.Font("Consolas", 9F);
-            this.label_Info_0.ForeColor = System.Drawing.Color.LemonChiffon;
-            this.label_Info_0.Location = new System.Drawing.Point(83, 57);
-            this.label_Info_0.Name = "label_Info_0";
-            this.label_Info_0.Size = new System.Drawing.Size(340, 35);
-            this.label_Info_0.TabIndex = 1;
-            this.label_Info_0.Text = "Materialet var oanvändbart.";
+            label_Info_0.Font = new Font("Consolas", 9F);
+            label_Info_0.ForeColor = Color.LemonChiffon;
+            label_Info_0.Location = new Point(97, 66);
+            label_Info_0.Margin = new Padding(4, 0, 4, 0);
+            label_Info_0.Name = "label_Info_0";
+            label_Info_0.Size = new Size(397, 40);
+            label_Info_0.TabIndex = 1;
+            label_Info_0.Text = "Materialet var oanvändbart.";
             // 
             // label_Info_1
             // 
-            this.label_Info_1.Font = new System.Drawing.Font("Consolas", 9F);
-            this.label_Info_1.ForeColor = System.Drawing.Color.LemonChiffon;
-            this.label_Info_1.Location = new System.Drawing.Point(83, 102);
-            this.label_Info_1.Name = "label_Info_1";
-            this.label_Info_1.Size = new System.Drawing.Size(340, 35);
-            this.label_Info_1.TabIndex = 1;
-            this.label_Info_1.Text = "Materialet var användbart men medförde mycket stora problem.";
+            label_Info_1.Font = new Font("Consolas", 9F);
+            label_Info_1.ForeColor = Color.FromArgb(239, 228, 177);
+            label_Info_1.Location = new Point(97, 118);
+            label_Info_1.Margin = new Padding(4, 0, 4, 0);
+            label_Info_1.Name = "label_Info_1";
+            label_Info_1.Size = new Size(397, 40);
+            label_Info_1.TabIndex = 1;
+            label_Info_1.Text = "Materialet var användbart men medförde mycket stora problem.";
             // 
             // label_Info_2
             // 
-            this.label_Info_2.Font = new System.Drawing.Font("Consolas", 9F);
-            this.label_Info_2.ForeColor = System.Drawing.Color.LemonChiffon;
-            this.label_Info_2.Location = new System.Drawing.Point(83, 147);
-            this.label_Info_2.Name = "label_Info_2";
-            this.label_Info_2.Size = new System.Drawing.Size(340, 35);
-            this.label_Info_2.TabIndex = 1;
-            this.label_Info_2.Text = "Materialet var användbart men medförde mer problem än vanligt.";
+            label_Info_2.Font = new Font("Consolas", 9F);
+            label_Info_2.ForeColor = Color.FromArgb(239, 228, 177);
+            label_Info_2.Location = new Point(97, 170);
+            label_Info_2.Margin = new Padding(4, 0, 4, 0);
+            label_Info_2.Name = "label_Info_2";
+            label_Info_2.Size = new Size(397, 40);
+            label_Info_2.TabIndex = 1;
+            label_Info_2.Text = "Materialet var användbart men medförde mer problem än vanligt.";
             // 
             // label_Info_3
             // 
-            this.label_Info_3.Font = new System.Drawing.Font("Consolas", 9F);
-            this.label_Info_3.ForeColor = System.Drawing.Color.LemonChiffon;
-            this.label_Info_3.Location = new System.Drawing.Point(83, 192);
-            this.label_Info_3.Name = "label_Info_3";
-            this.label_Info_3.Size = new System.Drawing.Size(340, 35);
-            this.label_Info_3.TabIndex = 1;
-            this.label_Info_3.Text = "Material uppförde sig som vanligt med normala hanterbara variationer från materia" +
-    "let.";
+            label_Info_3.Font = new Font("Consolas", 9F);
+            label_Info_3.ForeColor = Color.FromArgb(239, 228, 177);
+            label_Info_3.Location = new Point(97, 222);
+            label_Info_3.Margin = new Padding(4, 0, 4, 0);
+            label_Info_3.Name = "label_Info_3";
+            label_Info_3.Size = new Size(397, 40);
+            label_Info_3.TabIndex = 1;
+            label_Info_3.Text = "Material uppförde sig som vanligt med normala hanterbara variationer från materialet.";
             // 
             // label_Info_4
             // 
-            this.label_Info_4.Font = new System.Drawing.Font("Consolas", 9F);
-            this.label_Info_4.ForeColor = System.Drawing.Color.LemonChiffon;
-            this.label_Info_4.Location = new System.Drawing.Point(83, 237);
-            this.label_Info_4.Name = "label_Info_4";
-            this.label_Info_4.Size = new System.Drawing.Size(340, 35);
-            this.label_Info_4.TabIndex = 1;
-            this.label_Info_4.Text = "Körningen gick bra med färre än vanligt problem med materialet.";
+            label_Info_4.Font = new Font("Consolas", 9F);
+            label_Info_4.ForeColor = Color.FromArgb(239, 228, 177);
+            label_Info_4.Location = new Point(97, 273);
+            label_Info_4.Margin = new Padding(4, 0, 4, 0);
+            label_Info_4.Name = "label_Info_4";
+            label_Info_4.Size = new Size(397, 40);
+            label_Info_4.TabIndex = 1;
+            label_Info_4.Text = "Körningen gick bra med färre än vanligt problem med materialet.";
             // 
             // label_Info_5
             // 
-            this.label_Info_5.Font = new System.Drawing.Font("Consolas", 9F);
-            this.label_Info_5.ForeColor = System.Drawing.Color.LemonChiffon;
-            this.label_Info_5.Location = new System.Drawing.Point(83, 282);
-            this.label_Info_5.Name = "label_Info_5";
-            this.label_Info_5.Size = new System.Drawing.Size(340, 35);
-            this.label_Info_5.TabIndex = 1;
-            this.label_Info_5.Text = "Körningen gick mycket bra utan problem orsakade av materialet.";
-            // 
-            // lbl_FinishOrder_Done
-            // 
-            this.lbl_FinishOrder_Done.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.lbl_FinishOrder_Done.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.lbl_FinishOrder_Done.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold);
-            this.lbl_FinishOrder_Done.ForeColor = System.Drawing.Color.Black;
-            this.lbl_FinishOrder_Done.Location = new System.Drawing.Point(0, 442);
-            this.lbl_FinishOrder_Done.Name = "lbl_FinishOrder_Done";
-            this.lbl_FinishOrder_Done.Size = new System.Drawing.Size(117, 24);
-            this.lbl_FinishOrder_Done.TabIndex = 4;
-            this.lbl_FinishOrder_Done.Text = "Avsluta Order";
-            this.lbl_FinishOrder_Done.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
-            this.lbl_FinishOrder_Done.Click += new System.EventHandler(this.Klar_Click);
-            // 
-            // lbl_FinishOrder_Abort
-            // 
-            this.lbl_FinishOrder_Abort.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.lbl_FinishOrder_Abort.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.lbl_FinishOrder_Abort.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold);
-            this.lbl_FinishOrder_Abort.ForeColor = System.Drawing.Color.Black;
-            this.lbl_FinishOrder_Abort.Location = new System.Drawing.Point(376, 442);
-            this.lbl_FinishOrder_Abort.Name = "lbl_FinishOrder_Abort";
-            this.lbl_FinishOrder_Abort.Size = new System.Drawing.Size(72, 24);
-            this.lbl_FinishOrder_Abort.TabIndex = 4;
-            this.lbl_FinishOrder_Abort.Text = "Avbryt";
-            this.lbl_FinishOrder_Abort.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
-            this.lbl_FinishOrder_Abort.Click += new System.EventHandler(this.Avbryt_Click);
+            label_Info_5.Font = new Font("Consolas", 9F);
+            label_Info_5.ForeColor = Color.FromArgb(239, 228, 177);
+            label_Info_5.Location = new Point(97, 325);
+            label_Info_5.Margin = new Padding(4, 0, 4, 0);
+            label_Info_5.Name = "label_Info_5";
+            label_Info_5.Size = new Size(397, 40);
+            label_Info_5.TabIndex = 1;
+            label_Info_5.Text = "Körningen gick mycket bra utan problem orsakade av materialet.";
             // 
             // chb_Rapportera_Jira
             // 
-            this.chb_Rapportera_Jira.AutoSize = true;
-            this.chb_Rapportera_Jira.Font = new System.Drawing.Font("Consolas", 10.25F);
-            this.chb_Rapportera_Jira.ForeColor = System.Drawing.Color.Black;
-            this.chb_Rapportera_Jira.Location = new System.Drawing.Point(50, 73);
-            this.chb_Rapportera_Jira.Name = "chb_Rapportera_Jira";
-            this.chb_Rapportera_Jira.Size = new System.Drawing.Size(371, 21);
-            this.chb_Rapportera_Jira.TabIndex = 1;
-            this.chb_Rapportera_Jira.Text = "Rapportera problem till produktionssupport?";
-            this.chb_Rapportera_Jira.UseVisualStyleBackColor = true;
+            chb_Rapportera_Jira.AutoSize = true;
+            chb_Rapportera_Jira.Font = new Font("Consolas", 10.25F);
+            chb_Rapportera_Jira.ForeColor = Color.FromArgb(239, 228, 177);
+            chb_Rapportera_Jira.Location = new Point(77, 37);
+            chb_Rapportera_Jira.Margin = new Padding(4, 3, 4, 3);
+            chb_Rapportera_Jira.Name = "chb_Rapportera_Jira";
+            chb_Rapportera_Jira.Size = new Size(371, 21);
+            chb_Rapportera_Jira.TabIndex = 1;
+            chb_Rapportera_Jira.Text = "Rapportera problem till produktionssupport?";
+            chb_Rapportera_Jira.UseVisualStyleBackColor = true;
             // 
-            // panel_Poäng
+            // panel_Points
             // 
-            this.panel_Poäng.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel_Poäng.Controls.Add(this.label_Info);
-            this.panel_Poäng.Controls.Add(this.chb_0);
-            this.panel_Poäng.Controls.Add(this.label_Info_0);
-            this.panel_Poäng.Controls.Add(this.chb_5);
-            this.panel_Poäng.Controls.Add(this.label_Info_5);
-            this.panel_Poäng.Controls.Add(this.chb_1);
-            this.panel_Poäng.Controls.Add(this.chb_4);
-            this.panel_Poäng.Controls.Add(this.label_Info_1);
-            this.panel_Poäng.Controls.Add(this.label_Info_4);
-            this.panel_Poäng.Controls.Add(this.chb_3);
-            this.panel_Poäng.Controls.Add(this.chb_2);
-            this.panel_Poäng.Controls.Add(this.label_Info_2);
-            this.panel_Poäng.Controls.Add(this.label_Info_3);
-            this.panel_Poäng.Location = new System.Drawing.Point(12, 100);
-            this.panel_Poäng.Name = "panel_Poäng";
-            this.panel_Poäng.Size = new System.Drawing.Size(426, 347);
-            this.panel_Poäng.TabIndex = 5;
+            panel_Points.BorderStyle = BorderStyle.FixedSingle;
+            panel_Points.Controls.Add(label_Info);
+            panel_Points.Controls.Add(chb_0);
+            panel_Points.Controls.Add(label_Info_0);
+            panel_Points.Controls.Add(chb_5);
+            panel_Points.Controls.Add(label_Info_5);
+            panel_Points.Controls.Add(chb_1);
+            panel_Points.Controls.Add(chb_4);
+            panel_Points.Controls.Add(label_Info_1);
+            panel_Points.Controls.Add(label_Info_4);
+            panel_Points.Controls.Add(chb_3);
+            panel_Points.Controls.Add(chb_2);
+            panel_Points.Controls.Add(label_Info_2);
+            panel_Points.Controls.Add(label_Info_3);
+            panel_Points.Dock = DockStyle.Fill;
+            panel_Points.Location = new Point(0, 112);
+            panel_Points.Margin = new Padding(4, 3, 4, 3);
+            panel_Points.Name = "panel_Points";
+            panel_Points.Size = new Size(540, 371);
+            panel_Points.TabIndex = 5;
             // 
             // pb_Info_Jira
             // 
-            this.pb_Info_Jira.BackColor = System.Drawing.Color.Transparent;
-            this.pb_Info_Jira.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("pb_Info_Jira.BackgroundImage")));
-            this.pb_Info_Jira.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.pb_Info_Jira.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.pb_Info_Jira.Location = new System.Drawing.Point(5, 65);
-            this.pb_Info_Jira.Name = "pb_Info_Jira";
-            this.pb_Info_Jira.Size = new System.Drawing.Size(34, 29);
-            this.pb_Info_Jira.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pb_Info_Jira.TabIndex = 871;
-            this.pb_Info_Jira.TabStop = false;
-            this.pb_Info_Jira.Click += new System.EventHandler(this.Info_Jira_Click);
+            pb_Info_Jira.BackColor = Color.Transparent;
+            pb_Info_Jira.BackgroundImage = (Image)resources.GetObject("pb_Info_Jira.BackgroundImage");
+            pb_Info_Jira.BackgroundImageLayout = ImageLayout.Stretch;
+            pb_Info_Jira.Cursor = Cursors.Hand;
+            pb_Info_Jira.Location = new Point(4, 6);
+            pb_Info_Jira.Margin = new Padding(4, 3, 4, 3);
+            pb_Info_Jira.Name = "pb_Info_Jira";
+            pb_Info_Jira.Size = new Size(40, 33);
+            pb_Info_Jira.SizeMode = PictureBoxSizeMode.Zoom;
+            pb_Info_Jira.TabIndex = 871;
+            pb_Info_Jira.TabStop = false;
+            pb_Info_Jira.Click += Info_Jira_Click;
             // 
-            // Order_Done
+            // panel_Info
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.DarkOliveGreen;
-            this.ClientSize = new System.Drawing.Size(450, 470);
-            this.Controls.Add(this.pb_Info_Jira);
-            this.Controls.Add(this.panel_Poäng);
-            this.Controls.Add(this.lbl_FinishOrder_Abort);
-            this.Controls.Add(this.lbl_FinishOrder_Done);
-            this.Controls.Add(this.chb_Rapportera_Jira);
-            this.Controls.Add(this.chb_FinishOrder_PrintOrder);
-            this.Controls.Add(this.label_FinishOrder_Header);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-            this.Name = "Order_Done";
-            this.Text = "OrderKlar";
-            this.panel_Poäng.ResumeLayout(false);
-            this.panel_Poäng.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pb_Info_Jira)).EndInit();
-            this.ResumeLayout(false);
-            this.PerformLayout();
+            panel_Info.Controls.Add(pb_Info_Jira);
+            panel_Info.Controls.Add(chb_FinishOrder_PrintOrder);
+            panel_Info.Controls.Add(chb_Rapportera_Jira);
+            panel_Info.Dock = DockStyle.Top;
+            panel_Info.Location = new Point(0, 38);
+            panel_Info.Name = "panel_Info";
+            panel_Info.Size = new Size(540, 74);
+            panel_Info.TabIndex = 872;
+            // 
+            // tlp_Buttons
+            // 
+            tlp_Buttons.ColumnCount = 3;
+            tlp_Buttons.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            tlp_Buttons.ColumnStyles.Add(new ColumnStyle());
+            tlp_Buttons.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            tlp_Buttons.Controls.Add(btn_FinishOrder, 0, 0);
+            tlp_Buttons.Controls.Add(btn_Abort, 2, 0);
+            tlp_Buttons.Dock = DockStyle.Bottom;
+            tlp_Buttons.Location = new Point(0, 483);
+            tlp_Buttons.Name = "tlp_Buttons";
+            tlp_Buttons.RowCount = 1;
+            tlp_Buttons.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            tlp_Buttons.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
+            tlp_Buttons.Size = new Size(540, 38);
+            tlp_Buttons.TabIndex = 873;
+            // 
+            // btn_FinishOrder
+            // 
+            btn_FinishOrder.Dock = DockStyle.Fill;
+            btn_FinishOrder.FlatAppearance.BorderSize = 0;
+            btn_FinishOrder.FlatStyle = FlatStyle.Flat;
+            btn_FinishOrder.Font = new Font("Segoe UI", 12F);
+            btn_FinishOrder.ForeColor = Color.FromArgb(198, 239, 206);
+            btn_FinishOrder.Location = new Point(3, 3);
+            btn_FinishOrder.Name = "btn_FinishOrder";
+            btn_FinishOrder.Size = new Size(264, 32);
+            btn_FinishOrder.TabIndex = 1;
+            btn_FinishOrder.Text = "Avsluta Order";
+            btn_FinishOrder.TextAlign = ContentAlignment.MiddleLeft;
+            btn_FinishOrder.UseVisualStyleBackColor = true;
+            btn_FinishOrder.Click += Klar_Click;
+            // 
+            // btn_Abort
+            // 
+            btn_Abort.Dock = DockStyle.Fill;
+            btn_Abort.FlatAppearance.BorderSize = 0;
+            btn_Abort.FlatStyle = FlatStyle.Flat;
+            btn_Abort.Font = new Font("Segoe UI", 12F);
+            btn_Abort.ForeColor = Color.FromArgb(255, 199, 206);
+            btn_Abort.Location = new Point(273, 3);
+            btn_Abort.Name = "btn_Abort";
+            btn_Abort.Size = new Size(264, 32);
+            btn_Abort.TabIndex = 0;
+            btn_Abort.Text = "Avbryt";
+            btn_Abort.TextAlign = ContentAlignment.MiddleRight;
+            btn_Abort.UseVisualStyleBackColor = true;
+            btn_Abort.Click += Avbryt_Click;
+            // 
+            // FinishOrder
+            // 
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            BackColor = Color.FromArgb(6, 81, 87);
+            ClientSize = new Size(540, 521);
+            Controls.Add(panel_Points);
+            Controls.Add(tlp_Buttons);
+            Controls.Add(panel_Info);
+            Controls.Add(label_FinishOrder_Header);
+            FormBorderStyle = FormBorderStyle.None;
+            Margin = new Padding(4, 3, 4, 3);
+            Name = "FinishOrder";
+            Text = "OrderKlar";
+            panel_Points.ResumeLayout(false);
+            panel_Points.PerformLayout();
+            ((ISupportInitialize)pb_Info_Jira).EndInit();
+            panel_Info.ResumeLayout(false);
+            panel_Info.PerformLayout();
+            tlp_Buttons.ResumeLayout(false);
+            ResumeLayout(false);
 
         }
 
@@ -348,10 +404,12 @@ namespace DigitalProductionProgram.OrderManagement
         private Label label_Info_3;
         private Label label_Info_4;
         private Label label_Info_5;
-        private Label lbl_FinishOrder_Done;
-        private Label lbl_FinishOrder_Abort;
         private CheckBox chb_Rapportera_Jira;
-        private Panel panel_Poäng;
+        private Panel panel_Points;
         private PictureBox pb_Info_Jira;
+        private Panel panel_Info;
+        private TableLayoutPanel tlp_Buttons;
+        private Button btn_FinishOrder;
+        private Button btn_Abort;
     }
 }

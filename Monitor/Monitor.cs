@@ -311,7 +311,7 @@ namespace DigitalProductionProgram.Monitor
                 {
                     status = Status.Ok;
                     MonitorStatus = $"Connection to Monitor ok: Responsetime = {text} ms";
-                    if (lbl_Monitorstatus != null) lbl_Monitorstatus.ForeColor = Color.FromArgb(0, 97, 0);
+                    if (lbl_Monitorstatus != null) lbl_Monitorstatus.ForeColor = Color.FromArgb(198, 239, 206);
                     if (panel_Monitorstatus != null) ServerStatus.DrawPanelMonitorStatus(panel_Monitorstatus, Color.FromArgb(198, 239, 206));
                     break;
                 }
@@ -479,7 +479,6 @@ namespace DigitalProductionProgram.Monitor
                 foreach (var operation in operations)
                 {
                     var prodline = Utilities.GetOneFromMonitor<Manufacturing.WorkCenters>($"filter=Id Eq'{operation.WorkCenterId}'");
-                    //list_Operations.Add($"{operation.OperationNumber} - {prodline.Description}");
                     ops.Add(new Main_OrderInformation.Operation_Description { Operation = operation.OperationNumber, Description = prodline.Description });
                     if (Main_OrderInformation.List_ProdGroup != null)
                         Main_OrderInformation.List_ProdGroup.Add(prodline.Number);

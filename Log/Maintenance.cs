@@ -1,7 +1,8 @@
-﻿using System;
-using DigitalProductionProgram.ControlsManagement;
-using Microsoft.Data.SqlClient;
+﻿using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.DatabaseManagement;
+using Microsoft.Data.SqlClient;
+using System;
+using System.Diagnostics;
 
 namespace DigitalProductionProgram.Log
 {
@@ -121,6 +122,23 @@ namespace DigitalProductionProgram.Log
                     cmd.Parameters.AddWithValue("@now", DateTime.Now);
                     return cmd.ExecuteScalar().ToString();
                 }
+            }
+        }
+
+        public static void StartInstallation()
+        {
+            try
+            {
+                // Starta MSIX-installationen
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = @"\\optifil\DPP\Install DPP.appinstaller", 
+                    UseShellExecute = true
+                });
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Kunde inte starta installationsfilen.\n{ex.Message}", "Fel", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

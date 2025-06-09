@@ -104,12 +104,12 @@ namespace DigitalProductionProgram.MainWindow
 
         //UPPSNABBNING AV PROGRAMMET VID UTVECKLING
         public static bool IsLoadingPriorityPlan;
-        public static bool IsLoadingMeasurePoints;
+        public static bool IsLoadingMeasurePoints = true;
         public static bool IsOpenRandomOrder = false;
         public static bool IsAutoOpenOrder = false;
         public static bool IsAutoLoginSuperAdmin = true;
 
-        private const string? develop_OrderNr = "A66570";
+        private const string? develop_OrderNr = "C1335";
         private const string? develop_Operation = "10";
         public static Timer? timer_StatsDPP;
 
@@ -1026,37 +1026,50 @@ namespace DigitalProductionProgram.MainWindow
             if (ChangeLog.LatestVersion is null)
                 return;
 
-            if (ChangeLog.LatestVersion.CompareTo(value: ChangeLog.CurrentVersion) <= 0)
+            if (ChangeLog.LatestVersion.CompareTo(ChangeLog.CurrentVersion) <= 0)
                 return;
 
-
             timer_CheckForUpdate.Stop();
+
             if (Program.IsUpdateCritical)
             {
                 InfoText.Show(LanguageManager.GetString("update_Info_1"),
-                    CustomColors.InfoText_Color.Bad, "Warning!", this);
-                timer_CheckForUpdate.Interval = 10000;
+                    CustomColors.InfoText_Color.Bad,
+                    "Warning!", this);
+
+                Maintenance.StartInstallation(); // <--Kör installationspaketet
+
+                timer_CheckForUpdate.Interval = 10000; // 10 sekunder
                 timer_CheckForUpdate.Start();
                 return;
             }
 
             Activity.Start();
-            InfoText.Question($"{LanguageManager.GetString("update_Info_1_1")}\n\n" +
-                          $"{ChangeLog.News} \n" +
-                          $"{LanguageManager.GetString("update_Info_1_2")}", CustomColors.InfoText_Color.Warning, "Warning!", this);
+
+            InfoText.Question(
+                $"{LanguageManager.GetString("update_Info_1_1")}\n\n" +
+                $"{ChangeLog.News}\n" +
+                $"{LanguageManager.GetString("update_Info_1_2")}",
+                CustomColors.InfoText_Color.Warning,
+                "Warning!", this);
+
             if (InfoText.answer == InfoText.Answer.No)
             {
                 _ = Activity.Stop($"Användare {Person.Name} uppdaterade INTE programmet.");
-                timer_CheckForUpdate.Interval = 18000000;//=5 timmar
+                timer_CheckForUpdate.Interval = 18000000; // 5 timmar
             }
             else
             {
                 _ = Activity.Stop($"Användare {Person.Name} uppdaterade programmet.");
-                timer_CheckForUpdate.Interval = 300000;//= 5 minuter
+                timer_CheckForUpdate.Interval = 300000; // 5 minuter
+
+                Maintenance.StartInstallation(); // <-- Kör installationspaketet
+
             }
 
             timer_CheckForUpdate.Start();
         }
+
         private void CheckIf_Maintenance_Has_Started_Tick(object sender, EventArgs e)
         {
             if (Maintenance.IsMaintenance_Ongoing)

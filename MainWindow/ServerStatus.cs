@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
 using DigitalProductionProgram.EasterEggs;
@@ -20,34 +21,30 @@ namespace DigitalProductionProgram.MainWindow
         }
         public static void DrawPanelMonitorStatus(Panel panel, Color color)
         {
-            panel.Paint += (sender, e) =>
-            {
-                using (var g = e.Graphics)
-                {
-                    // Define the points of the triangle
-                    Point[] trianglePoints =
-                    {
-                        new Point(0, 0),
-                        new Point(panel.Width / 2, panel.Height),
-                        new Point(panel.Width, 0)
-                    };
+            //panel.Paint += (sender, e) =>
+            //{
+            //    if (panel.Width <= 0 || panel.Height <= 0)
+            //        return; // Undvik crash
 
-                    // Draw the filled triangle
-                    using (Brush brush = new SolidBrush(color))
-                    {
-                        try
-                        {
-                            g.FillPolygon(brush, trianglePoints);
-                            // g.DrawPolygon(Pens.DarkGreen, trianglePoints);
-                        }
-                        catch (Exception exception)
-                        {
-                            Console.WriteLine(exception);
-                        }
-                    }
+            //    using var g = e.Graphics;
+            //    Point[] trianglePoints =
+            //    {
+            //        new Point(0, 0),
+            //        new Point(panel.Width / 2, panel.Height),
+            //        new Point(panel.Width, 0)
+            //    };
 
-                }
-            };
+            //    using Brush brush = new SolidBrush(color);
+            //    try
+            //    {
+            //        g.FillPolygon(brush, trianglePoints);
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        Debug.WriteLine($"Fel i DrawPanelMonitorStatus: {ex.Message}");
+            //    }
+            //};
+
         }
         public void DrawPanelDPP_ServerStatus(long time)
         {

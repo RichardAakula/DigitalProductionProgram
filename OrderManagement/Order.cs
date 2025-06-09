@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
+﻿using System.Data;
 using Microsoft.Data.SqlClient;
-using System.Drawing;
 using System.Globalization;
-using System.Linq;
-using System.Windows.Forms;
 using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.eMail;
@@ -19,7 +14,6 @@ using DigitalProductionProgram.PrintingServices;
 using DigitalProductionProgram.Processcards;
 using DigitalProductionProgram.Protocols;
 using DigitalProductionProgram.Protocols.ExtraProtocols;
-using DigitalProductionProgram.Protocols.LineClearance;
 using DigitalProductionProgram.Protocols.MainInfo;
 using DigitalProductionProgram.Protocols.Protocol;
 using DigitalProductionProgram.QC;
@@ -485,20 +479,17 @@ namespace DigitalProductionProgram.OrderManagement
         {
             get
             {
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    var query = "SELECT Stopp_1 FROM [Order].MainData WHERE OrderID = @orderid";
-                    var cmd = new SqlCommand(query, con);
-                    cmd.Parameters.AddWithValue("@orderid", OrderID);
-                    con.Open();
-                    try
-                    {
-                        if (string.IsNullOrEmpty((string)cmd.ExecuteScalar()))
-                            return false;
-                        return true;
-                    }
-                    catch { return false; }
-                }
+                using var con = new SqlConnection(Database.cs_Protocol);
+                var query = "SELECT Date_Stop FROM [Order].MainData WHERE OrderID = @orderid";
+                var cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@orderid", OrderID);
+                con.Open();
+                var result = cmd.ExecuteScalar();
+
+                if (result == DBNull.Value || result == null)
+                    return false;
+
+                return true;
             }
         }
         public static bool IsOrder_Exist(string? orderNumber, string? operation)
@@ -1017,80 +1008,81 @@ namespace DigitalProductionProgram.OrderManagement
 
         public static class Finish
         {
-            private static IEnumerable<int> formTemplateIDs()
-            {
-                //Filtrerar bort Equipment så att operatörerna lär sig att fylla i all utrustning. 
-                //Dom skriver oftast N/A i verktygen om dom saknas istället för att se till att verktygen kommer in i registren.
-                //Om man skriver N/A så sparas det som NULL i databasen och då kan man inte avsluta ordern
-                var list_BlackListFormTemplateID = new List<int>
-                {
-                    38,39,70,75, 88, 116
-                };
-                var list = new List<int>();
-               
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    var query = "SELECT FormTemplateID FROM Protocol.FormTemplate WHERE MainTemplateID = @maintemplateid";
-
-                    var cmd = new SqlCommand(query, con);
-                    cmd.Parameters.AddWithValue("@maintemplateid", Templates_Protocol.MainTemplate.ID);
-                    con.Open();
-                   var reader = cmd.ExecuteReader();
-                   while (reader.Read())
-                   {
-                       if (int.TryParse(reader[0].ToString(), out var formtemplateid))
-                           if (list_BlackListFormTemplateID.Contains(formtemplateid) == false)
-                            list.Add(formtemplateid);
-                   }
-                }
-                return list;
-            }
-            public static bool Is_OkFinishOrder
+            private static IEnumerable<int> formTemplateIDs
             {
                 get
                 {
+                    //Filtrerar bort Equipment så att operatörerna lär sig att fylla i all utrustning. 
+                    //Dom skriver oftast N/A i verktygen om dom saknas istället för att se till att verktygen kommer in i registren.
+                    //Om man skriver N/A så sparas det som NULL i databasen och då kan man inte avsluta ordern
+                    var list_BlackListFormTemplateID = new List<int>
+                    {
+                        38, 39, 70, 75, 88, 116
+                    };
+                    var list = new List<int>();
+
+                    using (var con = new SqlConnection(Database.cs_Protocol))
+                    {
+                        var query = "SELECT FormTemplateID FROM Protocol.FormTemplate WHERE MainTemplateID = @maintemplateid";
+
+                        var cmd = new SqlCommand(query, con);
+                        cmd.Parameters.AddWithValue("@maintemplateid", Templates_Protocol.MainTemplate.ID);
+                        con.Open();
+                        var reader = cmd.ExecuteReader();
+                        while (reader.Read())
+                        {
+                            if (int.TryParse(reader[0].ToString(), out var formtemplateid))
+                                if (list_BlackListFormTemplateID.Contains(formtemplateid) == false)
+                                    list.Add(formtemplateid);
+                        }
+                    }
+
+                    return list;
+                }
+            }
+            public static bool Is_OkFinishOrder(Main_Form main)
+            {
                     if (IsOrderDone_Before)
                         return true;
                   
-                    switch (WorkOperation)
-                    {
-                        case WorkOperations.Blandning_PTFE:
-                            return Is_Blandning_PTFE_Done;
+                switch (WorkOperation)
+                {
+                    case WorkOperations.Blandning_PTFE:
+                            return Is_Blandning_PTFE_Done(main);
                         
                         case WorkOperations.Extrudering_FEP:
-                            return Is_Protocol_Done(formTemplateIDs()) && Is_Halvfabrikat_Done && IsCommentsDone;
+                            return Is_Protocol_Done(formTemplateIDs, main) && Is_Halvfabrikat_Done(main) && IsCommentsDone(main);
                         
                         case WorkOperations.Extrudering_PTFE:
                         case WorkOperations.Extrudering_Grov_PTFE:
-                            return Is_MeasureEquipmentFilledIn && Is_Halvfabrikat_Done && Is_Protocol_Done(formTemplateIDs()) && IsCommentsDone;
+                            return Is_MeasureEquipmentFilledIn(main) && Is_Halvfabrikat_Done(main) && Is_Protocol_Done(formTemplateIDs, main) && IsCommentsDone(main);
                         
                         case WorkOperations.Extrudering_Termo:
                         case WorkOperations.Extrudering_Tryck:
                         case WorkOperations.Extrusion_HS:
-                            return Is_Protocol_Done(formTemplateIDs()) && Is_MeasureEquipmentFilledIn && Is_CompoundForm_Done && Is_RoomClimate_Done && Is_Halvfabrikat_Done && IsCommentsDone;
+                            return Is_Protocol_Done(formTemplateIDs, main) && Is_MeasureEquipmentFilledIn(main) && Is_CompoundForm_Done(main) && Is_RoomClimate_Done(main) && Is_Halvfabrikat_Done(main) && IsCommentsDone(main);
                             
                         default:
-                            return Is_Protocol_Done(formTemplateIDs()) && Is_MeasureEquipmentFilledIn && IsCommentsDone;
+                            return Is_Protocol_Done(formTemplateIDs, main) && Is_MeasureEquipmentFilledIn(main) && IsCommentsDone(main);
 
                         case WorkOperations.Kragning_TEF:
-                            return Is_Halvfabrikat_Done && Is_Protocol_Done(formTemplateIDs());
+                            return Is_Halvfabrikat_Done(main) && Is_Protocol_Done(formTemplateIDs, main);
 
                         case WorkOperations.Krympslangsblåsning:
                         case WorkOperations.HeatShrink:
-                            return IsHeatShrinkMeasurementsDone && Is_MeasureEquipmentFilledIn && Is_Halvfabrikat_Done && Is_Protocol_Done(formTemplateIDs()) && Is_LineClearance_Done && IsCommentsDone;
+                            return IsHeatShrinkMeasurementsDone(main) && Is_MeasureEquipmentFilledIn(main) && Is_Halvfabrikat_Done(main) && Is_Protocol_Done(formTemplateIDs, main) && IsCommentsDone(main);
 
                         case WorkOperations.Skärmning:
                             return true;
                         case WorkOperations.Slipning:
-                            return Is_Slipning_Done && IsCommentsDone;
+                            return Is_Slipning_Done(main) && IsCommentsDone(main);
                        
                         case WorkOperations.Svetsning:
-                            return Is_Svetsning_Done && IsCommentsDone;
+                            return Is_Svetsning_Done(main) && IsCommentsDone(main);
                     }
                     return false;
-                }
             }
-            private static bool Is_Protocol_Done(IEnumerable<int> array_formtemplateid)
+            private static bool Is_Protocol_Done(IEnumerable<int> array_formtemplateid, Main_Form main)
             {
                 var TotalStartUps = Module.TotalStartUps;
                 foreach (var formtemplateid in array_formtemplateid)
@@ -1119,313 +1111,273 @@ namespace DigitalProductionProgram.OrderManagement
                         AND pc_data.TemplateID IS NOT NULL
                     ORDER BY RowIndex, MachineIndex";
 
-                    using (var con = new SqlConnection(Database.cs_Protocol))
+                    using var con = new SqlConnection(Database.cs_Protocol);
+                    var cmd = new SqlCommand(query_Processkort, con);
+                    cmd.Parameters.AddWithValue("@partid", PartID);
+                    cmd.Parameters.AddWithValue("@formtemplateid", formtemplateid);
+                    con.Open();
+                    var reader = cmd.ExecuteReader();
+                    while (reader.Read())
                     {
-                        var cmd = new SqlCommand(query_Processkort, con);
-                        cmd.Parameters.AddWithValue("@partid", PartID);
-                        cmd.Parameters.AddWithValue("@formtemplateid", formtemplateid);
-                        con.Open();
-                        var reader = cmd.ExecuteReader();
-                        while (reader.Read())
-                        {
-                            int.TryParse(reader["Type"].ToString(), out var type);
-                            int.TryParse(reader["ID"].ToString(), out var protocoldescriptionid);
-                            var codetext = reader["CodeText"].ToString();
-                            var machine = reader["MachineIndex"].ToString();
-                            if (codetext == "FILTERHUS")//Denna kontroll kan tas bort först när artiklar får egna templates för protokollet, nu döljs den i vissa fall och programmet tycker att operatör ska fylla i Filterhus fast det är dolt i protokollet
-                                if (Equipment.Equipment.Is_Filterhus_Used_In_Processcard == false || Equipment.Equipment.Is_Filterhus_Used_No_Processcard == false)
-                                    break;
+                        int.TryParse(reader["Type"].ToString(), out var type);
+                        int.TryParse(reader["ID"].ToString(), out var protocoldescriptionid);
+                        var codetext = reader["CodeText"].ToString();
+                        var machine = reader["MachineIndex"].ToString();
+                        if (codetext == "FILTERHUS")//Denna kontroll kan tas bort först när artiklar får egna templates för protokollet, nu döljs den i vissa fall och programmet tycker att operatör ska fylla i Filterhus fast det är dolt i protokollet
+                            if (Equipment.Equipment.Is_Filterhus_Used_In_Processcard == false || Equipment.Equipment.Is_Filterhus_Used_No_Processcard == false)
+                                break;
 
-                            switch (type)
-                            {
-                                case 0:
-                                    if (Is_Value_Exist_In_Korprotokoll(codetext, protocoldescriptionid, "Value", machine, TotalStartUps) == false)
-                                        return ShowMessage(string.IsNullOrEmpty(machine) ? $"{LanguageManager.GetString("orderDone_1")} ({codetext})" : $"{LanguageManager.GetString("orderDone_1")} ({codetext}) {LanguageManager.GetString("orderDone_2")} {machine}");
-                                    break;
-                                case 1:
-                                    if (Is_Value_Exist_In_Korprotokoll(codetext, protocoldescriptionid, "TextValue", machine, TotalStartUps) == false)
-                                        return ShowMessage(string.IsNullOrEmpty(machine) ? $"{LanguageManager.GetString("orderDone_1")} ({codetext})" : $"{LanguageManager.GetString("orderDone_1")} ({codetext}) {LanguageManager.GetString("orderDone_2")} {machine}");
-                                    break;
-                            }
+                        switch (type)
+                        {
+                            case 0:
+                                if (Is_Value_Exist_In_Korprotokoll(codetext, protocoldescriptionid, "Value", machine, TotalStartUps) == false)
+                                    return ShowMessage(string.IsNullOrEmpty(machine) ? $"{LanguageManager.GetString("orderDone_1")} ({codetext})" : $"{LanguageManager.GetString("orderDone_1")} ({codetext}) {LanguageManager.GetString("orderDone_2")} {machine}", main);
+                                break;
+                            case 1:
+                                if (Is_Value_Exist_In_Korprotokoll(codetext, protocoldescriptionid, "TextValue", machine, TotalStartUps) == false)
+                                    return ShowMessage(string.IsNullOrEmpty(machine) ? $"{LanguageManager.GetString("orderDone_1")} ({codetext})" : $"{LanguageManager.GetString("orderDone_1")} ({codetext}) {LanguageManager.GetString("orderDone_2")} {machine}", main);
+                                break;
                         }
                     }
                 }
 
                 return true;
             }
-            private static bool Is_Blandning_PTFE_Done
+            private static bool Is_Blandning_PTFE_Done(Main_Form main)
             {
-                get
-                {
-                    using (var con = new SqlConnection(Database.cs_Protocol))
-                    {
-                        var query = "SELECT * FROM [Order].Data WHERE OrderID = @orderid";
-                        con.Open();
-                        var cmd = new SqlCommand(query, con);
-                        cmd.Parameters.AddWithValue("@orderid", OrderID);
-                        var reader = cmd.ExecuteReader();
-                        return reader.HasRows || ShowMessage("Fyll i Journalen före du avslutar ordern.");
-                    }
-                }
+                using var con = new SqlConnection(Database.cs_Protocol);
+                var query = "SELECT * FROM [Order].Data WHERE OrderID = @orderid";
+                con.Open();
+                var cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@orderid", OrderID);
+                var reader = cmd.ExecuteReader();
+                return reader.HasRows || ShowMessage("Fyll i Journalen före du avslutar ordern.", main);
+            
             }
-            private static bool Is_CompoundForm_Done
+            private static bool Is_CompoundForm_Done(Main_Form main)
             {
-                get
-                {
                     if (Settings.Settings.SpecialPartNumbers.DataTable_SpecialPartNr("Kompoundering").AsEnumerable().Any(row => PartNumber == row.Field<string>("PartNr")) == false)
                         return true;
-                    using (var con = new SqlConnection(Database.cs_Protocol))
-                    {
-                        const string query = @"
+                    using var con = new SqlConnection(Database.cs_Protocol);
+                    const string query = @"
                         SELECT Size AS Pelletsstorlek, BulkWeight AS Bulkvikt, Weight75D AS [Vikt 75D], Weight55D AS [Vikt 55D]
                         FROM [Order].Compound AS kompound
                         JOIN [Order].Compound_Main AS main
                             ON kompound.OrderID = main.OrderID
                         WHERE main.OrderID = @orderid";
-                        var cmd = new SqlCommand(query, con);
-                        cmd.Parameters.AddWithValue("@orderid", OrderID);
-                        con.Open();
-                        var reader = cmd.ExecuteReader();
-                        var IsOk = true;
-                        string message = null;
-                        while (reader.Read())
-                        {
-                            for (var i = 0; i < reader.FieldCount; i++)
-                                if (string.IsNullOrEmpty(reader[i].ToString()))
-                                {
-                                    IsOk = false;
-                                    message = reader.GetName(i);
-                                }
-                        }
-
-                        if (IsOk == false)
-                            return ShowMessage($"Fyll i {message} i Kompounderings-blanketten ");
-                        if (reader.HasRows == false)
-                            return ShowMessage("Du har inte fyllt i Kompounderings-blanketten.");
+                    var cmd = new SqlCommand(query, con);
+                    cmd.Parameters.AddWithValue("@orderid", OrderID);
+                    con.Open();
+                    var reader = cmd.ExecuteReader();
+                    var IsOk = true;
+                    string message = null;
+                    while (reader.Read())
+                    {
+                        for (var i = 0; i < reader.FieldCount; i++)
+                            if (string.IsNullOrEmpty(reader[i].ToString()))
+                            {
+                                IsOk = false;
+                                message = reader.GetName(i);
+                            }
                     }
+
+                    if (IsOk == false)
+                        return ShowMessage($"Fyll i {message} i Kompounderings-blanketten ", main);
+                    if (reader.HasRows == false)
+                        return ShowMessage("Du har inte fyllt i Kompounderings-blanketten.", main);
                     return true;
-                }
             }
 
-            private static bool Is_MeasureEquipmentFilledIn
+            private static bool Is_MeasureEquipmentFilledIn(Main_Form main)
             {
-                get
+                if (Part.IsPartNrSpecial("Kompoundering"))
+                    return true;
+                using var con = new SqlConnection(Database.cs_Protocol);
+                var query = $"SELECT * FROM MeasureInstruments.Mätdon {Queries.WHERE_OrderID}";
+                var cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@id", OrderID);
+                con.Open();
+                var reader = cmd.ExecuteReader();
+                var IsOk = true;
+                while (reader.Read())
                 {
-                    if (Part.IsPartNrSpecial("Kompoundering"))
-                        return true;
-                    using (var con = new SqlConnection(Database.cs_Protocol))
-                    {
-                        var query = $"SELECT * FROM MeasureInstruments.Mätdon {Queries.WHERE_OrderID}";
-                        var cmd = new SqlCommand(query, con);
-                        cmd.Parameters.AddWithValue("@id", OrderID);
-                        con.Open();
-                        var reader = cmd.ExecuteReader();
-                        var IsOk = true;
-                        while (reader.Read())
-                        {
-                            IsOk = !string.IsNullOrEmpty(reader["Nr"].ToString());
-                            if (IsOk == false)
-                                return ShowMessage(LanguageManager.GetString("finishOrder_MeasureEq_1"));
-                        }
+                    IsOk = !string.IsNullOrEmpty(reader["Nr"].ToString());
+                    if (IsOk == false)
+                        return ShowMessage(LanguageManager.GetString("finishOrder_MeasureEq_1"), main);
+                }
 
                         
-                        if (reader.HasRows == false)
-                            return ShowMessage(LanguageManager.GetString("finishOrder_MeasureEq_2"));
-                    }
-                    return true;
-                }
+                if (reader.HasRows == false)
+                    return ShowMessage(LanguageManager.GetString("finishOrder_MeasureEq_2"), main);
+                return true;
             }
-            private static bool Is_Halvfabrikat_Done
+            private static bool Is_Halvfabrikat_Done(Main_Form main)
             {
-                get
+                using var con = new SqlConnection(Database.cs_Protocol);
+                var query = "SELECT * FROM [Order].PreFab WHERE OrderID = @orderid";
+                var cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@orderid", OrderID);
+                con.Open();
+                var reader = cmd.ExecuteReader();
+                while (reader.Read())
                 {
-                    using (var con = new SqlConnection(Database.cs_Protocol))
-                    {
-                        var query = "SELECT * FROM [Order].PreFab WHERE OrderID = @orderid";
-                        var cmd = new SqlCommand(query, con);
-                        cmd.Parameters.AddWithValue("@orderid", OrderID);
-                        con.Open();
-                        var reader = cmd.ExecuteReader();
-                        while (reader.Read())
-                        {
-                            if (string.IsNullOrEmpty(reader["Halvfabrikat_OrderNr"].ToString()))
-                                return ShowMessage(LanguageManager.GetString("finishOrder_Halvfabrikat_1"));
+                    if (string.IsNullOrEmpty(reader["Halvfabrikat_OrderNr"].ToString()))
+                        return ShowMessage(LanguageManager.GetString("finishOrder_Halvfabrikat_1"), main);
 
-                            if ((WorkOperation == WorkOperations.Extrudering_Termo || WorkOperation == WorkOperations.Extrudering_Tryck || WorkOperation == WorkOperations.Extrusion_HS) && string.IsNullOrEmpty(reader["Extruder"].ToString()))
-                                return ShowMessage($"{LanguageManager.GetString("finishOrder_Halvfabrikat_2_1")} {reader["Halvfabrikat_ArtikelNr"]} {LanguageManager.GetString("finishOrder_Halvfabrikat_2_2")}");
-                        }
-                    }
-                    return true;
+                    if ((WorkOperation == WorkOperations.Extrudering_Termo || WorkOperation == WorkOperations.Extrudering_Tryck || WorkOperation == WorkOperations.Extrusion_HS) && string.IsNullOrEmpty(reader["Extruder"].ToString()))
+                        return ShowMessage($"{LanguageManager.GetString("finishOrder_Halvfabrikat_2_1")} {reader["Halvfabrikat_ArtikelNr"]} {LanguageManager.GetString("finishOrder_Halvfabrikat_2_2")}", main);
                 }
+
+                return true;
             }
-            private static bool Is_RoomClimate_Done
+            private static bool Is_RoomClimate_Done(Main_Form main)
             {
-                get
+                using var con = new SqlConnection(Database.cs_Protocol);
+                var query = "SELECT Rum_Temp, Rum_Fukt FROM [Order].MainData WHERE OrderID = @orderid";
+                var cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@orderid", OrderID);
+                con.Open();
+                var reader = cmd.ExecuteReader();
+                while (reader.Read())
                 {
-                    using (var con = new SqlConnection(Database.cs_Protocol))
-                    {
-                        var query = "SELECT Rum_Temp, Rum_Fukt FROM [Order].MainData WHERE OrderID = @orderid";
-                        var cmd = new SqlCommand(query, con);
-                        cmd.Parameters.AddWithValue("@orderid", OrderID);
-                        con.Open();
-                        var reader = cmd.ExecuteReader();
-                        while (reader.Read())
-                        {
-                            if (string.IsNullOrEmpty(reader["Rum_Temp"].ToString()))
-                                return ShowMessage(LanguageManager.GetString("finishOrder_RoomTemp"));
-                            if (string.IsNullOrEmpty(reader["Rum_Fukt"].ToString()))
-                                return ShowMessage(LanguageManager.GetString("finishOrder_RoomMoist"));
-                        }
-                    }
-                    return true;
+                    if (string.IsNullOrEmpty(reader["Rum_Temp"].ToString()))
+                        return ShowMessage(LanguageManager.GetString("finishOrder_RoomTemp"), main); 
+                    if (string.IsNullOrEmpty(reader["Rum_Fukt"].ToString()))
+                        return ShowMessage(LanguageManager.GetString("finishOrder_RoomMoist"), main);
                 }
+
+                return true;
             }
-            private static bool IsHeatShrinkMeasurementsDone
+            private static bool IsHeatShrinkMeasurementsDone(Main_Form main)
             {
-                get
-                {
-                    if (MeasurePoints.Value(MeasurePoints.CodeTextMonitor.Length, "LSL") < 500)
-                        return true;
-                    int ctr;
-                    using (var con = new SqlConnection(Database.cs_Protocol))
-                    {
-                        const string query = "SELECT COUNT(*) FROM Measureprotocol.MainData WHERE OrderID = @orderid";
-                        var cmd = new SqlCommand(query, con);
-                        cmd.Parameters.AddWithValue("@orderid", OrderID);
-                        con.Open();
-                        ctr = (int)cmd.ExecuteScalar();
-                    }
-                    if (ctr < 13 & !IsOnlyTestRun)
-                        return ShowMessage($"{LanguageManager.GetString("finishOrder_2_1")} {ctr} {LanguageManager.GetString("finishOrder_2_2")}");
+                if (MeasurePoints.Value(MeasurePoints.CodeTextMonitor.Length, "LSL") < 500)
                     return true;
+                int ctr;
+                using (var con = new SqlConnection(Database.cs_Protocol))
+                {
+                    const string query = "SELECT COUNT(*) FROM Measureprotocol.MainData WHERE OrderID = @orderid";
+                    var cmd = new SqlCommand(query, con);
+                    cmd.Parameters.AddWithValue("@orderid", OrderID);
+                    con.Open();
+                    ctr = (int)cmd.ExecuteScalar();
                 }
+                if (ctr < 13 & !IsOnlyTestRun)
+                    return ShowMessage($"{LanguageManager.GetString("finishOrder_2_1")} {ctr} {LanguageManager.GetString("finishOrder_2_2")}", main);
+                return true;
             }
-            private static bool Is_LineClearance_Done => LineClearance.IsLineClearanceDone || ShowMessage(LanguageManager.GetString("finishOrder_LineClearance"));
 
-            private static bool Is_Svetsning_Done
+            private static bool Is_Svetsning_Done(Main_Form main)
             {
-                get
+                using (var con = new SqlConnection(Database.cs_Protocol))
                 {
-                    using (var con = new SqlConnection(Database.cs_Protocol))
-                    {
-                        var query = $"SELECT * FROM Korprotokoll_Svetsning_Maskinparametrar {Queries.WHERE_OrderID}";
-                        var cmd = new SqlCommand(query, con);
-                        cmd.Parameters.AddWithValue("@id", OrderID);
-                        con.Open();
-                        var reader = cmd.ExecuteReader();
-                        if (!reader.HasRows)
-                            return ShowMessage("Fyll i Maskinparametrarna i Körprotokollet");
-                    }
-
-
-                    using (var con = new SqlConnection(Database.cs_Protocol))
-                    {
-                        var query = $"SELECT * FROM Korprotokoll_Svetsning_Parametrar {Queries.WHERE_OrderID}";
-                        var cmd = new SqlCommand(query, con);
-                        cmd.Parameters.AddWithValue("@id", OrderID);
-                        con.Open();
-                        var reader = cmd.ExecuteReader();
-                        if (!reader.HasRows)
-                            return ShowMessage("Fyll i Produktionsparametrarna i Körprotokollet");
-                    }
-                    using (var con = new SqlConnection(Database.cs_Protocol))
-                    {
-                        var query = $"SELECT * FROM [Order].PreFab {Queries.WHERE_OrderID}";
-                        var cmd = new SqlCommand(query, con);
-                        cmd.Parameters.AddWithValue("@id", OrderID);
-                        con.Open();
-                        var reader = cmd.ExecuteReader();
-                        if (!reader.HasRows)
-                            return ShowMessage("Fyll i Halvfabrikatet i Körprotokollet");
-                    }
-
-                    return true;
+                    var query = $"SELECT * FROM Korprotokoll_Svetsning_Maskinparametrar {Queries.WHERE_OrderID}";
+                    var cmd = new SqlCommand(query, con);
+                    cmd.Parameters.AddWithValue("@id", OrderID);
+                    con.Open();
+                    var reader = cmd.ExecuteReader();
+                    if (!reader.HasRows)
+                        return ShowMessage("Fyll i Maskinparametrarna i Körprotokollet", main);
                 }
+
+                using (var con = new SqlConnection(Database.cs_Protocol))
+                {
+                    var query = $"SELECT * FROM Korprotokoll_Svetsning_Parametrar {Queries.WHERE_OrderID}";
+                    var cmd = new SqlCommand(query, con);
+                    cmd.Parameters.AddWithValue("@id", OrderID);
+                    con.Open();
+                    var reader = cmd.ExecuteReader();
+                    if (!reader.HasRows)
+                        return ShowMessage("Fyll i Produktionsparametrarna i Körprotokollet", main);
+                }
+
+                using (var con = new SqlConnection(Database.cs_Protocol))
+                {
+                    var query = $"SELECT * FROM [Order].PreFab {Queries.WHERE_OrderID}";
+                    var cmd = new SqlCommand(query, con);
+                    cmd.Parameters.AddWithValue("@id", OrderID);
+                    con.Open();
+                    var reader = cmd.ExecuteReader();
+                    if (!reader.HasRows)
+                        return ShowMessage("Fyll i Halvfabrikatet i Körprotokollet", main);
+                }
+
+                return true;
             }
-            private static bool Is_Slipning_Done
+            private static bool Is_Slipning_Done(Main_Form main)
             {
-                get
+                using (var con = new SqlConnection(Database.cs_Protocol))
                 {
-                    using (var con = new SqlConnection(Database.cs_Protocol))
-                    {
-                        var query = $"SELECT * FROM Korprotokoll_Slipning_Maskinparametrar {Queries.WHERE_OrderID}";
-                        var cmd = new SqlCommand(query, con);
-                        cmd.Parameters.AddWithValue("@id", OrderID);
-                        con.Open();
-                        var reader = cmd.ExecuteReader();
-                        if (!reader.HasRows)
-                            return ShowMessage("Fyll i Maskinparametrarna i Körprotokollet");
-                    }
+                    var query = $"SELECT * FROM Korprotokoll_Slipning_Maskinparametrar {Queries.WHERE_OrderID}";
+                    var cmd = new SqlCommand(query, con);
+                    cmd.Parameters.AddWithValue("@id", OrderID);
+                    con.Open();
+                    var reader = cmd.ExecuteReader();
+                    if (!reader.HasRows)
+                        return ShowMessage("Fyll i Maskinparametrarna i Körprotokollet", main);
+                }
 
-                    using (var con = new SqlConnection(Database.cs_Protocol))
-                    {
-                        var query = $"SELECT * FROM Korprotokoll_Slipning_Produktion  {Queries.WHERE_OrderID}";
-                        var cmd = new SqlCommand(query, con);
-                        cmd.Parameters.AddWithValue("@id", OrderID);
-                        con.Open();
-                        var reader = cmd.ExecuteReader();
-                        if (!reader.HasRows)
-                            return ShowMessage("Fyll i Produktionsparametrarna i Körprotokollet");
-                    }
-                    return true;
-                }
-            }
-            private static bool IsCommentsDone
-            {
-                get
+                using (var con = new SqlConnection(Database.cs_Protocol))
                 {
-                    using (var con = new SqlConnection(Database.cs_Protocol))
-                    {
-                        var query = "SELECT Comments FROM [Order].MainData WHERE OrderID = @orderid";
-                        var cmd = new SqlCommand(query, con);
-                        cmd.Parameters.AddWithValue("@orderid", OrderID);
-                        con.Open();
-                        var reader = cmd.ExecuteReader();
-                        while (reader.Read())
-                        {
-                            if (string.IsNullOrEmpty(reader["Comments"].ToString()))
-                                return ShowMessage(LanguageManager.GetString("finishOrder_Comments"));
-                        }
-                    }
-                    return true;
+                    var query = $"SELECT * FROM Korprotokoll_Slipning_Produktion  {Queries.WHERE_OrderID}";
+                    var cmd = new SqlCommand(query, con);
+                    cmd.Parameters.AddWithValue("@id", OrderID);
+                    con.Open();
+                    var reader = cmd.ExecuteReader();
+                    if (!reader.HasRows)
+                        return ShowMessage("Fyll i Produktionsparametrarna i Körprotokollet", main);
                 }
+                return true;
+            }
+            private static bool IsCommentsDone(Main_Form main)
+            {
+                using var con = new SqlConnection(Database.cs_Protocol);
+                var query = "SELECT Comments FROM [Order].MainData WHERE OrderID = @orderid";
+                var cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@orderid", OrderID);
+                con.Open();
+                var reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    if (string.IsNullOrEmpty(reader["Comments"].ToString()))
+                        return ShowMessage(LanguageManager.GetString("finishOrder_Comments"), main);
+                }
+
+                return true;
             }
             private static bool Is_Value_Exist_In_Korprotokoll(string codetext, int protocolDescriptionID, string valueType, string machine, int totalStartups)
             {
                 var IsOk = false;
                 for (var startUp = 1; startUp < totalStartups + 1; startUp++)
                 {
-                    using (var con = new SqlConnection(Database.cs_Protocol))
-                    {
-                        var query = $@"
+                    using var con = new SqlConnection(Database.cs_Protocol);
+                    var query = $@"
                         SELECT {valueType}, Uppstart, MachineIndex
                         FROM [Order].Data WHERE OrderID = @orderid 
                             AND ProtocolDescriptionID = @protocoldescriptionid
                             AND Uppstart = @startup ";
-                        if (!string.IsNullOrEmpty(machine))
-                            query += "AND (MachineIndex = @machineindex OR (MachineIndex IS NULL AND @machineindex IS NULL))";
-                        var cmd = new SqlCommand(query, con);
-                        cmd.Parameters.AddWithValue("@orderid", OrderID);
-                        cmd.Parameters.AddWithValue("@protocoldescriptionid", protocolDescriptionID);
-                        cmd.Parameters.AddWithValue("@codetext", codetext);
-                        cmd.Parameters.AddWithValue("@startup", startUp);
-                        cmd.Parameters.AddWithValue("@machineindex", machine);
-                        con.Open();
-                        var reader = cmd.ExecuteReader();
+                    if (!string.IsNullOrEmpty(machine))
+                        query += "AND (MachineIndex = @machineindex OR (MachineIndex IS NULL AND @machineindex IS NULL))";
+                    var cmd = new SqlCommand(query, con);
+                    cmd.Parameters.AddWithValue("@orderid", OrderID);
+                    cmd.Parameters.AddWithValue("@protocoldescriptionid", protocolDescriptionID);
+                    cmd.Parameters.AddWithValue("@codetext", codetext);
+                    cmd.Parameters.AddWithValue("@startup", startUp);
+                    cmd.Parameters.AddWithValue("@machineindex", machine);
+                    con.Open();
+                    var reader = cmd.ExecuteReader();
 
-                        while (reader.Read())
-                        {
-                            int.TryParse(reader["Uppstart"].ToString(), out var uppstart);
-                            var value = reader[0].ToString();
-                            if (Is_Korprotokoll_Value_Discarded(uppstart))
-                                continue;
-                            if (Is_ValueReportedAndOkToLeaveEmpty(protocolDescriptionID))
-                                return true;
-                            IsOk = !string.IsNullOrEmpty(value);
-                        }
-                        if (reader.HasRows == false)
-                            IsOk = false;
+                    while (reader.Read())
+                    {
+                        int.TryParse(reader["Uppstart"].ToString(), out var uppstart);
+                        var value = reader[0].ToString();
+                        if (Is_Korprotokoll_Value_Discarded(uppstart))
+                            continue;
+                        if (Is_ValueReportedAndOkToLeaveEmpty(protocolDescriptionID))
+                            return true;
+                        IsOk = !string.IsNullOrEmpty(value);
                     }
+                    if (reader.HasRows == false)
+                        IsOk = false;
                 }
                 return IsOk;
             }
@@ -1460,19 +1412,19 @@ namespace DigitalProductionProgram.OrderManagement
                 return false;
             }
 
-            private static bool ShowMessage(string? Text)
+            private static bool ShowMessage(string? Text, Main_Form main)
             {
                 if (CheckAuthority.IsRoleAuthorized(CheckAuthority.TemplateAuthorities.FinishIncompleteOrder, false))
                 {
                     InfoText.Question($"{Text} {LanguageManager.GetString("finishOrder_3_1")}\n\n" +
                                   $"{LanguageManager.GetString("finishOrder_3_2")} {Person.Role} {LanguageManager.GetString("finishOrder_3_3")}\n\n" +
-                                  $"{LanguageManager.GetString("finishOrder_3_4")}", CustomColors.InfoText_Color.Warning, "Warning!");
+                                  $"{LanguageManager.GetString("finishOrder_3_4")}", CustomColors.InfoText_Color.Warning, "Warning!", main);
                     if (InfoText.answer == InfoText.Answer.Yes)
                         return true;
                     return false;
                 }
 
-                InfoText.Show($"{Text} {LanguageManager.GetString("finishOrder_3_1")}", CustomColors.InfoText_Color.Bad, "Warning");
+                InfoText.Show($"{Text} {LanguageManager.GetString("finishOrder_3_1")}", CustomColors.InfoText_Color.Bad, "Warning", main);
                 _ = Activity.Stop($"Error FinishOrder: {Text}");
                 return false;
             }
@@ -1492,7 +1444,7 @@ namespace DigitalProductionProgram.OrderManagement
                 }
                 Activity.Start();
                // ControlManager.Close_All_Körprotokoll();
-                if (Is_OkFinishOrder == false)
+                if (Is_OkFinishOrder(main) == false)
                     return;
                 
 

@@ -256,9 +256,9 @@ namespace DigitalProductionProgram.MainWindow
             //Gör det möjligt att öppna en order på bara OrderID
             if (string.IsNullOrEmpty(tb_OrderNr.Text))
                 return;
-            string operation = null;
             if (char.IsDigit(tb_OrderNr.Text[0]))
             {
+                int? operation = null;
                 using (var con = new SqlConnection(Database.cs_Protocol))
                 {
                     const string query = "SELECT OrderNr, Operation FROM [Order].MainData WHERE OrderID = @id";
@@ -270,16 +270,17 @@ namespace DigitalProductionProgram.MainWindow
                     while (reader.Read())
                     {
                         tb_OrderNr.Text = reader["OrderNr"].ToString();
-                        operation = reader["Operation"].ToString();
+                        operation = Parse(reader["Operation"].ToString() ?? string.Empty);
                     }
                 }
                 Fill_cb_Operation();
                 // cb_Operation.SelectedIndexChanged += mainForm.Operation_SelectedIndexChanged!;
-                for (var i = 0; i < cb_Operation.Items.Count; i++)
+                foreach (var t in cb_Operation.Items)
                 {
-                    if (cb_Operation.Items[i].ToString().Substring(0, 5).Contains(operation))
+                    var item = (Operation_Description)t;
+                    if (item.Operation == operation)
                     {
-                        cb_Operation.SelectedIndex = i;
+                        cb_Operation.SelectedValue = operation;
                         mainForm.Operation_SelectedIndexChanged(cb_Operation, EventArgs.Empty);
                         return;
                     }

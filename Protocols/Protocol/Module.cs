@@ -4,6 +4,7 @@ using Microsoft.Data.SqlClient;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
@@ -49,7 +50,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                 return 1;
             }
         }
-      
+
 
         private string HeaderText_StartUp(int startup, int oven)
         {
@@ -100,7 +101,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
 
         private static string? DieType;
         private static string? TipType;
-        
+
 
         private static string? MIN_Value(DataGridViewRow dgv_Row)
         {
@@ -120,8 +121,8 @@ namespace DigitalProductionProgram.Protocols.Protocol
             {
                 if (dgv_Module.Rows.Count < 1)
                     return 0;
-                var totalHeight= (from DataGridViewRow row in dgv_Module.Rows where row.Visible select row.Height).Sum();
-               
+                var totalHeight = (from DataGridViewRow row in dgv_Module.Rows where row.Visible select row.Height).Sum();
+
                 if (dgv_Module.ColumnHeadersVisible)
                     totalHeight += dgv_Module.ColumnHeadersHeight;
                 return totalHeight + 1;
@@ -135,7 +136,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
         public Processcard.Save save_processcard;
         public Processcard.Load load_processcard;
         public Processcard processcard;
-        
+
 
 
         public Module()
@@ -144,7 +145,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
             MainProtocol.Module_dataGridViews?.Add(dgv_Module);
 
             dgv_Module.ScrollBars = ScrollBars.None;
-         
+
 
             equipment = new Equipment(this);
             save_processcard = new Processcard.Save(this);
@@ -152,7 +153,12 @@ namespace DigitalProductionProgram.Protocols.Protocol
             processcard = new Processcard(this);
             IsOk_CellValueChanged = true;
         }
-
+        private void Module_Load(object sender, EventArgs e)
+        {
+            typeof(DataGridView).InvokeMember("DoubleBuffered",
+                BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.SetProperty,
+                null, dgv_Module, new object[] { true });
+        }
 
         private void Label_LEFT_Paint(object sender, PaintEventArgs e)
         {
@@ -166,7 +172,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
         {
             font ??= new Font("Arial", 8);
             var g = e.Graphics;
-            
+
             g.DrawString(text, font, Brushes.Black, 0, y, new StringFormat(StringFormatFlags.DirectionVertical));
         }
 
@@ -209,7 +215,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                 cmd.Parameters.AddWithValue("@maintemplateid", Templates_Protocol.MainTemplate.ID);
                 con.Open();
                 var reader = cmd.ExecuteReader();
-                
+
                 while (reader.Read())
                 {
                     bool.TryParse(reader["IsAuthenticationNeeded"].ToString(), out var isAuthenticationNeeded);
@@ -242,7 +248,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                         col = colIndex;
                         CheckIfOnlyNomValue_ColIndex.Add(colIndex);
                     }
-                    
+
                     if (IsCodeTextExistInModule(dgv_Module, codetext) == false)
                     {
                         dgv_Module.Rows.Add();
@@ -260,7 +266,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
 
                     SetColorCodeText(isValueCritical, dgv_Module.Rows[row].Cells["col_CodeText"]);
                 }
-                
+
             }
 
             if (CheckIfOnlyNomValue_ColIndex.Contains(0) == false && CheckIfOnlyNomValue_ColIndex.Contains(2) == false)
@@ -285,7 +291,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
             switch (col)
             {
                 case 0:
-                dgv_Module.Rows[row].Cells["col_MIN"].Style.BackColor = Color.Gainsboro;
+                    dgv_Module.Rows[row].Cells["col_MIN"].Style.BackColor = Color.Gainsboro;
                     break;
                 case 1:
                     dgv_Module.Rows[row].Cells["col_NOM"].Style.BackColor = Color.Silver;
@@ -306,7 +312,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                 dgv_Module.Rows[i].Cells[dgv_Module.ColumnCount - 1].Value = string.Empty;
             }
         }
-        
+
         public void Load_Data(int formTemplateID)
         {
             Load_StartUps();
@@ -336,17 +342,17 @@ namespace DigitalProductionProgram.Protocols.Protocol
 
                 int? previousStartup = null;
                 int? previousOven = null;
-                
+
                 var activeColumn = ColIndex_StartUp1;
                 while (reader.Read())
                 {
                     int.TryParse(reader["Uppstart"].ToString(), out var startup);
                     int.TryParse(reader["Ugn"].ToString(), out var oven);
 
-                    
+
                     int.TryParse(reader["Type"].ToString(), out var type);
                     int.TryParse(reader["RowIndex"].ToString(), out var row);
-                    
+
                     var value = string.Empty;
                     switch (type)
                     {
@@ -369,13 +375,13 @@ namespace DigitalProductionProgram.Protocols.Protocol
                                 var formattedDate = date.ToString($"{dateTimeFormat.ShortDatePattern} {dateTimeFormat.ShortTimePattern}", CultureInfo.CurrentCulture);
                                 value = formattedDate;
                             }
-                                
+
                             break;
                     }
 
                     if (string.IsNullOrEmpty(value))
                         value = "N/A";
-                   
+
                     if (previousStartup.HasValue && previousOven.HasValue)
                     {
                         if (startup != previousStartup.Value || oven != previousOven.Value)
@@ -389,10 +395,10 @@ namespace DigitalProductionProgram.Protocols.Protocol
                     if (Browse_Protocols.Browse_Protocols.Is_BrowsingProtocols == false)
                         cell.Selected = true;
                     cell.Value = value;
-                   
+
                 }
             }
-           
+
             if (IsAuthenticationNeeded)
                 for (int col = ColIndex_StartUp1; col < dgv_Module.Columns.Count; col++)
                 {
@@ -400,7 +406,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                         equipment.Lock_Equipment(col);
                 }
             dgv_Module.ClearSelection();
-            
+
         }
         private void Load_StartUps()
         {
@@ -410,7 +416,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
             cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
             con.Open();
             var value = cmd.ExecuteScalar();
-            if (value == null) 
+            if (value == null)
                 return;
             int.TryParse(value.ToString(), out int startups);
             //Detta lägger till kolumner för Ugn 2 för första Uppstarten
@@ -422,7 +428,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                     AddStartup(1, oven);
             }
             //Lägger till kolumner för Ugn för resterande uppstarter
-            for (var startup = 2; startup < startups+1; startup++)
+            for (var startup = 2; startup < startups + 1; startup++)
             {
                 if (IsModuleUsedWithMultipleColumnsStartup)
                     for (int oven = 1; oven < SinteringOven.TotalOvens(startup) + 1; oven++)
@@ -431,13 +437,13 @@ namespace DigitalProductionProgram.Protocols.Protocol
                     AddStartup(startup);
             }
         }
-        
+
         public void AddStartup(int startUp, int oven = 0)
         {
             var clonedColumn = dgv_Module.Columns[^1].Clone() as DataGridViewColumn;
             dgv_Module.Columns.Add(clonedColumn ?? new DataGridViewTextBoxColumn());
 
-            dgv_Module.Columns[^1].HeaderText = HeaderText_StartUp(startUp,oven);
+            dgv_Module.Columns[^1].HeaderText = HeaderText_StartUp(startUp, oven);
             dgv_Module.Columns[^1].ReadOnly = false;
             dgv_Module.Columns[^1].Width = StartUp_Width;
 
@@ -447,7 +453,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
             var startUp = StartUp(dgv_Module.Columns[^1].HeaderText);
             dgv_Module.Columns.RemoveAt(dgv_Module.Columns.Count - 1);
             dgv_Module.ClearSelection();
-           
+
             if (IsModuleUsedWithMultipleColumnsStartup)
                 for (int col = dgv_Module.Columns.Count - 1; col > ColIndex_StartUp1; col--)
                 {
@@ -478,15 +484,18 @@ namespace DigitalProductionProgram.Protocols.Protocol
             {
                 dgv_Module.Columns.RemoveAt(dgv_Module.Columns.Count - 1);
             } while (dgv_Module.Columns.Count > colIndex_StartUp1);
-            
+
         }
 
         private void EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
         {
-            var tb = (DataGridViewTextBoxEditingControl)e.Control;
-            tb.KeyPress -= AllowedChars_CellKeyPress;
-            tb.KeyPress += AllowedChars_CellKeyPress;
-            tb.ShortcutsEnabled = false;
+            if (e.Control is DataGridViewTextBoxEditingControl tb)
+            {
+                // Undvik att lägga till eventhandler flera gånger
+                tb.KeyPress -= AllowedChars_CellKeyPress;
+                tb.KeyPress += AllowedChars_CellKeyPress;
+                tb.ShortcutsEnabled = false;
+            }
         }
         private void AllowedChars_CellKeyPress(object? sender, KeyPressEventArgs e)
         {
@@ -502,59 +511,57 @@ namespace DigitalProductionProgram.Protocols.Protocol
                 e.Handled = true;
                 return;
             }
-                
-            Validate_Data.IsCharOk_KeyPress(e, row, FormTemplateID,  dgv_Module);
+
+            Validate_Data.IsCharOk_KeyPress(e, row, FormTemplateID, dgv_Module);
         }
         private void Module_CellEnter(object sender, DataGridViewCellEventArgs e)
         {
-            if (dgv_Module == null || IsOkToSave == false)
+            if (dgv_Module == null || !IsOkToSave || e.RowIndex < 0)
                 return;
-            var row = e.RowIndex;
-            dgv_Module.Rows[row].Cells["col_CodeText"].Style.BackColor = Color.Khaki;
+            var cell = dgv_Module.Rows[e.RowIndex].Cells["col_CodeText"];
+            if (cell != null)
+                cell.Style.BackColor = Color.Khaki;
         }
         private void Module_CellMouseEnter(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex >= 0 && e.ColumnIndex >= 0)
-            {
-                var cell = dgv_Module[e.ColumnIndex, e.RowIndex];
-                string toolTipText;
-                if (cell.Style.BackColor == CustomColors.Bad_Back)
-                {
-                    toolTipText = $"{LanguageManager.GetString("cell_Protocol_ToolTip_1")}\n" +
-                                  $"{cell.Value}";
-                }
-                else if (cell.Style.BackColor == CustomColors.Warning_Back)
-                {
-                    toolTipText = $"{LanguageManager.GetString("cell_Protocol_ToolTip_2")}\n" +
-                                  $"{cell.Value}";
-                }
-                else if (cell.Style.BackColor == CustomColors.Ok_Back)
-                    toolTipText = $"{cell.Value}";
-                else
-                    toolTipText = $"{cell.Value}";
+            if (e.RowIndex < 0 || e.ColumnIndex < 0)
+                return;
 
-                cell.ToolTipText = toolTipText;
-            }
+            var cell = dgv_Module[e.ColumnIndex, e.RowIndex];
+            string valueText = cell.Value?.ToString() ?? "";
+
+            string toolTipText = cell.Style.BackColor switch
+            {
+                var c when c == CustomColors.Bad_Back => $"{LanguageManager.GetString("cell_Protocol_ToolTip_1")}\n{valueText}",
+                var c when c == CustomColors.Warning_Back => $"{LanguageManager.GetString("cell_Protocol_ToolTip_2")}\n{valueText}",
+                var c when c == CustomColors.Ok_Back => valueText,
+                _ => valueText
+            };
+
+            cell.ToolTipText = toolTipText;
         }
         private void Module_CellLeave(object sender, DataGridViewCellEventArgs e)
         {
-            if (dgv_Module == null || IsOkToSave == false)
+            if (dgv_Module == null || !IsOkToSave || e.RowIndex < 0)
                 return;
-            var row = e.RowIndex;
-            dgv_Module.Rows[row].Cells["col_CodeText"].Style.BackColor = Color.FromArgb(252, 250, 235);
+
+            var cell = dgv_Module.Rows[e.RowIndex].Cells["col_CodeText"];
+            if (cell != null)
+                cell.Style.BackColor = Color.FromArgb(252, 250, 235);
         }
         private void Protocol_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
-            var cell = dgv_Module.CurrentCell;
-            if (IsOkToSave == false || cell.ReadOnly)
+            var cell = dgv_Module?.CurrentCell;
+            if (cell == null || !IsOkToSave || cell.ReadOnly)
                 return;
+
             cell.Value = "N/A";
             cell.Style.ForeColor = Color.Red;
             cell.Style.BackColor = Color.White;
         }
         private void Module_Leave(object sender, EventArgs e)
         {
-            dgv_Module.ClearSelection();
+            dgv_Module?.ClearSelection();
         }
         public void Module_ValidateData_SaveData_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
@@ -574,7 +581,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                 return;
 
             var startUp = col + 1;
-            
+
             if (row < 0)
                 return;
             if (IsModuleUsedWithMultipleColumnsStartup)
@@ -582,7 +589,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
             int.TryParse(dgv_Module.Rows[row].Cells["col_ProtocolDescriptionID"].Value.ToString(), out var protocolDescriptionID);
 
             bool.TryParse(dgv_Row.Cells["col_IsValueCritical"].Value.ToString(), out var IsValueCritical);
-           
+
             var IsValidated = false;
             if (IsOk_CellValueChanged)
             {
@@ -672,7 +679,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
             }
 
             if (IsValidated == false)
-                Validate_Data.ValidateData(cell, row, IsValueCritical, FormTemplateID, 0,MIN_Value(dgv_Row), NOM_Value(dgv_Row), MAX_Value(dgv_Row));
+                Validate_Data.ValidateData(cell, row, IsValueCritical, FormTemplateID, 0, MIN_Value(dgv_Row), NOM_Value(dgv_Row), MAX_Value(dgv_Row));
 
             DatabaseManagement.Save_Data(dgv_Module, row, FormTemplateID, oven, MachineIndex);
         }
@@ -688,8 +695,8 @@ namespace DigitalProductionProgram.Protocols.Protocol
             var col = e.ColumnIndex;
             if (row < 0)
                 return;
-            
-           
+
+
             bool.TryParse(dgv_Module.Rows[row].Cells["col_IsList_Processcard"].Value.ToString(), out var isListProcesscard);
             if (Manage_Processcards.IsProcesscardUnderManagement && isListProcesscard == false)
                 return;
@@ -703,7 +710,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
 
             if (e.Button == MouseButtons.Right)
             {
-                
+
                 bool.TryParse(dgv_Module.Rows[row].Cells["col_IsOkWriteText"].Value.ToString(), out var isOkWriteText);
                 bool.TryParse(dgv_Module.Rows[e.RowIndex].Cells["col_IsList_Protocol"].Value.ToString(), out var IsListProtocol);
                 int.TryParse(dgv_Module.Columns[e.ColumnIndex].HeaderText, out var startup);
@@ -774,7 +781,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                             break;
                         case 305: //SKRUVTYP
                             //Korprotokoll hämtar ID_Nummer
-                            items = DigitalProductionProgram.Equipment.Equipment.List_Register(isProcesscardUnderManagement,NOM_Value(dgv_Row), "Register_Skruvar");
+                            items = DigitalProductionProgram.Equipment.Equipment.List_Register(isProcesscardUnderManagement, NOM_Value(dgv_Row), "Register_Skruvar");
                             IsItemsMultipleColumns = true;
                             break;
                         case 306: //TORK
@@ -795,7 +802,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                             break;
                         case 310: //MUNSTYCKE TYP
                             items = DigitalProductionProgram.Equipment.Equipment.List_Tool_Type("Munstycke");
-                            
+
                             break;
                         case 83: //MUNSTYCKE
                             cells = new[] { dgv_Module.Rows[e.RowIndex].Cells[col], dgv_Module.Rows[e.RowIndex + 1].Cells[col] };
@@ -808,7 +815,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                             items = DigitalProductionProgram.Equipment.Equipment.List_Tool_Type("Kanyl");
                             break;
                         case 209: //KÄRNA
-                            cells = new[] {dgv_Module.Rows[e.RowIndex].Cells[col], dgv_Module.Rows[e.RowIndex + 1].Cells[col] };
+                            cells = new[] { dgv_Module.Rows[e.RowIndex].Cells[col], dgv_Module.Rows[e.RowIndex + 1].Cells[col] };
                             if (Order.WorkOperation == Manage_WorkOperation.WorkOperations.Extrudering_FEP)
                                 TipType = "Kanyler FEP";
                             items = DigitalProductionProgram.Equipment.Equipment.List_Tool(TipType, MIN_Value(dgv_Row), MAX_Value(dgv_Row));
@@ -832,8 +839,8 @@ namespace DigitalProductionProgram.Protocols.Protocol
                             break;
                         case 316: //KALIBRERINGSTYP
 
-                            items = DigitalProductionProgram.Equipment.Equipment.List_Register(true, NOM_Value(dgv_Row), "Register_Kalibreringar"); 
-                          //  IsItemsMultipleColumns = false;
+                            items = DigitalProductionProgram.Equipment.Equipment.List_Register(true, NOM_Value(dgv_Row), "Register_Kalibreringar");
+                            //  IsItemsMultipleColumns = false;
                             break;
                         case 159:   //HS MASKIN
                             items = Machines.HS_Machines;
@@ -879,7 +886,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                     }
                 }
 
-                
+
                 if (items is null)
                     return;
                 if (items.Contains("N/A") == false)
@@ -895,15 +902,17 @@ namespace DigitalProductionProgram.Protocols.Protocol
         }
         private void Module_RowEnter(object sender, DataGridViewCellEventArgs e)
         {
-            if (dgv_Module.ReadOnly && IsOkToSave)
+            if (!IsOkToSave || !dgv_Module.ReadOnly)
+                return;
+
+            if (!LineClearance.LineClearance.IsLineClearanceDone)
             {
-                if (LineClearance.LineClearance.IsLineClearanceDone == false)
-                    InfoText.Show(LanguageManager.GetString("lineClearance_Info_2"), CustomColors.InfoText_Color.Bad, "Warning", this);
-                else if (Person.IsUserSignedIn(true))
-                    return;
-                else
-                    InfoText.Show(LanguageManager.GetString("otherUserIsLoggedIn"), CustomColors.InfoText_Color.Warning, "Warning", this);
+                InfoText.Show(LanguageManager.GetString("lineClearance_Info_2"), CustomColors.InfoText_Color.Bad, "Warning", this);
+                return;
             }
+
+            if (!Person.IsUserSignedIn(true))
+                InfoText.Show(LanguageManager.GetString("otherUserIsLoggedIn"), CustomColors.InfoText_Color.Warning, "Warning", this);
         }
         private void SpecialItems(int row, int col, int protocolDescriptionID, bool isProcesscardUnderManagement)
         {
@@ -940,92 +949,6 @@ namespace DigitalProductionProgram.Protocols.Protocol
         }
 
 
-
-        //private void Korprotokoll_MouseWheel(object sender, MouseEventArgs e)
-        //{
-        //    if (MainProtocol.Module_dataGridViews is null)
-        //    {
-        //        var dgv = (DataGridView)sender;
-        //        MainProtocol.Module_dataGridViews = new List<DataGridView> { dgv };
-        //    }
-        //    var lastcolumn = dgv_Module.Columns["col_MAX"].Index;
-        //    var activeColumn = dgv_Module.HitTest(e.X, e.Y);
-
-        //    if (activeColumn.ColumnIndex > lastcolumn)
-        //    {
-        //        DrawingControl.SuspendDrawing(this);
-        //        ((HandledMouseEventArgs)e).Handled = true;
-
-        //        var columnsToScroll = e.Delta > 0 ? -30 : 30; // Adjust this value as needed
-        //                                                      // DataGridView dgv = (DataGridView)sender;
-        //        int columnWidth = 100;
-        //        foreach (var dgv in MainProtocol.Module_dataGridViews)
-        //        {
-        //            if (dgv.Columns.Count > 0)
-        //            {
-        //                var currentOffset = dgv.HorizontalScrollingOffset;
-        //                var newOffset = Math.Max(0, currentOffset + columnsToScroll * dgv.Columns[0].Width);
-        //                dgv.HorizontalScrollingOffset = newOffset;
-        //            }
-        //        }
-        //        DrawingControl.ResumeDrawing(this);
-        //    }
-
-        //}
-        //private void Korprotokoll_MouseWheel(object sender, MouseEventArgs e)
-        //{
-        //    if (MainProtocol.Module_dataGridViews is null)
-        //    {
-        //        var dgv = (DataGridView)sender;
-        //        MainProtocol.Module_dataGridViews = new List<DataGridView> { dgv };
-        //    }
-        //    var lastcolumn = dgv_Module.Columns["col_MAX"].Index;
-        //    var activeColumn = dgv_Module.HitTest(e.X, e.Y);
-
-        //    if (activeColumn.ColumnIndex > lastcolumn)
-        //    {
-        //        // DrawingControl.SuspendDrawing(this);
-        //        ((HandledMouseEventArgs)e).Handled = true;
-        //        foreach (var dgv in MainProtocol.Module_dataGridViews)
-        //        {
-        //            try
-        //            {
-        //                int totalVisibleWidth = 0;
-        //                int lastVisibleColumnIndex = dgv.FirstDisplayedScrollingColumnIndex;
-
-        //                // Calculate the total width of the visible columns
-        //                for (int i = dgv.FirstDisplayedScrollingColumnIndex; i < dgv.Columns.Count; i++)
-        //                {
-        //                    totalVisibleWidth += dgv.Columns[i].Width;
-        //                    if (totalVisibleWidth > dgv.ClientSize.Width)
-        //                    {
-        //                        lastVisibleColumnIndex = i;
-        //                        break;
-        //                    }
-        //                }
-
-        //                // Adjust the scrolling
-        //                if (e.Delta > 0)
-        //                {
-        //                    if (dgv.FirstDisplayedScrollingColumnIndex > 0)
-        //                        dgv.FirstDisplayedScrollingColumnIndex--;
-        //                }
-        //                else
-        //                {
-        //                    if (lastVisibleColumnIndex < dgv.Columns.Count - 1)
-        //                        dgv.FirstDisplayedScrollingColumnIndex++;
-        //                }
-        //            }
-        //            catch (Exception exception)
-        //            {
-        //                // Handle the exception (optional)
-        //            }
-        //        }
-
-        //        //  DrawingControl.ResumeDrawing(this);
-        //    }
-
-        //}
 
         public class DatabaseManagement
         {
@@ -1075,9 +998,8 @@ namespace DigitalProductionProgram.Protocols.Protocol
                 _ = int.Parse(dgv.Rows[row].Cells["col_DataType"].Value.ToString());
                 int type = ValueType(protocol_Description_ID, formtemplateid);
 
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    var query = OvenIndex > 0 ? @"
+                using var con = new SqlConnection(Database.cs_Protocol);
+                var query = OvenIndex > 0 ? @"
                     IF NOT EXISTS (SELECT * FROM [Order].Data WHERE OrderID = @orderid AND ProtocolDescriptionID = @protocoldescriptionid AND uppstart = @uppstart AND ugn = @ugn)
                         INSERT INTO [Order].Data (OrderID, ProtocolDescriptionID, MachineIndex, Uppstart, Ugn, Value, TextValue, BoolValue)
                         VALUES (@orderid, @protocoldescriptionid, @machineindex, @uppstart, @ugn, @value, @textvalue, @boolvalue)
@@ -1092,70 +1014,67 @@ namespace DigitalProductionProgram.Protocols.Protocol
                         UPDATE [Order].Data 
                             SET value = @value, textvalue = @textvalue, BoolValue = @boolvalue, datevalue = @datevalue
                         WHERE OrderID = @orderid AND ProtocolDescriptionID = @protocoldescriptionid AND (COALESCE(Uppstart, 0) = COALESCE(@uppstart, 0)) AND (COALESCE(MachineIndex, 0) = COALESCE(@machineindex, 0))";
-                    con.Open();
-                    var cmd = new SqlCommand(query, con);
-                    cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
-                    cmd.Parameters.AddWithValue("@protocoldescriptionid", protocol_Description_ID);
-                    SQL_Parameter.Int(cmd.Parameters, "@machineindex", machineindex);
-                    cmd.Parameters.AddWithValue("@uppstart", Module.StartUp(dgv.Columns[cell.ColumnIndex].HeaderText)); //dgv.Columns[cell.ColumnIndex].HeaderText);
-                    if (OvenIndex > 0)
-                        cmd.Parameters.AddWithValue("@ugn", OvenIndex);
-                    else
-                        cmd.Parameters.AddWithValue("@ugn", DBNull.Value);
+                con.Open();
+                var cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
+                cmd.Parameters.AddWithValue("@protocoldescriptionid", protocol_Description_ID);
+                SQL_Parameter.Int(cmd.Parameters, "@machineindex", machineindex);
+                cmd.Parameters.AddWithValue("@uppstart", Module.StartUp(dgv.Columns[cell.ColumnIndex].HeaderText)); //dgv.Columns[cell.ColumnIndex].HeaderText);
+                if (OvenIndex > 0)
+                    cmd.Parameters.AddWithValue("@ugn", OvenIndex);
+                else
+                    cmd.Parameters.AddWithValue("@ugn", DBNull.Value);
 
-                    switch (type)
-                    {
-                        case 0://NumberValue
-                            SQL_Parameter.Double(cmd.Parameters, "@value", cell.Value);
+                switch (type)
+                {
+                    case 0://NumberValue
+                        SQL_Parameter.Double(cmd.Parameters, "@value", cell.Value);
+                        cmd.Parameters.AddWithValue("@textvalue", DBNull.Value);
+                        cmd.Parameters.AddWithValue("@boolvalue", DBNull.Value);
+                        cmd.Parameters.AddWithValue("@datevalue", DBNull.Value);
+                        break;
+                    case 1://TextValue
+                        if (cell.Value != null)
+                            SQL_Parameter.String(cmd.Parameters, "@textvalue", cell.Value.ToString());
+                        else
                             cmd.Parameters.AddWithValue("@textvalue", DBNull.Value);
-                            cmd.Parameters.AddWithValue("@boolvalue", DBNull.Value);
-                            cmd.Parameters.AddWithValue("@datevalue", DBNull.Value);
-                            break;
-                        case 1://TextValue
-                            if (cell.Value != null)
-                                SQL_Parameter.String(cmd.Parameters, "@textvalue", cell.Value.ToString());
-                            else
-                                cmd.Parameters.AddWithValue("@textvalue", DBNull.Value);
-                            cmd.Parameters.AddWithValue("@value", DBNull.Value);
-                            cmd.Parameters.AddWithValue("@boolvalue", DBNull.Value);
-                            cmd.Parameters.AddWithValue("@datevalue", DBNull.Value);
-                            break;
-                        case 2://BoolValue
-                            SQL_Parameter.Boolean(cmd.Parameters, "@boolean", cell.Value);
-                            cmd.Parameters.AddWithValue("@textvalue", DBNull.Value);
-                            cmd.Parameters.AddWithValue("@value", DBNull.Value);
-                            cmd.Parameters.AddWithValue("@datevalue", DBNull.Value);
-                            break;
-                        case 3://DateValue
-                            if (DateTime.TryParse(cell.Value.ToString(), out var dateValue))
-                                cmd.Parameters.AddWithValue("@datevalue", dateValue);
-                            cmd.Parameters.AddWithValue("@textvalue", DBNull.Value);
-                            cmd.Parameters.AddWithValue("@value", DBNull.Value);
-                            cmd.Parameters.AddWithValue("@boolvalue", DBNull.Value);
-                            break;
-                    }
-
-                    cmd.ExecuteNonQuery();
+                        cmd.Parameters.AddWithValue("@value", DBNull.Value);
+                        cmd.Parameters.AddWithValue("@boolvalue", DBNull.Value);
+                        cmd.Parameters.AddWithValue("@datevalue", DBNull.Value);
+                        break;
+                    case 2://BoolValue
+                        SQL_Parameter.Boolean(cmd.Parameters, "@boolean", cell.Value);
+                        cmd.Parameters.AddWithValue("@textvalue", DBNull.Value);
+                        cmd.Parameters.AddWithValue("@value", DBNull.Value);
+                        cmd.Parameters.AddWithValue("@datevalue", DBNull.Value);
+                        break;
+                    case 3://DateValue
+                        if (DateTime.TryParse(cell.Value.ToString(), out var dateValue))
+                            cmd.Parameters.AddWithValue("@datevalue", dateValue);
+                        cmd.Parameters.AddWithValue("@textvalue", DBNull.Value);
+                        cmd.Parameters.AddWithValue("@value", DBNull.Value);
+                        cmd.Parameters.AddWithValue("@boolvalue", DBNull.Value);
+                        break;
                 }
+
+                cmd.ExecuteNonQuery();
             }
 
             public static int ValueType(int? id, int FormTemplateID)
             {
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    var query = @"
+                using var con = new SqlConnection(Database.cs_Protocol);
+                var query = @"
                     SELECT Type FROM Protocol.Template
                     WHERE ProtocolDescriptionID = @descrid
                         AND FormTemplateID = @formtemplateid";
 
-                    var cmd = new SqlCommand(query, con);
-                    cmd.Parameters.AddWithValue("@descrid", id);
-                    cmd.Parameters.AddWithValue("@formtemplateid", FormTemplateID);
-                    cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
-                    con.Open();
-                    var value = cmd.ExecuteScalar();
-                    return int.Parse(value.ToString());
-                }
+                var cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@descrid", id);
+                cmd.Parameters.AddWithValue("@formtemplateid", FormTemplateID);
+                cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
+                con.Open();
+                var value = cmd.ExecuteScalar();
+                return int.Parse(value.ToString());
             }
         }
 
@@ -1257,7 +1176,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
             {
                 var cell = module.dgv_Module.Rows[module.dgv_Module.Rows.Count - 1].Cells[module.dgv_Module.Columns.Count - 1];
                 int.TryParse(cell.OwningColumn.HeaderText, out var StartUp);
-                
+
                 if (module.IsAuthenticationNeeded && (cell.Value == null || string.IsNullOrEmpty(cell.Value.ToString())) && IsEquipmentEmpty(module.dgv_Module) == false)
                 {
                     if (isOkWarnUser == false)
@@ -1272,7 +1191,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                         InfoText.Question(LanguageManager.GetString("equipment_Info_1"), CustomColors.InfoText_Color.Warning, "Warning!", null);
                     if (InfoText.answer == InfoText.Answer.Yes)
                     {
-                            _ = Activity.Stop($"Senaste Uppstart för utrustning raderas pga att operatör {Person.Name} inte har bekräftat utrustningen. Användare har fått meddelande om detta.");
+                        _ = Activity.Stop($"Senaste Uppstart för utrustning raderas pga att operatör {Person.Name} inte har bekräftat utrustningen. Användare har fått meddelande om detta.");
                         Delete_LastStartup(StartUp, module.FormTemplateID, module.dgv_Module);
                         isQuestionAnswered = true;
                         isOkCloseForm = true;
@@ -1284,7 +1203,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                     }
                 }
 
-                
+
             }
             public static void Delete_LastStartup(int startup, int formtemplateid, DataGridView dgv)
             {
@@ -1593,6 +1512,6 @@ namespace DigitalProductionProgram.Protocols.Protocol
             }
         }
 
-        
+       
     }
 }

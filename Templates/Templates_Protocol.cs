@@ -1096,36 +1096,32 @@ namespace DigitalProductionProgram.Templates
 
             public static void Load_MainTemplateID(string templateName, string revision)
             {
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    const string query =
-                        @"SELECT ID FROM Protocol.MainTemplate WHERE Name = @name AND Revision = @revision";
-                    var cmd = new SqlCommand(query, con);
-                    cmd.Parameters.AddWithValue("@name", templateName);
-                    cmd.Parameters.AddWithValue("@revision", revision);
-                    con.Open();
-                    var value = cmd.ExecuteScalar();
-                    if (value != null)
-                        ID = int.Parse(value.ToString());
-                }
+                using var con = new SqlConnection(Database.cs_Protocol);
+                const string query =
+                    @"SELECT ID FROM Protocol.MainTemplate WHERE Name = @name AND Revision = @revision";
+                var cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@name", templateName);
+                cmd.Parameters.AddWithValue("@revision", revision);
+                con.Open();
+                var value = cmd.ExecuteScalar();
+                if (value != null)
+                    ID = int.Parse(value.ToString());
             }
             public static void Set_MainTemplateID(ref bool IsOkStartOrder)
             {
                 if (Order.PartID != null)
                 {
-                    using (var con = new SqlConnection(Database.cs_Protocol))
+                    using var con = new SqlConnection(Database.cs_Protocol);
+                    const string query =
+                        @"SELECT ProtocolMainTemplateID FROM Processcard.MainData WHERE PartID = @partid";
+                    var cmd = new SqlCommand(query, con);
+                    cmd.Parameters.AddWithValue("@partid", Order.PartID);
+                    con.Open();
+                    var value = cmd.ExecuteScalar();
+                    if (value != DBNull.Value && value != null)
                     {
-                        const string query =
-                            @"SELECT ProtocolMainTemplateID FROM Processcard.MainData WHERE PartID = @partid";
-                        var cmd = new SqlCommand(query, con);
-                        cmd.Parameters.AddWithValue("@partid", Order.PartID);
-                        con.Open();
-                        var value = cmd.ExecuteScalar();
-                        if (value != DBNull.Value && value != null)
-                        {
-                            ID = int.Parse(value.ToString());
-                            return;
-                        }
+                        ID = int.Parse(value.ToString());
+                        return;
                     }
 
                     return;

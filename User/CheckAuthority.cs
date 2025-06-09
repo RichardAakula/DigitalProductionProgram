@@ -73,20 +73,19 @@ namespace DigitalProductionProgram.User
             get
             {
                 var dict = new Dictionary<int, string>();
-                
-                using (var con = new SqlConnection(Database.cs_Protocol))
+
+                using var con = new SqlConnection(Database.cs_Protocol);
+                const string query = @"SELECT ID, CodeText FROM Authorities.TemplateAuthorities ORDER BY ID";
+                var cmd = new SqlCommand(query, con);
+                con.Open();
+                var reader = cmd.ExecuteReader();
+                while (reader.Read())
                 {
-                    const string query = @"SELECT ID, CodeText FROM Authorities.TemplateAuthorities ORDER BY ID";
-                    var cmd = new SqlCommand(query, con);
-                    con.Open();
-                    var reader = cmd.ExecuteReader();
-                    while (reader.Read())
-                    {
-                        int.TryParse(reader[0].ToString(), out var id);
-                        var codetext = reader[1].ToString();
-                        dict.Add(id, codetext);
-                    }
+                    int.TryParse(reader[0].ToString(), out var id);
+                    var codetext = reader[1].ToString();
+                    dict.Add(id, codetext);
                 }
+
                 return dict;
             }
         }
@@ -132,36 +131,32 @@ namespace DigitalProductionProgram.User
         public static bool IsWorkoperationAuthorized(Enum templateWorkoperation)
         {
             var val = Convert.ChangeType(templateWorkoperation, templateWorkoperation.GetTypeCode());
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                const string query = "SELECT * FROM Authorities.CustomWorkoperation WHERE TemplateID = @id AND Workoperation = @workoperation";
+            using var con = new SqlConnection(Database.cs_Protocol);
+            const string query = "SELECT * FROM Authorities.CustomWorkoperation WHERE TemplateID = @id AND Workoperation = @workoperation";
 
-                con.Open();
-                var cmd = new SqlCommand(query, con);
-                cmd.Parameters.AddWithValue("@id", (int)val);
-                cmd.Parameters.AddWithValue("@workoperation", Order.WorkOperation.ToString());
-                var reader = cmd.ExecuteReader();
-                if (reader.HasRows)
-                    return true;
-            }
+            con.Open();
+            var cmd = new SqlCommand(query, con);
+            cmd.Parameters.AddWithValue("@id", (int)val);
+            cmd.Parameters.AddWithValue("@workoperation", Order.WorkOperation.ToString());
+            var reader = cmd.ExecuteReader();
+            if (reader.HasRows)
+                return true;
 
             return false;
         }
         public static bool IsFactoryAuthorized(Enum templateFactory)
         {
             var val = Convert.ChangeType(templateFactory, templateFactory.GetTypeCode());
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                const string query = "SELECT * FROM Authorities.CustomFactory WHERE TemplateID = @id AND Factory = @factory";
+            using var con = new SqlConnection(Database.cs_Protocol);
+            const string query = "SELECT * FROM Authorities.CustomFactory WHERE TemplateID = @id AND Factory = @factory";
 
-                con.Open();
-                var cmd = new SqlCommand(query, con);
-                cmd.Parameters.AddWithValue("@id", (int)val);
-                cmd.Parameters.AddWithValue("@factory", Monitor.Monitor.factory.ToString());
-                var reader = cmd.ExecuteReader();
-                if (reader.HasRows)
-                    return true;
-            }
+            con.Open();
+            var cmd = new SqlCommand(query, con);
+            cmd.Parameters.AddWithValue("@id", (int)val);
+            cmd.Parameters.AddWithValue("@factory", Monitor.Monitor.factory.ToString());
+            var reader = cmd.ExecuteReader();
+            if (reader.HasRows)
+                return true;
             return false;
         }
 

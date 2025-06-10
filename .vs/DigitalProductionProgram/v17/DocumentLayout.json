@@ -46,8 +46,7 @@
               "RelativeToolTip": "Monitor\\Monitor.cs",
               "ViewState": "AgIAAGgAAAAAAAAAAAD4vzcCAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-10T12:38:34.17Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-06-10T12:38:34.17Z"
             },
             {
               "$type": "Document",
@@ -59,8 +58,7 @@
               "RelativeToolTip": "MainWindow\\Main_Menu.cs",
               "ViewState": "AgIAAE4BAAAAAAAAAAD4v4ABAAA+AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-10T12:38:15.269Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-06-10T12:38:15.269Z"
             },
             {
               "$type": "Document",
@@ -72,8 +70,7 @@
               "RelativeToolTip": "MainWindow\\Main_Buttons.cs",
               "ViewState": "AgIAABcBAAAAAAAAAAD4v0kBAAA+AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-10T12:36:56.16Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-06-10T12:36:56.16Z"
             },
             {
               "$type": "Document",
@@ -85,8 +82,7 @@
               "RelativeToolTip": "Log\\Maintenance.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAD0AAAAvAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-09T13:12:45.041Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-06-09T13:12:45.041Z"
             },
             {
               "$type": "Document",
@@ -94,9 +90,9 @@
               "Title": "Main_Form.cs",
               "DocumentMoniker": "C:\\Users\\RICHARDA\\Documents\\Visual Studio 2022\\Projects\\DigitalProductionProgram\\MainWindow\\Main_Form.cs",
               "RelativeDocumentMoniker": "MainWindow\\Main_Form.cs",
-              "ToolTip": "C:\\Users\\RICHARDA\\Documents\\Visual Studio 2022\\Projects\\DigitalProductionProgram\\MainWindow\\Main_Form.cs*",
-              "RelativeToolTip": "MainWindow\\Main_Form.cs*",
-              "ViewState": "AgIAAM4DAAAAAAAAAAD4vwsEAAAlAAAAAAAAAA==",
+              "ToolTip": "C:\\Users\\RICHARDA\\Documents\\Visual Studio 2022\\Projects\\DigitalProductionProgram\\MainWindow\\Main_Form.cs",
+              "RelativeToolTip": "MainWindow\\Main_Form.cs",
+              "ViewState": "AgIAAEABAAAAAAAAAAAIwAUEAABIAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-06-09T12:17:58.125Z",
               "EditorCaption": ""

@@ -29,9 +29,7 @@ namespace DigitalProductionProgram.PrintingServices
        
         public static Chart? chart_Diagram;
 
-        //public static bool IsExtraCommentsDone = true;
         public static bool IsOkPrintExtraRaderComments = false;
-        //public static int next_row_Extra_Comments;
        
 
 

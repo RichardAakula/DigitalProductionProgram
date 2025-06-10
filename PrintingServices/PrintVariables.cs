@@ -94,6 +94,7 @@ namespace DigitalProductionProgram.PrintingServices
             public void SetPagesProtocols(int TotalRows_Template, int MaxRowsRunProtocol)
             {
                 var totalPages = 0;
+                //totalPrintOutsForModules berättar hur många utskrifter det behövs
                 var totalPrintOutsForModules = Math.Ceiling((double)TotalRows_Template / MaxRowsRunProtocol);
 
                 for (var machineIndex = 1; machineIndex < Korprotokoll.Total_Machines + 1; machineIndex++)
@@ -111,6 +112,7 @@ namespace DigitalProductionProgram.PrintingServices
                             if (list_ctr == list.Count)
                                 break;
                             var formtemplateid = list[list_ctr];
+                            //Räknar hur många rader formtemplaten har och lägger till det i totalen och ser om det får rum på pappret
                             lastRowModule += Print_Protocol.TotalRows_FormTemplateID(formtemplateid);
 
                             if (lastRowModule > MaxRowsRunProtocol)
@@ -127,7 +129,7 @@ namespace DigitalProductionProgram.PrintingServices
                         var totalPrintOutsForStartUps = Print_Protocol.TotalPrintOutsForStartUps(List_FormTemplates);
 
                         for (var j = 0; j < totalPrintOutsForStartUps; j++)
-                            totalPages += 1;
+                            totalPages ++;
                     }
                 }
 

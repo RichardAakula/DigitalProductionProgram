@@ -229,7 +229,7 @@ namespace DigitalProductionProgram.MainWindow
         {
             if (BrowseOldMeasureprotocol.Visible == false)
                 return;
-            Main_Form.Timer_ChangeGrade.Stop();
+            // Stoppa MainTimer eventuellt om det blir problem
             var screen = Screen.FromPoint(Cursor.Position);
             var sök = new BrowseMeasureProtocols
             {
@@ -244,7 +244,7 @@ namespace DigitalProductionProgram.MainWindow
             if (BrowseOldOrders.Visible == false)
                 return;
 
-            Main_Form.Timer_UpdateChart.Stop();
+            // Stoppa MainTimer eventuellt om det blir problem
 
             var fc = Application.OpenForms;
             if (fc.Cast<Form>().Any(frm => frm.Name.Contains("Korprotokoll") || frm.Name.Contains("Protocol") || frm.Name.Contains("Measurement")))
@@ -298,11 +298,11 @@ namespace DigitalProductionProgram.MainWindow
 
             Order.Restore_TempOrderInfo();
             //Laddar toleranser på nytt ifall dom ändrats i Bläddra Körprotokoll
-            Main_Form.Timer_UpdateChart_Start();
+           // Main_Form.Timer_UpdateChart_Start();
         }
         public void F5_Compund_Click(object sender, EventArgs e)
         {
-            if (Compound.Visible == false)
+            if (Order.OrderID == 0 || Order.OrderID is null ||Compound.Visible == false)
                 return;
             var compound = new Protocol_Compund();
             compound.ShowDialog();
@@ -327,7 +327,7 @@ namespace DigitalProductionProgram.MainWindow
         }
         public async void F7_OverviewProdLines_Click(object sender, EventArgs e)
         {
-            Main_Form.Timer_UpdateChart.Stop();
+            // Stoppa MainTimer eventuellt om det blir problem
             Log.Activity.Start();
 
             Points.Add_Points(1, "Överblick Produktionslinjer");
@@ -336,7 +336,7 @@ namespace DigitalProductionProgram.MainWindow
 
             await Log.Activity.Stop("Överblick ProdLinjer");
             Cursor = Cursors.Default;
-            Main_Form.Timer_UpdateChart_Start();
+           // Main_Form.Timer_UpdateChart_Start();
         }
         public void F8_Statistics_Click(object sender, EventArgs e)
         {

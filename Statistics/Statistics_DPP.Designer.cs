@@ -54,6 +54,7 @@
             chartArea1.BackColor = Color.Transparent;
             chartArea1.Name = "ChartArea1";
             chart_Statistics.ChartAreas.Add(chartArea1);
+            chart_Statistics.Cursor = Cursors.Hand;
             chart_Statistics.Dock = DockStyle.Fill;
             legend1.BackColor = Color.Transparent;
             legend1.BorderColor = Color.Transparent;

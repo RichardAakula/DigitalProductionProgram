@@ -82,7 +82,6 @@ namespace DigitalProductionProgram.MainWindow
             ActiveOrdersUser = new ActiveOrdersUser();
             timer_CheckForUpdate = new System.Windows.Forms.Timer(components);
             timer_Planerat_Stopp = new System.Windows.Forms.Timer(components);
-            timer_Update_Körplanering = new System.Windows.Forms.Timer(components);
             timer_Check_MeasurePoints = new System.Windows.Forms.Timer(components);
             timer_Check_If_Maintenance_Has_Started = new System.Windows.Forms.Timer(components);
             timer_ReLogin_Monitor = new System.Windows.Forms.Timer(components);
@@ -209,12 +208,12 @@ namespace DigitalProductionProgram.MainWindow
             // panelChart
             // 
             panelChart.BackColor = Color.Transparent;
-            tlp_MainWindow.SetColumnSpan(panelChart, 3);
+            tlp_MainWindow.SetColumnSpan(panelChart, 2);
             panelChart.Dock = DockStyle.Fill;
             panelChart.Location = new Point(6, 361);
             panelChart.Margin = new Padding(6, 2, 0, 0);
             panelChart.Name = "panelChart";
-            panelChart.Size = new Size(990, 345);
+            panelChart.Size = new Size(928, 345);
             panelChart.TabIndex = 913;
             panelChart.Visible = false;
             // 
@@ -736,32 +735,6 @@ namespace DigitalProductionProgram.MainWindow
             // 
             timer_CheckForUpdate.Enabled = true;
             timer_CheckForUpdate.Interval = 6000;
-            timer_CheckForUpdate.Tick += CheckForUpdate_Tick;
-            // 
-            // timer_Planerat_Stopp
-            // 
-            timer_Planerat_Stopp.Interval = 6000;
-            timer_Planerat_Stopp.Tick += PlaneratStopp_Tick;
-            // 
-            // timer_Update_Körplanering
-            // 
-            timer_Update_Körplanering.Interval = 3600000;
-            // 
-            // timer_Check_MeasurePoints
-            // 
-            timer_Check_MeasurePoints.Interval = 10000;
-            timer_Check_MeasurePoints.Tick += CheckMätpunkter_Tick;
-            // 
-            // timer_Check_If_Maintenance_Has_Started
-            // 
-            timer_Check_If_Maintenance_Has_Started.Enabled = true;
-            timer_Check_If_Maintenance_Has_Started.Interval = 10000;
-            timer_Check_If_Maintenance_Has_Started.Tick += CheckIf_Maintenance_Has_Started_Tick;
-            // 
-            // timer_ReLogin_Monitor
-            // 
-            timer_ReLogin_Monitor.Interval = 60000;
-            timer_ReLogin_Monitor.Tick += ReLogin_Monitor_Tick;
             // 
             // Buttons
             // 
@@ -850,7 +823,7 @@ namespace DigitalProductionProgram.MainWindow
             tlp_MainWindow.Controls.Add(OrderInformation, 0, 0);
             tlp_MainWindow.Controls.Add(measurePoints, 0, 3);
             tlp_MainWindow.Controls.Add(measureStats, 1, 3);
-            tlp_MainWindow.Controls.Add(Statistics_DPP, 4, 4);
+            tlp_MainWindow.Controls.Add(Statistics_DPP, 2, 4);
             tlp_MainWindow.Dock = DockStyle.Fill;
             tlp_MainWindow.Location = new Point(0, 0);
             tlp_MainWindow.Margin = new Padding(4, 3, 3, 3);
@@ -867,11 +840,12 @@ namespace DigitalProductionProgram.MainWindow
             // Statistics_DPP
             // 
             Statistics_DPP.BackColor = Color.Transparent;
+            tlp_MainWindow.SetColumnSpan(Statistics_DPP, 3);
             Statistics_DPP.Dock = DockStyle.Fill;
-            Statistics_DPP.Location = new Point(1108, 362);
+            Statistics_DPP.Location = new Point(938, 362);
             Statistics_DPP.Margin = new Padding(4, 3, 4, 3);
             Statistics_DPP.Name = "Statistics_DPP";
-            Statistics_DPP.Size = new Size(207, 341);
+            Statistics_DPP.Size = new Size(377, 341);
             Statistics_DPP.TabIndex = 920;
             // 
             // Main_Form

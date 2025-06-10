@@ -63,30 +63,26 @@ namespace DigitalProductionProgram.Log
         {
             get
             {
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    const string query = "SELECT * FROM Log.Maintenance_Work WHERE Datum > @now";
-                    con.Open();
-                    var cmd = new SqlCommand(query, con);
-                    cmd.Parameters.AddWithValue("@now", DateTime.Now);
-                    var reader = cmd.ExecuteReader();
-                    return reader.HasRows;
-                }
+                using var con = new SqlConnection(Database.cs_Protocol);
+                const string query = "SELECT * FROM Log.Maintenance_Work WHERE Datum > @now";
+                con.Open();
+                var cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@now", DateTime.Now);
+                var reader = cmd.ExecuteReader();
+                return reader.HasRows;
             }
         }
         public static bool IsMaintenance_Ongoing
         {
             get
             {
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    const string query = "SELECT * FROM Log.Maintenance_Work WHERE Datum < @now AND Done = 'False'";
-                    con.Open();
-                    var cmd = new SqlCommand(query, con);
-                    cmd.Parameters.AddWithValue("@now", DateTime.Now);
-                    var reader = cmd.ExecuteReader();
-                    return reader.HasRows;
-                }
+                using var con = new SqlConnection(Database.cs_Protocol);
+                const string query = "SELECT * FROM Log.Maintenance_Work WHERE Datum < @now AND Done = 'False'";
+                con.Open();
+                var cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@now", DateTime.Now);
+                var reader = cmd.ExecuteReader();
+                return reader.HasRows;
             }
         }
         public static string Time_Left

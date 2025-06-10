@@ -139,7 +139,7 @@ namespace DigitalProductionProgram.MainWindow
                 return;
             }
 
-            Main_Form.Timer_UpdateChart.Stop();
+            // Stoppa MainTimer eventuellt om det blir problem
             var screen = Screen.FromPoint(Cursor.Position);
 
             var frmÖppna = new Open_Order
@@ -166,7 +166,7 @@ namespace DigitalProductionProgram.MainWindow
         {
             if (Print.IsPrinterInstalled)
             {
-                Main_Form.Timer_ChangeGrade.Stop();
+                // Stoppa MainTimer eventuellt om det blir problem
                 Main_Form.Preview_PrintOut();
             }
             else
@@ -382,7 +382,7 @@ namespace DigitalProductionProgram.MainWindow
                 return;
             }
 
-            Main_Form.Timer_UpdateChart.Stop();
+            // Stoppa MainTimer eventuellt om det blir problem
             var WorkOperation = new Choose_WorkOperation_BrowseProtocols_ManageProcesscards(true, false, LanguageManager.GetString("label_ChoosePC_Header"));
             WorkOperation.ShowDialog();
         }

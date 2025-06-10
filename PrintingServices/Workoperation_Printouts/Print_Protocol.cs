@@ -171,38 +171,41 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
 
         public static int TotalPrintOutsForStartUps(List<int> List_FormTemplates)
         {
-                var max_Width = PrintVariables.MaxWidthProcesscardRunProtocol;
-                var processcard_ColWidth = 0;
-                var runProtocol_ColWidth = 0;
-                var totalStartUps = Module.TotalStartUps;
-                var max_RunProtocolWidth = 100;
-                foreach (var formtemplateid in List_FormTemplates)
-                {
-                    using var con = new SqlConnection(Database.cs_Protocol);
-                    const string query = @"
+            //Kontrollerar maxbredden på kolumnerna på körprotokoll samt processkort för inkommande FormTemplates och kollar hur många utskrifter som krävs för dessa
+            if (List_FormTemplates.Count == 0)
+                return 0;
+            var max_Width = PrintVariables.MaxWidthProcesscardRunProtocol;
+            var processcard_ColWidth = 0;
+            var runProtocol_ColWidth = 0;
+            var totalStartUps = Module.TotalStartUps;
+            var max_RunProtocolWidth = 100;
+            foreach (var formtemplateid in List_FormTemplates)
+            {
+                using var con = new SqlConnection(Database.cs_Protocol);
+                const string query = @"
                             SELECT Processcard_ColWidth, RunProtocol_ColWidth 
                             FROM Protocol.FormTemplate
                             WHERE FormTemplateID = @formtemplateid";
-                    var cmd = new SqlCommand(query, con);
-                    cmd.Parameters.AddWithValue("@formtemplateid", formtemplateid);
-                    con.Open();
-                    var reader = cmd.ExecuteReader();
-                    while (reader.Read())
-                    {
-                        int.TryParse(reader["Processcard_ColWidth"].ToString(), out processcard_ColWidth);
-                        int.TryParse(reader["RunProtocol_ColWidth"].ToString(), out runProtocol_ColWidth);
-                    }
-
-                    var space_Left = PrintVariables.MaxPaperWidth - PrintVariables.StartPointProcesscard - processcard_ColWidth;
-                    if (space_Left < max_Width)
-                        max_Width = space_Left;
-                        
-                    if (runProtocol_ColWidth > max_RunProtocolWidth)
-                        max_RunProtocolWidth = runProtocol_ColWidth;
+                var cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@formtemplateid", formtemplateid);
+                con.Open();
+                var reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    int.TryParse(reader["Processcard_ColWidth"].ToString(), out processcard_ColWidth);
+                    int.TryParse(reader["RunProtocol_ColWidth"].ToString(), out runProtocol_ColWidth);
                 }
-                //Dividerar totalt antal uppstarter med hur många uppstarter som får rum på aktiv sida
-                var maxStartupsPerPage = max_Width / max_RunProtocolWidth;
-                return (int)Math.Ceiling(totalStartUps / (double)maxStartupsPerPage);
+
+                var space_Left = PrintVariables.MaxPaperWidth - PrintVariables.StartPointProcesscard - processcard_ColWidth;
+                if (space_Left < max_Width)
+                    max_Width = space_Left;
+                        
+                if (runProtocol_ColWidth > max_RunProtocolWidth)
+                    max_RunProtocolWidth = runProtocol_ColWidth;
+            }
+            //Dividerar totalt antal uppstarter med hur många uppstarter som får rum på aktiv sida
+            var maxStartupsPerPage = max_Width / max_RunProtocolWidth;
+            return (int)Math.Ceiling(totalStartUps / (double)maxStartupsPerPage);
         }
         public static int MaxStartUpPerPrintOut(List<int> List_FormTemplates)
         {

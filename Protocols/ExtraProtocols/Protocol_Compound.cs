@@ -172,9 +172,10 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
     {
         public static void Data(string Column, string Text = null, string? Value = null)
         {
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query = $@"
+            if (Order.OrderID == 0 || Order.OrderID is null)
+                return;
+            using var con = new SqlConnection(Database.cs_Protocol);
+            var query = $@"
                     IF EXISTS (SELECT * FROM [Order].Compound_Main WHERE OrderID = @id) 
                         BEGIN
                             UPDATE [Order].Compound_Main
@@ -186,21 +187,20 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
                             INSERT INTO [Order].Compound_Main (OrderID, {Column})
                             VALUES (@id, @text)
                         END";
-                var cmd = new SqlCommand(query, con);
-                SQL_Parameter.NullableINT(cmd.Parameters, "@id", Order.OrderID);
-                if (string.IsNullOrEmpty(Text))
-                    SQL_Parameter.Double(cmd.Parameters, "@text", Value);
+            var cmd = new SqlCommand(query, con);
+            SQL_Parameter.NullableINT(cmd.Parameters, "@id", Order.OrderID);
+            if (string.IsNullOrEmpty(Text))
+                SQL_Parameter.Double(cmd.Parameters, "@text", Value);
+            else
+            {
+                if (DateTime.TryParse(Text, out var date))
+                    cmd.Parameters.AddWithValue("@text", date);
                 else
-                {
-                    if (DateTime.TryParse(Text, out var date))
-                        cmd.Parameters.AddWithValue("@text", date);
-                    else
-                        cmd.Parameters.AddWithValue("@text", DBNull.Value);
-                }
-
-                con.Open();
-                cmd.ExecuteNonQuery();
+                    cmd.Parameters.AddWithValue("@text", DBNull.Value);
             }
+
+            con.Open();
+            cmd.ExecuteNonQuery();
         }
         public static void DataGridView(DataGridView dgv)
         {

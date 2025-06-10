@@ -1550,7 +1550,7 @@ HS-Machine = {Equipment.Equipment.HS_Machine}", CustomColors.InfoText_Color.Info
         private void Lägg_till_nytt_Processkort_FormClosed(object sender, FormClosedEventArgs e)
         {
            // Order.ProdLinje = org_ProdLinje;
-            Main_Form.Timer_UpdateChart.Start();
+           // Main_Form.Timer_UpdateChart.Start();
         }
         private void Skapa_Uppdatera_Processkort_Activated(object sender, EventArgs e)
         {

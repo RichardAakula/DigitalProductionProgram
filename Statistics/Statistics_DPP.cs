@@ -138,6 +138,46 @@ namespace DigitalProductionProgram.Statistics
                 ON a.Date BETWEEN ti.IntervalStart AND ti.IntervalEnd
             GROUP BY ti.IntervalStart, ti.IntervalEnd
             ORDER BY ti.IntervalStart";
+        private const string Query_DeploymentByVersion = @"
+           -- Steg 1: Hämta senaste loggpost per HostID
+WITH LatestLogPerHost AS (
+    SELECT HostID, Version
+    FROM (
+        SELECT 
+        ROW_NUMBER() OVER (PARTITION BY HostID ORDER BY Date DESC) AS rn,
+            Version,
+            HostID            
+        FROM [Log].ActivityLog
+    ) AS ranked
+    WHERE rn = 1
+),
+-- Steg 2: Lägg till versionkomponenter för jämförelse
+VersionComponents AS (
+    SELECT 
+        HostID, 
+        Version,
+      
+        CAST(PARSENAME(Version, 4) AS INT) AS Major,
+        CAST(PARSENAME(Version, 3) AS INT) AS Minor,
+        CAST(PARSENAME(Version, 2) AS INT) AS Patch,
+        CAST(PARSENAME(Version, 1) AS INT) AS Build
+    FROM LatestLogPerHost
+),
+-- Steg 3: Begränsa till de 8 senaste versionerna
+Top8Versions AS (
+    SELECT TOP 8 Version
+    FROM VersionComponents
+    GROUP BY Version, Major, Minor, Patch, Build
+    ORDER BY Major DESC, Minor DESC, Patch DESC, Build DESC
+)
+-- Steg 4: Räkna hur många hostar som har varje av de versionerna + visa senaste datum
+SELECT 
+    COUNT(*) AS HostCount,
+    v.Version
+FROM VersionComponents v
+JOIN Top8Versions t ON v.Version = t.Version
+GROUP BY v.Version, v.Major, v.Minor, v.Patch, v.Build
+ORDER BY v.Major DESC, v.Minor DESC, v.Patch DESC, v.Build DESC;";
 
         private readonly List<(string Title, string Query)> chartQueries = new()
         {
@@ -147,7 +187,24 @@ namespace DigitalProductionProgram.Statistics
             ("Activity DPP - Last Month", Query_LastMonth),
             ("Activity DPP - Last 6 Months", Query_LastMonths),
             ("Activity DPP - Last 5 Years", Query_LastYears),
+            ("Deployment by Version", Query_DeploymentByVersion)
         };
+        private async Task<List<(string Label, int Value)>> LoadChartDataAsync(string query)
+        {
+            var data = new List<(string Label, int Value)>();
+            await using var con = new SqlConnection(Database.cs_Protocol);
+            await using var cmd = new SqlCommand(query, con);
+            await con.OpenAsync();
+            await using var reader = await cmd.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
+            {
+                var label = reader[1].ToString();
+                int.TryParse(reader[0].ToString(), out var value);
+                data.Add((label, value));
+            }
+
+            return data;
+        }
 
 
 
@@ -156,48 +213,47 @@ namespace DigitalProductionProgram.Statistics
             InitializeComponent();
 
         }
-        private void Statistics_DPP_Load(object sender, EventArgs e)
+        private async void Statistics_DPP_Load(object sender, EventArgs e)
         {
             if (DesignMode || Program.IsInDesignMode())
                 return;
 
-            Load_Statistics();
+            if (DesignMode || Program.IsInDesignMode())
+                return;
+
+            await Load_StatisticsAsync();
         }
-        public void Load_Statistics()
+        public async Task Load_StatisticsAsync()
         {
             var random = new Random();
             var selected = chartQueries[random.Next(chartQueries.Count)];
 
-            CreateChart(selected.Title, selected.Query);
+            await CreateChartAsync(selected.Title, selected.Query);
         }
 
-        public void CreateChart(string legendText, string query)
+
+        public async Task CreateChartAsync(string legendText, string query)
         {
+            var data = await LoadChartDataAsync(query);
+
             chart_Statistics.Series[0].Points.Clear();
             chart_Statistics.Series[0].LegendText = legendText;
             chart_Statistics.Legends[0].Docking = Docking.Top;
-            chart_Statistics.Legends[0].Alignment = StringAlignment.Far;  // Centrera texten
+            chart_Statistics.Legends[0].Alignment = StringAlignment.Far;
             chart_Statistics.Legends[0].IsDockedInsideChartArea = false;
             chart_Statistics.Legends[0].LegendStyle = LegendStyle.Table;
             chart_Statistics.Legends[0].Position.Auto = false;
-            chart_Statistics.Legends[0].Position = new ElementPosition(5, 2, 90, 10); // (X, Y, Width, Height) i procent
-            using (var con = new SqlConnection(Database.cs_Protocol))
+            chart_Statistics.Legends[0].Position = new ElementPosition(5, 2, 90, 10);
+
+            foreach (var (label, value) in data)
             {
-                var cmd = new SqlCommand(query, con);
-                con.Open();
-                var reader = cmd.ExecuteReader();
-                while (reader.Read())
-                {
-                    var timeZone = reader[1].ToString();
-                    int.TryParse(reader[0].ToString(), out var counter);
-                    chart_Statistics.Series[0].Points.AddXY(timeZone, counter);
-                }
+                chart_Statistics.Series[0].Points.AddXY(label, value);
             }
 
-            // Justera axlar
-            chart_Statistics.ChartAreas[0].AxisX.LabelStyle.Angle = -45; // Lutade etiketter
-            chart_Statistics.ChartAreas[0].AxisX.MajorGrid.Enabled = false; // Ta bort rutnätslinjer om du vill
+            chart_Statistics.ChartAreas[0].AxisX.LabelStyle.Angle = -45;
+            chart_Statistics.ChartAreas[0].AxisX.MajorGrid.Enabled = false;
         }
+
        
         private void panelStatistics_Click(object sender, MouseEventArgs e)
         {
@@ -205,9 +261,9 @@ namespace DigitalProductionProgram.Statistics
         }
 
 
-        private void chart_Statistics_MouseDown(object sender, MouseEventArgs e)
+        private async void chart_Statistics_MouseDown(object sender, MouseEventArgs e)
         {
-            Load_Statistics();
+            await Load_StatisticsAsync();
         }
     }
 }

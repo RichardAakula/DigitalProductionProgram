@@ -22,16 +22,24 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 2,
           "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
             {
               "$type": "Document",
               "DocumentIndex": 0,
               "Title": "Main_Menu.cs [Design]",
               "DocumentMoniker": "C:\\Users\\RICHARDA\\Documents\\Visual Studio 2022\\Projects\\DigitalProductionProgram 4.3.9.6\\MainWindow\\Main_Menu.cs",
               "RelativeDocumentMoniker": "MainWindow\\Main_Menu.cs",
-              "ToolTip": "C:\\Users\\RICHARDA\\Documents\\Visual Studio 2022\\Projects\\DigitalProductionProgram 4.3.9.6\\MainWindow\\Main_Menu.cs [Design]*",
-              "RelativeToolTip": "MainWindow\\Main_Menu.cs [Design]*",
+              "ToolTip": "C:\\Users\\RICHARDA\\Documents\\Visual Studio 2022\\Projects\\DigitalProductionProgram 4.3.9.6\\MainWindow\\Main_Menu.cs [Design]",
+              "RelativeToolTip": "MainWindow\\Main_Menu.cs [Design]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-06-10T14:02:38.836Z",
               "EditorCaption": " [Design]"
@@ -47,14 +55,6 @@
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-06-10T14:01:36.661Z",
               "EditorCaption": " [Design]"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
             },
             {
               "$type": "Document",

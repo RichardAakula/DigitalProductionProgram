@@ -1059,8 +1059,8 @@ namespace DigitalProductionProgram.MainWindow
                 CheckForUpdate();
             }
             //60 sek: Hantera inloggning mot Monitor API
-            if (counter_ReLoginMonitor >= timer_ReloginMonitor)
-                ReLogin_Monitor();
+           // if (counter_ReLoginMonitor >= timer_ReloginMonitor)
+           //     ReLogin_Monitor();
 
          
             // 5 min: Kolla uppdatering och statistik

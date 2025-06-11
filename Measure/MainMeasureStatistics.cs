@@ -466,18 +466,18 @@ namespace DigitalProductionProgram.Measure
                     double value = GetMeasurementValue("AVG", CodeName);
 
                     if (value < lcl)
-                        if (CodeName != null && lcl > 0)
-                            InfoText.Show($"Enligt mätningarna så ligger Medel-{CodeName[i]} under den lägre styrgränsen, vänligen kontrollera att mätningarna är ok.", CustomColors.InfoText_Color.Warning, $"Varning - Medel {dt.Rows[i][0]}");
+                        if (CodeName != null && lcl > 0 && value > 0)
+                            InfoText.Show($"Enligt mätningarna så ligger Medel-{CodeName} under den lägre styrgränsen, kontrollera att mätningarna är ok.", CustomColors.InfoText_Color.Warning, $"Varning - {CodeName}");
                     if (value > ucl)
-                        if (CodeName != null && ucl > 0)
-                            InfoText.Show($"Enligt mätningarna så ligger Medel-{CodeName[i]} över den övre styrgränsen, vänligen kontrollera att mätningarna är ok.", CustomColors.InfoText_Color.Warning, $"Varning - Medel ID{dt.Rows[i][0]}");
+                        if (CodeName != null && ucl > 0 && value > 0)
+                            InfoText.Show($"Enligt mätningarna så ligger Medel-{CodeName} över den övre styrgränsen, kontrollera att mätningarna är ok.", CustomColors.InfoText_Color.Warning, $"Varning - {CodeName}");
 
                     if (value < lsl)
-                        if (CodeName != null && lsl > 0)
-                            InfoText.Show($"Enligt mätningarna så ligger Medel-{CodeName[i]} under den lägre gränsen, kontrollera att mätningarna är ok.", CustomColors.InfoText_Color.Bad, $"Varning - Medel {dt.Rows[i][0]}");
+                        if (CodeName != null && lsl > 0 && value > 0)
+                            InfoText.Show($"Enligt mätningarna så ligger Medel-{CodeName} under den lägre gränsen, kontrollera att mätningarna är ok.", CustomColors.InfoText_Color.Bad, $"Varning - {CodeName}");
                     if (value > usl)
-                        if (CodeName != null && usl > 0) 
-                            InfoText.Show($"Enligt mätningarna så ligger Medel-{CodeName[i]} över den övre styrgränsen, kontrollera att mätningarna är ok.", CustomColors.InfoText_Color.Bad, $"Varning - Medel {dt.Rows[i][0]}");
+                        if (CodeName != null && usl > 0 && value > 0) 
+                            InfoText.Show($"Enligt mätningarna så ligger Medel-{CodeName} över den övre styrgränsen, kontrollera att mätningarna är ok.", CustomColors.InfoText_Color.Bad, $"Varning - {CodeName}");
                 }
             }
         }

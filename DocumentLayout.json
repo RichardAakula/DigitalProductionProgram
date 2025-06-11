@@ -1,0 +1,105 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\RICHARDA\\Documents\\Visual Studio 2022\\Projects\\DigitalProductionProgram\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{6674A660-9B6A-4413-B538-229C62AEBB35}|DigitalProductionProgram.csproj|c:\\users\\richarda\\documents\\visual studio 2022\\projects\\digitalproductionprogram\\mainwindow\\main_form.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6674A660-9B6A-4413-B538-229C62AEBB35}|DigitalProductionProgram.csproj|solutionrelative:mainwindow\\main_form.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6674A660-9B6A-4413-B538-229C62AEBB35}|DigitalProductionProgram.csproj|c:\\users\\richarda\\documents\\visual studio 2022\\projects\\digitalproductionprogram\\monitor\\monitor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6674A660-9B6A-4413-B538-229C62AEBB35}|DigitalProductionProgram.csproj|solutionrelative:monitor\\monitor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6674A660-9B6A-4413-B538-229C62AEBB35}|DigitalProductionProgram.csproj|c:\\users\\richarda\\documents\\visual studio 2022\\projects\\digitalproductionprogram\\mainwindow\\main_menu.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6674A660-9B6A-4413-B538-229C62AEBB35}|DigitalProductionProgram.csproj|solutionrelative:mainwindow\\main_menu.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6674A660-9B6A-4413-B538-229C62AEBB35}|DigitalProductionProgram.csproj|c:\\users\\richarda\\documents\\visual studio 2022\\projects\\digitalproductionprogram\\mainwindow\\main_buttons.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6674A660-9B6A-4413-B538-229C62AEBB35}|DigitalProductionProgram.csproj|solutionrelative:mainwindow\\main_buttons.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6674A660-9B6A-4413-B538-229C62AEBB35}|DigitalProductionProgram.csproj|c:\\users\\richarda\\documents\\visual studio 2022\\projects\\digitalproductionprogram\\log\\maintenance.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6674A660-9B6A-4413-B538-229C62AEBB35}|DigitalProductionProgram.csproj|solutionrelative:log\\maintenance.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 5,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Monitor.cs",
+              "DocumentMoniker": "C:\\Users\\RICHARDA\\Documents\\Visual Studio 2022\\Projects\\DigitalProductionProgram\\Monitor\\Monitor.cs",
+              "RelativeDocumentMoniker": "Monitor\\Monitor.cs",
+              "ToolTip": "C:\\Users\\RICHARDA\\Documents\\Visual Studio 2022\\Projects\\DigitalProductionProgram\\Monitor\\Monitor.cs",
+              "RelativeToolTip": "Monitor\\Monitor.cs",
+              "ViewState": "AgIAAGgAAAAAAAAAAAD4vzcCAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-10T12:38:34.17Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Main_Menu.cs",
+              "DocumentMoniker": "C:\\Users\\RICHARDA\\Documents\\Visual Studio 2022\\Projects\\DigitalProductionProgram\\MainWindow\\Main_Menu.cs",
+              "RelativeDocumentMoniker": "MainWindow\\Main_Menu.cs",
+              "ToolTip": "C:\\Users\\RICHARDA\\Documents\\Visual Studio 2022\\Projects\\DigitalProductionProgram\\MainWindow\\Main_Menu.cs",
+              "RelativeToolTip": "MainWindow\\Main_Menu.cs",
+              "ViewState": "AgIAAE4BAAAAAAAAAAD4v4ABAAA+AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-10T12:38:15.269Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Main_Buttons.cs",
+              "DocumentMoniker": "C:\\Users\\RICHARDA\\Documents\\Visual Studio 2022\\Projects\\DigitalProductionProgram\\MainWindow\\Main_Buttons.cs",
+              "RelativeDocumentMoniker": "MainWindow\\Main_Buttons.cs",
+              "ToolTip": "C:\\Users\\RICHARDA\\Documents\\Visual Studio 2022\\Projects\\DigitalProductionProgram\\MainWindow\\Main_Buttons.cs",
+              "RelativeToolTip": "MainWindow\\Main_Buttons.cs",
+              "ViewState": "AgIAABcBAAAAAAAAAAD4v0kBAAA+AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-10T12:36:56.16Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Maintenance.cs",
+              "DocumentMoniker": "C:\\Users\\RICHARDA\\Documents\\Visual Studio 2022\\Projects\\DigitalProductionProgram\\Log\\Maintenance.cs",
+              "RelativeDocumentMoniker": "Log\\Maintenance.cs",
+              "ToolTip": "C:\\Users\\RICHARDA\\Documents\\Visual Studio 2022\\Projects\\DigitalProductionProgram\\Log\\Maintenance.cs",
+              "RelativeToolTip": "Log\\Maintenance.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAD0AAAAvAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-09T13:12:45.041Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Main_Form.cs",
+              "DocumentMoniker": "C:\\Users\\RICHARDA\\Documents\\Visual Studio 2022\\Projects\\DigitalProductionProgram\\MainWindow\\Main_Form.cs",
+              "RelativeDocumentMoniker": "MainWindow\\Main_Form.cs",
+              "ToolTip": "C:\\Users\\RICHARDA\\Documents\\Visual Studio 2022\\Projects\\DigitalProductionProgram\\MainWindow\\Main_Form.cs",
+              "RelativeToolTip": "MainWindow\\Main_Form.cs",
+              "ViewState": "AgIAAEABAAAAAAAAAAAIwAUEAABIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-09T12:17:58.125Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

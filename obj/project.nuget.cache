@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "kiTytXjQ+Hc=",
+  "dgSpecHash": "6GJpL8yEXeg=",
   "success": true,
-  "projectFilePath": "C:\\Users\\RICHARDA\\Documents\\Visual Studio 2022\\Projects\\DigitalProductionProgram 4.3.9.6\\DigitalProductionProgram.csproj",
+  "projectFilePath": "C:\\Users\\RICHARDA\\Documents\\Visual Studio 2022\\Projects\\DigitalProductionProgram 4.3.9.8\\DigitalProductionProgram.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\RICHARDA\\.nuget\\packages\\azure.core\\1.38.0\\azure.core.1.38.0.nupkg.sha512",
     "C:\\Users\\RICHARDA\\.nuget\\packages\\azure.identity\\1.11.4\\azure.identity.1.11.4.nupkg.sha512",
@@ -144,9 +144,9 @@
       "code": "NU1701",
       "level": "Warning",
       "message": "Package 'ncalc 1.3.8' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' instead of the project target framework 'net8.0-windows7.0'. This package may not be fully compatible with your project.",
-      "projectPath": "C:\\Users\\RICHARDA\\Documents\\Visual Studio 2022\\Projects\\DigitalProductionProgram 4.3.9.6\\DigitalProductionProgram.csproj",
+      "projectPath": "C:\\Users\\RICHARDA\\Documents\\Visual Studio 2022\\Projects\\DigitalProductionProgram 4.3.9.8\\DigitalProductionProgram.csproj",
       "warningLevel": 1,
-      "filePath": "C:\\Users\\RICHARDA\\Documents\\Visual Studio 2022\\Projects\\DigitalProductionProgram 4.3.9.6\\DigitalProductionProgram.csproj",
+      "filePath": "C:\\Users\\RICHARDA\\Documents\\Visual Studio 2022\\Projects\\DigitalProductionProgram 4.3.9.8\\DigitalProductionProgram.csproj",
       "libraryId": "ncalc",
       "targetGraphs": [
         "net8.0-windows7.0"

@@ -74,13 +74,13 @@ namespace DigitalProductionProgram.Measure
                     return result;
             return 0;
         }
-        public static double MaxOrMinMeasureValue(string Min_Max, string? codename)
+        public static double GetMeasurementValue(string statisticType, string? parameterCode)
         {
             if (Order.OrderID is null)
                 return 0;
             using var con = new SqlConnection(Database.cs_Protocol);
             var query = $@"
-                    SELECT {Min_Max}(Value) FROM MeasureProtocol.Data AS data
+                    SELECT {statisticType}(Value) FROM MeasureProtocol.Data AS data
                     INNER JOIN MeasureProtocol.MainData AS maindata
 	                    ON data.OrderID = maindata.OrderID
 		                    AND data.RowIndex = maindata.RowIndex
@@ -91,7 +91,7 @@ namespace DigitalProductionProgram.Measure
             var cmd = new SqlCommand(query, con);
             con.Open();
             cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
-            cmd.Parameters.AddWithValue("@codename", codename);
+            cmd.Parameters.AddWithValue("@codename", parameterCode);
             var value = cmd.ExecuteScalar();
             if (value == null) 
                 return 0;
@@ -104,15 +104,15 @@ namespace DigitalProductionProgram.Measure
        
         private static double? Max_Value_MätData(string? codename, double sl_max)
         {
-            var max = Math.Max(AvgValue_Measurement_LastOrder(codename), MaxOrMinMeasureValue("MAX", codename));
+            var max = Math.Max(AvgValue_Measurement_LastOrder(codename), GetMeasurementValue("MAX", codename));
             return Math.Max(max, sl_max);
         }
         private static double Min_Value_MätData(string? codename, double sl_min)
         {
-            var min = Math.Min(MaxOrMinMeasureValue("MIN", codename), Math.Max(AvgValue_Measurement_LastOrder(codename), MaxOrMinMeasureValue("MIN", codename)));
+            var min = Math.Min(GetMeasurementValue("MIN", codename), Math.Max(AvgValue_Measurement_LastOrder(codename), GetMeasurementValue("MIN", codename)));
             return Math.Min(Math.Max(min, sl_min), min);
         }
-        public static int Max_Bag => (int)MaxOrMinMeasureValue("MAX", "Bag");
+        public static int Max_Bag => (int)GetMeasurementValue("MAX", "Bag");
         public static string? active_MeasureCode;
         public static int MeasureStatsHeight;
         public static string? ChartCodename = string.Empty;
@@ -452,7 +452,6 @@ namespace DigitalProductionProgram.Measure
         {
             public static void Medelvärden()
             {
-                return;
                 var dt = Monitor.Monitor.DataTable_Measurepoints;
                 if (string.IsNullOrEmpty(Order.OrderNumber) || dt is null)
                     return;
@@ -464,18 +463,19 @@ namespace DigitalProductionProgram.Measure
                     double.TryParse(dt.Rows[i][4].ToString(), out var lcl);
                     double.TryParse(dt.Rows[i][1].ToString(), out var usl);
                     double.TryParse(dt.Rows[i][5].ToString(), out var lsl);
+                    double value = GetMeasurementValue("AVG", CodeName);
 
-                    if (MaxOrMinMeasureValue("AVG", CodeName) < lcl)
+                    if (value < lcl)
                         if (CodeName != null && lcl > 0)
                             InfoText.Show($"Enligt mätningarna så ligger Medel-{CodeName[i]} under den lägre styrgränsen, vänligen kontrollera att mätningarna är ok.", CustomColors.InfoText_Color.Warning, $"Varning - Medel {dt.Rows[i][0]}");
-                    if (MaxOrMinMeasureValue("AVG", CodeName) > ucl)
+                    if (value > ucl)
                         if (CodeName != null && ucl > 0)
                             InfoText.Show($"Enligt mätningarna så ligger Medel-{CodeName[i]} över den övre styrgränsen, vänligen kontrollera att mätningarna är ok.", CustomColors.InfoText_Color.Warning, $"Varning - Medel ID{dt.Rows[i][0]}");
 
-                    if (MaxOrMinMeasureValue("AVG", CodeName) <lsl)
+                    if (value < lsl)
                         if (CodeName != null && lsl > 0)
                             InfoText.Show($"Enligt mätningarna så ligger Medel-{CodeName[i]} under den lägre gränsen, kontrollera att mätningarna är ok.", CustomColors.InfoText_Color.Bad, $"Varning - Medel {dt.Rows[i][0]}");
-                    if (MaxOrMinMeasureValue("AVG", CodeName) > usl)
+                    if (value > usl)
                         if (CodeName != null && usl > 0) 
                             InfoText.Show($"Enligt mätningarna så ligger Medel-{CodeName[i]} över den övre styrgränsen, kontrollera att mätningarna är ok.", CustomColors.InfoText_Color.Bad, $"Varning - Medel {dt.Rows[i][0]}");
                 }

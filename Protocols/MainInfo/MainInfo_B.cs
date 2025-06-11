@@ -17,9 +17,9 @@ namespace DigitalProductionProgram.Protocols.MainInfo
 {
     public partial class MainInfo_B : UserControl
     {
-        public static List<string> List_ProdType(string tabell)
+        public static List<string?> List_ProdType(string tabell)
         {
-            var list = new List<string>();
+            var list = new List<string?>();
             using (var con = new SqlConnection(Database.cs_Protocol))
             {
                 var query = $@"SELECT DISTINCT ProdType FROM {tabell} WHERE WorkOperationID = (SELECT ID FROM Workoperation.Names WHERE Name = @workoperation AND ID IS NOT NULL)";

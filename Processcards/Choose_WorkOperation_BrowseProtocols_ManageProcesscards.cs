@@ -170,7 +170,7 @@ namespace DigitalProductionProgram.Processcards
 
         private void PartNr_Click(object sender, EventArgs e)
         {
-            var list = new List<string>();
+            var list = new List<string?>();
             if (IsProcesscard)
             {
                 using var con = new SqlConnection(Database.cs_Protocol);

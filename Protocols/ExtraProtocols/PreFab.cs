@@ -115,7 +115,7 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
             }
             return dt;
         }
-        public static List<string> List_BatchNr(string? partNr)
+        public static List<string?> List_BatchNr(string? partNr)
         {
             var list = Monitor.Monitor.PreFab_BatchNr(partNr);
             if (list != null)
@@ -126,11 +126,11 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
 
             return null;
         }
-        public static List<string> ListBatchNr
+        public static List<string?> ListBatchNr
         {
             get
             {
-                var list = new List<string>();
+                var list = new List<string?>();
                 using (var con = new SqlConnection(Database.cs_Protocol))
                 {
                     var query = @"SELECT DISTINCT Halvfabrikat_OrderNr FROM [Order].PreFab ORDER BY Halvfabrikat_OrderNr";
@@ -144,11 +144,11 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
                 return list;
             }
         }
-        public static List<string> ListMaterial
+        public static List<string?> ListMaterial
         {
             get
             {
-                var list = new List<string>();
+                var list = new List<string?>();
                 using (var con = new SqlConnection(Database.cs_Protocol))
                 {
                     const string query = @"SELECT DISTINCT Halvfabrikat_Benämning FROM [Order].PreFab ORDER BY Halvfabrikat_Benämning";
@@ -309,7 +309,7 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
         {
             if (Browse_Protocols.Browse_Protocols.Is_BrowsingProtocols)
                 return;
-            List<string> items;
+            List<string?> items;
 
             if (e.ColumnIndex == ExtruderColumn)//Extruder
             {

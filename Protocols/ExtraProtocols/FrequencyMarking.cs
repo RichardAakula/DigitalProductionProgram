@@ -114,11 +114,11 @@ namespace DigitalProductionProgram.Protocols
             dgv_Frekvensmarkering.Rows.Add();
 
         }
-        private static IEnumerable<string> List_BatchNr
+        private static IEnumerable<string?> List_BatchNr
         {
             get
             {
-                var list = new List<string>();
+                var list = new List<string?>();
                 using (var con = new SqlConnection(Database.cs_Protocol))
                 {
                     var query = @"SELECT Halvfabrikat_OrderNr

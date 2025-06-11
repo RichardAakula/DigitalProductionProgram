@@ -403,7 +403,7 @@ namespace DigitalProductionProgram.Protocols.Slipning_TEF
         private void Inledande_LotNr_Enter(object sender, EventArgs e)
         {
             var ctrl = (Control) sender;
-            var list = new List<string>();
+            var list = new List<string?>();
 
             if (Monitor.Monitor.Part_Material is null == false)
                 list = Monitor.Monitor.PreFab_BatchNr(Monitor.Monitor.Part_Material.PartNumber);

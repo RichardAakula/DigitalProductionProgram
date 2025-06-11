@@ -34,23 +34,21 @@ namespace DigitalProductionProgram.Processcards
 
         public static int TotalRowsProcesscard(int formtemplateid)
         {
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query = @"
+            using var con = new SqlConnection(Database.cs_Protocol);
+            var query = @"
                     SELECT MAX(RowIndex) 
                     FROM Protocol.Template
                     WHERE FormTemplateID = @formtemplateid";
-                //AND Revision = @revision";    //Denna bör gå att vara utan vid nya versionen med Flexibla Protokoll
+            //AND Revision = @revision";    //Denna bör gå att vara utan vid nya versionen med Flexibla Protokoll
 
-                con.Open();
-                var cmd = new SqlCommand(query, con);
-                cmd.Parameters.AddWithValue("@formtemplateid", formtemplateid);
-               // cmd.Parameters.AddWithValue("@revision", Active_Processcard_Revision(formtemplateid));
-                var value = cmd.ExecuteScalar();
+            con.Open();
+            var cmd = new SqlCommand(query, con);
+            cmd.Parameters.AddWithValue("@formtemplateid", formtemplateid);
+            // cmd.Parameters.AddWithValue("@revision", Active_Processcard_Revision(formtemplateid));
+            var value = cmd.ExecuteScalar();
 
-                int.TryParse(value.ToString(), out var totalrows);
-                return totalrows + 1;
-            }
+            int.TryParse(value.ToString(), out var totalrows);
+            return totalrows + 1;
         }
         public static bool IsNotUsing_Processcard(WorkOperations workoperation)
         {

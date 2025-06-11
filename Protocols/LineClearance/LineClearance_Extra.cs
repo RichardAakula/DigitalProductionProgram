@@ -339,7 +339,7 @@ namespace DigitalProductionProgram.Protocols.LineClearance
                 InfoText.Show("Du kan inte godkänna en Line Clearance före någon har gjort Line Clearance.", CustomColors.InfoText_Color.Bad, "Warning!", this);
                 return;
             }
-            var List_AuthorizedUsers = new List<string>();
+            var List_AuthorizedUsers = new List<string?>();
             using (var con = new SqlConnection(Database.cs_Protocol))
             {
                 const int id = (int)CheckAuthority.TemplateAuthorities.ApproveLineClearancePTFE_Kragning;

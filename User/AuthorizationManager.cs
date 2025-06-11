@@ -312,7 +312,7 @@ namespace DigitalProductionProgram.User
             }
             else
             {
-                var roles = Person.List_Roles.Select(x => x.ToString()).ToList();
+                List<string?> roles = Person.List_Roles.Select(x => x.ToString()).ToList();
 
                 var choose_Item = new Choose_Item(roles, new Control[] { btn_Add }, false);
                 choose_Item.ShowDialog();
@@ -336,7 +336,7 @@ namespace DigitalProductionProgram.User
         }
         private void Insert_Mail()
         {
-            var emails = Person.List_MailAddress.Select(x => x.ToString()).ToList();
+            List<string?> emails = Person.List_MailAddress.Select(x => x.ToString()).ToList();
             var choose_Item = new Choose_Item(emails, new Control[] { btn_Add }, false, true);
             choose_Item.ShowDialog();
             if (btn_Add.Text == LanguageManager.GetString("btn_AuthoritiesAddEmail"))
@@ -358,7 +358,7 @@ namespace DigitalProductionProgram.User
         }
         private void Insert_Workoperation()
         {
-            var workoperations = Manage_WorkOperation.List_Workoperations.Select(x => x.ToString()).ToList();
+            List<string?> workoperations = Manage_WorkOperation.List_Workoperations.Select(x => x.ToString()).ToList();
 
             var choose_Item = new Choose_Item(workoperations, new Control[] { btn_Add }, false);
             choose_Item.ShowDialog();
@@ -381,7 +381,7 @@ namespace DigitalProductionProgram.User
         }
         private void Insert_Factory()
         {
-            var factories = new List<string> { "Godby", "Thailand", "Holding"};
+            var factories = new List<string?> { "Godby", "Thailand", "Holding"};
 
             var choose_Item = new Choose_Item(factories, new Control[] { btn_Add }, false);
             choose_Item.ShowDialog();

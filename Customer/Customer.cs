@@ -10,11 +10,11 @@ namespace DigitalProductionProgram.Customer
     internal class Customer
     {
 
-        public static List<string> List_Customers
+        public static List<string?> List_Customers
         {
             get
             {
-                var list = new List<string>();
+                var list = new List<string?>();
                 using (var con = new SqlConnection(Database.cs_Protocol))
                 {
                     var query = @"SELECT DISTINCT Customer FROM [Order].MainData WHERE WorkOperationID = (SELECT ID FROM Workoperation.Names WHERE Name = @workoperation AND ID IS NOT NULL) ORDER BY Customer";

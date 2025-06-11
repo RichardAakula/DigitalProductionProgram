@@ -73,9 +73,9 @@ namespace DigitalProductionProgram.Monitor
             var partNr = Utilities.GetOneFromMonitor<Inventory.Parts>("select=PartNumber", $"filter=PartNumber Eq'{partNumber}'");
             return partNr != null;
         }
-        public static List<string> PreFab_BatchNr(string? artikelNr)
+        public static List<string?> PreFab_BatchNr(string? artikelNr)
         {
-            var list = new List<string>
+            var list = new List<string?>
             {
                 "N/A",
                 string.Empty

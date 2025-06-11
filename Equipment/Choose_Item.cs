@@ -74,7 +74,7 @@ namespace DigitalProductionProgram.Equipment
             tb_Filter.Focus();
         }
 
-        public Choose_Item(IEnumerable<string> items, Control[] ctrl, bool isMultipleColumns, bool isOkReturnOwnText = false, bool isLastColumnVisible = true)
+        public Choose_Item(IEnumerable<string?> items, Control[] ctrl, bool isMultipleColumns, bool isOkReturnOwnText = false, bool isLastColumnVisible = true)
         {
             IsDataGridView = false;
             InitializeComponent();
@@ -118,7 +118,7 @@ namespace DigitalProductionProgram.Equipment
             tb_Filter.Focus();
 
         }
-        public Choose_Item(IEnumerable<string> items, DataGridViewCell[] cells, string dataBaseColumnName = null, int maskin = 0, int uppstart = 0, bool isReturnOwnText = false, bool isReturnMultipleValues = false, bool isMultipleColumns = false, string dividerChar = "/")
+        public Choose_Item(IEnumerable<string?> items, DataGridViewCell[] cells, string dataBaseColumnName = null, int maskin = 0, int uppstart = 0, bool isReturnOwnText = false, bool isReturnMultipleValues = false, bool isMultipleColumns = false, string dividerChar = "/")
         {
             IsDataGridView = true;
             InitializeComponent();
@@ -154,7 +154,7 @@ namespace DigitalProductionProgram.Equipment
             tb_Filter.Focus();
         }
 
-        public void AddItems(IEnumerable<string> items)
+        public void AddItems(IEnumerable<string?> items)
         {
             DT.Columns.Add("Item");
             if (IsMultipleColumns)

@@ -17,11 +17,11 @@ namespace DigitalProductionProgram.Measure
 {
     public partial class MeasureInstrument : UserControl
     {
-        public static IEnumerable<string> List_Mätdon
+        public static IEnumerable<string?> List_Mätdon
         {
             get
             {
-                var list = new List<string>();
+                var list = new List<string?>();
                 using (var con = new SqlConnection(Database.cs_Protocol))
                 {
                     con.Open();

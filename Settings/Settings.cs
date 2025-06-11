@@ -553,7 +553,7 @@ namespace DigitalProductionProgram.Settings
 
             private void Email_Click(object sender, EventArgs e)
             {
-                List<string> emailList = Person.List_MailAddress.Select(mail => mail.Address).ToList();
+                List<string?> emailList = Person.List_MailAddress.Select(mail => mail.Address).ToList();
                 var choose_Email = new Choose_Item(emailList, new Control[] { settings.tb_Email }, false, true);
                 choose_Email.ShowDialog();
                 settings.tb_Email.Text = string.Empty;

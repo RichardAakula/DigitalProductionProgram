@@ -104,7 +104,7 @@ namespace DigitalProductionProgram.OrderManagement
 
         private void tb_CodeText_Click(object sender, EventArgs e)
         {
-            var list = new List<string>();
+            var list = new List<string?>();
             using (var con = new SqlConnection(Database.cs_Protocol))
             {
                 const string query = @"SELECT CodeText FROM Protocol.Description ORDER BY CodeText";

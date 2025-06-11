@@ -543,7 +543,7 @@ namespace DigitalProductionProgram.Browse_Protocols
             var column = Prefab.dgv.CurrentCell.ColumnIndex;
             DataGridViewCell[] cells = { Prefab.dgv.Rows[0].Cells[column] };
             string codetext;
-            List<string> items;
+            List<string?> items;
             switch (column)
             {
                 case 1:
@@ -568,7 +568,7 @@ namespace DigitalProductionProgram.Browse_Protocols
             DataGridViewCell[] cells = { dgv.Rows[dgv.CurrentCell.RowIndex].Cells[0] };
 
             int.TryParse(dgv.Rows[dgv.CurrentCell.RowIndex].Cells["ProtocolDescriptionID"].Value.ToString(), out var protocoldescriptionid);
-            var items = new List<string>();
+            var items = new List<string?>();
             using (var con = new SqlConnection(Database.cs_Protocol))
             {
                 var query = @"

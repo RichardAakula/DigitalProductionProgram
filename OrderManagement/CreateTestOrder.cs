@@ -78,7 +78,7 @@ namespace DigitalProductionProgram.OrderManagement
         }
         private void ArtikelNr_Click(object sender, EventArgs e)
         {
-            var list = new List<string>();
+            var list = new List<string?>();
             using (var con = new SqlConnection(Database.cs_Protocol))
             {
                 var query = "SELECT DISTINCT PartNr FROM Processcard.MainData WHERE Aktiv = 'True' AND WorkOperationID = (SELECT ID FROM Workoperation.Names WHERE Name = @workoperation AND ID IS NOT NULL) AND PartNr != '1234567' ORDER BY PartNr";

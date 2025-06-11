@@ -524,7 +524,7 @@ namespace DigitalProductionProgram.Measure
                 return;
             var tb = (InputTextBox)sender;
             var codename = tb.Monitor_Name;
-            var items = new List<string> { "N/A" };
+            var items = new List<string?> { "N/A" };
 
             using (var con = new SqlConnection(Database.cs_Protocol))
             {

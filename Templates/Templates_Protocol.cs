@@ -505,7 +505,7 @@ namespace DigitalProductionProgram.Templates
 
         private void Workoperation_MouseDown(object sender, MouseEventArgs e)
         {
-            List<string> list = new List<string>();
+            List<string?> list = new List<string?>();
             using (var con = new SqlConnection(Database.cs_Protocol))
             {
                 const string query = @"

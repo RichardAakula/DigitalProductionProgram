@@ -1140,7 +1140,7 @@ namespace DigitalProductionProgram.Processcards
         private void PartNr_Enter(object sender, EventArgs e)
         {
             var artikelNr_Aktiv = chb_HideInactive_PartNr.Checked;
-            var list = new List<string>();
+            var list = new List<string?>();
             using (var con = new SqlConnection(Database.cs_Protocol))
             {
                 con.Open();

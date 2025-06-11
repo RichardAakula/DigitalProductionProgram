@@ -20,8 +20,8 @@ namespace DigitalProductionProgram.ToolManagement
 {
     public partial class ToolCalculator : Form
     {
-        private readonly List<string> List_DieType;
-        private readonly List<string> List_PinType;
+        private readonly List<string?> List_DieType;
+        private readonly List<string?> List_PinType;
         private bool IsOpening = true;
         private bool IsToManyCalculations(int totalSteps, bool isOkToOverrideCalculation)
         {
@@ -149,7 +149,7 @@ namespace DigitalProductionProgram.ToolManagement
         {
             Control[] controls = { tb_Operation };
             var ops = Monitor.Monitor.List_Operations(tb_OrderNr.Text, null);
-            var opsStrings = ops.Select(op => $"{op.Operation} - {op.Description}");
+            IEnumerable<string?> opsStrings = ops.Select(op => $"{op.Operation} - {op.Description}");
             var chooseOperation = new Choose_Item(opsStrings, controls, false);
             chooseOperation.ShowDialog();
 

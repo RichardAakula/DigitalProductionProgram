@@ -127,7 +127,7 @@ namespace DigitalProductionProgram.Help
             t.Start();
         }
 
-        public static void PromptForText(string Question, CustomColors.InfoText_Color color, string? header, Control? Form, List<string> list_Items)
+        public static void PromptForText(string Question, CustomColors.InfoText_Color color, string? header, Control? Form, List<string?> list_Items)
         {
             Change_GUI_BackColor(color);
           //  form = Form;
@@ -140,7 +140,7 @@ namespace DigitalProductionProgram.Help
 
             Translate_Form();
             Change_GUI_Header(header);
-            Change_GUI_Return_Text(true);
+            Change_GUI_Return_Text();
             Change_GUI_Size(Question);
             infoText.ShowDialog();
         }
@@ -228,37 +228,27 @@ namespace DigitalProductionProgram.Help
                 infoText.btn_Ok.Visible = false;
             }
         }
-        private static void Change_GUI_Return_Text(bool isInputText)
+        private static void Change_GUI_Return_Text()
         {
-            if (isInputText)
-            {
-             //   IsInputText = true;
-                infoText.tlp_Buttons.Visible = true;
-                infoText.tb_Return_Text = new TextBox
-                {
-                    Dock = DockStyle.Left,
-                    Multiline = true,
-                    Width = 400,
-                };
-                if (InputTextList is null == false)
-                {
-                    infoText.tb_Return_Text.Click += Items_Click;
-                }
-                infoText.tlp_Main.Controls.Add(infoText.tb_Return_Text, 1, 3);
+             infoText.tlp_Buttons.Visible = true;
+             infoText.tb_Return_Text = new TextBox
+             {
+                 Dock = DockStyle.Left,
+                 Multiline = true,
+                 Width = 400,
+             };
+             if (InputTextList is null == false)
+                 infoText.tb_Return_Text.Click += Items_Click;
+             infoText.tlp_Main.Controls.Add(infoText.tb_Return_Text, 1, 2);
                
-                infoText.btn_Yes.Visible = false;
-                infoText.btn_No.Visible = true;
-                infoText.btn_Ok.Visible = true;
-                infoText.btn_No.Text = "Avbryt";
-                infoText.tlp_Main.RowStyles[2].Height = 40;
-                infoText.tlp_Main.RowStyles[3].Height = 60;
-                infoText.tlp_Main.RowStyles[4].Height = 40;
-            }
-            else
-            {
-              //  IsInputText = false;
-                infoText.tlp_Main.RowStyles[3].Height = 0;
-            }
+             infoText.btn_Yes.Visible = false;
+             infoText.btn_No.Visible = true;
+             infoText.btn_Ok.Visible = true;
+             infoText.btn_No.Text = "Avbryt";
+             infoText.tlp_Main.RowStyles[2].Height = 80;
+             infoText.tlp_Main.RowStyles[3].Height = 20;
+             //infoText.tlp_Main.RowStyles[4].Height = 40;
+           
         }
         private static void Change_GUI_Return_Value()
         {
@@ -374,7 +364,7 @@ namespace DigitalProductionProgram.Help
         }
 
        
-        private static void NumberOfLayersChanged(object sender, EventArgs e)
+        private static void NumberOfLayersChanged(object? sender, EventArgs e)
         {
             return_Value = (int)infoText.num_Return_Value.Value;
             switch (infoText.num_Return_Value.Value)

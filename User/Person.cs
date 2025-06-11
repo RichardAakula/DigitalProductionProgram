@@ -16,9 +16,9 @@ namespace DigitalProductionProgram.User
         public static string? Role = null!;
         
 
-        public static List<string> List_Users(bool IsShowInactiveUsers)
+        public static List<string?> List_Users(bool IsShowInactiveUsers)
         {
-            var list = new List<string>();
+            var list = new List<string?>();
 
             using var con = new SqlConnection(Database.cs_Protocol);
             const string query = @"

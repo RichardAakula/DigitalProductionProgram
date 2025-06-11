@@ -11,7 +11,7 @@ namespace DigitalProductionProgram.Equipment
 {
     internal class Equipment
     {
-        public static string HS_Machine { get; set; }
+        public static string? HS_Machine { get; set; }
 
         public static bool Is_Filterhus_Used_No_Processcard
         {
@@ -21,22 +21,20 @@ namespace DigitalProductionProgram.Equipment
             {
                 if (string.IsNullOrEmpty(Order.PartID.ToString()))
                     return false;
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    var query = @"
+                using var con = new SqlConnection(Database.cs_Protocol);
+                var query = @"
                         SELECT BoolValue                          
                         FROM [Order].Data
                         WHERE OrderID = @orderid
                         AND ProtocolDescriptionID = 313";
-                    var IsFilterhus = false;
-                    con.Open();
-                    var cmd = new SqlCommand(query, con);
-                    cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
-                    var value = cmd.ExecuteScalar();
-                    if (value != null)
-                        bool.TryParse(value.ToString(), out IsFilterhus);
-                    return IsFilterhus;
-                }
+                var IsFilterhus = false;
+                con.Open();
+                var cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
+                var value = cmd.ExecuteScalar();
+                if (value != null)
+                    bool.TryParse(value.ToString(), out IsFilterhus);
+                return IsFilterhus;
             }
         }
         public static bool Is_Filterhus_Used_In_Processcard
@@ -121,126 +119,29 @@ namespace DigitalProductionProgram.Equipment
             }
         }
 
-        public static List<string> Skruvar_FEP
+        public static List<string?> List_ProdLines
         {
             get
             {
-                var list = new List<string>();
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    var query = @"SELECT DISTINCT textvalue
-                        FROM [Order].Data WHERE ProtocolDescriptionID = 242";
-                    con.Open();
-                    var cmd = new SqlCommand(query, con);
-                    var reader = cmd.ExecuteReader();
-
-                    while (reader.Read())
-                        list.Add(reader[0].ToString());
-                }
-                return list;
-            }
-        }
-        public static List<string> Huvud_FEP
-        {
-            get
-            {
-                var list = new List<string>();
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    var query = @"SELECT DISTINCT textvalue
-                        FROM [Order].Data WHERE ProtocolDescriptionID = 243";
-                    con.Open();
-                    var cmd = new SqlCommand(query, con);
-                    var reader = cmd.ExecuteReader();
-
-                    while (reader.Read())
-                        list.Add(reader[0].ToString());
-                }
-                return list;
-            }
-        }
-        public static List<string> Silpaket_FEP
-        {
-            get
-            {
-                var list = new List<string>();
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    var query = @"SELECT DISTINCT textvalue
-                        FROM [Order].Data WHERE ProtocolDescriptionID = 244";
-                    con.Open();
-                    var cmd = new SqlCommand(query, con);
-                    var reader = cmd.ExecuteReader();
-
-                    while (reader.Read())
-                        list.Add(reader[0].ToString());
-                }
-                return list;
-            }
-        }
-        public static List<string> Kalibreringstyp_FEP
-        {
-            get
-            {
-                var list = new List<string>();
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    var query = @"SELECT DISTINCT textvalue
-                        FROM [Order].Data WHERE ProtocolDescriptionID = 245";
-                    con.Open();
-                    var cmd = new SqlCommand(query, con);
-                    var reader = cmd.ExecuteReader();
-
-                    while (reader.Read())
-                        list.Add(reader[0].ToString());
-                }
-                return list;
-            }
-        }
-        public static List<string> List_ProdLines
-        {
-            get
-            {
-                var list = new List<string>();
+                var list = new List<string?>();
                 foreach (var prodlinje in Monitor.Monitor.WorkCenters.Where(prodlinje => list.Contains(prodlinje.Value) == false))
                     list.Add(prodlinje.Value);
 
-                using (var con = new SqlConnection(Database.cs_Protocol))
+                using var con = new SqlConnection(Database.cs_Protocol);
+                var query = @"SELECT DISTINCT ProdLine FROM Processcard.MainData ORDER BY ProdLine";
+                var cmd = new SqlCommand(query, con);
+                con.Open();
+                var reader = cmd.ExecuteReader();
+                while (reader.Read())
                 {
-                    var query = @"SELECT DISTINCT ProdLine FROM Processcard.MainData ORDER BY ProdLine";
-                    var cmd = new SqlCommand(query, con);
-                    con.Open();
-                    var reader = cmd.ExecuteReader();
-                    while (reader.Read())
-                    {
-                        if (!Blacklist_Utrustning.Contains(reader[0].ToString()) && !list.Contains(reader[0].ToString()))
-                            list.Add(reader[0].ToString());
-                    }
+                    if (!Blacklist_Utrustning.Contains(reader[0].ToString()) && !list.Contains(reader[0].ToString()))
+                        list.Add(reader[0].ToString());
                 }
+
                 return list;
             }
         }
         
-        //public static List<string> List_Screws_IDNummer(bool isType, string type)
-        //{
-        //    var list = new List<string>();
-        //    using (var con = new SqlConnection(Database.cs_ToolRegister))
-        //    {
-        //        string query;
-        //        if (isType)
-        //            query = "SELECT Typ FROM Register_Skruvar WHERE (Kasserad IS NULL OR Kasserad = '') AND Inaktiv = 'False' AND Reserv = 'False'";
-        //        else
-        //            query = "SELECT ID_Nummer FROM Register_Skruvar WHERE Typ = @type AND (Kasserad IS NULL OR Kasserad = '') AND Inaktiv = 'False' AND Reserv = 'False'";
-
-        //        var cmd = new SqlCommand(query, con);
-        //        SQL_Parameter.String(cmd.Parameters, "@type", type);
-        //        con.Open();
-        //        var reader = cmd.ExecuteReader();
-        //        while (reader.Read())
-        //            list.Add(reader[0].ToString());
-        //    }
-        //    return list;
-        //}
         public static List<string?> List_Intag
         {
             get
@@ -254,148 +155,47 @@ namespace DigitalProductionProgram.Equipment
                 return list;
             }
         }
-        //public static List<string> List_Dryer(string typ)
-        //{
-        //    var list = new List<string>();
-        //    using (var con = new SqlConnection(Database.cs_ToolRegister))
-        //    {
-        //        string query;
-        //        if (string.IsNullOrEmpty(typ) || typ == "N/A")
-        //            query = "SELECT ID_Nummer, Lagerplats FROM Register_Torkar";
-        //        else
-        //            query = "SELECT ID_Nummer, Lagerplats FROM Register_Torkar WHERE Typ = @typ";
-
-        //        var cmd = new SqlCommand(query, con);
-        //        SQL_Parameter.String(cmd.Parameters, "@typ", typ);
-        //        con.Open();
-        //        var reader = cmd.ExecuteReader();
-        //        while (reader.Read())
-        //            list.Add($"{reader[0]}:({reader[1]})");
-
-        //    }
-
-        //    return list;
-        //}
-        //public static List<string> List_Torped(bool isType)
-        //{
-        //    var list = new List<string>();
-        //    using (var con = new SqlConnection(Database.cs_ToolRegister))
-        //    {
-        //        string query;
-        //        if (isType)
-        //            query = "SELECT DISTINCT Typ FROM Register_Torpeder";
-        //        else
-        //            query = "SELECT DISTINCT ID_Nummer, Typ FROM Register_Torpeder";
-
-        //        var cmd = new SqlCommand(query, con);
-        //        con.Open();
-        //        var reader = cmd.ExecuteReader();
-        //        while (reader.Read())
-        //            list.Add(isType ? reader[0].ToString() : $"{reader[0]}:({reader[1]})");
-        //    }
-        //    return list;
-        //}
-        //public static List<string> List_TorpedMutter(bool isType)
-        //{
-        //    var list = new List<string>();
-        //    using (var con = new SqlConnection(Database.cs_ToolRegister))
-        //    {
-        //        string query;
-        //        if (isType)
-        //            query = "SELECT DISTINCT Typ FROM Register_Torpedmuttrar";
-        //        else
-        //            query = "SELECT DISTINCT ID_Nummer, Typ FROM Register_Torpedmuttrar";
-
-        //        var cmd = new SqlCommand(query, con);
-        //        con.Open();
-        //        var reader = cmd.ExecuteReader();
-        //        while (reader.Read())
-        //            list.Add(isType ? reader[0].ToString() : $"{reader[0]}:({reader[1]})");
-        //    }
-
-        //    return list;
-        //}
-        //public static List<string> List_Huvud(bool isType, string type)
-        //{
-        //    //När registret för Huvuden tas i bruk skall data enbart hämtas från registret och inte från Processkorten som det görs nu-
-
-        //    var List_Huvud = new List<string>();
-
-        //    using (var con = new SqlConnection(Database.cs_ToolRegister))
-        //    {
-        //        string query;
-        //        if (isType)
-        //            query = "SELECT DISTINCT Typ FROM Register_Huvud";
-        //        else
-        //            query = "SELECT DISTINCT ID_Nummer FROM Register_Huvud WHERE Typ = @typ";
-
-        //        var cmd = new SqlCommand(query, con);
-        //        SQL_Parameter.String(cmd.Parameters, "@typ", type);
-        //        con.Open();
-        //        var reader = cmd.ExecuteReader();
-        //        while (reader.Read())
-        //            List_Huvud.Add($"{reader[0]}");
-        //    }
-        //    //using (var con = new SqlConnection(Database.cs_Protocol))
-        //    //{
-        //    //    var query = "SELECT DISTINCT TextValue FROM Processcard.Data WHERE TemplateID IN (SELECT ID FROM Protocol.Template WHERE ProtocolDescriptionID = 307) ORDER BY TextValue"; // AND FormTemplateID = 31
-
-        //    //    var cmd = new SqlCommand(query, con);
-        //    //   // cmd.Parameters.AddWithValue("@now", DateTime.Now.AddYears(-1));
-        //    //    con.Open();
-        //    //    var reader = cmd.ExecuteReader();
-        //    //    while (reader.Read())
-        //    //        if (!Blacklist_Utrustning.Contains(reader[0].ToString()) && List_Huvud.Contains(reader[0].ToString()) == false)
-        //    //            List_Huvud.Add(reader[0].ToString());
-        //    //}
-        //    List_Huvud.Add("N/A");
-        //    return List_Huvud;
-        //}
-        public static List<string> List_Tool_Type(string CodeName)
+        public static List<string?> List_Tool_Type(string CodeName)
         {
-            var list = new List<string>();
-            using (var con = new SqlConnection(Database.cs_ToolRegister))
-            {
-                var query = "SELECT DISTINCT Typ FROM Register_Verktyg WHERE Sort = @codeName AND (Kasserad IS NULL OR Kasserad = '') ORDER BY Typ";
+            var list = new List<string?>();
+            using var con = new SqlConnection(Database.cs_ToolRegister);
+            var query = "SELECT DISTINCT Typ FROM Register_Verktyg WHERE Sort = @codeName AND (Kasserad IS NULL OR Kasserad = '') ORDER BY Typ";
 
-                var cmd = new SqlCommand(query, con);
-                cmd.Parameters.AddWithValue("@codeName", CodeName);
-                con.Open();
-                var reader = cmd.ExecuteReader();
-                while (reader.Read())
-                    list.Add(reader[0].ToString());
-            }
+            var cmd = new SqlCommand(query, con);
+            cmd.Parameters.AddWithValue("@codeName", CodeName);
+            con.Open();
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+                list.Add(reader[0].ToString());
             return list;
         }
-        public static List<string> List_Tool(string? typ, string? min = null, string? max = null)
+        public static List<string?> List_Tool(string? typ, string? min = null, string? max = null)
         {
-            var list = new List<string>();
+            var list = new List<string?>();
             double.TryParse(min, out var MIN);
             double.TryParse(max, out var MAX);
-            using (var con = new SqlConnection(Database.cs_ToolRegister))
-            {
-                var query = $@"
+            using var con = new SqlConnection(Database.cs_ToolRegister);
+            var query = $@"
                     SELECT DISTINCT ID_Nummer, Landlängd_nom, Dimension_nom 
                     FROM Register_Verktyg 
                     WHERE (Typ = @typ OR @typ IS NULL)
                         AND (Kasserad IS NULL OR Kasserad = '') ";
-                if (!string.IsNullOrEmpty(min) && !string.IsNullOrEmpty(max))
-                    query += "AND Dimension_nom >= @min AND Dimension_nom <= @max ";
-                query += "ORDER BY Dimension_nom";
-                con.Open();
-                var cmd = new SqlCommand(query, con);
-                cmd.Parameters.AddWithValue("@min", MIN);
-                cmd.Parameters.AddWithValue("@max", MAX);
-                SQL_Parameter.String(cmd.Parameters, "@typ", typ);
-                var reader = cmd.ExecuteReader();
-                while (reader.Read())
-                    list.Add($"{reader[0]}:{reader[1]}");
-            }
+            if (!string.IsNullOrEmpty(min) && !string.IsNullOrEmpty(max))
+                query += "AND Dimension_nom >= @min AND Dimension_nom <= @max ";
+            query += "ORDER BY Dimension_nom";
+            con.Open();
+            var cmd = new SqlCommand(query, con);
+            cmd.Parameters.AddWithValue("@min", MIN);
+            cmd.Parameters.AddWithValue("@max", MAX);
+            SQL_Parameter.String(cmd.Parameters, "@typ", typ);
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+                list.Add($"{reader[0]}:{reader[1]}");
             return list;
         }
-        public static List<string> List_From_Register(string kolumn, string register, bool is_Show_Typ = false, string nom_Typ = null, string? sort = null)
+        public static List<string?> List_From_Register(string kolumn, string register, bool is_Show_Typ = false, string nom_Typ = null, string? sort = null)
         {
-            var list = new List<string>();
+            var list = new List<string?>();
 
             using (var con = new SqlConnection(Database.cs_ToolRegister))
             {
@@ -434,7 +234,7 @@ namespace DigitalProductionProgram.Equipment
             return list;
 
         }
-        public static List<string> List_Equipment_Protocol(string codetext)
+        public static List<string?> List_Equipment_Protocol(string codetext)
         {
             var list = new List<string>();
             using (var con = new SqlConnection(Database.cs_Protocol))
@@ -473,7 +273,7 @@ namespace DigitalProductionProgram.Equipment
                 return list;
             }
         }
-        public static List<string> List_Register(bool isType, string? type, string db_Table)
+        public static List<string?> List_Register(bool isType, string? type, string db_Table)
         {
             var list = new List<string>();
             using (var con = new SqlConnection(Database.cs_ToolRegister))

@@ -339,7 +339,7 @@ namespace DigitalProductionProgram.Protocols.Blandning_PTFE
         }
         private void Journal_Input_CellEnter(object sender, DataGridViewCellEventArgs e)
         {
-            var items = new List<string>();
+            var items = new List<string?>();
             var col = e.ColumnIndex;
             switch (col)
             {

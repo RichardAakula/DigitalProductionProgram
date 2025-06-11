@@ -29,9 +29,9 @@ namespace DigitalProductionProgram.Equipment
         }
        
       
-        public static List<string> Extruders(string codetext, int? orderid = 0)
+        public static List<string?> Extruders(string codetext, int? orderid = 0)
         {
-            var list = new List<string>();
+            var list = new List<string?>();
             using var con = new SqlConnection(Database.cs_Protocol);
             var query = @"
                     SELECT DISTINCT TextValue
@@ -135,7 +135,7 @@ namespace DigitalProductionProgram.Equipment
             }
         }
 
-        public static string Active_HS_Machine
+        public static string? Active_HS_Machine
         {
             get
             {

@@ -35,7 +35,7 @@ namespace DigitalProductionProgram.Monitor.GET
             public override string URL => "Inventory/ProductRecords";
 
             public long Id { get; set; }
-            public string SerialNumber { get; set; }    //LotNr
+            public string? SerialNumber { get; set; }    //LotNr
             public string BestBeforeDate { get; set; }
         }
 

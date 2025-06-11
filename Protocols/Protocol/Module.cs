@@ -115,6 +115,20 @@ namespace DigitalProductionProgram.Protocols.Protocol
         {
             return dgv_Row.Cells["col_MAX"].Value?.ToString();
         }
+        private string? Value(int col, int protocolDescriptionID)
+        {
+
+            foreach (DataGridViewRow row in dgv_Module.Rows)
+            {
+                if (row.Cells["col_ProtocolDescriptionID"].Value != null &&
+                    (int)row.Cells["col_ProtocolDescriptionID"].Value == protocolDescriptionID)
+                {
+                    return row.Cells[col].Value?.ToString();
+                }
+            }
+
+            return null;
+        }
         public int TotalModuleHeight
         {
             get
@@ -703,7 +717,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
 
             DataGridViewCell[] cells = { dgv_Module.Rows[row].Cells[e.ColumnIndex] };
             var dgv_Row = dgv_Module.Rows[row];
-            var items = new List<string>();
+            var items = new List<string?>();
             dgv_Module.Rows[e.RowIndex].Cells[e.ColumnIndex].Selected = true;
             var IsItemsMultipleColumns = false;
             int.TryParse(dgv_Module.Rows[row].Cells["col_ProtocolDescriptionID"].Value.ToString(), out var protocolDescriptionID);
@@ -739,8 +753,8 @@ namespace DigitalProductionProgram.Protocols.Protocol
                         case 292:   //OD REGLERING
                         case 326:   //RENGJORT UTRUSTNING
                         case 313:
-                            items.Add(LanguageManager.GetString("yes"));
-                            items.Add(LanguageManager.GetString("no"));
+                            items.Add(LanguageManager.GetString("yes") ?? string.Empty);
+                            items.Add(LanguageManager.GetString("no") ?? string.Empty);
                             break;
                         case 80:    //EXTRUDER
                             items = CheckAuthority.IsWorkoperationAuthorized(CheckAuthority.TemplateWorkoperation.ExtruderRegister) ? DigitalProductionProgram.Equipment.Equipment.List_From_Register("Extruder", "Extruder_Skruvar") : Machines.Extruders("EXTRUDER");
@@ -765,7 +779,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                             dgv_Module.Rows[row].Cells[col].Value = datePicker.OutGoingDate;
                             return;
                         case 277: //TORK-TID
-                            items.Add(LanguageManager.GetString("dryingMaterial_1"));
+                            items.Add(LanguageManager.GetString("dryingMaterial_1") ?? string.Empty);
                             break;
                         case 301: //HACK/DRAGARE
                             items = DigitalProductionProgram.Equipment.Equipment.List_Equipment_Protocol("HACK/DRAGARE");
@@ -806,8 +820,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                             break;
                         case 83: //MUNSTYCKE
                             cells = new[] { dgv_Module.Rows[e.RowIndex].Cells[col], dgv_Module.Rows[e.RowIndex + 1].Cells[col] };
-                            if (Order.WorkOperation == Manage_WorkOperation.WorkOperations.Extrudering_FEP)
-                                DieType = "Munstycken FEP";
+                            DieType = Value(col, 310);
                             items = DigitalProductionProgram.Equipment.Equipment.List_Tool(DieType, MIN_Value(dgv_Row), MAX_Value(dgv_Row));
                             IsItemsMultipleColumns = true;
                             break;
@@ -816,8 +829,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                             break;
                         case 209: //KÄRNA
                             cells = new[] { dgv_Module.Rows[e.RowIndex].Cells[col], dgv_Module.Rows[e.RowIndex + 1].Cells[col] };
-                            if (Order.WorkOperation == Manage_WorkOperation.WorkOperations.Extrudering_FEP)
-                                TipType = "Kanyler FEP";
+                            DieType = Value(col, 311);
                             items = DigitalProductionProgram.Equipment.Equipment.List_Tool(TipType, MIN_Value(dgv_Row), MAX_Value(dgv_Row));
                             IsItemsMultipleColumns = true;
                             break;
@@ -897,7 +909,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                 var choose_Item = new Choose_Item(items, cells, dgv_Module.Rows[row].Cells[0].Value.ToString(), MachineIndex, startup, isOkWriteText, false, IsItemsMultipleColumns);
                 choose_Item.ShowDialog();
             }
-            if (IsOkToSave)
+            if (IsOkToSave || isProcesscardUnderManagement)
                 SpecialItems(row, col, protocolDescriptionID, isProcesscardUnderManagement);
         }
         private void Module_RowEnter(object sender, DataGridViewCellEventArgs e)

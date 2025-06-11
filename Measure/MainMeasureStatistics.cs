@@ -452,6 +452,7 @@ namespace DigitalProductionProgram.Measure
         {
             public static void Medelvärden()
             {
+                return;
                 var dt = Monitor.Monitor.DataTable_Measurepoints;
                 if (string.IsNullOrEmpty(Order.OrderNumber) || dt is null)
                     return;

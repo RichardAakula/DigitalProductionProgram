@@ -57,11 +57,11 @@ namespace DigitalProductionProgram.QC
 
             }
         }
-        private List<string> HistoryPartNumbers
+        private List<string?> HistoryPartNumbers
         {
             get
             {
-               var list = new List<string>();
+               var list = new List<string?>();
                 using (var con = new SqlConnection(Database.cs_Protocol))
                 {
                     const string query = @"

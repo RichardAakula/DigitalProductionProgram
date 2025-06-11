@@ -36,11 +36,11 @@ namespace DigitalProductionProgram.Protocols.Spolning_PTFE
                 return new[] { 60, 50, 45, 75, 100, 80, 45, 55, 100, 80, 45, 55, 100, 40, 40, 55, 48, 50, 45, 55, 50, 125, 40, 40, 50, 100, 50, 120 };
             }
         }
-        private static List<string> Blandning_LotNr
+        private static List<string?> Blandning_LotNr
         {
             get
             {
-                var list = new List<string>();
+                var list = new List<string?>();
                 using (var con = new SqlConnection(Database.cs_Protocol))
                 {
                     var query = @"
@@ -668,7 +668,7 @@ namespace DigitalProductionProgram.Protocols.Spolning_PTFE
         }
         private void Journal_Input_CellEnter(object sender, DataGridViewCellEventArgs e)
         {
-            List<string> items = null;
+            List<string?> items = null;
             var protocoldescriptionid = int.Parse(dgv_Journal_Input.Columns[e.ColumnIndex].Name);
             switch (protocoldescriptionid)
             {

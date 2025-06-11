@@ -98,11 +98,11 @@ namespace DigitalProductionProgram.OrderManagement
                 return 0;
             }
         }
-        public static List<string> List_Orders
+        public static List<string?> List_Orders
         {
             get
             {
-                var list = new List<string>();
+                var list = new List<string?>();
                 using (var con = new SqlConnection(Database.cs_Protocol))
                 {
                     var query = @"SELECT DISTINCT OrderNr FROM [Order].MainData WHERE WorkOperationID = (SELECT ID FROM Workoperation.Names WHERE Name = @workoperation AND ID IS NOT NULL) ORDER BY OrderNr";
@@ -136,11 +136,11 @@ namespace DigitalProductionProgram.OrderManagement
                 }
             }
         }
-        public static List<string> List_ProdType
+        public static List<string?> List_ProdType
         {
             get
             {
-                var list = new List<string>();
+                var list = new List<string?>();
                 using (var con = new SqlConnection(Database.cs_Protocol))
                 {
                     var query = @"SELECT DISTINCT ProdType FROM [Order].MainData WHERE WorkOperationID = (SELECT ID FROM Workoperation.Names WHERE Name = @workoperation AND ID IS NOT NULL) ORDER BY ProdType";

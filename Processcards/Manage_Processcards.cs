@@ -519,14 +519,14 @@ namespace DigitalProductionProgram.Processcards
             if (Processcard.IsMultiple_Processcard(Order.WorkOperation, Order.PartNumber))
             {
                 var black = new BlackBackground("", 70);
-                var chooseProcesscard = new ProcesscardTemplateSelector(false, true, true);
+                var chooseProcesscard = new ProcesscardTemplateSelector(false, true, true, false);
                 black.Show();
                 chooseProcesscard.ShowDialog();
                 black.Close();
             }
             else
             {
-                Part.Load_PartID(Order.PartNumber, false, true, Order.WorkOperation.ToString());
+                Part.Load_PartID(Order.PartNumber, false, true, false, Order.WorkOperation.ToString());
                 Part.Load_PartGroup_ID(Order.PartNumber, Order.WorkOperation);
             }
             

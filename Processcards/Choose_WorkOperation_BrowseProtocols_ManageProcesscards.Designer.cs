@@ -31,120 +31,120 @@ namespace DigitalProductionProgram.Processcards
         /// </summary>
         private void InitializeComponent()
         {
-            this.label_ChoosePC_Header = new System.Windows.Forms.Label();
-            this.flp_Left = new System.Windows.Forms.FlowLayoutPanel();
-            this.label_Info = new System.Windows.Forms.Label();
-            this.tb_PartNr = new System.Windows.Forms.TextBox();
-            this.label_Avdelning = new System.Windows.Forms.Label();
-            this.flp_ArbetsOperation = new System.Windows.Forms.FlowLayoutPanel();
-            this.label_ChoosePC_Info_1 = new System.Windows.Forms.Label();
-            this.flp_Left.SuspendLayout();
-            this.SuspendLayout();
+            label_ChoosePC_Header = new Label();
+            flp_Left = new FlowLayoutPanel();
+            label_Info = new Label();
+            tb_PartNr = new TextBox();
+            label_Avdelning = new Label();
+            flp_ArbetsOperation = new FlowLayoutPanel();
+            label_ChoosePC_Info_1 = new Label();
+            flp_Left.SuspendLayout();
+            SuspendLayout();
             // 
             // label_ChoosePC_Header
             // 
-            this.label_ChoosePC_Header.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(113)))), ((int)(((byte)(122)))));
-            this.label_ChoosePC_Header.Dock = System.Windows.Forms.DockStyle.Top;
-            this.label_ChoosePC_Header.Font = new System.Drawing.Font("Mongolian Baiti", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label_ChoosePC_Header.ForeColor = System.Drawing.Color.White;
-            this.label_ChoosePC_Header.Location = new System.Drawing.Point(0, 0);
-            this.label_ChoosePC_Header.Name = "label_ChoosePC_Header";
-            this.label_ChoosePC_Header.Size = new System.Drawing.Size(800, 56);
-            this.label_ChoosePC_Header.TabIndex = 0;
-            this.label_ChoosePC_Header.Text = "Hantering av Proceskort";
-            this.label_ChoosePC_Header.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            label_ChoosePC_Header.BackColor = Color.FromArgb(45, 113, 122);
+            label_ChoosePC_Header.Dock = DockStyle.Top;
+            label_ChoosePC_Header.Font = new Font("Mongolian Baiti", 26.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label_ChoosePC_Header.ForeColor = Color.White;
+            label_ChoosePC_Header.Location = new Point(0, 0);
+            label_ChoosePC_Header.Name = "label_ChoosePC_Header";
+            label_ChoosePC_Header.Size = new Size(800, 56);
+            label_ChoosePC_Header.TabIndex = 0;
+            label_ChoosePC_Header.Text = "Hantering av Proceskort";
+            label_ChoosePC_Header.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // flp_Left
             // 
-            this.flp_Left.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(6)))), ((int)(((byte)(81)))), ((int)(((byte)(87)))));
-            this.flp_Left.Controls.Add(this.label_Info);
-            this.flp_Left.Controls.Add(this.tb_PartNr);
-            this.flp_Left.Controls.Add(this.label_Avdelning);
-            this.flp_Left.Dock = System.Windows.Forms.DockStyle.Left;
-            this.flp_Left.Location = new System.Drawing.Point(0, 74);
-            this.flp_Left.Name = "flp_Left";
-            this.flp_Left.Size = new System.Drawing.Size(210, 382);
-            this.flp_Left.TabIndex = 1;
+            flp_Left.BackColor = Color.FromArgb(6, 81, 87);
+            flp_Left.Controls.Add(label_Info);
+            flp_Left.Controls.Add(tb_PartNr);
+            flp_Left.Controls.Add(label_Avdelning);
+            flp_Left.Dock = DockStyle.Left;
+            flp_Left.Location = new Point(0, 74);
+            flp_Left.Name = "flp_Left";
+            flp_Left.Size = new Size(210, 382);
+            flp_Left.TabIndex = 1;
             // 
             // label_Info
             // 
-            this.label_Info.AutoSize = true;
-            this.label_Info.BackColor = System.Drawing.Color.Transparent;
-            this.label_Info.Font = new System.Drawing.Font("Lucida Sans", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label_Info.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(184)))), ((int)(((byte)(220)))), ((int)(((byte)(231)))));
-            this.label_Info.Location = new System.Drawing.Point(3, 10);
-            this.label_Info.Margin = new System.Windows.Forms.Padding(3, 10, 3, 10);
-            this.label_Info.Name = "label_Info";
-            this.label_Info.Size = new System.Drawing.Size(182, 54);
-            this.label_Info.TabIndex = 1;
-            this.label_Info.Text = "Välj ArtikelNr och programmet väljer Arbetsoperation åt dig.";
+            label_Info.AutoSize = true;
+            label_Info.BackColor = Color.Transparent;
+            label_Info.Font = new Font("Lucida Sans", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label_Info.ForeColor = Color.FromArgb(184, 220, 231);
+            label_Info.Location = new Point(3, 10);
+            label_Info.Margin = new Padding(3, 10, 3, 10);
+            label_Info.Name = "label_Info";
+            label_Info.Size = new Size(182, 54);
+            label_Info.TabIndex = 1;
+            label_Info.Text = "Välj ArtikelNr och programmet väljer Arbetsoperation åt dig.";
             // 
             // tb_PartNr
             // 
-            this.tb_PartNr.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(185)))), ((int)(((byte)(188)))), ((int)(((byte)(189)))));
-            this.tb_PartNr.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.tb_PartNr.Font = new System.Drawing.Font("Palatino Linotype", 9.25F);
-            this.tb_PartNr.ForeColor = System.Drawing.Color.WhiteSmoke;
-            this.tb_PartNr.Location = new System.Drawing.Point(3, 77);
-            this.tb_PartNr.Name = "tb_PartNr";
-            this.tb_PartNr.ReadOnly = true;
-            this.tb_PartNr.Size = new System.Drawing.Size(182, 24);
-            this.tb_PartNr.TabIndex = 1011;
-            this.tb_PartNr.Click += new System.EventHandler(this.PartNr_Click);
+            tb_PartNr.BackColor = Color.FromArgb(185, 188, 189);
+            tb_PartNr.BorderStyle = BorderStyle.FixedSingle;
+            tb_PartNr.Font = new Font("Palatino Linotype", 9.25F);
+            tb_PartNr.ForeColor = Color.WhiteSmoke;
+            tb_PartNr.Location = new Point(3, 77);
+            tb_PartNr.Name = "tb_PartNr";
+            tb_PartNr.ReadOnly = true;
+            tb_PartNr.Size = new Size(182, 24);
+            tb_PartNr.TabIndex = 1011;
+            tb_PartNr.Click += PartNr_Click;
             // 
             // label_Avdelning
             // 
-            this.label_Avdelning.AutoSize = true;
-            this.label_Avdelning.Font = new System.Drawing.Font("Mongolian Baiti", 11.75F);
-            this.label_Avdelning.Location = new System.Drawing.Point(191, 84);
-            this.label_Avdelning.Margin = new System.Windows.Forms.Padding(3, 10, 3, 10);
-            this.label_Avdelning.Name = "label_Avdelning";
-            this.label_Avdelning.Size = new System.Drawing.Size(0, 16);
-            this.label_Avdelning.TabIndex = 1;
+            label_Avdelning.AutoSize = true;
+            label_Avdelning.Font = new Font("Mongolian Baiti", 11.75F);
+            label_Avdelning.Location = new Point(191, 84);
+            label_Avdelning.Margin = new Padding(3, 10, 3, 10);
+            label_Avdelning.Name = "label_Avdelning";
+            label_Avdelning.Size = new Size(0, 16);
+            label_Avdelning.TabIndex = 1;
             // 
             // flp_ArbetsOperation
             // 
-            this.flp_ArbetsOperation.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(81)))), ((int)(((byte)(85)))), ((int)(((byte)(92)))));
-            this.flp_ArbetsOperation.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flp_ArbetsOperation.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flp_ArbetsOperation.Location = new System.Drawing.Point(210, 74);
-            this.flp_ArbetsOperation.Margin = new System.Windows.Forms.Padding(15, 3, 3, 3);
-            this.flp_ArbetsOperation.MaximumSize = new System.Drawing.Size(590, 380);
-            this.flp_ArbetsOperation.Name = "flp_ArbetsOperation";
-            this.flp_ArbetsOperation.Size = new System.Drawing.Size(590, 380);
-            this.flp_ArbetsOperation.TabIndex = 2;
+            flp_ArbetsOperation.BackColor = Color.FromArgb(81, 85, 92);
+            flp_ArbetsOperation.Dock = DockStyle.Fill;
+            flp_ArbetsOperation.FlowDirection = FlowDirection.TopDown;
+            flp_ArbetsOperation.Location = new Point(210, 74);
+            flp_ArbetsOperation.Margin = new Padding(15, 3, 3, 3);
+            flp_ArbetsOperation.MaximumSize = new Size(590, 380);
+            flp_ArbetsOperation.Name = "flp_ArbetsOperation";
+            flp_ArbetsOperation.Size = new Size(590, 380);
+            flp_ArbetsOperation.TabIndex = 2;
             // 
             // label_ChoosePC_Info_1
             // 
-            this.label_ChoosePC_Info_1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(113)))), ((int)(((byte)(122)))));
-            this.label_ChoosePC_Info_1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.label_ChoosePC_Info_1.Font = new System.Drawing.Font("Mongolian Baiti", 12.75F);
-            this.label_ChoosePC_Info_1.ForeColor = System.Drawing.Color.White;
-            this.label_ChoosePC_Info_1.Location = new System.Drawing.Point(0, 56);
-            this.label_ChoosePC_Info_1.Margin = new System.Windows.Forms.Padding(3, 10, 3, 5);
-            this.label_ChoosePC_Info_1.Name = "label_ChoosePC_Info_1";
-            this.label_ChoosePC_Info_1.Padding = new System.Windows.Forms.Padding(240, 0, 0, 0);
-            this.label_ChoosePC_Info_1.Size = new System.Drawing.Size(800, 18);
-            this.label_ChoosePC_Info_1.TabIndex = 1;
-            this.label_ChoosePC_Info_1.Text = "Här nedan kan du klicka på den arbetsoperation du vill gå till.";
+            label_ChoosePC_Info_1.BackColor = Color.FromArgb(45, 113, 122);
+            label_ChoosePC_Info_1.Dock = DockStyle.Top;
+            label_ChoosePC_Info_1.Font = new Font("Mongolian Baiti", 12.75F);
+            label_ChoosePC_Info_1.ForeColor = Color.White;
+            label_ChoosePC_Info_1.Location = new Point(0, 56);
+            label_ChoosePC_Info_1.Margin = new Padding(3, 10, 3, 5);
+            label_ChoosePC_Info_1.Name = "label_ChoosePC_Info_1";
+            label_ChoosePC_Info_1.Padding = new Padding(240, 0, 0, 0);
+            label_ChoosePC_Info_1.Size = new Size(800, 18);
+            label_ChoosePC_Info_1.TabIndex = 1;
+            label_ChoosePC_Info_1.Text = "Här nedan kan du klicka på den arbetsoperation du vill gå till.";
             // 
             // Choose_WorkOperation_BrowseProtocols_ManageProcesscards
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(113)))), ((int)(((byte)(122)))));
-            this.ClientSize = new System.Drawing.Size(800, 456);
-            this.Controls.Add(this.flp_ArbetsOperation);
-            this.Controls.Add(this.flp_Left);
-            this.Controls.Add(this.label_ChoosePC_Info_1);
-            this.Controls.Add(this.label_ChoosePC_Header);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.Name = "Choose_WorkOperation_BrowseProtocols_ManageProcesscards";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Välj_ArbetsOperation_Hantering_Processkort_FormClosed);
-            this.flp_Left.ResumeLayout(false);
-            this.flp_Left.PerformLayout();
-            this.ResumeLayout(false);
+            AutoScaleDimensions = new SizeF(96F, 96F);
+            AutoScaleMode = AutoScaleMode.Dpi;
+            BackColor = Color.FromArgb(45, 113, 122);
+            ClientSize = new Size(800, 456);
+            Controls.Add(flp_ArbetsOperation);
+            Controls.Add(flp_Left);
+            Controls.Add(label_ChoosePC_Info_1);
+            Controls.Add(label_ChoosePC_Header);
+            FormBorderStyle = FormBorderStyle.FixedDialog;
+            Name = "Choose_WorkOperation_BrowseProtocols_ManageProcesscards";
+            StartPosition = FormStartPosition.CenterScreen;
+            FormClosed += Välj_ArbetsOperation_Hantering_Processkort_FormClosed;
+            flp_Left.ResumeLayout(false);
+            flp_Left.PerformLayout();
+            ResumeLayout(false);
 
         }
 

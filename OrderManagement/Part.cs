@@ -236,12 +236,12 @@ namespace DigitalProductionProgram.OrderManagement
             return new ProcesscardRevision(partId, revNr, latestRev, isLatest);
         }
 
-        public static void Load_PartID(string? partNr, bool isOperatorStartingOrder, bool isOnlyProcessCard, string? workOperation = null)
+        public static void Load_PartID(string? partNr, bool isOperatorStartingOrder, bool isOnlyProcessCard, bool isAutoSelectTemplate, string? workOperation = null)
         {
             if (string.IsNullOrWhiteSpace(partNr))
                 return;
 
-            var resolvedWorkOperation = ResolveWorkOperation(workOperation, isOnlyProcessCard, isOperatorStartingOrder);
+            var resolvedWorkOperation = ResolveWorkOperation(workOperation, isOnlyProcessCard, isOperatorStartingOrder, isAutoSelectTemplate);
             if (string.IsNullOrWhiteSpace(resolvedWorkOperation))
                 return;
 
@@ -257,7 +257,7 @@ namespace DigitalProductionProgram.OrderManagement
             if (!revision.IsLatestRevSelected && isOperatorStartingOrder)
                 Mail.NotifyQAPartNumberNeedApproval(revision.LatestRev);
         }
-        private static string? ResolveWorkOperation(string? workOperation, bool isOnlyProcessCard, bool isOperatorStartingOrder)
+        private static string? ResolveWorkOperation(string? workOperation, bool isOnlyProcessCard, bool isOperatorStartingOrder, bool isAutoSelectTemplate)
         {
             if (!string.IsNullOrWhiteSpace(workOperation) && workOperation != WorkOperations.Nothing.ToString())
                 return workOperation;
@@ -265,7 +265,7 @@ namespace DigitalProductionProgram.OrderManagement
             Order.WorkOperation = WorkOperations.Nothing;
 
             using var black = new BlackBackground("", 70);
-            using var chooser = new ProcesscardTemplateSelector(isOperatorStartingOrder, isOnlyProcessCard, false);
+            using var chooser = new ProcesscardTemplateSelector(isOperatorStartingOrder, isOnlyProcessCard, false, isAutoSelectTemplate);
 
             black.Show();
             chooser.ShowDialog();

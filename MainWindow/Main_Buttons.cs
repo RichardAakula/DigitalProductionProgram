@@ -287,7 +287,7 @@ namespace DigitalProductionProgram.MainWindow
                     break;
                 
                 case Manage_WorkOperation.WorkOperations.Nothing:
-                    var välj = new Choose_WorkOperation_BrowseProtocols_ManageProcesscards( false, false, LanguageManager.GetString("browseProtocols"));
+                    var välj = new Choose_WorkOperation_BrowseProtocols_ManageProcesscards( false, false, true,LanguageManager.GetString("browseProtocols"));
                     välj.ShowDialog();
                     break;
 

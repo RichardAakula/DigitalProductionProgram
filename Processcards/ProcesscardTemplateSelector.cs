@@ -24,19 +24,18 @@ namespace DigitalProductionProgram.Processcards
         public bool IsAborted = false;
         private static bool IsDevelopmentOfProcessCard(int? partID)
         {
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query = @"SELECT TOP(1) Framtagning_Processfönster FROM Processcard.MainData
+            using var con = new SqlConnection(Database.cs_Protocol);
+            var query = @"SELECT TOP(1) Framtagning_Processfönster FROM Processcard.MainData
                                 WHERE PartID = @partid";
 
-                var cmd = new SqlCommand(query, con);
-                cmd.Parameters.AddWithValue("@partid", partID);
-                con.Open();
-                return Convert.ToBoolean(cmd.ExecuteScalar());
-            }
+            var cmd = new SqlCommand(query, con);
+            cmd.Parameters.AddWithValue("@partid", partID);
+            con.Open();
+            return Convert.ToBoolean(cmd.ExecuteScalar());
         }
         private readonly bool IsOperatorStartingOrder;
         private readonly bool IsOnlyProcesscard;
+        private readonly bool IsAutoSelectTemplate;
 
         public int totalLabels;
         public enum TemplateType
@@ -92,10 +91,11 @@ namespace DigitalProductionProgram.Processcards
 
 
 
-        public ProcesscardTemplateSelector(bool isOperatorStartingOrder, bool isOnlyProcesscard, bool IsOkSelectLatestRev)
+        public ProcesscardTemplateSelector(bool isOperatorStartingOrder, bool isOnlyProcesscard, bool IsOkSelectLatestRev, bool isAutoSelectTemplate)
         {
             IsOperatorStartingOrder = isOperatorStartingOrder;
             IsOnlyProcesscard = isOnlyProcesscard;
+            IsAutoSelectTemplate = isAutoSelectTemplate;
             InitializeComponent();
             Translate_Form();
 
@@ -148,21 +148,10 @@ namespace DigitalProductionProgram.Processcards
                 Close();
             }
 
-            //Detta är ett försök att användaren inte skall behöva välja mall när man startar ProcesskortsHantering eftersom det inte har någon betydelse, mall laddas oavsett när processkortet laddas.
-
-            //if (totalLabels > 1 && IsOnlyProcesscard)
-            //{
-            //    var allButtons = flp_Buttons.Controls.OfType<HeaderButton>().ToList();
-
-            //    bool allSameWorkoperation = allButtons
-            //        .Select(b => b.Workoperation)
-            //        .Distinct()
-            //        .Count() == 1;
-
-            //    if (allSameWorkoperation)
-            //        allButtons.First().PerformClick();
-            //}
-
+            //Om användare håller på öppna Bläddra gamla ordrar så väljs automatiskt den första mallen i listan pga att det är irrelevant vilken mall som väljs eftersom det ändå väljs automatiskt när ordern öppnas.
+            if (IsAutoSelectTemplate)
+                foreach (HeaderButton btn in flp_Buttons.Controls.OfType<HeaderButton>())
+                    btn.PerformClick();
         }
         private void ProcesscardTemplateSelector_Shown(object sender, EventArgs e)
         {
@@ -499,11 +488,6 @@ namespace DigitalProductionProgram.Processcards
 
             if (Enum.TryParse(lbl?.Workoperation, out Manage_WorkOperation.WorkOperations workOperation))
                 Order.WorkOperation = workOperation;
-
-            //Vad är detta för något????
-            //if (lbl.IsProcesscardOkToStart == false)
-            //    if (CheckAuthority.IsRoleAuthorized(CheckAuthority.TemplateAuthorities.StartOrderWithoutQA_sign) == false)
-            //        return;
 
             Order.PartID = lbl?.PartID;
             Order.PartGroupID = lbl?.PartGroupID;

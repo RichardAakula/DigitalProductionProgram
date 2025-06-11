@@ -20,6 +20,8 @@ namespace DigitalProductionProgram.Processcards
      
         private readonly bool IsProcesscard;
         private readonly bool IsOperatorStartingOrder;
+        private bool IsAutoSelectTemplate;
+
 
         //private List<Manage_WorkOperation.WorkOperations> WorkOperations
         //{
@@ -66,7 +68,7 @@ namespace DigitalProductionProgram.Processcards
             }
         }
 
-        public Choose_WorkOperation_BrowseProtocols_ManageProcesscards(bool isProcesscard, bool isOperatorStartingOrder, string? headerText)
+        public Choose_WorkOperation_BrowseProtocols_ManageProcesscards(bool isProcesscard, bool isOperatorStartingOrder, bool isAutoSelectTemplate, string? headerText)
         {
             InitializeComponent();
             Translate_Form();
@@ -75,6 +77,8 @@ namespace DigitalProductionProgram.Processcards
             
             IsProcesscard = isProcesscard;
             IsOperatorStartingOrder = isOperatorStartingOrder;
+            IsAutoSelectTemplate = isAutoSelectTemplate;
+            
             label_ChoosePC_Header.Text = headerText;
 
             //cb_Workoperation.Text = Person.UserPreferredWorkOperation;
@@ -208,7 +212,7 @@ namespace DigitalProductionProgram.Processcards
             Order.PartNumber = tb_PartNr.Text;
             Order.ProdLine = string.Empty;
 
-            Part.Load_PartID(Order.PartNumber, IsOperatorStartingOrder, IsProcesscard);
+            Part.Load_PartID(Order.PartNumber, IsOperatorStartingOrder, IsProcesscard, IsAutoSelectTemplate);
             //if (Order.PartID is null)
             {//Vad gör denna? Varför stoppar den här? Det kan vara till för om användare inte väljer någon operation/processkort/mall så skall programmet inte gå vidare.
                 //    this.Close();

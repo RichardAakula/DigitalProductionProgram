@@ -161,7 +161,7 @@ namespace DigitalProductionProgram.OrderManagement
             Order.Operation = Operation[cb_Operation.SelectedIndex].ToString();
            
             Order.PartNumber = tb_ArtikelNr.Text;
-            Part.Load_PartID(Order.PartNumber, true,  false,Order.WorkOperation.ToString());
+            Part.Load_PartID(Order.PartNumber, true,  false, false, Order.WorkOperation.ToString());
             Order.Amount = 0;
             Order.Enhet = "m";
             Order.StartTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm");
@@ -179,7 +179,7 @@ namespace DigitalProductionProgram.OrderManagement
 
             if (Processcard.IsMultiple_Processcard(Order.WorkOperation))
             {
-                var chooseProcesscard_StartTestOrder = new ProcesscardTemplateSelector(false, false, false);
+                var chooseProcesscard_StartTestOrder = new ProcesscardTemplateSelector(false, false, false, false);
                 chooseProcesscard_StartTestOrder.ShowDialog();
 
             }

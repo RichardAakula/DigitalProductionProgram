@@ -175,7 +175,7 @@ namespace DigitalProductionProgram.MainWindow
         {
             //Startar ny Order
             lbl_ArtikelNr.Text = Order.PartNumber = Monitor.Monitor.Part.PartNumber;
-            Part.Load_PartID(Order.PartNumber, true, false, Order.WorkOperation.ToString());
+            Part.Load_PartID(Order.PartNumber, true, false, false, Order.WorkOperation.ToString());
             lbl_Antal.Text = $"{Monitor.Monitor.Operations.PlannedQuantity:0}";
             Order.Amount = Parse(lbl_Antal.Text);
             lbl_ProdGroup.Text = Monitor.Monitor.WorkCenter.Number;

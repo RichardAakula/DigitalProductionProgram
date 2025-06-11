@@ -78,9 +78,8 @@ namespace DigitalProductionProgram.Measure
         {
             if (Order.OrderID is null)
                 return 0;
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query = $@"
+            using var con = new SqlConnection(Database.cs_Protocol);
+            var query = $@"
                     SELECT {Min_Max}(Value) FROM MeasureProtocol.Data AS data
                     INNER JOIN MeasureProtocol.MainData AS maindata
 	                    ON data.OrderID = maindata.OrderID
@@ -89,16 +88,15 @@ namespace DigitalProductionProgram.Measure
                     AND (Discarded = 'False' OR Discarded IS NULL)
                         AND DescriptionId = (SELECT Id FROM MeasureProtocol.Description WHERE CodeName = @codename)";
 
-                var cmd = new SqlCommand(query, con);
-                con.Open();
-                cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
-                cmd.Parameters.AddWithValue("@codename", codename);
-               var value = cmd.ExecuteScalar();
-               if (value == null) 
-                   return 0;
-               if (double.TryParse(value.ToString(), out var result))
-                   return result;
-            }
+            var cmd = new SqlCommand(query, con);
+            con.Open();
+            cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
+            cmd.Parameters.AddWithValue("@codename", codename);
+            var value = cmd.ExecuteScalar();
+            if (value == null) 
+                return 0;
+            if (double.TryParse(value.ToString(), out var result))
+                return result;
 
             return 0;
         }
@@ -455,20 +453,30 @@ namespace DigitalProductionProgram.Measure
             public static void Medelvärden()
             {
                 var dt = Monitor.Monitor.DataTable_Measurepoints;
-                if (string.IsNullOrEmpty(Order.OrderNumber))
+                if (string.IsNullOrEmpty(Order.OrderNumber) || dt is null)
                     return;
 
                 for (var i = 0; i < dt.Rows.Count - 1; i++)
                 {
-                    if (MaxOrMinMeasureValue("AVG", dt.Rows[i][0].ToString()) < double.Parse(dt.Rows[i][4].ToString()))
-                        InfoText.Show($"Enligt mätningarna så ligger Medel-{dt.Rows[i][0].ToString()[i]} under den lägre styrgränsen, vänligen kontrollera att mätningarna är ok.", CustomColors.InfoText_Color.Warning, $"Varning - Medel {dt.Rows[i][0]}");
-                    if (MaxOrMinMeasureValue("AVG",dt.Rows[i][0].ToString()) > double.Parse(dt.Rows[i][2].ToString()))
-                        InfoText.Show($"Enligt mätningarna så ligger Medel-{dt.Rows[i][0].ToString()[i]} över den övre styrgränsen, vänligen kontrollera att mätningarna är ok.", CustomColors.InfoText_Color.Warning, $"Varning - Medel ID{dt.Rows[i][0]}");
+                    var CodeName = dt.Rows[i][0].ToString();
+                    double.TryParse(dt.Rows[i][2].ToString(), out var ucl);
+                    double.TryParse(dt.Rows[i][4].ToString(), out var lcl);
+                    double.TryParse(dt.Rows[i][1].ToString(), out var usl);
+                    double.TryParse(dt.Rows[i][5].ToString(), out var lsl);
 
-                    if (MaxOrMinMeasureValue("AVG",dt.Rows[i][0].ToString()) < double.Parse(dt.Rows[i][5].ToString()))
-                        InfoText.Show($"Enligt mätningarna så ligger Medel-{dt.Rows[i][0].ToString()[i]} under den lägre gränsen, kontrollera att mätningarna är ok.", CustomColors.InfoText_Color.Bad, $"Varning - Medel {dt.Rows[i][0]}");
-                    if (MaxOrMinMeasureValue("AVG", dt.Rows[i][0].ToString()) > double.Parse(dt.Rows[i][1].ToString()))
-                        InfoText.Show($"Enligt mätningarna så ligger Medel-{dt.Rows[i][0].ToString()[i]} över den övre styrgränsen, kontrollera att mätningarna är ok.", CustomColors.InfoText_Color.Bad, $"Varning - Medel {dt.Rows[i][0]}");
+                    if (MaxOrMinMeasureValue("AVG", CodeName) < lcl)
+                        if (CodeName != null && lcl > 0)
+                            InfoText.Show($"Enligt mätningarna så ligger Medel-{CodeName[i]} under den lägre styrgränsen, vänligen kontrollera att mätningarna är ok.", CustomColors.InfoText_Color.Warning, $"Varning - Medel {dt.Rows[i][0]}");
+                    if (MaxOrMinMeasureValue("AVG", CodeName) > ucl)
+                        if (CodeName != null && ucl > 0)
+                            InfoText.Show($"Enligt mätningarna så ligger Medel-{CodeName[i]} över den övre styrgränsen, vänligen kontrollera att mätningarna är ok.", CustomColors.InfoText_Color.Warning, $"Varning - Medel ID{dt.Rows[i][0]}");
+
+                    if (MaxOrMinMeasureValue("AVG", CodeName) <lsl)
+                        if (CodeName != null && lsl > 0)
+                            InfoText.Show($"Enligt mätningarna så ligger Medel-{CodeName[i]} under den lägre gränsen, kontrollera att mätningarna är ok.", CustomColors.InfoText_Color.Bad, $"Varning - Medel {dt.Rows[i][0]}");
+                    if (MaxOrMinMeasureValue("AVG", CodeName) > usl)
+                        if (CodeName != null && usl > 0) 
+                            InfoText.Show($"Enligt mätningarna så ligger Medel-{CodeName[i]} över den övre styrgränsen, kontrollera att mätningarna är ok.", CustomColors.InfoText_Color.Bad, $"Varning - Medel {dt.Rows[i][0]}");
                 }
             }
         }

@@ -296,7 +296,7 @@ namespace DigitalProductionProgram.MainWindow
                 return;
             }
 
-            var chooseProcesscard_ChangeProcesscard = new ProcesscardTemplateSelector(false, true, false);
+            var chooseProcesscard_ChangeProcesscard = new ProcesscardTemplateSelector(false, true, false, false);
             chooseProcesscard_ChangeProcesscard.ShowDialog();
             if (Order.PartID is null)
                 return;
@@ -383,7 +383,7 @@ namespace DigitalProductionProgram.MainWindow
             }
 
             // Stoppa MainTimer eventuellt om det blir problem
-            var WorkOperation = new Choose_WorkOperation_BrowseProtocols_ManageProcesscards(true, false, LanguageManager.GetString("label_ChoosePC_Header"));
+            var WorkOperation = new Choose_WorkOperation_BrowseProtocols_ManageProcesscards(true, false, false,LanguageManager.GetString("label_ChoosePC_Header"));
             WorkOperation.ShowDialog();
         }
 

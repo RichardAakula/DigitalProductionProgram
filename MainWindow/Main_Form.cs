@@ -1047,7 +1047,7 @@ namespace DigitalProductionProgram.MainWindow
             }
 
             // 10 sek: Kontrollera mätpunkter
-            if (counter_CheckMätpunkter >= 10)
+            if (counter_CheckMätpunkter >= 10 && Person.Role == "SuperAdmin")
             {
                 counter_CheckMätpunkter = 0;
                 MainMeasureStatistics.Kontrollera_Mätningar.Medelvärden();

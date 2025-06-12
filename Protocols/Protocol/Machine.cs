@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Help;
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.PrintingServices;
 using DigitalProductionProgram.Protocols.Template_Management;
@@ -26,7 +27,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                         WHERE MainTemplateID = @maintemplateid";
 
 
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 SQL_Parameter.NullableINT(cmd.Parameters, "@maintemplateid", Templates_Protocol.MainTemplate.ID);
                 con.Open();
                 var reader = cmd.ExecuteReader();
@@ -51,7 +52,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                         WHERE MainTemplateID = @maintemplateid";
 
 
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 SQL_Parameter.NullableINT(cmd.Parameters, "@maintemplateid", Templates_Protocol.MainTemplate.ID);
                 con.Open();
                 var reader = cmd.ExecuteReader();
@@ -97,7 +98,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                         AND TemplateOrder IS NOT NULL
                         AND MachineIndex = @machineindex
                     ORDER BY TemplateOrder";
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@maintemplateID", Templates_Protocol.MainTemplate.ID);
             cmd.Parameters.AddWithValue("@machineindex", machineIndex);
             con.Open();

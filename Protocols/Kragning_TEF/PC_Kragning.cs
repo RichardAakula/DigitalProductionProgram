@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Globalization;
 using System.Windows.Forms;
 using DigitalProductionProgram.DatabaseManagement;
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.Övrigt;
 using DigitalProductionProgram.Processcards;
@@ -49,7 +50,7 @@ namespace DigitalProductionProgram.Protocols.Kragning_TEF
                     AND ColumnIndex IS NOT NULL
                     ORDER BY RowIndex";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@formtemplateid", 8);
                 //cmd.Parameters.AddWithValue("@revision", Processcard.Active_Processcard_Revision(8));
                 var reader = cmd.ExecuteReader();
@@ -103,7 +104,7 @@ namespace DigitalProductionProgram.Protocols.Kragning_TEF
                     
                     ORDER BY RowIndex, ColumnIndex";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 SQL_Parameter.NullableINT(cmd.Parameters, "@partID", Order.PartID);
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
@@ -230,7 +231,7 @@ namespace DigitalProductionProgram.Protocols.Kragning_TEF
                     COMMIT TRANSACTION";
 
                 
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@partid", Order.PartID);
                 if (parameters != null)
                     Add_Parameters(cmd, parameters);
@@ -249,7 +250,7 @@ namespace DigitalProductionProgram.Protocols.Kragning_TEF
                     query += $"{Manage_Processcards.UPDATE_Processkort_Main} ";
 
                 query += "COMMIT TRANSACTION";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@partid", Order.PartID);
                 if (parameters != null)
                     Add_Parameters(cmd, parameters);

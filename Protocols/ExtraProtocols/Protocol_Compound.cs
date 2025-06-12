@@ -1,6 +1,7 @@
 ﻿using System.Data;
 using System.Globalization;
 using DigitalProductionProgram.DatabaseManagement;
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.User;
 using Microsoft.Data.SqlClient;
@@ -122,7 +123,7 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
             Compound.lbl_OrderNr.Text = Order.OrderNumber;
             using var con = new SqlConnection(Database.cs_Protocol);
             const string query = "SELECT * FROM [Order].Compound_Main WHERE OrderID = @id";
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             SQL_Parameter.NullableINT(cmd.Parameters, "@id", Order.OrderID);
             con.Open();
             var reader = cmd.ExecuteReader();
@@ -138,7 +139,7 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
         {
             using var con = new SqlConnection(Database.cs_Protocol);
             const string query = "SELECT Rum_Temp, Rum_Fukt FROM [Order].MainData WHERE OrderID = @id";
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             SQL_Parameter.NullableINT(cmd.Parameters, "@id", Order.OrderID);
             con.Open();
             var reader = cmd.ExecuteReader();
@@ -152,7 +153,7 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
         {
             using var con = new SqlConnection(Database.cs_Protocol);
             const string query = "SELECT Halvfabrikat_Benämning, Halvfabrikat_OrderNr FROM [Order].PreFab WHERE OrderID = @id ORDER BY Halvfabrikat_Benämning DESC";
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             SQL_Parameter.NullableINT(cmd.Parameters, "@id", Order.OrderID);
             con.Open();
             var reader = cmd.ExecuteReader();
@@ -187,7 +188,7 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
                             INSERT INTO [Order].Compound_Main (OrderID, {Column})
                             VALUES (@id, @text)
                         END";
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             SQL_Parameter.NullableINT(cmd.Parameters, "@id", Order.OrderID);
             if (string.IsNullOrEmpty(Text))
                 SQL_Parameter.Double(cmd.Parameters, "@text", Value);
@@ -218,7 +219,7 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
                             UPDATE [Order].Compound
                                 SET Sample = @sample, Size = @size, BulkWeight = @bulkweight, Comments = @comments
                                 WHERE OrderID = @orderid AND TempID = @tempid";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     SQL_Parameter.Int(cmd.Parameters, "@tempid", row.Cells[6].Value);
                     SQL_Parameter.NullableINT(cmd.Parameters, "@orderid", Order.OrderID);
                     SQL_Parameter.Int(cmd.Parameters, "@sample", row.Cells[1].Value);

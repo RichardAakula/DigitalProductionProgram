@@ -117,7 +117,7 @@ namespace DigitalProductionProgram.MainWindow
                         AND ColumnIndex IS NOT NULL
                     ORDER BY ColumnIndex";
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@workoperationid", Order.WorkoperationID);
                     var reader = cmd.ExecuteReader();
                     while (reader.Read())
@@ -387,7 +387,7 @@ namespace DigitalProductionProgram.MainWindow
                     var query = @"INSERT INTO [Order].Pictures
                                    VALUES (@orderid, @picture, @index)";
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                     cmd.Parameters.AddWithValue("@picture", img);
                     cmd.Parameters.AddWithValue("@index", Pictures.Total_Pictures);

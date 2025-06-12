@@ -2,7 +2,7 @@
 using System.Configuration;
 using Microsoft.Data.SqlClient;
 using DigitalProductionProgram.DatabaseManagement;
-
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.Protocols.Template_Management;
 using DigitalProductionProgram.Templates;
@@ -18,7 +18,7 @@ namespace DigitalProductionProgram.Equipment
                 const string query = @"SELECT DISTINCT textvalue
                     FROM [Order].Data WHERE ProtocolDescriptionID = 10";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@codetext", "KRAGMASKIN");
                 cmd.Parameters.AddWithValue("@formtemplateid", FormTemplateID);
                 var reader = cmd.ExecuteReader();
@@ -41,7 +41,7 @@ namespace DigitalProductionProgram.Equipment
             if (orderid > 0)
                 query += "AND OrderID = @orderid";
             con.Open();
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@codetext", codetext);
             cmd.Parameters.AddWithValue("@orderid", orderid);
             cmd.Parameters.AddWithValue("@maintemplateid", Templates_Protocol.MainTemplate.ID);
@@ -64,7 +64,7 @@ namespace DigitalProductionProgram.Equipment
 								(SELECT id FROM Protocol.Description WHERE CodeText = 'CYLINDER') 
                                     AND (FormTemplateID IN (SELECT FormTemplateID FROM Protocol.FormTemplate WHERE MainTemplateID = @maintemplateid)))";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@maintemplateid", Templates_Protocol.MainTemplate.ID);
                 var reader = cmd.ExecuteReader();
 
@@ -84,7 +84,7 @@ namespace DigitalProductionProgram.Equipment
                         SELECT DISTINCT TextValue
                         FROM [Order].Data WHERE ProtocolDescriptionID = 73";
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     var reader = cmd.ExecuteReader();
                     while (reader.Read())
                         list.Add(reader[0].ToString());
@@ -104,7 +104,7 @@ namespace DigitalProductionProgram.Equipment
                         SELECT DISTINCT TextValue 
                         FROM [Order].Data WHERE ProtocolDescriptionID = 159";
 
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     con.Open();
                     var reader = cmd.ExecuteReader();
                     while (reader.Read())
@@ -122,7 +122,7 @@ namespace DigitalProductionProgram.Equipment
                 {
                     const string query = @"SELECT DISTINCT ProdLine FROM [Order].MainData 
                                 ORDER BY ProdLine";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     con.Open();
                     var reader = cmd.ExecuteReader();
 
@@ -150,7 +150,7 @@ namespace DigitalProductionProgram.Equipment
                             AND ProtocolDescriptionID = 159
                             AND Uppstart = 1";
 
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                     con.Open();
                     var value = cmd.ExecuteScalar();

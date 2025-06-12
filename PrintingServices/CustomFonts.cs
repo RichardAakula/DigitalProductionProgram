@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.eMail;
+using DigitalProductionProgram.MainWindow;
 
 namespace DigitalProductionProgram.PrintingServices
 {
@@ -119,7 +120,7 @@ namespace DigitalProductionProgram.PrintingServices
             var query = "SELECT Back_Red, Back_Green, Back_Blue FROM Settings.QuickStart_Color WHERE WorkOperationID = (SELECT ID FROM Workoperation.Names WHERE Name = @workoperation AND ID IS NOT NULL)";
             con.Open();
 
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@workoperation", workoperation);
             var reader = cmd.ExecuteReader();
             while (reader.Read())
@@ -140,7 +141,7 @@ namespace DigitalProductionProgram.PrintingServices
             var query = "SELECT Fore_Red, Fore_Green, Fore_Blue FROM Settings.QuickStart_Color WHERE WorkOperationID = (SELECT ID FROM Workoperation.Names WHERE Name = @workoperation AND ID IS NOT NULL)";
             con.Open();
 
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@workoperation", workoperation);
             var reader = cmd.ExecuteReader();
             while (reader.Read())

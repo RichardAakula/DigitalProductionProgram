@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Help;
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.PrintingServices;
 using DigitalProductionProgram.Protocols.Protocol;
@@ -42,7 +43,7 @@ namespace DigitalProductionProgram.Processcards
             //AND Revision = @revision";    //Denna bör gå att vara utan vid nya versionen med Flexibla Protokoll
 
             con.Open();
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@formtemplateid", formtemplateid);
             // cmd.Parameters.AddWithValue("@revision", Active_Processcard_Revision(formtemplateid));
             var value = cmd.ExecuteScalar();
@@ -73,7 +74,7 @@ namespace DigitalProductionProgram.Processcards
             {
                 var query = "SELECT DISTINCT ProdLine, ProdType FROM Processcard.MainData WHERE PartNr = @partnr AND WorkoperationID = (SELECT ID FROM Workoperation.Names WHERE Name = @workoperation AND ID IS NOT NULL) AND Aktiv = 'True'";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@partnr", partNr);
                 cmd.Parameters.AddWithValue("@workoperation", workoperation.ToString());
                 var reader = cmd.ExecuteReader();
@@ -89,7 +90,7 @@ namespace DigitalProductionProgram.Processcards
                 using var con = new SqlConnection(Database.cs_Protocol);
                 var query = "SELECT * FROM Processcard.MainData WHERE PartNr = @partnr";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@partnr", Order.PartNumber);
                 var value = cmd.ExecuteScalar();
                 if (value != null)
@@ -99,21 +100,19 @@ namespace DigitalProductionProgram.Processcards
         }
         public static bool IsApproved_By_QA(int? partID)
         {
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query = "SELECT QA_sign FROM Processcard.MainData WHERE PartID = @partid";
-                string qa_Sign = null;
+            using var con = new SqlConnection(Database.cs_Protocol);
+            var query = "SELECT QA_sign FROM Processcard.MainData WHERE PartID = @partid";
+            string qa_Sign = null;
 
-                var cmd = new SqlCommand(query, con);
-                cmd.Parameters.AddWithValue("@partid", partID);
-                con.Open();
-                var value = cmd.ExecuteScalar();
-                if (value != null)
-                    qa_Sign = value.ToString();
-                if (string.IsNullOrEmpty(qa_Sign))
-                    return false;
-                return true;
-            }
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            cmd.Parameters.AddWithValue("@partid", partID);
+            con.Open();
+            var value = cmd.ExecuteScalar();
+            if (value != null)
+                qa_Sign = value.ToString();
+            if (string.IsNullOrEmpty(qa_Sign))
+                return false;
+            return true;
         }
         public static bool IsUnderConstruction
         {
@@ -125,7 +124,7 @@ namespace DigitalProductionProgram.Processcards
                 {
                     const string query = "SELECT Framtagning_Processfönster FROM Processcard.MainData WHERE PartID = @partid";
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@partid", Order.PartID);
                     var value = cmd.ExecuteScalar();
                     return !bool.TryParse(value.ToString(), out var isunderconstruction) || isunderconstruction;
@@ -136,28 +135,27 @@ namespace DigitalProductionProgram.Processcards
         public static List<int> List_UsedColumnsProcesscard(int row, int formtemplateid)
         {
             var list = new List<int>();
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query = @"
+            using var con = new SqlConnection(Database.cs_Protocol);
+            var query = @"
                         SELECT ColumnIndex FROM Protocol.Template as template
                             JOIN Protocol.Description as descr
                                 ON descr.id = template.ProtocolDescriptionID
                         WHERE FormTemplateID = @formtemplateid
                         AND RowIndex = @row ";
-                        //AND revision = @revision";    //Denna bör gå att vara utan vid nya versionen med Flexibla Protokoll
-                con.Open();
-                var cmd = new SqlCommand(query, con);
-                cmd.Parameters.AddWithValue("@workoperation", Order.WorkOperation.ToString());
-                cmd.Parameters.AddWithValue("@formtemplateid", formtemplateid);
-                cmd.Parameters.AddWithValue("@row", row);
-                //cmd.Parameters.AddWithValue("@revision", Active_Processcard_Revision(formtemplateid));
-                var reader = cmd.ExecuteReader();
-                while (reader.Read())
-                {
-                    if (int.TryParse(reader["ColumnIndex"].ToString(), out var col))
-                        list.Add(col);
-                }
+            //AND revision = @revision";    //Denna bör gå att vara utan vid nya versionen med Flexibla Protokoll
+            con.Open();
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            cmd.Parameters.AddWithValue("@workoperation", Order.WorkOperation.ToString());
+            cmd.Parameters.AddWithValue("@formtemplateid", formtemplateid);
+            cmd.Parameters.AddWithValue("@row", row);
+            //cmd.Parameters.AddWithValue("@revision", Active_Processcard_Revision(formtemplateid));
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                if (int.TryParse(reader["ColumnIndex"].ToString(), out var col))
+                    list.Add(col);
             }
+
             return list;
         }
         
@@ -171,7 +169,7 @@ namespace DigitalProductionProgram.Processcards
                     WHERE FormTemplateID = @formtemplateid
                     ORDER BY revision DESC";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@workoperation", Order.WorkOperation.ToString());
                 cmd.Parameters.AddWithValue("@formtemplateid", formtemplateid);
                 var value = cmd.ExecuteScalar();
@@ -207,7 +205,7 @@ namespace DigitalProductionProgram.Processcards
                         AND RowIndex = @rowIndex 
                         AND Revision = @revision";
 
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@workoperation", Order.WorkOperation.ToString());
                 cmd.Parameters.AddWithValue("@formtemplateid", formtemplateid);
                 cmd.Parameters.AddWithValue("@colIndex", col);
@@ -226,7 +224,7 @@ namespace DigitalProductionProgram.Processcards
                     SELECT type FROM Protocol.Template
                     WHERE ID = @id";
 
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@id", templ_ID);
                 con.Open();
                 var value = cmd.ExecuteScalar();
@@ -256,7 +254,7 @@ namespace DigitalProductionProgram.Processcards
                     AND (COALESCE(MachineIndex, 0) = COALESCE(@machineindex, 0))
                     ORDER BY RowIndex, ColumnIndex";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 SQL_Parameter.NullableINT(cmd.Parameters, "@partID", Order.PartID);
                 cmd.Parameters.AddWithValue("@formtemplateid", formtemplateid);
                 if (IsMultipleExtruder)
@@ -366,7 +364,7 @@ namespace DigitalProductionProgram.Processcards
             {
                 var query = @"UPDATE Processcard.MainData SET Aktiv = @flag WHERE PartGroupID = @partgroupid";
 
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@flag", flag);
                 SQL_Parameter.NullableINT(cmd.Parameters, "@partgroupid", Order.PartGroupID);
                 con.Open();
@@ -420,7 +418,7 @@ namespace DigitalProductionProgram.Processcards
                          "DELETE FROM Processcard.Data WHERE PartID = @partID ";
                 query += "\n" +
                          "COMMIT TRANSACTION";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@partID", partID);
                 cmd.ExecuteNonQuery();
             }
@@ -587,7 +585,7 @@ namespace DigitalProductionProgram.Processcards
                     SELECT Type FROM Protocol.Template
                     WHERE ID = @templateid";
 
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@templateid", templ_ID);
                     con.Open();
                     var value = cmd.ExecuteScalar();
@@ -647,7 +645,7 @@ namespace DigitalProductionProgram.Processcards
                         'True'
                     )";
 
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@partid", PartID);
                     cmd.Parameters.AddWithValue("@name", Templates_MeasureProtocol.MainTemplate.Name);
                     Add_Parameters(cmd, parameters, PartID);
@@ -666,7 +664,7 @@ namespace DigitalProductionProgram.Processcards
                         INSERT INTO Processcard.Data (PartID, TemplateID, MachineIndex, Value, TextValue, Type)
                         VALUES {data} ";
 
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@partid", Order.PartID);
                     con.Open();
                     Manage_Processcards.Execute_cmd(cmd, ref IsOk);
@@ -691,7 +689,7 @@ namespace DigitalProductionProgram.Processcards
                         Validerade_Loter = @validerade_Loter 
                     WHERE PartID = @partID";
 
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@partid", Order.PartID);
                     cmd.Parameters.AddWithValue("@name", Templates_MeasureProtocol.MainTemplate.Name);
                     Add_Parameters(cmd, parameters, (int)Order.PartID);
@@ -707,7 +705,7 @@ namespace DigitalProductionProgram.Processcards
 
                 using (var con = new SqlConnection(Database.cs_Protocol))
                 {
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@partID", Order.PartID);
                     con.Open();
                     Manage_Processcards.Execute_cmd(cmd, ref IsOk);
@@ -741,7 +739,7 @@ namespace DigitalProductionProgram.Processcards
                         
                     ORDER BY RowIndex, ColumnIndex";
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     SQL_Parameter.NullableINT(cmd.Parameters, "@partID", Order.PartID);
                     //template.Revision bör ej behövas kvar eftersom MainTemplateID är unikt och revisionen baseras på det
                     // cmd.Parameters.AddWithValue("@revision", Manage_Templates.MainTemplate.Revision);

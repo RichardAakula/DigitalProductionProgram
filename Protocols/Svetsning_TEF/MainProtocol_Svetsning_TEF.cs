@@ -8,7 +8,7 @@ using System.Windows.Forms;
 using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Help;
-
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.Övrigt;
 using DigitalProductionProgram.PrintingServices;
@@ -186,7 +186,7 @@ namespace DigitalProductionProgram.Protocols.Svetsning_TEF
             {
                 var query = $@"SELECT Typ, Halvfabrikat_ArtikelNr, Halvfabrikat_OrderNr, Halvfabrikat_ID, Halvfabrikat_OD, Halvfabrikat_W, Length
                                         FROM [Order].PreFab {Queries.WHERE_OrderID} ORDER BY TempID";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@id", Order.OrderID);
                 con.Open();
                 var reader = cmd.ExecuteReader();
@@ -211,7 +211,7 @@ namespace DigitalProductionProgram.Protocols.Svetsning_TEF
                         (OrderID, Typ, Halvfabrikat_ArtikelNr, Halvfabrikat_OrderNr, Halvfabrikat_ID, Halvfabrikat_OD, Halvfabrikat_W, Length) 
                     VALUES (@id, @typ, @halv_ArtikelNr, @halv_OrderNr, @halv_ID, @halv_OD, @halv_W, @length)";
 
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@id", Order.OrderID);
                 cmd.Parameters.AddWithValue("@typ", cb_Halvfabrikat_Typ.Text);
                 cmd.Parameters.AddWithValue("@halv_ArtikelNr", cb_Halvfabrikat_ArtikelNr.Text);
@@ -242,7 +242,7 @@ namespace DigitalProductionProgram.Protocols.Svetsning_TEF
                     INSERT INTO Korprotokoll_Svetsning_Maskinparametrar
                          VALUES (@id, 'False', @0, @1, @2, @3, @4, @5, @6, @7, @8, @9, @datum, @tid, @employeenumber, @sign)";
 
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
 
                 cmd.Parameters.AddWithValue("@id", Order.OrderID);
                 cmd.Parameters.AddWithValue("@partnr", Order.PartNumber);
@@ -266,7 +266,7 @@ namespace DigitalProductionProgram.Protocols.Svetsning_TEF
                     INSERT INTO Korprotokoll_Svetsning_Parametrar 
                     VALUES (@id, 'False', @inledande_ordernr, @inledande_Påse, @inledande_Pinne, @inledande_ID, @inledande_OD, @inledande_Längd, @inspekt_utsida, @inspekt_insida, @datum, @tid, @employeenumber, @sign)";
 
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
 
                 cmd.Parameters.AddWithValue("@id", Order.OrderID);
                 cmd.Parameters.AddWithValue("@inledande_ordernr", cb_Inledande_BatchNr.Text);
@@ -464,7 +464,7 @@ namespace DigitalProductionProgram.Protocols.Svetsning_TEF
                         Inledande_ID = @inledande_ID, Inledande_OD = @inledande_OD, Inledande_Längd = @inledande_Längd, Inspektion_Utsida = @inspektion_Utsida, Inspektion_Insida = @inspektion_Insida
                             {Queries.WHERE_OrderID} AND TempID = @tempId";
 
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
 
                     cmd.Parameters.AddWithValue("@id", Order.OrderID);
                     cmd.Parameters.AddWithValue("@inledande_OrderNr", cb_Inledande_BatchNr.Text);
@@ -542,7 +542,7 @@ namespace DigitalProductionProgram.Protocols.Svetsning_TEF
                 {
                     var query = $"DELETE TOP (1) FROM [Order].PreFab {Queries.WHERE_OrderID} AND Typ = @typ AND Halvfabrikat_ArtikelNr = @h_a AND Halvfabrikat_OrderNr = @h_o";
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@id", Order.OrderID);
                     cmd.Parameters.AddWithValue("@typ", dgv_Halvfabrikat.Rows[row].Cells[0].Value.ToString());
                     cmd.Parameters.AddWithValue("@h_a", dgv_Halvfabrikat.Rows[row].Cells[1].Value.ToString());

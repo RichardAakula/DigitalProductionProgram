@@ -6,6 +6,7 @@ using System;
 using Microsoft.Data.SqlClient;
 using System.Windows.Forms;
 using DigitalProductionProgram.ControlsManagement;
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 
 namespace DigitalProductionProgram.Övrigt
@@ -58,7 +59,7 @@ namespace DigitalProductionProgram.Övrigt
                                      ELSE
                                      INSERT INTO ArtikelNr_Tips_Trix (ArtikelNr, Text, WorkOperation) VALUES (@partnr, @text, @workoperation)";
             con.Open();
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@partnr", Order.PartNumber);
             cmd.Parameters.AddWithValue("@workoperation", Order.WorkOperation.ToString());
             cmd.Parameters.AddWithValue("@text", rb_Text_Tips_Trix.Rtf);
@@ -74,7 +75,7 @@ namespace DigitalProductionProgram.Övrigt
             {
                 const string query = "SELECT Text FROM ArtikelNr_Tips_Trix WHERE ArtikelNr = @partnr AND WorkOperation = @workoperation";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@partnr", Order.PartNumber);
                 cmd.Parameters.AddWithValue("@workoperation", Order.WorkOperation.ToString());
                 var reader = cmd.ExecuteReader();

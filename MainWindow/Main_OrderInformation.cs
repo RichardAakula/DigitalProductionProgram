@@ -105,7 +105,7 @@ namespace DigitalProductionProgram.MainWindow
                 ORDER BY IsMultipleColumnsStartup DESC";
 
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
@@ -264,7 +264,7 @@ namespace DigitalProductionProgram.MainWindow
                     const string query = "SELECT OrderNr, Operation FROM [Order].MainData WHERE OrderID = @id";
 
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@id", tb_OrderNr.Text);
                     var reader = cmd.ExecuteReader();
                     while (reader.Read())

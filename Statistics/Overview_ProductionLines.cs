@@ -6,7 +6,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.DatabaseManagement;
-
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.Övrigt;
 using ProgressBar = DigitalProductionProgram.ControlsManagement.ProgressBar;
@@ -71,7 +71,7 @@ namespace DigitalProductionProgram.Statistics
                         WHERE rowNumber = 1
                     ORDER BY IsOrderDone, Date_Start";
 
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 con.Open();
                 var reader = cmd.ExecuteReader();
 
@@ -340,7 +340,7 @@ namespace DigitalProductionProgram.Statistics
                     AND IsDeleted = 'false'";
                 
 
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@prodline", productionLines[ctr].ProdLine);
                 con.Open();
                 var reader = cmd.ExecuteReader();

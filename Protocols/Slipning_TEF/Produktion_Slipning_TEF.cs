@@ -10,6 +10,7 @@ using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Equipment;
 using DigitalProductionProgram.Help;
 using DigitalProductionProgram.Log;
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.Övrigt;
 using DigitalProductionProgram.PrintingServices;
@@ -30,7 +31,7 @@ namespace DigitalProductionProgram.Protocols.Slipning_TEF
                     var query = @"SELECT PartNr FROM Parts.PartNrSpecial WHERE PartNrDescriptionID = (SELECT id FROM Parts.PartNrDescription WHERE description = 'Extra Parametrar Slipning_TEF')";
 
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     dt.Load(cmd.ExecuteReader());
                     return dt;
                 }
@@ -201,7 +202,7 @@ namespace DigitalProductionProgram.Protocols.Slipning_TEF
                             SET Bool = 'True' WHERE OrderID = @orderid AND CodeText = 'Kasserad' 
                                 AND Date_Time = @date";
 
-                        var cmd = new SqlCommand(query, con);
+                        var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                         cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                         cmd.Parameters.AddWithValue("@date", date);
                         con.Open();
@@ -223,7 +224,7 @@ namespace DigitalProductionProgram.Protocols.Slipning_TEF
                     JOIN [User].Person AS op
                         ON op.EmployeeNumber = prod.AnstNr
                     WHERE OrderID = @id ORDER BY Date_Time, Column_Index";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 con.Open();
                 cmd.Parameters.AddWithValue("@id", Order.OrderID);
                 var reader = cmd.ExecuteReader();
@@ -301,7 +302,7 @@ namespace DigitalProductionProgram.Protocols.Slipning_TEF
             using (var con = new SqlConnection(Database.cs_Protocol))
             {
                 var query = "SELECT Dragprov_enhet FROM Processkort_Slipning WHERE PartID = @partID";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 con.Open();
                 cmd.Parameters.AddWithValue("@partID", Order.PartID);
                 if (string.IsNullOrEmpty(cmd.ExecuteScalar().ToString()) == false)
@@ -330,7 +331,7 @@ namespace DigitalProductionProgram.Protocols.Slipning_TEF
                                 VALUES (@orderid, @codeText, @Value, @text, @bool, @date, @employeenumber, @colIndex)
                             END";
 
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
 
                 cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                 if (col < 0)

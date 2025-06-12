@@ -242,7 +242,7 @@ namespace DigitalProductionProgram.MainWindow
             
             
             //if (Database.IsGodby____ + Database.IsGodbyBeta + Database.IsGodbyThai + Database.IsThai_____ > 1)
-
+            Serverstatus.lbl_SQL_Queries.Visible = true;
             Person.Name = "Richard Aakula";
             Person.Sign = "RA";
             Person.UserID = 24;
@@ -353,9 +353,8 @@ namespace DigitalProductionProgram.MainWindow
                 foreach (var ctrl in controls)
                     ctrl.Visible = false;
 
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    const string query = @"
+                using var con = new SqlConnection(Database.cs_Protocol);
+                const string query = @"
                     SELECT Name
                     FROM Workoperation.ControlVisibiltySettings  as visibility
 	                    JOIN Workoperation.ApplicationControls as controls
@@ -363,18 +362,17 @@ namespace DigitalProductionProgram.MainWindow
                     WHERE WorkOperationID = (SELECT ID FROM Workoperation.Names WHERE Name = @workoperation AND ID IS NOT NULL) 
 	                    AND ColumnIndex IS NULL
                     ORDER BY ColumnIndex";
-                    con.Open();
-                    var cmd = new SqlCommand(query, con);
-                    cmd.Parameters.AddWithValue("@workoperation", Order.WorkOperation.ToString());
-                    var reader = cmd.ExecuteReader();
-                    while (reader.Read())
+                con.Open();
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                cmd.Parameters.AddWithValue("@workoperation", Order.WorkOperation.ToString());
+                var reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    var name = reader[0].ToString();
+                    foreach (var control in controls)
                     {
-                        var name = reader[0].ToString();
-                        foreach (var control in controls)
-                        {
-                            if (control.Name == name)
-                                control.Visible = true;
-                        }
+                        if (control.Name == name)
+                            control.Visible = true;
                     }
                 }
             }
@@ -1038,6 +1036,8 @@ namespace DigitalProductionProgram.MainWindow
             counter_UpdateChart++;
             counter_ReLoginMonitor++;
 
+
+            Serverstatus.Set_Sql_Counter(); // Uppdatera serverstatus varje sekund
 
             // 60 sek: Kontrollera planerat stopp
             if (counter_PlaneratStopp >= timer_counterPlaneratStopp)

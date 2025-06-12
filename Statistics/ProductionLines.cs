@@ -6,6 +6,7 @@ using System.Linq;
 using System.Windows.Forms;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Log;
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 
 namespace DigitalProductionProgram.Statistics
@@ -77,7 +78,7 @@ namespace DigitalProductionProgram.Statistics
                 var query = @"SELECT DISTINCT ProdLinje 
                                     FROM [Order].MainData
                                     ORDER BY ProdLinje";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
 
                 con.Open();
                 var reader = cmd.ExecuteReader();
@@ -139,7 +140,7 @@ namespace DigitalProductionProgram.Statistics
                     GROUP BY [User].Person.Name
                     ORDER BY Antal DESC";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@linje", cb_Linje.Text);
                 cmd.Parameters.AddWithValue("@dateFrom", date_From.Value);
                 cmd.Parameters.AddWithValue("@dateTo", date_To.Value);
@@ -163,7 +164,7 @@ namespace DigitalProductionProgram.Statistics
                     BETWEEN @dateFrom AND @dateTo GROUP BY PartNr, Kund 
                     ORDER BY Antal DESC";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@linje", cb_Linje.Text);
                 cmd.Parameters.AddWithValue("@dateFrom", date_From.Value);
                 cmd.Parameters.AddWithValue("@dateTo", date_To.Value);
@@ -185,7 +186,7 @@ namespace DigitalProductionProgram.Statistics
                     BETWEEN @dateFrom AND @dateTo
                     ORDER BY Antal DESC";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@linje", cb_Linje.Text);
                 cmd.Parameters.AddWithValue("@dateFrom", date_From.Value);
                 cmd.Parameters.AddWithValue("@dateTo", date_To.Value);
@@ -208,7 +209,7 @@ namespace DigitalProductionProgram.Statistics
                     BETWEEN @dateFrom AND @dateTo
                     ORDER BY Antal DESC";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@linje", cb_Linje.Text);
                 cmd.Parameters.AddWithValue("@dateFrom", date_From.Value);
                 cmd.Parameters.AddWithValue("@dateTo", date_To.Value);
@@ -236,7 +237,7 @@ namespace DigitalProductionProgram.Statistics
                     GROUP BY Huvud, ProdLinje
                     ORDER BY Antal DESC";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@linje", cb_Linje.Text);
                 cmd.Parameters.AddWithValue("@dateFrom", date_From.Value);
                 cmd.Parameters.AddWithValue("@dateTo", date_To.Value);
@@ -264,7 +265,7 @@ namespace DigitalProductionProgram.Statistics
                     GROUP BY Munstycke, ProdLinje
                     ORDER BY Antal DESC";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@linje", cb_Linje.Text);
                 cmd.Parameters.AddWithValue("@dateFrom", date_From.Value);
                 cmd.Parameters.AddWithValue("@dateTo", date_To.Value);
@@ -293,7 +294,7 @@ namespace DigitalProductionProgram.Statistics
                     ORDER BY Antal DESC";
               
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@linje", cb_Linje.Text);
                 cmd.Parameters.AddWithValue("@dateFrom", date_From.Value);
                 cmd.Parameters.AddWithValue("@dateTo", date_To.Value);
@@ -321,7 +322,7 @@ namespace DigitalProductionProgram.Statistics
                         GROUP BY rör
                     ORDER BY Antal DESC";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@linje", cb_Linje.Text);
                 dt.Load(cmd.ExecuteReader());
             }
@@ -351,7 +352,7 @@ namespace DigitalProductionProgram.Statistics
                     GROUP BY textvalue) x 
                     GROUP BY textvalue ORDER BY Antal DESC";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@linje", cb_Linje.Text);
                 cmd.Parameters.AddWithValue("@dateFrom", date_From.Value);
                 cmd.Parameters.AddWithValue("@dateTo", date_To.Value);
@@ -376,7 +377,7 @@ namespace DigitalProductionProgram.Statistics
                     GROUP BY value)
                         x GROUP BY value ORDER BY Antal DESC";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 dt.Load(cmd.ExecuteReader());
             }
             Fill_dt_Column_Percent(dt);
@@ -398,7 +399,7 @@ namespace DigitalProductionProgram.Statistics
                     GROUP BY value)
                         x GROUP BY value ORDER BY Antal DESC";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@linje", cb_Linje.Text);
                 cmd.Parameters.AddWithValue("@dateFrom", date_From.Value);
                 cmd.Parameters.AddWithValue("@dateTo", date_To.Value);

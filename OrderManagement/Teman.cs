@@ -6,6 +6,7 @@ using System.IO;
 using System.Windows.Forms;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Log;
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.PrintingServices;
 using DigitalProductionProgram.User;
 
@@ -45,7 +46,7 @@ namespace DigitalProductionProgram.OrderManagement
                 {
                     var query = "SELECT TOP(1) Image FROM [Settings].Themes WHERE Theme = @theme ORDER BY NEWID()";
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@theme", Theme.ToString());
                     object value;
                     try

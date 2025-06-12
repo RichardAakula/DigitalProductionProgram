@@ -10,6 +10,7 @@ using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.eMail;
 using DigitalProductionProgram.Equipment;
 using DigitalProductionProgram.Help;
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.PrintingServices;
 using DigitalProductionProgram.Processcards;
@@ -31,7 +32,7 @@ namespace DigitalProductionProgram.Övrigt
                     WHERE id = (SELECT TOP(1) ProtocolDescriptionID FROM Protocol.Template 
                                     WHERE FormTemplateID = @formtemplateid
                                     AND RowIndex = @row)";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 con.Open();
                 cmd.Parameters.AddWithValue("@formtemplateid", formtemplateid);
                 cmd.Parameters.AddWithValue("@row", row);
@@ -74,7 +75,7 @@ namespace DigitalProductionProgram.Övrigt
             using (var con = new SqlConnection(Database.cs_ToolRegister))
             {
                 var query = $"SELECT * FROM {db_Table} WHERE Typ = @typ AND ID_NUmmer = @idnumber";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@idnumber", cell.Value.ToString());
                 SQL_Parameter.String(cmd.Parameters, "@typ", type);
                 con.Open();
@@ -384,7 +385,7 @@ namespace DigitalProductionProgram.Övrigt
             using (var con = new SqlConnection(Database.cs_Protocol))
             {
                 var query = $"SELECT * FROM Processcard.ProposedChanges {Queries.WHERE_OrderID} AND Rubrik LIKE '%{text}%'";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@id", Order.OrderID);
                 con.Open();
                 var reader = cmd.ExecuteReader();
@@ -623,7 +624,7 @@ namespace DigitalProductionProgram.Övrigt
                     
                     AND RowIndex = @row";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@row", row);
                 cmd.Parameters.AddWithValue("@formtemplateid", formtemplateid);
                 var reader = cmd.ExecuteReader();

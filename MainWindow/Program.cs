@@ -31,7 +31,7 @@ namespace DigitalProductionProgram.MainWindow
             {
                 using var con = new SqlConnection(Database.cs_Protocol);
                 var query = @"SELECT ReleaseDate FROM Log.ChangeLog WHERE Version = @vers";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@vers", vers);
                 con.Open();
                 var reader = cmd.ExecuteReader();
@@ -54,7 +54,7 @@ namespace DigitalProductionProgram.MainWindow
                 {
                     using var con = new SqlConnection(Database.cs_Protocol);
                     const string query = "SELECT MeasureOnly FROM [Settings].General WHERE HostName = @computerName";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     con.Open();
                     cmd.Parameters.AddWithValue("@computerName", Environment.MachineName);
 
@@ -76,7 +76,7 @@ namespace DigitalProductionProgram.MainWindow
             {
                 using var con = new SqlConnection(Database.cs_Protocol);
                 var query = $"SELECT * FROM Log.ChangeLog WHERE Version = '{ChangeLog.LatestVersion}' AND IsCritical = 'True'";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
 
                 con.Open();
                 var reader = cmd.ExecuteReader();

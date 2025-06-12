@@ -8,7 +8,7 @@ using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Equipment;
 using DigitalProductionProgram.Help;
-
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.PrintingServices;
 using DigitalProductionProgram.User;
@@ -33,7 +33,7 @@ namespace DigitalProductionProgram.Processcards
         //            con.Open();
         //            var query = @"
         //            SELECT Name FROM Workoperation.Names";
-        //            var cmd = new SqlCommand(query, con);
+        //            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
         //            var reader = cmd.ExecuteReader();
 
         //            while (reader.Read())
@@ -55,7 +55,7 @@ namespace DigitalProductionProgram.Processcards
                     con.Open();
                     const string query = @"
                     SELECT Name FROM Workoperation.Names";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     var reader = cmd.ExecuteReader();
 
                     while (reader.Read())
@@ -178,7 +178,7 @@ namespace DigitalProductionProgram.Processcards
                 const string query = @"
                     SELECT DISTINCT PartNr FROM Processcard.MainData                       
                     ORDER BY PartNr DESC";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 var reader = cmd.ExecuteReader();
 
                 while (reader.Read())
@@ -194,7 +194,7 @@ namespace DigitalProductionProgram.Processcards
                 con.Open();
                 const string query = @"SELECT DISTINCT PartNr FROM [Order].MainData  
                                     ORDER BY PartNr DESC";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 var reader = cmd.ExecuteReader();
 
                 while (reader.Read())

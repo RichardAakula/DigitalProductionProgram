@@ -47,7 +47,7 @@ namespace DigitalProductionProgram.OrderManagement
                 using var con = new SqlConnection(Database.cs_Protocol);
                 const string query = "SELECT ID FROM Workoperation.Names WHERE Name = @workoperation AND ID IS NOT NULL";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@workoperation", WorkOperation.ToString());
                 var value = cmd.ExecuteScalar();
                 return int.Parse(value.ToString());
@@ -68,7 +68,7 @@ namespace DigitalProductionProgram.OrderManagement
                     AND OrderID != @orderid
                     ORDER BY Date_Start DESC";
 
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@partid", PartID);
                 cmd.Parameters.AddWithValue("@orderid", OrderID);
                 con.Open();
@@ -89,7 +89,7 @@ namespace DigitalProductionProgram.OrderManagement
                 using (var con = new SqlConnection(Database.cs_Protocol))
                 {
                     var query = @"SELECT COUNT(*) FROM [Order].MainData";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     con.Open();
                     var total = cmd.ExecuteScalar();
                     if (total != null)
@@ -107,7 +107,7 @@ namespace DigitalProductionProgram.OrderManagement
                 {
                     var query = @"SELECT DISTINCT OrderNr FROM [Order].MainData WHERE WorkOperationID = (SELECT ID FROM Workoperation.Names WHERE Name = @workoperation AND ID IS NOT NULL) ORDER BY OrderNr";
 
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     SQL_Parameter.String(cmd.Parameters, "@workoperation", WorkOperation.ToString());
                     con.Open();
                     var reader = cmd.ExecuteReader();
@@ -127,7 +127,7 @@ namespace DigitalProductionProgram.OrderManagement
                 {
                     var query = @"SELECT DISTINCT LEFT ([Order].MainData.OrderNr, 1) FROM [Order].MainData";
 
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     con.Open();
                     var reader = cmd.ExecuteReader();
                     while (reader.Read())
@@ -145,7 +145,7 @@ namespace DigitalProductionProgram.OrderManagement
                 {
                     var query = @"SELECT DISTINCT ProdType FROM [Order].MainData WHERE WorkOperationID = (SELECT ID FROM Workoperation.Names WHERE Name = @workoperation AND ID IS NOT NULL) ORDER BY ProdType";
 
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     SQL_Parameter.String(cmd.Parameters, "@workoperation", WorkOperation.ToString());
                     con.Open();
                     var reader = cmd.ExecuteReader();
@@ -168,7 +168,7 @@ namespace DigitalProductionProgram.OrderManagement
             {
                 var query = "SELECT OrderID FROM [Order].MainData WHERE OrderNr = @orderNr AND Operation = @operation";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderNr", ordernr);
                 cmd.Parameters.AddWithValue("@operation", operation);
                 var value = cmd.ExecuteScalar();
@@ -182,7 +182,7 @@ namespace DigitalProductionProgram.OrderManagement
             {
                 var query = "SELECT OrderID FROM [Order].MainData WHERE OrderNr = @orderNr AND Operation = @operation";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderNr", ordernr);
                 cmd.Parameters.AddWithValue("@operation", operation);
                 var value = cmd.ExecuteScalar();
@@ -195,7 +195,7 @@ namespace DigitalProductionProgram.OrderManagement
             {
                 var query = "SELECT OrderNr FROM [Order].MainData WHERE OrderID = @orderid";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", orderid);
                 var value = cmd.ExecuteScalar();
                 return value.ToString();
@@ -274,7 +274,7 @@ namespace DigitalProductionProgram.OrderManagement
             using var con = new SqlConnection(Database.cs_Protocol);
             var query = @"SELECT Operation, ProdLine AS Description FROM [Order].MainData WHERE OrderNr = @orderNr";
 
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@orderNr", Order.OrderNumber);
             con.Open();
             var reader = cmd.ExecuteReader();
@@ -289,7 +289,7 @@ namespace DigitalProductionProgram.OrderManagement
             using var con = new SqlConnection(Database.cs_Protocol);
             var query = "SELECT Operation FROM [Order].MainData WHERE OrderID = @id";
             con.Open();
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@id", orderID);
             var value = cmd.ExecuteScalar();
             Operation = (string)value;
@@ -301,7 +301,7 @@ namespace DigitalProductionProgram.OrderManagement
             using var con = new SqlConnection(Database.cs_Protocol);
             var query = "SELECT ProdLine FROM [Order].MainData WHERE OrderID = @id";
             con.Open();
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@id", OrderID);
             var value = cmd.ExecuteScalar();
             ProdLine = value != null ? value.ToString() : string.Empty;
@@ -316,7 +316,7 @@ namespace DigitalProductionProgram.OrderManagement
             {
                 var query = "SELECT ProdType FROM [Order].MainData WHERE OrderID = @orderid";
 
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", OrderID);
                 con.Open();
                 var reader = cmd.ExecuteReader();
@@ -334,7 +334,7 @@ namespace DigitalProductionProgram.OrderManagement
             {
                 var query = "SELECT ProdType FROM Processcard.MainData WHERE PartID = @partid";
 
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 SQL_Parameter.NullableINT(cmd.Parameters, "@partid", PartID);
                 con.Open();
                 var reader = cmd.ExecuteReader();
@@ -354,7 +354,7 @@ namespace DigitalProductionProgram.OrderManagement
                 using var con = new SqlConnection(Database.cs_Protocol);
                 var query = "SELECT TOP(1) OrderID FROM [Order].MainData ORDER BY OrderID DESC";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 var value = cmd.ExecuteScalar();
                 if (value is null)
                     return 1;
@@ -390,7 +390,7 @@ namespace DigitalProductionProgram.OrderManagement
                 using (var con = new SqlConnection(Database.cs_Protocol))
                 {
                     const string query = "SELECT Version FROM [Order].MainData WHERE OrderID = @orderid";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@orderid", OrderID);
                     con.Open();
                     return cmd.ExecuteScalar().ToString();
@@ -404,7 +404,7 @@ namespace DigitalProductionProgram.OrderManagement
                 using (var con = new SqlConnection(Database.cs_Protocol))
                 {
                     const string query = "SELECT Points FROM [Order].MainData WHERE OrderID = @orderid";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@orderid", OrderID);
                     con.Open();
                     var value = cmd.ExecuteScalar();
@@ -431,7 +431,7 @@ namespace DigitalProductionProgram.OrderManagement
             using (var con = new SqlConnection(Database.cs_Protocol))
             {
                 const string query = "SELECT IsOrderDone FROM [Order].MainData WHERE OrderID = @orderid";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", OrderID);
                 con.Open();
                 var value = cmd.ExecuteScalar();
@@ -451,7 +451,7 @@ namespace DigitalProductionProgram.OrderManagement
                         INSERT INTO [Order].InactiveOrders (OrderID, Comment, InactivatedBy_Name, InactivatedBy_EmployeeNr, Inactivated_Date)
                         VALUES (@orderid, @comment, @name, @employeenr, @date)
                     END";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", orderid);
                 cmd.Parameters.AddWithValue("@comment", comment);
                 cmd.Parameters.AddWithValue("@name", Person.Name);
@@ -468,7 +468,7 @@ namespace DigitalProductionProgram.OrderManagement
                 const string query = @"
                     DELETE FROM [Order].InactiveOrders
                     WHERE OrderID = @orderid";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", orderid);
                 con.Open();
                 cmd.ExecuteNonQuery();
@@ -481,7 +481,7 @@ namespace DigitalProductionProgram.OrderManagement
             {
                 using var con = new SqlConnection(Database.cs_Protocol);
                 var query = "SELECT Date_Stop FROM [Order].MainData WHERE OrderID = @orderid";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", OrderID);
                 con.Open();
                 var result = cmd.ExecuteScalar();
@@ -500,7 +500,7 @@ namespace DigitalProductionProgram.OrderManagement
 
                 using (var con = new SqlConnection(Database.cs_Protocol))
                 {
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@ordernumber", orderNumber);
                     cmd.Parameters.AddWithValue("@operation", operation);
                 con.Open();
@@ -520,7 +520,7 @@ namespace DigitalProductionProgram.OrderManagement
                 using (var con = new SqlConnection(Database.cs_Protocol))
                 {
                     var query = "SELECT * FROM [Order].MainData WHERE OrderID = @orderid AND Points IS NOT NULL";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@orderid", OrderID);
                     con.Open();
                     var reader = cmd.ExecuteReader();
@@ -544,7 +544,7 @@ namespace DigitalProductionProgram.OrderManagement
                 {
                     var query = "SELECT Date_Start FROM [Order].Data WHERE OrderID = @orderid";
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@orderid", OrderID);
                     var reader = cmd.ExecuteReader();
                     while (reader.Read())
@@ -568,7 +568,7 @@ namespace DigitalProductionProgram.OrderManagement
                     SELECT IsExtraInputBoxes_2Layer 
                     FROM MeasureProtocol.MainTemplate
                     WHERE MeasureProtocolMainTemplateID = @measureprotocoltemplateid";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 SQL_Parameter.Int(cmd.Parameters, "@measureprotocoltemplateid", Templates_MeasureProtocol.MainTemplate.ID);
                 con.Open();
                 var value = cmd.ExecuteScalar();
@@ -606,7 +606,7 @@ namespace DigitalProductionProgram.OrderManagement
             {
                 var query = @"SELECT TOP(1) OrderNr, Operation, Date_Start FROM [Order].MainData WHERE IsOrderDone = 'False' AND Date_Start < @datum AND Name_Start = @namn";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@datum", DateTime.Now.AddMonths(-3));
                 cmd.Parameters.AddWithValue("@namn", Person.Name);
                 var reader = cmd.ExecuteReader();
@@ -702,7 +702,7 @@ namespace DigitalProductionProgram.OrderManagement
                         DELETE FROM Zumbach.Measurements WHERE OrderID = @id
                     COMMIT TRANSACTION";
 
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@id", OrderID);
             con.Open();
             cmd.ExecuteNonQuery();
@@ -897,7 +897,7 @@ namespace DigitalProductionProgram.OrderManagement
                         ORDER BY NEWID()";
                     //(3,5,6,7,9,10,11,12,16,18,19,20,22,23,24,25,26,27,29,30,31,36)
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     orderid = (int)cmd.ExecuteScalar();
                 }
 
@@ -1025,7 +1025,7 @@ namespace DigitalProductionProgram.OrderManagement
                     {
                         var query = "SELECT FormTemplateID FROM Protocol.FormTemplate WHERE MainTemplateID = @maintemplateid";
 
-                        var cmd = new SqlCommand(query, con);
+                        var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                         cmd.Parameters.AddWithValue("@maintemplateid", Templates_Protocol.MainTemplate.ID);
                         con.Open();
                         var reader = cmd.ExecuteReader();
@@ -1148,7 +1148,7 @@ namespace DigitalProductionProgram.OrderManagement
                 using var con = new SqlConnection(Database.cs_Protocol);
                 var query = "SELECT * FROM [Order].Data WHERE OrderID = @orderid";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", OrderID);
                 var reader = cmd.ExecuteReader();
                 return reader.HasRows || ShowMessage("Fyll i Journalen före du avslutar ordern.", main);
@@ -1165,7 +1165,7 @@ namespace DigitalProductionProgram.OrderManagement
                         JOIN [Order].Compound_Main AS main
                             ON kompound.OrderID = main.OrderID
                         WHERE main.OrderID = @orderid";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@orderid", OrderID);
                     con.Open();
                     var reader = cmd.ExecuteReader();
@@ -1194,7 +1194,7 @@ namespace DigitalProductionProgram.OrderManagement
                     return true;
                 using var con = new SqlConnection(Database.cs_Protocol);
                 var query = $"SELECT * FROM MeasureInstruments.Mätdon {Queries.WHERE_OrderID}";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@id", OrderID);
                 con.Open();
                 var reader = cmd.ExecuteReader();
@@ -1215,7 +1215,7 @@ namespace DigitalProductionProgram.OrderManagement
             {
                 using var con = new SqlConnection(Database.cs_Protocol);
                 var query = "SELECT * FROM [Order].PreFab WHERE OrderID = @orderid";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", OrderID);
                 con.Open();
                 var reader = cmd.ExecuteReader();
@@ -1234,7 +1234,7 @@ namespace DigitalProductionProgram.OrderManagement
             {
                 using var con = new SqlConnection(Database.cs_Protocol);
                 var query = "SELECT Rum_Temp, Rum_Fukt FROM [Order].MainData WHERE OrderID = @orderid";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", OrderID);
                 con.Open();
                 var reader = cmd.ExecuteReader();
@@ -1256,7 +1256,7 @@ namespace DigitalProductionProgram.OrderManagement
                 using (var con = new SqlConnection(Database.cs_Protocol))
                 {
                     const string query = "SELECT COUNT(*) FROM Measureprotocol.MainData WHERE OrderID = @orderid";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@orderid", OrderID);
                     con.Open();
                     ctr = (int)cmd.ExecuteScalar();
@@ -1271,7 +1271,7 @@ namespace DigitalProductionProgram.OrderManagement
                 using (var con = new SqlConnection(Database.cs_Protocol))
                 {
                     var query = $"SELECT * FROM Korprotokoll_Svetsning_Maskinparametrar {Queries.WHERE_OrderID}";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@id", OrderID);
                     con.Open();
                     var reader = cmd.ExecuteReader();
@@ -1282,7 +1282,7 @@ namespace DigitalProductionProgram.OrderManagement
                 using (var con = new SqlConnection(Database.cs_Protocol))
                 {
                     var query = $"SELECT * FROM Korprotokoll_Svetsning_Parametrar {Queries.WHERE_OrderID}";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@id", OrderID);
                     con.Open();
                     var reader = cmd.ExecuteReader();
@@ -1293,7 +1293,7 @@ namespace DigitalProductionProgram.OrderManagement
                 using (var con = new SqlConnection(Database.cs_Protocol))
                 {
                     var query = $"SELECT * FROM [Order].PreFab {Queries.WHERE_OrderID}";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@id", OrderID);
                     con.Open();
                     var reader = cmd.ExecuteReader();
@@ -1308,7 +1308,7 @@ namespace DigitalProductionProgram.OrderManagement
                 using (var con = new SqlConnection(Database.cs_Protocol))
                 {
                     var query = $"SELECT * FROM Korprotokoll_Slipning_Maskinparametrar {Queries.WHERE_OrderID}";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@id", OrderID);
                     con.Open();
                     var reader = cmd.ExecuteReader();
@@ -1319,7 +1319,7 @@ namespace DigitalProductionProgram.OrderManagement
                 using (var con = new SqlConnection(Database.cs_Protocol))
                 {
                     var query = $"SELECT * FROM Korprotokoll_Slipning_Produktion  {Queries.WHERE_OrderID}";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@id", OrderID);
                     con.Open();
                     var reader = cmd.ExecuteReader();
@@ -1332,7 +1332,7 @@ namespace DigitalProductionProgram.OrderManagement
             {
                 using var con = new SqlConnection(Database.cs_Protocol);
                 var query = "SELECT Comments FROM [Order].MainData WHERE OrderID = @orderid";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", OrderID);
                 con.Open();
                 var reader = cmd.ExecuteReader();
@@ -1357,7 +1357,7 @@ namespace DigitalProductionProgram.OrderManagement
                             AND Uppstart = @startup ";
                     if (!string.IsNullOrEmpty(machine))
                         query += "AND (MachineIndex = @machineindex OR (MachineIndex IS NULL AND @machineindex IS NULL))";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@orderid", OrderID);
                     cmd.Parameters.AddWithValue("@protocoldescriptionid", protocolDescriptionID);
                     cmd.Parameters.AddWithValue("@codetext", codetext);
@@ -1389,7 +1389,7 @@ namespace DigitalProductionProgram.OrderManagement
                         FROM [Processcard].ProposedChanges 
                         WHERE OrderID = @orderid 
                             AND ProtocolDescriptionID = @protocoldescriptionid";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", OrderID);
                 cmd.Parameters.AddWithValue("@protocoldescriptionid", protocolDescriptionID);
                 con.Open();
@@ -1400,7 +1400,7 @@ namespace DigitalProductionProgram.OrderManagement
             {
                 using var con = new SqlConnection(Database.cs_Protocol);
                 var query = @"SELECT BoolValue FROM [Order].Data WHERE OrderID = @orderid AND uppstart = @row AND ProtocolDescriptionID = @protocoldescriptionid";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", OrderID);
                 cmd.Parameters.AddWithValue("@protocoldescriptionid", 174);//174 = Kasserad
                 cmd.Parameters.AddWithValue("@row", uppstart);

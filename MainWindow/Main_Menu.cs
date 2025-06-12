@@ -1,8 +1,4 @@
-﻿using Microsoft.Data.SqlClient;
-using System.Diagnostics;
-using System.Globalization;
-using System.Runtime.InteropServices;
-using DigitalProductionProgram.ControlsManagement;
+﻿using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.EasterEggs;
 using DigitalProductionProgram.eMail;
@@ -18,6 +14,11 @@ using DigitalProductionProgram.QC;
 using DigitalProductionProgram.Templates;
 using DigitalProductionProgram.ToolManagement;
 using DigitalProductionProgram.User;
+using Microsoft.Data.SqlClient;
+using System.Diagnostics;
+using System.Globalization;
+using System.Runtime.InteropServices;
+using System.Text;
 using Color = System.Drawing.Color;
 using ProgressBar = DigitalProductionProgram.ControlsManagement.ProgressBar;
 
@@ -306,7 +307,7 @@ namespace DigitalProductionProgram.MainWindow
                         UPDATE [Order].MainData
                             SET PartID = @partID, RevNr = @revNr, ProdLine = @prodline, ProdType = @prodtyp
                         WHERE OrderID = @orderid";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                 cmd.Parameters.AddWithValue("@partID", Order.PartID);
                 cmd.Parameters.AddWithValue("@revNr", Order.RevNr);
@@ -339,7 +340,7 @@ namespace DigitalProductionProgram.MainWindow
                         UPDATE [Order].MainData
                             SET ProtocolMainTemplateID = @protocolmaintemplateid
                         WHERE OrderID = @orderid";
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
             cmd.Parameters.AddWithValue("@protocolmaintemplateid", Templates_Protocol.MainTemplate.ID);
 
@@ -365,7 +366,7 @@ namespace DigitalProductionProgram.MainWindow
                         UPDATE [Order].MainData
                             SET MeasureProtocolMainTemplateID = @measureprotocolmaintemplateid
                         WHERE OrderID = @orderid";
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter(); ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
             cmd.Parameters.AddWithValue("@measureprotocolmaintemplateid", Templates_MeasureProtocol.MainTemplate.ID);
 
@@ -383,7 +384,7 @@ namespace DigitalProductionProgram.MainWindow
             }
 
             // Stoppa MainTimer eventuellt om det blir problem
-            var WorkOperation = new Choose_WorkOperation_BrowseProtocols_ManageProcesscards(true, false, false,LanguageManager.GetString("label_ChoosePC_Header"));
+            var WorkOperation = new Choose_WorkOperation_BrowseProtocols_ManageProcesscards(true, false, false, LanguageManager.GetString("label_ChoosePC_Header"));
             WorkOperation.ShowDialog();
         }
 
@@ -710,7 +711,7 @@ Protocol.MainTemplate.Revision = {Templates_Protocol.MainTemplate.Revision}"
                 //    FROM [Order].MainData 
                 //    WHERE OrderID = @orderid";
 
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter(); ServerStatus.Add_Sql_Counter();
                 //cmd.Parameters.AddWithValue("@orderid", Order.ID);
                 con.Open();
                 var reader = cmd.ExecuteReader();
@@ -729,7 +730,7 @@ Protocol.MainTemplate.Revision = {Templates_Protocol.MainTemplate.Revision}"
                     var query =
                         @"SELECT MAX(Uppstart), MAX(MachineIndex) FROM [Order].Data WHERE OrderID = @orderid";
 
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter(); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@orderid", orderid);
                     con.Open();
                     var reader = cmd.ExecuteReader();
@@ -747,7 +748,7 @@ Protocol.MainTemplate.Revision = {Templates_Protocol.MainTemplate.Revision}"
                             FROM [Order].MainData
                             WHERE OrderID = @orderid";
 
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter(); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@orderid", orderid);
                     con.Open();
                     var reader = cmd.ExecuteReader();
@@ -825,7 +826,7 @@ Protocol.MainTemplate.Revision = {Templates_Protocol.MainTemplate.Revision}"
                     WHERE (WorkOperation = 'Extrudering_Termo' OR WorkOperation = 'Extrudering_Tryck')
                     AND OrderID < 10001
                     ORDER BY OrderID ";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 con.Open();
                 var reader = cmd.ExecuteReader();
 
@@ -844,7 +845,7 @@ Protocol.MainTemplate.Revision = {Templates_Protocol.MainTemplate.Revision}"
                     var query =
                         @"SELECT MAX(Uppstart), MAX(MachineIndex) FROM [Order].Data WHERE OrderID = @orderid";
 
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@orderid", orderid);
                     con.Open();
                     var reader = cmd.ExecuteReader();
@@ -862,7 +863,7 @@ Protocol.MainTemplate.Revision = {Templates_Protocol.MainTemplate.Revision}"
                             FROM [Order].Data
                             WHERE OrderID = @orderid AND (ProtocolDescriptionID = 310 OR ProtocolDescriptionID = 311)";
 
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@orderid", orderid);
                     con.Open();
                     var reader = cmd.ExecuteReader();
@@ -888,7 +889,7 @@ Protocol.MainTemplate.Revision = {Templates_Protocol.MainTemplate.Revision}"
                             FROM Processcard.Data
                             WHERE PartID = (SELECT PartID FROM [Order].MainData WHERE OrderID = @orderid) AND TemplateID = 942";
 
-                        var cmd = new SqlCommand(query, con);
+                        var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                         cmd.Parameters.AddWithValue("@orderid", orderid);
                         con.Open();
                         var reader = cmd.ExecuteReader();
@@ -906,7 +907,7 @@ Protocol.MainTemplate.Revision = {Templates_Protocol.MainTemplate.Revision}"
                             FROM Processcard.Data
                             WHERE PartID = (SELECT PartID FROM [Order].MainData WHERE OrderID = @orderid) AND TemplateID = 945";
 
-                        var cmd = new SqlCommand(query, con);
+                        var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                         cmd.Parameters.AddWithValue("@orderid", orderid);
                         con.Open();
                         var reader = cmd.ExecuteReader();
@@ -944,7 +945,7 @@ Protocol.MainTemplate.Revision = {Templates_Protocol.MainTemplate.Revision}"
             {
                 var query =
                     @"SELECT TOP(1) OrderNr, Operation FROM [Order].MainData WHERE ArtikelNr = @partnr AND RevNr IS NOT NULL ORDER BY NEWID()";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
 
                 con.Open();
                 cmd.Parameters.AddWithValue("@partnr", artikelNr);
@@ -973,7 +974,20 @@ Protocol.MainTemplate.Revision = {Templates_Protocol.MainTemplate.Revision}"
             LoggedInUsers calender = new LoggedInUsers();
             calender.ShowDialog();
         }
+        private void Developer_CountSql_Queries_Click(object sender, EventArgs e)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine($"Totalt antal SQL-anrop: {Database.SQL_Counter}");
 
+            foreach (var kvp in ServerStatus._methodSqlCounters.OrderByDescending(x => x.Value))
+            {
+                sb.AppendLine($"{kvp.Key}: {kvp.Value} anrop");
+            }
+
+            InfoText.Show(sb.ToString(), CustomColors.InfoText_Color.Info, null,mainForm);
+            // Kopiera till urklipp
+            Clipboard.SetText(sb.ToString());
+        }
         private void testRGBToolStripMenuItem_Click(object sender, EventArgs e)
         {
             //MessageBox.Show(Colors.DimGray.R.ToString());
@@ -1015,7 +1029,7 @@ AND NOT EXISTS(
 	AND SubQuery.OrderID = data.OrderID
 	)
 ORDER BY OrderID DESC ";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 con.Open();
                 var reader = cmd.ExecuteReader();
 
@@ -1055,7 +1069,7 @@ ORDER BY OrderID DESC ";
                             VALUES (@orderid, @descrId, @uppstart, @machineindex, @value)
                 END";
 
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", orderid);
                 cmd.Parameters.AddWithValue("@descrId", descrId);
                 SQL_Parameter.Double(cmd.Parameters, "@value", value);
@@ -1092,7 +1106,7 @@ ORDER BY OrderID DESC ";
 			                WHERE OrderID = @orderid AND uppstart = @uppstart AND (COALESCE(MachineIndex, 0) = COALESCE(@machineindex, 0)) AND ProtocolDescriptionID = @descrId
                     END";
 
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", orderid);
                 cmd.Parameters.AddWithValue("@descrId", descrId);
                 SQL_Parameter.String(cmd.Parameters, "@textvalue", textvalue);
@@ -1128,7 +1142,7 @@ ORDER BY OrderID DESC ";
 
 
 
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", orderid);
                 cmd.Parameters.AddWithValue("@descrId", descrId);
                 SQL_Parameter.Boolean(cmd.Parameters, "@boolvalue", boolvalue);
@@ -1165,7 +1179,7 @@ ORDER BY OrderID DESC ";
 			                WHERE OrderID = @orderid AND uppstart = @uppstart AND (COALESCE(MachineIndex, 0) = COALESCE(@machineindex, 0)) AND ProtocolDescriptionID = @descrId
                     END";
 
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", orderid);
                 cmd.Parameters.AddWithValue("@descrId", descrId);
                 cmd.Parameters.AddWithValue("@datevalue", date);
@@ -1201,7 +1215,7 @@ ORDER BY OrderID DESC ";
                             WHERE PartID = @PartID AND (COALESCE(MachineIndex, 0) = COALESCE(@machineindex, 0)) AND TemplateID = @templateid
                         END";
 
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@partid", PartID);
                 cmd.Parameters.AddWithValue("@templateid", templateID);
                 if (machineindex == 0)
@@ -1233,7 +1247,7 @@ ORDER BY OrderID DESC ";
                             WHERE PartID = @PartID AND (COALESCE(MachineIndex, 0) = COALESCE(@machineindex, 0)) AND TemplateID = @templateid
                         END";
 
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@partid", PartID);
                 cmd.Parameters.AddWithValue("@templateid", templateID);
                 if (machineindex == 0)
@@ -1271,7 +1285,7 @@ ORDER BY OrderID DESC ";
 			                WHERE OrderID = @orderid AND ProtocolDescriptionID = @descrId
                     END";
 
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", orderid);
                 cmd.Parameters.AddWithValue("@descrId", descrId);
                 SQL_Parameter.String(cmd.Parameters, "@textvalue", value);
@@ -1303,7 +1317,7 @@ ORDER BY OrderID DESC ";
 			                WHERE OrderID = @orderid AND ProtocolDescriptionID = @descrId
                     END";
 
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", orderid);
                 cmd.Parameters.AddWithValue("@descrId", descrId);
                 SQL_Parameter.Double(cmd.Parameters, "@value", value);
@@ -1406,5 +1420,7 @@ ORDER BY OrderID DESC ";
             EasterEgg_Code easterEgg = new EasterEgg_Code();
             easterEgg.ShowDialog();
         }
+
+        
     }
 }

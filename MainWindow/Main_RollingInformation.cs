@@ -19,7 +19,7 @@ namespace DigitalProductionProgram.MainWindow
         {
             using var con = new SqlConnection(Database.cs_Protocol);
             var query = @"SELECT COUNT(*) FROM [Order].MainData WHERE YEAR(Date_Start) = @year";
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@year", årtal);
             con.Open();
             return (int)cmd.ExecuteScalar();
@@ -29,7 +29,7 @@ namespace DigitalProductionProgram.MainWindow
             using var con = new SqlConnection(Database.cs_Protocol);
             var query = "SELECT COUNT(*) FROM [Order].MainData WHERE WorkOperationID = (SELECT ID FROM Workoperation.Names WHERE Name = @workoperation AND ID IS NOT NULL) AND DATENAME(DW, Date_Start) = @weekdayname";
 
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             SQL_Parameter.String(cmd.Parameters, "@workoperation", Order.WorkOperation.ToString());
             cmd.Parameters.AddWithValue("@weekdayname", Tips.WeekDayName);
             con.Open();
@@ -40,7 +40,7 @@ namespace DigitalProductionProgram.MainWindow
         {
             using var con = new SqlConnection(Database.cs_Protocol);
             var query = @"SELECT YEAR(Date_Start) FROM [Order].MainData ORDER BY YEAR(Date_Start)";
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             con.Open();
             object value = cmd.ExecuteScalar();
             if (value != null)
@@ -56,7 +56,7 @@ namespace DigitalProductionProgram.MainWindow
             using var con = new SqlConnection(Database.cs_Protocol);
             var query = @"SELECT AVG(LEN(Comments))
                                     FROM [Order].MainData WHERE WorkOperationID = (SELECT ID FROM Workoperation.Names WHERE Name = @workoperation AND ID IS NOT NULL)";
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             SQL_Parameter.String(cmd.Parameters, "@workoperation", workoperation);
             con.Open();
             var value = cmd.ExecuteScalar();
@@ -123,7 +123,7 @@ namespace DigitalProductionProgram.MainWindow
                     //ID > 200 är pga av att jag missat att läggga in ReleasDatum på dom allra första releaserna
                     const string query = "SELECT Tags, Description FROM Log.ChangeLog WHERE ReleaseDate IS NULL AND VisibleToUser = 'True' AND ID > 200";
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     var reader = cmd.ExecuteReader();
                     while (reader.Read())
                         tips.AddTip($"{LanguageManager.GetString("rollingTips_FutureUpdate")} {reader["Tags"]}: {reader["Description"]}");

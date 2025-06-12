@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Equipment;
 using DigitalProductionProgram.Help;
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.Measure;
 
 using DigitalProductionProgram.OrderManagement;
@@ -126,7 +127,7 @@ namespace DigitalProductionProgram.Protocols.LineClearance
                         ON lc.ProtocolMainTemplateID = protocol.ID
                     WHERE MainTemplateID = @maintemplateid";
 
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@maintemplateid", Templates_LineClearance.MainTemplate.LineClearance_MainTemplateID);
                 con.Open();
                 var reader = cmd.ExecuteReader();
@@ -193,7 +194,7 @@ namespace DigitalProductionProgram.Protocols.LineClearance
 	                        ON template.DescriptionID = description.DescriptionID
                     WHERE FormTemplateID = @formtemplateid
                     ORDER BY RowIndex";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@formtemplateid", formTemplateid);
                 con.Open();
                 var reader = cmd.ExecuteReader();
@@ -210,7 +211,7 @@ namespace DigitalProductionProgram.Protocols.LineClearance
             using (var con = new SqlConnection(Database.cs_Protocol))
             {
                 const string query = @"SELECT FormTemplateID, Category FROM LineClearance.FormTemplate WHERE MainTemplateID = @maintemplateid ORDER BY TemplateOrder";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@maintemplateid", Templates_LineClearance.MainTemplate.LineClearance_MainTemplateID);
                 con.Open();
                 var reader = cmd.ExecuteReader();
@@ -240,7 +241,7 @@ namespace DigitalProductionProgram.Protocols.LineClearance
                     FROM [Order].MainData
                     WHERE OrderID = @orderid";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
@@ -290,7 +291,7 @@ namespace DigitalProductionProgram.Protocols.LineClearance
                 var query =
                     "UPDATE [Order].MainData SET LC_Date = @date, LC_Name = @name WHERE OrderID = @orderid";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                 cmd.Parameters.AddWithValue("@date", LC_Date.Text);
                 cmd.Parameters.AddWithValue("@name", LC_Name.Text);
@@ -305,7 +306,7 @@ namespace DigitalProductionProgram.Protocols.LineClearance
                 var query =
                     "UPDATE [Order].MainData SET LC_Approved_Date = @date, LC_Approved_Name = @name WHERE OrderID = @orderid";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                 cmd.Parameters.AddWithValue("@date", LC_Approved_Date.Text);
                 cmd.Parameters.AddWithValue("@name", LC_Approved_Name.Text);
@@ -346,7 +347,7 @@ namespace DigitalProductionProgram.Protocols.LineClearance
                 const string query = "SELECT UserName FROM Authorities.CustomNames WHERE TemplateID = @id";
 
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@id", id);
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
@@ -398,7 +399,7 @@ namespace DigitalProductionProgram.Protocols.LineClearance
                 con.Open();
                 var query =
                     $@"UPDATE [Order].MainData SET LC_Comments = @comments {Queries.WHERE_OrderID}";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@id", Order.OrderID);
                 cmd.Parameters.AddWithValue("@comments", tb_Comments.Text);
 

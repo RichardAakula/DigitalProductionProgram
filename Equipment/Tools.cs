@@ -1,6 +1,7 @@
 ﻿using System.Data;
 
 using DigitalProductionProgram.DatabaseManagement;
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.User;
 using Microsoft.Data.SqlClient;
@@ -20,7 +21,7 @@ namespace DigitalProductionProgram.Equipment
                         
                     ORDER BY Uppstart";
 
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
             cmd.Parameters.AddWithValue("@descriptionid", descriptionID);
             con.Open();
@@ -40,7 +41,7 @@ namespace DigitalProductionProgram.Equipment
             using var con = new SqlConnection(Database.cs_ToolRegister);
             var query = @"SELECT Nom_ID FROM Register_Krympslangsrör WHERE ID_Nummer = @id";
 
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             SQL_Parameter.String(cmd.Parameters, "@id", id_Number);
             con.Open();
             var value = cmd.ExecuteScalar();
@@ -53,7 +54,7 @@ namespace DigitalProductionProgram.Equipment
             using var con = new SqlConnection(Database.cs_ToolRegister);
             var query = IsNomID ? "SELECT Nom_ID FROM Register_Krympslangsrör WHERE Inaktiv != 'True' OR Inaktiv IS NULL GROUP BY Nom_ID ORDER BY min(ID)" : @"SELECT ID_Nummer FROM Register_Krympslangsrör WHERE Inaktiv != 'True' OR Inaktiv IS NULL GROUP BY ID_Nummer ORDER BY min(ID)";
 
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             con.Open();
             var reader = cmd.ExecuteReader();
             while (reader.Read())
@@ -68,7 +69,7 @@ namespace DigitalProductionProgram.Equipment
                 using var con = new SqlConnection(Database.cs_ToolRegister);
                 var query = @"SELECT DISTINCT ID_Nummer FROM Register_Hackhylsor ORDER BY ID_Nummer DESC";
 
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 con.Open();
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
@@ -88,7 +89,7 @@ namespace DigitalProductionProgram.Equipment
                 query += "AND Dimension_nom >= @min AND Dimension_nom <= @max ";
             query += "ORDER BY Dimension_nom";
             con.Open();
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             SQL_Parameter.Double(cmd.Parameters, "@min", min);
             SQL_Parameter.Double(cmd.Parameters, "@max", max);
             var reader = cmd.ExecuteReader();
@@ -108,7 +109,7 @@ namespace DigitalProductionProgram.Equipment
                     GROUP BY Typ
                     ORDER BY Ctr DESC";
 
-            using var cmd = new SqlCommand(query, con);
+            using var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@user", Person.Name); // Adjust as needed
             cmd.Parameters.AddWithValue("@type", type);
             con.Open();
@@ -122,7 +123,7 @@ namespace DigitalProductionProgram.Equipment
             const string query = @"INSERT INTO RegularUsed_VerktygsTyp_Användare (Användare, Typ, Datum) 
                                     VALUES (@user, @typ, @date)";
 
-            using var cmd = new SqlCommand(query, con);
+            using var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             con.Open();
             cmd.Parameters.AddWithValue("@user", Person.Name);
             cmd.Parameters.AddWithValue("@typ", typ);

@@ -108,7 +108,7 @@ namespace DigitalProductionProgram.MainWindow
 
                 ON main.WorkoperationID = workoperation.ID
                 WHERE AnstNr = @employeenumber AND main.IsOrderDone = 'False'";
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             con.Open();
             cmd.Parameters.AddWithValue("@employeenumber", Person.EmployeeNr);
             var thisyear = DateTime.Now.ToString("yyyy");

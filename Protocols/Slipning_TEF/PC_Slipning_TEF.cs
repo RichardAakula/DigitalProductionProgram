@@ -3,7 +3,7 @@ using System.Configuration;
 using Microsoft.Data.SqlClient;
 using System.Windows.Forms;
 using DigitalProductionProgram.DatabaseManagement;
-
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.Processcards;
 
@@ -50,7 +50,7 @@ namespace DigitalProductionProgram.Protocols.Slipning_TEF
                                 Arbetsblad_min, Arbetsblad_nom, Arbetsblad_max, Chimshöjd_nom, Dragprov_enhet
                             FROM Processkort_Slipning WHERE PartID = @partID ";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@partID", Order.PartID);
 
                 var reader = cmd.ExecuteReader();
@@ -74,7 +74,7 @@ namespace DigitalProductionProgram.Protocols.Slipning_TEF
 
                     COMMIT TRANSACTION";
 
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 Add_Parameters(cmd, parameters);
                 con.Open();
                 Manage_Processcards.Execute_cmd(cmd, ref IsOk);
@@ -96,7 +96,7 @@ namespace DigitalProductionProgram.Protocols.Slipning_TEF
                         {Manage_Processcards.UPDATE_Processkort_Main}
                      
                     COMMIT TRANSACTION";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 Add_Parameters(cmd, parameters);
                 con.Open();
                 Manage_Processcards.Execute_cmd(cmd, ref IsOk);

@@ -3,7 +3,7 @@ using System.Configuration;
 using Microsoft.Data.SqlClient;
 using System.Windows.Forms;
 using DigitalProductionProgram.DatabaseManagement;
-
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.Processcards;
 
@@ -86,7 +86,7 @@ namespace DigitalProductionProgram.Protocols.Svetsning_TEF
                                 Tid_Bindvärme_max, Tid_Kylluft_min, Tid_Kylluft_nom, Tid_Kylluft_max, Temp_min, Temp_nom, Temp_max, Pinne_OD_Stål_nom, Pinne_OD_PTFE_nom, Värmebackar_Bredd_nom, Värmebackar_Hål_nom
                             FROM Processkort_Svetsning WHERE PartID = @partID";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@partID", Order.PartID);
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
@@ -115,7 +115,7 @@ namespace DigitalProductionProgram.Protocols.Svetsning_TEF
                         {Manage_Processcards.INSERT_INTO_Processkort_Main}
                     COMMIT TRANSACTION";
 
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 Add_Parameters(cmd, parameters);
                 con.Open();
                 Manage_Processcards.Execute_cmd(cmd, ref IsOk);
@@ -139,7 +139,7 @@ namespace DigitalProductionProgram.Protocols.Svetsning_TEF
                         {Manage_Processcards.UPDATE_Processkort_Main}
                      
                     COMMIT TRANSACTION";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 Add_Parameters(cmd, parameters);
                 con.Open();
                 Manage_Processcards.Execute_cmd(cmd, ref IsOk);

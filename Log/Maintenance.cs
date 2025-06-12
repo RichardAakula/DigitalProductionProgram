@@ -3,6 +3,7 @@ using DigitalProductionProgram.DatabaseManagement;
 using Microsoft.Data.SqlClient;
 using System;
 using System.Diagnostics;
+using DigitalProductionProgram.MainWindow;
 
 namespace DigitalProductionProgram.Log
 {
@@ -18,7 +19,7 @@ namespace DigitalProductionProgram.Log
                 {
                     const string query = "SELECT Datum FROM Log.Maintenance_Work WHERE Datum > @now";
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@now", DateTime.Now);
                     stop = DateTime.Parse(cmd.ExecuteScalar().ToString());
                 }
@@ -35,7 +36,7 @@ namespace DigitalProductionProgram.Log
                 {
                     const string query = "SELECT Datum FROM Log.Maintenance_Work WHERE Datum < @now AND Done = 'False'";
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@now", DateTime.Now);
                     start = DateTime.Parse(cmd.ExecuteScalar().ToString());
                 }
@@ -51,7 +52,7 @@ namespace DigitalProductionProgram.Log
                 {
                     const string query = "SELECT Datum FROM Log.Maintenance_Work WHERE Datum > @now";
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@now", DateTime.Now);
                     return DateTime.Parse(cmd.ExecuteScalar().ToString());
                 }
@@ -66,7 +67,7 @@ namespace DigitalProductionProgram.Log
                 using var con = new SqlConnection(Database.cs_Protocol);
                 const string query = "SELECT * FROM Log.Maintenance_Work WHERE Datum > @now";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@now", DateTime.Now);
                 var reader = cmd.ExecuteReader();
                 return reader.HasRows;
@@ -79,7 +80,7 @@ namespace DigitalProductionProgram.Log
                 using var con = new SqlConnection(Database.cs_Protocol);
                 const string query = "SELECT * FROM Log.Maintenance_Work WHERE Datum < @now AND Done = 'False'";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@now", DateTime.Now);
                 var reader = cmd.ExecuteReader();
                 return reader.HasRows;
@@ -114,7 +115,7 @@ namespace DigitalProductionProgram.Log
                 {
                     const string query = "SELECT Info FROM Log.Maintenance_Work WHERE Datum > @now";
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@now", DateTime.Now);
                     return cmd.ExecuteScalar().ToString();
                 }

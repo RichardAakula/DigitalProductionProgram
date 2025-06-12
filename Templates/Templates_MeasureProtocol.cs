@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Help;
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.PrintingServices;
 using DigitalProductionProgram.Processcards;
@@ -30,7 +31,7 @@ namespace DigitalProductionProgram.Templates
                 {
                     const string query = @"
                     SELECT COUNT(*) FROM Processcard.MainData WHERE MeasureProtocolMainTemplateID = @maintemplateid";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     con.Open();
                     cmd.Parameters.AddWithValue("@maintemplateid", MainTemplate.ID);
                     var value = cmd.ExecuteScalar();
@@ -47,7 +48,7 @@ namespace DigitalProductionProgram.Templates
                 {
                     const string query = @"
                     SELECT COUNT(*) FROM [Order].MainData WHERE MeasureProtocolMainTemplateID = @maintemplateid";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     con.Open();
                     cmd.Parameters.AddWithValue("@maintemplateid", MainTemplate.ID);
                     var value = cmd.ExecuteScalar();
@@ -198,7 +199,7 @@ namespace DigitalProductionProgram.Templates
                 LatestRevisions
                 WHERE rn = 1
                 ORDER BY Name";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 con.Open();
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
@@ -732,7 +733,7 @@ namespace DigitalProductionProgram.Templates
                 SELECT DISTINCT Revision
                 FROM Measureprotocol.MainTemplate
                 WHERE Name = @name";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@name", cb_TemplateName.Text);
                 con.Open();
                 var reader = cmd.ExecuteReader();
@@ -762,7 +763,7 @@ namespace DigitalProductionProgram.Templates
                 using (var con = new SqlConnection(Database.cs_Protocol))
                 {
                     const string query = @"SELECT ID, CodeName FROM MeasureProtocol.Description ORDER BY CodeName";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     con.Open();
                     var dataAdapter = new SqlDataAdapter(query, con);
                     dataAdapter.Fill(dt_Parameters);
@@ -796,7 +797,7 @@ namespace DigitalProductionProgram.Templates
                     using var con = new SqlConnection(Database.cs_Protocol);
                     const string query =
                         @"SELECT MeasureProtocolMainTemplateID FROM Processcard.MainData WHERE PartID = @partid";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@partid", Order.PartID);
                     con.Open();
                     var value = cmd.ExecuteScalar();
@@ -868,7 +869,7 @@ namespace DigitalProductionProgram.Templates
                            WHERE Name = @name
                                 AND Revision = @revision
                         END";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@templatemonitor", TemplateMonitor);
                 cmd.Parameters.AddWithValue("@revision", Revision);
                 cmd.Parameters.AddWithValue("@name", Name);
@@ -889,7 +890,7 @@ namespace DigitalProductionProgram.Templates
                 using var con = new SqlConnection(Database.cs_Protocol);
                 const string query = @"SELECT ISNULL(MAX(MeasureProtocolMainTemplateID) + 1, 1) FROM MeasureProtocol.MainTemplate";
 
-                using var cmd = new SqlCommand(query, con);
+                using var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 con.Open();
                 ID = Convert.ToInt32(cmd.ExecuteScalar()); // Handles null safely
             }
@@ -969,7 +970,7 @@ namespace DigitalProductionProgram.Templates
 
                     foreach (DataGridViewRow row in dgv.Rows)
                     {
-                        using var cmd = new SqlCommand(query, con);
+                        using var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                         cmd.Parameters.AddWithValue("@name", MainTemplate.Name);
                         cmd.Parameters.AddWithValue("@revision", MainTemplate.Revision);
                         cmd.Parameters.AddWithValue("@descriptionid", GetIntValue(row, "col_DescriptionID"));

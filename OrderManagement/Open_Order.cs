@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Equipment;
+using DigitalProductionProgram.MainWindow;
 using ProgressBar = DigitalProductionProgram.ControlsManagement.ProgressBar;
 
 namespace DigitalProductionProgram.OrderManagement
@@ -49,7 +50,7 @@ namespace DigitalProductionProgram.OrderManagement
                     ORDER BY Date_Start DESC";
 
 
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 var da = new SqlDataAdapter(cmd);
 
                 da.Fill(dt_Korprotokoll_MainData);
@@ -108,7 +109,7 @@ namespace DigitalProductionProgram.OrderManagement
             using (var con = new SqlConnection(Database.cs_Protocol))
             {
                 const string query = @"SELECT CodeText FROM Protocol.Description ORDER BY CodeText";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 con.Open();
                 var reader = cmd.ExecuteReader();
                 while(reader.Read())

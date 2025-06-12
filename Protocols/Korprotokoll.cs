@@ -5,7 +5,7 @@ using System.Windows.Forms;
 using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Help;
-
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.PrintingServices;
 using DigitalProductionProgram.Processcards;
@@ -118,7 +118,7 @@ namespace DigitalProductionProgram.Protocols
                         WHERE ID = @maintemplateid
                         ORDER BY revision DESC";
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                         
                     cmd.Parameters.AddWithValue("@maintemplateid", Templates_Protocol.MainTemplate.ID);
                     var value = cmd.ExecuteScalar();
@@ -136,7 +136,7 @@ namespace DigitalProductionProgram.Protocols
                             FROM [Order].MainData
                             WHERE OrderID = @orderid";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", orderID);
 
                 return cmd.ExecuteScalar().ToString();
@@ -149,7 +149,7 @@ namespace DigitalProductionProgram.Protocols
                             FROM [Order].MainData
                             WHERE OrderID = @orderid";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", orderID);
                 int.TryParse(cmd.ExecuteScalar().ToString(), out int maintemplateid);
                 return maintemplateid;
@@ -164,7 +164,7 @@ namespace DigitalProductionProgram.Protocols
                             FROM Processcard.MainData
                             WHERE PartID = @partid";
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@partid", Order.PartID);
 
                     return cmd.ExecuteScalar().ToString();
@@ -182,7 +182,7 @@ namespace DigitalProductionProgram.Protocols
                     WHERE FormTemplateID = @formtemplateid
                     ORDER BY Revision DESC";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@formtemplateid", FormTemplateID);
 
                 return cmd.ExecuteScalar().ToString();
@@ -198,7 +198,7 @@ namespace DigitalProductionProgram.Protocols
                     SELECT TOP(1) Type FROM Protocol.Template
                     WHERE ProtocolDescriptionID = @descrid";
 
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@descrid", id);
             con.Open();
             var value = cmd.ExecuteScalar();
@@ -215,7 +215,7 @@ namespace DigitalProductionProgram.Protocols
                 var query =
                     @"SELECT MAX(MachineIndex) FROM [Order].Data WHERE OrderID = @orderid";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                 var antal = cmd.ExecuteScalar();
                 if (antal == null)
@@ -227,7 +227,7 @@ namespace DigitalProductionProgram.Protocols
         {
             using var con = new SqlConnection(Database.cs_Protocol);
             var query = $"SELECT COUNT(*) FROM {table} WHERE OrderID = @orderid";
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
             con.Open();
             return (int)cmd.ExecuteScalar();
@@ -239,7 +239,7 @@ namespace DigitalProductionProgram.Protocols
                 using var con = new SqlConnection(Database.cs_Protocol);
                 var query = "SELECT * FROM BioBurden_Samples WHERE OrderID = @orderid";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                 var reader = cmd.ExecuteReader();
                 if (reader.HasRows)
@@ -259,7 +259,7 @@ namespace DigitalProductionProgram.Protocols
                     WHERE OrderID = @orderid
 	                    AND ProtocolDescriptionID = @protocoldescriptionid";
             con.Open();
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 
             SQL_Parameter.NullableINT(cmd.Parameters, "@orderid", orderID);
             cmd.Parameters.AddWithValue("@protocoldescriptionid", protocoldescriptionid);
@@ -362,7 +362,7 @@ namespace DigitalProductionProgram.Protocols
                             SET value = @value, textvalue = @textvalue, BoolValue = @boolvalue, datevalue = @datevalue
                         WHERE OrderID = @orderid AND ProtocolDescriptionID = @protocoldescriptionid AND (COALESCE(Uppstart, 0) = COALESCE(@uppstart, 0)) AND (COALESCE(MachineIndex, 0) = COALESCE(@machineindex, 0))";
             con.Open();
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
             cmd.Parameters.AddWithValue("@protocoldescriptionid", protocoldescriptionid);
             SQL_Parameter.NullableINT(cmd.Parameters, "@uppstart", uppstart);
@@ -413,7 +413,7 @@ namespace DigitalProductionProgram.Protocols
                     VALUES (@orderid, @protocoldescriptionid, @machineindex, @uppstart, @datevalue)";
 
             con.Open();
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
             cmd.Parameters.AddWithValue("@protocoldescriptionid", 239);
             SQL_Parameter.NullableINT(cmd.Parameters, "@uppstart", 1);

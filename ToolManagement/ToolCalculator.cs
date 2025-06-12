@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Equipment;
 using DigitalProductionProgram.Log;
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.Measure;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.PrintingServices;
@@ -310,7 +311,7 @@ namespace DigitalProductionProgram.ToolManagement
             const string query = @"INSERT INTO RegularUsedCalculations (UserID, DDR_min, DDR_max, Balance_min, Balance_max, Die_min, Die_max, Die_step, Pin_min, Pin_max, Pin_step, CreatedDate)
                                     VALUES (@userid, @ddrmin, @ddrmax, @balancemin, @balancemax, @diemin, @diemax, @diestep, @pinmin, @pinmax, @pinstep, @createddate)";
 
-            using var cmd = new SqlCommand(query, con);
+            using var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             con.Open();
             cmd.Parameters.AddWithValue("@userid", Person.UserID);
             cmd.Parameters.AddWithValue("@ddrmin", num_DDR_min.Value);

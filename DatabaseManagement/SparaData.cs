@@ -3,6 +3,7 @@ using Microsoft.Data.SqlClient;
 using System.Threading.Tasks;
 using DigitalProductionProgram.Help;
 using DigitalProductionProgram.Log;
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.Övrigt;
 using DigitalProductionProgram.Processcards;
@@ -22,7 +23,7 @@ namespace DigitalProductionProgram.DatabaseManagement
             {
                 var query = "INSERT INTO BioBurden_Samples VALUES (@orderid, @namn, @employeenumber, @datum)";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                 cmd.Parameters.AddWithValue("@namn", Person.Name);
                 cmd.Parameters.AddWithValue("@employeenumber", Person.EmployeeNr);
@@ -38,7 +39,7 @@ namespace DigitalProductionProgram.DatabaseManagement
             {
                 const string query = "INSERT INTO [Order].ExtraComments (OrderID, Spole, Kommentar, Datum, AnstNr, is_Locked, Row)" +
                                      "VALUES (@id, @spole, @kommentar, @datum, @employeenumber, 'True', @row)";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@id", Order.OrderID);
                 cmd.Parameters.AddWithValue("@spole", "N/A");
                 cmd.Parameters.AddWithValue("@kommentar", kommentar);
@@ -108,7 +109,7 @@ namespace DigitalProductionProgram.DatabaseManagement
                     'False'
                 )";
 
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@workoperationid", Order.WorkoperationID);
                 SQL_Parameter.Int(cmd.Parameters, "@protocolmaintemplateid", Templates_Protocol.MainTemplate.ID);
                 SQL_Parameter.NullableINT(cmd.Parameters, "@lineclearancetemplateid", Templates_LineClearance.MainTemplate.LineClearance_MainTemplateID);
@@ -142,7 +143,7 @@ namespace DigitalProductionProgram.DatabaseManagement
                 var query = @"IF NOT EXISTS (SELECT * FROM [User].TimeReadChangeLog WHERE UserID = @userid AND Month = @month AND Year = @year)
                                     INSERT INTO [User].TimeReadChangeLog (UserID, Month, Year, Time) VALUES (@userid, @month, @year, @time)";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@userid", Person.UserID);
                 cmd.Parameters.AddWithValue("@month", DateTime.Now.Month.ToString());
                 cmd.Parameters.AddWithValue("@year", DateTime.Now.Year.ToString());
@@ -156,7 +157,7 @@ namespace DigitalProductionProgram.DatabaseManagement
             {
                 var query = $@"UPDATE [Order].MainData SET Points = @point {Queries.WHERE_OrderID}";
 
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@partnr", Order.PartNumber);
                 cmd.Parameters.AddWithValue("@id", Order.OrderID);
                 cmd.Parameters.AddWithValue("@point", point);
@@ -173,7 +174,7 @@ namespace DigitalProductionProgram.DatabaseManagement
             using (var con = new SqlConnection(Database.cs_Protocol))
             {
                 var query = "UPDATE [User].Person SET Seen_Gallup_result = 'True' WHERE EmployeeNumber = @employeenumber";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@employeenumber", Person.EmployeeNr);
                 con.Open();
                 cmd.ExecuteNonQuery();
@@ -185,7 +186,7 @@ namespace DigitalProductionProgram.DatabaseManagement
             using (var con = new SqlConnection(Database.cs_Protocol))
             {
                 const string query = "UPDATE [User].Person SET Processkort_ArbetsOperation = @workoperation WHERE Name = @name";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@workoperation", arbetsOperation);
                 cmd.Parameters.AddWithValue("@name", Person.Name);
                 con.Open();
@@ -214,7 +215,7 @@ namespace DigitalProductionProgram.DatabaseManagement
                     AND pc_main.WorkOperationID = @workoperationid
                     AND [Order].MainData.OrderID = @orderid";
 
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 SQL_Parameter.Int(cmd.Parameters, "@partid", Order.PartID);
                 SQL_Parameter.Int(cmd.Parameters, "@workoperationid", Order.WorkoperationID);
                 SQL_Parameter.Int(cmd.Parameters, "@orderid", Order.OrderID);
@@ -232,7 +233,7 @@ namespace DigitalProductionProgram.DatabaseManagement
             using (var con = new SqlConnection(Database.cs_Protocol))
             {
                 var query = $"UPDATE {db_Tabell} SET Kasserad = 'True' {Queries.WHERE_OrderID} AND Datum = @datum AND Tid = @tid AND AnstNr = @employeenumber";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@id", Order.OrderID);
                 cmd.Parameters.AddWithValue("@datum", datum);
                 cmd.Parameters.AddWithValue("@tid", tid);
@@ -250,7 +251,7 @@ namespace DigitalProductionProgram.DatabaseManagement
                 {
                     var query = "UPDATE [User].Person SET Online = @flag WHERE EmployeeNumber = @employeenumber";
 
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@flag", flag);
                     cmd.Parameters.AddWithValue("@employeenumber", anstNr);
                     con.Open();
@@ -269,7 +270,7 @@ namespace DigitalProductionProgram.DatabaseManagement
             using (var con = new SqlConnection(Database.cs_Protocol))
             {
                 const string query = "UPDATE [Order].MainData SET Date_Stop = @stop WHERE OrderID = @orderid AND Date_Stop IS NULL";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                 cmd.Parameters.AddWithValue("@stop", endTime);
                 con.Open();
@@ -295,7 +296,7 @@ namespace DigitalProductionProgram.DatabaseManagement
                             VALUES (
                                 @orderid, 240, 1, @startup, @value, @textvalue, @boolvalue, @datevalue)
                         END";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                 cmd.Parameters.AddWithValue("@startup", Module.TotalStartUps);
                 cmd.Parameters.AddWithValue("@value", DBNull.Value);
@@ -311,7 +312,7 @@ namespace DigitalProductionProgram.DatabaseManagement
             using (var con = new SqlConnection(Database.cs_Protocol))
             {
                 const string query = "UPDATE [Order].MainData SET IsOrderDone = 'True' WHERE OrderID = @orderid";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                 con.Open();
                 cmd.ExecuteNonQuery();
@@ -323,7 +324,7 @@ namespace DigitalProductionProgram.DatabaseManagement
             {
                 var query = $"UPDATE [Order].MainData SET IsOrderDone = 'False' {Queries.WHERE_OrderID}";
 
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@id", Order.OrderID);
                 con.Open();
                 var reader = cmd.ExecuteReader();
@@ -338,7 +339,7 @@ namespace DigitalProductionProgram.DatabaseManagement
                 var query = @"DELETE FROM Zumbach.Data WHERE OrderID = @orderid AND Bag = @bag AND Position = @pos
                     AND ID BETWEEN @id_min AND @id_max";
 
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                 cmd.Parameters.AddWithValue("@bag", påse);
                 cmd.Parameters.AddWithValue("@pos", position);
@@ -364,7 +365,7 @@ namespace DigitalProductionProgram.DatabaseManagement
                 using (var con = new SqlConnection(Database.cs_Protocol))
                 {
                     var query = Queries.UPDATE_Reset_Processcard_Open;
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@id", Order.OrderID);
                     con.Open();
                     cmd.ExecuteScalar();
@@ -392,7 +393,7 @@ namespace DigitalProductionProgram.DatabaseManagement
             using (var con = new SqlConnection(Database.cs_Protocol))
             {
                 var query = "UPDATE Meddelanden SET Läst = 'True' WHERE Mottagare = @mottagare AND Meddelande = @meddelande";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@mottagare", Person.Name);
                 cmd.Parameters.AddWithValue("@meddelande", meddelande);
                 con.Open();

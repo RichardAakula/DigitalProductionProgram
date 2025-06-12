@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Help;
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.Övrigt;
 using DigitalProductionProgram.PrintingServices;
@@ -85,7 +86,7 @@ namespace DigitalProductionProgram.Protocols.Kragning_TEF
                             (SELECT TextValue FROM [Order].Data WHERE OrderID = @orderid AND ProtocolDescriptionID = 173) AS Kragningsdon_Nr
                         FROM [Order].MainData
                         WHERE OrderID = @orderid";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
@@ -100,7 +101,7 @@ namespace DigitalProductionProgram.Protocols.Kragning_TEF
             {
                 var query = $@"SELECT Typ, Halvfabrikat_ArtikelNr, Halvfabrikat_OrderNr, Halvfabrikat_ID, Halvfabrikat_OD, Halvfabrikat_W, Length
                                         FROM [Order].PreFab {Queries.WHERE_OrderID} ORDER BY TempID";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@id", Order.OrderID);
                 con.Open();
                 var reader = cmd.ExecuteReader();
@@ -124,7 +125,7 @@ namespace DigitalProductionProgram.Protocols.Kragning_TEF
                         (OrderID, Typ, Halvfabrikat_ArtikelNr, Halvfabrikat_OrderNr, Halvfabrikat_ID, Halvfabrikat_OD, Halvfabrikat_W, Length) 
                     VALUES (@id, @typ, @halv_ArtikelNr, @halv_OrderNr, @halv_ID, @halv_OD, @halv_W, @length)";
 
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@id", Order.OrderID);
                 cmd.Parameters.AddWithValue("@typ", cb_Halvfabrikat_Typ.Text);
                 cmd.Parameters.AddWithValue("@halv_ArtikelNr", cb_Halvfabrikat_ArtikelNr.Text);
@@ -176,7 +177,7 @@ namespace DigitalProductionProgram.Protocols.Kragning_TEF
                 {
                     var query = $"DELETE TOP (1) FROM [Order].PreFab {Queries.WHERE_OrderID} AND Typ = @typ AND Halvfabrikat_ArtikelNr = @h_a AND Halvfabrikat_OrderNr = @h_o";
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@id", Order.OrderID);
                     cmd.Parameters.AddWithValue("@typ", dgv_Halvfabrikat.Rows[row].Cells[0].Value.ToString());
                     cmd.Parameters.AddWithValue("@h_a", dgv_Halvfabrikat.Rows[row].Cells[1].Value.ToString());

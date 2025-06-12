@@ -5,7 +5,7 @@ using System.Windows.Forms;
 using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Help;
-
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.PrintingServices;
 using DigitalProductionProgram.Processcards;
 using DigitalProductionProgram.Protocols;
@@ -24,7 +24,7 @@ namespace DigitalProductionProgram.OrderManagement
                     using (var con = new SqlConnection(Database.cs_Protocol))
                     {
                         const string query = @"SELECT Description FROM Workoperation.Names ORDER BY Description";
-                        var cmd = new SqlCommand(query, con);
+                        var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                         
                         con.Open();
                         var reader = cmd.ExecuteReader();
@@ -44,7 +44,7 @@ namespace DigitalProductionProgram.OrderManagement
             {
                 const string query = "SELECT * FROM Workoperation.ProductionLines WHERE ProductionLine = @prodline";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@prodline", prodLinje);
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
@@ -80,7 +80,7 @@ namespace DigitalProductionProgram.OrderManagement
                     JOIN Workoperation.Names as names
 	                    ON prodlines.WorkoperationID = names.ID
                     WHERE ProductionLine = @prodline";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 SQL_Parameter.String(cmd.Parameters, "@prodline", prodline);
                 con.Open();
                 var reader = cmd.ExecuteReader();
@@ -127,7 +127,7 @@ namespace DigitalProductionProgram.OrderManagement
                 {
                     con.Open();
                     const string query = @"SELECT Name FROM [Workoperation].Names ORDER BY Name";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     var reader = cmd.ExecuteReader();
                     while (reader.Read())
                         list.Add(reader[0].ToString());
@@ -159,7 +159,7 @@ namespace DigitalProductionProgram.OrderManagement
                         SELECT Name 
                         FROM Workoperation.Names";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
                     cb.Items.Add(reader[0].ToString());
@@ -182,7 +182,7 @@ namespace DigitalProductionProgram.OrderManagement
                     INSERT INTO Workoperation.ProductionLines (ProductionLine, WorkoperationID)
                         VALUES (@prodline, @workoperationID)";
 
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@prodline", Order.ProdLine);
             cmd.Parameters.AddWithValue("@workoperationID", Order.WorkoperationID);
             con.Open();
@@ -219,7 +219,7 @@ namespace DigitalProductionProgram.OrderManagement
                 WHERE ID = (SELECT WorkoperationID FROM [Order].MainData WHERE OrderID = @orderid) AND ID IS NOT NULL";
 
             con.Open();
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@orderid", orderID);
             var value = cmd.ExecuteScalar();
             if (value != null)
@@ -239,7 +239,7 @@ namespace DigitalProductionProgram.OrderManagement
                     WHERE ID = (SELECT WorkoperationID FROM [Order].MainData WHERE OrderID = @orderid) AND ID IS NOT NULL";
 
             con.Open();
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@orderid", orderID);
             var value = cmd.ExecuteScalar();
             if (value != null)
@@ -256,7 +256,7 @@ namespace DigitalProductionProgram.OrderManagement
                         FROM Workoperation.Names 
                         WHERE ID = (SELECT WorkoperationID FROM Processcard.MainData WHERE PartID = @partid) AND ID IS NOT NULL";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 SQL_Parameter.NullableINT(cmd.Parameters, "@partid", partID);
                 var reader = cmd.ExecuteReader();
                 var ctr = 0;
@@ -295,7 +295,7 @@ namespace DigitalProductionProgram.OrderManagement
             {
                 const string query = "SELECT Name FROM Workoperation.Names WHERE ID = (SELECT TOP(1) WorkoperationID FROM Workoperation.ProductionLines WHERE ProductionLine = @prodline) AND ID IS NOT NULL";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 if (string.IsNullOrEmpty(prodline))
                     Part.Load_ProdLine();
                 cmd.Parameters.AddWithValue("@prodline", prodline);

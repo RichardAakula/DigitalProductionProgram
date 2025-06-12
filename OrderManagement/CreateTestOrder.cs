@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Equipment;
 using DigitalProductionProgram.Help;
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.PrintingServices;
 using DigitalProductionProgram.Processcards;
 using DigitalProductionProgram.Protocols;
@@ -28,7 +29,7 @@ namespace DigitalProductionProgram.OrderManagement
                     var query = @"SELECT OrderNr FROM [Order].MainData WHERE OrderNr Like 'Q%' AND OrderNr != 'Q12345'
                                         ORDER BY OrderNr";
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     var reader = cmd.ExecuteReader();
                     
                     while (reader.Read())
@@ -83,7 +84,7 @@ namespace DigitalProductionProgram.OrderManagement
             {
                 var query = "SELECT DISTINCT PartNr FROM Processcard.MainData WHERE Aktiv = 'True' AND WorkOperationID = (SELECT ID FROM Workoperation.Names WHERE Name = @workoperation AND ID IS NOT NULL) AND PartNr != '1234567' ORDER BY PartNr";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 SQL_Parameter.String(cmd.Parameters, "@workoperation", cb_ArbetsOperation.Text);
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
@@ -95,7 +96,7 @@ namespace DigitalProductionProgram.OrderManagement
             {
                 var query = "SELECT ArtikelNr_Gammal FROM Artikelkonvertering";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
@@ -121,7 +122,7 @@ namespace DigitalProductionProgram.OrderManagement
             using var con = new SqlConnection(Database.cs_Protocol);
             var query = "SELECT DISTINCT RevNr FROM Processcard.MainData WHERE PartNr = @partnr AND WorkOperationID = (SELECT ID FROM Workoperation.Names WHERE Name = @workoperation AND ID IS NOT NULL) ORDER BY RevNr";
             con.Open();
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@partnr", tb_ArtikelNr.Text);
             SQL_Parameter.String(cmd.Parameters, "@workoperation", cb_ArbetsOperation.Text);
             var reader = cmd.ExecuteReader();

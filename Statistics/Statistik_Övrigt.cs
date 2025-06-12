@@ -4,6 +4,7 @@ using Microsoft.Data.SqlClient;
 using System.Windows.Forms.DataVisualization.Charting;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Log;
+using DigitalProductionProgram.MainWindow;
 using static DigitalProductionProgram.OrderManagement.Teman;
 using ProgressBar = DigitalProductionProgram.ControlsManagement.ProgressBar;
 
@@ -372,7 +373,7 @@ namespace DigitalProductionProgram.Statistics
                     GROUP BY Year(Date) 
                     ORDER BY Year(Date)";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
 
                 dt_Mätningar_Extrudering_TEF_Year.Load(cmd.ExecuteReader());
             }
@@ -398,7 +399,7 @@ namespace DigitalProductionProgram.Statistics
                     GROUP BY Year(Date) 
                     ORDER BY Year(Date)";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
@@ -422,7 +423,7 @@ namespace DigitalProductionProgram.Statistics
                     GROUP BY Year(Date) 
                     ORDER BY Year(Date)";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
@@ -445,7 +446,7 @@ namespace DigitalProductionProgram.Statistics
                     ORDER BY Year(Date)";
 
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
@@ -468,7 +469,7 @@ namespace DigitalProductionProgram.Statistics
                     GROUP BY MONTH(Date) 
                     ORDER BY MONTH(Date)";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
 
                 dt_Mätningar_Extrudering_TEF_Month.Load(cmd.ExecuteReader());
             }
@@ -487,7 +488,7 @@ namespace DigitalProductionProgram.Statistics
 						AND YEAR(Date) > 2013 
                     GROUP BY CAST(Date as Date) ORDER BY CAST(Date as Date)";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
 
                 dt_Mätningar_Extrudering_TEF_Day.Load(cmd.ExecuteReader());
             }
@@ -507,7 +508,7 @@ namespace DigitalProductionProgram.Statistics
                     GROUP BY DATENAME(WEEKDAY, Date), Date
 					ORDER BY Date";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@date", DateTime.Now.AddDays(-7));
                 dt_Mätningar_Extrudering_TEF_LastWeek.Load(cmd.ExecuteReader());
             }
@@ -534,7 +535,7 @@ namespace DigitalProductionProgram.Statistics
                         WHEN 'Sunday' Then 7
                     END";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
 
                 dt_Mätningar_Extrudering_TEF_DayOfWeek.Load(cmd.ExecuteReader());
             }
@@ -554,7 +555,7 @@ namespace DigitalProductionProgram.Statistics
                     GROUP BY Year(Date) 
                     ORDER BY Year(Date)";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
 
                 dt_Mätningar_Extrudering_FEP_Year.Load(cmd.ExecuteReader());
             }
@@ -580,7 +581,7 @@ namespace DigitalProductionProgram.Statistics
                     GROUP BY Year(Date) 
                     ORDER BY Year(Date)";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
@@ -604,7 +605,7 @@ namespace DigitalProductionProgram.Statistics
                     GROUP BY Year(Date) 
                     ORDER BY Year(Date)";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
@@ -627,7 +628,7 @@ namespace DigitalProductionProgram.Statistics
                     ORDER BY Year(Date)";
 
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
@@ -650,7 +651,7 @@ namespace DigitalProductionProgram.Statistics
                         GROUP BY MONTH(Date) 
                         ORDER BY MONTH(Date)";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
 
                 dt_Mätningar_Extrudering_FEP_Month.Load(cmd.ExecuteReader());
             }
@@ -669,7 +670,7 @@ namespace DigitalProductionProgram.Statistics
                                 GROUP BY Date
                                 ORDER BY Date";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
 
                 dt_Mätningar_Extrudering_FEP_Day.Load(cmd.ExecuteReader());
             }
@@ -689,7 +690,7 @@ namespace DigitalProductionProgram.Statistics
                     GROUP BY DATENAME(WEEKDAY, Date), CAST(Date as date)
 					ORDER BY CAST(Date as date)";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@date", DateTime.Now.AddDays(-7));
                 dt_Mätningar_Extrudering_FEP_LastWeek.Load(cmd.ExecuteReader());
             }
@@ -716,7 +717,7 @@ namespace DigitalProductionProgram.Statistics
                         WHEN 'Sunday' Then 7
                     END";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
 
                 dt_Mätningar_Extrudering_FEP_DayOfWeek.Load(cmd.ExecuteReader());
             }
@@ -736,7 +737,7 @@ namespace DigitalProductionProgram.Statistics
                     GROUP BY Year(Date) 
                     ORDER BY Year(Date)";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
 
                 dt_Mätningar_Krymp_Year.Load(cmd.ExecuteReader());
             }
@@ -762,7 +763,7 @@ namespace DigitalProductionProgram.Statistics
                     GROUP BY Year(Date) 
                     ORDER BY Year(Date)";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
@@ -786,7 +787,7 @@ namespace DigitalProductionProgram.Statistics
                     GROUP BY Year(Date) 
                     ORDER BY Year(Date)";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
@@ -808,7 +809,7 @@ namespace DigitalProductionProgram.Statistics
                     GROUP BY Year(Date) 
                     ORDER BY Year(Date)";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
@@ -831,7 +832,7 @@ namespace DigitalProductionProgram.Statistics
                         GROUP BY MONTH(Date) 
                         ORDER BY MONTH(Date)";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
 
                 dt_Mätningar_Krymp_Month.Load(cmd.ExecuteReader());
             }
@@ -850,7 +851,7 @@ namespace DigitalProductionProgram.Statistics
                                 GROUP BY CAST(Date as Date)
                                 ORDER BY CAST(Date as Date)";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
 
                 dt_Mätningar_Krymp_Day.Load(cmd.ExecuteReader());
             }
@@ -870,7 +871,7 @@ namespace DigitalProductionProgram.Statistics
                     GROUP BY DATENAME(WEEKDAY, Date), CAST(Date as date)
 					ORDER BY CAST(Date as date)";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@date", DateTime.Now.AddDays(-7));
                 dt_Mätningar_Krymp_LastWeek.Load(cmd.ExecuteReader());
             }
@@ -897,7 +898,7 @@ namespace DigitalProductionProgram.Statistics
                         WHEN 'Sunday' Then 7
                     END";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
 
                 dt_Mätningar_Krymp_DayOfWeek.Load(cmd.ExecuteReader());
             }
@@ -910,7 +911,7 @@ namespace DigitalProductionProgram.Statistics
             {
                 var query = "SELECT YEAR(Date_Time), COUNT(*) AS Antal FROM Korprotokoll_Slipning_Produktion WHERE Column_Index IS NULL GROUP BY Year(Date_Time) ORDER BY Year(Date_Time)";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
 
                 dt_Mätningar_Slipning_Year.Load(cmd.ExecuteReader());
             }
@@ -932,7 +933,7 @@ namespace DigitalProductionProgram.Statistics
                                     GROUP BY Year(Date_Time) ORDER BY Year(Date_Time)";
 
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
@@ -952,7 +953,7 @@ namespace DigitalProductionProgram.Statistics
                                     GROUP BY Year(Date_Time) ORDER BY Year(Date_Time)";
 
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
@@ -969,7 +970,7 @@ namespace DigitalProductionProgram.Statistics
                                         AND Column_Index IS NULL
                                     GROUP BY Year(Date_Time) ORDER BY Year(Date_Time)";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
@@ -985,7 +986,7 @@ namespace DigitalProductionProgram.Statistics
             {
                 var query = "SELECT MONTH(Date_Time), COUNT(*) AS Antal FROM Korprotokoll_Slipning_Produktion WHERE Column_Index IS NULL GROUP BY MONTH(Date_Time) ORDER BY MONTH(Date_Time)";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
 
                 dt_Mätningar_Slipning_Month.Load(cmd.ExecuteReader());
             }
@@ -999,7 +1000,7 @@ namespace DigitalProductionProgram.Statistics
 
                 
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
 
                 dt_Mätningar_Slipning_Day.Load(cmd.ExecuteReader());
             }
@@ -1015,7 +1016,7 @@ namespace DigitalProductionProgram.Statistics
                     GROUP BY DATENAME(WEEKDAY, Date_Time), CAST(Date_Time AS date)
                     ORDER BY CAST(Date_Time AS date)";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@date", DateTime.Now.AddDays(-7));
                 dt_Mätningar_Slipning_LastWeek.Load(cmd.ExecuteReader());
             }
@@ -1039,7 +1040,7 @@ namespace DigitalProductionProgram.Statistics
                     WHEN 'Sunday' Then 7
                     END";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
 
                 dt_Mätningar_Slipning_DayOfWeek.Load(cmd.ExecuteReader());
             }
@@ -1052,7 +1053,7 @@ namespace DigitalProductionProgram.Statistics
             {
                 var query = "SELECT YEAR(Datum), COUNT(*) AS Antal FROM Korprotokoll_Svetsning_Parametrar WHERE Tid > '' AND Tid != '-' GROUP BY Year(Datum) ORDER BY Year(Datum)";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
 
                 dt_Mätningar_Svetsning_Year.Load(cmd.ExecuteReader());
             }
@@ -1069,7 +1070,7 @@ namespace DigitalProductionProgram.Statistics
             {
                 var query = "SELECT YEAR(Datum), COUNT(*) AS Antal FROM Korprotokoll_Svetsning_Parametrar WHERE Tid BETWEEN '06:00' AND '13:59'  GROUP BY Year(Datum) ORDER BY Year(Datum)";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
@@ -1084,7 +1085,7 @@ namespace DigitalProductionProgram.Statistics
             {
                 var query = "SELECT YEAR(Datum), COUNT(*) AS Antal FROM Korprotokoll_Svetsning_Parametrar WHERE Tid BETWEEN '14:00' AND '21:59' GROUP BY Year(Datum) ORDER BY Year(Datum)";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
@@ -1097,7 +1098,7 @@ namespace DigitalProductionProgram.Statistics
             {
                 var query = "SELECT YEAR(Datum), COUNT(*) AS Antal FROM Korprotokoll_Svetsning_Parametrar WHERE Tid BETWEEN '22:00' AND '23:59' OR Tid BETWEEN '00:00' AND '05:59' GROUP BY Year(Datum) ORDER BY Year(Datum)";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
@@ -1113,7 +1114,7 @@ namespace DigitalProductionProgram.Statistics
             {
                 var query = "SELECT MONTH(Datum), COUNT(*) AS Antal FROM Korprotokoll_Svetsning_Parametrar WHERE Tid > '' AND Tid != '-' GROUP BY MONTH(Datum) ORDER BY MONTH(Datum)";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
 
                 dt_Mätningar_Svetsning_Month.Load(cmd.ExecuteReader());
             }
@@ -1125,7 +1126,7 @@ namespace DigitalProductionProgram.Statistics
             {
                 var query = "SELECT Datum, COUNT(*) AS Antal FROM Korprotokoll_Svetsning_Parametrar WHERE Tid > '' AND Tid != '-' GROUP BY Datum ORDER BY Datum";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
 
                 dt_Mätningar_Svetsning_Day.Load(cmd.ExecuteReader());
             }
@@ -1141,7 +1142,7 @@ namespace DigitalProductionProgram.Statistics
                     GROUP BY DATENAME(WEEKDAY, Datum), Datum
                     ORDER BY Datum";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@date", DateTime.Now.AddDays(-7));
                 dt_Mätningar_Svetsning_LastWeek.Load(cmd.ExecuteReader());
             }
@@ -1166,7 +1167,7 @@ namespace DigitalProductionProgram.Statistics
                     END
                     ";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
 
                 dt_Mätningar_Svetsning_DayOfWeek.Load(cmd.ExecuteReader());
             }
@@ -1183,7 +1184,7 @@ namespace DigitalProductionProgram.Statistics
                                     GROUP BY YEAR(Date_Start)
                                     ORDER BY YEAR(Date_Start)";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 var reader = cmd.ExecuteReader();
                 var year = 0;
                 var antal = 0;
@@ -1217,7 +1218,7 @@ namespace DigitalProductionProgram.Statistics
                                     GROUP BY MONTH(Date_Start)
                                     ORDER BY Month(Date_Start)";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 var reader = cmd.ExecuteReader();
                 var month = 0;
                 var antal = 0;
@@ -1247,7 +1248,7 @@ namespace DigitalProductionProgram.Statistics
             {
                 var query = @"SELECT ProdLine, COUNT(OrderNr) FROM [Order].MainData WHERE ProdLine > '' GROUP BY ProdLine HAVING COUNT(OrderNr) > 10";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
 
                 dt_Ordrar_ProdLinje.Load(cmd.ExecuteReader());
             }
@@ -1262,7 +1263,7 @@ namespace DigitalProductionProgram.Statistics
                 var query = @"SELECT ProdLine, COUNT(OrderNr) FROM [Order].MainData
                                 WHERE ProdLine > '' AND YEAR(Date_Start) = YEAR(getdate()) GROUP BY ProdLine HAVING COUNT(OrderNr) > 10";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
@@ -1283,7 +1284,7 @@ namespace DigitalProductionProgram.Statistics
                     var query = @"SELECT ProdLine, COUNT(OrderNr) FROM [Order].MainData
                                 WHERE ProdLine > '' AND YEAR(Date_Start) = @lastYear GROUP BY ProdLine HAVING ProdLine = @prodline";
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@lastYear", lastYear);
                     cmd.Parameters.AddWithValue("@prodline", dt_Ordrar_ProdLinje_This_Year.Rows[i][0].ToString());
                     var reader = cmd.ExecuteReader();
@@ -1304,7 +1305,7 @@ namespace DigitalProductionProgram.Statistics
                     var query = @"SELECT ProdLine, COUNT(OrderNr) FROM [Order].MainData
                                 WHERE ProdLine > '' AND YEAR(Date_Start) = @2YearAgo GROUP BY ProdLine HAVING ProdLine = @prodline";
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@2YearAgo", two_Year_Ago);
                     cmd.Parameters.AddWithValue("@prodline", dt_Ordrar_ProdLinje_This_Year.Rows[i][0].ToString());
                     var reader = cmd.ExecuteReader();
@@ -1322,7 +1323,7 @@ namespace DigitalProductionProgram.Statistics
                                 WHERE ProdLine > '' AND Date_Start >= @date
                                 GROUP BY ProdLine";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@date", new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1));
                 dt_Ordrar_ProdLinje_This_Month.Load(cmd.ExecuteReader());
             }
@@ -1341,7 +1342,7 @@ namespace DigitalProductionProgram.Statistics
                                 GROUP BY ProdLine
                                 HAVING AVG(DATEDIFF(HOUR, Date_Start, Date_Stop)) < 1000";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
 
                 dt_Ordrar_Tid_Order_ProdLinje.Load(cmd.ExecuteReader());
             }
@@ -1365,7 +1366,7 @@ namespace DigitalProductionProgram.Statistics
                                 GROUP BY ProdLine
                                 HAVING AVG(DATEDIFF(HOUR, Date_Start, Date_Stop)) < 1000 AND AVG(DATEDIFF(HOUR, Date_Start, Date_Stop)) > 5";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@thisYear", thisYear);
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
@@ -1388,7 +1389,7 @@ namespace DigitalProductionProgram.Statistics
                                     AND ProdLine = @prodline
                                 GROUP BY ProdLine";
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@prodline", dt_Ordrar_Tid_Order_ProdLinje_Year.Rows[i][0]);
                     cmd.Parameters.AddWithValue("@lastYear", lastYear);
                     var reader = cmd.ExecuteReader();
@@ -1408,7 +1409,7 @@ namespace DigitalProductionProgram.Statistics
                                     AND ProdLine = @prodline
                                 GROUP BY ProdLine";
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@prodline", dt_Ordrar_Tid_Order_ProdLinje_Year.Rows[i][0]);
                     cmd.Parameters.AddWithValue("@twoYearAgo", two_Year_Ago);
                     var reader = cmd.ExecuteReader();
@@ -1430,7 +1431,7 @@ namespace DigitalProductionProgram.Statistics
                 {
                     var query = "SELECT Rum_Temp FROM [Order].MainData WHERE Rum_Temp IS NOT NULL AND ProdLine = @prodline";
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@prodline", ProdLine);
                     var reader = cmd.ExecuteReader();
                     while (reader.Read())
@@ -1461,7 +1462,7 @@ namespace DigitalProductionProgram.Statistics
                 {
                     var query = "SELECT Rum_Fukt FROM [Order].MainData WHERE Rum_Fukt IS NOT NULL AND ProdLine = @prodline";
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@prodline", ProdLine);
                     var reader = cmd.ExecuteReader();
                     while (reader.Read())
@@ -1499,7 +1500,7 @@ namespace DigitalProductionProgram.Statistics
                         WHERE ProtocolDescriptionID = 99 AND  Value IS NOT NULL 
                             AND ProdLine = @prodline";
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@prodline", ProdLine);
                     var reader = cmd.ExecuteReader();
                     while (reader.Read())
@@ -1538,7 +1539,7 @@ namespace DigitalProductionProgram.Statistics
                         WHERE ProtocolDescriptionID = 276 
                             AND ProdLine = @prodline AND LEN(Value) < 4";
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@prodline", Prodlinje);
                     var reader = cmd.ExecuteReader();
                     while (reader.Read())
@@ -1570,7 +1571,7 @@ namespace DigitalProductionProgram.Statistics
                     WHERE ProtocolDescriptionID = 283 AND ProdLine IS NOT NULL AND ProdLine IS NOT NULL
                     GROUP BY ProdLine";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
 
                 dt_Temp_Zon_Huvud_ProdLinje.Load(cmd.ExecuteReader());
             }
@@ -1588,7 +1589,7 @@ namespace DigitalProductionProgram.Statistics
                     WHERE ProtocolDescriptionID = 284 AND ProdLine IS NOT NULL AND ProdLine IS NOT NULL
                     GROUP BY ProdLine";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
 
                 dt_Temp_Zon_Munst_ProdLinje.Load(cmd.ExecuteReader());
             }
@@ -1610,7 +1611,7 @@ namespace DigitalProductionProgram.Statistics
                     GROUP BY ProdLine
                     ORDER BY ProdLine";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
@@ -1637,7 +1638,7 @@ namespace DigitalProductionProgram.Statistics
                     GROUP BY ProdLine
                     ORDER BY ProdLine";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@thisYear", thisYear);
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
@@ -1665,7 +1666,7 @@ namespace DigitalProductionProgram.Statistics
                         GROUP BY ProdLine
                         ORDER BY ProdLine";
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@lastYear", lastYear);
                     cmd.Parameters.AddWithValue("@prodline", dt_Mätningar_ProdLinje_Year.Rows[i][0].ToString());
                     var reader = cmd.ExecuteReader();
@@ -1692,7 +1693,7 @@ namespace DigitalProductionProgram.Statistics
                         GROUP BY ProdLine
                         ORDER BY ProdLine";
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@2YearAgo", two_Year_Ago);
                     cmd.Parameters.AddWithValue("@prodline", dt_Mätningar_ProdLinje_Year.Rows[i][0].ToString());
                     var reader = cmd.ExecuteReader();
@@ -1724,7 +1725,7 @@ namespace DigitalProductionProgram.Statistics
                             AND DescriptionID = 1
                             AND ProdLine = @prodline";
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@prodline", ProdLine);
                     var reader = cmd.ExecuteReader();
                     while (reader.Read())
@@ -1757,7 +1758,7 @@ namespace DigitalProductionProgram.Statistics
                     var query = $@"
                         SELECT Value FROM Measureprotocol.Data WHERE Value BETWEEN {i} AND {i + 1} AND DescriptionID = 11";
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     var reader = cmd.ExecuteReader();
                     while (reader.Read())
                     {
@@ -1781,7 +1782,7 @@ namespace DigitalProductionProgram.Statistics
                 {
                     var query = $"SELECT Value FROM Measureprotocol.Data WHERE Value BETWEEN {i} AND {i + 1} AND DescriptionID = 16";
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     var reader = cmd.ExecuteReader();
                     while (reader.Read())
                     {
@@ -1812,7 +1813,7 @@ namespace DigitalProductionProgram.Statistics
                     GROUP BY SUBSTRING(textvalue, 3, 5)
                     ORDER BY COUNT(*) DESC";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
 
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
@@ -1837,7 +1838,7 @@ namespace DigitalProductionProgram.Statistics
                                             AND (ProtocolDescriptionID = (SELECT id FROM Protocol.Description WHERE codetext = 'RÖR ID# POS 1') 
                                             OR ProtocolDescriptionID = (SELECT id FROM Protocol.Description WHERE codetext = 'RÖR ID# POS 2')
                                             OR ProtocolDescriptionID = (SELECT id FROM Protocol.Description WHERE codetext = 'RÖR ID# POS 3'))";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@rör", $"%{dt_RörFaktor_Krymp_QS.Rows[i]["Rör"]}%");
                     var reader = cmd.ExecuteReader();
                     while (reader.Read())
@@ -1867,7 +1868,7 @@ namespace DigitalProductionProgram.Statistics
                                     GROUP BY WorkOperationID
                                     HAVING AVG(LEN(Comments)) > 0 ";
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@year", i);
                     var reader = cmd.ExecuteReader();
                     while (reader.Read())
@@ -1899,7 +1900,7 @@ namespace DigitalProductionProgram.Statistics
                     GROUP BY Name
                     ORDER BY LoadingTime DESC";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@date_From", DateTime.Now.AddDays(-7));
                 cmd.Parameters.AddWithValue("@date_To", DateTime.Now.AddDays(1));
                 var reader = cmd.ExecuteReader();
@@ -1930,7 +1931,7 @@ namespace DigitalProductionProgram.Statistics
                     GROUP BY  [User].Person.RoleID
                     ORDER BY LoadingTime DESC";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 var reader = cmd.ExecuteReader();
                 var ctr = 0;
                 while (reader.Read())
@@ -1955,7 +1956,7 @@ namespace DigitalProductionProgram.Statistics
                 {
                     var query = $@"SELECT COUNT(*) FROM Log.ActivityLog WHERE Info = '{tema}' AND UserID != (SELECT UserID FROM [User].Person WHERE Name ='Richard Aakula')";
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     var ctr = (int)cmd.ExecuteScalar();
                     dt_Teman.Rows[row][0] = tema.ToString();
                     dt_Teman.Rows[row][1] = ctr; 
@@ -2106,7 +2107,7 @@ namespace DigitalProductionProgram.Statistics
             {
                 var query = "SELECT DISTINCT ProdLine FROM [Order].MainData WHERE ProdLine IS NOT NULL AND ProdLine > '' ORDER BY ProdLine";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())

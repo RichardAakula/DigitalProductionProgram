@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Help;
-
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.PrintingServices;
 using DigitalProductionProgram.User;
@@ -23,7 +23,7 @@ namespace DigitalProductionProgram.Equipment
             using (var con = new SqlConnection(Database.cs_ToolRegister))
             {
                 var query = "SELECT Dimension AS Dim, Datum, Namn FROM Register_Verktyg_Inventering WHERE ID_Nummer = @idNummer AND Typ = @typ ORDER BY Datum DESC";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@idNummer", lbl_ID_Nummer.Text);
                 cmd.Parameters.AddWithValue("@typ", label_Typ.Text);
                 con.Open();
@@ -38,7 +38,7 @@ namespace DigitalProductionProgram.Equipment
             {
                 var query = "SELECT Dimension FROM Register_Verktyg_Inventering WHERE Sort = @sort AND OrderNr = @ordernr AND Operation = @operation";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@id", Order.OrderID);
                 cmd.Parameters.AddWithValue("@sort", sort);
                 try
@@ -62,7 +62,7 @@ namespace DigitalProductionProgram.Equipment
             using (var con = new SqlConnection(Database.cs_ToolRegister))
             {
                 var query = "SELECT * FROM Register_Verktyg_Inventering WHERE Typ = @typ AND ID_Nummer = @idnummer AND OrderNr = @ordernr AND Operation = @operation";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@ordernr", Order.OrderNumber);
                 cmd.Parameters.AddWithValue("@operation", Order.Operation);
                 cmd.Parameters.AddWithValue("@typ", typ);
@@ -78,7 +78,7 @@ namespace DigitalProductionProgram.Equipment
             {
                 const string query = @"SELECT * FROM Register_Verktyg_Inventering WHERE Sort = @sort AND OrderNr = @ordernr AND Operation = @operation";
 
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@sort", sort);
                 cmd.Parameters.AddWithValue("@ordernr", Order.OrderNumber);
                 cmd.Parameters.AddWithValue("@operation", Order.Operation);
@@ -119,7 +119,7 @@ namespace DigitalProductionProgram.Equipment
             using (var con = new SqlConnection(Database.cs_ToolRegister))
             {
                 var query = "SELECT Sort, Dimension_min, Dimension_max FROM Register_Verktyg WHERE ID_Nummer = @idNummer AND Typ = @typ";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@idNummer", lbl_ID_Nummer.Text);
                 cmd.Parameters.AddWithValue("@typ", label_Typ.Text);
                 con.Open();
@@ -180,7 +180,7 @@ namespace DigitalProductionProgram.Equipment
                     var query = @"INSERT INTO Register_Verktyg_Inventering (ID_Nummer, Typ, Sort, Dimension, Datum, Namn, OrderNr, Operation) 
                                         VALUES (@idNummer, @typ, @sort, @dim, @datum, @namn, @ordernr, @op)";
 
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@idNummer", lbl_ID_Nummer.Text);
                     cmd.Parameters.AddWithValue("@typ", label_Typ.Text);
                     cmd.Parameters.AddWithValue("@sort", sort);

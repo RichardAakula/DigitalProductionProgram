@@ -114,7 +114,7 @@ namespace DigitalProductionProgram.Zumbach
                     WHERE data.OrderID = @orderid
                     ORDER BY Bag, Position, DateTime, ID";
             using var con = new SqlConnection(Database.cs_Protocol);
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
             cmd.CommandTimeout = 1800;
             con.Open();
@@ -391,7 +391,7 @@ namespace DigitalProductionProgram.Zumbach
             int lastXforPosition = 0;
             using (var con = new SqlConnection(Database.cs_Protocol))
             {
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                 con.Open();
                 var reader = cmd.ExecuteReader();
@@ -495,7 +495,7 @@ namespace DigitalProductionProgram.Zumbach
             var ctr_step = 10;
             using (var con = new SqlConnection(Database.cs_Protocol))
             {
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 SQL_Parameter.NullableINT(cmd.Parameters, "@partID", Order.PartID);
                 con.Open();
                 var reader = cmd.ExecuteReader();
@@ -1585,7 +1585,7 @@ namespace DigitalProductionProgram.Zumbach
                 const string query = @"UPDATE Zumbach.Measurements SET Discarded = 'True'
                         WHERE OrderID = @orderid AND Bag = @bag";
 
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                 cmd.Parameters.AddWithValue("@bag", measurement);
                 con.Open();
@@ -1726,7 +1726,7 @@ L       - Startar/Avslutar Loggning.
                     VALUES (@orderid, @userid, @discarded, @bag, @position, @datetime)";
 
                 var con = new SqlConnection(Database.cs_Protocol);
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 con.Open();
                 cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                 cmd.Parameters.AddWithValue("@userid", Person.Get_EmployeeID(Person.EmployeeNr));
@@ -1744,7 +1744,7 @@ L       - Startar/Avslutar Loggning.
                                     VALUES (@orderid, @bag, @position, @od)";
 
                 var con = new SqlConnection(Database.cs_Protocol);
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 con.Open();
                 cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                 cmd.Parameters.AddWithValue("@bag", påse);

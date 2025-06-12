@@ -7,6 +7,7 @@ using DigitalProductionProgram.DatabaseManagement;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
 using System.IO;
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.Processcards;
 using DigitalProductionProgram.Protocols;
@@ -103,7 +104,7 @@ private static void StartExport_Extrudering_FEP(DataGridView dgv)
             AND Uppstart = @uppstart
         ORDER BY MachineIndex, RowIndex";
         con.Open();
-        var cmd = new SqlCommand(query, con);
+        var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
         cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
         cmd.Parameters.AddWithValue("@uppstart", uppstart);
         cmd.Parameters.AddWithValue("@formtemplateid", 1);
@@ -179,7 +180,7 @@ private static void StartExport_Extrudering_FEP(DataGridView dgv)
             ORDER BY MachineIndex, RowIndex";
 
             con.Open();
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
             cmd.Parameters.AddWithValue("@uppstart", uppstart);
             cmd.Parameters.AddWithValue("@machineindex", machine);
@@ -257,7 +258,7 @@ private static void StartExport_Extrudering_FEP(DataGridView dgv)
             ORDER BY MachineIndex, RowIndex";
 
             con.Open();
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
             cmd.Parameters.AddWithValue("@uppstart", uppstart);
             cmd.Parameters.AddWithValue("@formtemplateid", 14);
@@ -331,7 +332,7 @@ private static void StartExport_Extrudering_FEP(DataGridView dgv)
             ORDER BY MachineIndex, RowIndex";
 
             con.Open();
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
             cmd.Parameters.AddWithValue("@uppstart", uppstart);
             cmd.Parameters.AddWithValue("@formtemplateid", 17);

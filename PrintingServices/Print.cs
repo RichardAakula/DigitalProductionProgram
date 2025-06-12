@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.DatabaseManagement;
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.PrintingServices.Workoperation_Printouts;
 using DigitalProductionProgram.Protocols.MainInfo;
@@ -55,7 +56,7 @@ namespace DigitalProductionProgram.PrintingServices
                         FROM [Order].MainData AS main
                         WHERE main.OrderID = @id";
 
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@id", Order.OrderID);
                 con.Open();
                 var reader = cmd.ExecuteReader();
@@ -86,7 +87,7 @@ namespace DigitalProductionProgram.PrintingServices
                 using (var con = new SqlConnection(Database.cs_Protocol))
                 {
                     const string query = "";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     con.Open();
                     cmd.Parameters.AddWithValue("@partnr", Order.PartNumber);
                     cmd.Parameters.AddWithValue("@id", Order.OrderID);
@@ -122,7 +123,7 @@ namespace DigitalProductionProgram.PrintingServices
                 var query = "SELECT * FROM Processcard.MainData WHERE PartID = @partid";
 
                 using var con = new SqlConnection(Database.cs_Protocol);
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 SQL_Parameter.NullableINT(cmd.Parameters, "@partid", Order.PartID);
                 con.Open();
                 var reader = cmd.ExecuteReader();
@@ -847,7 +848,7 @@ namespace DigitalProductionProgram.PrintingServices
                 using (var con = new SqlConnection(Database.cs_Protocol))
                 {
                     var query = Properties.Resources.Load_LineClearance;
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     con.Open();
                     cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                     var reader = cmd.ExecuteReader();
@@ -944,7 +945,7 @@ namespace DigitalProductionProgram.PrintingServices
                         using var con = new SqlConnection(Database.cs_Protocol);
                         const string query = "SELECT MAX(Ugn) FROM [Order].Data WHERE OrderID = @orderid AND Uppstart = @startup";
                         con.Open();
-                        var cmd = new SqlCommand(query, con);
+                        var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                         cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                         cmd.Parameters.AddWithValue("@startup", startup);
                         var total = cmd.ExecuteScalar();
@@ -1045,7 +1046,7 @@ namespace DigitalProductionProgram.PrintingServices
                     template.Decimals
                 ORDER BY 
                     template.RowIndex";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 con.Open();
                 cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                 cmd.Parameters.AddWithValue("@partid", Order.PartID);
@@ -1125,7 +1126,7 @@ namespace DigitalProductionProgram.PrintingServices
                                     AND template.RowIndex IS NOT NULL
                             ORDER BY 
                                 template.RowIndex;";
-                        var cmd = new SqlCommand(query, con);
+                        var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                         con.Open();
                         cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                         cmd.Parameters.AddWithValue("@startup", startup);
@@ -1187,7 +1188,7 @@ namespace DigitalProductionProgram.PrintingServices
                 using (var con = new SqlConnection(Database.cs_Protocol))
                 {
                     const string query = "SELECT Halvfabrikat_Benämning, Halvfabrikat_OrderNr FROM [Order].PreFab WHERE OrderID = @id ORDER BY Halvfabrikat_Benämning DESC";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     SQL_Parameter.NullableINT(cmd.Parameters, "@id", Order.OrderID);
                     con.Open();
                     var reader = cmd.ExecuteReader();
@@ -1207,7 +1208,7 @@ namespace DigitalProductionProgram.PrintingServices
                 using (var con = new SqlConnection(Database.cs_Protocol))
                 {
                     const string query = "SELECT Weight75D, Weight55D, Date, Name FROM [Order].Compound_Main WHERE OrderID = @id";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     SQL_Parameter.NullableINT(cmd.Parameters, "@id", Order.OrderID);
                     con.Open();
                     var reader = cmd.ExecuteReader();
@@ -1248,7 +1249,7 @@ namespace DigitalProductionProgram.PrintingServices
                 using (var con = new SqlConnection(Database.cs_Protocol))
                 {
                     const string query = "SELECT Sample, DateTime, Size, BulkWeight, Comments FROM [Order].Compound WHERE OrderID = @id ORDER BY TempID";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     SQL_Parameter.NullableINT(cmd.Parameters, "@id", Order.OrderID);
                     con.Open();
                     var reader = cmd.ExecuteReader();
@@ -1357,7 +1358,7 @@ namespace DigitalProductionProgram.PrintingServices
                             FROM [Order].Läcksökning 
                             WHERE OrderID = @orderid 
                             ORDER BY TempID";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                     con.Open();
                     var reader = cmd.ExecuteReader();

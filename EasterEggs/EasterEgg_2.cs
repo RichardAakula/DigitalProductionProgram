@@ -5,6 +5,7 @@ using DigitalProductionProgram.PrintingServices;
 using DigitalProductionProgram.User;
 using Microsoft.Data.SqlClient;
 using System.Data;
+using DigitalProductionProgram.MainWindow;
 
 namespace DigitalProductionProgram.EasterEggs
 {
@@ -12,21 +13,21 @@ namespace DigitalProductionProgram.EasterEggs
     {
         private static string Comment(int distance)
         {
-            if (distance > 0 && distance < 50)
+            if (distance is > 0 and < 50)
                 return "Wow!! Utopiskt!!";
-            if (distance > 49 && distance < 70)
+            if (distance is > 49 and < 70)
                 return "Gudomligt bra!!";
-            if (distance > 69 && distance < 100)
+            if (distance is > 69 and < 100)
                 return "Fantastiskt bra!!";
-            if (distance > 99 && distance < 200)
+            if (distance is > 99 and < 200)
                 return "Ganska bra!!";
-            if (distance > 199 && distance < 300)
+            if (distance is > 199 and < 300)
                 return "Hyfsat bra!";
-            if (distance > 299 && distance < 400)
+            if (distance is > 299 and < 400)
                 return "Ok";
-            if (distance > 399 && distance < 500)
+            if (distance is > 399 and < 500)
                 return "Mnjaa..Det där var nog inte så nära";
-            if (distance > 499 && distance < 600)
+            if (distance is > 499 and < 600)
                 return "Hoppsan, sikta du ens?";
 
             return "eeeehh...??? Okej?";
@@ -42,7 +43,7 @@ namespace DigitalProductionProgram.EasterEggs
             {
                 using var con = new SqlConnection(Database.cs_Protocol);
                 var query = "SELECT COUNT(*) FROM Easter_Egg_Points WHERE Namn = @namn AND CAST (Datum AS date) = @date AND Game = 'Easter Egg 2'";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@namn", Person.Name);
                 cmd.Parameters.AddWithValue("@date", DateTime.Now.ToString("yyyy-MM-dd"));
                 con.Open();
@@ -57,17 +58,15 @@ namespace DigitalProductionProgram.EasterEggs
             get
             {
                 var ctr = 0;
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    var query = "SELECT DISTINCT Namn FROM Easter_Egg_Points WHERE Namn <> @namn AND Game = 'Easter Egg 2'";
-                    var cmd = new SqlCommand(query, con);
-                    cmd.Parameters.AddWithValue("@namn", Person.Name);
-                    con.Open();
+                using var con = new SqlConnection(Database.cs_Protocol);
+                var query = "SELECT DISTINCT Namn FROM Easter_Egg_Points WHERE Namn <> @namn AND Game = 'Easter Egg 2'";
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                cmd.Parameters.AddWithValue("@namn", Person.Name);
+                con.Open();
 
-                    var reader = cmd.ExecuteReader();
-                    while (reader.Read())
-                        ctr++;
-                }
+                var reader = cmd.ExecuteReader();
+                while (reader.Read())
+                    ctr++;
                 return ctr;
             }
         }
@@ -148,7 +147,7 @@ namespace DigitalProductionProgram.EasterEggs
             ORDER BY Points DESC";
 
             using var con = new SqlConnection(Database.cs_Protocol);
-            using var cmd = new SqlCommand(query, con);
+            using var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             using var adapter = new SqlDataAdapter(cmd);
             var table = new DataTable();
 

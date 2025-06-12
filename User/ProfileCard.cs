@@ -40,7 +40,7 @@ namespace DigitalProductionProgram.User
                     WHERE AnstNr = @employeenumber 
                     AND IsOrderDone = 'False'
                     ORDER BY Date DESC";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@employeenumber", anstNr);
                 con.Open();
                 var reader = cmd.ExecuteReader();

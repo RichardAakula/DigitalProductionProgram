@@ -13,6 +13,7 @@ using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Equipment;
 using DigitalProductionProgram.Help;
 using DigitalProductionProgram.Log;
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.Övrigt;
 using DigitalProductionProgram.PrintingServices;
@@ -41,7 +42,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                 using var con = new SqlConnection(Database.cs_Protocol);
                 const string query = "SELECT MAX(Uppstart) FROM [Order].Data WHERE OrderID = @orderid";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                 var total = cmd.ExecuteScalar();
                 if (total != null)
@@ -88,7 +89,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
             using var con = new SqlConnection(Database.cs_Protocol);
             var query = $@"
                     SELECT * FROM [Order].Data WHERE OrderID = @orderid AND Uppstart = @startup";
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
             cmd.Parameters.AddWithValue("@startup", startUp);
             con.Open();
@@ -224,7 +225,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                         AND MainTemplateID = @maintemplateid
                         AND RowIndex IS NOT NULL
                     ORDER BY RowIndex, ColumnIndex";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@formtemplateid", FormTemplateID);
                 cmd.Parameters.AddWithValue("@maintemplateid", Templates_Protocol.MainTemplate.ID);
                 con.Open();
@@ -347,7 +348,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                             AND Uppstart > 0
                        ORDER BY Uppstart, Ugn, template.RowIndex";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 SQL_Parameter.NullableINT(cmd.Parameters, "@orderid", Order.OrderID);
                 cmd.Parameters.AddWithValue("@formtemplateid", formTemplateID);
                 cmd.Parameters.AddWithValue("@machineindex", MachineIndex);
@@ -426,7 +427,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
         {
             using var con = new SqlConnection(Database.cs_Protocol);
             const string query = @"SELECT MAX(Uppstart) FROM [Order].Data WHERE OrderID = @orderid";
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
             con.Open();
             var value = cmd.ExecuteScalar();
@@ -975,7 +976,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                             AND Uppstart = @uppstart";
 
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                     cmd.Parameters.AddWithValue("@uppstart", startup);
                     cmd.ExecuteNonQuery();
@@ -993,7 +994,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                             AND Ugn = @oven";
 
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                     cmd.Parameters.AddWithValue("@uppstart", startup);
                     cmd.Parameters.AddWithValue("@oven", oven);
@@ -1027,7 +1028,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                             SET value = @value, textvalue = @textvalue, BoolValue = @boolvalue, datevalue = @datevalue
                         WHERE OrderID = @orderid AND ProtocolDescriptionID = @protocoldescriptionid AND (COALESCE(Uppstart, 0) = COALESCE(@uppstart, 0)) AND (COALESCE(MachineIndex, 0) = COALESCE(@machineindex, 0))";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                 cmd.Parameters.AddWithValue("@protocoldescriptionid", protocol_Description_ID);
                 SQL_Parameter.Int(cmd.Parameters, "@machineindex", machineindex);
@@ -1080,7 +1081,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                     WHERE ProtocolDescriptionID = @descrid
                         AND FormTemplateID = @formtemplateid";
 
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@descrid", id);
                 cmd.Parameters.AddWithValue("@formtemplateid", FormTemplateID);
                 cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
@@ -1108,7 +1109,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                 {
                     var query = $@"
                     SELECT MAX(Ugn) FROM [Order].Data WHERE OrderID = @orderid AND Uppstart = @startup";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                     cmd.Parameters.AddWithValue("@startup", startUp);
                     con.Open();
@@ -1128,7 +1129,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                 {
                     var query = $@"
                     SELECT * FROM [Order].Data WHERE OrderID = @orderid AND Uppstart = @startup AND Ugn = @oven";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                     cmd.Parameters.AddWithValue("@startup", startUp);
                     cmd.Parameters.AddWithValue("@oven", oven);
@@ -1228,7 +1229,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                                 AND Uppstart = @startup
                                 AND ProtocolDescriptionID IN (SELECT ProtocolDescriptionID FROM Protocol.Template WHERE FormTemplateID = @formtemplateid)";
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                     cmd.Parameters.AddWithValue("@startup", startup);
                     // cmd.Parameters.AddWithValue("@machineindex", machine);
@@ -1270,7 +1271,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                     const string query = @"
                         SELECT RowIndex FROM Protocol.Template WHERE FormTemplateID = @formtemplateID AND Type = 3 ORDER BY RowIndex";
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@formtemplateid", FormTemplateID);
                     var reader = cmd.ExecuteReader();
                     var ctr = 0;
@@ -1357,7 +1358,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                                     WHERE CodeText IN ('Munstycke', 'KÄRNA', 'MUNSTYCKE - LANDLÄNGD', 'KÄRNA - LANDLÄNGD')
                                 )";
                             con.Open();
-                            var cmd = new SqlCommand(query, con);
+                            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                             cmd.Parameters.AddWithValue("@formtemplateid", formtemplateid);
                             var reader = cmd.ExecuteReader();
                             while (reader.Read())
@@ -1403,7 +1404,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                                     AND Uppstart = 1
                                 ORDER BY RowIndex";
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     SQL_Parameter.NullableINT(cmd.Parameters, "@orderid", lastOrderID);
                     cmd.Parameters.AddWithValue("@formtemplateid", formtemplateid);
                     cmd.Parameters.AddWithValue("@machineindex", machineindex);
@@ -1464,7 +1465,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                             AND (COALESCE(MachineIndex, 0) = COALESCE(@machineindex, 0))
                        ORDER BY uppstart";
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     SQL_Parameter.NullableINT(cmd.Parameters, "@orderid", Order.OrderID);
                     cmd.Parameters.AddWithValue("@machineindex", ExtruderIndex);
                     var reader = cmd.ExecuteReader();

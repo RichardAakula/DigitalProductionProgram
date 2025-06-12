@@ -1,5 +1,6 @@
 ﻿using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.DatabaseManagement;
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.Protocols.Protocol;
 using Microsoft.Data.SqlClient;
@@ -28,7 +29,7 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
             con.Open();
             var query =
                 @"UPDATE [Order].MainData SET Comments = @comments WHERE OrderID = @orderid";
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
             cmd.Parameters.AddWithValue("@comments", tb_Comments.Text);
 
@@ -42,7 +43,7 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
             using (var con = new SqlConnection(Database.cs_Protocol))
             {
                 var query = "SELECT Comments FROM [Order].MainData WHERE OrderID = @orderid";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", orderID);
                 con.Open();
                 tb_Comments.Text = cmd.ExecuteScalar().ToString();

@@ -3,6 +3,7 @@ using System.Drawing.Drawing2D;
 using AxWMPLib;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Help;
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.PrintingServices;
 using DigitalProductionProgram.User;
 using Microsoft.Data.SqlClient;
@@ -377,7 +378,7 @@ namespace DigitalProductionProgram.EasterEggs
             var dt = new DataTable();
             using var con = new SqlConnection(Database.cs_Protocol);
             var query = "SELECT TOP(10) Namn, Datum, Level, Points FROM Easter_Egg_Points WHERE Game = 'Easter Egg 1' ORDER BY Points DESC";
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             con.Open();
             dt.Load(cmd.ExecuteReader());
 

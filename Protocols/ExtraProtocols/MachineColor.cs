@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.DatabaseManagement;
+using DigitalProductionProgram.MainWindow;
 
 namespace DigitalProductionProgram.Protocols
 {
@@ -22,7 +23,7 @@ namespace DigitalProductionProgram.Protocols
                     "SELECT * FROM Settings.HS_Color WHERE MachineName = @machineName";
                 con.Open();
 
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@machineName", Equipment.Equipment.HS_Machine);
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
@@ -61,7 +62,7 @@ namespace DigitalProductionProgram.Protocols
             {
                 const string query = "SELECT * FROM Settings.HS_Color ORDER BY MachineName";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
@@ -105,7 +106,7 @@ namespace DigitalProductionProgram.Protocols
                         WHERE MachineName = @machineName";
                 con.Open();
 
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@machineName", label_HS_Machine.Text);
                 cmd.Parameters.AddWithValue("@red", red);
                 cmd.Parameters.AddWithValue("@green", green);

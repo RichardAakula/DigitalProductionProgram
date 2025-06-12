@@ -3,6 +3,7 @@ using Microsoft.Data.SqlClient;
 using System.Windows.Forms;
 using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.DatabaseManagement;
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.Övrigt;
 using DigitalProductionProgram.User;
@@ -46,7 +47,7 @@ namespace DigitalProductionProgram.eMail
                 var query = @"INSERT INTO Processcard.ProposedChanges (OrderID, ProtocolDescriptionID, Rubrik, Meddelande, Namn, Datum) 
                               VALUES (@orderid, @protocoldescriptionid, @rubrik, @meddelande, @namn, @datum)";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                 SQL_Parameter.Int(cmd.Parameters, "@protocoldescriptionid", ProtocoldescriptionID);
                 cmd.Parameters.AddWithValue("@rubrik", Header);

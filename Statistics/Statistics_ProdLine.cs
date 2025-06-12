@@ -12,6 +12,7 @@ using DigitalProductionProgram.User;
 using System.Windows.Forms.DataVisualization;
 using System.Windows.Forms.DataVisualization.Charting;
 using DigitalProductionProgram.ControlsManagement;
+using DigitalProductionProgram.MainWindow;
 
 namespace DigitalProductionProgram.Statistics
 {
@@ -147,7 +148,7 @@ namespace DigitalProductionProgram.Statistics
                                         GROUP BY Customer) AS a
                                 ORDER BY Antal DESC";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@prodline", ProdLine);
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
@@ -171,7 +172,7 @@ namespace DigitalProductionProgram.Statistics
                                         GROUP BY PartNr) AS a
                                 ORDER BY Antal DESC";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@prodline", ProdLine);
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
@@ -201,7 +202,7 @@ namespace DigitalProductionProgram.Statistics
                     ) AS a
                     ORDER BY Antal DESC;";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@prodline", ProdLine);
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
@@ -226,7 +227,7 @@ namespace DigitalProductionProgram.Statistics
                                 GROUP BY YEAR(Date_Start)) AS a
                                 ORDER BY Year DESC";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@prodline", ProdLine);
                 var reader = cmd.ExecuteReader();
                 var row = 0;
@@ -267,7 +268,7 @@ namespace DigitalProductionProgram.Statistics
                         AND IsDeleted = 'False'
                     GROUP BY MONTH(Date_Start)";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@prodline", ProdLine);
                 var reader = cmd.ExecuteReader();
                 var row = 0;
@@ -305,7 +306,7 @@ namespace DigitalProductionProgram.Statistics
                                     GROUP BY LC_Name
                                 ORDER BY Antal DESC";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@prodline", ProdLine);
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
@@ -333,7 +334,7 @@ namespace DigitalProductionProgram.Statistics
 							 GROUP BY [User].Person.Name
                              ORDER BY Antal DESC";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@prodline", ProdLine);
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
@@ -366,7 +367,7 @@ namespace DigitalProductionProgram.Statistics
                                     (SELECT * FROM [Order].MainData
                                         WHERE ProdLine = @prodline AND [Order].Data.OrderID = [Order].MainData.OrderID)";
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@prodline", ProdLine);
                     cmd.Parameters.AddWithValue("@descriptionid", descrID);
                     var reader = cmd.ExecuteReader();
@@ -411,7 +412,7 @@ namespace DigitalProductionProgram.Statistics
                             WHERE ProdLine = @prodline AND [Order].MainData.OrderID = Measureprotocol.Data.OrderID)
                             AND DescriptionId = @descriptionid";
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@prodline", ProdLine);
                     cmd.Parameters.AddWithValue("@descriptionid", descriptionid);
                     var reader = cmd.ExecuteReader();

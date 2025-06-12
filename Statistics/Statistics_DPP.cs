@@ -139,15 +139,17 @@ namespace DigitalProductionProgram.Statistics
             GROUP BY ti.IntervalStart, ti.IntervalEnd
             ORDER BY ti.IntervalStart";
         private const string Query_DeploymentByVersion = @"
-           -- Steg 1: Hämta senaste loggpost per HostID
+          -- Steg 1: Hämta senaste loggpost per HostID
 WITH LatestLogPerHost AS (
-    SELECT HostID, Version
+    SELECT HostID, Version, Date
     FROM (
         SELECT 
-        ROW_NUMBER() OVER (PARTITION BY HostID ORDER BY Date DESC) AS rn,
+            HostID, 
             Version,
-            HostID            
+            Date,
+            ROW_NUMBER() OVER (PARTITION BY HostID ORDER BY Date DESC) AS rn
         FROM [Log].ActivityLog
+        WHERE Date >= DATEADD(DAY, -7, GETDATE()) -- Begränsa till de senaste 7 dagarna
     ) AS ranked
     WHERE rn = 1
 ),
@@ -156,7 +158,7 @@ VersionComponents AS (
     SELECT 
         HostID, 
         Version,
-      
+        Date,
         CAST(PARSENAME(Version, 4) AS INT) AS Major,
         CAST(PARSENAME(Version, 3) AS INT) AS Minor,
         CAST(PARSENAME(Version, 2) AS INT) AS Patch,
@@ -174,6 +176,7 @@ Top8Versions AS (
 SELECT 
     COUNT(*) AS HostCount,
     v.Version
+   
 FROM VersionComponents v
 JOIN Top8Versions t ON v.Version = t.Version
 GROUP BY v.Version, v.Major, v.Minor, v.Patch, v.Build
@@ -193,7 +196,7 @@ ORDER BY v.Major DESC, v.Minor DESC, v.Patch DESC, v.Build DESC;";
         {
             var data = new List<(string Label, int Value)>();
             await using var con = new SqlConnection(Database.cs_Protocol);
-            await using var cmd = new SqlCommand(query, con);
+            await using var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             await con.OpenAsync();
             await using var reader = await cmd.ExecuteReaderAsync();
             while (await reader.ReadAsync())

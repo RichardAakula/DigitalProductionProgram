@@ -148,7 +148,7 @@ namespace DigitalProductionProgram.Processcards
                     if (Processcard.IsMultiple_Processcard(Order.WorkOperation, Order.PartNumber))
                         query += $"AND ProdLine = '{Order.ProdLine}' AND ProdType = '{Order.ProdType}'";
 
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     SQL_Parameter.NullableINT(cmd.Parameters, "@artID", Order.PartID);
                     con.Open();
                     var reader = cmd.ExecuteReader();
@@ -172,7 +172,7 @@ namespace DigitalProductionProgram.Processcards
                 {
                     var query = "SELECT * FROM Processcard.MainData WHERE PartNr = @partnr AND RevNr = @revNr AND WorkOperationID = (SELECT ID FROM Workoperation.Names WHERE Name = @workoperation AND ID IS NOT NULL)";
 
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@partnr", Order.PartNumber);
                     cmd.Parameters.AddWithValue("@revNr", ProcesscardBasedOn.lbl_RevNr.Text);
                     cmd.Parameters.AddWithValue("@workoperation", Order.WorkOperation);
@@ -195,7 +195,7 @@ namespace DigitalProductionProgram.Processcards
             using (var con = new SqlConnection(Database.cs_Protocol))
             {
                 const string query = @"SELECT DISTINCT FormTemplateID, MainTemplateID FROM Protocol.FormTemplate WHERE MainTemplateID = (SELECT MainTemplateID FROM Workoperation.Names WHERE ID = @workoperationid)";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@workoperationid", Order.WorkoperationID);
                 con.Open();
                 var reader = cmd.ExecuteReader();
@@ -619,7 +619,7 @@ namespace DigitalProductionProgram.Processcards
                     WHERE PartID = @partid";
                 
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 SQL_Parameter.NullableINT(cmd.Parameters, "@partid", Order.PartID);
                 
                 var reader = cmd.ExecuteReader();
@@ -661,7 +661,7 @@ namespace DigitalProductionProgram.Processcards
             {
                 con.Open();
                 var query = "SELECT RevNr, RevInfo, RevÄndratDatum, UpprättatAv_Sign_AnstNr, PartID FROM Processcard.MainData WHERE PartGroupID = @partgroupid ORDER BY RevNr DESC";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@partgroupid", Order.PartGroupID);
 
                 using (var reader = cmd.ExecuteReader())
@@ -1091,7 +1091,7 @@ namespace DigitalProductionProgram.Processcards
             {
                 var query = @"UPDATE Processcard.MainData SET NumberOfLayers = @layers WHERE PartID = @partid";
 
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@partid", Order.PartID);
                 SQL_Parameter.Int(cmd.Parameters, "@layers", num_NumberOfLayers.Value.ToString(CultureInfo.InvariantCulture));
                 con.Open();
@@ -1145,7 +1145,7 @@ namespace DigitalProductionProgram.Processcards
             {
                 con.Open();
                 var query = "SELECT DISTINCT PartNr FROM Processcard.MainData WHERE WorkOperationID = (SELECT ID FROM Workoperation.Names WHERE Name = @workoperation AND ID IS NOT NULL) AND Aktiv = @aktiv ORDER BY PartNr DESC";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@aktiv", artikelNr_Aktiv);
                 SQL_Parameter.String(cmd.Parameters, "@workoperation", Order.WorkOperation.ToString());
                 var reader = cmd.ExecuteReader();
@@ -1389,7 +1389,7 @@ HS-Machine = {Equipment.Equipment.HS_Machine}", CustomColors.InfoText_Color.Info
             //    var query = @"
             //       SELECT DISTINCT PartNr FROM Processcard.MainData WHERE PartNr LIKE '358%' AND Aktiv = 'True'";
 
-            //    var cmd = new SqlCommand(query, con);
+            //    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             //    cmd.Parameters.AddWithValue("@prodline", tb_ProdLine.Text);
             //    var reader = cmd.ExecuteReader();
             //    while (reader.Read())
@@ -1420,7 +1420,7 @@ HS-Machine = {Equipment.Equipment.HS_Machine}", CustomColors.InfoText_Color.Info
                         WHERE rn = 1
                         ORDER BY PartNr;";
 
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@prodline", prodline);
                     var reader = cmd.ExecuteReader();
                     while (reader.Read())
@@ -1450,7 +1450,7 @@ HS-Machine = {Equipment.Equipment.HS_Machine}", CustomColors.InfoText_Color.Info
                         WHERE m.PartNr = @partnr
                         ORDER BY m.RevNr DESC";
 
-                        var cmd = new SqlCommand(query, con);
+                        var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                         cmd.Parameters.AddWithValue("@partnr", partNr);
                         var reader = cmd.ExecuteReader();
                         while (reader.Read())
@@ -1498,7 +1498,7 @@ HS-Machine = {Equipment.Equipment.HS_Machine}", CustomColors.InfoText_Color.Info
                     SELECT 0
                     END";
 
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@partid", Order.PartID);
                 cmd.Parameters.AddWithValue("@templaterevision", Processcard.Latest_Processcard_Revision(FormTemplateID));
                 cmd.Parameters.AddWithValue("@partgroupid", Order.PartGroupID);
@@ -1524,7 +1524,7 @@ HS-Machine = {Equipment.Equipment.HS_Machine}", CustomColors.InfoText_Color.Info
                         INSERT INTO Processcard.Data 
                         VALUES (@partid, @templateid, @machineindex, @value, @textvalue, @type)";
 
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@partid", Order.PartID);
                 cmd.Parameters.AddWithValue("@templateid", templateid);
                 cmd.Parameters.AddWithValue("@machineindex", machineindex);

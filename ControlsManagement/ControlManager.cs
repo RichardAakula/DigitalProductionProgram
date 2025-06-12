@@ -4,6 +4,7 @@ using Microsoft.Data.SqlClient;
 using System.Drawing;
 using System.Windows.Forms;
 using DigitalProductionProgram.DatabaseManagement;
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.PrintingServices;
 
@@ -143,7 +144,7 @@ namespace DigitalProductionProgram.ControlsManagement
                     var query =
                         $"UPDATE [Order].MainData SET {kolumn} = @kolumn {Queries.WHERE_OrderID}";
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@id", Order.OrderID);
                     switch (Type.GetTypeCode(dataType))
                     {

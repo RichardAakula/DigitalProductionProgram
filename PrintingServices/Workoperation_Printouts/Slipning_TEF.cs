@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Drawing.Printing;
 using System.Windows.Forms;
 using DigitalProductionProgram.DatabaseManagement;
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.Protocols;
 using DigitalProductionProgram.Protocols.Slipning_TEF;
@@ -35,7 +36,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                             FROM [Order].MainData
                             {Queries.WHERE_OrderID}";
 
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@id", Order.OrderID);
                     con.Open();
                     var reader = cmd.ExecuteReader();
@@ -108,7 +109,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                         ON slipning.PartID = maindata.PartID
                     WHERE maindata.PartID = @partid";
 
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     SQL_Parameter.NullableINT(cmd.Parameters, "@partID", Order.PartID);
                     con.Open();
                     var reader = cmd.ExecuteReader();
@@ -366,7 +367,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
 	                    JOIN Processcard.MainData as main
 		                    ON slipning.PartID = main.PartID
                     WHERE slipning.PartID = @partID";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@partID", Order.PartID);
                     con.Open();
                     var reader = cmd.ExecuteReader();
@@ -405,7 +406,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                                         Kasserad
                                     FROM Korprotokoll_Slipning_Maskinparametrar WHERE OrderID = @orderid";
 
-                        var cmd = new SqlCommand(query, con);
+                        var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                         cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                         con.Open();
                         var reader = cmd.ExecuteReader();
@@ -481,7 +482,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
 	                            ON op.EmployeeNumber = prod.AnstNr  WHERE OrderID = @orderid) AS MyDerivedTable
                         WHERE MyDerivedTable.RowNum BETWEEN @start and @slut";
 
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                     cmd.Parameters.AddWithValue("@start", Measureprotocol.FirstRowMeasurment);
                     cmd.Parameters.AddWithValue("@slut", Measureprotocol.LastRowMeasurement);
@@ -615,7 +616,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                             JOIN [User].Person AS op
 	                            ON op.EmployeeNumber = prod.AnstNr WHERE OrderID = @orderid) AS MyDerivedTable
                         WHERE MyDerivedTable.RowNum BETWEEN @start and @slut";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                     cmd.Parameters.AddWithValue("@start", Measureprotocol.FirstRowMeasurment);
                     cmd.Parameters.AddWithValue("@slut", Measureprotocol.LastRowMeasurement);

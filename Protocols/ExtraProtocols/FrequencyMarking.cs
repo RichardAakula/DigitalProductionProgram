@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Equipment;
 using DigitalProductionProgram.Help;
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.PrintingServices;
 using DigitalProductionProgram.User;
@@ -44,7 +45,7 @@ namespace DigitalProductionProgram.Protocols
                         WHERE PartID = @partid
                         AND TemplateID IN (SELECT ID FROM Protocol.Template WHERE ProtocolDescriptionID = 227)";
 
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     con.Open();
                     cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                     cmd.Parameters.AddWithValue("@partid", Order.PartID);
@@ -79,7 +80,7 @@ namespace DigitalProductionProgram.Protocols
                     FROM [Order].Läcksökning
                     {Queries.WHERE_OrderID}
                     ORDER BY Datum_Tid";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 con.Open();
                 cmd.Parameters.AddWithValue("@id", Order.OrderID);
                 var reader = cmd.ExecuteReader();
@@ -124,7 +125,7 @@ namespace DigitalProductionProgram.Protocols
                     var query = @"SELECT Halvfabrikat_OrderNr
                             FROM [Order].PreFab WHERE OrderID = @orderid";
 
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                     con.Open();
                     var reader = cmd.ExecuteReader();
@@ -160,7 +161,7 @@ namespace DigitalProductionProgram.Protocols
                 var query = @"INSERT INTO [Order].Läcksökning
                     VALUES (@id, @is_Kasserad, @spole, @lotnr, @hål, @meter, @tid, @employeenumber, @sign)";
 
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@id", Order.OrderID);
                 cmd.Parameters.AddWithValue("@is_Kasserad", false);
                 cmd.Parameters.AddWithValue("@spole", dgv_Frekvensmarkering.Rows[row].Cells[0].Value.ToString());
@@ -212,7 +213,7 @@ namespace DigitalProductionProgram.Protocols
                 using (var con = new SqlConnection(Database.cs_Protocol))
                 {
                     var query = "UPDATE [Order].Läcksökning SET Kasserad = 'True' WHERE TempID = @tempID";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@tempID", tempID);
                     con.Open();
                     cmd.ExecuteNonQuery();

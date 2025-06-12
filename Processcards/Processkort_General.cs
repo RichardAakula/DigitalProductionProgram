@@ -5,7 +5,7 @@ using Microsoft.Data.SqlClient;
 using System.Windows.Forms;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Help;
-
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.PrintingServices;
 using DigitalProductionProgram.User;
@@ -47,7 +47,7 @@ namespace DigitalProductionProgram.Processcards
             using (var con = new SqlConnection(Database.cs_Protocol))
             {
                 const string query = "SELECT RevNr FROM Processcard.MainData WHERE PartID = @partid";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 con.Open();
                 SQL_Parameter.NullableINT(cmd.Parameters, "@partid", partID);
                 if (string.IsNullOrEmpty((string)cmd.ExecuteScalar()))

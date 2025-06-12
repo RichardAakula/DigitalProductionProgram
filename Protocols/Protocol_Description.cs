@@ -1,7 +1,7 @@
 ﻿using System.Configuration;
 using Microsoft.Data.SqlClient;
 using DigitalProductionProgram.DatabaseManagement;
-
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 
 namespace DigitalProductionProgram.Protocols
@@ -16,7 +16,7 @@ namespace DigitalProductionProgram.Protocols
                     WHERE FormTemplateID = @formtemplateid
                         AND RowIndex = @rowIndex";
 
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@formtemplateid", formtemplateid);
             cmd.Parameters.AddWithValue("@rowIndex", row);
             cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
@@ -32,7 +32,7 @@ namespace DigitalProductionProgram.Protocols
                     SELECT ProtocolDescriptionID FROM Protocol.Template
                     WHERE FormTemplateID = @formtemplateid
                     AND ColumnIndex = @colIndex";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@formtemplateid", formtemplateid);
                 cmd.Parameters.AddWithValue("@colIndex", col);
                 cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
@@ -50,7 +50,7 @@ namespace DigitalProductionProgram.Protocols
                     SELECT CodeText FROM Protocol.Description
                     WHERE id = @id";
 
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@id", id);
                 con.Open();
                 var value = cmd.ExecuteScalar();

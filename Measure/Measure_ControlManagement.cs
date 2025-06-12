@@ -11,6 +11,7 @@ using System.Text.RegularExpressions;
 using DigitalProductionProgram.Log;
 using System.Diagnostics;
 using DigitalProductionProgram.ControlsManagement;
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.Templates;
 using Microsoft.Data.SqlClient;
 
@@ -329,7 +330,7 @@ namespace DigitalProductionProgram.Measure
                     FROM MeasureProtocol.MainTemplate
                     WHERE MeasureProtocolMainTemplateID = @maintemplateid";
 
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
 
 
                 cmd.Parameters.AddWithValue("@maintemplateid", Templates_MeasureProtocol.MainTemplate.ID);
@@ -534,7 +535,7 @@ namespace DigitalProductionProgram.Measure
                     FROM MeasureProtocol.ItemsList
                     WHERE MeasureProtocolMainTemplateID = @maintemplateid
                     AND DescriptionID = @descriptionid";//(SELECT DescriptionID FROM MeasureProtocol.Template WHERE MeasureProtocolMainTemplateID = @maintemplateid AND ColumnIndex = @columnindex)";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@maintemplateid", Templates_MeasureProtocol.MainTemplate.ID);
                 cmd.Parameters.AddWithValue("@descriptionid", tb.DescriptionID);
 
@@ -620,7 +621,7 @@ namespace DigitalProductionProgram.Measure
                         AND DescriptionID = (SELECT ID FROM MeasureProtocol.Description WHERE CodeName = 'Bag')
                         AND Value = (SELECT MAX(Value) FROM MeasureProtocol.Data WHERE DescriptionID = (SELECT ID FROM MeasureProtocol.Description WHERE CodeName = 'Bag')
                         AND OrderID = @orderid)";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                     con.Open();
                     var count = (int)cmd.ExecuteScalar();
@@ -663,7 +664,7 @@ namespace DigitalProductionProgram.Measure
                 WHERE template.MeasureProtocolMainTemplateID = @maintemplateid 
                 ORDER BY ColumnIndex";
 
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@maintemplateid", Templates_MeasureProtocol.MainTemplate.ID);
                     con.Open();
                     var reader = cmd.ExecuteReader();

@@ -492,7 +492,7 @@ namespace DigitalProductionProgram.Monitor
                 using var con = new SqlConnection(Database.cs_Protocol);
                 const string query = @"SELECT Operation, ProdLine AS Description, ProdGroup FROM [Order].MainData WHERE OrderNr = @orderNr";
 
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderNr", ordernr);
                 con.Open();
                 var reader = cmd.ExecuteReader();

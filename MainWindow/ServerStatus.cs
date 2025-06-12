@@ -54,30 +54,27 @@ namespace DigitalProductionProgram.MainWindow
 
             panel_DPP_ServerStatus.Paint += (sender, e) =>
             {
-                using (var g = e.Graphics)
+                using var g = e.Graphics;
+                // Define the points of the triangle
+                Point[] trianglePoints =
                 {
-                    // Define the points of the triangle
-                    Point[] trianglePoints =
-                    {
-                        new Point(0, 0),
-                        new Point(panel_DPP_ServerStatus.Width / 2, panel_DPP_ServerStatus.Height),
-                        new Point(panel_DPP_ServerStatus.Width, 0)
-                    };
+                    new Point(0, 0),
+                    new Point(panel_DPP_ServerStatus.Width / 2, panel_DPP_ServerStatus.Height),
+                    new Point(panel_DPP_ServerStatus.Width, 0)
+                };
 
-                    // Draw the filled triangle
-                    using (Brush brush = new SolidBrush(color))
+                // Draw the filled triangle
+                using (Brush brush = new SolidBrush(color))
+                {
+                    try
                     {
-                        try
-                        {
-                            g.FillPolygon(brush, trianglePoints);
-                            // g.DrawPolygon(Pens.DarkGreen, trianglePoints);
-                        }
-                        catch (Exception exception)
-                        {
-                            Console.WriteLine(exception);
-                        }
+                        g.FillPolygon(brush, trianglePoints);
+                        // g.DrawPolygon(Pens.DarkGreen, trianglePoints);
                     }
-
+                    catch (Exception exception)
+                    {
+                        Console.WriteLine(exception);
+                    }
                 }
             };
         }

@@ -352,7 +352,7 @@ Datan som finns med i den kommer att raderas och går ej att återfå.</value>
     <value>Vill du att jag raderar dessa mätpunkter?</value>
   </data>
   <data name="update_Info_1_2" xml:space="preserve">
-    <value>Om du vill uppdatera programmet så kan du starta om programmet.</value>
+    <value>Vill du uppdatera programmet nu?</value>
   </data>
   <data name="lbl_EditUser" xml:space="preserve">
     <value>Redigera Användare</value>

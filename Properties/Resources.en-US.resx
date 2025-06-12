@@ -353,7 +353,7 @@ Everything under this extruder will be removed if you continue.</value>
     <value>Do you want me to delete these measurement points?</value>
   </data>
   <data name="update_Info_1_2" xml:space="preserve">
-    <value>If you want to update the program, please restart the program.</value>
+    <value>Do you want to update the application now?</value>
   </data>
   <data name="lbl_EditUser" xml:space="preserve">
     <value>Edit User</value>

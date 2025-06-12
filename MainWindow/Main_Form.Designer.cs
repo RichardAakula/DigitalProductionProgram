@@ -80,8 +80,6 @@ namespace DigitalProductionProgram.MainWindow
             panel_Background_OptinovaLogo = new Panel();
             pBox_OptinovaLogo = new PictureBox();
             ActiveOrdersUser = new ActiveOrdersUser();
-            timer_CheckForUpdate = new System.Windows.Forms.Timer(components);
-            timer_Planerat_Stopp = new System.Windows.Forms.Timer(components);
             timer_Check_MeasurePoints = new System.Windows.Forms.Timer(components);
             timer_Check_If_Maintenance_Has_Started = new System.Windows.Forms.Timer(components);
             timer_ReLogin_Monitor = new System.Windows.Forms.Timer(components);
@@ -731,11 +729,6 @@ namespace DigitalProductionProgram.MainWindow
             ActiveOrdersUser.Size = new Size(310, 209);
             ActiveOrdersUser.TabIndex = 866;
             // 
-            // timer_CheckForUpdate
-            // 
-            timer_CheckForUpdate.Enabled = true;
-            timer_CheckForUpdate.Interval = 6000;
-            // 
             // Buttons
             // 
             Buttons.BackColor = Color.FromArgb(60, 60, 60);
@@ -913,9 +906,6 @@ namespace DigitalProductionProgram.MainWindow
         private Label lbl_ExtraInfo;
         private Label label_ExtraInfo;
         private Label lbl_Rating;
-        private System.Windows.Forms.Timer timer_CheckForUpdate;
-        private System.Windows.Forms.Timer timer_Planerat_Stopp;
-        private System.Windows.Forms.Timer timer_Update_Körplanering;
         private PictureBox pb_Info_UserPoints;
         public TableLayoutPanel tlp_Top;
         public TableLayoutPanel tlp_ExtraInfo;

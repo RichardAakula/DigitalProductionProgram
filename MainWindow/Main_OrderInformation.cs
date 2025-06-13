@@ -240,6 +240,13 @@ namespace DigitalProductionProgram.MainWindow
             var ordernr = tb_OrderNr.Text;
             Clear();
             tb_OrderNr.Text = ordernr;
+            string test = cb_Operation.Text;
+            if (string.IsNullOrEmpty(tb_OrderNr.Text) || tb_OrderNr.Text.Length < 3)
+            {
+                panel_tb_OrderNr.BackColor = tb_OrderNr.BackColor = Color.Khaki;
+                cb_Operation.Enabled = false;
+                return;
+            }
             StartOrder();
         }
 

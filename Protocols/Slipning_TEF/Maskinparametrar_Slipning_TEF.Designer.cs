@@ -31,1346 +31,1298 @@ namespace DigitalProductionProgram.Protocols.Slipning_TEF
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle18 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle19 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle33 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle34 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle20 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle21 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle22 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle23 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle24 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle25 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle26 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle27 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle28 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle29 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle30 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle31 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle32 = new System.Windows.Forms.DataGridViewCellStyle();
-            this.tlp_Main = new System.Windows.Forms.TableLayoutPanel();
-            this.label_Maskinparametrar = new System.Windows.Forms.Label();
-            this.lbl_Transfer_Maskinparametrar = new System.Windows.Forms.Label();
-            this.label_Empty_11 = new System.Windows.Forms.Label();
-            this.label_Empty_1 = new System.Windows.Forms.Label();
-            this.lbl_Centerhöjd = new System.Windows.Forms.Label();
-            this.lbl_Arbetsblad_max = new System.Windows.Forms.Label();
-            this.lbl_Bladhöjd_max = new System.Windows.Forms.Label();
-            this.lbl_Arbetsblad_min = new System.Windows.Forms.Label();
-            this.lbl_Bladhöjd_min = new System.Windows.Forms.Label();
-            this.label_Chimshöjd = new System.Windows.Forms.Label();
-            this.tb_Slipmaskin = new System.Windows.Forms.TextBox();
-            this.lbl_Chimshöjd_nom = new System.Windows.Forms.Label();
-            this.label_Empty_3 = new System.Windows.Forms.Label();
-            this.lbl_Arbetsblad_nom = new System.Windows.Forms.Label();
-            this.lbl_Bladhöjd_nom = new System.Windows.Forms.Label();
-            this.lbl_Helix_Vinkel_nom = new System.Windows.Forms.Label();
-            this.lbl_Matarhjul_Vinkel_nom = new System.Windows.Forms.Label();
-            this.lbl_Matarhjul_Hastighet_nom = new System.Windows.Forms.Label();
-            this.label_Empty_2 = new System.Windows.Forms.Label();
-            this.label_MAX = new System.Windows.Forms.Label();
-            this.label_NOM = new System.Windows.Forms.Label();
-            this.label_MIN = new System.Windows.Forms.Label();
-            this.label_Empty_9 = new System.Windows.Forms.Label();
-            this.dgv_MaskinParametrar = new System.Windows.Forms.DataGridView();
-            this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dgv_Maskinparametrar_MatarhjulVinkel = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dgv_Maskinparametrar_Bladhöjd = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dgv_Maskinparametrar_Arbetsblad = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn7 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn8 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn9 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn14 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn15 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn16 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn17 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.label_Bladhöjd_enhet = new System.Windows.Forms.Label();
-            this.label_Helix_Vikel_enhet = new System.Windows.Forms.Label();
-            this.label_Matarhjul_Vinkel_enhet = new System.Windows.Forms.Label();
-            this.label_Matarhjul_Hastighet_enhet = new System.Windows.Forms.Label();
-            this.label_Chimshöjd_enhet = new System.Windows.Forms.Label();
-            this.label_Empty_8 = new System.Windows.Forms.Label();
-            this.label_Värmebackar = new System.Windows.Forms.Label();
-            this.label_Nr = new System.Windows.Forms.Label();
-            this.label_Arbetsblad = new System.Windows.Forms.Label();
-            this.label_Bladhöjd = new System.Windows.Forms.Label();
-            this.label_Helix_Vinkel = new System.Windows.Forms.Label();
-            this.label_Matarhjul_Vinkel = new System.Windows.Forms.Label();
-            this.label_MatarHjul_Hastighet = new System.Windows.Forms.Label();
-            this.label_Slipmaskin = new System.Windows.Forms.Label();
-            this.label_Empty_7 = new System.Windows.Forms.Label();
-            this.label_Centerhöjd_enhet = new System.Windows.Forms.Label();
-            this.label_Empty_12 = new System.Windows.Forms.Label();
-            this.label_Empty_10 = new System.Windows.Forms.Label();
-            this.lbl_Matarhjul_Vinkel_min = new System.Windows.Forms.Label();
-            this.label_Empty_14 = new System.Windows.Forms.Label();
-            this.label_Empty_15 = new System.Windows.Forms.Label();
-            this.lbl_Matarhjul_Vinkel_max = new System.Windows.Forms.Label();
-            this.label_Maskinparametrar_Datum = new System.Windows.Forms.Label();
-            this.label_Maskinparametrar_Tid = new System.Windows.Forms.Label();
-            this.label_Maskinparametrar_AnstNr = new System.Windows.Forms.Label();
-            this.label_Maskinparametrar_Sign = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.tb_MatarhjulHastighet = new System.Windows.Forms.TextBox();
-            this.tb_MatarhjulVinkel = new System.Windows.Forms.TextBox();
-            this.tb_HelixVinkel = new System.Windows.Forms.TextBox();
-            this.tb_Bladhöjd = new System.Windows.Forms.TextBox();
-            this.tb_Arbetsblad = new System.Windows.Forms.TextBox();
-            this.tb_Nr = new System.Windows.Forms.TextBox();
-            this.tb_Chimshöjd = new System.Windows.Forms.TextBox();
-            this.label4 = new System.Windows.Forms.Label();
-            this.tlp_Main.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgv_MaskinParametrar)).BeginInit();
-            this.SuspendLayout();
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle16 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle17 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle5 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle6 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle7 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle8 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle9 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle10 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle11 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle12 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle13 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle14 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle15 = new DataGridViewCellStyle();
+            tlp_Main = new TableLayoutPanel();
+            label_Maskinparametrar = new Label();
+            lbl_Transfer_Maskinparametrar = new Label();
+            label_Empty_11 = new Label();
+            label_Empty_1 = new Label();
+            lbl_Centerhöjd = new Label();
+            lbl_Arbetsblad_max = new Label();
+            lbl_Bladhöjd_max = new Label();
+            lbl_Arbetsblad_min = new Label();
+            lbl_Bladhöjd_min = new Label();
+            label_Chimshöjd = new Label();
+            tb_Slipmaskin = new TextBox();
+            lbl_Chimshöjd_nom = new Label();
+            label_Empty_3 = new Label();
+            lbl_Arbetsblad_nom = new Label();
+            lbl_Bladhöjd_nom = new Label();
+            lbl_Helix_Vinkel_nom = new Label();
+            lbl_Matarhjul_Vinkel_nom = new Label();
+            lbl_Matarhjul_Hastighet_nom = new Label();
+            label_Empty_2 = new Label();
+            label_MAX = new Label();
+            label_NOM = new Label();
+            label_MIN = new Label();
+            label_Empty_9 = new Label();
+            dgv_MaskinParametrar = new DataGridView();
+            label_Bladhöjd_enhet = new Label();
+            label_Helix_Vikel_enhet = new Label();
+            label_Matarhjul_Vinkel_enhet = new Label();
+            label_Matarhjul_Hastighet_enhet = new Label();
+            label_Chimshöjd_enhet = new Label();
+            label_Empty_8 = new Label();
+            label_Värmebackar = new Label();
+            label_Nr = new Label();
+            label_Arbetsblad = new Label();
+            label_Bladhöjd = new Label();
+            label_Helix_Vinkel = new Label();
+            label_Matarhjul_Vinkel = new Label();
+            label_MatarHjul_Hastighet = new Label();
+            label_Slipmaskin = new Label();
+            label_Empty_7 = new Label();
+            label_Centerhöjd_enhet = new Label();
+            label_Empty_12 = new Label();
+            label_Empty_10 = new Label();
+            lbl_Matarhjul_Vinkel_min = new Label();
+            label_Empty_14 = new Label();
+            label_Empty_15 = new Label();
+            lbl_Matarhjul_Vinkel_max = new Label();
+            label_Maskinparametrar_Datum = new Label();
+            label_Maskinparametrar_Tid = new Label();
+            label_Maskinparametrar_AnstNr = new Label();
+            label_Maskinparametrar_Sign = new Label();
+            label3 = new Label();
+            tb_MatarhjulHastighet = new TextBox();
+            tb_MatarhjulVinkel = new TextBox();
+            tb_HelixVinkel = new TextBox();
+            tb_Bladhöjd = new TextBox();
+            tb_Arbetsblad = new TextBox();
+            tb_Nr = new TextBox();
+            tb_Chimshöjd = new TextBox();
+            label4 = new Label();
+            dataGridViewTextBoxColumn1 = new DataGridViewTextBoxColumn();
+            dataGridViewTextBoxColumn2 = new DataGridViewTextBoxColumn();
+            dgv_Maskinparametrar_MatarhjulVinkel = new DataGridViewTextBoxColumn();
+            dataGridViewTextBoxColumn4 = new DataGridViewTextBoxColumn();
+            dgv_Maskinparametrar_Bladhöjd = new DataGridViewTextBoxColumn();
+            dgv_Maskinparametrar_Arbetsblad = new DataGridViewTextBoxColumn();
+            dataGridViewTextBoxColumn7 = new DataGridViewTextBoxColumn();
+            dataGridViewTextBoxColumn8 = new DataGridViewTextBoxColumn();
+            dataGridViewTextBoxColumn9 = new DataGridViewTextBoxColumn();
+            dataGridViewTextBoxColumn14 = new DataGridViewTextBoxColumn();
+            dataGridViewTextBoxColumn15 = new DataGridViewTextBoxColumn();
+            dataGridViewTextBoxColumn16 = new DataGridViewTextBoxColumn();
+            dataGridViewTextBoxColumn17 = new DataGridViewTextBoxColumn();
+            tlp_Main.SuspendLayout();
+            ((ISupportInitialize)dgv_MaskinParametrar).BeginInit();
+            SuspendLayout();
             // 
             // tlp_Main
             // 
-            this.tlp_Main.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(45)))), ((int)(((byte)(45)))));
-            this.tlp_Main.ColumnCount = 14;
-            this.tlp_Main.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 37F));
-            this.tlp_Main.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 73F));
-            this.tlp_Main.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 65F));
-            this.tlp_Main.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 57F));
-            this.tlp_Main.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 58F));
-            this.tlp_Main.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 64F));
-            this.tlp_Main.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 70F));
-            this.tlp_Main.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 60F));
-            this.tlp_Main.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 72F));
-            this.tlp_Main.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 75F));
-            this.tlp_Main.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 80F));
-            this.tlp_Main.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 48F));
-            this.tlp_Main.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 40F));
-            this.tlp_Main.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 94F));
-            this.tlp_Main.Controls.Add(this.label_Maskinparametrar, 0, 0);
-            this.tlp_Main.Controls.Add(this.lbl_Transfer_Maskinparametrar, 0, 8);
-            this.tlp_Main.Controls.Add(this.label_Empty_11, 2, 7);
-            this.tlp_Main.Controls.Add(this.label_Empty_1, 0, 1);
-            this.tlp_Main.Controls.Add(this.lbl_Centerhöjd, 9, 6);
-            this.tlp_Main.Controls.Add(this.lbl_Arbetsblad_max, 6, 7);
-            this.tlp_Main.Controls.Add(this.lbl_Bladhöjd_max, 5, 7);
-            this.tlp_Main.Controls.Add(this.lbl_Arbetsblad_min, 6, 5);
-            this.tlp_Main.Controls.Add(this.lbl_Bladhöjd_min, 5, 5);
-            this.tlp_Main.Controls.Add(this.label_Chimshöjd, 8, 1);
-            this.tlp_Main.Controls.Add(this.tb_Slipmaskin, 1, 8);
-            this.tlp_Main.Controls.Add(this.lbl_Chimshöjd_nom, 8, 6);
-            this.tlp_Main.Controls.Add(this.label_Empty_3, 7, 5);
-            this.tlp_Main.Controls.Add(this.lbl_Arbetsblad_nom, 6, 6);
-            this.tlp_Main.Controls.Add(this.lbl_Bladhöjd_nom, 5, 6);
-            this.tlp_Main.Controls.Add(this.lbl_Helix_Vinkel_nom, 4, 6);
-            this.tlp_Main.Controls.Add(this.lbl_Matarhjul_Vinkel_nom, 3, 6);
-            this.tlp_Main.Controls.Add(this.lbl_Matarhjul_Hastighet_nom, 2, 6);
-            this.tlp_Main.Controls.Add(this.label_Empty_2, 1, 5);
-            this.tlp_Main.Controls.Add(this.label_MAX, 0, 7);
-            this.tlp_Main.Controls.Add(this.label_NOM, 0, 6);
-            this.tlp_Main.Controls.Add(this.label_MIN, 0, 5);
-            this.tlp_Main.Controls.Add(this.label_Empty_9, 6, 4);
-            this.tlp_Main.Controls.Add(this.dgv_MaskinParametrar, 1, 9);
-            this.tlp_Main.Controls.Add(this.label_Bladhöjd_enhet, 5, 4);
-            this.tlp_Main.Controls.Add(this.label_Helix_Vikel_enhet, 4, 4);
-            this.tlp_Main.Controls.Add(this.label_Matarhjul_Vinkel_enhet, 3, 4);
-            this.tlp_Main.Controls.Add(this.label_Matarhjul_Hastighet_enhet, 2, 4);
-            this.tlp_Main.Controls.Add(this.label_Chimshöjd_enhet, 8, 4);
-            this.tlp_Main.Controls.Add(this.label_Empty_8, 7, 4);
-            this.tlp_Main.Controls.Add(this.label_Värmebackar, 9, 1);
-            this.tlp_Main.Controls.Add(this.label_Nr, 7, 1);
-            this.tlp_Main.Controls.Add(this.label_Arbetsblad, 6, 1);
-            this.tlp_Main.Controls.Add(this.label_Bladhöjd, 5, 1);
-            this.tlp_Main.Controls.Add(this.label_Helix_Vinkel, 4, 1);
-            this.tlp_Main.Controls.Add(this.label_Matarhjul_Vinkel, 3, 1);
-            this.tlp_Main.Controls.Add(this.label_MatarHjul_Hastighet, 2, 1);
-            this.tlp_Main.Controls.Add(this.label_Slipmaskin, 1, 1);
-            this.tlp_Main.Controls.Add(this.label_Empty_7, 7, 7);
-            this.tlp_Main.Controls.Add(this.label_Centerhöjd_enhet, 9, 4);
-            this.tlp_Main.Controls.Add(this.label_Empty_12, 7, 6);
-            this.tlp_Main.Controls.Add(this.label_Empty_10, 2, 5);
-            this.tlp_Main.Controls.Add(this.lbl_Matarhjul_Vinkel_min, 3, 5);
-            this.tlp_Main.Controls.Add(this.label_Empty_14, 4, 5);
-            this.tlp_Main.Controls.Add(this.label_Empty_15, 4, 7);
-            this.tlp_Main.Controls.Add(this.lbl_Matarhjul_Vinkel_max, 3, 7);
-            this.tlp_Main.Controls.Add(this.label_Maskinparametrar_Datum, 10, 1);
-            this.tlp_Main.Controls.Add(this.label_Maskinparametrar_Tid, 11, 1);
-            this.tlp_Main.Controls.Add(this.label_Maskinparametrar_AnstNr, 12, 1);
-            this.tlp_Main.Controls.Add(this.label_Maskinparametrar_Sign, 13, 1);
-            this.tlp_Main.Controls.Add(this.label3, 10, 5);
-            this.tlp_Main.Controls.Add(this.tb_MatarhjulHastighet, 2, 8);
-            this.tlp_Main.Controls.Add(this.tb_MatarhjulVinkel, 3, 8);
-            this.tlp_Main.Controls.Add(this.tb_HelixVinkel, 4, 8);
-            this.tlp_Main.Controls.Add(this.tb_Bladhöjd, 5, 8);
-            this.tlp_Main.Controls.Add(this.tb_Arbetsblad, 6, 8);
-            this.tlp_Main.Controls.Add(this.tb_Nr, 7, 8);
-            this.tlp_Main.Controls.Add(this.tb_Chimshöjd, 8, 8);
-            this.tlp_Main.Controls.Add(this.label4, 9, 8);
-            this.tlp_Main.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tlp_Main.Location = new System.Drawing.Point(0, 0);
-            this.tlp_Main.Margin = new System.Windows.Forms.Padding(0);
-            this.tlp_Main.Name = "tlp_Main";
-            this.tlp_Main.RowCount = 11;
-            this.tlp_Main.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 24F));
-            this.tlp_Main.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 8F));
-            this.tlp_Main.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 14F));
-            this.tlp_Main.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 31F));
-            this.tlp_Main.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 14F));
-            this.tlp_Main.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tlp_Main.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tlp_Main.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tlp_Main.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 22F));
-            this.tlp_Main.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
-            this.tlp_Main.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
-            this.tlp_Main.Size = new System.Drawing.Size(893, 329);
-            this.tlp_Main.TabIndex = 1;
+            tlp_Main.BackColor = Color.FromArgb(45, 45, 45);
+            tlp_Main.ColumnCount = 14;
+            tlp_Main.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 43F));
+            tlp_Main.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 85F));
+            tlp_Main.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 76F));
+            tlp_Main.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 66F));
+            tlp_Main.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 68F));
+            tlp_Main.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 75F));
+            tlp_Main.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 82F));
+            tlp_Main.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 70F));
+            tlp_Main.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 84F));
+            tlp_Main.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 88F));
+            tlp_Main.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 93F));
+            tlp_Main.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 56F));
+            tlp_Main.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 47F));
+            tlp_Main.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 110F));
+            tlp_Main.Controls.Add(label_Maskinparametrar, 0, 0);
+            tlp_Main.Controls.Add(lbl_Transfer_Maskinparametrar, 0, 8);
+            tlp_Main.Controls.Add(label_Empty_11, 2, 7);
+            tlp_Main.Controls.Add(label_Empty_1, 0, 1);
+            tlp_Main.Controls.Add(lbl_Centerhöjd, 9, 6);
+            tlp_Main.Controls.Add(lbl_Arbetsblad_max, 6, 7);
+            tlp_Main.Controls.Add(lbl_Bladhöjd_max, 5, 7);
+            tlp_Main.Controls.Add(lbl_Arbetsblad_min, 6, 5);
+            tlp_Main.Controls.Add(lbl_Bladhöjd_min, 5, 5);
+            tlp_Main.Controls.Add(label_Chimshöjd, 8, 1);
+            tlp_Main.Controls.Add(tb_Slipmaskin, 1, 8);
+            tlp_Main.Controls.Add(lbl_Chimshöjd_nom, 8, 6);
+            tlp_Main.Controls.Add(label_Empty_3, 7, 5);
+            tlp_Main.Controls.Add(lbl_Arbetsblad_nom, 6, 6);
+            tlp_Main.Controls.Add(lbl_Bladhöjd_nom, 5, 6);
+            tlp_Main.Controls.Add(lbl_Helix_Vinkel_nom, 4, 6);
+            tlp_Main.Controls.Add(lbl_Matarhjul_Vinkel_nom, 3, 6);
+            tlp_Main.Controls.Add(lbl_Matarhjul_Hastighet_nom, 2, 6);
+            tlp_Main.Controls.Add(label_Empty_2, 1, 5);
+            tlp_Main.Controls.Add(label_MAX, 0, 7);
+            tlp_Main.Controls.Add(label_NOM, 0, 6);
+            tlp_Main.Controls.Add(label_MIN, 0, 5);
+            tlp_Main.Controls.Add(label_Empty_9, 6, 4);
+            tlp_Main.Controls.Add(dgv_MaskinParametrar, 1, 9);
+            tlp_Main.Controls.Add(label_Bladhöjd_enhet, 5, 4);
+            tlp_Main.Controls.Add(label_Helix_Vikel_enhet, 4, 4);
+            tlp_Main.Controls.Add(label_Matarhjul_Vinkel_enhet, 3, 4);
+            tlp_Main.Controls.Add(label_Matarhjul_Hastighet_enhet, 2, 4);
+            tlp_Main.Controls.Add(label_Chimshöjd_enhet, 8, 4);
+            tlp_Main.Controls.Add(label_Empty_8, 7, 4);
+            tlp_Main.Controls.Add(label_Värmebackar, 9, 1);
+            tlp_Main.Controls.Add(label_Nr, 7, 1);
+            tlp_Main.Controls.Add(label_Arbetsblad, 6, 1);
+            tlp_Main.Controls.Add(label_Bladhöjd, 5, 1);
+            tlp_Main.Controls.Add(label_Helix_Vinkel, 4, 1);
+            tlp_Main.Controls.Add(label_Matarhjul_Vinkel, 3, 1);
+            tlp_Main.Controls.Add(label_MatarHjul_Hastighet, 2, 1);
+            tlp_Main.Controls.Add(label_Slipmaskin, 1, 1);
+            tlp_Main.Controls.Add(label_Empty_7, 7, 7);
+            tlp_Main.Controls.Add(label_Centerhöjd_enhet, 9, 4);
+            tlp_Main.Controls.Add(label_Empty_12, 7, 6);
+            tlp_Main.Controls.Add(label_Empty_10, 2, 5);
+            tlp_Main.Controls.Add(lbl_Matarhjul_Vinkel_min, 3, 5);
+            tlp_Main.Controls.Add(label_Empty_14, 4, 5);
+            tlp_Main.Controls.Add(label_Empty_15, 4, 7);
+            tlp_Main.Controls.Add(lbl_Matarhjul_Vinkel_max, 3, 7);
+            tlp_Main.Controls.Add(label_Maskinparametrar_Datum, 10, 1);
+            tlp_Main.Controls.Add(label_Maskinparametrar_Tid, 11, 1);
+            tlp_Main.Controls.Add(label_Maskinparametrar_AnstNr, 12, 1);
+            tlp_Main.Controls.Add(label_Maskinparametrar_Sign, 13, 1);
+            tlp_Main.Controls.Add(label3, 10, 5);
+            tlp_Main.Controls.Add(tb_MatarhjulHastighet, 2, 8);
+            tlp_Main.Controls.Add(tb_MatarhjulVinkel, 3, 8);
+            tlp_Main.Controls.Add(tb_HelixVinkel, 4, 8);
+            tlp_Main.Controls.Add(tb_Bladhöjd, 5, 8);
+            tlp_Main.Controls.Add(tb_Arbetsblad, 6, 8);
+            tlp_Main.Controls.Add(tb_Nr, 7, 8);
+            tlp_Main.Controls.Add(tb_Chimshöjd, 8, 8);
+            tlp_Main.Controls.Add(label4, 9, 8);
+            tlp_Main.Dock = DockStyle.Fill;
+            tlp_Main.Location = new Point(0, 0);
+            tlp_Main.Margin = new Padding(0);
+            tlp_Main.Name = "tlp_Main";
+            tlp_Main.RowCount = 11;
+            tlp_Main.RowStyles.Add(new RowStyle(SizeType.Absolute, 28F));
+            tlp_Main.RowStyles.Add(new RowStyle(SizeType.Absolute, 9F));
+            tlp_Main.RowStyles.Add(new RowStyle(SizeType.Absolute, 16F));
+            tlp_Main.RowStyles.Add(new RowStyle(SizeType.Absolute, 36F));
+            tlp_Main.RowStyles.Add(new RowStyle(SizeType.Absolute, 16F));
+            tlp_Main.RowStyles.Add(new RowStyle(SizeType.Absolute, 23F));
+            tlp_Main.RowStyles.Add(new RowStyle(SizeType.Absolute, 23F));
+            tlp_Main.RowStyles.Add(new RowStyle(SizeType.Absolute, 23F));
+            tlp_Main.RowStyles.Add(new RowStyle(SizeType.Absolute, 25F));
+            tlp_Main.RowStyles.Add(new RowStyle(SizeType.Absolute, 29F));
+            tlp_Main.RowStyles.Add(new RowStyle(SizeType.Absolute, 29F));
+            tlp_Main.Size = new Size(1042, 380);
+            tlp_Main.TabIndex = 1;
             // 
             // label_Maskinparametrar
             // 
-            this.label_Maskinparametrar.BackColor = System.Drawing.Color.LightGray;
-            this.tlp_Main.SetColumnSpan(this.label_Maskinparametrar, 14);
-            this.label_Maskinparametrar.Cursor = System.Windows.Forms.Cursors.Default;
-            this.label_Maskinparametrar.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label_Maskinparametrar.Font = new System.Drawing.Font("Palatino Linotype", 10.25F);
-            this.label_Maskinparametrar.ForeColor = System.Drawing.Color.SaddleBrown;
-            this.label_Maskinparametrar.Location = new System.Drawing.Point(0, 0);
-            this.label_Maskinparametrar.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
-            this.label_Maskinparametrar.Name = "label_Maskinparametrar";
-            this.label_Maskinparametrar.Size = new System.Drawing.Size(893, 23);
-            this.label_Maskinparametrar.TabIndex = 1010;
-            this.label_Maskinparametrar.Text = "Maskinparametrar";
-            this.label_Maskinparametrar.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            label_Maskinparametrar.BackColor = Color.LightGray;
+            tlp_Main.SetColumnSpan(label_Maskinparametrar, 14);
+            label_Maskinparametrar.Dock = DockStyle.Fill;
+            label_Maskinparametrar.Font = new Font("Palatino Linotype", 10.25F);
+            label_Maskinparametrar.ForeColor = Color.SaddleBrown;
+            label_Maskinparametrar.Location = new Point(0, 0);
+            label_Maskinparametrar.Margin = new Padding(0, 0, 0, 1);
+            label_Maskinparametrar.Name = "label_Maskinparametrar";
+            label_Maskinparametrar.Size = new Size(1043, 27);
+            label_Maskinparametrar.TabIndex = 1010;
+            label_Maskinparametrar.Text = "Maskinparametrar";
+            label_Maskinparametrar.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // lbl_Transfer_Maskinparametrar
             // 
-            this.lbl_Transfer_Maskinparametrar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(198)))), ((int)(((byte)(239)))), ((int)(((byte)(206)))));
-            this.lbl_Transfer_Maskinparametrar.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.lbl_Transfer_Maskinparametrar.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lbl_Transfer_Maskinparametrar.Font = new System.Drawing.Font("Times New Roman", 13F, System.Drawing.FontStyle.Bold);
-            this.lbl_Transfer_Maskinparametrar.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(97)))), ((int)(((byte)(0)))));
-            this.lbl_Transfer_Maskinparametrar.Location = new System.Drawing.Point(0, 152);
-            this.lbl_Transfer_Maskinparametrar.Margin = new System.Windows.Forms.Padding(0, 1, 0, 0);
-            this.lbl_Transfer_Maskinparametrar.Name = "lbl_Transfer_Maskinparametrar";
-            this.lbl_Transfer_Maskinparametrar.Size = new System.Drawing.Size(37, 21);
-            this.lbl_Transfer_Maskinparametrar.TabIndex = 1009;
-            this.lbl_Transfer_Maskinparametrar.Text = "→";
-            this.lbl_Transfer_Maskinparametrar.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.lbl_Transfer_Maskinparametrar.Click += new System.EventHandler(this.Save_Click);
+            lbl_Transfer_Maskinparametrar.BackColor = Color.FromArgb(198, 239, 206);
+            lbl_Transfer_Maskinparametrar.Cursor = Cursors.Hand;
+            lbl_Transfer_Maskinparametrar.Dock = DockStyle.Fill;
+            lbl_Transfer_Maskinparametrar.Font = new Font("Times New Roman", 13F, FontStyle.Bold);
+            lbl_Transfer_Maskinparametrar.ForeColor = Color.FromArgb(0, 97, 0);
+            lbl_Transfer_Maskinparametrar.Location = new Point(0, 175);
+            lbl_Transfer_Maskinparametrar.Margin = new Padding(0, 1, 0, 0);
+            lbl_Transfer_Maskinparametrar.Name = "lbl_Transfer_Maskinparametrar";
+            lbl_Transfer_Maskinparametrar.Size = new Size(43, 24);
+            lbl_Transfer_Maskinparametrar.TabIndex = 1009;
+            lbl_Transfer_Maskinparametrar.Text = "→";
+            lbl_Transfer_Maskinparametrar.TextAlign = ContentAlignment.MiddleCenter;
+            lbl_Transfer_Maskinparametrar.Click += Save_Click;
             // 
             // label_Empty_11
             // 
-            this.label_Empty_11.BackColor = System.Drawing.Color.DarkGray;
-            this.label_Empty_11.Cursor = System.Windows.Forms.Cursors.SizeAll;
-            this.label_Empty_11.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label_Empty_11.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label_Empty_11.ForeColor = System.Drawing.Color.ForestGreen;
-            this.label_Empty_11.Location = new System.Drawing.Point(110, 131);
-            this.label_Empty_11.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
-            this.label_Empty_11.Name = "label_Empty_11";
-            this.label_Empty_11.Size = new System.Drawing.Size(65, 19);
-            this.label_Empty_11.TabIndex = 1008;
-            this.label_Empty_11.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            label_Empty_11.BackColor = Color.DarkGray;
+            label_Empty_11.Cursor = Cursors.SizeAll;
+            label_Empty_11.Dock = DockStyle.Fill;
+            label_Empty_11.Font = new Font("Consolas", 8.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label_Empty_11.ForeColor = Color.ForestGreen;
+            label_Empty_11.Location = new Point(128, 151);
+            label_Empty_11.Margin = new Padding(0, 0, 0, 1);
+            label_Empty_11.Name = "label_Empty_11";
+            label_Empty_11.Size = new Size(76, 22);
+            label_Empty_11.TabIndex = 1008;
+            label_Empty_11.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // label_Empty_1
             // 
-            this.label_Empty_1.BackColor = System.Drawing.Color.DarkGray;
-            this.label_Empty_1.Cursor = System.Windows.Forms.Cursors.SizeAll;
-            this.label_Empty_1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label_Empty_1.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label_Empty_1.ForeColor = System.Drawing.Color.ForestGreen;
-            this.label_Empty_1.Location = new System.Drawing.Point(0, 24);
-            this.label_Empty_1.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
-            this.label_Empty_1.Name = "label_Empty_1";
-            this.tlp_Main.SetRowSpan(this.label_Empty_1, 4);
-            this.label_Empty_1.Size = new System.Drawing.Size(37, 66);
-            this.label_Empty_1.TabIndex = 1007;
-            this.label_Empty_1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            label_Empty_1.BackColor = Color.DarkGray;
+            label_Empty_1.Cursor = Cursors.SizeAll;
+            label_Empty_1.Dock = DockStyle.Fill;
+            label_Empty_1.Font = new Font("Consolas", 8.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label_Empty_1.ForeColor = Color.ForestGreen;
+            label_Empty_1.Location = new Point(0, 28);
+            label_Empty_1.Margin = new Padding(0, 0, 0, 1);
+            label_Empty_1.Name = "label_Empty_1";
+            tlp_Main.SetRowSpan(label_Empty_1, 4);
+            label_Empty_1.Size = new Size(43, 76);
+            label_Empty_1.TabIndex = 1007;
+            label_Empty_1.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // lbl_Centerhöjd
             // 
-            this.lbl_Centerhöjd.AutoSize = true;
-            this.lbl_Centerhöjd.BackColor = System.Drawing.Color.LightGray;
-            this.lbl_Centerhöjd.Cursor = System.Windows.Forms.Cursors.Arrow;
-            this.lbl_Centerhöjd.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lbl_Centerhöjd.Font = new System.Drawing.Font("Consolas", 8.75F);
-            this.lbl_Centerhöjd.ForeColor = System.Drawing.Color.ForestGreen;
-            this.lbl_Centerhöjd.Location = new System.Drawing.Point(557, 112);
-            this.lbl_Centerhöjd.Margin = new System.Windows.Forms.Padding(1);
-            this.lbl_Centerhöjd.Name = "lbl_Centerhöjd";
-            this.lbl_Centerhöjd.Size = new System.Drawing.Size(73, 18);
-            this.lbl_Centerhöjd.TabIndex = 1005;
-            this.lbl_Centerhöjd.Text = "63,7";
-            this.lbl_Centerhöjd.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            lbl_Centerhöjd.AutoSize = true;
+            lbl_Centerhöjd.BackColor = Color.LightGray;
+            lbl_Centerhöjd.Dock = DockStyle.Fill;
+            lbl_Centerhöjd.Font = new Font("Consolas", 8.75F);
+            lbl_Centerhöjd.ForeColor = Color.ForestGreen;
+            lbl_Centerhöjd.Location = new Point(650, 129);
+            lbl_Centerhöjd.Margin = new Padding(1);
+            lbl_Centerhöjd.Name = "lbl_Centerhöjd";
+            lbl_Centerhöjd.Size = new Size(86, 21);
+            lbl_Centerhöjd.TabIndex = 1005;
+            lbl_Centerhöjd.Text = "63,7";
+            lbl_Centerhöjd.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // lbl_Arbetsblad_max
             // 
-            this.lbl_Arbetsblad_max.AutoSize = true;
-            this.lbl_Arbetsblad_max.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(230)))), ((int)(((byte)(230)))));
-            this.lbl_Arbetsblad_max.Cursor = System.Windows.Forms.Cursors.Arrow;
-            this.lbl_Arbetsblad_max.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lbl_Arbetsblad_max.Font = new System.Drawing.Font("Consolas", 8.75F);
-            this.lbl_Arbetsblad_max.ForeColor = System.Drawing.Color.DodgerBlue;
-            this.lbl_Arbetsblad_max.Location = new System.Drawing.Point(355, 131);
-            this.lbl_Arbetsblad_max.Margin = new System.Windows.Forms.Padding(1, 0, 0, 1);
-            this.lbl_Arbetsblad_max.Name = "lbl_Arbetsblad_max";
-            this.lbl_Arbetsblad_max.Size = new System.Drawing.Size(69, 19);
-            this.lbl_Arbetsblad_max.TabIndex = 1004;
-            this.lbl_Arbetsblad_max.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            lbl_Arbetsblad_max.AutoSize = true;
+            lbl_Arbetsblad_max.BackColor = Color.FromArgb(230, 230, 230);
+            lbl_Arbetsblad_max.Dock = DockStyle.Fill;
+            lbl_Arbetsblad_max.Font = new Font("Consolas", 8.75F);
+            lbl_Arbetsblad_max.ForeColor = Color.DodgerBlue;
+            lbl_Arbetsblad_max.Location = new Point(414, 151);
+            lbl_Arbetsblad_max.Margin = new Padding(1, 0, 0, 1);
+            lbl_Arbetsblad_max.Name = "lbl_Arbetsblad_max";
+            lbl_Arbetsblad_max.Size = new Size(81, 22);
+            lbl_Arbetsblad_max.TabIndex = 1004;
+            lbl_Arbetsblad_max.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // lbl_Bladhöjd_max
             // 
-            this.lbl_Bladhöjd_max.AutoSize = true;
-            this.lbl_Bladhöjd_max.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(230)))), ((int)(((byte)(230)))));
-            this.lbl_Bladhöjd_max.Cursor = System.Windows.Forms.Cursors.Arrow;
-            this.lbl_Bladhöjd_max.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lbl_Bladhöjd_max.Font = new System.Drawing.Font("Consolas", 8.75F);
-            this.lbl_Bladhöjd_max.ForeColor = System.Drawing.Color.DodgerBlue;
-            this.lbl_Bladhöjd_max.Location = new System.Drawing.Point(291, 131);
-            this.lbl_Bladhöjd_max.Margin = new System.Windows.Forms.Padding(1, 0, 0, 1);
-            this.lbl_Bladhöjd_max.Name = "lbl_Bladhöjd_max";
-            this.lbl_Bladhöjd_max.Size = new System.Drawing.Size(63, 19);
-            this.lbl_Bladhöjd_max.TabIndex = 1003;
-            this.lbl_Bladhöjd_max.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            lbl_Bladhöjd_max.AutoSize = true;
+            lbl_Bladhöjd_max.BackColor = Color.FromArgb(230, 230, 230);
+            lbl_Bladhöjd_max.Dock = DockStyle.Fill;
+            lbl_Bladhöjd_max.Font = new Font("Consolas", 8.75F);
+            lbl_Bladhöjd_max.ForeColor = Color.DodgerBlue;
+            lbl_Bladhöjd_max.Location = new Point(339, 151);
+            lbl_Bladhöjd_max.Margin = new Padding(1, 0, 0, 1);
+            lbl_Bladhöjd_max.Name = "lbl_Bladhöjd_max";
+            lbl_Bladhöjd_max.Size = new Size(74, 22);
+            lbl_Bladhöjd_max.TabIndex = 1003;
+            lbl_Bladhöjd_max.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // lbl_Arbetsblad_min
             // 
-            this.lbl_Arbetsblad_min.AutoSize = true;
-            this.lbl_Arbetsblad_min.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(230)))), ((int)(((byte)(230)))));
-            this.lbl_Arbetsblad_min.Cursor = System.Windows.Forms.Cursors.Arrow;
-            this.lbl_Arbetsblad_min.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lbl_Arbetsblad_min.Font = new System.Drawing.Font("Consolas", 8.75F);
-            this.lbl_Arbetsblad_min.ForeColor = System.Drawing.Color.DodgerBlue;
-            this.lbl_Arbetsblad_min.Location = new System.Drawing.Point(355, 91);
-            this.lbl_Arbetsblad_min.Margin = new System.Windows.Forms.Padding(1, 0, 0, 1);
-            this.lbl_Arbetsblad_min.Name = "lbl_Arbetsblad_min";
-            this.lbl_Arbetsblad_min.Size = new System.Drawing.Size(69, 19);
-            this.lbl_Arbetsblad_min.TabIndex = 1002;
-            this.lbl_Arbetsblad_min.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            lbl_Arbetsblad_min.AutoSize = true;
+            lbl_Arbetsblad_min.BackColor = Color.FromArgb(230, 230, 230);
+            lbl_Arbetsblad_min.Dock = DockStyle.Fill;
+            lbl_Arbetsblad_min.Font = new Font("Consolas", 8.75F);
+            lbl_Arbetsblad_min.ForeColor = Color.DodgerBlue;
+            lbl_Arbetsblad_min.Location = new Point(414, 105);
+            lbl_Arbetsblad_min.Margin = new Padding(1, 0, 0, 1);
+            lbl_Arbetsblad_min.Name = "lbl_Arbetsblad_min";
+            lbl_Arbetsblad_min.Size = new Size(81, 22);
+            lbl_Arbetsblad_min.TabIndex = 1002;
+            lbl_Arbetsblad_min.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // lbl_Bladhöjd_min
             // 
-            this.lbl_Bladhöjd_min.AutoSize = true;
-            this.lbl_Bladhöjd_min.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(230)))), ((int)(((byte)(230)))));
-            this.lbl_Bladhöjd_min.Cursor = System.Windows.Forms.Cursors.Arrow;
-            this.lbl_Bladhöjd_min.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lbl_Bladhöjd_min.Font = new System.Drawing.Font("Consolas", 8.75F);
-            this.lbl_Bladhöjd_min.ForeColor = System.Drawing.Color.DodgerBlue;
-            this.lbl_Bladhöjd_min.Location = new System.Drawing.Point(291, 91);
-            this.lbl_Bladhöjd_min.Margin = new System.Windows.Forms.Padding(1, 0, 0, 1);
-            this.lbl_Bladhöjd_min.Name = "lbl_Bladhöjd_min";
-            this.lbl_Bladhöjd_min.Size = new System.Drawing.Size(63, 19);
-            this.lbl_Bladhöjd_min.TabIndex = 1001;
-            this.lbl_Bladhöjd_min.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            lbl_Bladhöjd_min.AutoSize = true;
+            lbl_Bladhöjd_min.BackColor = Color.FromArgb(230, 230, 230);
+            lbl_Bladhöjd_min.Dock = DockStyle.Fill;
+            lbl_Bladhöjd_min.Font = new Font("Consolas", 8.75F);
+            lbl_Bladhöjd_min.ForeColor = Color.DodgerBlue;
+            lbl_Bladhöjd_min.Location = new Point(339, 105);
+            lbl_Bladhöjd_min.Margin = new Padding(1, 0, 0, 1);
+            lbl_Bladhöjd_min.Name = "lbl_Bladhöjd_min";
+            lbl_Bladhöjd_min.Size = new Size(74, 22);
+            lbl_Bladhöjd_min.TabIndex = 1001;
+            lbl_Bladhöjd_min.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // label_Chimshöjd
             // 
-            this.label_Chimshöjd.BackColor = System.Drawing.Color.White;
-            this.label_Chimshöjd.Cursor = System.Windows.Forms.Cursors.Arrow;
-            this.label_Chimshöjd.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label_Chimshöjd.Font = new System.Drawing.Font("Arial", 8.55F);
-            this.label_Chimshöjd.ForeColor = System.Drawing.Color.Black;
-            this.label_Chimshöjd.Location = new System.Drawing.Point(485, 24);
-            this.label_Chimshöjd.Margin = new System.Windows.Forms.Padding(1, 0, 0, 0);
-            this.label_Chimshöjd.Name = "label_Chimshöjd";
-            this.tlp_Main.SetRowSpan(this.label_Chimshöjd, 3);
-            this.label_Chimshöjd.Size = new System.Drawing.Size(71, 53);
-            this.label_Chimshöjd.TabIndex = 996;
-            this.label_Chimshöjd.Text = "Chimshöjd";
-            this.label_Chimshöjd.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            label_Chimshöjd.BackColor = Color.White;
+            label_Chimshöjd.Dock = DockStyle.Fill;
+            label_Chimshöjd.Font = new Font("Arial", 8.55F);
+            label_Chimshöjd.ForeColor = Color.Black;
+            label_Chimshöjd.Location = new Point(566, 28);
+            label_Chimshöjd.Margin = new Padding(1, 0, 0, 0);
+            label_Chimshöjd.Name = "label_Chimshöjd";
+            tlp_Main.SetRowSpan(label_Chimshöjd, 3);
+            label_Chimshöjd.Size = new Size(83, 61);
+            label_Chimshöjd.TabIndex = 996;
+            label_Chimshöjd.Text = "Chimshöjd";
+            label_Chimshöjd.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // tb_Slipmaskin
             // 
-            this.tb_Slipmaskin.BackColor = System.Drawing.Color.White;
-            this.tb_Slipmaskin.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.tb_Slipmaskin.Cursor = System.Windows.Forms.Cursors.IBeam;
-            this.tb_Slipmaskin.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tb_Slipmaskin.Font = new System.Drawing.Font("Courier New", 8.5F);
-            this.tb_Slipmaskin.ForeColor = System.Drawing.Color.DarkSlateGray;
-            this.tb_Slipmaskin.Location = new System.Drawing.Point(38, 152);
-            this.tb_Slipmaskin.Margin = new System.Windows.Forms.Padding(1, 1, 0, 0);
-            this.tb_Slipmaskin.MaxLength = 10;
-            this.tb_Slipmaskin.Multiline = true;
-            this.tb_Slipmaskin.Name = "tb_Slipmaskin";
-            this.tb_Slipmaskin.Size = new System.Drawing.Size(72, 21);
-            this.tb_Slipmaskin.TabIndex = 11;
-            this.tb_Slipmaskin.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.tb_Slipmaskin.WordWrap = false;
-            this.tb_Slipmaskin.KeyDown += new System.Windows.Forms.KeyEventHandler(this.EnterToTab_KeyDown);
+            tb_Slipmaskin.BackColor = Color.White;
+            tb_Slipmaskin.BorderStyle = BorderStyle.None;
+            tb_Slipmaskin.Cursor = Cursors.IBeam;
+            tb_Slipmaskin.Dock = DockStyle.Fill;
+            tb_Slipmaskin.Font = new Font("Courier New", 8.5F);
+            tb_Slipmaskin.ForeColor = Color.DarkSlateGray;
+            tb_Slipmaskin.Location = new Point(44, 175);
+            tb_Slipmaskin.Margin = new Padding(1, 1, 0, 0);
+            tb_Slipmaskin.MaxLength = 10;
+            tb_Slipmaskin.Multiline = true;
+            tb_Slipmaskin.Name = "tb_Slipmaskin";
+            tb_Slipmaskin.Size = new Size(84, 24);
+            tb_Slipmaskin.TabIndex = 11;
+            tb_Slipmaskin.TextAlign = HorizontalAlignment.Center;
+            tb_Slipmaskin.WordWrap = false;
+            tb_Slipmaskin.KeyDown += EnterToTab_KeyDown;
             // 
             // lbl_Chimshöjd_nom
             // 
-            this.lbl_Chimshöjd_nom.AutoSize = true;
-            this.lbl_Chimshöjd_nom.BackColor = System.Drawing.Color.LightGray;
-            this.lbl_Chimshöjd_nom.Cursor = System.Windows.Forms.Cursors.Arrow;
-            this.lbl_Chimshöjd_nom.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lbl_Chimshöjd_nom.Font = new System.Drawing.Font("Consolas", 8.75F);
-            this.lbl_Chimshöjd_nom.ForeColor = System.Drawing.Color.ForestGreen;
-            this.lbl_Chimshöjd_nom.Location = new System.Drawing.Point(485, 112);
-            this.lbl_Chimshöjd_nom.Margin = new System.Windows.Forms.Padding(1, 1, 0, 1);
-            this.lbl_Chimshöjd_nom.Name = "lbl_Chimshöjd_nom";
-            this.lbl_Chimshöjd_nom.Size = new System.Drawing.Size(71, 18);
-            this.lbl_Chimshöjd_nom.TabIndex = 990;
-            this.lbl_Chimshöjd_nom.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            lbl_Chimshöjd_nom.AutoSize = true;
+            lbl_Chimshöjd_nom.BackColor = Color.LightGray;
+            lbl_Chimshöjd_nom.Dock = DockStyle.Fill;
+            lbl_Chimshöjd_nom.Font = new Font("Consolas", 8.75F);
+            lbl_Chimshöjd_nom.ForeColor = Color.ForestGreen;
+            lbl_Chimshöjd_nom.Location = new Point(566, 129);
+            lbl_Chimshöjd_nom.Margin = new Padding(1, 1, 0, 1);
+            lbl_Chimshöjd_nom.Name = "lbl_Chimshöjd_nom";
+            lbl_Chimshöjd_nom.Size = new Size(83, 21);
+            lbl_Chimshöjd_nom.TabIndex = 990;
+            lbl_Chimshöjd_nom.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // label_Empty_3
             // 
-            this.label_Empty_3.BackColor = System.Drawing.Color.DarkGray;
-            this.tlp_Main.SetColumnSpan(this.label_Empty_3, 3);
-            this.label_Empty_3.Cursor = System.Windows.Forms.Cursors.SizeAll;
-            this.label_Empty_3.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label_Empty_3.ForeColor = System.Drawing.Color.ForestGreen;
-            this.label_Empty_3.Location = new System.Drawing.Point(425, 91);
-            this.label_Empty_3.Margin = new System.Windows.Forms.Padding(1, 0, 0, 0);
-            this.label_Empty_3.Name = "label_Empty_3";
-            this.label_Empty_3.Size = new System.Drawing.Size(206, 20);
-            this.label_Empty_3.TabIndex = 1007;
-            this.label_Empty_3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            label_Empty_3.BackColor = Color.DarkGray;
+            tlp_Main.SetColumnSpan(label_Empty_3, 3);
+            label_Empty_3.Cursor = Cursors.SizeAll;
+            label_Empty_3.Font = new Font("Consolas", 8.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label_Empty_3.ForeColor = Color.ForestGreen;
+            label_Empty_3.Location = new Point(496, 105);
+            label_Empty_3.Margin = new Padding(1, 0, 0, 0);
+            label_Empty_3.Name = "label_Empty_3";
+            label_Empty_3.Size = new Size(240, 23);
+            label_Empty_3.TabIndex = 1007;
+            label_Empty_3.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // lbl_Arbetsblad_nom
             // 
-            this.lbl_Arbetsblad_nom.AutoSize = true;
-            this.lbl_Arbetsblad_nom.BackColor = System.Drawing.Color.LightGray;
-            this.lbl_Arbetsblad_nom.Cursor = System.Windows.Forms.Cursors.Arrow;
-            this.lbl_Arbetsblad_nom.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lbl_Arbetsblad_nom.Font = new System.Drawing.Font("Consolas", 8.75F);
-            this.lbl_Arbetsblad_nom.ForeColor = System.Drawing.Color.ForestGreen;
-            this.lbl_Arbetsblad_nom.Location = new System.Drawing.Point(355, 111);
-            this.lbl_Arbetsblad_nom.Margin = new System.Windows.Forms.Padding(1, 0, 0, 1);
-            this.lbl_Arbetsblad_nom.Name = "lbl_Arbetsblad_nom";
-            this.lbl_Arbetsblad_nom.Size = new System.Drawing.Size(69, 19);
-            this.lbl_Arbetsblad_nom.TabIndex = 988;
-            this.lbl_Arbetsblad_nom.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            lbl_Arbetsblad_nom.AutoSize = true;
+            lbl_Arbetsblad_nom.BackColor = Color.LightGray;
+            lbl_Arbetsblad_nom.Dock = DockStyle.Fill;
+            lbl_Arbetsblad_nom.Font = new Font("Consolas", 8.75F);
+            lbl_Arbetsblad_nom.ForeColor = Color.ForestGreen;
+            lbl_Arbetsblad_nom.Location = new Point(414, 128);
+            lbl_Arbetsblad_nom.Margin = new Padding(1, 0, 0, 1);
+            lbl_Arbetsblad_nom.Name = "lbl_Arbetsblad_nom";
+            lbl_Arbetsblad_nom.Size = new Size(81, 22);
+            lbl_Arbetsblad_nom.TabIndex = 988;
+            lbl_Arbetsblad_nom.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // lbl_Bladhöjd_nom
             // 
-            this.lbl_Bladhöjd_nom.AutoSize = true;
-            this.lbl_Bladhöjd_nom.BackColor = System.Drawing.Color.LightGray;
-            this.lbl_Bladhöjd_nom.Cursor = System.Windows.Forms.Cursors.Arrow;
-            this.lbl_Bladhöjd_nom.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lbl_Bladhöjd_nom.Font = new System.Drawing.Font("Consolas", 8.75F);
-            this.lbl_Bladhöjd_nom.ForeColor = System.Drawing.Color.ForestGreen;
-            this.lbl_Bladhöjd_nom.Location = new System.Drawing.Point(291, 111);
-            this.lbl_Bladhöjd_nom.Margin = new System.Windows.Forms.Padding(1, 0, 0, 1);
-            this.lbl_Bladhöjd_nom.Name = "lbl_Bladhöjd_nom";
-            this.lbl_Bladhöjd_nom.Size = new System.Drawing.Size(63, 19);
-            this.lbl_Bladhöjd_nom.TabIndex = 987;
-            this.lbl_Bladhöjd_nom.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            lbl_Bladhöjd_nom.AutoSize = true;
+            lbl_Bladhöjd_nom.BackColor = Color.LightGray;
+            lbl_Bladhöjd_nom.Dock = DockStyle.Fill;
+            lbl_Bladhöjd_nom.Font = new Font("Consolas", 8.75F);
+            lbl_Bladhöjd_nom.ForeColor = Color.ForestGreen;
+            lbl_Bladhöjd_nom.Location = new Point(339, 128);
+            lbl_Bladhöjd_nom.Margin = new Padding(1, 0, 0, 1);
+            lbl_Bladhöjd_nom.Name = "lbl_Bladhöjd_nom";
+            lbl_Bladhöjd_nom.Size = new Size(74, 22);
+            lbl_Bladhöjd_nom.TabIndex = 987;
+            lbl_Bladhöjd_nom.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // lbl_Helix_Vinkel_nom
             // 
-            this.lbl_Helix_Vinkel_nom.AutoSize = true;
-            this.lbl_Helix_Vinkel_nom.BackColor = System.Drawing.Color.LightGray;
-            this.lbl_Helix_Vinkel_nom.Cursor = System.Windows.Forms.Cursors.Arrow;
-            this.lbl_Helix_Vinkel_nom.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lbl_Helix_Vinkel_nom.Font = new System.Drawing.Font("Consolas", 8.75F);
-            this.lbl_Helix_Vinkel_nom.ForeColor = System.Drawing.Color.ForestGreen;
-            this.lbl_Helix_Vinkel_nom.Location = new System.Drawing.Point(233, 111);
-            this.lbl_Helix_Vinkel_nom.Margin = new System.Windows.Forms.Padding(1, 0, 0, 1);
-            this.lbl_Helix_Vinkel_nom.Name = "lbl_Helix_Vinkel_nom";
-            this.lbl_Helix_Vinkel_nom.Size = new System.Drawing.Size(57, 19);
-            this.lbl_Helix_Vinkel_nom.TabIndex = 986;
-            this.lbl_Helix_Vinkel_nom.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            lbl_Helix_Vinkel_nom.AutoSize = true;
+            lbl_Helix_Vinkel_nom.BackColor = Color.LightGray;
+            lbl_Helix_Vinkel_nom.Dock = DockStyle.Fill;
+            lbl_Helix_Vinkel_nom.Font = new Font("Consolas", 8.75F);
+            lbl_Helix_Vinkel_nom.ForeColor = Color.ForestGreen;
+            lbl_Helix_Vinkel_nom.Location = new Point(271, 128);
+            lbl_Helix_Vinkel_nom.Margin = new Padding(1, 0, 0, 1);
+            lbl_Helix_Vinkel_nom.Name = "lbl_Helix_Vinkel_nom";
+            lbl_Helix_Vinkel_nom.Size = new Size(67, 22);
+            lbl_Helix_Vinkel_nom.TabIndex = 986;
+            lbl_Helix_Vinkel_nom.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // lbl_Matarhjul_Vinkel_nom
             // 
-            this.lbl_Matarhjul_Vinkel_nom.AutoSize = true;
-            this.lbl_Matarhjul_Vinkel_nom.BackColor = System.Drawing.Color.LightGray;
-            this.lbl_Matarhjul_Vinkel_nom.Cursor = System.Windows.Forms.Cursors.Arrow;
-            this.lbl_Matarhjul_Vinkel_nom.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lbl_Matarhjul_Vinkel_nom.Font = new System.Drawing.Font("Consolas", 8.75F);
-            this.lbl_Matarhjul_Vinkel_nom.ForeColor = System.Drawing.Color.ForestGreen;
-            this.lbl_Matarhjul_Vinkel_nom.Location = new System.Drawing.Point(176, 111);
-            this.lbl_Matarhjul_Vinkel_nom.Margin = new System.Windows.Forms.Padding(1, 0, 0, 1);
-            this.lbl_Matarhjul_Vinkel_nom.Name = "lbl_Matarhjul_Vinkel_nom";
-            this.lbl_Matarhjul_Vinkel_nom.Size = new System.Drawing.Size(56, 19);
-            this.lbl_Matarhjul_Vinkel_nom.TabIndex = 985;
-            this.lbl_Matarhjul_Vinkel_nom.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            lbl_Matarhjul_Vinkel_nom.AutoSize = true;
+            lbl_Matarhjul_Vinkel_nom.BackColor = Color.LightGray;
+            lbl_Matarhjul_Vinkel_nom.Dock = DockStyle.Fill;
+            lbl_Matarhjul_Vinkel_nom.Font = new Font("Consolas", 8.75F);
+            lbl_Matarhjul_Vinkel_nom.ForeColor = Color.ForestGreen;
+            lbl_Matarhjul_Vinkel_nom.Location = new Point(205, 128);
+            lbl_Matarhjul_Vinkel_nom.Margin = new Padding(1, 0, 0, 1);
+            lbl_Matarhjul_Vinkel_nom.Name = "lbl_Matarhjul_Vinkel_nom";
+            lbl_Matarhjul_Vinkel_nom.Size = new Size(65, 22);
+            lbl_Matarhjul_Vinkel_nom.TabIndex = 985;
+            lbl_Matarhjul_Vinkel_nom.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // lbl_Matarhjul_Hastighet_nom
             // 
-            this.lbl_Matarhjul_Hastighet_nom.AutoSize = true;
-            this.lbl_Matarhjul_Hastighet_nom.BackColor = System.Drawing.Color.LightGray;
-            this.lbl_Matarhjul_Hastighet_nom.Cursor = System.Windows.Forms.Cursors.Arrow;
-            this.lbl_Matarhjul_Hastighet_nom.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lbl_Matarhjul_Hastighet_nom.Font = new System.Drawing.Font("Consolas", 8.75F);
-            this.lbl_Matarhjul_Hastighet_nom.ForeColor = System.Drawing.Color.ForestGreen;
-            this.lbl_Matarhjul_Hastighet_nom.Location = new System.Drawing.Point(111, 111);
-            this.lbl_Matarhjul_Hastighet_nom.Margin = new System.Windows.Forms.Padding(1, 0, 0, 1);
-            this.lbl_Matarhjul_Hastighet_nom.Name = "lbl_Matarhjul_Hastighet_nom";
-            this.lbl_Matarhjul_Hastighet_nom.Size = new System.Drawing.Size(64, 19);
-            this.lbl_Matarhjul_Hastighet_nom.TabIndex = 984;
-            this.lbl_Matarhjul_Hastighet_nom.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            lbl_Matarhjul_Hastighet_nom.AutoSize = true;
+            lbl_Matarhjul_Hastighet_nom.BackColor = Color.LightGray;
+            lbl_Matarhjul_Hastighet_nom.Dock = DockStyle.Fill;
+            lbl_Matarhjul_Hastighet_nom.Font = new Font("Consolas", 8.75F);
+            lbl_Matarhjul_Hastighet_nom.ForeColor = Color.ForestGreen;
+            lbl_Matarhjul_Hastighet_nom.Location = new Point(129, 128);
+            lbl_Matarhjul_Hastighet_nom.Margin = new Padding(1, 0, 0, 1);
+            lbl_Matarhjul_Hastighet_nom.Name = "lbl_Matarhjul_Hastighet_nom";
+            lbl_Matarhjul_Hastighet_nom.Size = new Size(75, 22);
+            lbl_Matarhjul_Hastighet_nom.TabIndex = 984;
+            lbl_Matarhjul_Hastighet_nom.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // label_Empty_2
             // 
-            this.label_Empty_2.AutoSize = true;
-            this.label_Empty_2.BackColor = System.Drawing.Color.DarkGray;
-            this.label_Empty_2.Cursor = System.Windows.Forms.Cursors.SizeAll;
-            this.label_Empty_2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label_Empty_2.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label_Empty_2.ForeColor = System.Drawing.Color.ForestGreen;
-            this.label_Empty_2.Location = new System.Drawing.Point(38, 91);
-            this.label_Empty_2.Margin = new System.Windows.Forms.Padding(1, 0, 0, 1);
-            this.label_Empty_2.Name = "label_Empty_2";
-            this.tlp_Main.SetRowSpan(this.label_Empty_2, 3);
-            this.label_Empty_2.Size = new System.Drawing.Size(72, 59);
-            this.label_Empty_2.TabIndex = 983;
-            this.label_Empty_2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            label_Empty_2.AutoSize = true;
+            label_Empty_2.BackColor = Color.DarkGray;
+            label_Empty_2.Cursor = Cursors.SizeAll;
+            label_Empty_2.Dock = DockStyle.Fill;
+            label_Empty_2.Font = new Font("Consolas", 8.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label_Empty_2.ForeColor = Color.ForestGreen;
+            label_Empty_2.Location = new Point(44, 105);
+            label_Empty_2.Margin = new Padding(1, 0, 0, 1);
+            label_Empty_2.Name = "label_Empty_2";
+            tlp_Main.SetRowSpan(label_Empty_2, 3);
+            label_Empty_2.Size = new Size(84, 68);
+            label_Empty_2.TabIndex = 983;
+            label_Empty_2.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // label_MAX
             // 
-            this.label_MAX.BackColor = System.Drawing.Color.Silver;
-            this.label_MAX.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label_MAX.Font = new System.Drawing.Font("Palatino Linotype", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label_MAX.ForeColor = System.Drawing.Color.DodgerBlue;
-            this.label_MAX.Location = new System.Drawing.Point(0, 131);
-            this.label_MAX.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
-            this.label_MAX.Name = "label_MAX";
-            this.label_MAX.Size = new System.Drawing.Size(37, 19);
-            this.label_MAX.TabIndex = 838;
-            this.label_MAX.Text = "MAX";
-            this.label_MAX.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            label_MAX.BackColor = Color.Silver;
+            label_MAX.Dock = DockStyle.Fill;
+            label_MAX.Font = new Font("Palatino Linotype", 8.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label_MAX.ForeColor = Color.DodgerBlue;
+            label_MAX.Location = new Point(0, 151);
+            label_MAX.Margin = new Padding(0, 0, 0, 1);
+            label_MAX.Name = "label_MAX";
+            label_MAX.Size = new Size(43, 22);
+            label_MAX.TabIndex = 838;
+            label_MAX.Text = "MAX";
+            label_MAX.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // label_NOM
             // 
-            this.label_NOM.BackColor = System.Drawing.Color.Silver;
-            this.label_NOM.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label_NOM.Font = new System.Drawing.Font("Palatino Linotype", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label_NOM.ForeColor = System.Drawing.Color.ForestGreen;
-            this.label_NOM.Location = new System.Drawing.Point(0, 111);
-            this.label_NOM.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
-            this.label_NOM.Name = "label_NOM";
-            this.label_NOM.Size = new System.Drawing.Size(37, 19);
-            this.label_NOM.TabIndex = 824;
-            this.label_NOM.Text = "NOM";
-            this.label_NOM.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            label_NOM.BackColor = Color.Silver;
+            label_NOM.Dock = DockStyle.Fill;
+            label_NOM.Font = new Font("Palatino Linotype", 8.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label_NOM.ForeColor = Color.ForestGreen;
+            label_NOM.Location = new Point(0, 128);
+            label_NOM.Margin = new Padding(0, 0, 0, 1);
+            label_NOM.Name = "label_NOM";
+            label_NOM.Size = new Size(43, 22);
+            label_NOM.TabIndex = 824;
+            label_NOM.Text = "NOM";
+            label_NOM.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // label_MIN
             // 
-            this.label_MIN.BackColor = System.Drawing.Color.Silver;
-            this.label_MIN.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label_MIN.Font = new System.Drawing.Font("Palatino Linotype", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label_MIN.ForeColor = System.Drawing.Color.DodgerBlue;
-            this.label_MIN.Location = new System.Drawing.Point(0, 91);
-            this.label_MIN.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
-            this.label_MIN.Name = "label_MIN";
-            this.label_MIN.Size = new System.Drawing.Size(37, 19);
-            this.label_MIN.TabIndex = 819;
-            this.label_MIN.Text = "MIN";
-            this.label_MIN.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            label_MIN.BackColor = Color.Silver;
+            label_MIN.Dock = DockStyle.Fill;
+            label_MIN.Font = new Font("Palatino Linotype", 8.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label_MIN.ForeColor = Color.DodgerBlue;
+            label_MIN.Location = new Point(0, 105);
+            label_MIN.Margin = new Padding(0, 0, 0, 1);
+            label_MIN.Name = "label_MIN";
+            label_MIN.Size = new Size(43, 22);
+            label_MIN.TabIndex = 819;
+            label_MIN.Text = "MIN";
+            label_MIN.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // label_Empty_9
             // 
-            this.label_Empty_9.BackColor = System.Drawing.Color.White;
-            this.label_Empty_9.Cursor = System.Windows.Forms.Cursors.Arrow;
-            this.label_Empty_9.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label_Empty_9.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label_Empty_9.ForeColor = System.Drawing.Color.Black;
-            this.label_Empty_9.Location = new System.Drawing.Point(355, 77);
-            this.label_Empty_9.Margin = new System.Windows.Forms.Padding(1, 0, 0, 1);
-            this.label_Empty_9.Name = "label_Empty_9";
-            this.label_Empty_9.Size = new System.Drawing.Size(69, 13);
-            this.label_Empty_9.TabIndex = 818;
-            this.label_Empty_9.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            label_Empty_9.BackColor = Color.White;
+            label_Empty_9.Dock = DockStyle.Fill;
+            label_Empty_9.Font = new Font("Arial", 8.25F, FontStyle.Italic, GraphicsUnit.Point, 0);
+            label_Empty_9.ForeColor = Color.Black;
+            label_Empty_9.Location = new Point(414, 89);
+            label_Empty_9.Margin = new Padding(1, 0, 0, 1);
+            label_Empty_9.Name = "label_Empty_9";
+            label_Empty_9.Size = new Size(81, 15);
+            label_Empty_9.TabIndex = 818;
+            label_Empty_9.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // dgv_MaskinParametrar
             // 
-            this.dgv_MaskinParametrar.AllowUserToAddRows = false;
-            this.dgv_MaskinParametrar.AllowUserToDeleteRows = false;
-            this.dgv_MaskinParametrar.AllowUserToResizeColumns = false;
-            this.dgv_MaskinParametrar.AllowUserToResizeRows = false;
-            dataGridViewCellStyle18.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle18.ForeColor = System.Drawing.Color.DarkSlateGray;
-            dataGridViewCellStyle18.SelectionBackColor = System.Drawing.Color.DodgerBlue;
-            dataGridViewCellStyle18.SelectionForeColor = System.Drawing.Color.White;
-            this.dgv_MaskinParametrar.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle18;
-            this.dgv_MaskinParametrar.BackgroundColor = System.Drawing.Color.White;
-            this.dgv_MaskinParametrar.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            dataGridViewCellStyle19.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle19.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle19.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle19.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle19.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle19.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle19.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgv_MaskinParametrar.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle19;
-            this.dgv_MaskinParametrar.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgv_MaskinParametrar.ColumnHeadersVisible = false;
-            this.dgv_MaskinParametrar.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.dataGridViewTextBoxColumn1,
-            this.dataGridViewTextBoxColumn2,
-            this.dgv_Maskinparametrar_MatarhjulVinkel,
-            this.dataGridViewTextBoxColumn4,
-            this.dgv_Maskinparametrar_Bladhöjd,
-            this.dgv_Maskinparametrar_Arbetsblad,
-            this.dataGridViewTextBoxColumn7,
-            this.dataGridViewTextBoxColumn8,
-            this.dataGridViewTextBoxColumn9,
-            this.dataGridViewTextBoxColumn14,
-            this.dataGridViewTextBoxColumn15,
-            this.dataGridViewTextBoxColumn16,
-            this.dataGridViewTextBoxColumn17});
-            this.tlp_Main.SetColumnSpan(this.dgv_MaskinParametrar, 13);
-            this.dgv_MaskinParametrar.Cursor = System.Windows.Forms.Cursors.Arrow;
-            dataGridViewCellStyle33.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle33.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle33.Font = new System.Drawing.Font("Consolas", 7.5F);
-            dataGridViewCellStyle33.ForeColor = System.Drawing.Color.DarkSlateGray;
-            dataGridViewCellStyle33.SelectionBackColor = System.Drawing.SystemColors.MenuHighlight;
-            dataGridViewCellStyle33.SelectionForeColor = System.Drawing.Color.White;
-            dataGridViewCellStyle33.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgv_MaskinParametrar.DefaultCellStyle = dataGridViewCellStyle33;
-            this.dgv_MaskinParametrar.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgv_MaskinParametrar.Location = new System.Drawing.Point(38, 174);
-            this.dgv_MaskinParametrar.Margin = new System.Windows.Forms.Padding(1, 1, 0, 0);
-            this.dgv_MaskinParametrar.MultiSelect = false;
-            this.dgv_MaskinParametrar.Name = "dgv_MaskinParametrar";
-            this.dgv_MaskinParametrar.ReadOnly = true;
-            dataGridViewCellStyle34.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle34.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle34.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle34.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle34.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle34.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle34.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgv_MaskinParametrar.RowHeadersDefaultCellStyle = dataGridViewCellStyle34;
-            this.dgv_MaskinParametrar.RowHeadersVisible = false;
-            this.tlp_Main.SetRowSpan(this.dgv_MaskinParametrar, 2);
-            this.dgv_MaskinParametrar.RowTemplate.Height = 18;
-            this.dgv_MaskinParametrar.ScrollBars = System.Windows.Forms.ScrollBars.None;
-            this.dgv_MaskinParametrar.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgv_MaskinParametrar.Size = new System.Drawing.Size(855, 155);
-            this.dgv_MaskinParametrar.TabIndex = 845;
-            // 
-            // dataGridViewTextBoxColumn1
-            // 
-            dataGridViewCellStyle20.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle20.Font = new System.Drawing.Font("Courier New", 8.5F, System.Drawing.FontStyle.Italic);
-            dataGridViewCellStyle20.ForeColor = System.Drawing.Color.Gray;
-            this.dataGridViewTextBoxColumn1.DefaultCellStyle = dataGridViewCellStyle20;
-            this.dataGridViewTextBoxColumn1.HeaderText = "Slipmaskin";
-            this.dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
-            this.dataGridViewTextBoxColumn1.ReadOnly = true;
-            this.dataGridViewTextBoxColumn1.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridViewTextBoxColumn1.Width = 72;
-            // 
-            // dataGridViewTextBoxColumn2
-            // 
-            dataGridViewCellStyle21.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle21.Font = new System.Drawing.Font("Courier New", 8.5F, System.Drawing.FontStyle.Italic);
-            dataGridViewCellStyle21.ForeColor = System.Drawing.Color.Gray;
-            this.dataGridViewTextBoxColumn2.DefaultCellStyle = dataGridViewCellStyle21;
-            this.dataGridViewTextBoxColumn2.HeaderText = "Matarhjul Hastighet";
-            this.dataGridViewTextBoxColumn2.Name = "dataGridViewTextBoxColumn2";
-            this.dataGridViewTextBoxColumn2.ReadOnly = true;
-            this.dataGridViewTextBoxColumn2.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridViewTextBoxColumn2.Width = 65;
-            // 
-            // dgv_Maskinparametrar_MatarhjulVinkel
-            // 
-            dataGridViewCellStyle22.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle22.Font = new System.Drawing.Font("Courier New", 8.5F, System.Drawing.FontStyle.Italic);
-            dataGridViewCellStyle22.ForeColor = System.Drawing.Color.Gray;
-            this.dgv_Maskinparametrar_MatarhjulVinkel.DefaultCellStyle = dataGridViewCellStyle22;
-            this.dgv_Maskinparametrar_MatarhjulVinkel.HeaderText = "Matarhjul Vinkel";
-            this.dgv_Maskinparametrar_MatarhjulVinkel.Name = "dgv_Maskinparametrar_MatarhjulVinkel";
-            this.dgv_Maskinparametrar_MatarhjulVinkel.ReadOnly = true;
-            this.dgv_Maskinparametrar_MatarhjulVinkel.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgv_Maskinparametrar_MatarhjulVinkel.Width = 57;
-            // 
-            // dataGridViewTextBoxColumn4
-            // 
-            dataGridViewCellStyle23.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle23.Font = new System.Drawing.Font("Courier New", 8.5F, System.Drawing.FontStyle.Italic);
-            dataGridViewCellStyle23.ForeColor = System.Drawing.Color.Gray;
-            this.dataGridViewTextBoxColumn4.DefaultCellStyle = dataGridViewCellStyle23;
-            this.dataGridViewTextBoxColumn4.HeaderText = "Helix Vinkel";
-            this.dataGridViewTextBoxColumn4.Name = "dataGridViewTextBoxColumn4";
-            this.dataGridViewTextBoxColumn4.ReadOnly = true;
-            this.dataGridViewTextBoxColumn4.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridViewTextBoxColumn4.Width = 58;
-            // 
-            // dgv_Maskinparametrar_Bladhöjd
-            // 
-            dataGridViewCellStyle24.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle24.Font = new System.Drawing.Font("Courier New", 8.5F, System.Drawing.FontStyle.Italic);
-            dataGridViewCellStyle24.ForeColor = System.Drawing.Color.Gray;
-            this.dgv_Maskinparametrar_Bladhöjd.DefaultCellStyle = dataGridViewCellStyle24;
-            this.dgv_Maskinparametrar_Bladhöjd.HeaderText = "Bladhöjd";
-            this.dgv_Maskinparametrar_Bladhöjd.Name = "dgv_Maskinparametrar_Bladhöjd";
-            this.dgv_Maskinparametrar_Bladhöjd.ReadOnly = true;
-            this.dgv_Maskinparametrar_Bladhöjd.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgv_Maskinparametrar_Bladhöjd.Width = 64;
-            // 
-            // dgv_Maskinparametrar_Arbetsblad
-            // 
-            dataGridViewCellStyle25.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle25.Font = new System.Drawing.Font("Courier New", 8.5F, System.Drawing.FontStyle.Italic);
-            dataGridViewCellStyle25.ForeColor = System.Drawing.Color.Gray;
-            this.dgv_Maskinparametrar_Arbetsblad.DefaultCellStyle = dataGridViewCellStyle25;
-            this.dgv_Maskinparametrar_Arbetsblad.HeaderText = "Arbetsblad";
-            this.dgv_Maskinparametrar_Arbetsblad.Name = "dgv_Maskinparametrar_Arbetsblad";
-            this.dgv_Maskinparametrar_Arbetsblad.ReadOnly = true;
-            this.dgv_Maskinparametrar_Arbetsblad.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgv_Maskinparametrar_Arbetsblad.Width = 70;
-            // 
-            // dataGridViewTextBoxColumn7
-            // 
-            dataGridViewCellStyle26.Font = new System.Drawing.Font("Courier New", 8.5F, System.Drawing.FontStyle.Italic);
-            dataGridViewCellStyle26.ForeColor = System.Drawing.Color.Gray;
-            this.dataGridViewTextBoxColumn7.DefaultCellStyle = dataGridViewCellStyle26;
-            this.dataGridViewTextBoxColumn7.HeaderText = "Nr";
-            this.dataGridViewTextBoxColumn7.Name = "dataGridViewTextBoxColumn7";
-            this.dataGridViewTextBoxColumn7.ReadOnly = true;
-            this.dataGridViewTextBoxColumn7.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridViewTextBoxColumn7.Width = 60;
-            // 
-            // dataGridViewTextBoxColumn8
-            // 
-            dataGridViewCellStyle27.Font = new System.Drawing.Font("Courier New", 8.5F, System.Drawing.FontStyle.Italic);
-            dataGridViewCellStyle27.ForeColor = System.Drawing.Color.Gray;
-            this.dataGridViewTextBoxColumn8.DefaultCellStyle = dataGridViewCellStyle27;
-            this.dataGridViewTextBoxColumn8.HeaderText = "Chimshöjd";
-            this.dataGridViewTextBoxColumn8.Name = "dataGridViewTextBoxColumn8";
-            this.dataGridViewTextBoxColumn8.ReadOnly = true;
-            this.dataGridViewTextBoxColumn8.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridViewTextBoxColumn8.Width = 72;
-            // 
-            // dataGridViewTextBoxColumn9
-            // 
-            dataGridViewCellStyle28.Font = new System.Drawing.Font("Courier New", 8.5F, System.Drawing.FontStyle.Italic);
-            dataGridViewCellStyle28.ForeColor = System.Drawing.Color.Gray;
-            this.dataGridViewTextBoxColumn9.DefaultCellStyle = dataGridViewCellStyle28;
-            this.dataGridViewTextBoxColumn9.HeaderText = "Centerhöjd";
-            this.dataGridViewTextBoxColumn9.Name = "dataGridViewTextBoxColumn9";
-            this.dataGridViewTextBoxColumn9.ReadOnly = true;
-            this.dataGridViewTextBoxColumn9.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridViewTextBoxColumn9.Width = 75;
-            // 
-            // dataGridViewTextBoxColumn14
-            // 
-            dataGridViewCellStyle29.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle29.Font = new System.Drawing.Font("Courier New", 8.5F, System.Drawing.FontStyle.Italic);
-            dataGridViewCellStyle29.ForeColor = System.Drawing.Color.Gray;
-            this.dataGridViewTextBoxColumn14.DefaultCellStyle = dataGridViewCellStyle29;
-            this.dataGridViewTextBoxColumn14.HeaderText = "Datum";
-            this.dataGridViewTextBoxColumn14.Name = "dataGridViewTextBoxColumn14";
-            this.dataGridViewTextBoxColumn14.ReadOnly = true;
-            this.dataGridViewTextBoxColumn14.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridViewTextBoxColumn14.Width = 80;
-            // 
-            // dataGridViewTextBoxColumn15
-            // 
-            dataGridViewCellStyle30.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle30.Font = new System.Drawing.Font("Courier New", 8.5F, System.Drawing.FontStyle.Italic);
-            dataGridViewCellStyle30.ForeColor = System.Drawing.Color.Gray;
-            this.dataGridViewTextBoxColumn15.DefaultCellStyle = dataGridViewCellStyle30;
-            this.dataGridViewTextBoxColumn15.HeaderText = "Tid";
-            this.dataGridViewTextBoxColumn15.Name = "dataGridViewTextBoxColumn15";
-            this.dataGridViewTextBoxColumn15.ReadOnly = true;
-            this.dataGridViewTextBoxColumn15.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridViewTextBoxColumn15.Width = 48;
-            // 
-            // dataGridViewTextBoxColumn16
-            // 
-            dataGridViewCellStyle31.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle31.Font = new System.Drawing.Font("Courier New", 8.5F, System.Drawing.FontStyle.Italic);
-            dataGridViewCellStyle31.ForeColor = System.Drawing.Color.Gray;
-            this.dataGridViewTextBoxColumn16.DefaultCellStyle = dataGridViewCellStyle31;
-            this.dataGridViewTextBoxColumn16.HeaderText = "AnstNr";
-            this.dataGridViewTextBoxColumn16.Name = "dataGridViewTextBoxColumn16";
-            this.dataGridViewTextBoxColumn16.ReadOnly = true;
-            this.dataGridViewTextBoxColumn16.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridViewTextBoxColumn16.Width = 40;
-            // 
-            // dataGridViewTextBoxColumn17
-            // 
-            dataGridViewCellStyle32.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle32.Font = new System.Drawing.Font("Courier New", 8.5F, System.Drawing.FontStyle.Italic);
-            dataGridViewCellStyle32.ForeColor = System.Drawing.Color.Gray;
-            this.dataGridViewTextBoxColumn17.DefaultCellStyle = dataGridViewCellStyle32;
-            this.dataGridViewTextBoxColumn17.HeaderText = "Sign";
-            this.dataGridViewTextBoxColumn17.Name = "dataGridViewTextBoxColumn17";
-            this.dataGridViewTextBoxColumn17.ReadOnly = true;
-            this.dataGridViewTextBoxColumn17.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridViewTextBoxColumn17.Width = 55;
+            dgv_MaskinParametrar.AllowUserToAddRows = false;
+            dgv_MaskinParametrar.AllowUserToDeleteRows = false;
+            dgv_MaskinParametrar.AllowUserToResizeColumns = false;
+            dgv_MaskinParametrar.AllowUserToResizeRows = false;
+            dataGridViewCellStyle1.Font = new Font("Courier New", 8.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle1.ForeColor = Color.DarkSlateGray;
+            dataGridViewCellStyle1.SelectionBackColor = Color.DodgerBlue;
+            dataGridViewCellStyle1.SelectionForeColor = Color.White;
+            dgv_MaskinParametrar.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            dgv_MaskinParametrar.BackgroundColor = Color.White;
+            dgv_MaskinParametrar.BorderStyle = BorderStyle.None;
+            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = SystemColors.Control;
+            dataGridViewCellStyle2.Font = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle2.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle2.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.True;
+            dgv_MaskinParametrar.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
+            dgv_MaskinParametrar.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgv_MaskinParametrar.ColumnHeadersVisible = false;
+            dgv_MaskinParametrar.Columns.AddRange(new DataGridViewColumn[] { dataGridViewTextBoxColumn1, dataGridViewTextBoxColumn2, dgv_Maskinparametrar_MatarhjulVinkel, dataGridViewTextBoxColumn4, dgv_Maskinparametrar_Bladhöjd, dgv_Maskinparametrar_Arbetsblad, dataGridViewTextBoxColumn7, dataGridViewTextBoxColumn8, dataGridViewTextBoxColumn9, dataGridViewTextBoxColumn14, dataGridViewTextBoxColumn15, dataGridViewTextBoxColumn16, dataGridViewTextBoxColumn17 });
+            tlp_Main.SetColumnSpan(dgv_MaskinParametrar, 13);
+            dataGridViewCellStyle16.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle16.BackColor = SystemColors.Window;
+            dataGridViewCellStyle16.Font = new Font("Consolas", 7.5F);
+            dataGridViewCellStyle16.ForeColor = Color.DarkSlateGray;
+            dataGridViewCellStyle16.SelectionBackColor = SystemColors.MenuHighlight;
+            dataGridViewCellStyle16.SelectionForeColor = Color.White;
+            dataGridViewCellStyle16.WrapMode = DataGridViewTriState.False;
+            dgv_MaskinParametrar.DefaultCellStyle = dataGridViewCellStyle16;
+            dgv_MaskinParametrar.Dock = DockStyle.Fill;
+            dgv_MaskinParametrar.Location = new Point(44, 200);
+            dgv_MaskinParametrar.Margin = new Padding(1, 1, 0, 0);
+            dgv_MaskinParametrar.MultiSelect = false;
+            dgv_MaskinParametrar.Name = "dgv_MaskinParametrar";
+            dgv_MaskinParametrar.ReadOnly = true;
+            dataGridViewCellStyle17.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle17.BackColor = SystemColors.Control;
+            dataGridViewCellStyle17.Font = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle17.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle17.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle17.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle17.WrapMode = DataGridViewTriState.True;
+            dgv_MaskinParametrar.RowHeadersDefaultCellStyle = dataGridViewCellStyle17;
+            dgv_MaskinParametrar.RowHeadersVisible = false;
+            tlp_Main.SetRowSpan(dgv_MaskinParametrar, 2);
+            dgv_MaskinParametrar.RowTemplate.Height = 18;
+            dgv_MaskinParametrar.ScrollBars = ScrollBars.None;
+            dgv_MaskinParametrar.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgv_MaskinParametrar.Size = new Size(999, 180);
+            dgv_MaskinParametrar.TabIndex = 845;
             // 
             // label_Bladhöjd_enhet
             // 
-            this.label_Bladhöjd_enhet.BackColor = System.Drawing.Color.White;
-            this.label_Bladhöjd_enhet.Cursor = System.Windows.Forms.Cursors.Arrow;
-            this.label_Bladhöjd_enhet.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label_Bladhöjd_enhet.Font = new System.Drawing.Font("Arial", 8.5F, System.Drawing.FontStyle.Italic);
-            this.label_Bladhöjd_enhet.ForeColor = System.Drawing.Color.Black;
-            this.label_Bladhöjd_enhet.Location = new System.Drawing.Point(291, 77);
-            this.label_Bladhöjd_enhet.Margin = new System.Windows.Forms.Padding(1, 0, 0, 1);
-            this.label_Bladhöjd_enhet.Name = "label_Bladhöjd_enhet";
-            this.label_Bladhöjd_enhet.Padding = new System.Windows.Forms.Padding(8, 0, 8, 0);
-            this.label_Bladhöjd_enhet.Size = new System.Drawing.Size(63, 13);
-            this.label_Bladhöjd_enhet.TabIndex = 817;
-            this.label_Bladhöjd_enhet.Text = "mm";
-            this.label_Bladhöjd_enhet.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            label_Bladhöjd_enhet.BackColor = Color.White;
+            label_Bladhöjd_enhet.Dock = DockStyle.Fill;
+            label_Bladhöjd_enhet.Font = new Font("Arial", 8.5F, FontStyle.Italic);
+            label_Bladhöjd_enhet.ForeColor = Color.Black;
+            label_Bladhöjd_enhet.Location = new Point(339, 89);
+            label_Bladhöjd_enhet.Margin = new Padding(1, 0, 0, 1);
+            label_Bladhöjd_enhet.Name = "label_Bladhöjd_enhet";
+            label_Bladhöjd_enhet.Padding = new Padding(9, 0, 9, 0);
+            label_Bladhöjd_enhet.Size = new Size(74, 15);
+            label_Bladhöjd_enhet.TabIndex = 817;
+            label_Bladhöjd_enhet.Text = "mm";
+            label_Bladhöjd_enhet.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // label_Helix_Vikel_enhet
             // 
-            this.label_Helix_Vikel_enhet.BackColor = System.Drawing.Color.White;
-            this.label_Helix_Vikel_enhet.Cursor = System.Windows.Forms.Cursors.Arrow;
-            this.label_Helix_Vikel_enhet.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label_Helix_Vikel_enhet.Font = new System.Drawing.Font("Arial", 8.5F, System.Drawing.FontStyle.Italic);
-            this.label_Helix_Vikel_enhet.ForeColor = System.Drawing.Color.Black;
-            this.label_Helix_Vikel_enhet.Location = new System.Drawing.Point(233, 77);
-            this.label_Helix_Vikel_enhet.Margin = new System.Windows.Forms.Padding(1, 0, 0, 1);
-            this.label_Helix_Vikel_enhet.Name = "label_Helix_Vikel_enhet";
-            this.label_Helix_Vikel_enhet.Padding = new System.Windows.Forms.Padding(8, 0, 8, 0);
-            this.label_Helix_Vikel_enhet.Size = new System.Drawing.Size(57, 13);
-            this.label_Helix_Vikel_enhet.TabIndex = 816;
-            this.label_Helix_Vikel_enhet.Text = "º";
-            this.label_Helix_Vikel_enhet.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            label_Helix_Vikel_enhet.BackColor = Color.White;
+            label_Helix_Vikel_enhet.Dock = DockStyle.Fill;
+            label_Helix_Vikel_enhet.Font = new Font("Arial", 8.5F, FontStyle.Italic);
+            label_Helix_Vikel_enhet.ForeColor = Color.Black;
+            label_Helix_Vikel_enhet.Location = new Point(271, 89);
+            label_Helix_Vikel_enhet.Margin = new Padding(1, 0, 0, 1);
+            label_Helix_Vikel_enhet.Name = "label_Helix_Vikel_enhet";
+            label_Helix_Vikel_enhet.Padding = new Padding(9, 0, 9, 0);
+            label_Helix_Vikel_enhet.Size = new Size(67, 15);
+            label_Helix_Vikel_enhet.TabIndex = 816;
+            label_Helix_Vikel_enhet.Text = "º";
+            label_Helix_Vikel_enhet.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // label_Matarhjul_Vinkel_enhet
             // 
-            this.label_Matarhjul_Vinkel_enhet.BackColor = System.Drawing.Color.White;
-            this.label_Matarhjul_Vinkel_enhet.Cursor = System.Windows.Forms.Cursors.Arrow;
-            this.label_Matarhjul_Vinkel_enhet.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label_Matarhjul_Vinkel_enhet.Font = new System.Drawing.Font("Arial", 8.5F, System.Drawing.FontStyle.Italic);
-            this.label_Matarhjul_Vinkel_enhet.ForeColor = System.Drawing.Color.Black;
-            this.label_Matarhjul_Vinkel_enhet.Location = new System.Drawing.Point(176, 77);
-            this.label_Matarhjul_Vinkel_enhet.Margin = new System.Windows.Forms.Padding(1, 0, 0, 1);
-            this.label_Matarhjul_Vinkel_enhet.Name = "label_Matarhjul_Vinkel_enhet";
-            this.label_Matarhjul_Vinkel_enhet.Padding = new System.Windows.Forms.Padding(8, 0, 8, 0);
-            this.label_Matarhjul_Vinkel_enhet.Size = new System.Drawing.Size(56, 13);
-            this.label_Matarhjul_Vinkel_enhet.TabIndex = 815;
-            this.label_Matarhjul_Vinkel_enhet.Text = "º";
-            this.label_Matarhjul_Vinkel_enhet.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            label_Matarhjul_Vinkel_enhet.BackColor = Color.White;
+            label_Matarhjul_Vinkel_enhet.Dock = DockStyle.Fill;
+            label_Matarhjul_Vinkel_enhet.Font = new Font("Arial", 8.5F, FontStyle.Italic);
+            label_Matarhjul_Vinkel_enhet.ForeColor = Color.Black;
+            label_Matarhjul_Vinkel_enhet.Location = new Point(205, 89);
+            label_Matarhjul_Vinkel_enhet.Margin = new Padding(1, 0, 0, 1);
+            label_Matarhjul_Vinkel_enhet.Name = "label_Matarhjul_Vinkel_enhet";
+            label_Matarhjul_Vinkel_enhet.Padding = new Padding(9, 0, 9, 0);
+            label_Matarhjul_Vinkel_enhet.Size = new Size(65, 15);
+            label_Matarhjul_Vinkel_enhet.TabIndex = 815;
+            label_Matarhjul_Vinkel_enhet.Text = "º";
+            label_Matarhjul_Vinkel_enhet.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // label_Matarhjul_Hastighet_enhet
             // 
-            this.label_Matarhjul_Hastighet_enhet.BackColor = System.Drawing.Color.White;
-            this.label_Matarhjul_Hastighet_enhet.Cursor = System.Windows.Forms.Cursors.Arrow;
-            this.label_Matarhjul_Hastighet_enhet.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label_Matarhjul_Hastighet_enhet.Font = new System.Drawing.Font("Arial", 8.5F, System.Drawing.FontStyle.Italic);
-            this.label_Matarhjul_Hastighet_enhet.ForeColor = System.Drawing.Color.Black;
-            this.label_Matarhjul_Hastighet_enhet.Location = new System.Drawing.Point(111, 77);
-            this.label_Matarhjul_Hastighet_enhet.Margin = new System.Windows.Forms.Padding(1, 0, 0, 1);
-            this.label_Matarhjul_Hastighet_enhet.Name = "label_Matarhjul_Hastighet_enhet";
-            this.label_Matarhjul_Hastighet_enhet.Padding = new System.Windows.Forms.Padding(8, 0, 8, 0);
-            this.label_Matarhjul_Hastighet_enhet.Size = new System.Drawing.Size(64, 13);
-            this.label_Matarhjul_Hastighet_enhet.TabIndex = 814;
-            this.label_Matarhjul_Hastighet_enhet.Text = "rpm";
-            this.label_Matarhjul_Hastighet_enhet.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            label_Matarhjul_Hastighet_enhet.BackColor = Color.White;
+            label_Matarhjul_Hastighet_enhet.Dock = DockStyle.Fill;
+            label_Matarhjul_Hastighet_enhet.Font = new Font("Arial", 8.5F, FontStyle.Italic);
+            label_Matarhjul_Hastighet_enhet.ForeColor = Color.Black;
+            label_Matarhjul_Hastighet_enhet.Location = new Point(129, 89);
+            label_Matarhjul_Hastighet_enhet.Margin = new Padding(1, 0, 0, 1);
+            label_Matarhjul_Hastighet_enhet.Name = "label_Matarhjul_Hastighet_enhet";
+            label_Matarhjul_Hastighet_enhet.Padding = new Padding(9, 0, 9, 0);
+            label_Matarhjul_Hastighet_enhet.Size = new Size(75, 15);
+            label_Matarhjul_Hastighet_enhet.TabIndex = 814;
+            label_Matarhjul_Hastighet_enhet.Text = "rpm";
+            label_Matarhjul_Hastighet_enhet.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // label_Chimshöjd_enhet
             // 
-            this.label_Chimshöjd_enhet.BackColor = System.Drawing.Color.White;
-            this.label_Chimshöjd_enhet.Cursor = System.Windows.Forms.Cursors.Arrow;
-            this.label_Chimshöjd_enhet.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label_Chimshöjd_enhet.Font = new System.Drawing.Font("Arial", 8.5F, System.Drawing.FontStyle.Italic);
-            this.label_Chimshöjd_enhet.ForeColor = System.Drawing.Color.Black;
-            this.label_Chimshöjd_enhet.Location = new System.Drawing.Point(485, 77);
-            this.label_Chimshöjd_enhet.Margin = new System.Windows.Forms.Padding(1, 0, 0, 1);
-            this.label_Chimshöjd_enhet.Name = "label_Chimshöjd_enhet";
-            this.label_Chimshöjd_enhet.Size = new System.Drawing.Size(71, 13);
-            this.label_Chimshöjd_enhet.TabIndex = 812;
-            this.label_Chimshöjd_enhet.Text = "mm";
-            this.label_Chimshöjd_enhet.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            label_Chimshöjd_enhet.BackColor = Color.White;
+            label_Chimshöjd_enhet.Dock = DockStyle.Fill;
+            label_Chimshöjd_enhet.Font = new Font("Arial", 8.5F, FontStyle.Italic);
+            label_Chimshöjd_enhet.ForeColor = Color.Black;
+            label_Chimshöjd_enhet.Location = new Point(566, 89);
+            label_Chimshöjd_enhet.Margin = new Padding(1, 0, 0, 1);
+            label_Chimshöjd_enhet.Name = "label_Chimshöjd_enhet";
+            label_Chimshöjd_enhet.Size = new Size(83, 15);
+            label_Chimshöjd_enhet.TabIndex = 812;
+            label_Chimshöjd_enhet.Text = "mm";
+            label_Chimshöjd_enhet.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // label_Empty_8
             // 
-            this.label_Empty_8.BackColor = System.Drawing.Color.White;
-            this.label_Empty_8.Cursor = System.Windows.Forms.Cursors.Arrow;
-            this.label_Empty_8.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label_Empty_8.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label_Empty_8.ForeColor = System.Drawing.Color.Black;
-            this.label_Empty_8.Location = new System.Drawing.Point(425, 77);
-            this.label_Empty_8.Margin = new System.Windows.Forms.Padding(1, 0, 0, 1);
-            this.label_Empty_8.Name = "label_Empty_8";
-            this.label_Empty_8.Size = new System.Drawing.Size(59, 13);
-            this.label_Empty_8.TabIndex = 811;
-            this.label_Empty_8.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            label_Empty_8.BackColor = Color.White;
+            label_Empty_8.Dock = DockStyle.Fill;
+            label_Empty_8.Font = new Font("Arial", 8.25F, FontStyle.Italic, GraphicsUnit.Point, 0);
+            label_Empty_8.ForeColor = Color.Black;
+            label_Empty_8.Location = new Point(496, 89);
+            label_Empty_8.Margin = new Padding(1, 0, 0, 1);
+            label_Empty_8.Name = "label_Empty_8";
+            label_Empty_8.Size = new Size(69, 15);
+            label_Empty_8.TabIndex = 811;
+            label_Empty_8.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // label_Värmebackar
             // 
-            this.label_Värmebackar.BackColor = System.Drawing.Color.White;
-            this.label_Värmebackar.Cursor = System.Windows.Forms.Cursors.Arrow;
-            this.label_Värmebackar.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label_Värmebackar.Font = new System.Drawing.Font("Arial", 8.55F);
-            this.label_Värmebackar.ForeColor = System.Drawing.Color.Black;
-            this.label_Värmebackar.Location = new System.Drawing.Point(557, 24);
-            this.label_Värmebackar.Margin = new System.Windows.Forms.Padding(1, 0, 1, 0);
-            this.label_Värmebackar.Name = "label_Värmebackar";
-            this.tlp_Main.SetRowSpan(this.label_Värmebackar, 3);
-            this.label_Värmebackar.Size = new System.Drawing.Size(73, 53);
-            this.label_Värmebackar.TabIndex = 809;
-            this.label_Värmebackar.Text = "Centerhöjd";
-            this.label_Värmebackar.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            label_Värmebackar.BackColor = Color.White;
+            label_Värmebackar.Dock = DockStyle.Fill;
+            label_Värmebackar.Font = new Font("Arial", 8.55F);
+            label_Värmebackar.ForeColor = Color.Black;
+            label_Värmebackar.Location = new Point(650, 28);
+            label_Värmebackar.Margin = new Padding(1, 0, 1, 0);
+            label_Värmebackar.Name = "label_Värmebackar";
+            tlp_Main.SetRowSpan(label_Värmebackar, 3);
+            label_Värmebackar.Size = new Size(86, 61);
+            label_Värmebackar.TabIndex = 809;
+            label_Värmebackar.Text = "Centerhöjd";
+            label_Värmebackar.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // label_Nr
             // 
-            this.label_Nr.BackColor = System.Drawing.Color.White;
-            this.label_Nr.Cursor = System.Windows.Forms.Cursors.Arrow;
-            this.label_Nr.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label_Nr.Font = new System.Drawing.Font("Arial", 8.55F);
-            this.label_Nr.ForeColor = System.Drawing.Color.Black;
-            this.label_Nr.Location = new System.Drawing.Point(425, 24);
-            this.label_Nr.Margin = new System.Windows.Forms.Padding(1, 0, 0, 0);
-            this.label_Nr.Name = "label_Nr";
-            this.tlp_Main.SetRowSpan(this.label_Nr, 3);
-            this.label_Nr.Size = new System.Drawing.Size(59, 53);
-            this.label_Nr.TabIndex = 138;
-            this.label_Nr.Text = "Nr";
-            this.label_Nr.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            label_Nr.BackColor = Color.White;
+            label_Nr.Dock = DockStyle.Fill;
+            label_Nr.Font = new Font("Arial", 8.55F);
+            label_Nr.ForeColor = Color.Black;
+            label_Nr.Location = new Point(496, 28);
+            label_Nr.Margin = new Padding(1, 0, 0, 0);
+            label_Nr.Name = "label_Nr";
+            tlp_Main.SetRowSpan(label_Nr, 3);
+            label_Nr.Size = new Size(69, 61);
+            label_Nr.TabIndex = 138;
+            label_Nr.Text = "Nr";
+            label_Nr.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // label_Arbetsblad
             // 
-            this.label_Arbetsblad.BackColor = System.Drawing.Color.White;
-            this.label_Arbetsblad.Cursor = System.Windows.Forms.Cursors.Arrow;
-            this.label_Arbetsblad.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label_Arbetsblad.Font = new System.Drawing.Font("Arial", 8.55F);
-            this.label_Arbetsblad.ForeColor = System.Drawing.Color.Black;
-            this.label_Arbetsblad.Location = new System.Drawing.Point(355, 24);
-            this.label_Arbetsblad.Margin = new System.Windows.Forms.Padding(1, 0, 0, 0);
-            this.label_Arbetsblad.Name = "label_Arbetsblad";
-            this.tlp_Main.SetRowSpan(this.label_Arbetsblad, 3);
-            this.label_Arbetsblad.Size = new System.Drawing.Size(69, 53);
-            this.label_Arbetsblad.TabIndex = 137;
-            this.label_Arbetsblad.Text = "Arbetsblad";
-            this.label_Arbetsblad.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            label_Arbetsblad.BackColor = Color.White;
+            label_Arbetsblad.Dock = DockStyle.Fill;
+            label_Arbetsblad.Font = new Font("Arial", 8.55F);
+            label_Arbetsblad.ForeColor = Color.Black;
+            label_Arbetsblad.Location = new Point(414, 28);
+            label_Arbetsblad.Margin = new Padding(1, 0, 0, 0);
+            label_Arbetsblad.Name = "label_Arbetsblad";
+            tlp_Main.SetRowSpan(label_Arbetsblad, 3);
+            label_Arbetsblad.Size = new Size(81, 61);
+            label_Arbetsblad.TabIndex = 137;
+            label_Arbetsblad.Text = "Arbetsblad";
+            label_Arbetsblad.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // label_Bladhöjd
             // 
-            this.label_Bladhöjd.BackColor = System.Drawing.Color.White;
-            this.label_Bladhöjd.Cursor = System.Windows.Forms.Cursors.Arrow;
-            this.label_Bladhöjd.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label_Bladhöjd.Font = new System.Drawing.Font("Arial", 8.55F);
-            this.label_Bladhöjd.ForeColor = System.Drawing.Color.Black;
-            this.label_Bladhöjd.Location = new System.Drawing.Point(291, 24);
-            this.label_Bladhöjd.Margin = new System.Windows.Forms.Padding(1, 0, 0, 0);
-            this.label_Bladhöjd.Name = "label_Bladhöjd";
-            this.tlp_Main.SetRowSpan(this.label_Bladhöjd, 3);
-            this.label_Bladhöjd.Size = new System.Drawing.Size(63, 53);
-            this.label_Bladhöjd.TabIndex = 136;
-            this.label_Bladhöjd.Text = "Bladhöjd";
-            this.label_Bladhöjd.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            label_Bladhöjd.BackColor = Color.White;
+            label_Bladhöjd.Dock = DockStyle.Fill;
+            label_Bladhöjd.Font = new Font("Arial", 8.55F);
+            label_Bladhöjd.ForeColor = Color.Black;
+            label_Bladhöjd.Location = new Point(339, 28);
+            label_Bladhöjd.Margin = new Padding(1, 0, 0, 0);
+            label_Bladhöjd.Name = "label_Bladhöjd";
+            tlp_Main.SetRowSpan(label_Bladhöjd, 3);
+            label_Bladhöjd.Size = new Size(74, 61);
+            label_Bladhöjd.TabIndex = 136;
+            label_Bladhöjd.Text = "Bladhöjd";
+            label_Bladhöjd.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // label_Helix_Vinkel
             // 
-            this.label_Helix_Vinkel.BackColor = System.Drawing.Color.White;
-            this.label_Helix_Vinkel.Cursor = System.Windows.Forms.Cursors.Arrow;
-            this.label_Helix_Vinkel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label_Helix_Vinkel.Font = new System.Drawing.Font("Arial", 8.55F);
-            this.label_Helix_Vinkel.ForeColor = System.Drawing.Color.Black;
-            this.label_Helix_Vinkel.Location = new System.Drawing.Point(233, 24);
-            this.label_Helix_Vinkel.Margin = new System.Windows.Forms.Padding(1, 0, 0, 0);
-            this.label_Helix_Vinkel.Name = "label_Helix_Vinkel";
-            this.tlp_Main.SetRowSpan(this.label_Helix_Vinkel, 3);
-            this.label_Helix_Vinkel.Size = new System.Drawing.Size(57, 53);
-            this.label_Helix_Vinkel.TabIndex = 134;
-            this.label_Helix_Vinkel.Text = "Helix vinkel";
-            this.label_Helix_Vinkel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            label_Helix_Vinkel.BackColor = Color.White;
+            label_Helix_Vinkel.Dock = DockStyle.Fill;
+            label_Helix_Vinkel.Font = new Font("Arial", 8.55F);
+            label_Helix_Vinkel.ForeColor = Color.Black;
+            label_Helix_Vinkel.Location = new Point(271, 28);
+            label_Helix_Vinkel.Margin = new Padding(1, 0, 0, 0);
+            label_Helix_Vinkel.Name = "label_Helix_Vinkel";
+            tlp_Main.SetRowSpan(label_Helix_Vinkel, 3);
+            label_Helix_Vinkel.Size = new Size(67, 61);
+            label_Helix_Vinkel.TabIndex = 134;
+            label_Helix_Vinkel.Text = "Helix vinkel";
+            label_Helix_Vinkel.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // label_Matarhjul_Vinkel
             // 
-            this.label_Matarhjul_Vinkel.BackColor = System.Drawing.Color.White;
-            this.label_Matarhjul_Vinkel.Cursor = System.Windows.Forms.Cursors.Arrow;
-            this.label_Matarhjul_Vinkel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label_Matarhjul_Vinkel.Font = new System.Drawing.Font("Arial", 8.55F);
-            this.label_Matarhjul_Vinkel.ForeColor = System.Drawing.Color.Black;
-            this.label_Matarhjul_Vinkel.Location = new System.Drawing.Point(176, 24);
-            this.label_Matarhjul_Vinkel.Margin = new System.Windows.Forms.Padding(1, 0, 0, 0);
-            this.label_Matarhjul_Vinkel.Name = "label_Matarhjul_Vinkel";
-            this.tlp_Main.SetRowSpan(this.label_Matarhjul_Vinkel, 3);
-            this.label_Matarhjul_Vinkel.Size = new System.Drawing.Size(56, 53);
-            this.label_Matarhjul_Vinkel.TabIndex = 133;
-            this.label_Matarhjul_Vinkel.Text = "Matar hjul vinkel";
-            this.label_Matarhjul_Vinkel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            label_Matarhjul_Vinkel.BackColor = Color.White;
+            label_Matarhjul_Vinkel.Dock = DockStyle.Fill;
+            label_Matarhjul_Vinkel.Font = new Font("Arial", 8.55F);
+            label_Matarhjul_Vinkel.ForeColor = Color.Black;
+            label_Matarhjul_Vinkel.Location = new Point(205, 28);
+            label_Matarhjul_Vinkel.Margin = new Padding(1, 0, 0, 0);
+            label_Matarhjul_Vinkel.Name = "label_Matarhjul_Vinkel";
+            tlp_Main.SetRowSpan(label_Matarhjul_Vinkel, 3);
+            label_Matarhjul_Vinkel.Size = new Size(65, 61);
+            label_Matarhjul_Vinkel.TabIndex = 133;
+            label_Matarhjul_Vinkel.Text = "Matar hjul vinkel";
+            label_Matarhjul_Vinkel.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // label_MatarHjul_Hastighet
             // 
-            this.label_MatarHjul_Hastighet.BackColor = System.Drawing.Color.White;
-            this.label_MatarHjul_Hastighet.Cursor = System.Windows.Forms.Cursors.Arrow;
-            this.label_MatarHjul_Hastighet.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label_MatarHjul_Hastighet.Font = new System.Drawing.Font("Arial", 8.55F);
-            this.label_MatarHjul_Hastighet.ForeColor = System.Drawing.Color.Black;
-            this.label_MatarHjul_Hastighet.Location = new System.Drawing.Point(111, 24);
-            this.label_MatarHjul_Hastighet.Margin = new System.Windows.Forms.Padding(1, 0, 0, 0);
-            this.label_MatarHjul_Hastighet.Name = "label_MatarHjul_Hastighet";
-            this.label_MatarHjul_Hastighet.Padding = new System.Windows.Forms.Padding(1, 0, 1, 0);
-            this.tlp_Main.SetRowSpan(this.label_MatarHjul_Hastighet, 3);
-            this.label_MatarHjul_Hastighet.Size = new System.Drawing.Size(64, 53);
-            this.label_MatarHjul_Hastighet.TabIndex = 131;
-            this.label_MatarHjul_Hastighet.Text = "Matarhjul hastighet";
-            this.label_MatarHjul_Hastighet.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            label_MatarHjul_Hastighet.BackColor = Color.White;
+            label_MatarHjul_Hastighet.Dock = DockStyle.Fill;
+            label_MatarHjul_Hastighet.Font = new Font("Arial", 8.55F);
+            label_MatarHjul_Hastighet.ForeColor = Color.Black;
+            label_MatarHjul_Hastighet.Location = new Point(129, 28);
+            label_MatarHjul_Hastighet.Margin = new Padding(1, 0, 0, 0);
+            label_MatarHjul_Hastighet.Name = "label_MatarHjul_Hastighet";
+            label_MatarHjul_Hastighet.Padding = new Padding(1, 0, 1, 0);
+            tlp_Main.SetRowSpan(label_MatarHjul_Hastighet, 3);
+            label_MatarHjul_Hastighet.Size = new Size(75, 61);
+            label_MatarHjul_Hastighet.TabIndex = 131;
+            label_MatarHjul_Hastighet.Text = "Matarhjul hastighet";
+            label_MatarHjul_Hastighet.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // label_Slipmaskin
             // 
-            this.label_Slipmaskin.BackColor = System.Drawing.Color.White;
-            this.label_Slipmaskin.Cursor = System.Windows.Forms.Cursors.Arrow;
-            this.label_Slipmaskin.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label_Slipmaskin.Font = new System.Drawing.Font("Arial", 8.55F);
-            this.label_Slipmaskin.ForeColor = System.Drawing.Color.Black;
-            this.label_Slipmaskin.Location = new System.Drawing.Point(38, 24);
-            this.label_Slipmaskin.Margin = new System.Windows.Forms.Padding(1, 0, 0, 1);
-            this.label_Slipmaskin.Name = "label_Slipmaskin";
-            this.tlp_Main.SetRowSpan(this.label_Slipmaskin, 4);
-            this.label_Slipmaskin.Size = new System.Drawing.Size(72, 66);
-            this.label_Slipmaskin.TabIndex = 130;
-            this.label_Slipmaskin.Text = "Slip- maskin RMG";
-            this.label_Slipmaskin.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            label_Slipmaskin.BackColor = Color.White;
+            label_Slipmaskin.Dock = DockStyle.Fill;
+            label_Slipmaskin.Font = new Font("Arial", 8.55F);
+            label_Slipmaskin.ForeColor = Color.Black;
+            label_Slipmaskin.Location = new Point(44, 28);
+            label_Slipmaskin.Margin = new Padding(1, 0, 0, 1);
+            label_Slipmaskin.Name = "label_Slipmaskin";
+            tlp_Main.SetRowSpan(label_Slipmaskin, 4);
+            label_Slipmaskin.Size = new Size(84, 76);
+            label_Slipmaskin.TabIndex = 130;
+            label_Slipmaskin.Text = "Slip- maskin RMG";
+            label_Slipmaskin.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // label_Empty_7
             // 
-            this.label_Empty_7.BackColor = System.Drawing.Color.DarkGray;
-            this.tlp_Main.SetColumnSpan(this.label_Empty_7, 3);
-            this.label_Empty_7.Cursor = System.Windows.Forms.Cursors.SizeAll;
-            this.label_Empty_7.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label_Empty_7.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label_Empty_7.ForeColor = System.Drawing.Color.ForestGreen;
-            this.label_Empty_7.Location = new System.Drawing.Point(425, 131);
-            this.label_Empty_7.Margin = new System.Windows.Forms.Padding(1, 0, 0, 1);
-            this.label_Empty_7.Name = "label_Empty_7";
-            this.label_Empty_7.Size = new System.Drawing.Size(206, 19);
-            this.label_Empty_7.TabIndex = 1007;
-            this.label_Empty_7.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            label_Empty_7.BackColor = Color.DarkGray;
+            tlp_Main.SetColumnSpan(label_Empty_7, 3);
+            label_Empty_7.Cursor = Cursors.SizeAll;
+            label_Empty_7.Dock = DockStyle.Fill;
+            label_Empty_7.Font = new Font("Consolas", 8.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label_Empty_7.ForeColor = Color.ForestGreen;
+            label_Empty_7.Location = new Point(496, 151);
+            label_Empty_7.Margin = new Padding(1, 0, 0, 1);
+            label_Empty_7.Name = "label_Empty_7";
+            label_Empty_7.Size = new Size(241, 22);
+            label_Empty_7.TabIndex = 1007;
+            label_Empty_7.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // label_Centerhöjd_enhet
             // 
-            this.label_Centerhöjd_enhet.BackColor = System.Drawing.Color.White;
-            this.label_Centerhöjd_enhet.Cursor = System.Windows.Forms.Cursors.Arrow;
-            this.label_Centerhöjd_enhet.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label_Centerhöjd_enhet.Font = new System.Drawing.Font("Arial", 8.5F, System.Drawing.FontStyle.Italic);
-            this.label_Centerhöjd_enhet.ForeColor = System.Drawing.Color.Black;
-            this.label_Centerhöjd_enhet.Location = new System.Drawing.Point(557, 77);
-            this.label_Centerhöjd_enhet.Margin = new System.Windows.Forms.Padding(1, 0, 1, 1);
-            this.label_Centerhöjd_enhet.Name = "label_Centerhöjd_enhet";
-            this.label_Centerhöjd_enhet.Size = new System.Drawing.Size(73, 13);
-            this.label_Centerhöjd_enhet.TabIndex = 812;
-            this.label_Centerhöjd_enhet.Text = "mm";
-            this.label_Centerhöjd_enhet.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            label_Centerhöjd_enhet.BackColor = Color.White;
+            label_Centerhöjd_enhet.Dock = DockStyle.Fill;
+            label_Centerhöjd_enhet.Font = new Font("Arial", 8.5F, FontStyle.Italic);
+            label_Centerhöjd_enhet.ForeColor = Color.Black;
+            label_Centerhöjd_enhet.Location = new Point(650, 89);
+            label_Centerhöjd_enhet.Margin = new Padding(1, 0, 1, 1);
+            label_Centerhöjd_enhet.Name = "label_Centerhöjd_enhet";
+            label_Centerhöjd_enhet.Size = new Size(86, 15);
+            label_Centerhöjd_enhet.TabIndex = 812;
+            label_Centerhöjd_enhet.Text = "mm";
+            label_Centerhöjd_enhet.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // label_Empty_12
             // 
-            this.label_Empty_12.BackColor = System.Drawing.Color.DarkGray;
-            this.label_Empty_12.Cursor = System.Windows.Forms.Cursors.SizeAll;
-            this.label_Empty_12.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label_Empty_12.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label_Empty_12.ForeColor = System.Drawing.Color.ForestGreen;
-            this.label_Empty_12.Location = new System.Drawing.Point(425, 111);
-            this.label_Empty_12.Margin = new System.Windows.Forms.Padding(1, 0, 0, 0);
-            this.label_Empty_12.Name = "label_Empty_12";
-            this.label_Empty_12.Size = new System.Drawing.Size(59, 20);
-            this.label_Empty_12.TabIndex = 1007;
-            this.label_Empty_12.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            label_Empty_12.BackColor = Color.DarkGray;
+            label_Empty_12.Cursor = Cursors.SizeAll;
+            label_Empty_12.Dock = DockStyle.Fill;
+            label_Empty_12.Font = new Font("Consolas", 8.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label_Empty_12.ForeColor = Color.ForestGreen;
+            label_Empty_12.Location = new Point(496, 128);
+            label_Empty_12.Margin = new Padding(1, 0, 0, 0);
+            label_Empty_12.Name = "label_Empty_12";
+            label_Empty_12.Size = new Size(69, 23);
+            label_Empty_12.TabIndex = 1007;
+            label_Empty_12.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // label_Empty_10
             // 
-            this.label_Empty_10.BackColor = System.Drawing.Color.DarkGray;
-            this.label_Empty_10.Cursor = System.Windows.Forms.Cursors.SizeAll;
-            this.label_Empty_10.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label_Empty_10.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label_Empty_10.ForeColor = System.Drawing.Color.ForestGreen;
-            this.label_Empty_10.Location = new System.Drawing.Point(110, 91);
-            this.label_Empty_10.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
-            this.label_Empty_10.Name = "label_Empty_10";
-            this.label_Empty_10.Size = new System.Drawing.Size(65, 19);
-            this.label_Empty_10.TabIndex = 1007;
-            this.label_Empty_10.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            label_Empty_10.BackColor = Color.DarkGray;
+            label_Empty_10.Cursor = Cursors.SizeAll;
+            label_Empty_10.Dock = DockStyle.Fill;
+            label_Empty_10.Font = new Font("Consolas", 8.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label_Empty_10.ForeColor = Color.ForestGreen;
+            label_Empty_10.Location = new Point(128, 105);
+            label_Empty_10.Margin = new Padding(0, 0, 0, 1);
+            label_Empty_10.Name = "label_Empty_10";
+            label_Empty_10.Size = new Size(76, 22);
+            label_Empty_10.TabIndex = 1007;
+            label_Empty_10.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // lbl_Matarhjul_Vinkel_min
             // 
-            this.lbl_Matarhjul_Vinkel_min.AutoSize = true;
-            this.lbl_Matarhjul_Vinkel_min.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(230)))), ((int)(((byte)(230)))));
-            this.lbl_Matarhjul_Vinkel_min.Cursor = System.Windows.Forms.Cursors.Arrow;
-            this.lbl_Matarhjul_Vinkel_min.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lbl_Matarhjul_Vinkel_min.Font = new System.Drawing.Font("Consolas", 8.75F);
-            this.lbl_Matarhjul_Vinkel_min.ForeColor = System.Drawing.Color.DodgerBlue;
-            this.lbl_Matarhjul_Vinkel_min.Location = new System.Drawing.Point(176, 91);
-            this.lbl_Matarhjul_Vinkel_min.Margin = new System.Windows.Forms.Padding(1, 0, 0, 1);
-            this.lbl_Matarhjul_Vinkel_min.Name = "lbl_Matarhjul_Vinkel_min";
-            this.lbl_Matarhjul_Vinkel_min.Size = new System.Drawing.Size(56, 19);
-            this.lbl_Matarhjul_Vinkel_min.TabIndex = 1001;
-            this.lbl_Matarhjul_Vinkel_min.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            lbl_Matarhjul_Vinkel_min.AutoSize = true;
+            lbl_Matarhjul_Vinkel_min.BackColor = Color.FromArgb(230, 230, 230);
+            lbl_Matarhjul_Vinkel_min.Dock = DockStyle.Fill;
+            lbl_Matarhjul_Vinkel_min.Font = new Font("Consolas", 8.75F);
+            lbl_Matarhjul_Vinkel_min.ForeColor = Color.DodgerBlue;
+            lbl_Matarhjul_Vinkel_min.Location = new Point(205, 105);
+            lbl_Matarhjul_Vinkel_min.Margin = new Padding(1, 0, 0, 1);
+            lbl_Matarhjul_Vinkel_min.Name = "lbl_Matarhjul_Vinkel_min";
+            lbl_Matarhjul_Vinkel_min.Size = new Size(65, 22);
+            lbl_Matarhjul_Vinkel_min.TabIndex = 1001;
+            lbl_Matarhjul_Vinkel_min.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // label_Empty_14
             // 
-            this.label_Empty_14.BackColor = System.Drawing.Color.DarkGray;
-            this.label_Empty_14.Cursor = System.Windows.Forms.Cursors.SizeAll;
-            this.label_Empty_14.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label_Empty_14.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label_Empty_14.ForeColor = System.Drawing.Color.ForestGreen;
-            this.label_Empty_14.Location = new System.Drawing.Point(233, 91);
-            this.label_Empty_14.Margin = new System.Windows.Forms.Padding(1, 0, 0, 1);
-            this.label_Empty_14.Name = "label_Empty_14";
-            this.label_Empty_14.Size = new System.Drawing.Size(57, 19);
-            this.label_Empty_14.TabIndex = 1007;
-            this.label_Empty_14.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            label_Empty_14.BackColor = Color.DarkGray;
+            label_Empty_14.Cursor = Cursors.SizeAll;
+            label_Empty_14.Dock = DockStyle.Fill;
+            label_Empty_14.Font = new Font("Consolas", 8.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label_Empty_14.ForeColor = Color.ForestGreen;
+            label_Empty_14.Location = new Point(271, 105);
+            label_Empty_14.Margin = new Padding(1, 0, 0, 1);
+            label_Empty_14.Name = "label_Empty_14";
+            label_Empty_14.Size = new Size(67, 22);
+            label_Empty_14.TabIndex = 1007;
+            label_Empty_14.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // label_Empty_15
             // 
-            this.label_Empty_15.BackColor = System.Drawing.Color.DarkGray;
-            this.label_Empty_15.Cursor = System.Windows.Forms.Cursors.SizeAll;
-            this.label_Empty_15.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label_Empty_15.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label_Empty_15.ForeColor = System.Drawing.Color.ForestGreen;
-            this.label_Empty_15.Location = new System.Drawing.Point(233, 131);
-            this.label_Empty_15.Margin = new System.Windows.Forms.Padding(1, 0, 0, 1);
-            this.label_Empty_15.Name = "label_Empty_15";
-            this.label_Empty_15.Size = new System.Drawing.Size(57, 19);
-            this.label_Empty_15.TabIndex = 1008;
-            this.label_Empty_15.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            label_Empty_15.BackColor = Color.DarkGray;
+            label_Empty_15.Cursor = Cursors.SizeAll;
+            label_Empty_15.Dock = DockStyle.Fill;
+            label_Empty_15.Font = new Font("Consolas", 8.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label_Empty_15.ForeColor = Color.ForestGreen;
+            label_Empty_15.Location = new Point(271, 151);
+            label_Empty_15.Margin = new Padding(1, 0, 0, 1);
+            label_Empty_15.Name = "label_Empty_15";
+            label_Empty_15.Size = new Size(67, 22);
+            label_Empty_15.TabIndex = 1008;
+            label_Empty_15.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // lbl_Matarhjul_Vinkel_max
             // 
-            this.lbl_Matarhjul_Vinkel_max.AutoSize = true;
-            this.lbl_Matarhjul_Vinkel_max.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(230)))), ((int)(((byte)(230)))));
-            this.lbl_Matarhjul_Vinkel_max.Cursor = System.Windows.Forms.Cursors.Arrow;
-            this.lbl_Matarhjul_Vinkel_max.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lbl_Matarhjul_Vinkel_max.Font = new System.Drawing.Font("Consolas", 8.75F);
-            this.lbl_Matarhjul_Vinkel_max.ForeColor = System.Drawing.Color.DodgerBlue;
-            this.lbl_Matarhjul_Vinkel_max.Location = new System.Drawing.Point(176, 131);
-            this.lbl_Matarhjul_Vinkel_max.Margin = new System.Windows.Forms.Padding(1, 0, 0, 1);
-            this.lbl_Matarhjul_Vinkel_max.Name = "lbl_Matarhjul_Vinkel_max";
-            this.lbl_Matarhjul_Vinkel_max.Size = new System.Drawing.Size(56, 19);
-            this.lbl_Matarhjul_Vinkel_max.TabIndex = 1001;
-            this.lbl_Matarhjul_Vinkel_max.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            lbl_Matarhjul_Vinkel_max.AutoSize = true;
+            lbl_Matarhjul_Vinkel_max.BackColor = Color.FromArgb(230, 230, 230);
+            lbl_Matarhjul_Vinkel_max.Dock = DockStyle.Fill;
+            lbl_Matarhjul_Vinkel_max.Font = new Font("Consolas", 8.75F);
+            lbl_Matarhjul_Vinkel_max.ForeColor = Color.DodgerBlue;
+            lbl_Matarhjul_Vinkel_max.Location = new Point(205, 151);
+            lbl_Matarhjul_Vinkel_max.Margin = new Padding(1, 0, 0, 1);
+            lbl_Matarhjul_Vinkel_max.Name = "lbl_Matarhjul_Vinkel_max";
+            lbl_Matarhjul_Vinkel_max.Size = new Size(65, 22);
+            lbl_Matarhjul_Vinkel_max.TabIndex = 1001;
+            lbl_Matarhjul_Vinkel_max.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // label_Maskinparametrar_Datum
             // 
-            this.label_Maskinparametrar_Datum.BackColor = System.Drawing.Color.White;
-            this.label_Maskinparametrar_Datum.Cursor = System.Windows.Forms.Cursors.Arrow;
-            this.label_Maskinparametrar_Datum.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label_Maskinparametrar_Datum.Font = new System.Drawing.Font("Arial", 8.55F);
-            this.label_Maskinparametrar_Datum.ForeColor = System.Drawing.Color.Black;
-            this.label_Maskinparametrar_Datum.Location = new System.Drawing.Point(631, 24);
-            this.label_Maskinparametrar_Datum.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
-            this.label_Maskinparametrar_Datum.Name = "label_Maskinparametrar_Datum";
-            this.tlp_Main.SetRowSpan(this.label_Maskinparametrar_Datum, 4);
-            this.label_Maskinparametrar_Datum.Size = new System.Drawing.Size(80, 66);
-            this.label_Maskinparametrar_Datum.TabIndex = 809;
-            this.label_Maskinparametrar_Datum.Text = "Datum";
-            this.label_Maskinparametrar_Datum.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            label_Maskinparametrar_Datum.BackColor = Color.White;
+            label_Maskinparametrar_Datum.Dock = DockStyle.Fill;
+            label_Maskinparametrar_Datum.Font = new Font("Arial", 8.55F);
+            label_Maskinparametrar_Datum.ForeColor = Color.Black;
+            label_Maskinparametrar_Datum.Location = new Point(737, 28);
+            label_Maskinparametrar_Datum.Margin = new Padding(0, 0, 0, 1);
+            label_Maskinparametrar_Datum.Name = "label_Maskinparametrar_Datum";
+            tlp_Main.SetRowSpan(label_Maskinparametrar_Datum, 4);
+            label_Maskinparametrar_Datum.Size = new Size(93, 76);
+            label_Maskinparametrar_Datum.TabIndex = 809;
+            label_Maskinparametrar_Datum.Text = "Datum";
+            label_Maskinparametrar_Datum.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // label_Maskinparametrar_Tid
             // 
-            this.label_Maskinparametrar_Tid.BackColor = System.Drawing.Color.White;
-            this.label_Maskinparametrar_Tid.Cursor = System.Windows.Forms.Cursors.Arrow;
-            this.label_Maskinparametrar_Tid.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label_Maskinparametrar_Tid.Font = new System.Drawing.Font("Arial", 8.55F);
-            this.label_Maskinparametrar_Tid.ForeColor = System.Drawing.Color.Black;
-            this.label_Maskinparametrar_Tid.Location = new System.Drawing.Point(712, 24);
-            this.label_Maskinparametrar_Tid.Margin = new System.Windows.Forms.Padding(1, 0, 0, 1);
-            this.label_Maskinparametrar_Tid.Name = "label_Maskinparametrar_Tid";
-            this.tlp_Main.SetRowSpan(this.label_Maskinparametrar_Tid, 4);
-            this.label_Maskinparametrar_Tid.Size = new System.Drawing.Size(47, 66);
-            this.label_Maskinparametrar_Tid.TabIndex = 809;
-            this.label_Maskinparametrar_Tid.Text = "Tid";
-            this.label_Maskinparametrar_Tid.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            label_Maskinparametrar_Tid.BackColor = Color.White;
+            label_Maskinparametrar_Tid.Dock = DockStyle.Fill;
+            label_Maskinparametrar_Tid.Font = new Font("Arial", 8.55F);
+            label_Maskinparametrar_Tid.ForeColor = Color.Black;
+            label_Maskinparametrar_Tid.Location = new Point(831, 28);
+            label_Maskinparametrar_Tid.Margin = new Padding(1, 0, 0, 1);
+            label_Maskinparametrar_Tid.Name = "label_Maskinparametrar_Tid";
+            tlp_Main.SetRowSpan(label_Maskinparametrar_Tid, 4);
+            label_Maskinparametrar_Tid.Size = new Size(55, 76);
+            label_Maskinparametrar_Tid.TabIndex = 809;
+            label_Maskinparametrar_Tid.Text = "Tid";
+            label_Maskinparametrar_Tid.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // label_Maskinparametrar_AnstNr
             // 
-            this.label_Maskinparametrar_AnstNr.BackColor = System.Drawing.Color.White;
-            this.label_Maskinparametrar_AnstNr.Cursor = System.Windows.Forms.Cursors.Arrow;
-            this.label_Maskinparametrar_AnstNr.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label_Maskinparametrar_AnstNr.Font = new System.Drawing.Font("Arial", 8.55F);
-            this.label_Maskinparametrar_AnstNr.ForeColor = System.Drawing.Color.Black;
-            this.label_Maskinparametrar_AnstNr.Location = new System.Drawing.Point(760, 24);
-            this.label_Maskinparametrar_AnstNr.Margin = new System.Windows.Forms.Padding(1, 0, 0, 1);
-            this.label_Maskinparametrar_AnstNr.Name = "label_Maskinparametrar_AnstNr";
-            this.tlp_Main.SetRowSpan(this.label_Maskinparametrar_AnstNr, 4);
-            this.label_Maskinparametrar_AnstNr.Size = new System.Drawing.Size(39, 66);
-            this.label_Maskinparametrar_AnstNr.TabIndex = 809;
-            this.label_Maskinparametrar_AnstNr.Text = "Anst Nr";
-            this.label_Maskinparametrar_AnstNr.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            label_Maskinparametrar_AnstNr.BackColor = Color.White;
+            label_Maskinparametrar_AnstNr.Dock = DockStyle.Fill;
+            label_Maskinparametrar_AnstNr.Font = new Font("Arial", 8.55F);
+            label_Maskinparametrar_AnstNr.ForeColor = Color.Black;
+            label_Maskinparametrar_AnstNr.Location = new Point(887, 28);
+            label_Maskinparametrar_AnstNr.Margin = new Padding(1, 0, 0, 1);
+            label_Maskinparametrar_AnstNr.Name = "label_Maskinparametrar_AnstNr";
+            tlp_Main.SetRowSpan(label_Maskinparametrar_AnstNr, 4);
+            label_Maskinparametrar_AnstNr.Size = new Size(46, 76);
+            label_Maskinparametrar_AnstNr.TabIndex = 809;
+            label_Maskinparametrar_AnstNr.Text = "Anst Nr";
+            label_Maskinparametrar_AnstNr.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // label_Maskinparametrar_Sign
             // 
-            this.label_Maskinparametrar_Sign.BackColor = System.Drawing.Color.White;
-            this.label_Maskinparametrar_Sign.Cursor = System.Windows.Forms.Cursors.Arrow;
-            this.label_Maskinparametrar_Sign.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label_Maskinparametrar_Sign.Font = new System.Drawing.Font("Arial", 8.55F);
-            this.label_Maskinparametrar_Sign.ForeColor = System.Drawing.Color.Black;
-            this.label_Maskinparametrar_Sign.Location = new System.Drawing.Point(800, 24);
-            this.label_Maskinparametrar_Sign.Margin = new System.Windows.Forms.Padding(1, 0, 0, 1);
-            this.label_Maskinparametrar_Sign.Name = "label_Maskinparametrar_Sign";
-            this.tlp_Main.SetRowSpan(this.label_Maskinparametrar_Sign, 4);
-            this.label_Maskinparametrar_Sign.Size = new System.Drawing.Size(93, 66);
-            this.label_Maskinparametrar_Sign.TabIndex = 809;
-            this.label_Maskinparametrar_Sign.Text = "Sign";
-            this.label_Maskinparametrar_Sign.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            label_Maskinparametrar_Sign.BackColor = Color.White;
+            label_Maskinparametrar_Sign.Dock = DockStyle.Fill;
+            label_Maskinparametrar_Sign.Font = new Font("Arial", 8.55F);
+            label_Maskinparametrar_Sign.ForeColor = Color.Black;
+            label_Maskinparametrar_Sign.Location = new Point(934, 28);
+            label_Maskinparametrar_Sign.Margin = new Padding(1, 0, 0, 1);
+            label_Maskinparametrar_Sign.Name = "label_Maskinparametrar_Sign";
+            tlp_Main.SetRowSpan(label_Maskinparametrar_Sign, 4);
+            label_Maskinparametrar_Sign.Size = new Size(109, 76);
+            label_Maskinparametrar_Sign.TabIndex = 809;
+            label_Maskinparametrar_Sign.Text = "Sign";
+            label_Maskinparametrar_Sign.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // label3
             // 
-            this.label3.BackColor = System.Drawing.Color.DarkGray;
-            this.tlp_Main.SetColumnSpan(this.label3, 4);
-            this.label3.Cursor = System.Windows.Forms.Cursors.SizeAll;
-            this.label3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label3.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.ForeColor = System.Drawing.Color.ForestGreen;
-            this.label3.Location = new System.Drawing.Point(631, 91);
-            this.label3.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
-            this.label3.Name = "label3";
-            this.tlp_Main.SetRowSpan(this.label3, 3);
-            this.label3.Size = new System.Drawing.Size(262, 59);
-            this.label3.TabIndex = 1007;
-            this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            label3.BackColor = Color.DarkGray;
+            tlp_Main.SetColumnSpan(label3, 4);
+            label3.Cursor = Cursors.SizeAll;
+            label3.Dock = DockStyle.Fill;
+            label3.Font = new Font("Consolas", 8.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label3.ForeColor = Color.ForestGreen;
+            label3.Location = new Point(737, 105);
+            label3.Margin = new Padding(0, 0, 0, 1);
+            label3.Name = "label3";
+            tlp_Main.SetRowSpan(label3, 3);
+            label3.Size = new Size(306, 68);
+            label3.TabIndex = 1007;
+            label3.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // tb_MatarhjulHastighet
             // 
-            this.tb_MatarhjulHastighet.BackColor = System.Drawing.Color.White;
-            this.tb_MatarhjulHastighet.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.tb_MatarhjulHastighet.Cursor = System.Windows.Forms.Cursors.IBeam;
-            this.tb_MatarhjulHastighet.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tb_MatarhjulHastighet.Font = new System.Drawing.Font("Courier New", 8.5F);
-            this.tb_MatarhjulHastighet.ForeColor = System.Drawing.Color.DarkSlateGray;
-            this.tb_MatarhjulHastighet.Location = new System.Drawing.Point(111, 152);
-            this.tb_MatarhjulHastighet.Margin = new System.Windows.Forms.Padding(1, 1, 0, 0);
-            this.tb_MatarhjulHastighet.MaxLength = 4;
-            this.tb_MatarhjulHastighet.Multiline = true;
-            this.tb_MatarhjulHastighet.Name = "tb_MatarhjulHastighet";
-            this.tb_MatarhjulHastighet.Size = new System.Drawing.Size(64, 21);
-            this.tb_MatarhjulHastighet.TabIndex = 11;
-            this.tb_MatarhjulHastighet.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.tb_MatarhjulHastighet.WordWrap = false;
-            this.tb_MatarhjulHastighet.KeyDown += new System.Windows.Forms.KeyEventHandler(this.EnterToTab_KeyDown);
+            tb_MatarhjulHastighet.BackColor = Color.White;
+            tb_MatarhjulHastighet.BorderStyle = BorderStyle.None;
+            tb_MatarhjulHastighet.Cursor = Cursors.IBeam;
+            tb_MatarhjulHastighet.Dock = DockStyle.Fill;
+            tb_MatarhjulHastighet.Font = new Font("Courier New", 8.5F);
+            tb_MatarhjulHastighet.ForeColor = Color.DarkSlateGray;
+            tb_MatarhjulHastighet.Location = new Point(129, 175);
+            tb_MatarhjulHastighet.Margin = new Padding(1, 1, 0, 0);
+            tb_MatarhjulHastighet.MaxLength = 4;
+            tb_MatarhjulHastighet.Multiline = true;
+            tb_MatarhjulHastighet.Name = "tb_MatarhjulHastighet";
+            tb_MatarhjulHastighet.Size = new Size(75, 24);
+            tb_MatarhjulHastighet.TabIndex = 11;
+            tb_MatarhjulHastighet.TextAlign = HorizontalAlignment.Center;
+            tb_MatarhjulHastighet.WordWrap = false;
+            tb_MatarhjulHastighet.KeyDown += EnterToTab_KeyDown;
             // 
             // tb_MatarhjulVinkel
             // 
-            this.tb_MatarhjulVinkel.BackColor = System.Drawing.Color.White;
-            this.tb_MatarhjulVinkel.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.tb_MatarhjulVinkel.Cursor = System.Windows.Forms.Cursors.IBeam;
-            this.tb_MatarhjulVinkel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tb_MatarhjulVinkel.Font = new System.Drawing.Font("Courier New", 8.5F);
-            this.tb_MatarhjulVinkel.ForeColor = System.Drawing.Color.DarkSlateGray;
-            this.tb_MatarhjulVinkel.Location = new System.Drawing.Point(176, 152);
-            this.tb_MatarhjulVinkel.Margin = new System.Windows.Forms.Padding(1, 1, 0, 0);
-            this.tb_MatarhjulVinkel.MaxLength = 4;
-            this.tb_MatarhjulVinkel.Multiline = true;
-            this.tb_MatarhjulVinkel.Name = "tb_MatarhjulVinkel";
-            this.tb_MatarhjulVinkel.Size = new System.Drawing.Size(56, 21);
-            this.tb_MatarhjulVinkel.TabIndex = 11;
-            this.tb_MatarhjulVinkel.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.tb_MatarhjulVinkel.WordWrap = false;
-            this.tb_MatarhjulVinkel.KeyDown += new System.Windows.Forms.KeyEventHandler(this.EnterToTab_KeyDown);
-            this.tb_MatarhjulVinkel.Leave += new System.EventHandler(this.Check_MIN_NOM_MAX_Leave);
+            tb_MatarhjulVinkel.BackColor = Color.White;
+            tb_MatarhjulVinkel.BorderStyle = BorderStyle.None;
+            tb_MatarhjulVinkel.Cursor = Cursors.IBeam;
+            tb_MatarhjulVinkel.Dock = DockStyle.Fill;
+            tb_MatarhjulVinkel.Font = new Font("Courier New", 8.5F);
+            tb_MatarhjulVinkel.ForeColor = Color.DarkSlateGray;
+            tb_MatarhjulVinkel.Location = new Point(205, 175);
+            tb_MatarhjulVinkel.Margin = new Padding(1, 1, 0, 0);
+            tb_MatarhjulVinkel.MaxLength = 4;
+            tb_MatarhjulVinkel.Multiline = true;
+            tb_MatarhjulVinkel.Name = "tb_MatarhjulVinkel";
+            tb_MatarhjulVinkel.Size = new Size(65, 24);
+            tb_MatarhjulVinkel.TabIndex = 11;
+            tb_MatarhjulVinkel.TextAlign = HorizontalAlignment.Center;
+            tb_MatarhjulVinkel.WordWrap = false;
+            tb_MatarhjulVinkel.KeyDown += EnterToTab_KeyDown;
+            tb_MatarhjulVinkel.Leave += Check_MIN_NOM_MAX_Leave;
             // 
             // tb_HelixVinkel
             // 
-            this.tb_HelixVinkel.BackColor = System.Drawing.Color.White;
-            this.tb_HelixVinkel.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.tb_HelixVinkel.Cursor = System.Windows.Forms.Cursors.IBeam;
-            this.tb_HelixVinkel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tb_HelixVinkel.Font = new System.Drawing.Font("Courier New", 8.5F);
-            this.tb_HelixVinkel.ForeColor = System.Drawing.Color.DarkSlateGray;
-            this.tb_HelixVinkel.Location = new System.Drawing.Point(233, 152);
-            this.tb_HelixVinkel.Margin = new System.Windows.Forms.Padding(1, 1, 0, 0);
-            this.tb_HelixVinkel.MaxLength = 4;
-            this.tb_HelixVinkel.Multiline = true;
-            this.tb_HelixVinkel.Name = "tb_HelixVinkel";
-            this.tb_HelixVinkel.Size = new System.Drawing.Size(57, 21);
-            this.tb_HelixVinkel.TabIndex = 11;
-            this.tb_HelixVinkel.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.tb_HelixVinkel.WordWrap = false;
-            this.tb_HelixVinkel.KeyDown += new System.Windows.Forms.KeyEventHandler(this.EnterToTab_KeyDown);
+            tb_HelixVinkel.BackColor = Color.White;
+            tb_HelixVinkel.BorderStyle = BorderStyle.None;
+            tb_HelixVinkel.Cursor = Cursors.IBeam;
+            tb_HelixVinkel.Dock = DockStyle.Fill;
+            tb_HelixVinkel.Font = new Font("Courier New", 8.5F);
+            tb_HelixVinkel.ForeColor = Color.DarkSlateGray;
+            tb_HelixVinkel.Location = new Point(271, 175);
+            tb_HelixVinkel.Margin = new Padding(1, 1, 0, 0);
+            tb_HelixVinkel.MaxLength = 4;
+            tb_HelixVinkel.Multiline = true;
+            tb_HelixVinkel.Name = "tb_HelixVinkel";
+            tb_HelixVinkel.Size = new Size(67, 24);
+            tb_HelixVinkel.TabIndex = 11;
+            tb_HelixVinkel.TextAlign = HorizontalAlignment.Center;
+            tb_HelixVinkel.WordWrap = false;
+            tb_HelixVinkel.KeyDown += EnterToTab_KeyDown;
             // 
             // tb_Bladhöjd
             // 
-            this.tb_Bladhöjd.BackColor = System.Drawing.Color.White;
-            this.tb_Bladhöjd.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.tb_Bladhöjd.Cursor = System.Windows.Forms.Cursors.IBeam;
-            this.tb_Bladhöjd.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tb_Bladhöjd.Font = new System.Drawing.Font("Courier New", 8.5F);
-            this.tb_Bladhöjd.ForeColor = System.Drawing.Color.DarkSlateGray;
-            this.tb_Bladhöjd.Location = new System.Drawing.Point(291, 152);
-            this.tb_Bladhöjd.Margin = new System.Windows.Forms.Padding(1, 1, 0, 0);
-            this.tb_Bladhöjd.MaxLength = 6;
-            this.tb_Bladhöjd.Multiline = true;
-            this.tb_Bladhöjd.Name = "tb_Bladhöjd";
-            this.tb_Bladhöjd.Size = new System.Drawing.Size(63, 21);
-            this.tb_Bladhöjd.TabIndex = 11;
-            this.tb_Bladhöjd.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.tb_Bladhöjd.WordWrap = false;
-            this.tb_Bladhöjd.KeyDown += new System.Windows.Forms.KeyEventHandler(this.EnterToTab_KeyDown);
-            this.tb_Bladhöjd.Leave += new System.EventHandler(this.Check_MIN_NOM_MAX_Leave);
+            tb_Bladhöjd.BackColor = Color.White;
+            tb_Bladhöjd.BorderStyle = BorderStyle.None;
+            tb_Bladhöjd.Cursor = Cursors.IBeam;
+            tb_Bladhöjd.Dock = DockStyle.Fill;
+            tb_Bladhöjd.Font = new Font("Courier New", 8.5F);
+            tb_Bladhöjd.ForeColor = Color.DarkSlateGray;
+            tb_Bladhöjd.Location = new Point(339, 175);
+            tb_Bladhöjd.Margin = new Padding(1, 1, 0, 0);
+            tb_Bladhöjd.MaxLength = 6;
+            tb_Bladhöjd.Multiline = true;
+            tb_Bladhöjd.Name = "tb_Bladhöjd";
+            tb_Bladhöjd.Size = new Size(74, 24);
+            tb_Bladhöjd.TabIndex = 11;
+            tb_Bladhöjd.TextAlign = HorizontalAlignment.Center;
+            tb_Bladhöjd.WordWrap = false;
+            tb_Bladhöjd.KeyDown += EnterToTab_KeyDown;
+            tb_Bladhöjd.Leave += Check_MIN_NOM_MAX_Leave;
             // 
             // tb_Arbetsblad
             // 
-            this.tb_Arbetsblad.BackColor = System.Drawing.Color.White;
-            this.tb_Arbetsblad.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.tb_Arbetsblad.Cursor = System.Windows.Forms.Cursors.IBeam;
-            this.tb_Arbetsblad.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tb_Arbetsblad.Font = new System.Drawing.Font("Courier New", 8.5F);
-            this.tb_Arbetsblad.ForeColor = System.Drawing.Color.DarkSlateGray;
-            this.tb_Arbetsblad.Location = new System.Drawing.Point(355, 152);
-            this.tb_Arbetsblad.Margin = new System.Windows.Forms.Padding(1, 1, 0, 0);
-            this.tb_Arbetsblad.MaxLength = 5;
-            this.tb_Arbetsblad.Multiline = true;
-            this.tb_Arbetsblad.Name = "tb_Arbetsblad";
-            this.tb_Arbetsblad.Size = new System.Drawing.Size(69, 21);
-            this.tb_Arbetsblad.TabIndex = 11;
-            this.tb_Arbetsblad.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.tb_Arbetsblad.WordWrap = false;
-            this.tb_Arbetsblad.KeyDown += new System.Windows.Forms.KeyEventHandler(this.EnterToTab_KeyDown);
-            this.tb_Arbetsblad.Leave += new System.EventHandler(this.Check_MIN_NOM_MAX_Leave);
+            tb_Arbetsblad.BackColor = Color.White;
+            tb_Arbetsblad.BorderStyle = BorderStyle.None;
+            tb_Arbetsblad.Cursor = Cursors.IBeam;
+            tb_Arbetsblad.Dock = DockStyle.Fill;
+            tb_Arbetsblad.Font = new Font("Courier New", 8.5F);
+            tb_Arbetsblad.ForeColor = Color.DarkSlateGray;
+            tb_Arbetsblad.Location = new Point(414, 175);
+            tb_Arbetsblad.Margin = new Padding(1, 1, 0, 0);
+            tb_Arbetsblad.MaxLength = 5;
+            tb_Arbetsblad.Multiline = true;
+            tb_Arbetsblad.Name = "tb_Arbetsblad";
+            tb_Arbetsblad.Size = new Size(81, 24);
+            tb_Arbetsblad.TabIndex = 11;
+            tb_Arbetsblad.TextAlign = HorizontalAlignment.Center;
+            tb_Arbetsblad.WordWrap = false;
+            tb_Arbetsblad.KeyDown += EnterToTab_KeyDown;
+            tb_Arbetsblad.Leave += Check_MIN_NOM_MAX_Leave;
             // 
             // tb_Nr
             // 
-            this.tb_Nr.BackColor = System.Drawing.Color.White;
-            this.tb_Nr.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.tb_Nr.Cursor = System.Windows.Forms.Cursors.IBeam;
-            this.tb_Nr.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tb_Nr.Font = new System.Drawing.Font("Courier New", 8.5F);
-            this.tb_Nr.ForeColor = System.Drawing.Color.DarkSlateGray;
-            this.tb_Nr.Location = new System.Drawing.Point(425, 152);
-            this.tb_Nr.Margin = new System.Windows.Forms.Padding(1, 1, 0, 0);
-            this.tb_Nr.MaxLength = 4;
-            this.tb_Nr.Multiline = true;
-            this.tb_Nr.Name = "tb_Nr";
-            this.tb_Nr.Size = new System.Drawing.Size(59, 21);
-            this.tb_Nr.TabIndex = 11;
-            this.tb_Nr.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.tb_Nr.WordWrap = false;
-            this.tb_Nr.KeyDown += new System.Windows.Forms.KeyEventHandler(this.EnterToTab_KeyDown);
+            tb_Nr.BackColor = Color.White;
+            tb_Nr.BorderStyle = BorderStyle.None;
+            tb_Nr.Cursor = Cursors.IBeam;
+            tb_Nr.Dock = DockStyle.Fill;
+            tb_Nr.Font = new Font("Courier New", 8.5F);
+            tb_Nr.ForeColor = Color.DarkSlateGray;
+            tb_Nr.Location = new Point(496, 175);
+            tb_Nr.Margin = new Padding(1, 1, 0, 0);
+            tb_Nr.MaxLength = 4;
+            tb_Nr.Multiline = true;
+            tb_Nr.Name = "tb_Nr";
+            tb_Nr.Size = new Size(69, 24);
+            tb_Nr.TabIndex = 11;
+            tb_Nr.TextAlign = HorizontalAlignment.Center;
+            tb_Nr.WordWrap = false;
+            tb_Nr.KeyDown += EnterToTab_KeyDown;
             // 
             // tb_Chimshöjd
             // 
-            this.tb_Chimshöjd.BackColor = System.Drawing.Color.White;
-            this.tb_Chimshöjd.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.tb_Chimshöjd.Cursor = System.Windows.Forms.Cursors.IBeam;
-            this.tb_Chimshöjd.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tb_Chimshöjd.Font = new System.Drawing.Font("Courier New", 8.5F);
-            this.tb_Chimshöjd.ForeColor = System.Drawing.Color.DarkSlateGray;
-            this.tb_Chimshöjd.Location = new System.Drawing.Point(485, 152);
-            this.tb_Chimshöjd.Margin = new System.Windows.Forms.Padding(1, 1, 0, 0);
-            this.tb_Chimshöjd.MaxLength = 4;
-            this.tb_Chimshöjd.Multiline = true;
-            this.tb_Chimshöjd.Name = "tb_Chimshöjd";
-            this.tb_Chimshöjd.Size = new System.Drawing.Size(71, 21);
-            this.tb_Chimshöjd.TabIndex = 11;
-            this.tb_Chimshöjd.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.tb_Chimshöjd.WordWrap = false;
-            this.tb_Chimshöjd.KeyDown += new System.Windows.Forms.KeyEventHandler(this.EnterToTab_KeyDown);
+            tb_Chimshöjd.BackColor = Color.White;
+            tb_Chimshöjd.BorderStyle = BorderStyle.None;
+            tb_Chimshöjd.Cursor = Cursors.IBeam;
+            tb_Chimshöjd.Dock = DockStyle.Fill;
+            tb_Chimshöjd.Font = new Font("Courier New", 8.5F);
+            tb_Chimshöjd.ForeColor = Color.DarkSlateGray;
+            tb_Chimshöjd.Location = new Point(566, 175);
+            tb_Chimshöjd.Margin = new Padding(1, 1, 0, 0);
+            tb_Chimshöjd.MaxLength = 4;
+            tb_Chimshöjd.Multiline = true;
+            tb_Chimshöjd.Name = "tb_Chimshöjd";
+            tb_Chimshöjd.Size = new Size(83, 24);
+            tb_Chimshöjd.TabIndex = 11;
+            tb_Chimshöjd.TextAlign = HorizontalAlignment.Center;
+            tb_Chimshöjd.WordWrap = false;
+            tb_Chimshöjd.KeyDown += EnterToTab_KeyDown;
             // 
             // label4
             // 
-            this.label4.BackColor = System.Drawing.Color.DarkGray;
-            this.tlp_Main.SetColumnSpan(this.label4, 5);
-            this.label4.Cursor = System.Windows.Forms.Cursors.SizeAll;
-            this.label4.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label4.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.ForeColor = System.Drawing.Color.ForestGreen;
-            this.label4.Location = new System.Drawing.Point(557, 152);
-            this.label4.Margin = new System.Windows.Forms.Padding(1, 1, 0, 0);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(336, 21);
-            this.label4.TabIndex = 1007;
-            this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            label4.BackColor = Color.DarkGray;
+            tlp_Main.SetColumnSpan(label4, 5);
+            label4.Cursor = Cursors.SizeAll;
+            label4.Dock = DockStyle.Fill;
+            label4.Font = new Font("Consolas", 8.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label4.ForeColor = Color.ForestGreen;
+            label4.Location = new Point(650, 175);
+            label4.Margin = new Padding(1, 1, 0, 0);
+            label4.Name = "label4";
+            label4.Size = new Size(393, 24);
+            label4.TabIndex = 1007;
+            label4.TextAlign = ContentAlignment.MiddleCenter;
+            // 
+            // dataGridViewTextBoxColumn1
+            // 
+            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle3.Font = new Font("Courier New", 8.5F, FontStyle.Italic);
+            dataGridViewCellStyle3.ForeColor = Color.Gray;
+            dataGridViewTextBoxColumn1.DefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewTextBoxColumn1.HeaderText = "Slipmaskin";
+            dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
+            dataGridViewTextBoxColumn1.ReadOnly = true;
+            dataGridViewTextBoxColumn1.Resizable = DataGridViewTriState.False;
+            dataGridViewTextBoxColumn1.Width = 84;
+            // 
+            // dataGridViewTextBoxColumn2
+            // 
+            dataGridViewCellStyle4.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle4.Font = new Font("Courier New", 8.5F, FontStyle.Italic);
+            dataGridViewCellStyle4.ForeColor = Color.Gray;
+            dataGridViewTextBoxColumn2.DefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewTextBoxColumn2.HeaderText = "Matarhjul Hastighet";
+            dataGridViewTextBoxColumn2.Name = "dataGridViewTextBoxColumn2";
+            dataGridViewTextBoxColumn2.ReadOnly = true;
+            dataGridViewTextBoxColumn2.Resizable = DataGridViewTriState.False;
+            dataGridViewTextBoxColumn2.Width = 76;
+            // 
+            // dgv_Maskinparametrar_MatarhjulVinkel
+            // 
+            dataGridViewCellStyle5.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle5.Font = new Font("Courier New", 8.5F, FontStyle.Italic);
+            dataGridViewCellStyle5.ForeColor = Color.Gray;
+            dgv_Maskinparametrar_MatarhjulVinkel.DefaultCellStyle = dataGridViewCellStyle5;
+            dgv_Maskinparametrar_MatarhjulVinkel.HeaderText = "Matarhjul Vinkel";
+            dgv_Maskinparametrar_MatarhjulVinkel.Name = "dgv_Maskinparametrar_MatarhjulVinkel";
+            dgv_Maskinparametrar_MatarhjulVinkel.ReadOnly = true;
+            dgv_Maskinparametrar_MatarhjulVinkel.Resizable = DataGridViewTriState.False;
+            dgv_Maskinparametrar_MatarhjulVinkel.Width = 66;
+            // 
+            // dataGridViewTextBoxColumn4
+            // 
+            dataGridViewCellStyle6.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle6.Font = new Font("Courier New", 8.5F, FontStyle.Italic);
+            dataGridViewCellStyle6.ForeColor = Color.Gray;
+            dataGridViewTextBoxColumn4.DefaultCellStyle = dataGridViewCellStyle6;
+            dataGridViewTextBoxColumn4.HeaderText = "Helix Vinkel";
+            dataGridViewTextBoxColumn4.Name = "dataGridViewTextBoxColumn4";
+            dataGridViewTextBoxColumn4.ReadOnly = true;
+            dataGridViewTextBoxColumn4.Resizable = DataGridViewTriState.False;
+            dataGridViewTextBoxColumn4.Width = 68;
+            // 
+            // dgv_Maskinparametrar_Bladhöjd
+            // 
+            dataGridViewCellStyle7.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle7.Font = new Font("Courier New", 8.5F, FontStyle.Italic);
+            dataGridViewCellStyle7.ForeColor = Color.Gray;
+            dgv_Maskinparametrar_Bladhöjd.DefaultCellStyle = dataGridViewCellStyle7;
+            dgv_Maskinparametrar_Bladhöjd.HeaderText = "Bladhöjd";
+            dgv_Maskinparametrar_Bladhöjd.Name = "dgv_Maskinparametrar_Bladhöjd";
+            dgv_Maskinparametrar_Bladhöjd.ReadOnly = true;
+            dgv_Maskinparametrar_Bladhöjd.Resizable = DataGridViewTriState.False;
+            dgv_Maskinparametrar_Bladhöjd.Width = 75;
+            // 
+            // dgv_Maskinparametrar_Arbetsblad
+            // 
+            dataGridViewCellStyle8.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle8.Font = new Font("Courier New", 8.5F, FontStyle.Italic);
+            dataGridViewCellStyle8.ForeColor = Color.Gray;
+            dgv_Maskinparametrar_Arbetsblad.DefaultCellStyle = dataGridViewCellStyle8;
+            dgv_Maskinparametrar_Arbetsblad.HeaderText = "Arbetsblad";
+            dgv_Maskinparametrar_Arbetsblad.Name = "dgv_Maskinparametrar_Arbetsblad";
+            dgv_Maskinparametrar_Arbetsblad.ReadOnly = true;
+            dgv_Maskinparametrar_Arbetsblad.Resizable = DataGridViewTriState.False;
+            dgv_Maskinparametrar_Arbetsblad.Width = 82;
+            // 
+            // dataGridViewTextBoxColumn7
+            // 
+            dataGridViewCellStyle9.Font = new Font("Courier New", 8.5F, FontStyle.Italic);
+            dataGridViewCellStyle9.ForeColor = Color.Gray;
+            dataGridViewTextBoxColumn7.DefaultCellStyle = dataGridViewCellStyle9;
+            dataGridViewTextBoxColumn7.HeaderText = "Nr";
+            dataGridViewTextBoxColumn7.Name = "dataGridViewTextBoxColumn7";
+            dataGridViewTextBoxColumn7.ReadOnly = true;
+            dataGridViewTextBoxColumn7.Resizable = DataGridViewTriState.False;
+            dataGridViewTextBoxColumn7.Width = 70;
+            // 
+            // dataGridViewTextBoxColumn8
+            // 
+            dataGridViewCellStyle10.Font = new Font("Courier New", 8.5F, FontStyle.Italic);
+            dataGridViewCellStyle10.ForeColor = Color.Gray;
+            dataGridViewTextBoxColumn8.DefaultCellStyle = dataGridViewCellStyle10;
+            dataGridViewTextBoxColumn8.HeaderText = "Chimshöjd";
+            dataGridViewTextBoxColumn8.Name = "dataGridViewTextBoxColumn8";
+            dataGridViewTextBoxColumn8.ReadOnly = true;
+            dataGridViewTextBoxColumn8.Resizable = DataGridViewTriState.False;
+            dataGridViewTextBoxColumn8.Width = 83;
+            // 
+            // dataGridViewTextBoxColumn9
+            // 
+            dataGridViewCellStyle11.Font = new Font("Courier New", 8.5F, FontStyle.Italic);
+            dataGridViewCellStyle11.ForeColor = Color.Gray;
+            dataGridViewTextBoxColumn9.DefaultCellStyle = dataGridViewCellStyle11;
+            dataGridViewTextBoxColumn9.HeaderText = "Centerhöjd";
+            dataGridViewTextBoxColumn9.Name = "dataGridViewTextBoxColumn9";
+            dataGridViewTextBoxColumn9.ReadOnly = true;
+            dataGridViewTextBoxColumn9.Resizable = DataGridViewTriState.False;
+            dataGridViewTextBoxColumn9.Width = 87;
+            // 
+            // dataGridViewTextBoxColumn14
+            // 
+            dataGridViewCellStyle12.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle12.Font = new Font("Courier New", 8.5F, FontStyle.Italic);
+            dataGridViewCellStyle12.ForeColor = Color.Gray;
+            dataGridViewTextBoxColumn14.DefaultCellStyle = dataGridViewCellStyle12;
+            dataGridViewTextBoxColumn14.HeaderText = "Datum";
+            dataGridViewTextBoxColumn14.Name = "dataGridViewTextBoxColumn14";
+            dataGridViewTextBoxColumn14.ReadOnly = true;
+            dataGridViewTextBoxColumn14.Resizable = DataGridViewTriState.False;
+            dataGridViewTextBoxColumn14.Width = 94;
+            // 
+            // dataGridViewTextBoxColumn15
+            // 
+            dataGridViewCellStyle13.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle13.Font = new Font("Courier New", 8.5F, FontStyle.Italic);
+            dataGridViewCellStyle13.ForeColor = Color.Gray;
+            dataGridViewTextBoxColumn15.DefaultCellStyle = dataGridViewCellStyle13;
+            dataGridViewTextBoxColumn15.HeaderText = "Tid";
+            dataGridViewTextBoxColumn15.Name = "dataGridViewTextBoxColumn15";
+            dataGridViewTextBoxColumn15.ReadOnly = true;
+            dataGridViewTextBoxColumn15.Resizable = DataGridViewTriState.False;
+            dataGridViewTextBoxColumn15.Width = 56;
+            // 
+            // dataGridViewTextBoxColumn16
+            // 
+            dataGridViewCellStyle14.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle14.Font = new Font("Courier New", 8.5F, FontStyle.Italic);
+            dataGridViewCellStyle14.ForeColor = Color.Gray;
+            dataGridViewTextBoxColumn16.DefaultCellStyle = dataGridViewCellStyle14;
+            dataGridViewTextBoxColumn16.HeaderText = "AnstNr";
+            dataGridViewTextBoxColumn16.Name = "dataGridViewTextBoxColumn16";
+            dataGridViewTextBoxColumn16.ReadOnly = true;
+            dataGridViewTextBoxColumn16.Resizable = DataGridViewTriState.False;
+            dataGridViewTextBoxColumn16.Width = 57;
+            // 
+            // dataGridViewTextBoxColumn17
+            // 
+            dataGridViewTextBoxColumn17.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dataGridViewCellStyle15.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle15.Font = new Font("Courier New", 8.5F, FontStyle.Italic);
+            dataGridViewCellStyle15.ForeColor = Color.Gray;
+            dataGridViewTextBoxColumn17.DefaultCellStyle = dataGridViewCellStyle15;
+            dataGridViewTextBoxColumn17.HeaderText = "Sign";
+            dataGridViewTextBoxColumn17.Name = "dataGridViewTextBoxColumn17";
+            dataGridViewTextBoxColumn17.ReadOnly = true;
+            dataGridViewTextBoxColumn17.Resizable = DataGridViewTriState.False;
             // 
             // Maskinparametrar_Slipning_TEF
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.tlp_Main);
-            this.Name = "Maskinparametrar_Slipning_TEF";
-            this.Size = new System.Drawing.Size(893, 329);
-            this.tlp_Main.ResumeLayout(false);
-            this.tlp_Main.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgv_MaskinParametrar)).EndInit();
-            this.ResumeLayout(false);
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            Controls.Add(tlp_Main);
+            Margin = new Padding(4, 3, 4, 3);
+            Name = "Maskinparametrar_Slipning_TEF";
+            Size = new Size(1042, 380);
+            tlp_Main.ResumeLayout(false);
+            tlp_Main.PerformLayout();
+            ((ISupportInitialize)dgv_MaskinParametrar).EndInit();
+            ResumeLayout(false);
 
         }
 
@@ -1434,6 +1386,7 @@ namespace DigitalProductionProgram.Protocols.Slipning_TEF
         private TextBox tb_Chimshöjd;
         private Label label4;
         private Label label_Maskinparametrar;
+        public TableLayoutPanel tlp_Main;
         private DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
         private DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
         private DataGridViewTextBoxColumn dgv_Maskinparametrar_MatarhjulVinkel;
@@ -1447,6 +1400,5 @@ namespace DigitalProductionProgram.Protocols.Slipning_TEF
         private DataGridViewTextBoxColumn dataGridViewTextBoxColumn15;
         private DataGridViewTextBoxColumn dataGridViewTextBoxColumn16;
         private DataGridViewTextBoxColumn dataGridViewTextBoxColumn17;
-        public TableLayoutPanel tlp_Main;
     }
 }

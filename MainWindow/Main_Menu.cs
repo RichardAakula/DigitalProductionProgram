@@ -119,6 +119,7 @@ namespace DigitalProductionProgram.MainWindow
             mainForm.OrderInformation.tb_OrderNr.Focus();
             mainForm.measurePoints.ClearMeasurePoints();
             mainForm.measureStats.ClearData();
+            mainForm.OrderInformation.tb_OrderNr.Enabled = true;
 
             if (MainMeasureStatistics.Charts.chart != null && MainMeasureStatistics.Charts.chart.Series[0].Points.Count > 0)
             {
@@ -228,7 +229,7 @@ namespace DigitalProductionProgram.MainWindow
                 if (QC_Feedback.IsOperationHaveQCFeedback)
                     QC_Feedback.IncreaseRemainingViewsForOperation();
 
-                Order.Clear_Order();
+               // Order.Clear_Order();//Detta görs i Clear_Mainform
                 mainForm.Clear_Mainform();
 
             }

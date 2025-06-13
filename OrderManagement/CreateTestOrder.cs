@@ -10,6 +10,7 @@ using DigitalProductionProgram.PrintingServices;
 using DigitalProductionProgram.Processcards;
 using DigitalProductionProgram.Protocols;
 using DigitalProductionProgram.Protocols.ExtraProtocols;
+using DigitalProductionProgram.Templates;
 
 namespace DigitalProductionProgram.OrderManagement
 {

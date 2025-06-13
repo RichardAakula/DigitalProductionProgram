@@ -145,7 +145,7 @@
     <Compile Update="Processcards\ProcesscardBasedOn.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Update="Processcards\ProcesscardTemplateSelector.cs">
+    <Compile Update="Templates\ProcesscardTemplateSelector.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="Protocols\Blandning_PTFE\Blandning_PTFE.cs">

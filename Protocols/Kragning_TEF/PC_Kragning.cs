@@ -38,9 +38,8 @@ namespace DigitalProductionProgram.Protocols.Kragning_TEF
             for (var row = 0; row < 3; row++)
                 dgv_Processkort.Rows.Add();
 
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query = @"
+            using var con = new SqlConnection(Database.cs_Protocol);
+            var query = @"
                     SELECT DISTINCT codetext, unit, RowIndex, ColumnIndex, template.Type, template.Decimals
                     FROM Protocol.Template as template
 	                    JOIN Protocol.Description as descr
@@ -48,51 +47,49 @@ namespace DigitalProductionProgram.Protocols.Kragning_TEF
                     WHERE FormTemplateID = @formtemplateid
                     AND ColumnIndex IS NOT NULL
                     ORDER BY RowIndex";
-                con.Open();
-                var cmd = new SqlCommand(query, con);
-                cmd.Parameters.AddWithValue("@formtemplateid", 8);
-                //cmd.Parameters.AddWithValue("@revision", Processcard.Active_Processcard_Revision(8));
-                var reader = cmd.ExecuteReader();
+            con.Open();
+            var cmd = new SqlCommand(query, con);
+            cmd.Parameters.AddWithValue("@formtemplateid", 8);
+            //cmd.Parameters.AddWithValue("@revision", Processcard.Active_Processcard_Revision(8));
+            var reader = cmd.ExecuteReader();
 
-                while (reader.Read())
+            while (reader.Read())
+            {
+                int.TryParse(reader["RowIndex"].ToString(), out var row);
+                int.TryParse(reader["ColumnIndex"].ToString(), out var col);
+                int.TryParse(reader["Type"].ToString(), out var type);
+                int.TryParse(reader["Decimals"].ToString(), out var decimals);
+                switch (type)
                 {
-                    int.TryParse(reader["RowIndex"].ToString(), out var row);
-                    int.TryParse(reader["ColumnIndex"].ToString(), out var col);
-                    int.TryParse(reader["Type"].ToString(), out var type);
-                    int.TryParse(reader["Decimals"].ToString(), out var decimals);
-                    switch (type)
-                    {
-                        case 0: //NumberValue
-                            if (decimals > 0)
-                                Processcard.Rows_double.Add(row);
-                            else
-                                Processcard.Rows_int.Add(row);
-                            break;
-                        case 1: //TextValue
-                            Processcard.Rows_string.Add(row);
-                            break;
-                    }
-                    switch (col)
-                    {
-                        case 0://MIN
-                        case 2://MAX
-                            dgv_Processkort.Rows[col].Cells[row].Style.BackColor = Color.Gainsboro;
-                            dgv_Processkort.Rows[col].Cells[row].Style.ForeColor = Color.DodgerBlue;
-                            break;
-                        case 1://NOM
-                            dgv_Processkort.Rows[col].Cells[row].Style.BackColor = Color.Silver;
-                            dgv_Processkort.Rows[col].Cells[row].Style.ForeColor = Color.ForestGreen;
-                            break;
+                    case 0: //NumberValue
+                        if (decimals > 0)
+                            Processcard.Rows_double.Add(row);
+                        else
+                            Processcard.Rows_int.Add(row);
+                        break;
+                    case 1: //TextValue
+                        Processcard.Rows_string.Add(row);
+                        break;
+                }
+                switch (col)
+                {
+                    case 0://MIN
+                    case 2://MAX
+                        dgv_Processkort.Rows[col].Cells[row].Style.BackColor = Color.Gainsboro;
+                        dgv_Processkort.Rows[col].Cells[row].Style.ForeColor = Color.DodgerBlue;
+                        break;
+                    case 1://NOM
+                        dgv_Processkort.Rows[col].Cells[row].Style.BackColor = Color.Silver;
+                        dgv_Processkort.Rows[col].Cells[row].Style.ForeColor = Color.ForestGreen;
+                        break;
 
-                    }
                 }
             }
         }
         public void Load_Data()
         {
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query = @"
+            using var con = new SqlConnection(Database.cs_Protocol);
+            var query = @"
                     SELECT ColumnIndex, RowIndex, Value, TextValue, template.Type, template.Decimals
                     FROM Protocol.Template AS template
                         JOIN Processcard.Data AS pc_data
@@ -102,33 +99,32 @@ namespace DigitalProductionProgram.Protocols.Kragning_TEF
                     WHERE pc_data.PartID = @partID
                     
                     ORDER BY RowIndex, ColumnIndex";
-                con.Open();
-                var cmd = new SqlCommand(query, con);
-                SQL_Parameter.NullableINT(cmd.Parameters, "@partID", Order.PartID);
-                var reader = cmd.ExecuteReader();
-                while (reader.Read())
+            con.Open();
+            var cmd = new SqlCommand(query, con);
+            SQL_Parameter.NullableINT(cmd.Parameters, "@partID", Order.PartID);
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                int.TryParse(reader["Type"].ToString(), out var type);
+                int.TryParse(reader["ColumnIndex"].ToString(), out var row);
+                int.TryParse(reader["RowIndex"].ToString(), out var col);
+                var value = string.Empty;
+                switch (type)
                 {
-                    int.TryParse(reader["Type"].ToString(), out var type);
-                    int.TryParse(reader["ColumnIndex"].ToString(), out var row);
-                    int.TryParse(reader["RowIndex"].ToString(), out var col);
-                    var value = string.Empty;
-                    switch (type)
-                    {
-                        case 0://NumberValue
-                            int.TryParse(reader["Decimals"].ToString(), out var decimals);
+                    case 0://NumberValue
+                        int.TryParse(reader["Decimals"].ToString(), out var decimals);
 
-                            if (double.TryParse(reader["Value"].ToString(), out var NumberValue) == false)
-                                value = string.Empty;
-                            else
-                                value = Processcard.Format_Value(NumberValue, decimals);
-                            break;
-                        case 1://TextValue
-                            value = reader["TextValue"].ToString();
-                            break;
-                    }
-                   
-                    dgv_Processkort.Rows[row].Cells[col].Value = value;
+                        if (double.TryParse(reader["Value"].ToString(), out var NumberValue) == false)
+                            value = string.Empty;
+                        else
+                            value = Processcard.Format_Value(NumberValue, decimals);
+                        break;
+                    case 1://TextValue
+                        value = reader["TextValue"].ToString();
+                        break;
                 }
+                   
+                dgv_Processkort.Rows[row].Cells[col].Value = value;
             }
         }
 

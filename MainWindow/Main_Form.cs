@@ -305,27 +305,11 @@ namespace DigitalProductionProgram.MainWindow
 
         private void Initialize_Timers()
         {
-           // Timer_UpdateChart.Tick += UpdateChart_Tick;
-            //Timer_ChangeGrade.Tick += Change_Grade_Tick;
-            //Timer_ReloginMonitor.Tick += ReLogin_Monitor_Tick;
-
-           // Timer_UpdateChart.Interval = 300000;
-           // Timer_ChangeGrade.Interval = 600000;
-           // Timer_ReloginMonitor.Interval = 60000;
-
-          //  timer_CheckForUpdate.Start();
-
-           // Timer_Update_Körplanering_Start();
-
-           // timer_Planerat_Stopp.Start();
-
-
             timer_Master = new Timer();
             timer_Master.Interval = 1000; // 1 sekund
             timer_Master.Tick += MasterTimer_Tick;
             timer_Master.Start();
         }
-
 
         //----------- CHANGE GUI-----------------------
         public void Change_GUI_MainForm()
@@ -625,6 +609,7 @@ namespace DigitalProductionProgram.MainWindow
             {
                 OrderInformation.cb_Operation.BackColor = Color.White;
                 StartOrLoadOrder(false);
+                OrderInformation.tb_OrderNr.Enabled = false;
             }
         }
 
@@ -648,7 +633,7 @@ namespace DigitalProductionProgram.MainWindow
 
             ProgressBar.close();
             Activate();
-            OrderInformation.tb_OrderNr.SelectionLength = 0;
+            //OrderInformation.tb_OrderNr.SelectionLength = 0;
             Cursor = Cursors.Arrow;
 
             _ = Activity.Stop("Öppnar Order:");
@@ -731,10 +716,11 @@ namespace DigitalProductionProgram.MainWindow
                     CustomColors.InfoText_Color.Warning, "Varning!");
                 return;
             }
+            Clear_Mainform();
 
             OrderInformation.tb_OrderNr.Enabled = true;
             OrderInformation.tb_OrderNr.Text = PriorityPlanning.dgv_PriorityPlanning.Rows[e.RowIndex].Cells["OrderNr"].Value.ToString();
-
+            OrderInformation.cb_Operation.Focus();
             OrderInformation.Fill_cb_Operation();
 
             Order.Operation = PriorityPlanning.dgv_PriorityPlanning.Rows[e.RowIndex].Cells["Operation"].Value.ToString();
@@ -742,7 +728,7 @@ namespace DigitalProductionProgram.MainWindow
             int.TryParse(Order.Operation, out int operation);
             OrderInformation.Set_Operation(operation);
 
-            OrderInformation.tb_OrderNr.Enabled = true;
+            OrderInformation.tb_OrderNr.Enabled = false;
             OrderInformation.cb_Operation.Enabled = true;
             PriorityPlanning.dgv_PriorityPlanning.ClearSelection();
         }
@@ -1025,6 +1011,7 @@ namespace DigitalProductionProgram.MainWindow
         private int counter_ReLoginMonitor = 0;
         private int timer_counterPlaneratStopp = 60;
         public static int timer_ReloginMonitor = 600000;
+        private int timer_CheckForUpdate = 10;
 
         private Timer timer_Master;
         private async void MasterTimer_Tick(object? sender, EventArgs e)
@@ -1053,7 +1040,7 @@ namespace DigitalProductionProgram.MainWindow
                 MainMeasureStatistics.Kontrollera_Mätningar.Medelvärden();
             }
             // 10 sek: Kolla efter uppdatering
-            if (counter_CheckForUpdate >= 10)
+            if (counter_CheckForUpdate >= timer_CheckForUpdate)
             {
                 counter_CheckForUpdate = 0;
                 CheckForUpdate();
@@ -1116,12 +1103,11 @@ namespace DigitalProductionProgram.MainWindow
             if (InfoText.answer == InfoText.Answer.No)
             {
                 _ = Activity.Stop($"Användare {Person.Name} uppdaterade INTE programmet.");
-                counter_CheckForUpdate = 300; // 5 timmar
+                timer_CheckForUpdate = 300; // 5 timmar
             }
             else
             {
                 _ = Activity.Stop($"Användare {Person.Name} uppdaterade programmet.");
-                counter_CheckForUpdate = 5;
                 Maintenance.StartInstallation();
             }
         }

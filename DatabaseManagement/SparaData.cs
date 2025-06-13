@@ -170,27 +170,12 @@ namespace DigitalProductionProgram.DatabaseManagement
 
         public static void UPDATE_Användare_Seen_Gallup_Result()
         {
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query = "UPDATE [User].Person SET Seen_Gallup_result = 'True' WHERE EmployeeNumber = @employeenumber";
-                var cmd = new SqlCommand(query, con);
-                cmd.Parameters.AddWithValue("@employeenumber", Person.EmployeeNr);
-                con.Open();
-                cmd.ExecuteNonQuery();
-            }
-        }
-
-        public static void UPDATE_Processkort_Hantering_Arbetsoperation(string arbetsOperation)
-        {
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                const string query = "UPDATE [User].Person SET Processkort_ArbetsOperation = @workoperation WHERE Name = @name";
-                var cmd = new SqlCommand(query, con);
-                cmd.Parameters.AddWithValue("@workoperation", arbetsOperation);
-                cmd.Parameters.AddWithValue("@name", Person.Name);
-                con.Open();
-                cmd.ExecuteNonQuery();
-            }
+            using var con = new SqlConnection(Database.cs_Protocol);
+            var query = "UPDATE [User].Person SET Seen_Gallup_result = 'True' WHERE EmployeeNumber = @employeenumber";
+            var cmd = new SqlCommand(query, con);
+            cmd.Parameters.AddWithValue("@employeenumber", Person.EmployeeNr);
+            con.Open();
+            cmd.ExecuteNonQuery();
         }
 
 
@@ -200,9 +185,8 @@ namespace DigitalProductionProgram.DatabaseManagement
             if (Part.IsPartID_Exist() == false)
                 return;
 
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query = @"
+            using var con = new SqlConnection(Database.cs_Protocol);
+            var query = @"
                 UPDATE [Order].MainData
                 SET [Order].MainData.RevNr = pc_main.RevNr,
                     [Order].MainData.ProdType = pc_main.ProdType
@@ -214,48 +198,43 @@ namespace DigitalProductionProgram.DatabaseManagement
                     AND pc_main.WorkOperationID = @workoperationid
                     AND [Order].MainData.OrderID = @orderid";
 
-                var cmd = new SqlCommand(query, con);
-                SQL_Parameter.Int(cmd.Parameters, "@partid", Order.PartID);
-                SQL_Parameter.Int(cmd.Parameters, "@workoperationid", Order.WorkoperationID);
-                SQL_Parameter.Int(cmd.Parameters, "@orderid", Order.OrderID);
-                if (string.IsNullOrEmpty(Order.RevNr))
-                    cmd.Parameters.AddWithValue("@revNr", Processkort_General.Last_RevNr());
-                else//Om Testorder skapats så skall revNr vara Order.RevNr annars skall det automatiskt hämtas från Senaste_RevNr_Processkort
-                    cmd.Parameters.AddWithValue("@revNr", Order.RevNr);
-                con.Open();
+            var cmd = new SqlCommand(query, con);
+            SQL_Parameter.Int(cmd.Parameters, "@partid", Order.PartID);
+            SQL_Parameter.Int(cmd.Parameters, "@workoperationid", Order.WorkoperationID);
+            SQL_Parameter.Int(cmd.Parameters, "@orderid", Order.OrderID);
+            if (string.IsNullOrEmpty(Order.RevNr))
+                cmd.Parameters.AddWithValue("@revNr", Processkort_General.Last_RevNr());//Vet inte varför denna kontroll finns här, kolla om breakpåointen nånsin utlöses och varför isåfall, troligen kan detta tas bort
+            else//Om Testorder skapats så skall revNr vara Order.RevNr annars skall det automatiskt hämtas från Senaste_RevNr_Processkort
+                cmd.Parameters.AddWithValue("@revNr", Order.RevNr);
+            con.Open();
 
-                cmd.ExecuteNonQuery();
-            }
+            cmd.ExecuteNonQuery();
         }
         public static void UPDATE_Korprotokoll_Parametrar_Kassera(string db_Tabell, string datum, string tid, string anstNr)
         {
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query = $"UPDATE {db_Tabell} SET Kasserad = 'True' {Queries.WHERE_OrderID} AND Datum = @datum AND Tid = @tid AND AnstNr = @employeenumber";
-                var cmd = new SqlCommand(query, con);
-                cmd.Parameters.AddWithValue("@id", Order.OrderID);
-                cmd.Parameters.AddWithValue("@datum", datum);
-                cmd.Parameters.AddWithValue("@tid", tid);
-                cmd.Parameters.AddWithValue("@employeenumber", anstNr);
-                con.Open();
-                cmd.ExecuteScalar();
-            }
+            using var con = new SqlConnection(Database.cs_Protocol);
+            var query = $"UPDATE {db_Tabell} SET Kasserad = 'True' {Queries.WHERE_OrderID} AND Datum = @datum AND Tid = @tid AND AnstNr = @employeenumber";
+            var cmd = new SqlCommand(query, con);
+            cmd.Parameters.AddWithValue("@id", Order.OrderID);
+            cmd.Parameters.AddWithValue("@datum", datum);
+            cmd.Parameters.AddWithValue("@tid", tid);
+            cmd.Parameters.AddWithValue("@employeenumber", anstNr);
+            con.Open();
+            cmd.ExecuteScalar();
         }
 
         public static void UPDATE_User_Online(bool flag, string anstNr)
         {
             try
             {
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    var query = "UPDATE [User].Person SET Online = @flag WHERE EmployeeNumber = @employeenumber";
+                using var con = new SqlConnection(Database.cs_Protocol);
+                var query = "UPDATE [User].Person SET Online = @flag WHERE EmployeeNumber = @employeenumber";
 
-                    var cmd = new SqlCommand(query, con);
-                    cmd.Parameters.AddWithValue("@flag", flag);
-                    cmd.Parameters.AddWithValue("@employeenumber", anstNr);
-                    con.Open();
-                    cmd.ExecuteNonQuery();
-                }
+                var cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@flag", flag);
+                cmd.Parameters.AddWithValue("@employeenumber", anstNr);
+                con.Open();
+                cmd.ExecuteNonQuery();
             }
             catch (System.Exception e)
             {

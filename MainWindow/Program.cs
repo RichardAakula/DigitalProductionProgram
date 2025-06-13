@@ -1,12 +1,13 @@
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Help;
 using DigitalProductionProgram.Log;
+using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.Övrigt;
+using DigitalProductionProgram.Processcards;
 using Microsoft.Data.SqlClient;
 using System.ComponentModel;
 using System.Data.Odbc;
-using DigitalProductionProgram.OrderManagement;
-using DigitalProductionProgram.Processcards;
+using System.Diagnostics;
 using static DigitalProductionProgram.DatabaseManagement.Database;
 
 namespace DigitalProductionProgram.MainWindow
@@ -36,7 +37,7 @@ namespace DigitalProductionProgram.MainWindow
                 con.Open();
                 var reader = cmd.ExecuteReader();
                 if (reader.Read())
-                    datum = reader["ReleaseDatum"].ToString();
+                    datum = reader["ReleaseDate"].ToString();
                 if (DateTime.TryParse(datum, out DateTime date))
                     return date.ToShortDateString();
             }
@@ -91,9 +92,11 @@ namespace DigitalProductionProgram.MainWindow
             string.IsNullOrEmpty(Database.MonitorHost);
 
         [STAThread]
-        private static void Main()
+        private static void Main(string[] args)
         {
             Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+
             //Kontrollerar att alla databaskopplingar är ok, annars får användaren välja  
             Load_DatabaseSettings();
 
@@ -125,6 +128,6 @@ namespace DigitalProductionProgram.MainWindow
         }
 
 
-
+        
     }
 }

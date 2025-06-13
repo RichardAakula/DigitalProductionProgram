@@ -217,15 +217,15 @@ namespace DigitalProductionProgram.MainWindow
                 InfoText.Show(LanguageManager.GetString("Warning_OpenMeasureProtocol_5"), CustomColors.InfoText_Color.Warning, null);
         }
         
-        public void F1_MeasureProtocol_Click(object sender, EventArgs e)
+        public void F1_MeasureProtocol_Click(object sender, EventArgs? e)
         {
             Open_MeasureProtocol();
         }
-        public void F2_Protocol_Click(object sender, EventArgs e)
+        public void F2_Protocol_Click(object sender, EventArgs? e)
         {
             Open_Protocol.Choose_Protocol(Form.ActiveForm);
         }
-        public void F3_SearchOldMeasureProtocols_Click(object sender, EventArgs e)
+        public void F3_SearchOldMeasureProtocols_Click(object sender, EventArgs? e)
         {
             if (BrowseOldMeasureprotocol.Visible == false)
                 return;
@@ -238,7 +238,7 @@ namespace DigitalProductionProgram.MainWindow
             };
             sök.ShowDialog();
         }
-        public void F4_SearchOldProtocols(object sender, EventArgs e)
+        public void F4_SearchOldProtocols(object sender, EventArgs? e)
         {
             Browse_Protocols.Browse_Protocols.Is_BrowsingProtocols = true;
             if (BrowseOldOrders.Visible == false)
@@ -300,14 +300,14 @@ namespace DigitalProductionProgram.MainWindow
             //Laddar toleranser på nytt ifall dom ändrats i Bläddra Körprotokoll
            // Main_Form.Timer_UpdateChart_Start();
         }
-        public void F5_Compund_Click(object sender, EventArgs e)
+        public void F5_Compund_Click(object sender, EventArgs? e)
         {
             if (Order.OrderID == 0 || Order.OrderID is null ||Compound.Visible == false)
                 return;
             var compound = new Protocol_Compund();
             compound.ShowDialog();
         }
-        public void F6_Zumbach_Click(object sender, EventArgs e)
+        public void F6_Zumbach_Click(object sender, EventArgs? e)
         {
             if (Zumbach.Visible == false)
                 return;
@@ -325,7 +325,7 @@ namespace DigitalProductionProgram.MainWindow
                 zk.Show();
             }
         }
-        public async void F7_OverviewProdLines_Click(object sender, EventArgs e)
+        public async void F7_OverviewProdLines_Click(object sender, EventArgs? e)
         {
             // Stoppa MainTimer eventuellt om det blir problem
             Log.Activity.Start();
@@ -338,7 +338,7 @@ namespace DigitalProductionProgram.MainWindow
             Cursor = Cursors.Default;
            // Main_Form.Timer_UpdateChart_Start();
         }
-        public void F8_Statistics_Click(object sender, EventArgs e)
+        public void F8_Statistics_Click(object sender, EventArgs? e)
         {
             Points.Add_Points(3, "Statistik");
 
@@ -348,7 +348,7 @@ namespace DigitalProductionProgram.MainWindow
             stats.ShowDialog();
             black.Close();
         }
-        public void F9_FrequencyMarking_Click(object sender, EventArgs e)
+        public void F9_FrequencyMarking_Click(object sender, EventArgs? e)
         {
             if (string.IsNullOrEmpty(Person.Name))
             {

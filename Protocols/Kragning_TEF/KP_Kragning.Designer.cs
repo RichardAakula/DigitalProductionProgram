@@ -31,341 +31,324 @@ namespace DigitalProductionProgram.Protocols.Kragning_TEF
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle11 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
-            this.tlp_Main = new System.Windows.Forms.TableLayoutPanel();
-            this.dgv_Korprotokoll = new System.Windows.Forms.DataGridView();
-            this.Tryckluft_Fasthållning = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Tryckluft_Finmatning = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Induktion_Värme = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Induktion_Kylning = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Verktyg_PTFE_ID = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Verktyg_PTFE_OD = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Verktyg_Kragningsdon_MIN = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Verktyg_Kragningsdon_MAX = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Datum = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.AnstNr = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Sign = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dgv_Korprotokoll_Inputdata = new System.Windows.Forms.DataGridView();
-            this.col_Fasthållning = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.col_Finmatning = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.col_Värme = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.col_Kylning = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.col_PTFEid = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.col_PTFEod = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.col_Kragdon_MIN = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.col_Kragdon_MAX = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.btn_Transfer = new System.Windows.Forms.Button();
-            this.btn_Discard = new System.Windows.Forms.Button();
-            this.tlp_Main.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgv_Korprotokoll)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dgv_Korprotokoll_Inputdata)).BeginInit();
-            this.SuspendLayout();
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle11 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle5 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle6 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle7 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle8 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle9 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle10 = new DataGridViewCellStyle();
+            tlp_Main = new TableLayoutPanel();
+            btn_Discard = new Button();
+            dgv_Korprotokoll = new DataGridView();
+            dgv_Korprotokoll_Inputdata = new DataGridView();
+            btn_Transfer = new Button();
+            Tryckluft_Fasthållning = new DataGridViewTextBoxColumn();
+            Tryckluft_Finmatning = new DataGridViewTextBoxColumn();
+            Induktion_Värme = new DataGridViewTextBoxColumn();
+            Induktion_Kylning = new DataGridViewTextBoxColumn();
+            Verktyg_PTFE_ID = new DataGridViewTextBoxColumn();
+            Verktyg_PTFE_OD = new DataGridViewTextBoxColumn();
+            Verktyg_Kragningsdon_MIN = new DataGridViewTextBoxColumn();
+            Verktyg_Kragningsdon_MAX = new DataGridViewTextBoxColumn();
+            Datum = new DataGridViewTextBoxColumn();
+            AnstNr = new DataGridViewTextBoxColumn();
+            Sign = new DataGridViewTextBoxColumn();
+            col_Fasthållning = new DataGridViewTextBoxColumn();
+            col_Finmatning = new DataGridViewTextBoxColumn();
+            col_Värme = new DataGridViewTextBoxColumn();
+            col_Kylning = new DataGridViewTextBoxColumn();
+            col_PTFEid = new DataGridViewTextBoxColumn();
+            col_PTFEod = new DataGridViewTextBoxColumn();
+            col_Kragdon_MIN = new DataGridViewTextBoxColumn();
+            col_Kragdon_MAX = new DataGridViewTextBoxColumn();
+            tlp_Main.SuspendLayout();
+            ((ISupportInitialize)dgv_Korprotokoll).BeginInit();
+            ((ISupportInitialize)dgv_Korprotokoll_Inputdata).BeginInit();
+            SuspendLayout();
             // 
             // tlp_Main
             // 
-            this.tlp_Main.BackColor = System.Drawing.Color.Black;
-            this.tlp_Main.ColumnCount = 2;
-            this.tlp_Main.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 30F));
-            this.tlp_Main.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlp_Main.Controls.Add(this.btn_Discard, 0, 1);
-            this.tlp_Main.Controls.Add(this.dgv_Korprotokoll, 1, 1);
-            this.tlp_Main.Controls.Add(this.dgv_Korprotokoll_Inputdata, 1, 0);
-            this.tlp_Main.Controls.Add(this.btn_Transfer, 0, 0);
-            this.tlp_Main.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tlp_Main.Location = new System.Drawing.Point(0, 0);
-            this.tlp_Main.Name = "tlp_Main";
-            this.tlp_Main.RowCount = 2;
-            this.tlp_Main.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 22F));
-            this.tlp_Main.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlp_Main.Size = new System.Drawing.Size(481, 129);
-            this.tlp_Main.TabIndex = 0;
-            // 
-            // dgv_Korprotokoll
-            // 
-            this.dgv_Korprotokoll.AllowUserToAddRows = false;
-            this.dgv_Korprotokoll.AllowUserToDeleteRows = false;
-            this.dgv_Korprotokoll.AllowUserToResizeColumns = false;
-            this.dgv_Korprotokoll.AllowUserToResizeRows = false;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.Color.DodgerBlue;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.Color.White;
-            this.dgv_Korprotokoll.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
-            this.dgv_Korprotokoll.BackgroundColor = System.Drawing.Color.White;
-            this.dgv_Korprotokoll.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.dgv_Korprotokoll.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgv_Korprotokoll.ColumnHeadersVisible = false;
-            this.dgv_Korprotokoll.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.Tryckluft_Fasthållning,
-            this.Tryckluft_Finmatning,
-            this.Induktion_Värme,
-            this.Induktion_Kylning,
-            this.Verktyg_PTFE_ID,
-            this.Verktyg_PTFE_OD,
-            this.Verktyg_Kragningsdon_MIN,
-            this.Verktyg_Kragningsdon_MAX,
-            this.Datum,
-            this.AnstNr,
-            this.Sign});
-            this.dgv_Korprotokoll.Cursor = System.Windows.Forms.Cursors.IBeam;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Courier New", 8.5F);
-            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.DarkSlateGray;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.MenuHighlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.Color.White;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgv_Korprotokoll.DefaultCellStyle = dataGridViewCellStyle2;
-            this.dgv_Korprotokoll.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgv_Korprotokoll.Location = new System.Drawing.Point(31, 22);
-            this.dgv_Korprotokoll.Margin = new System.Windows.Forms.Padding(1, 0, 0, 0);
-            this.dgv_Korprotokoll.MultiSelect = false;
-            this.dgv_Korprotokoll.Name = "dgv_Korprotokoll";
-            this.dgv_Korprotokoll.ReadOnly = true;
-            this.dgv_Korprotokoll.RowHeadersVisible = false;
-            this.dgv_Korprotokoll.RowTemplate.Height = 18;
-            this.dgv_Korprotokoll.ScrollBars = System.Windows.Forms.ScrollBars.None;
-            this.dgv_Korprotokoll.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgv_Korprotokoll.Size = new System.Drawing.Size(450, 107);
-            this.dgv_Korprotokoll.TabIndex = 1013;
-            this.dgv_Korprotokoll.Leave += new System.EventHandler(this.dgv_Korprotokoll_Leave);
-            // 
-            // Tryckluft_Fasthållning
-            // 
-            this.Tryckluft_Fasthållning.HeaderText = "Fasthållning";
-            this.Tryckluft_Fasthållning.Name = "Tryckluft_Fasthållning";
-            this.Tryckluft_Fasthållning.ReadOnly = true;
-            this.Tryckluft_Fasthållning.Width = 52;
-            // 
-            // Tryckluft_Finmatning
-            // 
-            this.Tryckluft_Finmatning.HeaderText = "Finmatning";
-            this.Tryckluft_Finmatning.Name = "Tryckluft_Finmatning";
-            this.Tryckluft_Finmatning.ReadOnly = true;
-            this.Tryckluft_Finmatning.Width = 53;
-            // 
-            // Induktion_Värme
-            // 
-            this.Induktion_Värme.HeaderText = "Värme";
-            this.Induktion_Värme.Name = "Induktion_Värme";
-            this.Induktion_Värme.ReadOnly = true;
-            this.Induktion_Värme.Width = 53;
-            // 
-            // Induktion_Kylning
-            // 
-            this.Induktion_Kylning.HeaderText = "Kylning";
-            this.Induktion_Kylning.Name = "Induktion_Kylning";
-            this.Induktion_Kylning.ReadOnly = true;
-            this.Induktion_Kylning.Width = 53;
-            // 
-            // Verktyg_PTFE_ID
-            // 
-            this.Verktyg_PTFE_ID.HeaderText = "PTFE,ID";
-            this.Verktyg_PTFE_ID.Name = "Verktyg_PTFE_ID";
-            this.Verktyg_PTFE_ID.ReadOnly = true;
-            this.Verktyg_PTFE_ID.Width = 55;
-            // 
-            // Verktyg_PTFE_OD
-            // 
-            this.Verktyg_PTFE_OD.HeaderText = "PTFE,OD";
-            this.Verktyg_PTFE_OD.Name = "Verktyg_PTFE_OD";
-            this.Verktyg_PTFE_OD.ReadOnly = true;
-            this.Verktyg_PTFE_OD.Width = 57;
-            // 
-            // Verktyg_Kragningsdon_MIN
-            // 
-            this.Verktyg_Kragningsdon_MIN.HeaderText = "MIN";
-            this.Verktyg_Kragningsdon_MIN.Name = "Verktyg_Kragningsdon_MIN";
-            this.Verktyg_Kragningsdon_MIN.ReadOnly = true;
-            this.Verktyg_Kragningsdon_MIN.Width = 50;
-            // 
-            // Verktyg_Kragningsdon_MAX
-            // 
-            this.Verktyg_Kragningsdon_MAX.HeaderText = "MAX";
-            this.Verktyg_Kragningsdon_MAX.Name = "Verktyg_Kragningsdon_MAX";
-            this.Verktyg_Kragningsdon_MAX.ReadOnly = true;
-            this.Verktyg_Kragningsdon_MAX.Width = 50;
-            // 
-            // Datum
-            // 
-            this.Datum.HeaderText = "Datum";
-            this.Datum.Name = "Datum";
-            this.Datum.ReadOnly = true;
-            this.Datum.Width = 140;
-            // 
-            // AnstNr
-            // 
-            this.AnstNr.HeaderText = "AnstNr";
-            this.AnstNr.Name = "AnstNr";
-            this.AnstNr.ReadOnly = true;
-            this.AnstNr.Width = 52;
-            // 
-            // Sign
-            // 
-            this.Sign.HeaderText = "Sign";
-            this.Sign.Name = "Sign";
-            this.Sign.ReadOnly = true;
-            this.Sign.Width = 52;
-            // 
-            // dgv_Korprotokoll_Inputdata
-            // 
-            this.dgv_Korprotokoll_Inputdata.AllowUserToAddRows = false;
-            this.dgv_Korprotokoll_Inputdata.AllowUserToDeleteRows = false;
-            this.dgv_Korprotokoll_Inputdata.AllowUserToResizeColumns = false;
-            this.dgv_Korprotokoll_Inputdata.AllowUserToResizeRows = false;
-            this.dgv_Korprotokoll_Inputdata.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-            this.dgv_Korprotokoll_Inputdata.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgv_Korprotokoll_Inputdata.ColumnHeadersVisible = false;
-            this.dgv_Korprotokoll_Inputdata.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.col_Fasthållning,
-            this.col_Finmatning,
-            this.col_Värme,
-            this.col_Kylning,
-            this.col_PTFEid,
-            this.col_PTFEod,
-            this.col_Kragdon_MIN,
-            this.col_Kragdon_MAX});
-            this.dgv_Korprotokoll_Inputdata.Cursor = System.Windows.Forms.Cursors.IBeam;
-            dataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle11.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle11.Font = new System.Drawing.Font("Courier New", 8.25F);
-            dataGridViewCellStyle11.ForeColor = System.Drawing.Color.DarkSlateGray;
-            dataGridViewCellStyle11.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle11.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle11.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgv_Korprotokoll_Inputdata.DefaultCellStyle = dataGridViewCellStyle11;
-            this.dgv_Korprotokoll_Inputdata.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgv_Korprotokoll_Inputdata.Location = new System.Drawing.Point(30, 0);
-            this.dgv_Korprotokoll_Inputdata.Margin = new System.Windows.Forms.Padding(0);
-            this.dgv_Korprotokoll_Inputdata.Name = "dgv_Korprotokoll_Inputdata";
-            this.dgv_Korprotokoll_Inputdata.RowHeadersVisible = false;
-            this.dgv_Korprotokoll_Inputdata.ScrollBars = System.Windows.Forms.ScrollBars.None;
-            this.dgv_Korprotokoll_Inputdata.Size = new System.Drawing.Size(451, 22);
-            this.dgv_Korprotokoll_Inputdata.TabIndex = 1011;
-            this.dgv_Korprotokoll_Inputdata.CellValidated += new System.Windows.Forms.DataGridViewCellEventHandler(this.CellLeave_CellValidated);
-            this.dgv_Korprotokoll_Inputdata.EditingControlShowing += new System.Windows.Forms.DataGridViewEditingControlShowingEventHandler(this.EditingControlShowing);
-            // 
-            // col_Fasthållning
-            // 
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.col_Fasthållning.DefaultCellStyle = dataGridViewCellStyle3;
-            this.col_Fasthållning.HeaderText = "Fasthållning";
-            this.col_Fasthållning.Name = "col_Fasthållning";
-            this.col_Fasthållning.Width = 52;
-            // 
-            // col_Finmatning
-            // 
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.col_Finmatning.DefaultCellStyle = dataGridViewCellStyle4;
-            this.col_Finmatning.HeaderText = "Finmatning";
-            this.col_Finmatning.Name = "col_Finmatning";
-            this.col_Finmatning.Width = 53;
-            // 
-            // col_Värme
-            // 
-            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.col_Värme.DefaultCellStyle = dataGridViewCellStyle5;
-            this.col_Värme.HeaderText = "Värme";
-            this.col_Värme.Name = "col_Värme";
-            this.col_Värme.Width = 53;
-            // 
-            // col_Kylning
-            // 
-            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.col_Kylning.DefaultCellStyle = dataGridViewCellStyle6;
-            this.col_Kylning.HeaderText = "Kylning";
-            this.col_Kylning.Name = "col_Kylning";
-            this.col_Kylning.Width = 53;
-            // 
-            // col_PTFEid
-            // 
-            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.col_PTFEid.DefaultCellStyle = dataGridViewCellStyle7;
-            this.col_PTFEid.HeaderText = "PTFE, ID";
-            this.col_PTFEid.Name = "col_PTFEid";
-            this.col_PTFEid.Width = 55;
-            // 
-            // col_PTFEod
-            // 
-            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.col_PTFEod.DefaultCellStyle = dataGridViewCellStyle8;
-            this.col_PTFEod.HeaderText = "PTFE, OD";
-            this.col_PTFEod.Name = "col_PTFEod";
-            this.col_PTFEod.Width = 57;
-            // 
-            // col_Kragdon_MIN
-            // 
-            dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.col_Kragdon_MIN.DefaultCellStyle = dataGridViewCellStyle9;
-            this.col_Kragdon_MIN.HeaderText = "Kragningsdon MIN";
-            this.col_Kragdon_MIN.Name = "col_Kragdon_MIN";
-            this.col_Kragdon_MIN.Width = 50;
-            // 
-            // col_Kragdon_MAX
-            // 
-            dataGridViewCellStyle10.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.col_Kragdon_MAX.DefaultCellStyle = dataGridViewCellStyle10;
-            this.col_Kragdon_MAX.HeaderText = "Kragningsdon MAX";
-            this.col_Kragdon_MAX.Name = "col_Kragdon_MAX";
-            this.col_Kragdon_MAX.Width = 50;
-            // 
-            // btn_Transfer
-            // 
-            this.btn_Transfer.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(198)))), ((int)(((byte)(239)))), ((int)(((byte)(206)))));
-            this.btn_Transfer.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btn_Transfer.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(97)))), ((int)(((byte)(0)))));
-            this.btn_Transfer.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Black;
-            this.btn_Transfer.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btn_Transfer.Font = new System.Drawing.Font("Times New Roman", 14F, System.Drawing.FontStyle.Bold);
-            this.btn_Transfer.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(97)))), ((int)(((byte)(0)))));
-            this.btn_Transfer.Location = new System.Drawing.Point(0, 0);
-            this.btn_Transfer.Margin = new System.Windows.Forms.Padding(0);
-            this.btn_Transfer.Name = "btn_Transfer";
-            this.btn_Transfer.Size = new System.Drawing.Size(30, 22);
-            this.btn_Transfer.TabIndex = 1015;
-            this.btn_Transfer.Text = "→";
-            this.btn_Transfer.UseCompatibleTextRendering = true;
-            this.btn_Transfer.UseVisualStyleBackColor = false;
-            this.btn_Transfer.Click += new System.EventHandler(this.Transfer_Click);
+            tlp_Main.BackColor = Color.Black;
+            tlp_Main.ColumnCount = 2;
+            tlp_Main.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 35F));
+            tlp_Main.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            tlp_Main.Controls.Add(btn_Discard, 0, 1);
+            tlp_Main.Controls.Add(dgv_Korprotokoll, 1, 1);
+            tlp_Main.Controls.Add(dgv_Korprotokoll_Inputdata, 1, 0);
+            tlp_Main.Controls.Add(btn_Transfer, 0, 0);
+            tlp_Main.Dock = DockStyle.Fill;
+            tlp_Main.Location = new Point(0, 0);
+            tlp_Main.Margin = new Padding(4, 3, 4, 3);
+            tlp_Main.Name = "tlp_Main";
+            tlp_Main.RowCount = 2;
+            tlp_Main.RowStyles.Add(new RowStyle(SizeType.Absolute, 25F));
+            tlp_Main.RowStyles.Add(new RowStyle());
+            tlp_Main.Size = new Size(561, 149);
+            tlp_Main.TabIndex = 0;
             // 
             // btn_Discard
             // 
-            this.btn_Discard.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(199)))), ((int)(((byte)(206)))));
-            this.btn_Discard.Dock = System.Windows.Forms.DockStyle.Top;
-            this.btn_Discard.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(156)))), ((int)(((byte)(0)))), ((int)(((byte)(6)))));
-            this.btn_Discard.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Black;
-            this.btn_Discard.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btn_Discard.Font = new System.Drawing.Font("Times New Roman", 14F, System.Drawing.FontStyle.Bold);
-            this.btn_Discard.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(156)))), ((int)(((byte)(0)))), ((int)(((byte)(6)))));
-            this.btn_Discard.Location = new System.Drawing.Point(0, 22);
-            this.btn_Discard.Margin = new System.Windows.Forms.Padding(0);
-            this.btn_Discard.Name = "btn_Discard";
-            this.btn_Discard.Size = new System.Drawing.Size(30, 28);
-            this.btn_Discard.TabIndex = 1016;
-            this.btn_Discard.Text = "→";
-            this.btn_Discard.UseCompatibleTextRendering = true;
-            this.btn_Discard.UseVisualStyleBackColor = false;
-            this.btn_Discard.Click += new System.EventHandler(this.Kassera_Rad_Click);
+            btn_Discard.BackColor = Color.FromArgb(255, 199, 206);
+            btn_Discard.Dock = DockStyle.Top;
+            btn_Discard.FlatAppearance.BorderColor = Color.FromArgb(156, 0, 6);
+            btn_Discard.FlatAppearance.MouseOverBackColor = Color.Black;
+            btn_Discard.FlatStyle = FlatStyle.Flat;
+            btn_Discard.Font = new Font("Times New Roman", 14F, FontStyle.Bold);
+            btn_Discard.ForeColor = Color.FromArgb(156, 0, 6);
+            btn_Discard.Location = new Point(0, 25);
+            btn_Discard.Margin = new Padding(0);
+            btn_Discard.Name = "btn_Discard";
+            btn_Discard.Size = new Size(35, 32);
+            btn_Discard.TabIndex = 1016;
+            btn_Discard.Text = "→";
+            btn_Discard.UseCompatibleTextRendering = true;
+            btn_Discard.UseVisualStyleBackColor = false;
+            btn_Discard.Click += Kassera_Rad_Click;
+            // 
+            // dgv_Korprotokoll
+            // 
+            dgv_Korprotokoll.AllowUserToAddRows = false;
+            dgv_Korprotokoll.AllowUserToDeleteRows = false;
+            dgv_Korprotokoll.AllowUserToResizeColumns = false;
+            dgv_Korprotokoll.AllowUserToResizeRows = false;
+            dataGridViewCellStyle1.SelectionBackColor = Color.DodgerBlue;
+            dataGridViewCellStyle1.SelectionForeColor = Color.White;
+            dgv_Korprotokoll.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            dgv_Korprotokoll.BackgroundColor = Color.White;
+            dgv_Korprotokoll.BorderStyle = BorderStyle.None;
+            dgv_Korprotokoll.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgv_Korprotokoll.ColumnHeadersVisible = false;
+            dgv_Korprotokoll.Columns.AddRange(new DataGridViewColumn[] { Tryckluft_Fasthållning, Tryckluft_Finmatning, Induktion_Värme, Induktion_Kylning, Verktyg_PTFE_ID, Verktyg_PTFE_OD, Verktyg_Kragningsdon_MIN, Verktyg_Kragningsdon_MAX, Datum, AnstNr, Sign });
+            dgv_Korprotokoll.Cursor = Cursors.IBeam;
+            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle2.BackColor = SystemColors.Window;
+            dataGridViewCellStyle2.Font = new Font("Courier New", 8.5F);
+            dataGridViewCellStyle2.ForeColor = Color.DarkSlateGray;
+            dataGridViewCellStyle2.SelectionBackColor = SystemColors.MenuHighlight;
+            dataGridViewCellStyle2.SelectionForeColor = Color.White;
+            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.False;
+            dgv_Korprotokoll.DefaultCellStyle = dataGridViewCellStyle2;
+            dgv_Korprotokoll.Dock = DockStyle.Fill;
+            dgv_Korprotokoll.Location = new Point(36, 25);
+            dgv_Korprotokoll.Margin = new Padding(1, 0, 0, 0);
+            dgv_Korprotokoll.MultiSelect = false;
+            dgv_Korprotokoll.Name = "dgv_Korprotokoll";
+            dgv_Korprotokoll.ReadOnly = true;
+            dgv_Korprotokoll.RowHeadersVisible = false;
+            dgv_Korprotokoll.RowTemplate.Height = 18;
+            dgv_Korprotokoll.ScrollBars = ScrollBars.None;
+            dgv_Korprotokoll.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgv_Korprotokoll.Size = new Size(525, 124);
+            dgv_Korprotokoll.TabIndex = 1013;
+            dgv_Korprotokoll.Leave += dgv_Korprotokoll_Leave;
+            // 
+            // dgv_Korprotokoll_Inputdata
+            // 
+            dgv_Korprotokoll_Inputdata.AllowUserToAddRows = false;
+            dgv_Korprotokoll_Inputdata.AllowUserToDeleteRows = false;
+            dgv_Korprotokoll_Inputdata.AllowUserToResizeColumns = false;
+            dgv_Korprotokoll_Inputdata.AllowUserToResizeRows = false;
+            dgv_Korprotokoll_Inputdata.BackgroundColor = Color.FromArgb(80, 80, 80);
+            dgv_Korprotokoll_Inputdata.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgv_Korprotokoll_Inputdata.ColumnHeadersVisible = false;
+            dgv_Korprotokoll_Inputdata.Columns.AddRange(new DataGridViewColumn[] { col_Fasthållning, col_Finmatning, col_Värme, col_Kylning, col_PTFEid, col_PTFEod, col_Kragdon_MIN, col_Kragdon_MAX });
+            dgv_Korprotokoll_Inputdata.Cursor = Cursors.IBeam;
+            dataGridViewCellStyle11.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle11.BackColor = SystemColors.Window;
+            dataGridViewCellStyle11.Font = new Font("Courier New", 8.25F);
+            dataGridViewCellStyle11.ForeColor = Color.DarkSlateGray;
+            dataGridViewCellStyle11.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle11.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle11.WrapMode = DataGridViewTriState.False;
+            dgv_Korprotokoll_Inputdata.DefaultCellStyle = dataGridViewCellStyle11;
+            dgv_Korprotokoll_Inputdata.Dock = DockStyle.Fill;
+            dgv_Korprotokoll_Inputdata.Location = new Point(35, 0);
+            dgv_Korprotokoll_Inputdata.Margin = new Padding(0);
+            dgv_Korprotokoll_Inputdata.Name = "dgv_Korprotokoll_Inputdata";
+            dgv_Korprotokoll_Inputdata.RowHeadersVisible = false;
+            dgv_Korprotokoll_Inputdata.ScrollBars = ScrollBars.None;
+            dgv_Korprotokoll_Inputdata.Size = new Size(526, 25);
+            dgv_Korprotokoll_Inputdata.TabIndex = 1011;
+            dgv_Korprotokoll_Inputdata.CellValidated += CellLeave_CellValidated;
+            dgv_Korprotokoll_Inputdata.EditingControlShowing += EditingControlShowing;
+            // 
+            // btn_Transfer
+            // 
+            btn_Transfer.BackColor = Color.FromArgb(198, 239, 206);
+            btn_Transfer.Dock = DockStyle.Fill;
+            btn_Transfer.FlatAppearance.BorderColor = Color.FromArgb(0, 97, 0);
+            btn_Transfer.FlatAppearance.MouseOverBackColor = Color.Black;
+            btn_Transfer.FlatStyle = FlatStyle.Flat;
+            btn_Transfer.Font = new Font("Times New Roman", 14F, FontStyle.Bold);
+            btn_Transfer.ForeColor = Color.FromArgb(0, 97, 0);
+            btn_Transfer.Location = new Point(0, 0);
+            btn_Transfer.Margin = new Padding(0);
+            btn_Transfer.Name = "btn_Transfer";
+            btn_Transfer.Size = new Size(35, 25);
+            btn_Transfer.TabIndex = 1015;
+            btn_Transfer.Text = "→";
+            btn_Transfer.UseCompatibleTextRendering = true;
+            btn_Transfer.UseVisualStyleBackColor = false;
+            btn_Transfer.Click += Transfer_Click;
+            // 
+            // Tryckluft_Fasthållning
+            // 
+            Tryckluft_Fasthållning.HeaderText = "Fasthållning";
+            Tryckluft_Fasthållning.Name = "Tryckluft_Fasthållning";
+            Tryckluft_Fasthållning.ReadOnly = true;
+            Tryckluft_Fasthållning.Width = 61;
+            // 
+            // Tryckluft_Finmatning
+            // 
+            Tryckluft_Finmatning.HeaderText = "Finmatning";
+            Tryckluft_Finmatning.Name = "Tryckluft_Finmatning";
+            Tryckluft_Finmatning.ReadOnly = true;
+            Tryckluft_Finmatning.Width = 62;
+            // 
+            // Induktion_Värme
+            // 
+            Induktion_Värme.HeaderText = "Värme";
+            Induktion_Värme.Name = "Induktion_Värme";
+            Induktion_Värme.ReadOnly = true;
+            Induktion_Värme.Width = 62;
+            // 
+            // Induktion_Kylning
+            // 
+            Induktion_Kylning.HeaderText = "Kylning";
+            Induktion_Kylning.Name = "Induktion_Kylning";
+            Induktion_Kylning.ReadOnly = true;
+            Induktion_Kylning.Width = 62;
+            // 
+            // Verktyg_PTFE_ID
+            // 
+            Verktyg_PTFE_ID.HeaderText = "PTFE,ID";
+            Verktyg_PTFE_ID.Name = "Verktyg_PTFE_ID";
+            Verktyg_PTFE_ID.ReadOnly = true;
+            Verktyg_PTFE_ID.Width = 63;
+            // 
+            // Verktyg_PTFE_OD
+            // 
+            Verktyg_PTFE_OD.HeaderText = "PTFE,OD";
+            Verktyg_PTFE_OD.Name = "Verktyg_PTFE_OD";
+            Verktyg_PTFE_OD.ReadOnly = true;
+            Verktyg_PTFE_OD.Width = 66;
+            // 
+            // Verktyg_Kragningsdon_MIN
+            // 
+            Verktyg_Kragningsdon_MIN.HeaderText = "MIN";
+            Verktyg_Kragningsdon_MIN.Name = "Verktyg_Kragningsdon_MIN";
+            Verktyg_Kragningsdon_MIN.ReadOnly = true;
+            Verktyg_Kragningsdon_MIN.Width = 59;
+            // 
+            // Verktyg_Kragningsdon_MAX
+            // 
+            Verktyg_Kragningsdon_MAX.HeaderText = "MAX";
+            Verktyg_Kragningsdon_MAX.Name = "Verktyg_Kragningsdon_MAX";
+            Verktyg_Kragningsdon_MAX.ReadOnly = true;
+            Verktyg_Kragningsdon_MAX.Width = 60;
+            // 
+            // Datum
+            // 
+            Datum.HeaderText = "Datum";
+            Datum.Name = "Datum";
+            Datum.ReadOnly = true;
+            Datum.Width = 163;
+            // 
+            // AnstNr
+            // 
+            AnstNr.HeaderText = "AnstNr";
+            AnstNr.Name = "AnstNr";
+            AnstNr.ReadOnly = true;
+            AnstNr.Width = 57;
+            // 
+            // Sign
+            // 
+            Sign.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            Sign.HeaderText = "Sign";
+            Sign.Name = "Sign";
+            Sign.ReadOnly = true;
+            // 
+            // col_Fasthållning
+            // 
+            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            col_Fasthållning.DefaultCellStyle = dataGridViewCellStyle3;
+            col_Fasthållning.HeaderText = "Fasthållning";
+            col_Fasthållning.Name = "col_Fasthållning";
+            col_Fasthållning.Width = 61;
+            // 
+            // col_Finmatning
+            // 
+            dataGridViewCellStyle4.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            col_Finmatning.DefaultCellStyle = dataGridViewCellStyle4;
+            col_Finmatning.HeaderText = "Finmatning";
+            col_Finmatning.Name = "col_Finmatning";
+            col_Finmatning.Width = 62;
+            // 
+            // col_Värme
+            // 
+            dataGridViewCellStyle5.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            col_Värme.DefaultCellStyle = dataGridViewCellStyle5;
+            col_Värme.HeaderText = "Värme";
+            col_Värme.Name = "col_Värme";
+            col_Värme.Width = 62;
+            // 
+            // col_Kylning
+            // 
+            dataGridViewCellStyle6.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            col_Kylning.DefaultCellStyle = dataGridViewCellStyle6;
+            col_Kylning.HeaderText = "Kylning";
+            col_Kylning.Name = "col_Kylning";
+            col_Kylning.Width = 62;
+            // 
+            // col_PTFEid
+            // 
+            dataGridViewCellStyle7.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            col_PTFEid.DefaultCellStyle = dataGridViewCellStyle7;
+            col_PTFEid.HeaderText = "PTFE, ID";
+            col_PTFEid.Name = "col_PTFEid";
+            col_PTFEid.Width = 63;
+            // 
+            // col_PTFEod
+            // 
+            dataGridViewCellStyle8.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            col_PTFEod.DefaultCellStyle = dataGridViewCellStyle8;
+            col_PTFEod.HeaderText = "PTFE, OD";
+            col_PTFEod.Name = "col_PTFEod";
+            col_PTFEod.Width = 66;
+            // 
+            // col_Kragdon_MIN
+            // 
+            dataGridViewCellStyle9.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            col_Kragdon_MIN.DefaultCellStyle = dataGridViewCellStyle9;
+            col_Kragdon_MIN.HeaderText = "Kragningsdon MIN";
+            col_Kragdon_MIN.Name = "col_Kragdon_MIN";
+            col_Kragdon_MIN.Width = 59;
+            // 
+            // col_Kragdon_MAX
+            // 
+            dataGridViewCellStyle10.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            col_Kragdon_MAX.DefaultCellStyle = dataGridViewCellStyle10;
+            col_Kragdon_MAX.HeaderText = "Kragningsdon MAX";
+            col_Kragdon_MAX.Name = "col_Kragdon_MAX";
+            col_Kragdon_MAX.Width = 60;
             // 
             // KP_Kragning
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.tlp_Main);
-            this.Name = "KP_Kragning";
-            this.Size = new System.Drawing.Size(481, 129);
-            this.tlp_Main.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.dgv_Korprotokoll)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dgv_Korprotokoll_Inputdata)).EndInit();
-            this.ResumeLayout(false);
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            Controls.Add(tlp_Main);
+            Margin = new Padding(4, 3, 4, 3);
+            Name = "KP_Kragning";
+            Size = new Size(561, 149);
+            tlp_Main.ResumeLayout(false);
+            ((ISupportInitialize)dgv_Korprotokoll).EndInit();
+            ((ISupportInitialize)dgv_Korprotokoll_Inputdata).EndInit();
+            ResumeLayout(false);
 
         }
 
@@ -373,15 +356,9 @@ namespace DigitalProductionProgram.Protocols.Kragning_TEF
 
         private TableLayoutPanel tlp_Main;
         private DataGridView dgv_Korprotokoll_Inputdata;
-        private DataGridViewTextBoxColumn col_Fasthållning;
-        private DataGridViewTextBoxColumn col_Finmatning;
-        private DataGridViewTextBoxColumn col_Värme;
-        private DataGridViewTextBoxColumn col_Kylning;
-        private DataGridViewTextBoxColumn col_PTFEid;
-        private DataGridViewTextBoxColumn col_PTFEod;
-        private DataGridViewTextBoxColumn col_Kragdon_MIN;
-        private DataGridViewTextBoxColumn col_Kragdon_MAX;
         public DataGridView dgv_Korprotokoll;
+        private Button btn_Discard;
+        private Button btn_Transfer;
         private DataGridViewTextBoxColumn Tryckluft_Fasthållning;
         private DataGridViewTextBoxColumn Tryckluft_Finmatning;
         private DataGridViewTextBoxColumn Induktion_Värme;
@@ -393,7 +370,13 @@ namespace DigitalProductionProgram.Protocols.Kragning_TEF
         private DataGridViewTextBoxColumn Datum;
         private DataGridViewTextBoxColumn AnstNr;
         private DataGridViewTextBoxColumn Sign;
-        private Button btn_Discard;
-        private Button btn_Transfer;
+        private DataGridViewTextBoxColumn col_Fasthållning;
+        private DataGridViewTextBoxColumn col_Finmatning;
+        private DataGridViewTextBoxColumn col_Värme;
+        private DataGridViewTextBoxColumn col_Kylning;
+        private DataGridViewTextBoxColumn col_PTFEid;
+        private DataGridViewTextBoxColumn col_PTFEod;
+        private DataGridViewTextBoxColumn col_Kragdon_MIN;
+        private DataGridViewTextBoxColumn col_Kragdon_MAX;
     }
 }

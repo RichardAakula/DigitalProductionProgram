@@ -19,7 +19,7 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
         {
             LanguageManager.TranslationHelper.TranslateControls(new Control[]{label_Comments});
         }
-        public void Save_Comments(object sender, EventArgs e)
+        public void Save_Comments(object? sender, EventArgs e)
         {
             if (tb_Comments.Enabled == false || Module.IsOkToSave == false)
                 return;
@@ -34,16 +34,16 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
 
             cmd.ExecuteNonQuery();
         }
-        public void Load_Data(int? orderID = null)
+        public void Load_Data()
         {
-            if (orderID is null)
-                orderID = Order.OrderID;
+            if (Order.OrderID is null)
+                return;
            
             using (var con = new SqlConnection(Database.cs_Protocol))
             {
                 var query = "SELECT Comments FROM [Order].MainData WHERE OrderID = @orderid";
                 var cmd = new SqlCommand(query, con);
-                cmd.Parameters.AddWithValue("@orderid", orderID);
+                cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                 con.Open();
                 tb_Comments.Text = cmd.ExecuteScalar().ToString();
             }

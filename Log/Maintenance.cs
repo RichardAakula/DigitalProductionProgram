@@ -3,6 +3,7 @@ using DigitalProductionProgram.DatabaseManagement;
 using Microsoft.Data.SqlClient;
 using System;
 using System.Diagnostics;
+using DigitalProductionProgram.Övrigt;
 
 namespace DigitalProductionProgram.Log
 {
@@ -47,15 +48,12 @@ namespace DigitalProductionProgram.Log
         {
             get
             {
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    const string query = "SELECT Datum FROM Log.Maintenance_Work WHERE Datum > @now";
-                    con.Open();
-                    var cmd = new SqlCommand(query, con);
-                    cmd.Parameters.AddWithValue("@now", DateTime.Now);
-                    return DateTime.Parse(cmd.ExecuteScalar().ToString());
-                }
-
+                using var con = new SqlConnection(Database.cs_Protocol);
+                const string query = "SELECT Datum FROM Log.Maintenance_Work WHERE Datum > @now";
+                con.Open();
+                var cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@now", DateTime.Now);
+                return DateTime.Parse(cmd.ExecuteScalar().ToString());
             }
         }
 
@@ -110,32 +108,22 @@ namespace DigitalProductionProgram.Log
         {
             get
             {
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    const string query = "SELECT Info FROM Log.Maintenance_Work WHERE Datum > @now";
-                    con.Open();
-                    var cmd = new SqlCommand(query, con);
-                    cmd.Parameters.AddWithValue("@now", DateTime.Now);
-                    return cmd.ExecuteScalar().ToString();
-                }
+                using var con = new SqlConnection(Database.cs_Protocol);
+                const string query = "SELECT Info FROM Log.Maintenance_Work WHERE Datum > @now";
+                con.Open();
+                var cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@now", DateTime.Now);
+                return cmd.ExecuteScalar().ToString();
             }
         }
 
+
         public static void StartInstallation()
         {
-            try
-            {
-                // Starta MSIX-installationen
-                Process.Start(new ProcessStartInfo
-                {
-                    FileName = @"\\optifil\DPP\Install DPP.appinstaller", 
-                    UseShellExecute = true
-                });
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Kunde inte starta installationsfilen.\n{ex.Message}", "Fel", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            var updaterPath = @"\\optifil\dpp\Update\Update DPP.exe";
+            Process.Start(updaterPath);
+            Application.Exit();  // Stänger huvudprogrammet för uppdatering
         }
+
     }
 }

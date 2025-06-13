@@ -1,22 +1,15 @@
-﻿using System;
-using System.Data;
-using Microsoft.Data.SqlClient;
-using System.Drawing;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using System.Data;
 using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.eMail;
 using DigitalProductionProgram.Log;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.PrintingServices;
-using DigitalProductionProgram.Templates;
-using DigitalProductionProgram.User;
-using static System.Net.Mime.MediaTypeNames;
+using DigitalProductionProgram.Processcards;
+using Microsoft.Data.SqlClient;
 using Color = System.Drawing.Color;
 
-namespace DigitalProductionProgram.Processcards
+namespace DigitalProductionProgram.Templates
 {
     public partial class ProcesscardTemplateSelector : Form
     {
@@ -273,6 +266,7 @@ namespace DigitalProductionProgram.Processcards
                 Add_Button_Processcard(text, Order.WorkOperation.ToString(), prodType, prodLine, revNr, partid, partGroupID, !IsOperatorStartingOrder, true, latestRevNr, isLatestRevNrSelected);
             }
             Add_Button_Processcard("Processkort saknas", Order.WorkOperation.ToString(), null, null, null, null, null, true, false, null, true);
+            totalLabels--; //"Processkort saknas" ska inte räknas med i totalen, den är bara en fallback-knapp om inget annat finns.
         }
         private void Add_Workoperations()
         {

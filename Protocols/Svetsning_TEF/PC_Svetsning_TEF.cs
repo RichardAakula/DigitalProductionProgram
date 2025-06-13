@@ -79,33 +79,30 @@ namespace DigitalProductionProgram.Protocols.Svetsning_TEF
         {
             if (Order.PartID is null)
                 return;
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query = @"
+            using var con = new SqlConnection(Database.cs_Protocol);
+            var query = @"
                             SELECT Tid_Förvärme_min, Tid_Förvärme_nom, Tid_Förvärme_max, Svetsförflyttning_min, Svetsförflyttning_nom, Svetsförflyttning_max, Tid_Bindvärme_min, Tid_Bindvärme_nom, 
                                 Tid_Bindvärme_max, Tid_Kylluft_min, Tid_Kylluft_nom, Tid_Kylluft_max, Temp_min, Temp_nom, Temp_max, Pinne_OD_Stål_nom, Pinne_OD_PTFE_nom, Värmebackar_Bredd_nom, Värmebackar_Hål_nom
                             FROM Processkort_Svetsning WHERE PartID = @partID";
-                con.Open();
-                var cmd = new SqlCommand(query, con);
-                cmd.Parameters.AddWithValue("@partID", Order.PartID);
-                var reader = cmd.ExecuteReader();
-                while (reader.Read())
+            con.Open();
+            var cmd = new SqlCommand(query, con);
+            cmd.Parameters.AddWithValue("@partID", Order.PartID);
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                for (var i = 0; i < AllControls.Length; i++)
                 {
-                    for (var i = 0; i < AllControls.Length; i++)
-                    {
-                        if (string.IsNullOrEmpty(reader[i].ToString()))
-                            AllControls[i].Text = "N/A";
-                        else
-                            AllControls[i].Text = reader[i].ToString();
-                    }
+                    if (string.IsNullOrEmpty(reader[i].ToString()))
+                        AllControls[i].Text = "N/A";
+                    else
+                        AllControls[i].Text = reader[i].ToString();
                 }
             }
         }
         public void Save_Data(ref bool IsOk, List<SqlParameter> parameters)
         {
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query = $@"
+            using var con = new SqlConnection(Database.cs_Protocol);
+            var query = $@"
                     BEGIN TRANSACTION
                         INSERT INTO Processkort_Svetsning (PartID, Tid_Förvärme_min, Tid_Förvärme_nom, Tid_Förvärme_max, Svetsförflyttning_min, Svetsförflyttning_nom, Svetsförflyttning_max, Tid_Bindvärme_min, Tid_Bindvärme_nom, 
                             Tid_Bindvärme_max, Tid_Kylluft_min, Tid_Kylluft_nom, Tid_Kylluft_max, Temp_min, Temp_nom, Temp_max, Pinne_OD_Stål_nom, Pinne_OD_PTFE_nom, Värmebackar_Bredd_nom, Värmebackar_Hål_nom)
@@ -115,11 +112,10 @@ namespace DigitalProductionProgram.Protocols.Svetsning_TEF
                         {Manage_Processcards.INSERT_INTO_Processkort_Main}
                     COMMIT TRANSACTION";
 
-                var cmd = new SqlCommand(query, con);
-                Add_Parameters(cmd, parameters);
-                con.Open();
-                Manage_Processcards.Execute_cmd(cmd, ref IsOk);
-            }
+            var cmd = new SqlCommand(query, con);
+            Add_Parameters(cmd, parameters);
+            con.Open();
+            Manage_Processcards.Execute_cmd(cmd, ref IsOk);
         }
         public void Update_Data(ref bool IsOk, List<SqlParameter> parameters)
         {

@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel;
-using System.Windows.Forms;
 
-namespace DigitalProductionProgram.Processcards
+namespace DigitalProductionProgram.Templates
 {
     partial class ProcesscardTemplateSelector
     {

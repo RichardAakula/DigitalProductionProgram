@@ -59,6 +59,11 @@ namespace DigitalProductionProgram.eMail
 
         public static bool IsValidEmail(string? email)
         {
+            if (string.IsNullOrWhiteSpace(email) || !email.Contains("@") || !email.Contains("."))
+            {
+                return false;
+            }
+
             try
             {
                 var address = new MailAddress(email);
@@ -69,6 +74,8 @@ namespace DigitalProductionProgram.eMail
                 return false;
             }
         }
+
+
         public static void Send(string? subject, int customMailID, MailMessage? mailMessage = null)
         {
             var msg = mailMessage ?? MailMessage(customMailID);

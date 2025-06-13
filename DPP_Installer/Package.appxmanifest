@@ -9,7 +9,7 @@
   <Identity
     Name="com.Optinova.digitalproductionprogram"
     Publisher="CN=Richard Aakula, OU=OIC, OU=Holding, OU=AX, OU=Sympa, OU=Users, OU=Optinova, DC=OPTINOVA, DC=FI"
-    Version="4.3.9.7" />
+    Version="4.3.10.0" />
 
   <Properties>
     <DisplayName>Digital Production Program</DisplayName>
@@ -40,7 +40,6 @@
       </uap:VisualElements>
     </Application>
   </Applications>
-
   <Capabilities>
     <Capability Name="internetClient" />
     <rescap:Capability Name="runFullTrust" />

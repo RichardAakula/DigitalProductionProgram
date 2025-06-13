@@ -149,7 +149,7 @@ namespace DigitalProductionProgram.User
             using (var con = new SqlConnection(Database.cs_Protocol))
             {
                 var query = @"
-                    SELECT Name 
+                    SELECT UserName 
                     FROM Authorities.CustomNames
                     WHERE TemplateID = (SELECT ID FROM Authorities.TemplateAuthorities WHERE CodeText = @codetext)";
                 var cmd = new SqlCommand(query, con);

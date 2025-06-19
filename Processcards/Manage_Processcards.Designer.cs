@@ -68,7 +68,7 @@ namespace DigitalProductionProgram.Processcards
             tp_Svetsning = new TabPage();
             Processkort_Svetsning = new PC_Svetsning_TEF();
             tp_Protocol = new TabPage();
-            tlp_Machines = new TableLayoutPanel();
+            flp_Machines = new FlowLayoutPanel();
             tlp_Processkort_Top = new TableLayoutPanel();
             label_ProductType = new Label();
             tb_NewPartNr = new TextBox();
@@ -346,7 +346,7 @@ namespace DigitalProductionProgram.Processcards
             tlp_Main_Processkort.RowCount = 2;
             tlp_Main_Processkort.RowStyles.Add(new RowStyle(SizeType.Absolute, 25F));
             tlp_Main_Processkort.RowStyles.Add(new RowStyle(SizeType.Absolute, 173F));
-            tlp_Main_Processkort.Size = new Size(744, 1244);
+            tlp_Main_Processkort.Size = new Size(744, 1055);
             tlp_Main_Processkort.TabIndex = 947;
             // 
             // tab_Main
@@ -361,7 +361,7 @@ namespace DigitalProductionProgram.Processcards
             tab_Main.Margin = new Padding(0);
             tab_Main.Name = "tab_Main";
             tab_Main.SelectedIndex = 0;
-            tab_Main.Size = new Size(744, 1219);
+            tab_Main.Size = new Size(744, 1030);
             tab_Main.TabIndex = 874;
             // 
             // tp_Kragning
@@ -371,7 +371,7 @@ namespace DigitalProductionProgram.Processcards
             tp_Kragning.Location = new Point(4, 24);
             tp_Kragning.Name = "tp_Kragning";
             tp_Kragning.Padding = new Padding(3);
-            tp_Kragning.Size = new Size(736, 1191);
+            tp_Kragning.Size = new Size(736, 1002);
             tp_Kragning.TabIndex = 2;
             tp_Kragning.Text = "Krag";
             // 
@@ -444,28 +444,25 @@ namespace DigitalProductionProgram.Processcards
             // 
             // tp_Protocol
             // 
-            tp_Protocol.Controls.Add(tlp_Machines);
+            tp_Protocol.Controls.Add(flp_Machines);
             tp_Protocol.Location = new Point(4, 24);
             tp_Protocol.Name = "tp_Protocol";
             tp_Protocol.Padding = new Padding(3);
-            tp_Protocol.Size = new Size(192, 72);
+            tp_Protocol.Size = new Size(736, 1002);
             tp_Protocol.TabIndex = 20;
             tp_Protocol.Text = "Protocol";
             tp_Protocol.UseVisualStyleBackColor = true;
             // 
-            // tlp_Machines
+            // flp_Machines
             // 
-            tlp_Machines.ColumnCount = 1;
-            tlp_Machines.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
-            tlp_Machines.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 20F));
-            tlp_Machines.Dock = DockStyle.Fill;
-            tlp_Machines.Location = new Point(3, 3);
-            tlp_Machines.Name = "tlp_Machines";
-            tlp_Machines.RowCount = 1;
-            tlp_Machines.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            tlp_Machines.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
-            tlp_Machines.Size = new Size(186, 66);
-            tlp_Machines.TabIndex = 0;
+            flp_Machines.AutoScroll = true;
+            flp_Machines.BackColor = Color.FromArgb(25, 25, 25);
+            flp_Machines.Dock = DockStyle.Fill;
+            flp_Machines.Location = new Point(3, 3);
+            flp_Machines.Name = "flp_Machines";
+            flp_Machines.Size = new Size(730, 996);
+            flp_Machines.TabIndex = 908;
+            flp_Machines.WrapContents = false;
             // 
             // tlp_Processkort_Top
             // 
@@ -560,7 +557,7 @@ namespace DigitalProductionProgram.Processcards
             flp_Left.Dock = DockStyle.Left;
             flp_Left.Location = new Point(0, 0);
             flp_Left.Name = "flp_Left";
-            flp_Left.Size = new Size(250, 1250);
+            flp_Left.Size = new Size(250, 1061);
             flp_Left.TabIndex = 945;
             // 
             // panel_PartNr
@@ -1046,7 +1043,7 @@ namespace DigitalProductionProgram.Processcards
             tlp_Main.Name = "tlp_Main";
             tlp_Main.RowCount = 1;
             tlp_Main.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            tlp_Main.Size = new Size(1521, 1250);
+            tlp_Main.Size = new Size(1521, 1061);
             tlp_Main.TabIndex = 946;
             // 
             // Manage_Processcards
@@ -1055,7 +1052,7 @@ namespace DigitalProductionProgram.Processcards
             AutoScroll = true;
             AutoSize = true;
             BackColor = Color.FromArgb(25, 25, 25);
-            ClientSize = new Size(1771, 1250);
+            ClientSize = new Size(1771, 1061);
             Controls.Add(tlp_Main);
             Controls.Add(flp_Left);
             Name = "Manage_Processcards";
@@ -1165,6 +1162,6 @@ namespace DigitalProductionProgram.Processcards
         private DataGridViewTextBoxColumn col_EstablishedBy;
         private DataGridViewTextBoxColumn col_PartID;
         private DataGridViewTextBoxColumn col_TotalOrders;
-        private TableLayoutPanel tlp_Machines;
+        private FlowLayoutPanel flp_Machines;
     }
 }

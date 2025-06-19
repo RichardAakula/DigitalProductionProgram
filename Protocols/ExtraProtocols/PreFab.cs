@@ -197,64 +197,58 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
         {
             if (Module.IsOkToSave)
             {
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    const string query = @"
+                using var con = new SqlConnection(Database.cs_Protocol);
+                const string query = @"
                         UPDATE [Order].PreFab 
                         SET 
                             Halvfabrikat_OrderNr = @batchnr,
                             BestBeforeDate = @bestbeforedate
                         WHERE TempID = @tempid";
-                    con.Open();
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    cmd.Parameters.AddWithValue("@tempid", tempID);
-                    cmd.Parameters.AddWithValue("@halv_ArtikelNr", artikelNr);
+                con.Open();
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                cmd.Parameters.AddWithValue("@tempid", tempID);
+                cmd.Parameters.AddWithValue("@halv_ArtikelNr", artikelNr);
                    
-                    if (!DateTime.TryParse(dateBestBefore, out var dateTime))
-                        cmd.Parameters.AddWithValue("@bestbeforedate", DBNull.Value);
-                    else
-                        cmd.Parameters.AddWithValue("@bestbeforedate", dateTime);
+                if (!DateTime.TryParse(dateBestBefore, out var dateTime))
+                    cmd.Parameters.AddWithValue("@bestbeforedate", DBNull.Value);
+                else
+                    cmd.Parameters.AddWithValue("@bestbeforedate", dateTime);
                   
-                    if (string.IsNullOrEmpty(batchNr))
-                        cmd.Parameters.AddWithValue(@"batchnr", DBNull.Value);
-                    else
-                        cmd.Parameters.AddWithValue("@batchnr", batchNr);
-                    cmd.ExecuteNonQuery();
-                }
+                if (string.IsNullOrEmpty(batchNr))
+                    cmd.Parameters.AddWithValue(@"batchnr", DBNull.Value);
+                else
+                    cmd.Parameters.AddWithValue("@batchnr", batchNr);
+                cmd.ExecuteNonQuery();
             }
         }
         public static void UPDATE_PreFab_Extruder(string artikelnr, string extruder)
         {
             if (Module.IsOkToSave)
             {
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    var query = $"UPDATE [Order].PreFab SET Extruder = @extruder WHERE OrderID = @orderid AND Halvfabrikat_ArtikelNr = @halv_ArtikelNr";
-                    con.Open();
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
-                    cmd.Parameters.AddWithValue("@halv_ArtikelNr", artikelnr);
+                using var con = new SqlConnection(Database.cs_Protocol);
+                var query = $"UPDATE [Order].PreFab SET Extruder = @extruder WHERE OrderID = @orderid AND Halvfabrikat_ArtikelNr = @halv_ArtikelNr";
+                con.Open();
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
+                cmd.Parameters.AddWithValue("@halv_ArtikelNr", artikelnr);
 
-                    if (string.IsNullOrEmpty(extruder))
-                        cmd.Parameters.AddWithValue(@"extruder", DBNull.Value);
-                    else
-                        cmd.Parameters.AddWithValue("@extruder", extruder);
-                    cmd.ExecuteNonQuery();
-                }
+                if (string.IsNullOrEmpty(extruder))
+                    cmd.Parameters.AddWithValue(@"extruder", DBNull.Value);
+                else
+                    cmd.Parameters.AddWithValue("@extruder", extruder);
+                cmd.ExecuteNonQuery();
             }
         }
         public static void UPDATE_BatchNr_Skärmning(string batchNr)
         {
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query = $"UPDATE [Order].PreFab SET Halvfabrikat_OrderNr = @H_O WHERE OrderID = @orderid";
+            using var con = new SqlConnection(Database.cs_Protocol);
+            var query = $"UPDATE [Order].PreFab SET Halvfabrikat_OrderNr = @H_O WHERE OrderID = @orderid";
 
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
-                cmd.Parameters.AddWithValue("@H_O", batchNr);
-                con.Open();
-                cmd.ExecuteNonQuery();
-            }
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
+            cmd.Parameters.AddWithValue("@H_O", batchNr);
+            con.Open();
+            cmd.ExecuteNonQuery();
         }
         
         
@@ -269,11 +263,6 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
             ExtruderColumn = 100;
             switch (Order.WorkOperation)
             {
-                case Manage_WorkOperation.WorkOperations.Extrudering_FEP:
-                    dgv.DataSource = DataTable_PreFab(orderID, IsOkLoadBalance);
-                    BatchNrColumn = 3;
-                    dgv.Columns["Extruder:"].Visible = false;
-                    break;
                 case Manage_WorkOperation.WorkOperations.Extrudering_Termo:
                 case Manage_WorkOperation.WorkOperations.Extrudering_Tryck:
                 case Manage_WorkOperation.WorkOperations.Extrusion_HS:
@@ -289,7 +278,9 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
                     break;
                 case Manage_WorkOperation.WorkOperations.Extrudering_PTFE:
                 case Manage_WorkOperation.WorkOperations.Extrudering_Grov_PTFE:
-                    dgv.DataSource = DataTable_PreFab(orderID, IsOkLoadBalance);
+                case Manage_WorkOperation.WorkOperations.Skärmning:
+                case Manage_WorkOperation.WorkOperations.Extrudering_FEP:
+                dgv.DataSource = DataTable_PreFab(orderID, IsOkLoadBalance);
                     dgv.Columns["Extruder:"].Visible = false;
                     BatchNrColumn = 3;
                     break;
@@ -473,48 +464,45 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
 
                     foreach (var part in ListParts)
                     {
-                        using (var con = new SqlConnection(Database.cs_Protocol))
-                        {
-                            string query;
-                            if (CheckAuthority.IsWorkoperationAuthorized(CheckAuthority.TemplateWorkoperation.SaveMeasurepointsWithPrefab))
-                                query = @"IF NOT EXISTS (SELECT * FROM [Order].PreFab WHERE OrderID = @orderid AND Halvfabrikat_ArtikelNr = @partnumber)
+                        using var con = new SqlConnection(Database.cs_Protocol);
+                        string query;
+                        if (CheckAuthority.IsWorkoperationAuthorized(CheckAuthority.TemplateWorkoperation.SaveMeasurepointsWithPrefab))
+                            query = @"IF NOT EXISTS (SELECT * FROM [Order].PreFab WHERE OrderID = @orderid AND Halvfabrikat_ArtikelNr = @partnumber)
                                         INSERT INTO [Order].PreFab (OrderID, Halvfabrikat_ArtikelNr, Halvfabrikat_ID, Halvfabrikat_OD, Halvfabrikat_W) 
                                             VALUES (@orderid, @partnumber, @H_ID, @H_OD, @H_W)";
-                            else
-                                query = @"IF NOT EXISTS (SELECT * FROM [Order].PreFab WHERE OrderID = @orderid AND Halvfabrikat_ArtikelNr = @partnumber)
+                        else
+                            query = @"IF NOT EXISTS (SELECT * FROM [Order].PreFab WHERE OrderID = @orderid AND Halvfabrikat_ArtikelNr = @partnumber)
                                         INSERT INTO [Order].PreFab (OrderID, Halvfabrikat_ArtikelNr, Halvfabrikat_Benämning) 
                                             VALUES (@orderid, @partnumber, @description)";
 
 
-                            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                            cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
-                            cmd.Parameters.AddWithValue("@partnumber", part.PartNumber);
-                            SQL_Parameter.String(cmd.Parameters, "@description", part.Description);
+                        var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                        cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
+                        cmd.Parameters.AddWithValue("@partnumber", part.PartNumber);
+                        SQL_Parameter.String(cmd.Parameters, "@description", part.Description);
 
-                            if (CheckAuthority.IsWorkoperationAuthorized(CheckAuthority.TemplateWorkoperation.SaveMeasurepointsWithPrefab))
+                        if (CheckAuthority.IsWorkoperationAuthorized(CheckAuthority.TemplateWorkoperation.SaveMeasurepointsWithPrefab))
+                        {
+                            var id = Monitor.Monitor.MeasurePoint(part.PartNumber, "ID");
+                            var od = Monitor.Monitor.MeasurePoint(part.PartNumber,  "OD");
+                            var w = Monitor.Monitor.MeasurePoint(part.PartNumber,  "Wall");
+                            if (id > od)    //Blir ibland fel att ID och OD mixas
                             {
-                                var id = Monitor.Monitor.MeasurePoint(part.PartNumber, "ID");
-                                var od = Monitor.Monitor.MeasurePoint(part.PartNumber,  "OD");
-                                var w = Monitor.Monitor.MeasurePoint(part.PartNumber,  "Wall");
-                                if (id > od)    //Blir ibland fel att ID och OD mixas
-                                {
-                                    Activity.Start();
-                                    SQL_Parameter.Double(cmd.Parameters, "@H_ID", id);
-                                    SQL_Parameter.Double(cmd.Parameters, "@H_OD", od);
-                                    SQL_Parameter.Double(cmd.Parameters, "@H_W", w);
-                                    _ = Activity.Stop($"Halvfabrikat fel ID/OD: ID = {id} - OD = {od}");
-                                }
-                                else
-                                {
-                                    SQL_Parameter.Double(cmd.Parameters, "@H_ID", id);
-                                    SQL_Parameter.Double(cmd.Parameters, "@H_OD", od);
-                                    SQL_Parameter.Double(cmd.Parameters, "@H_W", w);
-                                }
+                                Activity.Start();
+                                SQL_Parameter.Double(cmd.Parameters, "@H_ID", id);
+                                SQL_Parameter.Double(cmd.Parameters, "@H_OD", od);
+                                SQL_Parameter.Double(cmd.Parameters, "@H_W", w);
+                                _ = Activity.Stop($"Halvfabrikat fel ID/OD: ID = {id} - OD = {od}");
                             }
-                            con.Open();
-                            cmd.ExecuteNonQuery();
-
+                            else
+                            {
+                                SQL_Parameter.Double(cmd.Parameters, "@H_ID", id);
+                                SQL_Parameter.Double(cmd.Parameters, "@H_OD", od);
+                                SQL_Parameter.Double(cmd.Parameters, "@H_W", w);
+                            }
                         }
+                        con.Open();
+                        cmd.ExecuteNonQuery();
                     }
                 }
             }
@@ -523,19 +511,17 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
                 var tråd_Benämning = Monitor.Monitor.Part_Material.Description;
                 var tråd_artikelNr = Monitor.Monitor.Part_Material.PartNumber;
 
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    var query = $@"
+                using var con = new SqlConnection(Database.cs_Protocol);
+                var query = $@"
                     IF NOT EXISTS (SELECT * FROM [Order].PreFab {Queries.WHERE_OrderID} AND Halvfabrikat_ArtikelNr = @h_a) 
                         INSERT INTO [Order].PreFab (OrderID, Halvfabrikat_ArtikelNr, Halvfabrikat_Benämning)
                             VALUES (@id, @h_a, @h_b)";
-                    con.Open();
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    cmd.Parameters.AddWithValue("@id", Order.OrderID);
-                    cmd.Parameters.AddWithValue("@h_a", tråd_artikelNr);
-                    cmd.Parameters.AddWithValue("@h_b", tråd_Benämning);
-                    cmd.ExecuteNonQuery();
-                }
+                con.Open();
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                cmd.Parameters.AddWithValue("@id", Order.OrderID);
+                cmd.Parameters.AddWithValue("@h_a", tråd_artikelNr);
+                cmd.Parameters.AddWithValue("@h_b", tråd_Benämning);
+                cmd.ExecuteNonQuery();
             }
 
             public static void INSERT_ExtraRow(int row)

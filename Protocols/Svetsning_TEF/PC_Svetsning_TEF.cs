@@ -98,7 +98,6 @@ namespace DigitalProductionProgram.Protocols.Svetsning_TEF
                             AllControls[i].Text = reader[i].ToString();
                     }
                 }
-            }
         }
         public void Save_Data(ref bool IsOk, List<SqlParameter> parameters)
         {
@@ -117,13 +116,11 @@ namespace DigitalProductionProgram.Protocols.Svetsning_TEF
                 Add_Parameters(cmd, parameters);
                 con.Open();
                 Manage_Processcards.Execute_cmd(cmd, ref IsOk);
-            }
         }
         public void Update_Data(ref bool IsOk, List<SqlParameter> parameters)
         {
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query = $@"
+            using var con = new SqlConnection(Database.cs_Protocol);
+            var query = $@"
                     BEGIN TRANSACTION
                         UPDATE Processkort_Svetsning
                         SET Tid_Förvärme_min = @tid_För_min, Tid_Förvärme_nom = @tid_För_nom, Tid_Förvärme_max = @tid_För_max, 
@@ -137,11 +134,10 @@ namespace DigitalProductionProgram.Protocols.Svetsning_TEF
                         {Manage_Processcards.UPDATE_Processkort_Main}
                      
                     COMMIT TRANSACTION";
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                Add_Parameters(cmd, parameters);
-                con.Open();
-                Manage_Processcards.Execute_cmd(cmd, ref IsOk);
-            }
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            Add_Parameters(cmd, parameters);
+            con.Open();
+            Manage_Processcards.Execute_cmd(cmd, ref IsOk);
         }
 
         private void Add_Parameters(SqlCommand cmd, List<SqlParameter> parameters)

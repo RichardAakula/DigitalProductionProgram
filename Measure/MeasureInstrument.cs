@@ -22,20 +22,19 @@ namespace DigitalProductionProgram.Measure
             get
             {
                 var list = new List<string?>();
-                using (var con = new SqlConnection(Database.cs_Protocol))
+                using var con = new SqlConnection(Database.cs_Protocol);
+                con.Open();
+                var query = @"SELECT * FROM MeasureInstruments.Templates ORDER BY MätdonsNr";
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                cmd.Parameters.AddWithValue("@id", Order.OrderID);
+                var reader = cmd.ExecuteReader();
+                var row = 0;
+                while (reader.Read())
                 {
-                    con.Open();
-                    var query = @"SELECT * FROM MeasureInstruments.Templates ORDER BY MätdonsNr";
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    cmd.Parameters.AddWithValue("@id", Order.OrderID);
-                    var reader = cmd.ExecuteReader();
-                    var row = 0;
-                    while (reader.Read())
-                    {
-                        list.Add(reader[0].ToString());
-                        row++;
-                    }
+                    list.Add(reader[0].ToString());
+                    row++;
                 }
+
                 return list;
             }
         }

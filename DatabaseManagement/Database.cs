@@ -77,6 +77,27 @@ namespace DigitalProductionProgram.DatabaseManagement
         private string building_csProtocol;
         private string building_csToolRegister;
 
+        public static string InstallationPath
+        {
+            get
+            {
+                switch (Monitor.Monitor.factory)
+                {
+                    case Monitor.Monitor.Factory.Godby:
+                    case Monitor.Monitor.Factory.Holding:
+                        return @"\\optifil\dpp\";
+                    
+                    case Monitor.Monitor.Factory.Thailand:
+                        return @"\\optifil\dpp\";
+                    case Monitor.Monitor.Factory.ValleyForge:
+                        return @"\\optifil\dpp\";
+                    default:
+                        throw new InvalidOperationException("Ogiltig fabrik angiven.");
+                }
+            }
+        }
+
+
         public Database()
         {
             InitializeComponent();
@@ -129,50 +150,12 @@ namespace DigitalProductionProgram.DatabaseManagement
             }
         }
 
-        //public static void Load_DatabaseSettings()
-        //{
-        //    cs_Protocol = null;
-        //    cs_ToolRegister = null;
-        //    MonitorHost = null;
-        //    MonitorCompany = null;
-
-        //    var json = File.ReadAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "DataBaseSettings.json"));
-        //    var jObject = JObject.Parse(json);
-        //    cs_Protocol = jObject["ConnectionStrings"]["csProtocol"].ToString();
-        //    cs_ToolRegister = jObject["ConnectionStrings"]["csToolregister"].ToString();
-        //    MonitorHost = jObject["ConnectionStrings"]["MonitorHost"].ToString();
-        //    MonitorCompany = jObject["ConnectionStrings"]["MonitorCompany"].ToString();
-        //    switch (MonitorCompany)
-        //    {
-        //        case "001.1":
-        //            Monitor.Monitor.factory = Monitor.Monitor.Factory.Godby;
-        //            break;
-        //        case "003.1":
-        //            Monitor.Monitor.factory = Monitor.Monitor.Factory.Holding;
-        //            break;
-        //        case "010.1":
-        //            Monitor.Monitor.factory = Monitor.Monitor.Factory.Thailand;
-        //            break;
-        //        case "012.1":
-        //            Monitor.Monitor.factory = Monitor.Monitor.Factory.ValleyForge;
-        //            break;
-
-        //    }
-
-        //}
         private void Load_Databases()
         {
             if (string.IsNullOrEmpty(cs_Protocol))
                 return;
 
-            //if (cs_Protocol.Equals(csDPP_OGO, StringComparison.OrdinalIgnoreCase))
-            //    cb_DPP.Text = "Godby";
-            //else if (cs_Protocol.Equals(csDPP_Beta, StringComparison.OrdinalIgnoreCase))
-            //    cb_DPP.Text = "Godby Test";
-            //else if (cs_Protocol.Equals(csDPP_OTH, StringComparison.OrdinalIgnoreCase))
-            //    cb_DPP.Text = "Thailand";
-            //else if (cs_Protocol.Equals(csDPP_OVF, StringComparison.OrdinalIgnoreCase))
-            //    cb_DPP.Text = "Valley Forge";
+          
             cb_DPP.Text = cs_Protocol switch
             {
                 string s when s.Contains("GOD_DPP_DEV", StringComparison.OrdinalIgnoreCase) => "Godby Test",
@@ -412,20 +395,6 @@ namespace DigitalProductionProgram.DatabaseManagement
             return credentials;
         }
 
-        //public static Monitor_API_Credentials LoadCredentials()
-        //{
-        //    var config = new ConfigurationBuilder()
-        //        .SetBasePath(AppContext.BaseDirectory)
-        //        .AddJsonFile("DatabaseSettings.json", optional: false, reloadOnChange: true)
-        //        .Build();
-
-        //    var credentials = config.GetSection("ApiCredentials").Get<Monitor_API_Credentials>();
-
-        //    // Dekryptera lösenordet
-        //    credentials.Password = AesEncryption.Decrypt(credentials.Password);
-
-        //    return credentials;
-        //}
         public class Monitor_API_Credentials
         {
             public string Username { get; set; }

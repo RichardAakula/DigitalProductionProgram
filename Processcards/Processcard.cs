@@ -33,25 +33,7 @@ namespace DigitalProductionProgram.Processcards
         public static readonly List<int> Rows_int = new List<int>();
         public static readonly List<int> Rows_string = new List<int>();
 
-        public static int TotalRowsProcesscard(int formtemplateid)
-        {
-            using var con = new SqlConnection(Database.cs_Protocol);
-            var query = @"
-                    SELECT MAX(RowIndex) 
-                    FROM Protocol.Template
-                    WHERE FormTemplateID = @formtemplateid";
-            //AND Revision = @revision";    //Denna bör gå att vara utan vid nya versionen med Flexibla Protokoll
-
-            con.Open();
-            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-            cmd.Parameters.AddWithValue("@formtemplateid", formtemplateid);
-            // cmd.Parameters.AddWithValue("@revision", Active_Processcard_Revision(formtemplateid));
-            var value = cmd.ExecuteScalar();
-
-            int.TryParse(value.ToString(), out var totalrows);
-            return totalrows + 1;
-        }
-        public static bool IsNotUsing_Processcard(WorkOperations workoperation)
+        public static bool IsNotUsingProcesscard(WorkOperations workoperation)
         {
             switch (workoperation)
             {
@@ -63,7 +45,7 @@ namespace DigitalProductionProgram.Processcards
                     return false;
             }
         }
-        public static bool IsMultiple_Processcard(WorkOperations workoperation, string? partNr = null)
+        public static bool IsMultipleProcesscard(WorkOperations workoperation, string? partNr = null)
         {
             if (partNr is null)
                 partNr = Order.PartNumber;

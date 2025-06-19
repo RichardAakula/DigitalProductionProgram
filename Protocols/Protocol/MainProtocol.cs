@@ -124,27 +124,9 @@ namespace DigitalProductionProgram.Protocols.Protocol
             AddMainInfo();
             LoadData();
 
-            // tlp_Machines.ColumnCount = Machine.TotalMachines;
-            // tlp_Machines.ColumnStyles.Clear();
-            float percent = 100f / Machine.TotalMachines;
+           // float percent = 100f / Machine.TotalMachines;
             for (int i = 0; i < Machine.TotalMachines; i++)
-            {
-                //   tlp_Machines.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, percent));
                 AddMachine(i + 1);
-            }
-
-            //AddMachine(1);
-            //if (Machine.Is_MultipleMachines)
-            //{
-            //    tlp_Machines.ColumnCount = 2;
-            //    tlp_Machines.ColumnStyles[0] = new ColumnStyle(SizeType.Percent, 60);
-            //    tlp_Machines.ColumnStyles[1] = new ColumnStyle(SizeType.Percent, 40);
-            //    AddMachine(2);
-
-            //    tlp_Main.ColumnStyles[1].Width = 400;
-            //}
-
-            //LoadData();//Flyttat denna längre upp pga ProcesscardBasedOn behöver laddas före datan annars valideras ej datan rätt
 
             if (Korprotokoll.IsProtocol_Open_By_AnotherUser(this) || string.IsNullOrEmpty(Person.EmployeeNr) || Order.IsOrderDone || LineClearance.LineClearance.IsLineClearanceDone == false)
                 SetProtocolLockState(true);
@@ -162,10 +144,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                 return;
             var isOkToCloseForm = false;
             CheckIfEquipmentIsConfirmed(false, ref isOkToCloseForm);
-            // SetSize_MainForm();
-
         }
-
         private void MainProtocol_Load(object sender, EventArgs e)
         {
             Module.IsOkToSave = true;
@@ -176,7 +155,6 @@ namespace DigitalProductionProgram.Protocols.Protocol
             LanguageManager.TranslationHelper.TranslateControls(new Control[] { btn_AddStartUp, btn_RemoveStartUp, btn_Confirm_Equipment, btn_Edit_Equipment });
             btn_ExtraComments.Text = LanguageManager.GetString("extraComments");
         }
-
         private void LoadData()
         {
             ProcesscardBasedOn?.Load_Data();
@@ -186,7 +164,6 @@ namespace DigitalProductionProgram.Protocols.Protocol
             if (PreFab.IsUsingPreFab)
                 PreFab.Load_Data();
         }
-
         private void SetProtocolLockState(bool IsLock)
         {
             PreFab.btn_AddPreFab.Enabled = PreFab.btn_RemovePreFab.Enabled = PreFab.dgv.Enabled = btn_AddStartUp.Enabled = btn_RemoveStartUp.Enabled = btn_Confirm_Equipment.Enabled = btn_Edit_Equipment.Enabled = btn_Add_Oven.Enabled = btn_RemoveOven.Enabled = !IsLock;
@@ -199,21 +176,18 @@ namespace DigitalProductionProgram.Protocols.Protocol
             Line_Clearance.Enabled = IsLock;
             Comments.tb_Comments.ReadOnly = IsLock;
         }
-
         private void AddMachine(int machineIndex)
         {
             var isUsingEquipment = false;
-            var width = 0;
-            var machine = new Machine(machineIndex, ref isUsingEquipment, ref width, false)
+            var height = 0;
+            var machine = new Machine(machineIndex, ref isUsingEquipment, ref height, false)
             {
-                Size = new Size(width, flp_Machines.Height - 20),
                 Name = machineIndex.ToString(),
-                Anchor = AnchorStyles.Top | AnchorStyles.Left
+                Dock = DockStyle.None,
             };
-            this.PerformLayout();
-            //machine.Width = flp_Machines.Width / Machine.TotalMachines - 10; // Adjust width based on total machines
+            var width = machine.TotalWidth;
+            machine.Size = new Size(width, height);
             flp_Machines.Controls.Add(machine);
-
 
             _ = Activity.Stop($"IsUsingPreFab = {PreFab.IsUsingPreFab}");
             if (PreFab.IsUsingPreFab == false)
@@ -224,18 +198,15 @@ namespace DigitalProductionProgram.Protocols.Protocol
                 btn_Add_Oven.Visible = btn_RemoveOven.Visible = true;
 
         }
-
         private void Hide_PreFab()
         {
             PreFab.Visible = false;
             tlp_Right.RowStyles[1].Height = 0;
         }
-
         private void Hide_Equipment()
         {
             btn_Confirm_Equipment.Visible = btn_Edit_Equipment.Visible = false;
         }
-
         private void AddMainInfo()
         {
             string MainInfoTemplate = null;
@@ -296,6 +267,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
 
         }
 
+        
         private void LC_Name_Click(object? sender, EventArgs e)
         {
             if (Order.IsOrderDone)
@@ -311,8 +283,6 @@ namespace DigitalProductionProgram.Protocols.Protocol
             SetProtocolLockState(false);
             Module.IsOkToSave = true;
         }
-
-
         private void AddStartup_Click(object sender, EventArgs e)
         {
             if (IsOkAddStartUp == false)

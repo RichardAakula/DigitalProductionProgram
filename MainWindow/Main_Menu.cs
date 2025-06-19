@@ -15,6 +15,7 @@ using DigitalProductionProgram.Templates;
 using DigitalProductionProgram.ToolManagement;
 using DigitalProductionProgram.User;
 using Microsoft.Data.SqlClient;
+using Microsoft.VisualBasic.Devices;
 using System.Diagnostics;
 using System.Globalization;
 using System.Runtime.InteropServices;
@@ -230,7 +231,7 @@ namespace DigitalProductionProgram.MainWindow
                 if (QC_Feedback.IsOperationHaveQCFeedback)
                     QC_Feedback.IncreaseRemainingViewsForOperation();
 
-               // Order.Clear_Order();//Detta görs i Clear_Mainform
+                // Order.Clear_Order();//Detta görs i Clear_Mainform
                 mainForm.Clear_Mainform();
 
             }
@@ -978,26 +979,21 @@ Protocol.MainTemplate.Revision = {Templates_Protocol.MainTemplate.Revision}"
         private void Developer_CountSql_Queries_Click(object sender, EventArgs e)
         {
             var sb = new StringBuilder();
-            sb.AppendLine($"Totalt antal SQL-anrop: {Database.SQL_Counter}");
+            sb.AppendLine($"Totalt antal SQL-anrop: {Database.SQL_Counter}\n\n");
 
             foreach (var kvp in ServerStatus._methodSqlCounters.OrderByDescending(x => x.Value))
             {
                 sb.AppendLine($"{kvp.Key}: {kvp.Value} anrop");
             }
 
-            InfoText.Show(sb.ToString(), CustomColors.InfoText_Color.Info, null,mainForm);
+            InfoText.Show(sb.ToString(), CustomColors.InfoText_Color.Info, null, mainForm);
             // Kopiera till urklipp
             Clipboard.SetText(sb.ToString());
         }
-        private void testRGBToolStripMenuItem_Click(object sender, EventArgs e)
+        private void Developer_Clear_Sql_Queries_Click(object sender, EventArgs e)
         {
-            //MessageBox.Show(Colors.DimGray.R.ToString());
-            //MessageBox.Show(Colors.DimGray.G.ToString());
-            //MessageBox.Show(Colors.DimGray.B.ToString());
-
-            //MessageBox.Show(Colors.ForestGreen.R.ToString());
-            //MessageBox.Show(Colors.ForestGreen.G.ToString());
-            //MessageBox.Show(Colors.ForestGreen.B.ToString());
+            ServerStatus._methodSqlCounters.Clear();
+            Database.SQL_Counter = 0;
         }
 
 

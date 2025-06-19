@@ -5,6 +5,7 @@ using DigitalProductionProgram.Övrigt;
 using DigitalProductionProgram.Processcards;
 using Microsoft.Data.SqlClient;
 using System.Data;
+using System.Text;
 using DigitalProductionProgram.Templates;
 
 
@@ -12,73 +13,6 @@ namespace DigitalProductionProgram.OrderManagement
 {
     internal class Part
     {
-
-        private static string BuildProcesscardQuery(string workOperation, string partNr)
-        {
-            bool isMultiple = Processcard.IsMultiple_Processcard(Order.WorkOperation, partNr);
-            var q = new StringBuilder(@"
-        WITH OrderedRevisions AS (
-            SELECT 
-                PartID, 
-                PartGroupID,
-                RevNr,
-                QA_sign,
-                Framtagning_Processfönster,");
-
-            if (isMultiple)
-            {
-                if (!string.IsNullOrEmpty(Order.ProdLine))
-                    q.Append("ProdLine, ");
-                if (!string.IsNullOrEmpty(Order.ProdType))
-                    q.Append("ProdType, ");
-            }
-
-            q.Append(@"
-                ROW_NUMBER() OVER (PARTITION BY PartGroupID ORDER BY RevNr DESC) AS RowNum,
-                COUNT(*) OVER (PARTITION BY PartGroupID) AS TotalRevisions,
-                MIN(RevNr) OVER (PARTITION BY PartGroupID) AS FirstRev,
-                MAX(RevNr) OVER (PARTITION BY PartGroupID) AS LatestRev,
-                MAX(CASE WHEN Framtagning_Processfönster = 'True' THEN RevNr END) OVER (PARTITION BY PartGroupID) AS LatestFramtagningRev,
-                MAX(CASE WHEN QA_sign IS NOT NULL THEN RevNr END) OVER (PARTITION BY PartGroupID) AS LatestApprovedRev
-            FROM Processcard.MainData
-            WHERE PartNr = @partnr
-            AND WorkOperationID = (SELECT ID FROM Workoperation.Names WHERE Name = @workoperation AND ID IS NOT NULL)
-            AND Aktiv = 'True'");
-
-            if (isMultiple)
-            {
-                if (!string.IsNullOrEmpty(Order.ProdLine))
-                    q.Append(" AND ProdLine = @prodline ");
-
-                if (!string.IsNullOrEmpty(Order.ProdType))
-                    q.Append(" AND ProdType = @prodtyp ");
-            }
-
-            q.Append(@"
-        ),
-        CheckAllNulls AS (
-            SELECT PartGroupID
-            FROM OrderedRevisions
-            GROUP BY PartGroupID
-            HAVING COUNT(*) = COUNT(CASE WHEN QA_sign IS NULL THEN 1 END)
-        )
-        SELECT 
-            PartID,
-            RevNr,
-            LatestRev,
-            CASE WHEN RevNr = LatestRev THEN 1 ELSE 0 END AS LatestRevSelected
-        FROM OrderedRevisions
-        WHERE 
-            RevNr = LatestApprovedRev
-            OR (RevNr = FirstRev AND PartGroupID IN (SELECT PartGroupID FROM CheckAllNulls) AND Framtagning_Processfönster = 'False')
-            OR (RevNr = LatestFramtagningRev AND PartGroupID IN (SELECT PartGroupID FROM CheckAllNulls) 
-                AND EXISTS (SELECT 1 FROM OrderedRevisions AS innerR 
-                            WHERE innerR.PartGroupID = OrderedRevisions.PartGroupID 
-                            AND Framtagning_Processfönster = 'True'))
-        ORDER BY PartGroupID, RevNr DESC");
-
-            return q.ToString();
-        }
 
         public static string? ExtraInfo_Part
         {
@@ -210,82 +144,35 @@ namespace DigitalProductionProgram.OrderManagement
             }
         }
 
-        private record ProcesscardRevision(int PartID, string RevNr, string LatestRev, bool IsLatestRevSelected);
-        private static ProcesscardRevision? GetProcesscardRevision(string query, string partNr, string workOperation)
-        {
-            using var con = new SqlConnection(Database.cs_Protocol);
-            using var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
 
-            cmd.Parameters.Add("@partnr", SqlDbType.VarChar).Value = partNr;
-            cmd.Parameters.Add("@workoperation", SqlDbType.VarChar).Value = workOperation;
-            SQL_Parameter.String(cmd.Parameters, "@prodline", Order.ProdLine);
-            SQL_Parameter.String(cmd.Parameters, "@prodtyp", Order.ProdType);
-
-            con.Open();
-            using var reader = cmd.ExecuteReader();
-
-            if (!reader.Read())
-                return null;
-
-            var partId = reader.GetInt32(reader.GetOrdinal("PartID"));
-            var revNr = reader.GetString(reader.GetOrdinal("RevNr"));
-            var latestRev = reader.GetString(reader.GetOrdinal("LatestRev"));
-            var isLatest = Convert.ToBoolean(reader["LatestRevSelected"]);
-
-            return new ProcesscardRevision(partId, revNr, latestRev, isLatest);
-        }
-
-        //public static void Load_PartID(string? partNr, bool isOperatorStartingOrder, bool isOnlyProcessCard, bool isAutoSelectTemplate, string? workOperation = null)
-        //{
-        //    if (string.IsNullOrWhiteSpace(partNr))
-        //        return;
-
-        //    var resolvedWorkOperation = ResolveWorkOperation(workOperation, isOnlyProcessCard, isOperatorStartingOrder, isAutoSelectTemplate);
-        //    if (string.IsNullOrWhiteSpace(resolvedWorkOperation))
-        //        return;
-
-        //    var query = BuildProcesscardQuery(resolvedWorkOperation, partNr);
-        //    var revision = GetProcesscardRevision(query, partNr, resolvedWorkOperation);
-
-        //    if (revision is null)
-        //        return;
-
-        //    Order.PartID = revision.PartID;
-        //    Order.RevNr = revision.RevNr;
-
-        //    if (!revision.IsLatestRevSelected && isOperatorStartingOrder)
-        //        Mail.NotifyQAPartNumberNeedApproval(revision.LatestRev);
-        //}
-        public static void Load_PartID(string PartNr, bool IsOperatorStartingOrder, bool IsOnlyProcessCard, bool isAutoSelectTemplate, string WorkOperation = null)
+        public static void Load_PartID(string PartNr, bool IsOperatorStartingOrder, bool IsOnlyProcessCard, bool isAutoSelectTemplate, string? WorkOperation = null)
         {
             //IsOnlyProcessCard - Letar endast efter mallar i Processkorten
             //IsOperatprStartingOrder - Då görs en kontroll när användare klickar på Processkortet om det är ok att starta ordern
+            bool isMultipleProcesscard = Processcard.IsMultipleProcesscard(Order.WorkOperation, PartNr);
 
-            if (WorkOperation is null || WorkOperation == WorkOperations.Nothing.ToString() || Processcard.IsMultiple_Processcard(Order.WorkOperation, PartNr))
+            if (WorkOperation is null || WorkOperation == Manage_WorkOperation.WorkOperations.Nothing.ToString() || isMultipleProcesscard)
             {
                 if (WorkOperation is null)
-                    Order.WorkOperation = WorkOperations.Nothing;
+                    Order.WorkOperation = Manage_WorkOperation.WorkOperations.Nothing;
                 var black = new BlackBackground("", 70);
                 var chooseProcesscard = new ProcesscardTemplateSelector(IsOperatorStartingOrder, IsOnlyProcessCard, false, isAutoSelectTemplate);
                 {
-                    //if (Order.WorkOperation == WorkOperations.Nothing || Processcard.IsMultiple_Processcard(Order.WorkOperation, PartNr))
-                    {
-                        black.Show();
-                        chooseProcesscard.ShowDialog();
-                        black.Close();
-                    }
+                    black.Show();
+                    chooseProcesscard.ShowDialog();
+                    black.Close();
 
                 }
                 WorkOperation = Order.WorkOperation.ToString();
+                isMultipleProcesscard = Processcard.IsMultipleProcesscard(Order.WorkOperation, PartNr); // uppdatera!
             }
 
             if (Order.PartID != null)
                 return;
             if (Order.PartNumber is null)
                 return;
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query = new StringBuilder(@"
+            using var con = new SqlConnection(Database.cs_Protocol);
+            var query = new StringBuilder(@"
                     WITH OrderedRevisions AS (
                         SELECT 
                         PartID, 
@@ -299,16 +186,16 @@ namespace DigitalProductionProgram.OrderManagement
                         AND Aktiv = 'True'
                         ");
 
-                if (Processcard.IsMultiple_Processcard(Order.WorkOperation, PartNr))
-                {
-                    if (!string.IsNullOrEmpty(Order.ProdLine))
-                        query.Append(" AND ProdLine = @prodline ");
+            if (isMultipleProcesscard)
+            {
+                if (!string.IsNullOrEmpty(Order.ProdLine))
+                    query.Append(" AND ProdLine = @prodline ");
 
-                    if (!string.IsNullOrEmpty(Order.ProdType))
-                        query.Append(" AND ProdType = @prodtyp ");
-                }
+                if (!string.IsNullOrEmpty(Order.ProdType))
+                    query.Append(" AND ProdType = @prodtyp ");
+            }
 
-                query.Append(@")
+            query.Append(@")
                     SELECT PartID FROM OrderedRevisions
                     WHERE (QA_sign IS NOT NULL AND RowNum = 1)  -- Latest approved revision
                         OR (QA_sign IS NULL AND RowNum = 2)   -- Previous revision if latest is not approved
@@ -316,65 +203,21 @@ namespace DigitalProductionProgram.OrderManagement
                     ORDER BY RowNum
                     OFFSET 0 ROWS FETCH NEXT 1 ROWS ONLY; -- Ensure only one record is returned");
 
-                con.Open();
-                using (var cmd = new SqlCommand(query.ToString(), con))
-                {
-                    cmd.Parameters.AddWithValue("@partnr", PartNr);
-                    cmd.Parameters.AddWithValue("@workoperation", WorkOperation);
-                    SQL_Parameter.String(cmd.Parameters, "@prodline", Order.ProdLine);
-                    SQL_Parameter.String(cmd.Parameters, "@prodtyp", Order.ProdType);
+            con.Open();
+            using var cmd = new SqlCommand(query.ToString(), con);
+            cmd.Parameters.AddWithValue("@partnr", PartNr);
+            cmd.Parameters.AddWithValue("@workoperation", WorkOperation);
+            SQL_Parameter.String(cmd.Parameters, "@prodline", Order.ProdLine);
+            SQL_Parameter.String(cmd.Parameters, "@prodtyp", Order.ProdType);
 
-                    var value = cmd.ExecuteScalar();
-                    Order.PartID = value as int?;
-                }
-            }
-
-
-
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query = "SELECT PartID FROM Processcard.MainData WHERE PartNr = @partnr AND WorkOperationID = (SELECT ID FROM Workoperation.Names WHERE Name = @workoperation AND ID IS NOT NULL) AND Aktiv = 'True' ";
-                if (Processcard.IsMultiple_Processcard(Order.WorkOperation, PartNr))
-                {
-                    if (!string.IsNullOrEmpty(Order.ProdLine))
-                        query += "AND ProdLine = @prodline ";
-                    if (!string.IsNullOrEmpty(Order.ProdType))
-                        query += "AND ProdType = @prodtyp ";
-                }
-
-                query += "ORDER BY revNr DESC";
-                con.Open();
-                var cmd = new SqlCommand(query, con);
-                cmd.Parameters.AddWithValue("@partnr", PartNr);
-                cmd.Parameters.AddWithValue("@workoperation", WorkOperation);
-                SQL_Parameter.String(cmd.Parameters, "@prodline", Order.ProdLine);
-                SQL_Parameter.String(cmd.Parameters, "@prodtyp", Order.ProdType);
-                var value = cmd.ExecuteScalar();
-                Order.PartID = (int?)value;
-            }
+            var value = cmd.ExecuteScalar();
+            Order.PartID = value as int?;
         }
-        private static string? ResolveWorkOperation(string? workOperation, bool isOnlyProcessCard, bool isOperatorStartingOrder, bool isAutoSelectTemplate)
-        {
-            if (!string.IsNullOrWhiteSpace(workOperation) && workOperation != WorkOperations.Nothing.ToString())
-                return workOperation;
-
-            Order.WorkOperation = WorkOperations.Nothing;
-
-            using var black = new BlackBackground("", 70);
-            using var chooser = new ProcesscardTemplateSelector(isOperatorStartingOrder, isOnlyProcessCard, false, isAutoSelectTemplate);
-
-            black.Show();
-            chooser.ShowDialog();
-            black.Close();
-
-            return chooser.IsAborted ? null : Order.WorkOperation.ToString();
-        }
-
-        public static int? Get_PartID(string? PartNr, WorkOperations WorkOperation)
+        public static int? Get_PartID(string? PartNr, Manage_WorkOperation.WorkOperations WorkOperation)
         {
             using var con = new SqlConnection(Database.cs_Protocol);
             var query = "SELECT PartID FROM Processcard.MainData WHERE PartNr = @partnr AND WorkOperationID = (SELECT ID FROM Workoperation.Names WHERE Name = @workoperation AND ID IS NOT NULL) ";
-            if (Processcard.IsMultiple_Processcard(WorkOperation, PartNr))
+            if (Processcard.IsMultipleProcesscard(WorkOperation, PartNr))
             {
                 if (!string.IsNullOrEmpty(Order.ProdLine))
                     query += "AND ProdLine = @prodline ";
@@ -391,6 +234,43 @@ namespace DigitalProductionProgram.OrderManagement
             SQL_Parameter.String(cmd.Parameters, "@prodtyp", Order.ProdType);
             var value = cmd.ExecuteScalar();
             return (int?)value;
+        }
+        public static Dictionary<string, int?> LoadPartIDCache(IEnumerable<(string PartNr, string WorkOpStr)> combos)
+        {
+            var result = new Dictionary<string, int?>();
+            using var con = new SqlConnection(Database.cs_Protocol);
+
+            // Bygg tabell i minnet
+            var dt = new DataTable();
+            dt.Columns.Add("PartNr", typeof(string));
+            dt.Columns.Add("WorkOperation", typeof(string));
+            foreach (var (partNr, workOpStr) in combos.Distinct())
+                dt.Rows.Add(partNr, workOpStr);
+
+            con.Open();
+            using var cmd = new SqlCommand(@"
+        SELECT PartNr, W.Name AS WorkOperation, MAX(PartID) AS PartID
+        FROM Processcard.MainData P
+        JOIN Workoperation.Names W ON W.ID = P.WorkOperationID
+        WHERE (P.ProdLine = @prodLine OR @prodLine IS NULL)
+          AND (P.ProdType = @prodType OR @prodType IS NULL)
+          AND Aktiv = 'True'
+        GROUP BY PartNr, W.Name", con); // Vi hämtar max(PartID) per unik PartNr + WorkOp
+
+            SQL_Parameter.String(cmd.Parameters, "@prodLine", Order.ProdLine);
+            SQL_Parameter.String(cmd.Parameters, "@prodType", Order.ProdType);
+            ServerStatus.Add_Sql_Counter();
+
+            using var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                var partNr = reader["PartNr"].ToString();
+                var workOp = reader["WorkOperation"].ToString();
+                var partKey = $"{partNr}__{workOp}";
+                result[partKey] = reader["PartID"] as int?;
+            }
+
+            return result;
         }
         public class ProcesscardStatus
         {
@@ -443,13 +323,13 @@ namespace DigitalProductionProgram.OrderManagement
 
 
 
-        public static void Load_PartGroup_ID(string? PartNr, WorkOperations workoperation)
+        public static void Load_PartGroup_ID(string? PartNr, Manage_WorkOperation.WorkOperations workoperation)
         {
             if (string.IsNullOrEmpty(PartNr))
                 return;
             using var con = new SqlConnection(Database.cs_Protocol);
             var query = "SELECT PartGroupID FROM Processcard.MainData WHERE PartNr = @partnr AND WorkOperationID = (SELECT ID FROM Workoperation.Names WHERE Name = @workoperation AND ID IS NOT NULL) ";
-            if (Processcard.IsMultiple_Processcard(workoperation, PartNr))
+            if (Processcard.IsMultipleProcesscard(workoperation, PartNr))
                 query += "AND (@prodline IS NULL OR ProdLine = @prodline) AND ProdType = @prodtyp";
             con.Open();
             var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
@@ -542,11 +422,10 @@ namespace DigitalProductionProgram.OrderManagement
             if (partID is null || partID == 0)
                 return false;
 
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query = "SELECT * FROM Processcard.MainData WHERE PartID = @partid";
-                var cmd = new SqlCommand(query, con);
-                SQL_Parameter.NullableINT(cmd.Parameters, "@partid", partID);
+            using var con = new SqlConnection(Database.cs_Protocol);
+            var query = "SELECT * FROM Processcard.MainData WHERE PartID = @partid";
+            var cmd = new SqlCommand(query, con);
+            SQL_Parameter.NullableINT(cmd.Parameters, "@partid", partID);
 
             con.Open();
             var reader = cmd.ExecuteReader();
@@ -611,15 +490,13 @@ namespace DigitalProductionProgram.OrderManagement
         {
             if (string.IsNullOrEmpty(Order.PartNumber))
                 return false;
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query = $"SELECT PartNr FROM Parts.PartNrSpecial WHERE PartNr = @partnr AND PartNrDescriptionID = (SELECT id FROM Parts.PartNrDescription WHERE Description = '{description}')";
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@partnr", Order.PartNumber);
-                con.Open();
-                var reader = cmd.ExecuteReader();
-                return reader.HasRows;
-            }
+            using var con = new SqlConnection(Database.cs_Protocol);
+            var query = $"SELECT PartNr FROM Parts.PartNrSpecial WHERE PartNr = @partnr AND PartNrDescriptionID = (SELECT id FROM Parts.PartNrDescription WHERE Description = '{description}')";
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            cmd.Parameters.AddWithValue("@partnr", Order.PartNumber);
+            con.Open();
+            var reader = cmd.ExecuteReader();
+            return reader.HasRows;
         }
 
 

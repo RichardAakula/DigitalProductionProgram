@@ -2,7 +2,7 @@
 .vs/
 *.user
 *.suo
-
+*.appxmanifest
 # Build output
 bin/
 obj/

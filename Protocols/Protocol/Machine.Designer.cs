@@ -33,19 +33,17 @@
             // 
             // tlp_Machine
             // 
-            tlp_Machine.AutoScroll = true;
-            tlp_Machine.AutoSize = true;
             tlp_Machine.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             tlp_Machine.BackColor = Color.FromArgb(65, 65, 65);
             tlp_Machine.ColumnCount = 1;
             tlp_Machine.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
-            tlp_Machine.Dock = DockStyle.Top;
+            tlp_Machine.Dock = DockStyle.Fill;
             tlp_Machine.Location = new Point(0, 0);
             tlp_Machine.Margin = new Padding(4, 3, 4, 3);
             tlp_Machine.Name = "tlp_Machine";
             tlp_Machine.RowCount = 1;
             tlp_Machine.RowStyles.Add(new RowStyle(SizeType.Absolute, 835F));
-            tlp_Machine.Size = new Size(734, 835);
+            tlp_Machine.Size = new Size(946, 1154);
             tlp_Machine.TabIndex = 0;
             // 
             // Machine
@@ -53,13 +51,13 @@
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             AutoScroll = true;
+            AutoSizeMode = AutoSizeMode.GrowAndShrink;
             BackColor = Color.Black;
             Controls.Add(tlp_Machine);
             Margin = new Padding(4, 3, 4, 3);
             Name = "Machine";
-            Size = new Size(734, 835);
+            Size = new Size(946, 1154);
             ResumeLayout(false);
-            PerformLayout();
 
         }
 

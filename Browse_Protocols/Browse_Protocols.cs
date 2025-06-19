@@ -78,7 +78,7 @@ namespace DigitalProductionProgram.Browse_Protocols
                     Initialize_GUI_Svetsning_TEF();
                     break;
                 default:
-                    Initialize_GUI_Protocol();
+                   // Initialize_GUI_Protocol();
                     break;
             }
 
@@ -105,7 +105,7 @@ namespace DigitalProductionProgram.Browse_Protocols
         private void Initialize_GUI_Blandning_PTFE()
         {
             blandning_PTFE = new MainProtocol_Blandning_PTFE();
-            tlp_Machines.Controls.Add(blandning_PTFE);
+            flp_Machines.Controls.Add(blandning_PTFE);
 
             Prefab.Dispose();
             Comments.Dispose();
@@ -125,7 +125,7 @@ namespace DigitalProductionProgram.Browse_Protocols
         private void Initialize_GUI_Skärmning_TEF()
         {
             skärmning_TEF = new MainProtocol_Skärmning_TEF();
-            tlp_Machines.Controls.Add(skärmning_TEF);
+            flp_Machines.Controls.Add(skärmning_TEF);
 
             Prefab.Dispose();
             skärmning_TEF.lbl_Add_Arbetskort.Dispose();
@@ -141,7 +141,7 @@ namespace DigitalProductionProgram.Browse_Protocols
         private void Initialize_GUI_Slipning_TEF()
         {
             slipning_TEF = new MainProtocol_Slipning_TEF();
-            tlp_Machines.Controls.Add(slipning_TEF);
+            flp_Machines.Controls.Add(slipning_TEF);
 
             Prefab.Dispose();
 
@@ -157,7 +157,7 @@ namespace DigitalProductionProgram.Browse_Protocols
         private void Initialize_GUI_Spolning_PTFE()
         {
             spolning_PTFE = new MainProtocol_Spolning_PTFE();
-            tlp_Machines.Controls.Add(spolning_PTFE);
+            flp_Machines.Controls.Add(spolning_PTFE);
 
             Prefab.Dispose();
             Processcard_BasedOn.Dispose();
@@ -174,7 +174,7 @@ namespace DigitalProductionProgram.Browse_Protocols
         private void Initialize_GUI_Svetsning_TEF()
         {
             svetsning_TEF = new MainProtocol_Svetsning_TEF();
-            tlp_Machines.Controls.Add(svetsning_TEF);
+            flp_Machines.Controls.Add(svetsning_TEF);
 
             Prefab.Dispose();
             svetsning_TEF.Lock_Controls();
@@ -192,24 +192,18 @@ namespace DigitalProductionProgram.Browse_Protocols
         private void AddMachine(int machineIndex)
         {
             var isUsingEquipment = false;
-            var width = 0;
-            var machine = new Machine(machineIndex, ref isUsingEquipment, ref width, false)
+            var height = 0;
+            
+            var machine = new Machine(machineIndex, ref isUsingEquipment, ref height, false)
             {
-                Dock = DockStyle.Fill,
                 Name = machineIndex.ToString(),
             };
-            if (machineIndex > tlp_Machines.ColumnCount)
-            {
-                tlp_Machines.ColumnCount++;
-                tlp_Machines.ColumnStyles[0] = new ColumnStyle(SizeType.Percent, 60f);
-                tlp_Machines.ColumnStyles[1] = new ColumnStyle(SizeType.Percent, 40f);
-                //for (var i = 0; i < tlp_Machines.ColumnCount; i++)
-                //    tlp_Machines.ColumnStyles[i] = new ColumnStyle(SizeType.Percent, 100f / tlp_Machines.ColumnCount);
-            }
-
-            tlp_Machines.Controls.Add(machine);
-            tlp_Machines.SetCellPosition(machine, new TableLayoutPanelCellPosition(machineIndex - 1, 0));
-            machine.Dock = DockStyle.Fill;
+            var width = machine.TotalWidth;
+            if (machine.HorizontalScroll.Visible)
+                height += SystemInformation.HorizontalScrollBarHeight;
+            machine.Size = new Size(width, height);
+            flp_Machines.Controls.Add(machine);
+          
         }
 
         private void Load_OrderList(string extraQuery = null)
@@ -447,16 +441,11 @@ namespace DigitalProductionProgram.Browse_Protocols
                     svetsning_TEF.Load_Data();
                     break;
                 default:
-                    tlp_Machines.Controls.Clear();
+                    flp_Machines.Controls.Clear();
 
-                    var totalMachines = Machine.TotalMachines;
-                    for (var machine = 0; machine < totalMachines; machine++)
-                        AddMachine(machine + 1);
-                    if (totalMachines == 1)
-                    {
-                        tlp_Machines.ColumnCount--;
-                        tlp_Machines.ColumnStyles[0] = new ColumnStyle(SizeType.Percent, 100f);
-                    }
+                    for (int i = 0; i < Machine.TotalMachines; i++)
+                        AddMachine(i + 1);
+                   
                     break;
             }
 

@@ -33,8 +33,8 @@ namespace DigitalProductionProgram.Log
         public static async Task Stop(string info, double tid = 0)
         {
             double LoadingTime = tid == 0 ? laddTid.TotalMilliseconds / 1000 : tid;
-            if (LoadingTime > 1000000) return;
-
+            if (LoadingTime > 100)
+                LoadingTime = 0;
             try
             {
                 await using var con = new SqlConnection(Database.cs_Protocol);
@@ -49,7 +49,7 @@ namespace DigitalProductionProgram.Log
                 SQL_Parameter.Int(cmd.Parameters, "@userid", Person.UserID);
                 SQL_Parameter.Int(cmd.Parameters, "orderid", Order.OrderID);
                 cmd.Parameters.AddWithValue("@version", ChangeLog.CurrentVersion.ToString());
-                cmd.Parameters.AddWithValue("@loadingtime", LoadingTime);
+                cmd.Parameters.AddWithValue("@loadingtime", (decimal)Math.Min(LoadingTime, 99999.999));
                 cmd.Parameters.AddWithValue("@info", info);
                 cmd.Parameters.AddWithValue("@resolution", $"{Program.ScreenWidth} x {Program.ScreenHeight}");
                 cmd.Parameters.AddWithValue("@windowsversion", Environment.Version.ToString());
@@ -58,7 +58,7 @@ namespace DigitalProductionProgram.Log
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.Message);
+                MessageBox.Show($@"Error when logging data: {e.Message}");
             }
         }
         public static async Task AddTimeUserRead(string version, TimeSpan duration)

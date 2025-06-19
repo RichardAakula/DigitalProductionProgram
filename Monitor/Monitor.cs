@@ -73,7 +73,7 @@ namespace DigitalProductionProgram.Monitor
             var partNr = Utilities.GetOneFromMonitor<Inventory.Parts>("select=PartNumber", $"filter=PartNumber Eq'{partNumber}'");
             return partNr != null;
         }
-        public static List<string?> PreFab_BatchNr(string? artikelNr)
+        public static List<string?> PreFab_BatchNr(string? partNumber)
         {
             var list = new List<string?>
             {
@@ -81,7 +81,7 @@ namespace DigitalProductionProgram.Monitor
                 string.Empty
             };
             // Monitor_Login.Login_Monitor();
-            var partId = Utilities.GetOneFromMonitor<Inventory.Parts>("select=Id", $"filter=PartNumber Eq'{artikelNr}'");
+            var partId = Utilities.GetOneFromMonitor<Inventory.Parts>("select=Id", $"filter=PartNumber Eq'{partNumber}'");
             if (partId is null)
                 return null;
             var PartLocationsId = Utilities.GetFromMonitor<Inventory.PartLocations>($"filter=PartId Eq'{partId.Id}' AND Balance gt'0' AND (WarehouseId Eq 1 OR WarehouseId Eq 5) AND LifeCycleState Eq 10");

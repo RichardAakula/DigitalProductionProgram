@@ -42,7 +42,6 @@ namespace DigitalProductionProgram.Protocols.Protocol
             btn_RemoveOven = new Button();
             btn_Confirm_Equipment = new Button();
             btn_Edit_Equipment = new Button();
-            button1 = new Button();
             btn_ExtraComments = new Button();
             ProcesscardBasedOn = new DigitalProductionProgram.Processcards.ProcesscardBasedOn();
             PreFab = new PreFab();
@@ -137,7 +136,6 @@ namespace DigitalProductionProgram.Protocols.Protocol
             flp_Buttons.Controls.Add(btn_RemoveOven);
             flp_Buttons.Controls.Add(btn_Confirm_Equipment);
             flp_Buttons.Controls.Add(btn_Edit_Equipment);
-            flp_Buttons.Controls.Add(button1);
             flp_Buttons.Dock = DockStyle.Fill;
             flp_Buttons.FlowDirection = FlowDirection.TopDown;
             flp_Buttons.Location = new Point(0, 0);
@@ -257,15 +255,6 @@ namespace DigitalProductionProgram.Protocols.Protocol
             btn_Edit_Equipment.Visible = false;
             btn_Edit_Equipment.Click += Edit_Equipment_Click;
             // 
-            // button1
-            // 
-            button1.Location = new Point(264, 3);
-            button1.Name = "button1";
-            button1.Size = new Size(75, 23);
-            button1.TabIndex = 4;
-            button1.Text = "button1";
-            button1.UseVisualStyleBackColor = true;
-            // 
             // btn_ExtraComments
             // 
             btn_ExtraComments.BackColor = Color.LightGray;
@@ -370,6 +359,5 @@ namespace DigitalProductionProgram.Protocols.Protocol
         private System.Windows.Forms.Panel panel_LineClearance;
         private LineClearance.LineClearance Line_Clearance;
         private FlowLayoutPanel flp_Machines;
-        private Button button1;
     }
 }

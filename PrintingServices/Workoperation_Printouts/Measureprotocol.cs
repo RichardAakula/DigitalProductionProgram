@@ -52,23 +52,24 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
         {
             get
             {
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    const string query = @"
+                if (Templates_MeasureProtocol.MainTemplate.ID == null || Templates_MeasureProtocol.MainTemplate.ID == 0)
+                    return 0;
+
+                using var con = new SqlConnection(Database.cs_Protocol);
+                const string query = @"
                                 SELECT SUM(ColumnWidth), COUNT(*)
                                 FROM MeasureProtocol.Template
                                 WHERE MeasureProtocolMainTemplateID = @maintemplateid";
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
-                    cmd.Parameters.AddWithValue("@maintemplateid", Templates_MeasureProtocol.MainTemplate.ID);
-                    con.Open();
-                    var reader = cmd.ExecuteReader();
-                    while (reader.Read())
-                    {
-                        int.TryParse(reader[0].ToString(), out var x);
-                        int.TryParse(reader[1].ToString(), out var ctr);
-                        return x - ctr * 4 + 26;
-                    }
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
+                cmd.Parameters.AddWithValue("@maintemplateid", Templates_MeasureProtocol.MainTemplate.ID);
+                con.Open();
+                var reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    int.TryParse(reader[0].ToString(), out var x);
+                    int.TryParse(reader[1].ToString(), out var ctr);
+                    return x - ctr * 4 + 26;
                 }
 
                 return 0;

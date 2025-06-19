@@ -44,7 +44,7 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
             {
                 var query = "SELECT Comments FROM [Order].MainData WHERE OrderID = @orderid";
                 var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@orderid", orderID);
+                cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                 con.Open();
                 tb_Comments.Text = cmd.ExecuteScalar().ToString();
             }

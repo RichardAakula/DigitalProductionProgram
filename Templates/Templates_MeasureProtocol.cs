@@ -273,7 +273,9 @@ namespace DigitalProductionProgram.Templates
                     {
                         if (isFirstRow)
                         {
-                            MainTemplate.ID = int.Parse(reader["MeasureProtocolMainTemplateID"].ToString());
+                            MainTemplate.ID = reader["MeasureProtocolMainTemplateID"] is DBNull
+                                ? null
+                                : (int?)Convert.ToInt32(reader["MeasureProtocolMainTemplateID"]);
                             lbl_CreatedBy.Text = reader["CreatedBy"].ToString();
                             lbl_CreatedDate.Text = GetFormattedDate(reader["CreatedDate"]);
                             cb_Monitor_MeasuringTemplate.Text = reader["MeasureProtocolTemplate_Monitor"].ToString();
@@ -780,7 +782,7 @@ namespace DigitalProductionProgram.Templates
         public class MainTemplate
         {
             internal static string? Name { get; set; }
-            public static int ID { get; set; }
+            public static int? ID { get; set; }
             internal static string? Revision { get; set; }
             internal static string TemplateMonitor { get; set; }
             internal static bool IsAmountEditable { get; set; }
@@ -900,11 +902,10 @@ namespace DigitalProductionProgram.Templates
         {
             public static void Update_Data(DataGridView dgv)
             {
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    con.Open(); // Open connection once
+                using var con = new SqlConnection(Database.cs_Protocol);
+                con.Open(); // Open connection once
 
-                    const string query = @"
+                const string query = @"
                 IF NOT EXISTS
                     (
                         SELECT 1 FROM MeasureProtocol.Template 
@@ -968,27 +969,26 @@ namespace DigitalProductionProgram.Templates
                     AND ColumnIndex = @columnindex
                 END";
 
-                    foreach (DataGridViewRow row in dgv.Rows)
-                    {
-                        using var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                        cmd.Parameters.AddWithValue("@name", MainTemplate.Name);
-                        cmd.Parameters.AddWithValue("@revision", MainTemplate.Revision);
-                        cmd.Parameters.AddWithValue("@descriptionid", GetIntValue(row, "col_DescriptionID"));
-                        cmd.Parameters.AddWithValue("@parameter", GetValue(row, "col_Parameter"));
-                        cmd.Parameters.AddWithValue("@parametermonitor", GetValue(row, "col_ParameterMonitor"));
-                        cmd.Parameters.AddWithValue("@ismandatory", GetBooleanValue(row, "col_IsMandatory"));
-                        cmd.Parameters.AddWithValue("@islist", GetBooleanValue(row, "col_Items"));
-                        cmd.Parameters.AddWithValue("@formula", ReplaceVariablesWithRowNumbers(row.Cells["col_Formula"], dgv));
-                        cmd.Parameters.AddWithValue("@datatype", GetIntValue(row, "col_DataType"));
-                        cmd.Parameters.AddWithValue("@controltype", GetValue(row, "col_ControlType"));
-                        cmd.Parameters.AddWithValue("@columnindex", row.Index);
-                        cmd.Parameters.AddWithValue("@increment", GetIntValue(row, "col_Increment"));
-                        cmd.Parameters.AddWithValue("@columnwidth", GetIntValue(row, "col_Width"));
-                        cmd.Parameters.AddWithValue("@decimals", GetIntValue(row, "col_Decimals"));
-                        cmd.Parameters.AddWithValue("@maxchars", GetIntValue(row, "col_MaxChars"));
+                foreach (DataGridViewRow row in dgv.Rows)
+                {
+                    using var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                    cmd.Parameters.AddWithValue("@name", MainTemplate.Name);
+                    cmd.Parameters.AddWithValue("@revision", MainTemplate.Revision);
+                    cmd.Parameters.AddWithValue("@descriptionid", GetIntValue(row, "col_DescriptionID"));
+                    cmd.Parameters.AddWithValue("@parameter", GetValue(row, "col_Parameter"));
+                    cmd.Parameters.AddWithValue("@parametermonitor", GetValue(row, "col_ParameterMonitor"));
+                    cmd.Parameters.AddWithValue("@ismandatory", GetBooleanValue(row, "col_IsMandatory"));
+                    cmd.Parameters.AddWithValue("@islist", GetBooleanValue(row, "col_Items"));
+                    cmd.Parameters.AddWithValue("@formula", ReplaceVariablesWithRowNumbers(row.Cells["col_Formula"], dgv));
+                    cmd.Parameters.AddWithValue("@datatype", GetIntValue(row, "col_DataType"));
+                    cmd.Parameters.AddWithValue("@controltype", GetValue(row, "col_ControlType"));
+                    cmd.Parameters.AddWithValue("@columnindex", row.Index);
+                    cmd.Parameters.AddWithValue("@increment", GetIntValue(row, "col_Increment"));
+                    cmd.Parameters.AddWithValue("@columnwidth", GetIntValue(row, "col_Width"));
+                    cmd.Parameters.AddWithValue("@decimals", GetIntValue(row, "col_Decimals"));
+                    cmd.Parameters.AddWithValue("@maxchars", GetIntValue(row, "col_MaxChars"));
 
-                        cmd.ExecuteNonQuery();
-                    }
+                    cmd.ExecuteNonQuery();
                 }
             }
 

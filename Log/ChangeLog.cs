@@ -1,9 +1,10 @@
-﻿using Microsoft.Data.SqlClient;
-using System.Diagnostics;
-using System.Reflection;
-using DigitalProductionProgram.DatabaseManagement;
+﻿using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.PrintingServices;
+using Microsoft.Data.SqlClient;
+using System.Diagnostics;
+using System.Reflection;
+using System.Xml.Linq;
 
 namespace DigitalProductionProgram.Log
 {
@@ -42,26 +43,33 @@ namespace DigitalProductionProgram.Log
        
 
     public static Version? LatestVersion
+    {
+        get
         {
-            get
-            {
-                try
-                {
-                    using var con = new SqlConnection(Database.cs_Protocol);
-                    const string query = "SELECT TOP(1) Version FROM Log.ChangeLog WHERE ReleaseDate IS NOT NULL ORDER BY ID DESC";
 
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    con.Open();
-                    Version.TryParse((string)cmd.ExecuteScalar(), out var vers);
-                    return vers;
-                }
-                catch
-                {
-                    Debug.WriteLine("Försöker hämta senaste version från databas");
-                    return null;
-                }
+            var doc = XDocument.Load(@"\\optifil\dpp\Install DPP.appinstaller");
+            var versionStr = doc.Root?.Attribute("Version")?.Value;
+            Version.TryParse(versionStr, out var latestVersion);
+            if (latestVersion != null) 
+                return latestVersion;
+
+            try
+            {
+                using var con = new SqlConnection(Database.cs_Protocol);
+                const string query = "SELECT TOP(1) Version FROM Log.ChangeLog WHERE ReleaseDate IS NOT NULL ORDER BY ID DESC";
+
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                con.Open();
+                Version.TryParse((string)cmd.ExecuteScalar(), out var vers);
+                return vers;
+            }
+            catch
+            {
+                Debug.WriteLine("Försöker hämta senaste version från databas");
+                return null;
             }
         }
+    }
 
         private readonly List<VersionInfo> versions = new();
         public static Version? selectedVersion;

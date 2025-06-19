@@ -85,9 +85,9 @@ namespace DigitalProductionProgram.Monitor
                }
            }
            // catch (Exception exc)
-            {
-           //     Monitor.Set_Monitorstatus(Monitor.Status.Bad, exc.Message);
-            }
+           {
+               //     Monitor.Set_Monitorstatus(Monitor.Status.Bad, exc.Message);
+           }
         }
 
     }

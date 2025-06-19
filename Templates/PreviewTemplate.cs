@@ -212,12 +212,13 @@ namespace DigitalProductionProgram.Protocols.Template_Management
         {
             var isAutheticationNeeded = false;
            // var IsUsingPrefab = false;
-            var width = 0;
-            var machine = new Machine(machineIndex, ref isAutheticationNeeded, ref width, false)
+            var height = 0; //Denna används inte här
+            var machine = new Machine(machineIndex, ref isAutheticationNeeded, ref height, false)
             {
                 Dock = DockStyle.Fill,
                 Name = machineIndex.ToString(),
             };
+            var width = machine.TotalWidth;
             machine.Remove_AllStartups();
             tlp_Machines_Compare.Controls.Add(machine);
             tlp_Machines_Compare.SetCellPosition(machine, new TableLayoutPanelCellPosition(columnIndex, 0));

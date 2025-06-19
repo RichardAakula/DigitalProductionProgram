@@ -115,7 +115,7 @@ namespace DigitalProductionProgram.Measure
         public static string? active_MeasureCode;
         public static int MeasureStatsHeight;
         public static string? ChartCodename = string.Empty;
-        public static string ChartCodeText = string.Empty;
+        public static string? ChartCodeText = string.Empty;
 
 
 
@@ -152,7 +152,7 @@ namespace DigitalProductionProgram.Measure
         }
         public void Add_MeasureInformation_MainForm(Panel? panel, TableLayoutPanel tlp_MainWindow)
         {
-            if (Order.OrderID is null)
+            if (Order.OrderID is null || Templates_MeasureProtocol.MainTemplate.ID == 0 || Templates_MeasureProtocol.MainTemplate.ID is null)
                 return;
             Invoke(new Action(() => DrawingControl.SuspendDrawing(this)));
 
@@ -204,28 +204,32 @@ namespace DigitalProductionProgram.Measure
                         ChartCodeText = parameterText;
                     }
 
-                    Add_Label(flp_Codenames, $"{parameterText}:",reader["Parameter_Monitor"].ToString(), labelHeight, FontStyle.Bold, ContentAlignment.MiddleRight);
-                    MeasureStatsHeight += labelHeight + 2;
+                    if (!string.IsNullOrEmpty(ChartCodename) && !string.IsNullOrEmpty(ChartCodeText))
+                    {
+                        Add_Label(flp_Codenames, $"{parameterText}:", reader["Parameter_Monitor"].ToString(), labelHeight, FontStyle.Bold, ContentAlignment.MiddleRight);
+                        MeasureStatsHeight += labelHeight + 2;
 
-                    int.TryParse(reader["Decimals"].ToString(), out var decimals);
-                    if (double.TryParse(reader["Average"].ToString(), out var average))
-                        Add_Label(flp_Average, $"{Math.Round(average, decimals)}", null, labelHeight);
-                    if (double.TryParse(reader["Min"].ToString(), out var min))
-                        Add_Label(flp_Min, $"{Math.Round(min, decimals)}", null, labelHeight);
-                    if (double.TryParse(reader["Max"].ToString(), out var max))
-                        Add_Label(flp_Max, $"{Math.Round(max, decimals)}", null, labelHeight);
+                        int.TryParse(reader["Decimals"].ToString(), out var decimals);
+                        if (double.TryParse(reader["Average"].ToString(), out var average))
+                            Add_Label(flp_Average, $"{Math.Round(average, decimals)}", null, labelHeight);
+                        if (double.TryParse(reader["Min"].ToString(), out var min))
+                            Add_Label(flp_Min, $"{Math.Round(min, decimals)}", null, labelHeight);
+                        if (double.TryParse(reader["Max"].ToString(), out var max))
+                            Add_Label(flp_Max, $"{Math.Round(max, decimals)}", null, labelHeight);
+                    }
                 }
             }
 
 
             if (!string.IsNullOrEmpty(ChartCodename))
             {
-                Charts.Add_Mätdata_Chart_MainForm(panel, ChartCodename, ChartCodeText);
+                Charts.Add_Data_Chart_MainForm(panel, ChartCodename, ChartCodeText);
             }
             else
             {
-                _ = Log.Activity.Stop($"Felsökning rött kryss över chart: ChartCodeName={ChartCodename}");
-                _ = Log.Activity.Stop($"Felsökning rött kryss över chart: ChartCodeName={ChartCodeText}");
+                _ = Log.Activity.Stop($"Felsökning rött kryss över chart: ChartCodeName={ChartCodename}\n" +
+                                      $"Felsökning rött kryss över chart: ChartCodeText={ChartCodeText}\n" +
+                                      $"OrderID = {Order.OrderID} Measureprotocol.MainTemplateID = {Templates_MeasureProtocol.MainTemplate.ID}");
 
             }
             tlp_MainWindow.Invoke(new Action<TableLayoutPanel>(SetHeight), tlp_MainWindow);
@@ -276,7 +280,7 @@ namespace DigitalProductionProgram.Measure
                 Load_MätStatistik();
             
             active_MeasureCode = mått;
-            Charts.Add_Mätdata_Chart_MainForm(Charts.panel_Chart, mått, label.Text);
+            Charts.Add_Data_Chart_MainForm(Charts.panel_Chart, mått, label.Text);
         }
 
         private void ShowStats_Click(object sender, EventArgs e)
@@ -390,7 +394,7 @@ namespace DigitalProductionProgram.Measure
                 if (LSL != null)
                     slMin.IntervalOffset = MeasurePoints.Tolerances.ActiveTolerance(codename, "LSL").Value;
             }
-            public static void Add_Mätdata_Chart_MainForm(Panel? panel, string? codename, string codetext)
+            public static void Add_Data_Chart_MainForm(Panel? panel, string? codename, string? codetext)
             {
                 chart = new Chart
                 {
@@ -447,9 +451,9 @@ namespace DigitalProductionProgram.Measure
                 }
             }
         }
-        public class Kontrollera_Mätningar
+        public class ValidateMeasurements
         {
-            public static void Medelvärden()
+            public static void AverageValues()
             {
                 var dt = Monitor.Monitor.DataTable_Measurepoints;
                 if (string.IsNullOrEmpty(Order.OrderNumber) || dt is null)

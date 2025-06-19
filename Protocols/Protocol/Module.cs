@@ -39,6 +39,8 @@ namespace DigitalProductionProgram.Protocols.Protocol
         {
             get
             {
+                if (Order.OrderID is null)
+                    return 0;
                 using var con = new SqlConnection(Database.cs_Protocol);
                 const string query = "SELECT MAX(Uppstart) FROM [Order].Data WHERE OrderID = @orderid";
                 con.Open();

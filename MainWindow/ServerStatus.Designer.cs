@@ -57,7 +57,7 @@ namespace DigitalProductionProgram.MainWindow
             // 
             lbl_DPP_Status.BackColor = Color.Transparent;
             lbl_DPP_Status.Dock = DockStyle.Fill;
-            lbl_DPP_Status.Font = new Font("Mongolian Baiti", 10F, FontStyle.Bold);
+            lbl_DPP_Status.Font = new Font("Mongolian Baiti", 9F, FontStyle.Bold);
             lbl_DPP_Status.ForeColor = Color.FromArgb(156, 0, 6);
             lbl_DPP_Status.Location = new Point(0, 0);
             lbl_DPP_Status.Margin = new Padding(4, 0, 4, 0);
@@ -83,7 +83,7 @@ namespace DigitalProductionProgram.MainWindow
             // 
             lbl_MonitorStatus.BackColor = Color.Transparent;
             lbl_MonitorStatus.Dock = DockStyle.Fill;
-            lbl_MonitorStatus.Font = new Font("Mongolian Baiti", 10F, FontStyle.Bold);
+            lbl_MonitorStatus.Font = new Font("Mongolian Baiti", 9F, FontStyle.Bold);
             lbl_MonitorStatus.ForeColor = Color.FromArgb(156, 0, 6);
             lbl_MonitorStatus.Location = new Point(0, 0);
             lbl_MonitorStatus.Margin = new Padding(6);
@@ -116,12 +116,13 @@ namespace DigitalProductionProgram.MainWindow
             // lbl_SQL_Queries
             // 
             lbl_SQL_Queries.BackColor = Color.Transparent;
+            lbl_SQL_Queries.Dock = DockStyle.Fill;
             lbl_SQL_Queries.Font = new Font("Arial", 8F, FontStyle.Bold);
             lbl_SQL_Queries.ForeColor = Color.White;
-            lbl_SQL_Queries.Location = new Point(4, 0);
-            lbl_SQL_Queries.Margin = new Padding(4, 0, 4, 0);
+            lbl_SQL_Queries.Location = new Point(0, 0);
+            lbl_SQL_Queries.Margin = new Padding(0);
             lbl_SQL_Queries.Name = "lbl_SQL_Queries";
-            lbl_SQL_Queries.Size = new Size(37, 40);
+            lbl_SQL_Queries.Size = new Size(45, 40);
             lbl_SQL_Queries.TabIndex = 896;
             lbl_SQL_Queries.Text = "0";
             lbl_SQL_Queries.TextAlign = ContentAlignment.MiddleCenter;

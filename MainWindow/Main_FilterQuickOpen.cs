@@ -13,8 +13,38 @@ namespace DigitalProductionProgram.MainWindow
 {
     public partial class Main_FilterQuickOpen : Form
     {
-        public static DataTable DataTable_SnabbÖppna { get; set; }
+        public static DataTable? DataTable_SnabbÖppna { get; set; }
         private readonly DataGridView dgv_QuickOpen;
+        public static Dictionary<int, (Color BackColor, Color ForeColor)> LoadQuickStartColors()
+        {
+            var result = new Dictionary<int, (Color, Color)>();
+
+            using var con = new SqlConnection(Database.cs_Protocol);
+            const string query = @"
+                SELECT c.WorkOperationID, 
+                    c.Back_Red, c.Back_Green, c.Back_Blue, 
+                    c.Fore_Red, c.Fore_Green, c.Fore_Blue
+                FROM [Settings].QuickStart_Color c";
+
+            using var cmd = new SqlCommand(query, con);
+            ServerStatus.Add_Sql_Counter();
+            con.Open();
+            using var reader = cmd.ExecuteReader();
+
+            while (reader.Read())
+            {
+                if (reader.IsDBNull(reader.GetOrdinal("WorkOperationID")))
+                    continue;
+
+                int id = reader.GetInt32(reader.GetOrdinal("WorkOperationID"));
+                var back = Color.FromArgb((int)reader["Back_Red"], (int)reader["Back_Green"], (int)reader["Back_Blue"]);
+                var fore = Color.FromArgb((int)reader["Fore_Red"], (int)reader["Fore_Green"], (int)reader["Fore_Blue"]);
+                result[id] = (back, fore);
+            }
+
+            return result;
+        }
+
 
         public Main_FilterQuickOpen(DataGridView dgv)
         {
@@ -26,17 +56,15 @@ namespace DigitalProductionProgram.MainWindow
 
         private static bool IsWorkoperationSelected(int workoperationID)
         {
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query = $"SELECT WorkoperationID FROM Workoperation.QuickStartList WHERE HostID = (SELECT HostID FROM Settings.General WHERE HostName = @hostname) AND WorkoperationID = @workoperationid";
-                con.Open();
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@hostname", Environment.MachineName);
-                cmd.Parameters.AddWithValue("@workoperationid", workoperationID);
-                var reader = cmd.ExecuteReader();
-                if (reader.HasRows)
-                    return true;
-            }
+            using var con = new SqlConnection(Database.cs_Protocol);
+            var query = $"SELECT WorkoperationID FROM Workoperation.QuickStartList WHERE HostID = (SELECT HostID FROM Settings.General WHERE HostName = @hostname) AND WorkoperationID = @workoperationid";
+            con.Open();
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            cmd.Parameters.AddWithValue("@hostname", Environment.MachineName);
+            cmd.Parameters.AddWithValue("@workoperationid", workoperationID);
+            var reader = cmd.ExecuteReader();
+            if (reader.HasRows)
+                return true;
 
             return false;
         }
@@ -91,39 +119,25 @@ namespace DigitalProductionProgram.MainWindow
         {
             Load_QuickStart();
 
-            var dv = DataTable_SnabbÖppna.DefaultView;
+            var dv = DataTable_SnabbÖppna?.DefaultView;
             if (dv.Count > 0)
                 dv.Sort = "Datum DESC";
             DataTable_SnabbÖppna = dv.ToTable();
 
             await Task.Run(() => dgv.Invoke(new Action(() => dgv.DataSource = DataTable_SnabbÖppna)));
-          
+            var colorsByOpId = LoadQuickStartColors();
+
             for (var i = 0; i < dgv.Rows.Count; i++)
             {
-                int? id = (int) dgv.Rows[i].Cells["OrderID"].Value;
+                int workOpId = (int)dgv.Rows[i].Cells["WorkOperationID"].Value;
 
-                using (var con = new SqlConnection(Database.cs_Protocol))
+                if (colorsByOpId.TryGetValue(workOpId, out var colorPair))
                 {
-                    var query = "SELECT * FROM [Settings].QuickStart_Color WHERE WorkOperationID = (SELECT ID FROM Workoperation.Names WHERE Name = @workoperation AND ID IS NOT NULL)";
-                    con.Open();
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    cmd.Parameters.AddWithValue("@workoperation", Workoperation(id));
-                    var reader = await cmd.ExecuteReaderAsync();
-                    while (await reader.ReadAsync())
-                    {
-                        int.TryParse(reader["Back_Red"].ToString(), out var BackRed);
-                        int.TryParse(reader["Back_Green"].ToString(), out var BackGreen);
-                        int.TryParse(reader["Back_Blue"].ToString(), out var BackBlue);
-                        int.TryParse(reader["Fore_Red"].ToString(), out var FrontRed);
-                        int.TryParse(reader["Fore_Green"].ToString(), out var FrontGreen);
-                        int.TryParse(reader["Fore_Blue"].ToString(), out var FrontBlue);
-
-                        dgv.Rows[i].DefaultCellStyle.BackColor = Color.FromArgb(BackRed, BackGreen, BackBlue);
-                        dgv.Rows[i].DefaultCellStyle.ForeColor = Color.FromArgb(FrontRed, FrontGreen, FrontBlue);
-                    }
+                    dgv.Rows[i].DefaultCellStyle.BackColor = colorPair.BackColor;
+                    dgv.Rows[i].DefaultCellStyle.ForeColor = colorPair.ForeColor;
                 }
             }
-         
+
             if (dgv.Rows.Count > 0)
             {
                 await Task.Run(() =>
@@ -138,6 +152,7 @@ namespace DigitalProductionProgram.MainWindow
                     dgv.Invoke(new Action(() => dgv.Columns[5].Width = 100)); // Date
                     dgv.Invoke(new Action(() => dgv.Columns[6].Visible = false)); // ProdLine
                     dgv.Invoke(new Action(() => dgv.Columns[7].Visible = false)); // ProdTyp
+                    dgv.Invoke(new Action(() => dgv.Columns["WorkoperationID"].Visible = false)); // WorkoperationID
                     dgv.Invoke(new Action(() => dgv.Height = dgv.Rows.Count * 22 + 15));
                     dgv.Invoke(new Action(() => dgv.Width = 290));
                 });
@@ -181,18 +196,19 @@ namespace DigitalProductionProgram.MainWindow
         }
         private static void Fill_QuickStart(int workOperationID, int ctr)
         {
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query = $@"SELECT TOP({ctr}) OrderID, OrderNr, PartNr, PartID, Customer, Date_Start AS Datum, ProdLine, ProdType
+            using var con = new SqlConnection(Database.cs_Protocol);
+            var query = $@"SELECT TOP({ctr}) OrderID, OrderNr, PartNr, PartID, Customer, Date_Start AS Datum, ProdLine, ProdType, WorkOperationID
                                 FROM [Order].MainData   
                                 WHERE WorkoperationID = @workoperationid 
-                                    AND IsOrderDone = 'False' AND OrderNr != 'Q12345' AND Date_Start IS NOT NULL ORDER BY Datum DESC";
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@workoperationid", workOperationID);
-                con.Open();
-                DataTable_SnabbÖppna.Load(cmd.ExecuteReader());
-                con.Close();
-            }
+                                    AND IsOrderDone = 'False' 
+                                    AND OrderNr != 'Q12345' 
+                                    AND Date_Start IS NOT NULL 
+                                ORDER BY Datum DESC";
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            cmd.Parameters.AddWithValue("@workoperationid", workOperationID);
+            con.Open();
+            DataTable_SnabbÖppna?.Load(cmd.ExecuteReader());
+            con.Close();
         }
 
         private void WorkOperation_CheckBoxChangedAsync(object sender, EventArgs e)

@@ -42,7 +42,7 @@ namespace DigitalProductionProgram.PrintingServices
 
         public static Dictionary<string, string?>? utskrift_Korprotokoll;
         public static Dictionary<string, string?>? utskrift_Processkort;
-        public static Dictionary<string, string?>? List_PrintOut_Korprotokoll
+        public static Dictionary<string, string> List_PrintOut_Korprotokoll
         {
             get
             {
@@ -71,7 +71,7 @@ namespace DigitalProductionProgram.PrintingServices
                 return korprotokoll;
             }
         }
-        public static Dictionary<string, string?>? List_PrintOut_Korprotokoll_empty
+        public static Dictionary<string, string> List_PrintOut_Korprotokoll_empty
         {
             get
             {
@@ -167,16 +167,14 @@ namespace DigitalProductionProgram.PrintingServices
         }
 
         
-        public static float StringWidth(string? text, Font font, Graphics? g)
+        public static float StringWidth(string? text, Font font, Graphics g)
         {
             var size = g.MeasureString(text, font);
             return (int)size.Width;
         }
         public static bool IsTextDate(string? text)
         {
-            if (text.Contains('-') && text.Contains(':') && text.Length > 15)
-                return true;
-            return false;
+            return text != null && text.Contains('-') && text.Contains(':') && text.Length > 15;
         }
         public static void Static_InfoText(PrintPageEventArgs e, string? text, float x, int y, bool IsRightMargin = false, bool IsSmallFont = false)
         {
@@ -201,7 +199,8 @@ namespace DigitalProductionProgram.PrintingServices
         public static void Protocol_InfoText(PrintPageEventArgs e, string? text, bool isValueCritical, float x, int y, int MaxWidth, bool IsCenter, bool IsWrap, bool IsRightMargin = false)
         {
             if (IsRightMargin)
-                x -= StringWidth(text, CustomFonts.parametrarFont, e.Graphics);
+                if (e.Graphics != null)
+                    x -= StringWidth(text, CustomFonts.parametrarFont, e.Graphics);
 
             if (text == "Direkt Hackning")
                 if (text == "True")
@@ -212,6 +211,7 @@ namespace DigitalProductionProgram.PrintingServices
                 Text_NA(e, x, y, IsCenter);
             else
             {
+                if (e.Graphics == null) return;
                 var string_Length = StringWidth(text, CustomFonts.parametrarFont, e.Graphics);
                 if (string_Length < MaxWidth || IsWrap == false)
                 {
@@ -248,32 +248,35 @@ namespace DigitalProductionProgram.PrintingServices
             else
             {
 
-                if (StringWidth(text, CustomFonts.operatörFont, e.Graphics) > maxWidth)
+                if (e.Graphics != null && StringWidth(text, CustomFonts.operatörFont, e.Graphics) > maxWidth)
                 {
                     if (IsWrap && StringWidth(text, CustomFonts.operatörFont_small, e.Graphics) > maxWidth)
                     {
-                        var text_1 = text.Substring(0, text.IndexOf('+') + 1);
-                        var text_2 = text.Substring(text_1.Length, text.Length - text_1.Length);
-                        if (StringWidth(text_2, CustomFonts.operatörFont_small, e.Graphics) > maxWidth)
+                        var text_1 = text?.Substring(0, text.IndexOf('+') + 1);
+                        if (text_1 != null)
                         {
-                            text = text_2;
-                            text_1 = text.Substring(0, text.Length / 2);
-                            text_2 = text.Substring(text_1.Length, text.Length - text_1.Length);
-                        }
-                        if (IsTextDate(text))
-                        {
-                            text_1 = text.Substring(0, 10);
-                            text_2 = text.Substring(11, 5);
-                        }
-                        if (IsCenter)
-                        {
-                            e.Graphics.DrawString(text_1, CustomFonts.operatörFont_small, CustomFonts.operatör_clr, x - (TextRenderer.MeasureText(text_1, CustomFonts.operatörFont_small).Width / 2f), y - 2);
-                            e.Graphics.DrawString(text_2, CustomFonts.operatörFont_small, CustomFonts.operatör_clr, x - (TextRenderer.MeasureText(text_2, CustomFonts.operatörFont_small).Width / 2f), y + 6);
-                        }
-                        else
-                        {
-                            e.Graphics.DrawString(text_1, CustomFonts.operatörFont_small, CustomFonts.operatör_clr, x, y - 2);
-                            e.Graphics.DrawString(text_2, CustomFonts.operatörFont_small, CustomFonts.operatör_clr, x, y + 6);
+                            var text_2 = text?.Substring(text_1.Length, text.Length - text_1.Length);
+                            if (StringWidth(text_2, CustomFonts.operatörFont_small, e.Graphics) > maxWidth)
+                            {
+                                text = text_2;
+                                text_1 = text?.Substring(0, text.Length / 2);
+                                if (text_1 != null) text_2 = text?.Substring(text_1.Length, text.Length - text_1.Length);
+                            }
+                            if (IsTextDate(text))
+                            {
+                                text_1 = text?.Substring(0, 10);
+                                text_2 = text?.Substring(11, 5);
+                            }
+                            if (IsCenter)
+                            {
+                                e.Graphics.DrawString(text_1, CustomFonts.operatörFont_small, CustomFonts.operatör_clr, x - (TextRenderer.MeasureText(text_1, CustomFonts.operatörFont_small).Width / 2f), y - 2);
+                                e.Graphics.DrawString(text_2, CustomFonts.operatörFont_small, CustomFonts.operatör_clr, x - (TextRenderer.MeasureText(text_2, CustomFonts.operatörFont_small).Width / 2f), y + 6);
+                            }
+                            else
+                            {
+                                e.Graphics.DrawString(text_1, CustomFonts.operatörFont_small, CustomFonts.operatör_clr, x, y - 2);
+                                e.Graphics.DrawString(text_2, CustomFonts.operatörFont_small, CustomFonts.operatör_clr, x, y + 6);
+                            }
                         }
                     }
                     else
@@ -301,9 +304,9 @@ namespace DigitalProductionProgram.PrintingServices
                 else
                 {
                     if (IsCenter)
-                        e.Graphics.DrawString(text, CustomFonts.operatörFont, CustomFonts.operatör_clr, x - TextRenderer.MeasureText(text, CustomFonts.operatörFont).Width / 2f, y);
+                        e.Graphics?.DrawString(text, CustomFonts.operatörFont, CustomFonts.operatör_clr, x - TextRenderer.MeasureText(text, CustomFonts.operatörFont).Width / 2f, y);
                     else
-                        e.Graphics.DrawString(text, CustomFonts.operatörFont, CustomFonts.operatör_clr, x, y);
+                        e.Graphics?.DrawString(text, CustomFonts.operatörFont, CustomFonts.operatör_clr, x, y);
                 }
             }
         }
@@ -311,13 +314,16 @@ namespace DigitalProductionProgram.PrintingServices
         public static void Text_PageNumber(PrintPageEventArgs e, string? text, int x, int y)
         {
             var font = new Font("Arial", 9, FontStyle.Italic);
-            x -= (int)StringWidth(text, font , e.Graphics);
-            e.Graphics.DrawString(text, font, CustomFonts.operatör_clr, x, y);
+            if (e.Graphics != null)
+            {
+                x -= (int)StringWidth(text, font, e.Graphics);
+                e.Graphics.DrawString(text, font, CustomFonts.operatör_clr, x, y);
+            }
         }
 
         public static void Text_StartUp_Header(PrintPageEventArgs e, string text, int x, int y)
         {
-            e.Graphics.DrawString(text, CustomFonts.A8_BI, CustomFonts.operatör_clr, x - TextRenderer.MeasureText(text, CustomFonts.operatörFont_small).Width / 2f, y);
+            e.Graphics?.DrawString(text, CustomFonts.A8_BI, CustomFonts.operatör_clr, x - TextRenderer.MeasureText(text, CustomFonts.operatörFont_small).Width / 2f, y);
         }
         public static void Text_StartUpWithOven_Header(PrintPageEventArgs e, int startup, int x, int y, int colwidth)
         {
@@ -327,7 +333,7 @@ namespace DigitalProductionProgram.PrintingServices
             {
                 var text = $"{startup}-Ugn# {oven}";
                 Print.Filled_Rectangle(e, CustomFonts.lightGray, x - colwidth / 2, y - 3, colwidth, PrintVariables.RowHeight);
-                e.Graphics.DrawString(text, CustomFonts.A8_BI, CustomFonts.operatör_clr, x - TextRenderer.MeasureText(text, CustomFonts.operatörFont_small).Width / 2f, y);
+                e.Graphics?.DrawString(text, CustomFonts.A8_BI, CustomFonts.operatör_clr, x - TextRenderer.MeasureText(text, CustomFonts.operatörFont_small).Width / 2f, y);
                 x += colwidth;
             }
                 
@@ -395,7 +401,7 @@ namespace DigitalProductionProgram.PrintingServices
         {
             char[] chars = {'+', '-', ' ', '/'  };
             foreach(var c in chars)
-                if (text.Contains(c))
+                if (text != null && text.Contains(c))
                     return text.Substring(0, text.IndexOf(c) + 1);
             return text;
         }
@@ -549,24 +555,22 @@ namespace DigitalProductionProgram.PrintingServices
         public static void ProductInformation(PrintPageEventArgs e)
         {
             Rubrik(e, LanguageManager.GetString("productInfo"), PrintVariables.LeftMargin, 89, PrintVariables.MaxPaperWidth - PrintVariables.LeftMargin);
-            e.Graphics.DrawRectangle(CustomFonts.thinBlack, PrintVariables.LeftMargin, 111, PrintVariables.MaxPaperWidth - PrintVariables.LeftMargin, 68);
-            e.Graphics.DrawRectangle(CustomFonts.thinBlack, 430, 111, 210, 68);
+            e.Graphics.DrawRectangle(CustomFonts.thinBlack, PrintVariables.LeftMargin, 111, PrintVariables.MaxPaperWidth - PrintVariables.LeftMargin, 48);
+            e.Graphics.DrawRectangle(CustomFonts.thinBlack, 430, 111, 210, 48);
 
             //6 rader, 2 kolumner + 4 kolumner i z-led(djup)
             object[,,] text = { 
-                { { LanguageManager.GetString("label_Customer"),      30,  114 }, { utskrift_Korprotokoll["Customer"],       125, 116 } },
-                { { LanguageManager.GetString("label_Description"),   30,  137 }, { utskrift_Korprotokoll["Description"],    125, 139 } },
-                { { LanguageManager.GetString("date"),                435, 114 }, { utskrift_Korprotokoll["Date_Start"],     485, 116 } },
-                { { LanguageManager.GetString("name"),                435, 137 }, { utskrift_Korprotokoll["Name_Start"],     485, 139 } },
-                { { LanguageManager.GetString("label_OrderNr"),       643, 114 }, { Order.OrderNumber,                       703, 116 } },
-                { { LanguageManager.GetString("label_PartNumber"),        643, 137 }, { utskrift_Korprotokoll["PartNr"],         703, 139 } } };
+                { { LanguageManager.GetString("label_Customer"),      30,  114 }, { utskrift_Korprotokoll["Customer"],       125, 114 } },
+                { { LanguageManager.GetString("label_Description"),   30,  137 }, { utskrift_Korprotokoll["Description"],    125, 137 } },
+                { { LanguageManager.GetString("date"),                435, 114 }, { utskrift_Korprotokoll["Date_Start"],     485, 114 } },
+                { { LanguageManager.GetString("name"),                435, 137 }, { utskrift_Korprotokoll["Name_Start"],     485, 137 } },
+                { { LanguageManager.GetString("label_OrderNr"),       643, 114 }, { Order.OrderNumber,                       703, 114 } },
+                { { LanguageManager.GetString("label_PartNumber"),        643, 137 }, { utskrift_Korprotokoll["PartNr"],         703, 137 } } };
 
             for (var x = 0; x < 6; x++)
             {
                 Protocol_InfoText(e, (string)text[x, 0, 0], false, (int)text[x,0,1], (int)text[x, 0, 2], 200, false, true);
                 Text_Operatör(e, (string)text[x, 1, 0], (int)text[x, 1, 1], (int)text[x, 1, 2], 300, false, true);
-                //e.Graphics.DrawString((string)text[x, 0, 0], Pennor.A9_B, Pennor.black, (int)text[x, 0, 1], (int)text[x, 0, 2]);
-                //e.Graphics.DrawString((string)text[x, 1, 0], Pennor.operatörFont, Pennor.parametrar_clr, (int)text[x, 1, 1], (int)text[x, 1, 2]);
             }
         }
        

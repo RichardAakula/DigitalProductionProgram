@@ -70,8 +70,8 @@ namespace DigitalProductionProgram.Protocols.Skärmning_TEF
 
         private readonly List<DataGridView> list_dgv = new List<DataGridView>();
       
-        private List<int> List_ProtocolDescriptionID { get; set; }
-        private List<int> List_Type { get; set; }
+        private List<int>? List_ProtocolDescriptionID { get; set; }
+        private List<int>? List_Type { get; set; }
         private void Load_Lists()
         {
             if (Order.OrderID is null)
@@ -147,38 +147,34 @@ namespace DigitalProductionProgram.Protocols.Skärmning_TEF
             Load_MainInfo();
             Load_Data_FROM_Processcard();
             Load_Processcard_Maskinparametrar_Values();
-            Load_Data_FROM_Halvfabrikat();
             Load_Korprotokoll_Values();
             Load_Protocol_Production();
-
+            PreFab.Load_Data();
             Module.IsOkToSave = true;
 
         }
         private void Load_MainInfo()
         {
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query = @"
+            using var con = new SqlConnection(Database.cs_Protocol);
+            var query = @"
                            SELECT Date_Start, Name_Start
                            FROM [Order].MainData AS main
                                     
                             WHERE OrderID = @id";
-                con.Open();
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@id", Order.OrderID);
-                var reader = cmd.ExecuteReader();
-                while (reader.Read())
-                {
-                    Date_Start.Text = reader[0].ToString();
-                    Name_Start.Text = reader[1].ToString();
-                }
+            con.Open();
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            cmd.Parameters.AddWithValue("@id", Order.OrderID);
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                Date_Start.Text = reader[0].ToString();
+                Name_Start.Text = reader[1].ToString();
             }
         }
         private void Load_Korprotokoll_Values()
         {
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query = @"
+            using var con = new SqlConnection(Database.cs_Protocol);
+            var query = @"
                         SELECT DISTINCT Value, TextValue, ColumnIndex, template.Type, template.Decimals
                         FROM [Order].Data AS protocol
 	                        JOIN Protocol.Template as template
@@ -187,41 +183,39 @@ namespace DigitalProductionProgram.Protocols.Skärmning_TEF
 		                        ON descr.id = template.ProtocolDescriptionID
                         WHERE OrderID = @orderid
                             AND FormTemplateID = @formtemplateid
-                            AND template.revision = @revision
+                            --AND template.revision = @revision
                         ORDER BY ColumnIndex";
-                con.Open();
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                SQL_Parameter.NullableINT(cmd.Parameters, "@orderid", Order.OrderID);
-                cmd.Parameters.AddWithValue("@formtemplateid",11);
-                cmd.Parameters.AddWithValue("@revision", Korprotokoll.ProtocolTemplateRevision.OrderNr(Order.OrderID));
-                var reader = cmd.ExecuteReader();
+            con.Open();
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            SQL_Parameter.NullableINT(cmd.Parameters, "@orderid", Order.OrderID);
+            cmd.Parameters.AddWithValue("@formtemplateid",11);
+            cmd.Parameters.AddWithValue("@revision", Korprotokoll.ProtocolTemplateRevision.OrderNr(Order.OrderID));
+            var reader = cmd.ExecuteReader();
 
-                while (reader.Read())
+            while (reader.Read())
+            {
+                int.TryParse(reader["ColumnIndex"].ToString(), out var col);
+                int.TryParse(reader["type"].ToString(), out var type);
+                var value = string.Empty;
+                switch (type)
                 {
-                    int.TryParse(reader["ColumnIndex"].ToString(), out var col);
-                    int.TryParse(reader["type"].ToString(), out var type);
-                    var value = string.Empty;
-                    switch (type)
-                    {
-                        case 0: //Numbers
-                            int.TryParse(reader["Decimals"].ToString(), out var decimals);
-                            if (double.TryParse(reader["Value"].ToString(), out var NumberValue) == false)
-                                value = string.Empty;
-                            else
-                                value = Processcard.Format_Value(NumberValue, decimals);
-                            break;
-                        case 1://TextValue
-                            value = reader["TextValue"].ToString();
-                            break;
-                    }
-
-                    if (string.IsNullOrEmpty(value))
-                        value = "N/A";
-                    var ctrl = tlp_Maskinparametrar.GetControlFromPosition(col + 1, 7);
-                    ctrl.Text = value;
+                    case 0: //Numbers
+                        int.TryParse(reader["Decimals"].ToString(), out var decimals);
+                        if (double.TryParse(reader["Value"].ToString(), out var NumberValue) == false)
+                            value = string.Empty;
+                        else
+                            value = Processcard.Format_Value(NumberValue, decimals);
+                        break;
+                    case 1://TextValue
+                        value = reader["TextValue"].ToString();
+                        break;
                 }
+
+                if (string.IsNullOrEmpty(value))
+                    value = "N/A";
+                var ctrl = tlp_Maskinparametrar.GetControlFromPosition(col + 1, 7);
+                ctrl.Text = value;
             }
-            
         }
 
         private void Load_Processcard_Maskinparametrar_Values()
@@ -428,22 +422,7 @@ namespace DigitalProductionProgram.Protocols.Skärmning_TEF
                 Module.IsOkToSave = true;
             }
         }
-        private void Load_Data_FROM_Halvfabrikat()
-        {
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query = $"SELECT Halvfabrikat_Benämning, Halvfabrikat_OrderNr FROM [Order].PreFab {Queries.WHERE_OrderID}";
-                con.Open();
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@id", Order.OrderID);
-                var reader = cmd.ExecuteReader();
-                while (reader.Read())
-                {
-                    lbl_Tråd_Material.Text = reader[0].ToString();
-                    lbl_LotNr.Text = reader[1].ToString();
-                }
-            }
-        }
+       
 
         public static void Save_Korprotokoll_Main(string Column, string value)
         {
@@ -471,9 +450,8 @@ namespace DigitalProductionProgram.Protocols.Skärmning_TEF
                 
                 var type = Module.DatabaseManagement.ValueType(protocol_Description_ID, 11);
 
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    var query = @"
+                using var con = new SqlConnection(Database.cs_Protocol);
+                var query = @"
                     IF NOT EXISTS (SELECT * FROM [Order].Data WHERE OrderID = @orderid AND ProtocolDescriptionID = @protocoldescriptionid)
                         INSERT INTO [Order].Data (OrderID, ProtocolDescriptionID, Value, TextValue, Uppstart)
                             VALUES(@orderid, @protocoldescriptionid, @value, @textvalue, 1)
@@ -481,24 +459,23 @@ namespace DigitalProductionProgram.Protocols.Skärmning_TEF
                         UPDATE [Order].Data
                             SET Value = @value, TextValue = @textvalue
                     WHERE OrderID = @orderid AND ProtocolDescriptionID = @protocoldescriptionid";
-                    con.Open();
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    cmd.Parameters.AddWithValue("@protocoldescriptionid", protocol_Description_ID);
-                    cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
-                    switch (type)
-                    {
-                        case 0://NumberValue
-                            SQL_Parameter.Double(cmd.Parameters, "@value", tb.Text);
-                            cmd.Parameters.AddWithValue("@textvalue", DBNull.Value);
-                            break;
-                        case 1://TextValue
-                            cmd.Parameters.AddWithValue("@value", DBNull.Value);
-                            SQL_Parameter.String(cmd.Parameters, "@textvalue", tb.Text);
-                            break;
-                    }
-
-                    cmd.ExecuteNonQuery();
+                con.Open();
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                cmd.Parameters.AddWithValue("@protocoldescriptionid", protocol_Description_ID);
+                cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
+                switch (type)
+                {
+                    case 0://NumberValue
+                        SQL_Parameter.Double(cmd.Parameters, "@value", tb.Text);
+                        cmd.Parameters.AddWithValue("@textvalue", DBNull.Value);
+                        break;
+                    case 1://TextValue
+                        cmd.Parameters.AddWithValue("@value", DBNull.Value);
+                        SQL_Parameter.String(cmd.Parameters, "@textvalue", tb.Text);
+                        break;
                 }
+
+                cmd.ExecuteNonQuery();
             }
 
             Validate_Data.Value_CellOrControl(true, tb.Name, 0,MIN_Value(tb.Name), MAX_Value(tb.Name), tb.Text, null, null, tb);
@@ -535,17 +512,7 @@ namespace DigitalProductionProgram.Protocols.Skärmning_TEF
                 Save_Korprotokoll_Main("Name_Start", Name_Start.Text);
             }
         }
-        private void LotNr_Click(object sender, EventArgs e)
-        {
-            if (Module.IsOkToSave)
-            {
-                var list = Monitor.Monitor.PreFab_BatchNr(Monitor.Monitor.Part_Material.PartNumber);
-                var choose_Item = new Choose_Item(list, new[] { lbl_LotNr }, false);
-                choose_Item.ShowDialog();
-
-                PreFab.UPDATE_BatchNr_Skärmning(lbl_LotNr.Text);
-            }
-        }
+       
 
         private void Add_New_Card(string card_Name)
         {
@@ -587,7 +554,7 @@ namespace DigitalProductionProgram.Protocols.Skärmning_TEF
         internal void Lock_All_control()
         {
             Module.IsOkToSave = false;
-            ControlManager.Lock_Controls(new Control[] {lbl_Transfer_Produktion, lbl_Kassera_Maskinparameter, lbl_LotNr, Tråd_Antal,
+            ControlManager.Lock_Controls(new Control[] {lbl_Transfer_Produktion, lbl_Kassera_Maskinparameter, Tråd_Antal,
                 Maskin_Hastighet_pot, Travers_Hastighet_pot, Carrier_fjäder, PPI, tb_Verktygs_ID, OD_oinsmält,
                 tb_Produktion_Mätare, tb_Produktion_Temp_L1, tb_Produktion_Temp_L2, tb_Produktion_ID_L1, tb_Produktion_ID_L2, tb_Produktion_OD1_L1, tb_Produktion_OD1_L2, tb_Produktion_ODs_L1, tb_Produktion_ODs_L2,
                 tb_Verktygs_ID, chb_Avslut_linje, chb_Skarv, chb_Spole_slut, chb_Trasig_carrier, chb_Tråd_av, chb_Tråd_slut, chb_Avrapporterat, tb_Produktion_Kommentar }, true);

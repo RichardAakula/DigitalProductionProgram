@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using Microsoft.Data.SqlClient;
-using System.Linq;
-using System.Windows.Forms;
-using DigitalProductionProgram.ControlsManagement;
+﻿using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Help;
 using DigitalProductionProgram.MainWindow;
@@ -10,6 +6,11 @@ using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.PrintingServices;
 using DigitalProductionProgram.Protocols.Template_Management;
 using DigitalProductionProgram.Templates;
+using Microsoft.Data.SqlClient;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Windows.Forms;
 using static DigitalProductionProgram.Protocols.Protocol.Module;
 
 namespace DigitalProductionProgram.Protocols.Protocol
@@ -65,11 +66,26 @@ namespace DigitalProductionProgram.Protocols.Protocol
                 return 0;
             }
         }
+        public int TotalWidth
+        {
+            get
+            {
+                var MaxWidth = 0;
+                foreach(Module module in tlp_Machine.Controls)
+                {
+                    var ModuleWidth = module.label_LEFT.Width + (from DataGridViewColumn column in module.dgv_Module.Columns let test = column.Name where column.Visible select column.Width).Sum();
+                    if (ModuleWidth > MaxWidth)
+                        MaxWidth = ModuleWidth;
+                }
 
-        public Machine(int machineIndex, ref bool isAutheticationNeeded, ref int width, bool isOkChangeProcessdata)
+                return MaxWidth;
+            }
+        }
+
+        public Machine(int machineIndex, ref bool isAutheticationNeeded, ref int height, bool isOkChangeProcessdata)
         {
             InitializeComponent();
-            Load_Templates(machineIndex, ref isAutheticationNeeded, ref width, isOkChangeProcessdata);
+            Load_Templates(machineIndex, ref isAutheticationNeeded,ref height, isOkChangeProcessdata);
             if (MainProtocol.IsUsingMultipleColumnsStartUp)
                 Divide_Startups(false);
 
@@ -84,7 +100,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
 
 
 
-        public void Load_Templates(int machineIndex, ref bool isAutheticationNeeded, ref int width, bool isOkChangeProcessdata)
+        public void Load_Templates(int machineIndex, ref bool isAutheticationNeeded,  ref int height, bool isOkChangeProcessdata)
         {
             if (Templates_Protocol.MainTemplate.ID is 0)
                 return;
@@ -103,7 +119,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
             cmd.Parameters.AddWithValue("@machineindex", machineIndex);
             con.Open();
             var reader = cmd.ExecuteReader();
-            var ctr = 0;
+            
             while (reader.Read())
             {
                 int.TryParse(reader["FormTemplateID"].ToString(), out var formtemplateid);
@@ -127,6 +143,8 @@ namespace DigitalProductionProgram.Protocols.Protocol
 
                 module.LoadTemplate(isHeaderVisible, processcardColWidth, runprotocolColWidth, isOkChangeProcessdata);
                 module.load_processcard.Load_ProcessData(formtemplateid);
+                height += module.TotalModuleHeight;// + 1; // +1 for the row height in the TableLayoutPanel
+              
                 if (Order.OrderID is null == false)
                     module.Load_Data(formtemplateid);
 
@@ -137,14 +155,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                 tlp_Machine.RowStyles[tlp_Machine.RowCount - 2].Height = module.TotalModuleHeight;
                 modules.Add(module);
                 module.dgv_Module.MouseWheel += Korprotokoll_MouseWheel;
-                if (ctr == 0)
-                    //width += (int)module.tlp_Module.ColumnStyles[0].Width;
-                    width += 18;
-
-                if (ctr == 0)
-                    width += 208 + processcardColWidth * 3;
-
-                ctr++;
+             
             }
         }
 
@@ -212,11 +223,21 @@ namespace DigitalProductionProgram.Protocols.Protocol
             foreach (var module in modules)
             {
                 var dgv = module.Controls.OfType<DataGridView>().FirstOrDefault();
-                if (dgv == null) continue;
+                if (dgv == null || dgv.Columns.Count == 0) continue;
 
-                var currentIndex = dgv.FirstDisplayedScrollingColumnIndex;
+                int currentIndex = dgv.FirstDisplayedScrollingColumnIndex;
+                int lastFrozenIndex = -1;
 
-                var nextIndex = -1;
+                // Hitta sista frysta kolumn
+                for (int i = 0; i < dgv.Columns.Count; i++)
+                {
+                    if (dgv.Columns[i].Frozen && dgv.Columns[i].Visible)
+                        lastFrozenIndex = i;
+                }
+
+                int nextIndex = -1;
+
+                // Hitta nästa kolumn som är scrollbar (inte fryst och synlig)
                 for (int i = currentIndex + 1; i < dgv.Columns.Count; i++)
                 {
                     var col = dgv.Columns[i];
@@ -227,13 +248,20 @@ namespace DigitalProductionProgram.Protocols.Protocol
                     }
                 }
 
-                if (nextIndex != -1)
+                // Scrolla om vi hittat en giltig kolumn som går att scrolla till
+                if (nextIndex > lastFrozenIndex)
                 {
-                    dgv.FirstDisplayedScrollingColumnIndex = nextIndex;
+                    try
+                    {
+                        dgv.FirstDisplayedScrollingColumnIndex = nextIndex;
+                    }
+                    catch (InvalidOperationException ex)
+                    {
+                        Debug.WriteLine($"Scrollning misslyckades: {ex.Message}");
+                    }
                 }
             }
         }
-
         private void ScrollLeft()
         {
             foreach (var module in modules)

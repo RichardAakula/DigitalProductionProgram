@@ -32,408 +32,431 @@ namespace DigitalProductionProgram.Measure
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Title title1 = new System.Windows.Forms.DataVisualization.Charting.Title();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.tlp_SPC = new System.Windows.Forms.TableLayoutPanel();
-            this.lbl_LSL = new System.Windows.Forms.Label();
-            this.label_LSL = new System.Windows.Forms.Label();
-            this.lbl_USL = new System.Windows.Forms.Label();
-            this.label_USL = new System.Windows.Forms.Label();
-            this.lbl_Cpk = new System.Windows.Forms.Label();
-            this.label_Cpk = new System.Windows.Forms.Label();
-            this.lbl_Cp = new System.Windows.Forms.Label();
-            this.label_Cp = new System.Windows.Forms.Label();
-            this.label_Max = new System.Windows.Forms.Label();
-            this.lbl_HiLo = new System.Windows.Forms.Label();
-            this.label_Avg = new System.Windows.Forms.Label();
-            this.lbl_Min = new System.Windows.Forms.Label();
-            this.label_HiLo = new System.Windows.Forms.Label();
-            this.lbl_Avg = new System.Windows.Forms.Label();
-            this.label_Min = new System.Windows.Forms.Label();
-            this.lbl_Max = new System.Windows.Forms.Label();
-            this.dgv_OrderList = new System.Windows.Forms.DataGridView();
-            this.order = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cB_visaAllaOrdrar = new System.Windows.Forms.CheckBox();
-            this.cb_Mått = new System.Windows.Forms.ComboBox();
-            this.chartData = new System.Windows.Forms.DataVisualization.Charting.Chart();
-            this.lblOrderNr = new System.Windows.Forms.Label();
-            this.panel1.SuspendLayout();
-            this.tlp_SPC.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgv_OrderList)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.chartData)).BeginInit();
-            this.SuspendLayout();
+            ChartArea chartArea1 = new ChartArea();
+            Legend legend1 = new Legend();
+            Series series1 = new Series();
+            Title title1 = new Title();
+            panel1 = new Panel();
+            tlp_SPC = new TableLayoutPanel();
+            lbl_LSL = new Label();
+            label_LSL = new Label();
+            lbl_USL = new Label();
+            label_USL = new Label();
+            lbl_Cpk = new Label();
+            label_Cpk = new Label();
+            lbl_Cp = new Label();
+            label_Cp = new Label();
+            label_Max = new Label();
+            lbl_HiLo = new Label();
+            label_Avg = new Label();
+            lbl_Min = new Label();
+            label_HiLo = new Label();
+            lbl_Avg = new Label();
+            label_Min = new Label();
+            lbl_Max = new Label();
+            dgv_OrderList = new DataGridView();
+            order = new DataGridViewTextBoxColumn();
+            cB_visaAllaOrdrar = new CheckBox();
+            cb_Mått = new ComboBox();
+            chartData = new Chart();
+            lblOrderNr = new Label();
+            panel1.SuspendLayout();
+            tlp_SPC.SuspendLayout();
+            ((ISupportInitialize)dgv_OrderList).BeginInit();
+            ((ISupportInitialize)chartData).BeginInit();
+            SuspendLayout();
             // 
             // panel1
             // 
-            this.panel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(24)))), ((int)(((byte)(24)))), ((int)(((byte)(24)))));
-            this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.panel1.Controls.Add(this.tlp_SPC);
-            this.panel1.Controls.Add(this.dgv_OrderList);
-            this.panel1.Controls.Add(this.cB_visaAllaOrdrar);
-            this.panel1.Controls.Add(this.cb_Mått);
-            this.panel1.Controls.Add(this.chartData);
-            this.panel1.Controls.Add(this.lblOrderNr);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel1.Location = new System.Drawing.Point(0, 0);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1037, 499);
-            this.panel1.TabIndex = 0;
+            panel1.BackColor = Color.FromArgb(24, 24, 24);
+            panel1.BorderStyle = BorderStyle.Fixed3D;
+            panel1.Controls.Add(tlp_SPC);
+            panel1.Controls.Add(dgv_OrderList);
+            panel1.Controls.Add(cB_visaAllaOrdrar);
+            panel1.Controls.Add(cb_Mått);
+            panel1.Controls.Add(chartData);
+            panel1.Controls.Add(lblOrderNr);
+            panel1.Dock = DockStyle.Fill;
+            panel1.Location = new Point(0, 0);
+            panel1.Margin = new Padding(4, 3, 4, 3);
+            panel1.Name = "panel1";
+            panel1.Size = new Size(1210, 576);
+            panel1.TabIndex = 0;
             // 
             // tlp_SPC
             // 
-            this.tlp_SPC.ColumnCount = 2;
-            this.tlp_SPC.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 40.95238F));
-            this.tlp_SPC.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 59.04762F));
-            this.tlp_SPC.Controls.Add(this.lbl_LSL, 1, 4);
-            this.tlp_SPC.Controls.Add(this.label_LSL, 0, 4);
-            this.tlp_SPC.Controls.Add(this.lbl_USL, 1, 0);
-            this.tlp_SPC.Controls.Add(this.label_USL, 0, 0);
-            this.tlp_SPC.Controls.Add(this.lbl_Cpk, 1, 8);
-            this.tlp_SPC.Controls.Add(this.label_Cpk, 0, 8);
-            this.tlp_SPC.Controls.Add(this.lbl_Cp, 1, 7);
-            this.tlp_SPC.Controls.Add(this.label_Cp, 0, 7);
-            this.tlp_SPC.Controls.Add(this.label_Max, 0, 1);
-            this.tlp_SPC.Controls.Add(this.lbl_HiLo, 1, 5);
-            this.tlp_SPC.Controls.Add(this.label_Avg, 0, 2);
-            this.tlp_SPC.Controls.Add(this.lbl_Min, 1, 3);
-            this.tlp_SPC.Controls.Add(this.label_HiLo, 0, 5);
-            this.tlp_SPC.Controls.Add(this.lbl_Avg, 1, 2);
-            this.tlp_SPC.Controls.Add(this.label_Min, 0, 3);
-            this.tlp_SPC.Controls.Add(this.lbl_Max, 1, 1);
-            this.tlp_SPC.Location = new System.Drawing.Point(918, 72);
-            this.tlp_SPC.Name = "tlp_SPC";
-            this.tlp_SPC.RowCount = 9;
-            this.tlp_SPC.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tlp_SPC.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tlp_SPC.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tlp_SPC.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tlp_SPC.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tlp_SPC.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tlp_SPC.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 15F));
-            this.tlp_SPC.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 15F));
-            this.tlp_SPC.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tlp_SPC.Size = new System.Drawing.Size(105, 176);
-            this.tlp_SPC.TabIndex = 5;
+            tlp_SPC.ColumnCount = 2;
+            tlp_SPC.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 40.95238F));
+            tlp_SPC.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 59.04762F));
+            tlp_SPC.Controls.Add(lbl_LSL, 1, 4);
+            tlp_SPC.Controls.Add(label_LSL, 0, 4);
+            tlp_SPC.Controls.Add(lbl_USL, 1, 0);
+            tlp_SPC.Controls.Add(label_USL, 0, 0);
+            tlp_SPC.Controls.Add(lbl_Cpk, 1, 8);
+            tlp_SPC.Controls.Add(label_Cpk, 0, 8);
+            tlp_SPC.Controls.Add(lbl_Cp, 1, 7);
+            tlp_SPC.Controls.Add(label_Cp, 0, 7);
+            tlp_SPC.Controls.Add(label_Max, 0, 1);
+            tlp_SPC.Controls.Add(lbl_HiLo, 1, 5);
+            tlp_SPC.Controls.Add(label_Avg, 0, 2);
+            tlp_SPC.Controls.Add(lbl_Min, 1, 3);
+            tlp_SPC.Controls.Add(label_HiLo, 0, 5);
+            tlp_SPC.Controls.Add(lbl_Avg, 1, 2);
+            tlp_SPC.Controls.Add(label_Min, 0, 3);
+            tlp_SPC.Controls.Add(lbl_Max, 1, 1);
+            tlp_SPC.Location = new Point(1071, 83);
+            tlp_SPC.Margin = new Padding(4, 3, 4, 3);
+            tlp_SPC.Name = "tlp_SPC";
+            tlp_SPC.RowCount = 9;
+            tlp_SPC.RowStyles.Add(new RowStyle(SizeType.Absolute, 23F));
+            tlp_SPC.RowStyles.Add(new RowStyle(SizeType.Absolute, 23F));
+            tlp_SPC.RowStyles.Add(new RowStyle(SizeType.Absolute, 23F));
+            tlp_SPC.RowStyles.Add(new RowStyle(SizeType.Absolute, 23F));
+            tlp_SPC.RowStyles.Add(new RowStyle(SizeType.Absolute, 23F));
+            tlp_SPC.RowStyles.Add(new RowStyle(SizeType.Absolute, 23F));
+            tlp_SPC.RowStyles.Add(new RowStyle(SizeType.Absolute, 17F));
+            tlp_SPC.RowStyles.Add(new RowStyle(SizeType.Absolute, 17F));
+            tlp_SPC.RowStyles.Add(new RowStyle(SizeType.Absolute, 23F));
+            tlp_SPC.Size = new Size(122, 203);
+            tlp_SPC.TabIndex = 5;
             // 
             // lbl_LSL
             // 
-            this.lbl_LSL.AutoSize = true;
-            this.lbl_LSL.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lbl_LSL.ForeColor = System.Drawing.Color.White;
-            this.lbl_LSL.Location = new System.Drawing.Point(46, 80);
-            this.lbl_LSL.Name = "lbl_LSL";
-            this.lbl_LSL.Size = new System.Drawing.Size(56, 20);
-            this.lbl_LSL.TabIndex = 12;
-            this.lbl_LSL.Text = "0,000";
-            this.lbl_LSL.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            lbl_LSL.AutoSize = true;
+            lbl_LSL.Dock = DockStyle.Fill;
+            lbl_LSL.ForeColor = Color.White;
+            lbl_LSL.Location = new Point(53, 92);
+            lbl_LSL.Margin = new Padding(4, 0, 4, 0);
+            lbl_LSL.Name = "lbl_LSL";
+            lbl_LSL.Size = new Size(65, 23);
+            lbl_LSL.TabIndex = 12;
+            lbl_LSL.Text = "0,000";
+            lbl_LSL.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // label_LSL
             // 
-            this.label_LSL.AutoSize = true;
-            this.label_LSL.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label_LSL.ForeColor = System.Drawing.Color.Red;
-            this.label_LSL.Location = new System.Drawing.Point(3, 80);
-            this.label_LSL.Name = "label_LSL";
-            this.label_LSL.Size = new System.Drawing.Size(37, 20);
-            this.label_LSL.TabIndex = 11;
-            this.label_LSL.Text = "LSL:";
-            this.label_LSL.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            label_LSL.AutoSize = true;
+            label_LSL.Dock = DockStyle.Fill;
+            label_LSL.ForeColor = Color.Red;
+            label_LSL.Location = new Point(4, 92);
+            label_LSL.Margin = new Padding(4, 0, 4, 0);
+            label_LSL.Name = "label_LSL";
+            label_LSL.Size = new Size(41, 23);
+            label_LSL.TabIndex = 11;
+            label_LSL.Text = "LSL:";
+            label_LSL.TextAlign = ContentAlignment.MiddleRight;
             // 
             // lbl_USL
             // 
-            this.lbl_USL.AutoSize = true;
-            this.lbl_USL.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lbl_USL.ForeColor = System.Drawing.Color.White;
-            this.lbl_USL.Location = new System.Drawing.Point(46, 0);
-            this.lbl_USL.Name = "lbl_USL";
-            this.lbl_USL.Size = new System.Drawing.Size(56, 20);
-            this.lbl_USL.TabIndex = 10;
-            this.lbl_USL.Text = "0,000";
-            this.lbl_USL.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            lbl_USL.AutoSize = true;
+            lbl_USL.Dock = DockStyle.Fill;
+            lbl_USL.ForeColor = Color.White;
+            lbl_USL.Location = new Point(53, 0);
+            lbl_USL.Margin = new Padding(4, 0, 4, 0);
+            lbl_USL.Name = "lbl_USL";
+            lbl_USL.Size = new Size(65, 23);
+            lbl_USL.TabIndex = 10;
+            lbl_USL.Text = "0,000";
+            lbl_USL.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // label_USL
             // 
-            this.label_USL.AutoSize = true;
-            this.label_USL.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label_USL.ForeColor = System.Drawing.Color.Red;
-            this.label_USL.Location = new System.Drawing.Point(3, 0);
-            this.label_USL.Name = "label_USL";
-            this.label_USL.Size = new System.Drawing.Size(37, 20);
-            this.label_USL.TabIndex = 9;
-            this.label_USL.Text = "USL:";
-            this.label_USL.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            label_USL.AutoSize = true;
+            label_USL.Dock = DockStyle.Fill;
+            label_USL.ForeColor = Color.Red;
+            label_USL.Location = new Point(4, 0);
+            label_USL.Margin = new Padding(4, 0, 4, 0);
+            label_USL.Name = "label_USL";
+            label_USL.Size = new Size(41, 23);
+            label_USL.TabIndex = 9;
+            label_USL.Text = "USL:";
+            label_USL.TextAlign = ContentAlignment.MiddleRight;
             // 
             // lbl_Cpk
             // 
-            this.lbl_Cpk.AutoSize = true;
-            this.lbl_Cpk.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lbl_Cpk.ForeColor = System.Drawing.Color.White;
-            this.lbl_Cpk.Location = new System.Drawing.Point(46, 150);
-            this.lbl_Cpk.Name = "lbl_Cpk";
-            this.lbl_Cpk.Size = new System.Drawing.Size(56, 26);
-            this.lbl_Cpk.TabIndex = 8;
-            this.lbl_Cpk.Text = "0,000";
-            this.lbl_Cpk.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            lbl_Cpk.AutoSize = true;
+            lbl_Cpk.Dock = DockStyle.Fill;
+            lbl_Cpk.ForeColor = Color.White;
+            lbl_Cpk.Location = new Point(53, 172);
+            lbl_Cpk.Margin = new Padding(4, 0, 4, 0);
+            lbl_Cpk.Name = "lbl_Cpk";
+            lbl_Cpk.Size = new Size(65, 31);
+            lbl_Cpk.TabIndex = 8;
+            lbl_Cpk.Text = "0,000";
+            lbl_Cpk.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // label_Cpk
             // 
-            this.label_Cpk.AutoSize = true;
-            this.label_Cpk.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label_Cpk.ForeColor = System.Drawing.Color.Gold;
-            this.label_Cpk.Location = new System.Drawing.Point(3, 150);
-            this.label_Cpk.Name = "label_Cpk";
-            this.label_Cpk.Size = new System.Drawing.Size(37, 26);
-            this.label_Cpk.TabIndex = 7;
-            this.label_Cpk.Text = "Cpk:";
-            this.label_Cpk.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            label_Cpk.AutoSize = true;
+            label_Cpk.Dock = DockStyle.Fill;
+            label_Cpk.ForeColor = Color.Gold;
+            label_Cpk.Location = new Point(4, 172);
+            label_Cpk.Margin = new Padding(4, 0, 4, 0);
+            label_Cpk.Name = "label_Cpk";
+            label_Cpk.Size = new Size(41, 31);
+            label_Cpk.TabIndex = 7;
+            label_Cpk.Text = "Cpk:";
+            label_Cpk.TextAlign = ContentAlignment.MiddleRight;
             // 
             // lbl_Cp
             // 
-            this.lbl_Cp.AutoSize = true;
-            this.lbl_Cp.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lbl_Cp.ForeColor = System.Drawing.Color.White;
-            this.lbl_Cp.Location = new System.Drawing.Point(46, 135);
-            this.lbl_Cp.Name = "lbl_Cp";
-            this.lbl_Cp.Size = new System.Drawing.Size(56, 15);
-            this.lbl_Cp.TabIndex = 6;
-            this.lbl_Cp.Text = "0,000";
-            this.lbl_Cp.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            lbl_Cp.AutoSize = true;
+            lbl_Cp.Dock = DockStyle.Fill;
+            lbl_Cp.ForeColor = Color.White;
+            lbl_Cp.Location = new Point(53, 155);
+            lbl_Cp.Margin = new Padding(4, 0, 4, 0);
+            lbl_Cp.Name = "lbl_Cp";
+            lbl_Cp.Size = new Size(65, 17);
+            lbl_Cp.TabIndex = 6;
+            lbl_Cp.Text = "0,000";
+            lbl_Cp.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // label_Cp
             // 
-            this.label_Cp.AutoSize = true;
-            this.label_Cp.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label_Cp.ForeColor = System.Drawing.Color.Gold;
-            this.label_Cp.Location = new System.Drawing.Point(3, 135);
-            this.label_Cp.Name = "label_Cp";
-            this.label_Cp.Size = new System.Drawing.Size(37, 15);
-            this.label_Cp.TabIndex = 5;
-            this.label_Cp.Text = "Cp:";
-            this.label_Cp.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            label_Cp.AutoSize = true;
+            label_Cp.Dock = DockStyle.Fill;
+            label_Cp.ForeColor = Color.Gold;
+            label_Cp.Location = new Point(4, 155);
+            label_Cp.Margin = new Padding(4, 0, 4, 0);
+            label_Cp.Name = "label_Cp";
+            label_Cp.Size = new Size(41, 17);
+            label_Cp.TabIndex = 5;
+            label_Cp.Text = "Cp:";
+            label_Cp.TextAlign = ContentAlignment.MiddleRight;
             // 
             // label_Max
             // 
-            this.label_Max.AutoSize = true;
-            this.label_Max.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label_Max.ForeColor = System.Drawing.Color.Gold;
-            this.label_Max.Location = new System.Drawing.Point(3, 20);
-            this.label_Max.Name = "label_Max";
-            this.label_Max.Size = new System.Drawing.Size(37, 20);
-            this.label_Max.TabIndex = 4;
-            this.label_Max.Text = "Max:";
-            this.label_Max.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            label_Max.AutoSize = true;
+            label_Max.Dock = DockStyle.Fill;
+            label_Max.ForeColor = Color.Gold;
+            label_Max.Location = new Point(4, 23);
+            label_Max.Margin = new Padding(4, 0, 4, 0);
+            label_Max.Name = "label_Max";
+            label_Max.Size = new Size(41, 23);
+            label_Max.TabIndex = 4;
+            label_Max.Text = "Max:";
+            label_Max.TextAlign = ContentAlignment.MiddleRight;
             // 
             // lbl_HiLo
             // 
-            this.lbl_HiLo.AutoSize = true;
-            this.lbl_HiLo.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lbl_HiLo.ForeColor = System.Drawing.Color.White;
-            this.lbl_HiLo.Location = new System.Drawing.Point(46, 100);
-            this.lbl_HiLo.Name = "lbl_HiLo";
-            this.lbl_HiLo.Size = new System.Drawing.Size(56, 20);
-            this.lbl_HiLo.TabIndex = 4;
-            this.lbl_HiLo.Text = "0,000";
-            this.lbl_HiLo.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            lbl_HiLo.AutoSize = true;
+            lbl_HiLo.Dock = DockStyle.Fill;
+            lbl_HiLo.ForeColor = Color.White;
+            lbl_HiLo.Location = new Point(53, 115);
+            lbl_HiLo.Margin = new Padding(4, 0, 4, 0);
+            lbl_HiLo.Name = "lbl_HiLo";
+            lbl_HiLo.Size = new Size(65, 23);
+            lbl_HiLo.TabIndex = 4;
+            lbl_HiLo.Text = "0,000";
+            lbl_HiLo.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // label_Avg
             // 
-            this.label_Avg.AutoSize = true;
-            this.label_Avg.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label_Avg.ForeColor = System.Drawing.Color.Gold;
-            this.label_Avg.Location = new System.Drawing.Point(3, 40);
-            this.label_Avg.Name = "label_Avg";
-            this.label_Avg.Size = new System.Drawing.Size(37, 20);
-            this.label_Avg.TabIndex = 4;
-            this.label_Avg.Text = "Avg:";
-            this.label_Avg.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            label_Avg.AutoSize = true;
+            label_Avg.Dock = DockStyle.Fill;
+            label_Avg.ForeColor = Color.Gold;
+            label_Avg.Location = new Point(4, 46);
+            label_Avg.Margin = new Padding(4, 0, 4, 0);
+            label_Avg.Name = "label_Avg";
+            label_Avg.Size = new Size(41, 23);
+            label_Avg.TabIndex = 4;
+            label_Avg.Text = "Avg:";
+            label_Avg.TextAlign = ContentAlignment.MiddleRight;
             // 
             // lbl_Min
             // 
-            this.lbl_Min.AutoSize = true;
-            this.lbl_Min.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lbl_Min.ForeColor = System.Drawing.Color.White;
-            this.lbl_Min.Location = new System.Drawing.Point(46, 60);
-            this.lbl_Min.Name = "lbl_Min";
-            this.lbl_Min.Size = new System.Drawing.Size(56, 20);
-            this.lbl_Min.TabIndex = 4;
-            this.lbl_Min.Text = "0,000";
-            this.lbl_Min.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            lbl_Min.AutoSize = true;
+            lbl_Min.Dock = DockStyle.Fill;
+            lbl_Min.ForeColor = Color.White;
+            lbl_Min.Location = new Point(53, 69);
+            lbl_Min.Margin = new Padding(4, 0, 4, 0);
+            lbl_Min.Name = "lbl_Min";
+            lbl_Min.Size = new Size(65, 23);
+            lbl_Min.TabIndex = 4;
+            lbl_Min.Text = "0,000";
+            lbl_Min.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // label_HiLo
             // 
-            this.label_HiLo.AutoSize = true;
-            this.label_HiLo.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label_HiLo.ForeColor = System.Drawing.Color.Gold;
-            this.label_HiLo.Location = new System.Drawing.Point(3, 100);
-            this.label_HiLo.Name = "label_HiLo";
-            this.label_HiLo.Size = new System.Drawing.Size(37, 20);
-            this.label_HiLo.TabIndex = 4;
-            this.label_HiLo.Text = "HiLo:";
-            this.label_HiLo.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            label_HiLo.AutoSize = true;
+            label_HiLo.Dock = DockStyle.Fill;
+            label_HiLo.ForeColor = Color.Gold;
+            label_HiLo.Location = new Point(4, 115);
+            label_HiLo.Margin = new Padding(4, 0, 4, 0);
+            label_HiLo.Name = "label_HiLo";
+            label_HiLo.Size = new Size(41, 23);
+            label_HiLo.TabIndex = 4;
+            label_HiLo.Text = "HiLo:";
+            label_HiLo.TextAlign = ContentAlignment.MiddleRight;
             // 
             // lbl_Avg
             // 
-            this.lbl_Avg.AutoSize = true;
-            this.lbl_Avg.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lbl_Avg.ForeColor = System.Drawing.Color.White;
-            this.lbl_Avg.Location = new System.Drawing.Point(46, 40);
-            this.lbl_Avg.Name = "lbl_Avg";
-            this.lbl_Avg.Size = new System.Drawing.Size(56, 20);
-            this.lbl_Avg.TabIndex = 4;
-            this.lbl_Avg.Text = "0,000";
-            this.lbl_Avg.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            lbl_Avg.AutoSize = true;
+            lbl_Avg.Dock = DockStyle.Fill;
+            lbl_Avg.ForeColor = Color.White;
+            lbl_Avg.Location = new Point(53, 46);
+            lbl_Avg.Margin = new Padding(4, 0, 4, 0);
+            lbl_Avg.Name = "lbl_Avg";
+            lbl_Avg.Size = new Size(65, 23);
+            lbl_Avg.TabIndex = 4;
+            lbl_Avg.Text = "0,000";
+            lbl_Avg.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // label_Min
             // 
-            this.label_Min.AutoSize = true;
-            this.label_Min.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label_Min.ForeColor = System.Drawing.Color.Gold;
-            this.label_Min.Location = new System.Drawing.Point(3, 60);
-            this.label_Min.Name = "label_Min";
-            this.label_Min.Size = new System.Drawing.Size(37, 20);
-            this.label_Min.TabIndex = 4;
-            this.label_Min.Text = "Min:";
-            this.label_Min.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            label_Min.AutoSize = true;
+            label_Min.Dock = DockStyle.Fill;
+            label_Min.ForeColor = Color.Gold;
+            label_Min.Location = new Point(4, 69);
+            label_Min.Margin = new Padding(4, 0, 4, 0);
+            label_Min.Name = "label_Min";
+            label_Min.Size = new Size(41, 23);
+            label_Min.TabIndex = 4;
+            label_Min.Text = "Min:";
+            label_Min.TextAlign = ContentAlignment.MiddleRight;
             // 
             // lbl_Max
             // 
-            this.lbl_Max.AutoSize = true;
-            this.lbl_Max.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lbl_Max.ForeColor = System.Drawing.Color.White;
-            this.lbl_Max.Location = new System.Drawing.Point(46, 20);
-            this.lbl_Max.Name = "lbl_Max";
-            this.lbl_Max.Size = new System.Drawing.Size(56, 20);
-            this.lbl_Max.TabIndex = 4;
-            this.lbl_Max.Text = "0,000";
-            this.lbl_Max.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            lbl_Max.AutoSize = true;
+            lbl_Max.Dock = DockStyle.Fill;
+            lbl_Max.ForeColor = Color.White;
+            lbl_Max.Location = new Point(53, 23);
+            lbl_Max.Margin = new Padding(4, 0, 4, 0);
+            lbl_Max.Name = "lbl_Max";
+            lbl_Max.Size = new Size(65, 23);
+            lbl_Max.TabIndex = 4;
+            lbl_Max.Text = "0,000";
+            lbl_Max.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // dgv_OrderList
             // 
-            this.dgv_OrderList.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(24)))), ((int)(((byte)(24)))), ((int)(((byte)(24)))));
-            this.dgv_OrderList.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.dgv_OrderList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgv_OrderList.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.order});
-            this.dgv_OrderList.Location = new System.Drawing.Point(833, 72);
-            this.dgv_OrderList.Name = "dgv_OrderList";
-            this.dgv_OrderList.RowHeadersVisible = false;
-            this.dgv_OrderList.Size = new System.Drawing.Size(79, 257);
-            this.dgv_OrderList.TabIndex = 3;
-            this.dgv_OrderList.Visible = false;
-            this.dgv_OrderList.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.DataGridView_Data_CellContentClick);
+            dgv_OrderList.BackgroundColor = Color.FromArgb(24, 24, 24);
+            dgv_OrderList.BorderStyle = BorderStyle.None;
+            dgv_OrderList.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgv_OrderList.Columns.AddRange(new DataGridViewColumn[] { order });
+            dgv_OrderList.Location = new Point(972, 83);
+            dgv_OrderList.Margin = new Padding(4, 3, 4, 3);
+            dgv_OrderList.Name = "dgv_OrderList";
+            dgv_OrderList.RowHeadersVisible = false;
+            dgv_OrderList.Size = new Size(92, 297);
+            dgv_OrderList.TabIndex = 3;
+            dgv_OrderList.Visible = false;
+            dgv_OrderList.CellContentClick += DataGridView_Data_CellContentClick;
             // 
             // order
             // 
-            this.order.HeaderText = "OrderNr";
-            this.order.Name = "order";
-            this.order.Width = 70;
+            order.HeaderText = "OrderNr";
+            order.Name = "order";
+            order.Width = 70;
             // 
             // cB_visaAllaOrdrar
             // 
-            this.cB_visaAllaOrdrar.AutoSize = true;
-            this.cB_visaAllaOrdrar.ForeColor = System.Drawing.Color.White;
-            this.cB_visaAllaOrdrar.Location = new System.Drawing.Point(838, 49);
-            this.cB_visaAllaOrdrar.Name = "cB_visaAllaOrdrar";
-            this.cB_visaAllaOrdrar.Size = new System.Drawing.Size(185, 17);
-            this.cB_visaAllaOrdrar.TabIndex = 1;
-            this.cB_visaAllaOrdrar.Text = "Visa alla ordrar med detta artikelnr";
-            this.cB_visaAllaOrdrar.UseVisualStyleBackColor = true;
-            this.cB_visaAllaOrdrar.Visible = false;
-            this.cB_visaAllaOrdrar.CheckedChanged += new System.EventHandler(this.Mått_SelectedIndexChanged);
+            cB_visaAllaOrdrar.AutoSize = true;
+            cB_visaAllaOrdrar.ForeColor = Color.White;
+            cB_visaAllaOrdrar.Location = new Point(978, 57);
+            cB_visaAllaOrdrar.Margin = new Padding(4, 3, 4, 3);
+            cB_visaAllaOrdrar.Name = "cB_visaAllaOrdrar";
+            cB_visaAllaOrdrar.Size = new Size(206, 19);
+            cB_visaAllaOrdrar.TabIndex = 1;
+            cB_visaAllaOrdrar.Text = "Visa alla ordrar med detta artikelnr";
+            cB_visaAllaOrdrar.UseVisualStyleBackColor = true;
+            cB_visaAllaOrdrar.Visible = false;
+            cB_visaAllaOrdrar.CheckedChanged += Mått_SelectedIndexChanged;
             // 
             // cb_Mått
             // 
-            this.cb_Mått.FormattingEnabled = true;
-            this.cb_Mått.Location = new System.Drawing.Point(838, 10);
-            this.cb_Mått.Name = "cb_Mått";
-            this.cb_Mått.Size = new System.Drawing.Size(139, 21);
-            this.cb_Mått.TabIndex = 2;
-            this.cb_Mått.Visible = false;
-            this.cb_Mått.SelectedIndexChanged += new System.EventHandler(this.Mått_SelectedIndexChanged);
+            cb_Mått.FormattingEnabled = true;
+            cb_Mått.Location = new Point(978, 12);
+            cb_Mått.Margin = new Padding(4, 3, 4, 3);
+            cb_Mått.Name = "cb_Mått";
+            cb_Mått.Size = new Size(162, 23);
+            cb_Mått.TabIndex = 2;
+            cb_Mått.Visible = false;
+            cb_Mått.SelectedIndexChanged += Mått_SelectedIndexChanged;
             // 
             // chartData
             // 
-            this.chartData.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(24)))), ((int)(((byte)(24)))), ((int)(((byte)(24)))));
-            chartArea1.AxisX.LabelStyle.ForeColor = System.Drawing.Color.White;
-            chartArea1.AxisX.LineColor = System.Drawing.Color.White;
-            chartArea1.AxisX.MajorGrid.LineColor = System.Drawing.Color.DimGray;
-            chartArea1.AxisX2.LineColor = System.Drawing.Color.White;
-            chartArea1.AxisY.LabelStyle.ForeColor = System.Drawing.Color.White;
-            chartArea1.AxisY.LineColor = System.Drawing.Color.White;
-            chartArea1.AxisY.MajorGrid.LineColor = System.Drawing.Color.DimGray;
-            chartArea1.AxisY2.LineColor = System.Drawing.Color.White;
-            chartArea1.BackColor = System.Drawing.Color.Transparent;
-            chartArea1.BorderColor = System.Drawing.Color.Transparent;
+            chartData.BackColor = Color.FromArgb(24, 24, 24);
+            chartArea1.AxisX.LabelStyle.ForeColor = Color.White;
+            chartArea1.AxisX.LineColor = Color.White;
+            chartArea1.AxisX.MajorGrid.LineColor = Color.DimGray;
+            chartArea1.AxisX2.LineColor = Color.White;
+            chartArea1.AxisY.LabelStyle.ForeColor = Color.White;
+            chartArea1.AxisY.LineColor = Color.White;
+            chartArea1.AxisY.MajorGrid.LineColor = Color.DimGray;
+            chartArea1.AxisY2.LineColor = Color.White;
+            chartArea1.BackColor = Color.Transparent;
+            chartArea1.BorderColor = Color.Transparent;
             chartArea1.Name = "ChartArea1";
-            this.chartData.ChartAreas.Add(chartArea1);
-            legend1.BackColor = System.Drawing.Color.Transparent;
+            chartData.ChartAreas.Add(chartArea1);
+            legend1.BackColor = Color.Transparent;
             legend1.Enabled = false;
-            legend1.ForeColor = System.Drawing.Color.White;
+            legend1.ForeColor = Color.White;
             legend1.Name = "Legend1";
-            legend1.TableStyle = System.Windows.Forms.DataVisualization.Charting.LegendTableStyle.Wide;
-            legend1.TitleForeColor = System.Drawing.Color.White;
-            this.chartData.Legends.Add(legend1);
-            this.chartData.Location = new System.Drawing.Point(6, 35);
-            this.chartData.Name = "chartData";
-            this.chartData.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.Light;
-            series1.BorderColor = System.Drawing.Color.Red;
+            legend1.TableStyle = LegendTableStyle.Wide;
+            legend1.TitleForeColor = Color.White;
+            chartData.Legends.Add(legend1);
+            chartData.Location = new Point(7, 40);
+            chartData.Margin = new Padding(4, 3, 4, 3);
+            chartData.Name = "chartData";
+            chartData.Palette = ChartColorPalette.Light;
+            series1.BorderColor = Color.Red;
             series1.ChartArea = "ChartArea1";
-            series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
-            series1.Color = System.Drawing.Color.Green;
-            series1.LabelBackColor = System.Drawing.Color.Black;
-            series1.LabelBorderColor = System.Drawing.Color.Transparent;
-            series1.LabelForeColor = System.Drawing.Color.White;
+            series1.ChartType = SeriesChartType.Spline;
+            series1.Color = Color.Green;
+            series1.LabelBackColor = Color.Black;
+            series1.LabelBorderColor = Color.Transparent;
+            series1.LabelForeColor = Color.White;
             series1.Legend = "Legend1";
-            series1.MarkerBorderColor = System.Drawing.Color.White;
+            series1.MarkerBorderColor = Color.White;
             series1.Name = "Value";
             series1.YValuesPerPoint = 6;
-            this.chartData.Series.Add(series1);
-            this.chartData.Size = new System.Drawing.Size(823, 450);
-            this.chartData.TabIndex = 1;
-            this.chartData.Text = "chart1";
-            title1.Font = new System.Drawing.Font("Lucida Bright", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            title1.ForeColor = System.Drawing.Color.Orange;
+            chartData.Series.Add(series1);
+            chartData.Size = new Size(960, 519);
+            chartData.TabIndex = 1;
+            chartData.Text = "chart1";
+            title1.Font = new Font("Lucida Bright", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            title1.ForeColor = Color.Orange;
             title1.Name = "Title1";
             title1.Text = "Blåst ID";
-            this.chartData.Titles.Add(title1);
-            this.chartData.Visible = false;
-            this.chartData.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Chart_Data_MouseMove);
+            chartData.Titles.Add(title1);
+            chartData.Visible = false;
+            chartData.MouseMove += Chart_Data_MouseMove;
             // 
             // lblOrderNr
             // 
-            this.lblOrderNr.AutoSize = true;
-            this.lblOrderNr.Dock = System.Windows.Forms.DockStyle.Top;
-            this.lblOrderNr.Font = new System.Drawing.Font("Palatino Linotype", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblOrderNr.ForeColor = System.Drawing.Color.Gold;
-            this.lblOrderNr.Location = new System.Drawing.Point(0, 0);
-            this.lblOrderNr.Name = "lblOrderNr";
-            this.lblOrderNr.Size = new System.Drawing.Size(0, 26);
-            this.lblOrderNr.TabIndex = 0;
+            lblOrderNr.AutoSize = true;
+            lblOrderNr.Dock = DockStyle.Top;
+            lblOrderNr.Font = new Font("Palatino Linotype", 14.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblOrderNr.ForeColor = Color.Gold;
+            lblOrderNr.Location = new Point(0, 0);
+            lblOrderNr.Margin = new Padding(4, 0, 4, 0);
+            lblOrderNr.Name = "lblOrderNr";
+            lblOrderNr.Size = new Size(0, 26);
+            lblOrderNr.TabIndex = 0;
             // 
             // MätStatistik
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(45)))), ((int)(((byte)(45)))));
-            this.ClientSize = new System.Drawing.Size(1037, 499);
-            this.Controls.Add(this.panel1);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-            this.Name = "MätStatistik";
-            this.Opacity = 0.25D;
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "TestStatistik";
-            this.TransparencyKey = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(45)))), ((int)(((byte)(45)))));
-            this.Deactivate += new System.EventHandler(this.MätStatistik_Deactivate);
-            this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
-            this.tlp_SPC.ResumeLayout(false);
-            this.tlp_SPC.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgv_OrderList)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.chartData)).EndInit();
-            this.ResumeLayout(false);
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            BackColor = Color.FromArgb(45, 45, 45);
+            ClientSize = new Size(1210, 576);
+            Controls.Add(panel1);
+            FormBorderStyle = FormBorderStyle.None;
+            Margin = new Padding(4, 3, 4, 3);
+            Name = "MätStatistik";
+            Opacity = 0.25D;
+            StartPosition = FormStartPosition.CenterScreen;
+            Text = "TestStatistik";
+            TransparencyKey = Color.FromArgb(45, 45, 45);
+            Deactivate += MätStatistik_Deactivate;
+            panel1.ResumeLayout(false);
+            panel1.PerformLayout();
+            tlp_SPC.ResumeLayout(false);
+            tlp_SPC.PerformLayout();
+            ((ISupportInitialize)dgv_OrderList).EndInit();
+            ((ISupportInitialize)chartData).EndInit();
+            ResumeLayout(false);
 
         }
 

@@ -140,8 +140,10 @@ namespace DigitalProductionProgram.MainWindow
                         Templates_Protocol.MainTemplate.ID = mainTemplateID;
                     if (TryParse(reader["LineClearanceMainTemplateID"].ToString(), out var lc_MainTemplateID))
                         Templates_LineClearance.MainTemplate.LineClearance_MainTemplateID = lc_MainTemplateID;
-                    if (TryParse(reader["MeasureProtocolMainTemplateID"].ToString(), out var mpMainTemplateID))
-                        Templates_MeasureProtocol.MainTemplate.ID = mpMainTemplateID;
+                   
+                    Templates_MeasureProtocol.MainTemplate.ID = reader["MeasureProtocolMainTemplateID"] is DBNull
+                        ? null
+                        : (int?)Convert.ToInt32(reader["MeasureProtocolMainTemplateID"]);
 
                     Templates_LineClearance.MainTemplate.LineClearance_CenturiLink = reader["CenturiLink"].ToString();
                     bool.TryParse(reader["IsMultipleColumnsStartup"].ToString(), out var isUsingOven);

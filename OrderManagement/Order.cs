@@ -178,16 +178,14 @@ namespace DigitalProductionProgram.OrderManagement
 
         public static int? GetOrderID(string? ordernr, string operation)
         {
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query = "SELECT OrderID FROM [Order].MainData WHERE OrderNr = @orderNr AND Operation = @operation";
-                con.Open();
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@orderNr", ordernr);
-                cmd.Parameters.AddWithValue("@operation", operation);
-                var value = cmd.ExecuteScalar();
-                return (int?)value;
-            }
+            using var con = new SqlConnection(Database.cs_Protocol);
+            var query = "SELECT OrderID FROM [Order].MainData WHERE OrderNr = @orderNr AND Operation = @operation";
+            con.Open();
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            cmd.Parameters.AddWithValue("@orderNr", ordernr);
+            cmd.Parameters.AddWithValue("@operation", operation);
+            var value = cmd.ExecuteScalar();
+            return (int?)value;
         }
         public static string GetOrderNr(int orderid)
         {
@@ -218,7 +216,7 @@ namespace DigitalProductionProgram.OrderManagement
         private static string Temp_ProdGroup;
         private static string? Temp_TemplateRevision;
         private static int? Temp_LineClearanceMainTemplateID;
-        private static int Temp_MeasureProtocolMainTemplateID;
+        private static int? Temp_MeasureProtocolMainTemplateID;
 
         public static void Save_TempOrderInfo()
         {
@@ -387,30 +385,26 @@ namespace DigitalProductionProgram.OrderManagement
             {
                 if (string.IsNullOrEmpty(OrderNumber))
                     return null;
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    const string query = "SELECT Version FROM [Order].MainData WHERE OrderID = @orderid";
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    cmd.Parameters.AddWithValue("@orderid", OrderID);
-                    con.Open();
-                    return cmd.ExecuteScalar().ToString();
-                }
+                using var con = new SqlConnection(Database.cs_Protocol);
+                const string query = "SELECT Version FROM [Order].MainData WHERE OrderID = @orderid";
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                cmd.Parameters.AddWithValue("@orderid", OrderID);
+                con.Open();
+                return cmd.ExecuteScalar().ToString();
             }
         }
         public static string Rating
         {
             get
             {
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    const string query = "SELECT Points FROM [Order].MainData WHERE OrderID = @orderid";
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    cmd.Parameters.AddWithValue("@orderid", OrderID);
-                    con.Open();
-                    var value = cmd.ExecuteScalar();
-                    if (value != null)
-                        return value.ToString();
-                }
+                using var con = new SqlConnection(Database.cs_Protocol);
+                const string query = "SELECT Points FROM [Order].MainData WHERE OrderID = @orderid";
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                cmd.Parameters.AddWithValue("@orderid", OrderID);
+                con.Open();
+                var value = cmd.ExecuteScalar();
+                if (value != null)
+                    return value.ToString();
 
                 return "";
             }
@@ -419,7 +413,6 @@ namespace DigitalProductionProgram.OrderManagement
         public static bool Is_PrintOutCopy { get; set; }
 
         public static bool IsOrderDone { get; set; }
-
         public static void Set_IsOrderDone()
         {
             if (OrderID is null || OrderNumber == "Q12345")
@@ -427,52 +420,47 @@ namespace DigitalProductionProgram.OrderManagement
                 IsOrderDone = false;
                 return;
             }
-                
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                const string query = "SELECT IsOrderDone FROM [Order].MainData WHERE OrderID = @orderid";
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@orderid", OrderID);
-                con.Open();
-                var value = cmd.ExecuteScalar();
-                if (value == null)
-                    IsOrderDone = false;
-                bool.TryParse(value.ToString(), out var isOrderDone);
-                IsOrderDone = isOrderDone;
-            }
+
+            using var con = new SqlConnection(Database.cs_Protocol);
+            const string query = "SELECT IsOrderDone FROM [Order].MainData WHERE OrderID = @orderid";
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            cmd.Parameters.AddWithValue("@orderid", OrderID);
+            con.Open();
+            var value = cmd.ExecuteScalar();
+            if (value == null)
+                IsOrderDone = false;
+            bool.TryParse(value.ToString(), out var isOrderDone);
+            IsOrderDone = isOrderDone;
         }
+
         public static void DeActivateOrder(int orderid, string comment)
         {
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                const string query = @"
+            using var con = new SqlConnection(Database.cs_Protocol);
+            const string query = @"
                     IF NOT EXISTS (SELECT OrderID FROM [Order].InactiveOrders WHERE OrderID = @orderid)
                     BEGIN
                         INSERT INTO [Order].InactiveOrders (OrderID, Comment, InactivatedBy_Name, InactivatedBy_EmployeeNr, Inactivated_Date)
                         VALUES (@orderid, @comment, @name, @employeenr, @date)
                     END";
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@orderid", orderid);
-                cmd.Parameters.AddWithValue("@comment", comment);
-                cmd.Parameters.AddWithValue("@name", Person.Name);
-                cmd.Parameters.AddWithValue("@employeenr", Person.EmployeeNr);
-                cmd.Parameters.AddWithValue("@date", DateTime.Now);
-                con.Open();
-                cmd.ExecuteNonQuery();
-            }
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            cmd.Parameters.AddWithValue("@orderid", orderid);
+            cmd.Parameters.AddWithValue("@comment", comment);
+            cmd.Parameters.AddWithValue("@name", Person.Name);
+            cmd.Parameters.AddWithValue("@employeenr", Person.EmployeeNr);
+            cmd.Parameters.AddWithValue("@date", DateTime.Now);
+            con.Open();
+            cmd.ExecuteNonQuery();
         }
         public static void ActivateOrder(int orderid)
         {
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                const string query = @"
+            using var con = new SqlConnection(Database.cs_Protocol);
+            const string query = @"
                     DELETE FROM [Order].InactiveOrders
                     WHERE OrderID = @orderid";
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@orderid", orderid);
-                con.Open();
-                cmd.ExecuteNonQuery();
-            }
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            cmd.Parameters.AddWithValue("@orderid", orderid);
+            con.Open();
+            cmd.ExecuteNonQuery();
         }
 
         public static bool IsOrderDone_Before
@@ -492,24 +480,22 @@ namespace DigitalProductionProgram.OrderManagement
                 return true;
             }
         }
-        public static bool IsOrder_Exist(string? orderNumber, string? operation)
+        public static bool IsOrderExist(string? orderNumber, string? operation)
         {
                 if (string.IsNullOrEmpty(orderNumber))
                     return false;
                 const string query = "SELECT * FROM [Order].MainData WHERE OrderNr = @ordernumber AND Operation = @operation";
 
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    cmd.Parameters.AddWithValue("@ordernumber", orderNumber);
-                    cmd.Parameters.AddWithValue("@operation", operation);
+                using var con = new SqlConnection(Database.cs_Protocol);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                cmd.Parameters.AddWithValue("@ordernumber", orderNumber);
+                cmd.Parameters.AddWithValue("@operation", operation);
                 con.Open();
-                    var reader = cmd.ExecuteReader();
+                var reader = cmd.ExecuteReader();
 
-                    if (reader.HasRows)
-                        return true;
-                    return false;
-                }
+                if (reader.HasRows)
+                    return true;
+                return false;
         }
         public static bool IsOnlyTestRun =>
             new[] { "D", "TR", "SP" }.Any(prefix => OrderNumber.StartsWith(prefix));
@@ -517,16 +503,14 @@ namespace DigitalProductionProgram.OrderManagement
         {
             get
             {
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    var query = "SELECT * FROM [Order].MainData WHERE OrderID = @orderid AND Points IS NOT NULL";
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    cmd.Parameters.AddWithValue("@orderid", OrderID);
-                    con.Open();
-                    var reader = cmd.ExecuteReader();
-                    if (reader.HasRows)
-                        return true;
-                }
+                using var con = new SqlConnection(Database.cs_Protocol);
+                var query = "SELECT * FROM [Order].MainData WHERE OrderID = @orderid AND Points IS NOT NULL";
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                cmd.Parameters.AddWithValue("@orderid", OrderID);
+                con.Open();
+                var reader = cmd.ExecuteReader();
+                if (reader.HasRows)
+                    return true;
                 return false;
             }
         }
@@ -562,21 +546,19 @@ namespace DigitalProductionProgram.OrderManagement
             NumberOfLayers = 1;
             if (WorkOperation != WorkOperations.Extrudering_Termo)
                 return;
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query = @"
+            using var con = new SqlConnection(Database.cs_Protocol);
+            var query = @"
                     SELECT IsExtraInputBoxes_2Layer 
                     FROM MeasureProtocol.MainTemplate
                     WHERE MeasureProtocolMainTemplateID = @measureprotocoltemplateid";
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                SQL_Parameter.Int(cmd.Parameters, "@measureprotocoltemplateid", Templates_MeasureProtocol.MainTemplate.ID);
-                con.Open();
-                var value = cmd.ExecuteScalar();
-                bool IsExtraLayer = false;
-                if (value != null)
-                    bool.TryParse(value.ToString(), out IsExtraLayer);
-                NumberOfLayers = IsExtraLayer ? 2 : 1;
-            }
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            SQL_Parameter.Int(cmd.Parameters, "@measureprotocoltemplateid", Templates_MeasureProtocol.MainTemplate.ID);
+            con.Open();
+            var value = cmd.ExecuteScalar();
+            bool IsExtraLayer = false;
+            if (value != null)
+                bool.TryParse(value.ToString(), out IsExtraLayer);
+            NumberOfLayers = IsExtraLayer ? 2 : 1;
         }
         public static void Check_BioBurden_Samples(int mätning, int totalAmount, Control form)
         {
@@ -601,40 +583,38 @@ namespace DigitalProductionProgram.OrderManagement
         public static void CheckIfOldOrderNotDoneExists(ref string? ordernr, ref string? operation)
         {
             //Kontrollerar om Användare har startat en order för länge sedan som fortfarande ligger öppen och ej avslutad
-           
-            using (var con = new SqlConnection(Database.cs_Protocol))
+
+            using var con = new SqlConnection(Database.cs_Protocol);
+            var query = @"SELECT TOP(1) OrderNr, Operation, Date_Start FROM [Order].MainData WHERE IsOrderDone = 'False' AND Date_Start < @datum AND Name_Start = @namn";
+            con.Open();
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            cmd.Parameters.AddWithValue("@datum", DateTime.Now.AddMonths(-3));
+            cmd.Parameters.AddWithValue("@namn", Person.Name);
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
             {
-                var query = @"SELECT TOP(1) OrderNr, Operation, Date_Start FROM [Order].MainData WHERE IsOrderDone = 'False' AND Date_Start < @datum AND Name_Start = @namn";
-                con.Open();
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@datum", DateTime.Now.AddMonths(-3));
-                cmd.Parameters.AddWithValue("@namn", Person.Name);
-                var reader = cmd.ExecuteReader();
-                while (reader.Read())
+                if (reader.HasRows)
                 {
-                    if (reader.HasRows)
-                    {
-                        TimeSpan months;
-                        if (DateTime.TryParse(reader["Date_Start"].ToString(), out var date_Order))
-                            months = DateTime.Now.Subtract(date_Order);
-                        else
-                            months = DateTime.Now.Subtract(DateTime.Now.AddMonths(-3));
-                        var dateSpan = Math.Round(months.Days / (365.25 / 12), 0);
-                        InfoText.Question($"{LanguageManager.GetString("orderNotDone_1")} {reader["OrderNr"]} - Operation {reader["Operation"]} {LanguageManager.GetString("orderNotDone_2")} {dateSpan} {LanguageManager.GetString("orderNotDone_3")}\n" +
+                    TimeSpan months;
+                    if (DateTime.TryParse(reader["Date_Start"].ToString(), out var date_Order))
+                        months = DateTime.Now.Subtract(date_Order);
+                    else
+                        months = DateTime.Now.Subtract(DateTime.Now.AddMonths(-3));
+                    var dateSpan = Math.Round(months.Days / (365.25 / 12), 0);
+                    InfoText.Question($"{LanguageManager.GetString("orderNotDone_1")} {reader["OrderNr"]} - Operation {reader["Operation"]} {LanguageManager.GetString("orderNotDone_2")} {dateSpan} {LanguageManager.GetString("orderNotDone_3")}\n" +
                                       $"{LanguageManager.GetString("orderNotDone_4")}\n\n" +
                                       $"{LanguageManager.GetString("orderNotDone_5")}", CustomColors.InfoText_Color.Info, "Info");
-                        Activity.Start();
-                        if (InfoText.answer == InfoText.Answer.Yes)
-                        {
-                            ordernr = reader[0].ToString();
-                            operation = reader[1].ToString();
-                            Points.Add_Points(100, $"Öppnade Order {ordernr}-{operation} för att avsluta den.");
+                    Activity.Start();
+                    if (InfoText.answer == InfoText.Answer.Yes)
+                    {
+                        ordernr = reader[0].ToString();
+                        operation = reader[1].ToString();
+                        Points.Add_Points(100, $"Öppnade Order {ordernr}-{operation} för att avsluta den.");
                             
-                            return;
-                        }
-
-                        Points.Add_Points(-10, $"Öppnade INTE Order {ordernr}-{operation} för att avsluta den.");
+                        return;
                     }
+
+                    Points.Add_Points(-10, $"Öppnade INTE Order {ordernr}-{operation} för att avsluta den.");
                 }
             }
         }
@@ -666,7 +646,7 @@ namespace DigitalProductionProgram.OrderManagement
             Templates_Protocol.MainTemplate.Revision = null;
             Templates_Protocol.MainTemplate.Name = null;
             Templates_Protocol.MainTemplate.ID = 0;
-            Templates_MeasureProtocol.MainTemplate.ID = 0;
+            Templates_MeasureProtocol.MainTemplate.ID = null;
             Templates_LineClearance.MainTemplate.LineClearance_MainTemplateID = null;
             HS_Pipe_1 = null;
             HS_Pipe_2 = null;
@@ -726,7 +706,7 @@ namespace DigitalProductionProgram.OrderManagement
                     if (Processcard.IsUnderConstruction == false && Processcard.IsApproved_By_QA(PartID) == false)
                         return CheckAuthority.IsRoleAuthorized(CheckAuthority.TemplateAuthorities.StartOrderWithoutQA_sign);
 
-                    if (Monitor.Monitor.factory == Monitor.Monitor.Factory.Holding || Processcard.IsNotUsing_Processcard(WorkOperation) || Processcard.IsUnderConstruction == false)
+                    if (Monitor.Monitor.factory == Monitor.Monitor.Factory.Holding || Processcard.IsNotUsingProcesscard(WorkOperation) || Processcard.IsUnderConstruction == false)
                         return true;
 
                     var totalOrders = TotalOrders;
@@ -914,7 +894,7 @@ namespace DigitalProductionProgram.OrderManagement
                     if (!string.IsNullOrEmpty(RevNr))
                         return true;
 
-                    if (Processcard.IsMultiple_Processcard(WorkOperation))
+                    if (Processcard.IsMultipleProcesscard(WorkOperation))
                     {
                         var chooseProcesscard_StartOrder = new ProcesscardTemplateSelector(true, false, false, false); 
                         var black = new BlackBackground("", 70);
@@ -1491,7 +1471,7 @@ namespace DigitalProductionProgram.OrderManagement
                 //D-ordrar skall heller inte 
                 _ = Activity.Stop("Finish Order: Skickar mail ang. Processkortsuppdateringar");
                 Mail.ProcesscardNeedChanges_FinishOrder();
-                if (TotalOrders == 3 && !Processcard.IsNotUsing_Processcard(WorkOperation)) 
+                if (TotalOrders == 3 && !Processcard.IsNotUsingProcesscard(WorkOperation)) 
                     Mail.NotifyOrderFinishedCount_3();
 
                 _ = Main_FilterQuickOpen.Load_ListAsync(main.dgv_QuickOpen);

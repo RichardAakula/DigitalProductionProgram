@@ -92,10 +92,66 @@ namespace DigitalProductionProgram.MainWindow
         }
 
 
-        private readonly Dictionary<string, bool> _orderExistCache = new();
-        private readonly Dictionary<string, int?> _partIdCache = new();
+        private readonly Dictionary<string, bool> dictIsOrderExist = new();
+        private readonly Dictionary<string, int?> dictOrderID = new();
+        private readonly Dictionary<string, int?> dictPartID = new();
         private readonly Dictionary<int, Part.ProcesscardStatus> _partStatusCache = new();
+        public static Dictionary<string, (bool IsStarted, int? OrderID)> LoadOrderExistCache(List<(string OrderNumber, string OperationNumber)> neededChecks)
+        {
+            var result = new Dictionary<string, (bool, int?)>();
 
+            if (neededChecks == null || neededChecks.Count == 0)
+                return result;
+
+            using var con = new SqlConnection(Database.cs_Protocol);
+            con.Open();
+
+            // Bygg parametrar för IN-klausul
+            var parameters = new List<string>();
+            var cmd = new SqlCommand();
+            cmd.Connection = con;
+
+            int index = 0;
+            foreach (var check in neededChecks)
+            {
+                var pOrder = $"@orderNr{index}";
+                var pOp = $"@operation{index}";
+                parameters.Add($"(OrderNr = {pOrder} AND Operation = {pOp})");
+
+                cmd.Parameters.AddWithValue(pOrder, check.OrderNumber);
+                cmd.Parameters.AddWithValue(pOp, check.OperationNumber);
+
+                index++;
+            }
+
+            var whereClause = string.Join(" OR ", parameters);
+            cmd.CommandText = $@"
+        SELECT OrderNr, Operation, OrderID 
+        FROM [Order].MainData 
+        WHERE {whereClause}";
+
+            using var reader = cmd.ExecuteReader();
+
+            while (reader.Read())
+            {
+                var orderNr = reader.GetString(reader.GetOrdinal("OrderNr"));
+                var operation = reader.GetString(reader.GetOrdinal("Operation"));
+                var orderID = reader.IsDBNull(reader.GetOrdinal("OrderID")) ? (int?)null : reader.GetInt32(reader.GetOrdinal("OrderID"));
+
+                var key = $"{orderNr}-{operation}";
+                result[key] = (true, orderID);
+            }
+
+            // Lägg till alla som inte hittades i resultatet med false och null
+            foreach (var check in neededChecks)
+            {
+                var key = $"{check.OrderNumber}-{check.OperationNumber}";
+                if (!result.ContainsKey(key))
+                    result[key] = (false, null);
+            }
+
+            return result;
+        }
         public void Load_PriorityPlanning()
         {
             var dt = dt_PriorityPlan;
@@ -114,17 +170,26 @@ namespace DigitalProductionProgram.MainWindow
             Manage_WorkOperation.WorkOperations workOperation = new Manage_WorkOperation.WorkOperations();
 
             // Fyll cache för order start-status
+            var neededChecks = new List<(string OrderNumber, string OperationNumber)>();
+
             foreach (var row in orderOperations)
             {
                 var ordernr = Utilities.GetOneFromMonitor<Manufacturing.ManufacturingOrders>($"filter=Id Eq'{row.ManufacturingOrderId}'");
-                if (ordernr == null) continue;
+                if (ordernr == null)
+                    continue;
 
                 var key = $"{ordernr.OrderNumber}-{row.OperationNumber}";
-                if (!_orderExistCache.ContainsKey(key))
+                if (!dictIsOrderExist.ContainsKey(key))
                 {
-                    bool isStarted = Order.IsOrder_Exist(ordernr.OrderNumber, row.OperationNumber.ToString());
-                    _orderExistCache[key] = isStarted;
+                    neededChecks.Add((ordernr.OrderNumber, row.OperationNumber.ToString()));
                 }
+            }
+            // 2. Hämta data i bulk från DB och fyll cachen
+            var loadedCache = LoadOrderExistCache(neededChecks);
+            foreach (var kvp in loadedCache)
+            {
+                dictIsOrderExist[kvp.Key] = kvp.Value.IsStarted;
+                dictOrderID[kvp.Key] = kvp.Value.OrderID;  // _orderIDCache är en ny Dictionary<string, int?>
             }
 
             // Bygg datatable med data och använd cachen för isStarted
@@ -138,8 +203,7 @@ namespace DigitalProductionProgram.MainWindow
                     continue;
 
                 var key = $"{ordernr.OrderNumber}-{row.OperationNumber}";
-                bool isStarted = false;
-                _orderExistCache.TryGetValue(key, out isStarted);
+                dictIsOrderExist.TryGetValue(key, out bool isStarted);
 
                 dt.Rows.Add();
                 dt.Rows[^1]["OrderNr"] = ordernr.OrderNumber;
@@ -160,16 +224,17 @@ namespace DigitalProductionProgram.MainWindow
                 dgv_PriorityPlanning.Invoke(new Action(() => dgv_PriorityPlanning.Columns["Processkort Godkänt"].Visible = false));
 
                 var partNr = dgv_PriorityPlanning.Rows[ctr].Cells["ArtikelNr"].Value.ToString();
-                var operation = row.OperationNumber;
-                var orderID = Order.GetOrderID(ordernr.OrderNumber, operation.ToString());
+                //var operation = row.OperationNumber;
+                dictOrderID.TryGetValue(key, out int? orderID);
+                // var orderID = Order.GetOrderID(ordernr.OrderNumber, operation.ToString());
 
                 if (workOperation == Manage_WorkOperation.WorkOperations.Nothing)
                     workOperation = Manage_WorkOperation.Load_WorkOperation(false, orderID, null, row.Description);
                 string partKey = $"{partNr}__{workOperation}";
-                if (!_partIdCache.TryGetValue(partKey, out var partID))
+                if (!dictPartID.TryGetValue(partKey, out var partID))
                 {
                     partID = Part.Get_PartID(partNr, workOperation);
-                    _partIdCache[partKey] = partID;
+                    dictPartID[partKey] = partID;
                 }
                 if (!_partStatusCache.TryGetValue(partID ?? 0, out var status))
                 {
@@ -225,6 +290,7 @@ namespace DigitalProductionProgram.MainWindow
             }
         }
 
+
         private bool IsOrderStarted(int row)
         {
             if (bool.Parse(dgv_PriorityPlanning.Rows[row].Cells["Order Startad"].Value.ToString()))
@@ -237,7 +303,7 @@ namespace DigitalProductionProgram.MainWindow
         }
         private bool IsNoProcesscard(int row, Manage_WorkOperation.WorkOperations workoperation)
         {
-            if (!Processcard.IsNotUsing_Processcard(workoperation)) 
+            if (!Processcard.IsNotUsingProcesscard(workoperation)) 
                 return false;
             dgv_PriorityPlanning.Rows[row].DefaultCellStyle.BackColor = CustomColors.Ok_Back;
             dgv_PriorityPlanning.Rows[row].DefaultCellStyle.ForeColor = CustomColors.Ok_Front;

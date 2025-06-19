@@ -142,24 +142,22 @@ namespace DigitalProductionProgram.Processcards
             {
                 if (string.IsNullOrEmpty(Order.PartNumber))
                     return false;
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    var query = "SELECT * FROM [Order].MainData WHERE PartID = @artID ";
-                    if (Processcard.IsMultiple_Processcard(Order.WorkOperation, Order.PartNumber))
-                        query += $"AND ProdLine = '{Order.ProdLine}' AND ProdType = '{Order.ProdType}'";
+                using var con = new SqlConnection(Database.cs_Protocol);
+                var query = "SELECT * FROM [Order].MainData WHERE PartID = @artID ";
+                if (Processcard.IsMultipleProcesscard(Order.WorkOperation, Order.PartNumber))
+                    query += $"AND ProdLine = '{Order.ProdLine}' AND ProdType = '{Order.ProdType}'";
 
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    SQL_Parameter.NullableINT(cmd.Parameters, "@artID", Order.PartID);
-                    con.Open();
-                    var reader = cmd.ExecuteReader();
-                    if (reader.HasRows)
-                    {
-                        InfoText.Show($"{LanguageManager.GetString("saveProcesscard_Info_2_1")} ({tb_NewPartNr.Text}: {ProcesscardBasedOn.lbl_RevNr.Text})\n" +
-                                      $"{LanguageManager.GetString("saveProcesscard_Info_2_2")}", CustomColors.InfoText_Color.Bad, "Warning", this);
-                        return true;
-                    }
-                    return false;
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                SQL_Parameter.NullableINT(cmd.Parameters, "@artID", Order.PartID);
+                con.Open();
+                var reader = cmd.ExecuteReader();
+                if (reader.HasRows)
+                {
+                    InfoText.Show($"{LanguageManager.GetString("saveProcesscard_Info_2_1")} ({tb_NewPartNr.Text}: {ProcesscardBasedOn.lbl_RevNr.Text})\n" +
+                                  $"{LanguageManager.GetString("saveProcesscard_Info_2_2")}", CustomColors.InfoText_Color.Bad, "Warning", this);
+                    return true;
                 }
+                return false;
             }
         }
         private bool IsPartRevisionNrExist
@@ -168,23 +166,21 @@ namespace DigitalProductionProgram.Processcards
             {
                 if (string.IsNullOrEmpty(tb_NewPartNr.Text) || string.IsNullOrEmpty(ProcesscardBasedOn.lbl_RevNr.Text))
                     return true;
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    var query = "SELECT * FROM Processcard.MainData WHERE PartNr = @partnr AND RevNr = @revNr AND WorkOperationID = (SELECT ID FROM Workoperation.Names WHERE Name = @workoperation AND ID IS NOT NULL)";
+                using var con = new SqlConnection(Database.cs_Protocol);
+                var query = "SELECT * FROM Processcard.MainData WHERE PartNr = @partnr AND RevNr = @revNr AND WorkOperationID = (SELECT ID FROM Workoperation.Names WHERE Name = @workoperation AND ID IS NOT NULL)";
 
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    cmd.Parameters.AddWithValue("@partnr", Order.PartNumber);
-                    cmd.Parameters.AddWithValue("@revNr", ProcesscardBasedOn.lbl_RevNr.Text);
-                    cmd.Parameters.AddWithValue("@workoperation", Order.WorkOperation);
-                    con.Open();
-                    var reader = cmd.ExecuteReader();
-                    if (reader.HasRows)
-                    {
-                        InfoText.Show(LanguageManager.GetString("processCard_Info_2"), CustomColors.InfoText_Color.Bad, "Warning", this);
-                        return true;
-                    }
-                    return false;
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                cmd.Parameters.AddWithValue("@partnr", Order.PartNumber);
+                cmd.Parameters.AddWithValue("@revNr", ProcesscardBasedOn.lbl_RevNr.Text);
+                cmd.Parameters.AddWithValue("@workoperation", Order.WorkOperation);
+                con.Open();
+                var reader = cmd.ExecuteReader();
+                if (reader.HasRows)
+                {
+                    InfoText.Show(LanguageManager.GetString("processCard_Info_2"), CustomColors.InfoText_Color.Bad, "Warning", this);
+                    return true;
                 }
+                return false;
             }
         }
        
@@ -192,20 +188,18 @@ namespace DigitalProductionProgram.Processcards
 
         private void LoadFormTeplateID()
         {
-            using (var con = new SqlConnection(Database.cs_Protocol))
+            using var con = new SqlConnection(Database.cs_Protocol);
+            const string query = @"SELECT DISTINCT FormTemplateID, MainTemplateID FROM Protocol.FormTemplate WHERE MainTemplateID = (SELECT MainTemplateID FROM Workoperation.Names WHERE ID = @workoperationid)";
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            cmd.Parameters.AddWithValue("@workoperationid", Order.WorkoperationID);
+            con.Open();
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
             {
-                const string query = @"SELECT DISTINCT FormTemplateID, MainTemplateID FROM Protocol.FormTemplate WHERE MainTemplateID = (SELECT MainTemplateID FROM Workoperation.Names WHERE ID = @workoperationid)";
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@workoperationid", Order.WorkoperationID);
-                con.Open();
-                var reader = cmd.ExecuteReader();
-                while (reader.Read())
-                {
-                    if (int.TryParse(reader["FormTemplateID"].ToString(), out var formTemplateID))
-                        FormTemplateID = formTemplateID;
-                    if (int.TryParse(reader["MainTemplateID"].ToString(), out var mainTemplateID))
-                        Templates_Protocol.MainTemplate.ID = mainTemplateID;
-                }
+                if (int.TryParse(reader["FormTemplateID"].ToString(), out var formTemplateID))
+                    FormTemplateID = formTemplateID;
+                if (int.TryParse(reader["MainTemplateID"].ToString(), out var mainTemplateID))
+                    Templates_Protocol.MainTemplate.ID = mainTemplateID;
             }
         }
 
@@ -516,7 +510,7 @@ namespace DigitalProductionProgram.Processcards
         {
             Order.PartNumber = tb_PartNr.Text;
 
-            if (Processcard.IsMultiple_Processcard(Order.WorkOperation, Order.PartNumber))
+            if (Processcard.IsMultipleProcesscard(Order.WorkOperation, Order.PartNumber))
             {
                 var black = new BlackBackground("", 70);
                 var chooseProcesscard = new ProcesscardTemplateSelector(false, true, true, false);
@@ -526,6 +520,7 @@ namespace DigitalProductionProgram.Processcards
             }
             else
             {
+                Order.PartID = null;
                 Part.Load_PartID(Order.PartNumber, false, true, false, Order.WorkOperation.ToString());
                 Part.Load_PartGroup_ID(Order.PartNumber, Order.WorkOperation);
             }
@@ -721,19 +716,19 @@ namespace DigitalProductionProgram.Processcards
         private void ClearTemplate()
         {
             // 1. Rensa alla kontroller
-            tlp_Machines.Controls.Clear();
+            flp_Machines.Controls.Clear();
 
             // 2. Rensa alla rader och kolumnstilar
-            tlp_Machines.RowStyles.Clear();
-            tlp_Machines.ColumnStyles.Clear();
+            //tlp_Machines.RowStyles.Clear();
+            //tlp_Machines.ColumnStyles.Clear();
 
-            // 3. Återställ layouten till exakt 1 kolumn och 1 rad (om du vill)
-            tlp_Machines.ColumnCount = 1;
-            tlp_Machines.RowCount = 1;
+            //// 3. Återställ layouten till exakt 1 kolumn och 1 rad (om du vill)
+            //tlp_Machines.ColumnCount = 1;
+            //tlp_Machines.RowCount = 1;
 
-            // 4. Lägg till default style (valfritt)
-            tlp_Machines.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
-            tlp_Machines.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            //// 4. Lägg till default style (valfritt)
+            //tlp_Machines.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
+            //tlp_Machines.RowStyles.Add(new RowStyle(SizeType.AutoSize));
         }
 
 
@@ -741,7 +736,7 @@ namespace DigitalProductionProgram.Processcards
         {
             if (Templates_Protocol.MainTemplate.ID == ActiveMainTemplateID && Templates_Protocol.MainTemplate.Revision == ActiveTemplateRevision)
             {
-                foreach (var machine in tlp_Machines.Controls.OfType<Machine>())
+                foreach (var machine in flp_Machines.Controls.OfType<Machine>())
                 {
                     foreach (TableLayoutPanel tlp in machine.Controls)
                     foreach (var module in tlp.Controls.OfType<Module>())
@@ -761,24 +756,9 @@ namespace DigitalProductionProgram.Processcards
 
             for (int i = 0; i < Machine.TotalMachines; i++)
             {
-                if (i > 0)
-                {
-                    tlp_Machines.ColumnCount++;
-                    tlp_Machines.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 50));
-                }
                 AddMachine(i, i + 1, ref width);
             }
-
-
-            //AddMachine(0, 1, ref width);
-            //if (Machine.Is_MultipleMachines)
-            //{
-            //    tlp_Machines.ColumnCount++;
-            //    tlp_Machines.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 50));
-            //    //for (var i = 0; i < tlp_Machines.ColumnCount; i++)
-            //    // tlp_Machines.ColumnStyles[i] = new ColumnStyle(SizeType.Absolute, 100f / tlp_Machines.ColumnCount);
-            //    AddMachine(1, 2, ref width);
-            //}
+            
             tlp_Main.ColumnStyles[0].Width = width + 26;
             if (dataTables_ProcessData.Count > 0)
             {
@@ -790,59 +770,59 @@ namespace DigitalProductionProgram.Processcards
 
 
         
-        private void AddMachine(int columnIndex, int machineIndex, ref int width)
+        private void AddMachine(int columnIndex, int machineIndex, ref int totalWidth)
         {
-          //  var isUsingPrefab = false;
             var isAutheticationNeeded = false;
-            var machine = new Machine(machineIndex, ref isAutheticationNeeded, ref width, true)
+            var height = 0;//Denna används inte i Processkortshantering.
+            var machine = new Machine(machineIndex, ref isAutheticationNeeded,  ref height, true)
             {
-                Dock = DockStyle.Fill,
                 Name = machineIndex.ToString(),
-                Margin = new Padding(3,0,0,0)
-                
+                Margin = new Padding(3,0,0,0),
             };
-            //Tar bort Uppstart eftersom det inte skall användas vid processkortshantering
-            machine.Remove_StartUp();
-            tlp_Machines.Controls.Add(machine);
-            tlp_Machines.SetCellPosition(machine, new TableLayoutPanelCellPosition(columnIndex, 0));
+            machine.Remove_StartUp();//Uppstarter används inte i Processkortshantering.
+
+            var width = machine.TotalWidth;
+            machine.Size = new Size(width, height);
+            totalWidth += width;
+            flp_Machines.Controls.Add(machine);
 
         }
 
         private void Change_Width()
         {
-            var totalWidth = 0;
-            var ctr = 0;
-            foreach (Machine machine in tlp_Machines.Controls)
-            {
-                // Hämta första modulen i denna maskin
-                var firstModule = machine.tlp_Machine.Controls
-                    .OfType<Module>()
-                    .FirstOrDefault();
-                if (firstModule == null)
-                    continue;
+            //var totalWidth = 0;
+            //var ctr = 0;
+            //foreach (Machine machine in tlp_Machines.Controls)
+            //{
+            //    // Hämta första modulen i denna maskin
+            //    var firstModule = machine.tlp_Machine.Controls
+            //        .OfType<Module>()
+            //        .FirstOrDefault();
+            //    if (firstModule == null)
+            //        continue;
 
-                var width = firstModule.Controls.
-                    OfType<DataGridView>().
-                    Sum(dgv => dgv.Columns.
-                        Cast<DataGridViewColumn>().
-                        Where(c => c.Visible).
-                        Sum(col => col.Width));
-                if (machine.tlp_Machine.VerticalScroll.Visible)
-                    width += SystemInformation.VerticalScrollBarWidth;
-                width += 20; //LabelLeftHeader
-                tlp_Machines.ColumnStyles[ctr].Width = width;
-                totalWidth += width;
-                ctr++;
-            }
+            //    var width = firstModule.Controls.
+            //        OfType<DataGridView>().
+            //        Sum(dgv => dgv.Columns.
+            //            Cast<DataGridViewColumn>().
+            //            Where(c => c.Visible).
+            //            Sum(col => col.Width));
+            //    if (machine.tlp_Machine.VerticalScroll.Visible)
+            //        width += SystemInformation.VerticalScrollBarWidth;
+            //    width += 20; //LabelLeftHeader
+            //    tlp_Machines.ColumnStyles[ctr].Width = width;
+            //    totalWidth += width;
+            //    ctr++;
+            //}
 
-            tlp_Main.ColumnStyles[0].Width = totalWidth + 16;
+            //tlp_Main.ColumnStyles[0].Width = totalWidth + 16;
         }
 
 
         private readonly List<DataTable> dataTables_ProcessData = new();
         private void CopyProcessDataToNewTemplateRevision()
         {
-            foreach (var machine in tlp_Machines.Controls.OfType<Machine>())
+            foreach (var machine in flp_Machines.Controls.OfType<Machine>())
             {
                 foreach (TableLayoutPanel tlp in machine.Controls)
                 foreach (var module in tlp.Controls.OfType<Module>())
@@ -869,7 +849,7 @@ namespace DigitalProductionProgram.Processcards
 
         private void Load_ProcessDataFromOldTemplateRevision()
         {
-            foreach (var machine in tlp_Machines.Controls.OfType<Machine>())
+            foreach (var machine in flp_Machines.Controls.OfType<Machine>())
             {
                 foreach (TableLayoutPanel tlp in machine.Controls)
                 {
@@ -890,11 +870,9 @@ namespace DigitalProductionProgram.Processcards
                                            row.Cells["col_Nom"].Value = dataRow["Nom"].ToString();
                                            row.Cells["col_Max"].Value = dataRow["Max"].ToString();
                                        }
-
                                    }
                                }
                            }
-
                         }
                     }
                 }
@@ -984,7 +962,7 @@ namespace DigitalProductionProgram.Processcards
             {
                 default:
                     Processcard.Save.Save_MainData(ref IsOk, (int)Order.PartID, Parameters_Main);
-                    foreach (var machine in tlp_Machines.Controls.OfType<Machine>())
+                    foreach (var machine in flp_Machines.Controls.OfType<Machine>())
                     {
                         foreach (TableLayoutPanel tlp in machine.Controls)
                             foreach (var module in tlp.Controls.OfType<Module>())
@@ -1036,7 +1014,7 @@ namespace DigitalProductionProgram.Processcards
             {
                 default:
                     Processcard.Save.Update_MainData(ref IsOk, Parameters_Main);
-                    foreach (var machine in tlp_Machines.Controls.OfType<Machine>())
+                    foreach (var machine in flp_Machines.Controls.OfType<Machine>())
                     {
                         foreach (TableLayoutPanel tlp in machine.Controls)
                         foreach (var module in tlp.Controls.OfType<Module>())

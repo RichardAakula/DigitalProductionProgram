@@ -1249,9 +1249,11 @@ namespace DigitalProductionProgram.Zumbach
 
         private void CheckBox_LogData_CheckedChanged(object sender, EventArgs e)
         {
+            Order.Set_IsOrderDone();
             if (Order.IsOrderDone)
             {
                 InfoText.Show(LanguageManager.GetString("zumbach_Info_12"), CustomColors.InfoText_Color.Bad, "Warning!", this);
+                chb_LogData.Enabled = false;
                 return;
             }
             InitializeChart_Logging();
@@ -1278,15 +1280,23 @@ namespace DigitalProductionProgram.Zumbach
             {
                 try
                 {
+                    if (!SerialPort.GetPortNames().Contains(serialPort.PortName))
+                    {
+                        IsPortOpen = false;
+                        InfoText.Show($"This COM-port {serialPort.PortName} does not exist on this computer, please contact Admin.", CustomColors.InfoText_Color.Bad, "Error:");
+                        return;
+                    }
+
                     serialPort.Open();
                     IsPortOpen = true;
                 }
                 catch (Exception exc)
                 {
                     IsPortOpen = false;
-                    InfoText.Show($"{exc}", CustomColors.InfoText_Color.Bad, "Error:");
+                    InfoText.Show($"{exc.Message}", CustomColors.InfoText_Color.Bad, "Fel:");
                 }
             }
+
         }
         private void StartLogData()
         {

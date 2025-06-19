@@ -109,7 +109,7 @@ namespace DigitalProductionProgram.MainWindow
         public static bool IsAutoOpenOrder = false;
         public static bool IsAutoLoginSuperAdmin = true;
 
-        private const string? develop_OrderNr = "C1335";
+        private const string? develop_OrderNr = "A67613";
         private const string? develop_Operation = "10";
         public static Timer? timer_StatsDPP;
 
@@ -160,7 +160,6 @@ namespace DigitalProductionProgram.MainWindow
             Serverstatus.SetMainForm(this);
 
 
-
             //Login_Monitor.Login_API();
             PriorityPlanning.dgv_PriorityPlanning.CellClick += PriorityPlanning_OrderNr_CellClick;
             OrderInformation.cb_Operation.SelectedIndexChanged += Operation_SelectedIndexChanged;
@@ -197,7 +196,6 @@ namespace DigitalProductionProgram.MainWindow
 
             Mail.AutoTestJira();
             CheckForMaintenanceWork();
-           
         }
 
         private async void MainForm_Load(object sender, EventArgs e)
@@ -560,7 +558,7 @@ namespace DigitalProductionProgram.MainWindow
 
             var IsOkStartOrder = true;
 
-            if (Order.IsOrder_Exist(Order.OrderNumber, Order.Operation))
+            if (Order.IsOrderExist(Order.OrderNumber, Order.Operation))
                 Open();
             else
                 Order.Start.New_Order(this, ref IsOkStartOrder); //Hämtar data från Monitor och sparar i Korprotokoll_Databas PartID laddas här
@@ -1033,11 +1031,11 @@ namespace DigitalProductionProgram.MainWindow
                 CheckForMaintenanceWork();
             }
 
-            // 10 sek: Kontrollera mätpunkter
-            if (counter_CheckMätpunkter >= 10 && Person.Role == "SuperAdmin")
+            // 100 sek: Kontrollera mätpunkter
+            if (counter_CheckMätpunkter >= 100 && Person.Role == "SuperAdmin")
             {
                 counter_CheckMätpunkter = 0;
-                MainMeasureStatistics.Kontrollera_Mätningar.Medelvärden();
+                MainMeasureStatistics.ValidateMeasurements.AverageValues();
             }
             // 10 sek: Kolla efter uppdatering
             if (counter_CheckForUpdate >= timer_CheckForUpdate)
@@ -1054,7 +1052,6 @@ namespace DigitalProductionProgram.MainWindow
             if (counter_UpdateChart >= 300)
             {
                 counter_UpdateChart = 0;
-
                 _ = Task.Run(() => measureStats.Add_MeasureInformation_MainForm(panelChart, tlp_MainWindow));
 
                 await Statistics_DPP.Load_StatisticsAsync();

@@ -3,6 +3,7 @@ using DigitalProductionProgram.DatabaseManagement;
 using Microsoft.Data.SqlClient;
 using System;
 using System.Diagnostics;
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.Övrigt;
 
 namespace DigitalProductionProgram.Log

@@ -179,7 +179,7 @@ namespace DigitalProductionProgram.OrderManagement
             if (InfoText.answer == InfoText.Answer.Yes)
                 PreFab.SaveData.INSERT_Halvfabrikat(Monitor.Monitor.OrderId(tb_ArtikelNr.Text));
 
-            if (Processcard.IsMultiple_Processcard(Order.WorkOperation))
+            if (Processcard.IsMultipleProcesscard(Order.WorkOperation))
             {
                 var chooseProcesscard_StartTestOrder = new ProcesscardTemplateSelector(false, false, false, false);
                 chooseProcesscard_StartTestOrder.ShowDialog();

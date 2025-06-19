@@ -37,12 +37,6 @@ namespace DigitalProductionProgram.PrintingServices
         {
             Print_Diagram_Sökning_Processkort.PrintPage += Diagram_Sökning_Processkort_PrintPage;
          
-
-            //Print_Comments_And_ExtraComments.PrintPage += Comments_Extrudering_PrintPage;
-            //Print_Comments_Extra_Rows.PrintPage += Comments_Extrudering_Extra_Rader_PrintPage;
-            //Print_ExtraComments.PrintPage += ExtraComments_PrintPage;
-
-           
             Preview_Comments_And_ExtraComments.Document = Print_Comments_And_ExtraComments;
             Preview_ExtraComments.Document = Print_ExtraComments;
             Preview_Comments_Extra_Rows.Document = Print_Comments_Extra_Rows;

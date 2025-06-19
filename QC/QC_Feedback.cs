@@ -11,7 +11,7 @@ using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Equipment;
 using DigitalProductionProgram.Help;
-
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.Övrigt;
 using DigitalProductionProgram.PrintingServices;
@@ -46,7 +46,7 @@ namespace DigitalProductionProgram.QC
                 {
                     const string query = @"SELECT DISTINCT Operation FROM [Order].MainData WHERE PartNr = @partnumber";
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@partnumber", tb_PartNr.Text);
                     var reader = cmd.ExecuteReader();
                     while (reader.Read())
@@ -70,7 +70,7 @@ namespace DigitalProductionProgram.QC
                         JOIN [Order].MainData as main
                             ON qc.OrderID = main.OrderID";
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     var reader = cmd.ExecuteReader();
                     while (reader.Read())
                         list.Add($"{reader["PartNumber"]} - {reader["OrderNr"]} - {reader["Operation"]}:{reader["OrderID"]}");
@@ -95,7 +95,7 @@ namespace DigitalProductionProgram.QC
 
                             WHERE qc.PartNumber = @partnumber AND IsDone = 'False' AND Operation = @operation AND RemainingViews > 0";
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@partnumber", Order.PartNumber);
                     cmd.Parameters.AddWithValue("@operation", Order.Operation);
                     var value = cmd.ExecuteScalar();
@@ -155,7 +155,7 @@ namespace DigitalProductionProgram.QC
                         ON feedback.FeedbackQC_ID = remViews.FeedbackQC_ID
                     WHERE PartNumber = @partnumber AND IsDone = 'False'";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", orderid);
                 cmd.Parameters.AddWithValue("@partnumber", tb_PartNr.Text);
                 var reader = cmd.ExecuteReader();
@@ -183,7 +183,7 @@ namespace DigitalProductionProgram.QC
             {
                 const string query = @"UPDATE Parts.FeedbackQC_RemainingViews SET RemainingViews = RemainingViews - 1 WHERE FeedbackQC_ID = (SELECT FeedbackQC_ID FROM Parts.FeedbackQC WHERE PartNumber = @partnumber AND IsDone = 'False') AND Operation = @operation AND RemainingViews > 0";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@partnumber", Order.PartNumber);
                 cmd.Parameters.AddWithValue("@operation", Order.Operation);
                 cmd.ExecuteNonQuery();
@@ -196,7 +196,7 @@ namespace DigitalProductionProgram.QC
             {
                 const string query = @"UPDATE Parts.FeedbackQC_RemainingViews SET RemainingViews = RemainingViews + 1 WHERE FeedbackQC_ID = (SELECT FeedbackQC_ID FROM Parts.FeedbackQC WHERE PartNumber = @partnumber AND IsDone = 'False') AND Operation = @operation AND RemainingViews > 0";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@partnumber", Order.PartNumber);
                 cmd.Parameters.AddWithValue("@operation", Order.Operation);
                 cmd.ExecuteNonQuery();
@@ -211,7 +211,7 @@ namespace DigitalProductionProgram.QC
                     SELECT SUM(RemainingViews) FROM Parts.FeedbackQC_RemainingViews
                     WHERE FeedbackQC_ID = (SELECT FeedbackQC_ID FROM Parts.FeedBackQC WHERE PartNumber = @partnumber AND IsDone = 'False')";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@partNumber", tb_PartNr.Text);
                 var value = cmd.ExecuteScalar();
                 int.TryParse(value.ToString(), out var remainingViews);
@@ -219,7 +219,7 @@ namespace DigitalProductionProgram.QC
                     return;
                 InfoText.Show("Denna feedback stängs nu och kommer ej att visas flera gånger.", CustomColors.InfoText_Color.Info, null,this);
                 query = @"UPDATE Parts.FeedbackQC SET IsDone = 'True' WHERE PartNumber = @partnumber";
-                cmd = new SqlCommand(query, con);
+                cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@partNumber", tb_PartNr.Text);
                 cmd.ExecuteNonQuery();
             }
@@ -233,7 +233,7 @@ namespace DigitalProductionProgram.QC
                     const string query = @"INSERT INTO Parts.FeedbackQC_RemainingViews
                                    VALUES ((SELECT TOP(1) FeedbackQC_ID FROM Parts.FeedbackQC WHERE PartNumber = @partNumber ORDER BY DateTime DESC), @operation, @remainingViews)";
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@partNumber", Order.PartNumber);
                     cmd.Parameters.AddWithValue("@operation", operation);
                     SQL_Parameter.Double(cmd.Parameters, "@remainingViews", num_RemainingViews.Text);
@@ -311,7 +311,7 @@ namespace DigitalProductionProgram.QC
                     const string query = @"INSERT INTO Parts.FeedbackQC (OrderID, PartNumber, Text, Ppk_OrderNr, Ppk_History, Image, DateTime, IsDone)
                                    VALUES (@orderid, @partnumber, @text, @ppk_orderNr, @ppk_history, @img, @date, 'False')";
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                     cmd.Parameters.AddWithValue("@partnumber", tb_PartNr.Text);
                     cmd.Parameters.AddWithValue("@text" ,tb_Comments.Text);

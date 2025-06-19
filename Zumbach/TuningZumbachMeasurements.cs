@@ -10,6 +10,7 @@ using System.Configuration;
 using Microsoft.Data.SqlClient;
 using System.Windows.Forms.DataVisualization.Charting;
 using DigitalProductionProgram.ControlsManagement;
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 
 namespace DigitalProductionProgram.Zumbach
@@ -90,7 +91,7 @@ namespace DigitalProductionProgram.Zumbach
                 using var con = new SqlConnection(Database.cs_Protocol);
                 var query = "DELETE FROM Zumbach.Data WHERE ID IN (" + string.Join(",", List_ZumbachID.ToArray()) + ")";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.ExecuteScalar();
             }
 

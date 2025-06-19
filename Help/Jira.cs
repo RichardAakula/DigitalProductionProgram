@@ -7,7 +7,7 @@ using System.Windows.Forms;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.eMail;
 using DigitalProductionProgram.Equipment;
-
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.PrintingServices;
 using DigitalProductionProgram.Protocols;
@@ -139,7 +139,7 @@ namespace DigitalProductionProgram.Help
                                 var query = $@"SELECT Halvfabrikat_OrderNr FROM [Order].PreFab {Queries.WHERE_OrderID}
                                                AND Halvfabrikat_Benämning = @lotNr";
                                 con.Open();
-                                var cmd = new SqlCommand(query, con);
+                                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                                 cmd.Parameters.AddWithValue("@id", Order.OrderID);
                                 cmd.Parameters.AddWithValue("@lotNr", chb.Text);
                                 var orderNr = cmd.ExecuteScalar().ToString();
@@ -168,7 +168,7 @@ namespace DigitalProductionProgram.Help
             {
                 var query = "SELECT DISTINCT OrderNr FROM [Order].PreFab WHERE Halvfabrikat_OrderNr = @lotNr";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@lotNr", lotNr);
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())

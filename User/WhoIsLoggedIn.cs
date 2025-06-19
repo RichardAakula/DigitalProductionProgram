@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using DigitalProductionProgram.DatabaseManagement;
+using DigitalProductionProgram.MainWindow;
 
 namespace DigitalProductionProgram.User
 {
@@ -38,7 +39,7 @@ namespace DigitalProductionProgram.User
                 WHERE Online = 'True' 
                     AND CONVERT(date, Last_Point_Time) = CONVERT(date, GETDATE())
                 ORDER BY RoleName";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 con.Open();
                 var reader = await cmd.ExecuteReaderAsync();
                 while (await reader.ReadAsync())
@@ -83,7 +84,7 @@ namespace DigitalProductionProgram.User
 
                     ORDER BY Datum DESC";
 
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@employeenumber", anstNr);
                 await con.OpenAsync();
                 var reader = await cmd.ExecuteReaderAsync();
@@ -115,7 +116,7 @@ namespace DigitalProductionProgram.User
                         AND Date_Start > @date
                     ORDER BY Datum DESC";
 
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", orderID);
                 cmd.Parameters.AddWithValue("@date", DateTime.Now.AddYears(-1));
                 await con.OpenAsync();
@@ -236,7 +237,7 @@ namespace DigitalProductionProgram.User
             try
             {
                 var query = "SELECT COUNT(*) FROM Log.ActivityLog WHERE Program = 'Körprotokoll' AND UserID = (SELECT UserID FROM [User].Person WHERE Name = @name) AND Info LIKE 'Loggar in%'";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@name", name);
                 await con.OpenAsync();
                 return (int)await cmd.ExecuteScalarAsync();
@@ -253,7 +254,7 @@ namespace DigitalProductionProgram.User
             try
             {
                 const string query = "SELECT COUNT(*) FROM Log.ActivityLog WHERE Program = 'Körprotokoll' AND UserID IS NOT NULL AND Info LIKE 'Loggar in%'";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 con.Open();
                 return (int)cmd.ExecuteScalar();
             }

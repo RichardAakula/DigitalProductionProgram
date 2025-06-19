@@ -6,6 +6,7 @@ using System.Text;
 using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Help;
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.Monitor;
 using DigitalProductionProgram.Monitor.GET;
 
@@ -37,7 +38,7 @@ namespace DigitalProductionProgram.Övrigt
 					AND DescriptionId = @descriptionid
 					AND Value IS NOT NULL";
 
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", orderid);
                 cmd.Parameters.AddWithValue("@descriptionid", descrID);
                 con.Open();
@@ -60,7 +61,7 @@ namespace DigitalProductionProgram.Övrigt
                     WHERE PartNr = '{partnr}'
                     ORDER BY Date_Start DESC";
 
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             con.Open();
             var value = cmd.ExecuteScalar();
             if (value != null)
@@ -115,7 +116,7 @@ namespace DigitalProductionProgram.Övrigt
                     AND ColumnIndex = @column
                     AND RowIndex = @row";
 
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@partID", partid);
             cmd.Parameters.AddWithValue("@column", column);
             cmd.Parameters.AddWithValue("@row", row);
@@ -140,7 +141,7 @@ namespace DigitalProductionProgram.Övrigt
                     FROM [Order].MainData
                     WHERE OrderId = @orderid";
 
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@orderid", orderid);
             con.Open();
             var value = cmd.ExecuteScalar();
@@ -180,7 +181,7 @@ namespace DigitalProductionProgram.Övrigt
                     WHERE PartID = @partid
                     AND Date_Start > '{startDate}'";
 
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 con.Open();
                 cmd.Parameters.AddWithValue("@partID", partid);
                 var reader = cmd.ExecuteReader();
@@ -205,7 +206,7 @@ namespace DigitalProductionProgram.Övrigt
                     AND DescriptionID = @descriptionid
                     ORDER BY Date";
 
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             con.Open();
             cmd.Parameters.AddWithValue("@orderid", orderid);
             cmd.Parameters.AddWithValue("@descriptionid", descrID);
@@ -228,7 +229,7 @@ namespace DigitalProductionProgram.Övrigt
                     AND (maindata.Discarded = 'False' OR maindata.Discarded IS NULL)
                     ORDER BY Date";
 
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             con.Open();
             cmd.Parameters.AddWithValue("@orderid", orderid);
             var reader = cmd.ExecuteReader();
@@ -256,7 +257,7 @@ namespace DigitalProductionProgram.Övrigt
                         AND {queryBuilderVariable(variablename)} 
                         AND tagval.tagValue = @ordernr ORDER BY datetime_ ";
 
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             con.Open();
             cmd.Parameters.AddWithValue("@ordernr", ordernr);
             cmd.Parameters.AddWithValue("@variablename", variablename);
@@ -294,7 +295,7 @@ namespace DigitalProductionProgram.Övrigt
                         AND tagval.tagvalue = @ordernr 
                         ORDER BY datetime_";
 
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             con.Open();
             cmd.Parameters.AddWithValue("@ordernr", ordernr);
             cmd.Parameters.AddWithValue("@variablename", variablename);
@@ -324,7 +325,7 @@ namespace DigitalProductionProgram.Övrigt
                         AND {queryBuilderVariable(variablename)}
                         AND tagval.tagValue = @ordernr ORDER BY datetime_ ";
 
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 con.Open();
                 cmd.Parameters.AddWithValue("@ordernr", ordernr);
                 cmd.Parameters.AddWithValue("@variablename", variablename);
@@ -344,7 +345,7 @@ namespace DigitalProductionProgram.Övrigt
                     SELECT OrderID 
                     FROM [Order].MainData 
                     WHERE OrderNr = (SELECT TOP(1) Halvfabrikat_OrderNr FROM [Order].PreFab WHERE OrderID = @orderid)";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", orderid);
                 con.Open();
                 var value = cmd.ExecuteScalar();
@@ -417,7 +418,7 @@ namespace DigitalProductionProgram.Övrigt
                         ON main.WorkoperationID = names.ID
                    
                     ORDER BY Date_Start, PartNr, RevNr DESC";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
 
                     con.Open();
                     var reader = cmd.ExecuteReader();
@@ -548,7 +549,7 @@ namespace DigitalProductionProgram.Övrigt
                             query = "SELECT Halvfabrikat_ArtikelNr, Halvfabrikat_Benämning FROM [Order].PreFab WHERE OrderID IN (SELECT TOP(1) OrderID FROM [Order].MainData WHERE PartNr = @partnr ORDER BY Date_Start DESC)";
                         else
                             query = "SELECT Halvfabrikat_ArtikelNr, Halvfabrikat_Benämning FROM [Order].PreFab WHERE OrderID IN (SELECT TOP(1) OrderID FROM [Order].MainData WHERE PartID = @partid ORDER BY Date_Start DESC)";
-                        var cmd = new SqlCommand(query, con);
+                        var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
 
                         con.Open();
                         cmd.Parameters.AddWithValue("@partid", partid);
@@ -640,7 +641,7 @@ namespace DigitalProductionProgram.Övrigt
                         FROM [Order].Data
                         WHERE OrderID IN (SELECT TOP(1) OrderID FROM [Order].MainData WHERE PartID = @partid ORDER BY Date_Start DESC)
                         AND ProtocolDescriptionID = @protocoldescriptionid";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@partid", partid);
                     SQL_Parameter.String(cmd.Parameters, "@partnr", partnr);
                     cmd.Parameters.AddWithValue("@protocoldescriptionid", protocoldescriptionid);
@@ -669,7 +670,7 @@ namespace DigitalProductionProgram.Övrigt
                         FROM [Order].Data
                         WHERE OrderID IN (SELECT OrderID FROM [Order].MainData WHERE PartID = @partid)
                         AND ProtocolDescriptionID = @protocoldescriptionid";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@partid", partid);
                     SQL_Parameter.String(cmd.Parameters, "@partnr", partnr);
                     cmd.Parameters.AddWithValue("@protocoldescriptionid", protocoldescriptionid);
@@ -699,7 +700,7 @@ namespace DigitalProductionProgram.Övrigt
                         FROM MeasureProtocol.Data
                         WHERE OrderID IN (SELECT OrderID FROM [Order].MainData WHERE PartID = @partid)
                         AND DescriptionID = @protocoldescriptionid";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@partid", partid);
                     SQL_Parameter.String(cmd.Parameters, "@partnr", partnr);
                     cmd.Parameters.AddWithValue("@protocoldescriptionid", protocoldescriptionid);
@@ -729,7 +730,7 @@ namespace DigitalProductionProgram.Övrigt
                         FROM MeasureProtocol.Data
                         WHERE OrderID IN (SELECT OrderID FROM [Order].MainData WHERE PartID = @partid)
                         AND DescriptionID = @protocoldescriptionid";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@partid", partid);
                     SQL_Parameter.String(cmd.Parameters, "@partnr", partnr);
                     cmd.Parameters.AddWithValue("@protocoldescriptionid", protocoldescriptionid);
@@ -757,7 +758,7 @@ namespace DigitalProductionProgram.Övrigt
                         SELECT STDEV(Amount) 
                         FROM [Order].MainData
                         WHERE OrderID IN (SELECT OrderID FROM [Order].MainData WHERE PartID = @partid)";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@partid", partid);
                     SQL_Parameter.String(cmd.Parameters, "@partnr", partnr);
                     con.Open();
@@ -781,7 +782,7 @@ namespace DigitalProductionProgram.Övrigt
                     WHERE data.OrderID = @orderid
                     AND (maindata.Discarded = 'False' OR maindata.Discarded IS NULL)
                     AND DescriptionID = @descriptionid";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@orderid", orderid);
                     cmd.Parameters.AddWithValue("@descriptionid", descrID);
                     con.Open();
@@ -807,7 +808,7 @@ namespace DigitalProductionProgram.Övrigt
                         SELECT AVG(Amount) 
                         FROM [Order].MainData
                         WHERE OrderID IN (SELECT OrderID FROM [Order].MainData WHERE PartID = @partid)";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@partid", partid);
                     SQL_Parameter.String(cmd.Parameters, "@partnr", partnr);
                     con.Open();
@@ -830,7 +831,7 @@ namespace DigitalProductionProgram.Övrigt
                 using (var con = new SqlConnection(Database.cs_Protocol))
                 {
                     var query = @"SELECT MAX(MachineIndex) FROM [Order].Data WHERE OrderID = @orderid";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@orderid", orderid);
                     con.Open();
                     var value = cmd.ExecuteScalar();
@@ -844,7 +845,7 @@ namespace DigitalProductionProgram.Övrigt
                 using (var con = new SqlConnection(Database.cs_Protocol))
                 {
                     var query = @"SELECT MAX(Uppstart) FROM [Order].Data WHERE OrderID = @orderid";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@orderid", orderid);
                     con.Open();
                     var value = cmd.ExecuteScalar();
@@ -878,7 +879,7 @@ namespace DigitalProductionProgram.Övrigt
                     if (IsMultipleExtruders)
                         query += "AND (COALESCE(MachineIndex, 0) = COALESCE(@machineindex, 0))";
                     query += "ORDER BY OrderID, MachineIndex, Uppstart, template.RowIndex";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@orderid", orderid);
                     cmd.Parameters.AddWithValue("@formtemplateid", formTemplateID);
                     cmd.Parameters.AddWithValue("@machineindex", machine);
@@ -922,7 +923,7 @@ namespace DigitalProductionProgram.Övrigt
                         WHERE FormTemplateID = @formtemplateid
                             AND RowIndex IS NOT NULL
                         ORDER BY RowIndex";
-                        var cmd = new SqlCommand(query, con);
+                        var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                         cmd.Parameters.AddWithValue("@formtemplateid", formtemplateid);
                         con.Open();
                         var reader = cmd.ExecuteReader();

@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Help;
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.PrintingServices;
 using DigitalProductionProgram.Processcards;
@@ -37,7 +38,7 @@ namespace DigitalProductionProgram.Templates
                         WHERE MainTemplateID IN (@oldtemplateid, @newtemplateid)
                         ORDER BY TemplateOrder, MachineIndex, MainTemplateID";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@oldtemplateid", oldTemplate);
                 cmd.Parameters.AddWithValue("@newtemplateid", newTemplate);
                 var reader = cmd.ExecuteReader();
@@ -97,7 +98,7 @@ namespace DigitalProductionProgram.Templates
                         WHERE data.PartID = @partid
                             AND TemplateID IN ({string_Templates})";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@partid", partID);
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
@@ -156,7 +157,7 @@ namespace DigitalProductionProgram.Templates
                     FROM Processcard.MainData
                     WHERE PartID = @partid";
 
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@partid", partID);
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
@@ -219,7 +220,7 @@ namespace DigitalProductionProgram.Templates
                         )
                     AS SubQuery";
 
-                        var cmd = new SqlCommand(query, con);
+                        var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                         cmd.Parameters.AddWithValue("@name", TemplateName);
                         cmd.Parameters.AddWithValue("@revision", TemplateRevision);
                         var value = cmd.ExecuteScalar();
@@ -239,7 +240,7 @@ namespace DigitalProductionProgram.Templates
                     var query = @"
                     SELECT ID FROM Protocol.MainTemplate WHERE Name = @name AND Revision = @revision";
 
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@name", templateName);
                     cmd.Parameters.AddWithValue("@revision", revision);
                     var value = cmd.ExecuteScalar();
@@ -260,7 +261,7 @@ namespace DigitalProductionProgram.Templates
                     else
                         query = IsAllRevisions ? Query_PartList_AllRevisions : Query_PartList_LatestRevision;
 
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     var da = new SqlDataAdapter(cmd);
                     cmd.Parameters.AddWithValue("@new_maintemplateid", MainTemplateID);
                     if (IsAutoSelectPartNr)
@@ -428,7 +429,7 @@ namespace DigitalProductionProgram.Templates
                     con.Open();
                     var query = IsAllRevisions ? Query_PartList_AllRevisions : Query_PartList_LatestRevision;
 
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     var da = new SqlDataAdapter(cmd);
                     //cmd.Parameters.AddWithValue("@new_maintemplateid", MainTemplateID);
 
@@ -539,7 +540,7 @@ namespace DigitalProductionProgram.Templates
                     con.Open();
                     var query = IsAllRevisions ? Query_PartList_AllRevisions : Query_PartList_LatestRevision;
 
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     var da = new SqlDataAdapter(cmd);
                     da.Fill(dt_PartList);
                     da.Dispose();
@@ -789,7 +790,7 @@ namespace DigitalProductionProgram.Templates
                 const string query = @"
                     SELECT Name FROM MeasureProtocol.MainTemplate WHERE MeasureProtocolMainTemplateID = (SELECT MeasureProtocolMainTemplateID FROM Processcard.MainData WHERE PartID = @partid)";
 
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@partid", partID);
                 con.Open();
                 var value = cmd.ExecuteScalar();
@@ -894,7 +895,7 @@ namespace DigitalProductionProgram.Templates
 
                     WHERE PartID = @partID";
 
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@partid", partID);
                     cmd.Parameters.AddWithValue("@maintemplateid", Templates_Protocol.MainTemplate.ID);
                     cmd.Parameters.AddWithValue("@protocoltemplaterevision", NewTemplateRevision);
@@ -923,7 +924,7 @@ namespace DigitalProductionProgram.Templates
 
                     WHERE PartID = @partID";
 
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@partid", partID);
                     cmd.Parameters.AddWithValue("@maintemplateid", Templates_MeasureProtocol.MainTemplate.ID);
                     con.Open();
@@ -947,7 +948,7 @@ namespace DigitalProductionProgram.Templates
 
                     WHERE PartID = @partID";
 
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@partid", partID);
                     cmd.Parameters.AddWithValue("@maintemplateid", Templates_LineClearance.MainTemplate.LineClearance_MainTemplateID);
                     con.Open();
@@ -988,7 +989,7 @@ namespace DigitalProductionProgram.Templates
                             WHERE template.ID IN (SELECT ID FROM Protocol.Template WHERE FormTemplateID IN (@oldformtemplateid, @newformtemplateid))
                                 AND description.CodeText IN (SELECT CodeText FROM UniqueCodeText)";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
 
 
                 cmd.Parameters.AddWithValue("@oldformtemplateid", FormtemplateID_Old);
@@ -1009,7 +1010,7 @@ namespace DigitalProductionProgram.Templates
                     SET MainTemplateID = @new_maintemplateid, ProtocolTemplateRevision = @new_revision
                     WHERE PartID = @partid";
 
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@partid", partid);
                 cmd.Parameters.AddWithValue("@new_maintemplateid", MainTemplateID);
                 cmd.Parameters.AddWithValue("@new_revision", NewTemplateRevision);
@@ -1034,7 +1035,7 @@ namespace DigitalProductionProgram.Templates
                         AND Revision = @newrevision";
 
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@newmaintemplateid", newMainTemplateID);
                     cmd.Parameters.AddWithValue("@machineindex", machineIndex);
                     cmd.Parameters.AddWithValue("@oldtemplateid", oldTemplateID);
@@ -1052,7 +1053,7 @@ namespace DigitalProductionProgram.Templates
                 using (var con = new SqlConnection(Database.cs_Protocol))
                 {
                     const string query = @"SELECT FormTemplateID FROM Protocol.FormTemplate WHERE MainTemplateID = @maintemplateid";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@maintemplateid", mainTemplateID);
                     con.Open();
                     var reader = cmd.ExecuteReader();
@@ -1073,7 +1074,7 @@ namespace DigitalProductionProgram.Templates
                         const string query = @"
                         SELECT * FROM Processcard.Data WHERE PartID = @partID AND TemplateID IN (SELECT ID FROM Protocol.Template WHERE FormTemplateID = @oldformtemplateid) ORDER BY TemplateID";
                         con.Open();
-                        var cmd = new SqlCommand(query, con);
+                        var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                         cmd.Parameters.AddWithValue("@partID", oldPartID);
                         cmd.Parameters.AddWithValue("@oldformtemplateid", FormTemplateID);
                         var reader = cmd.ExecuteReader();
@@ -1110,7 +1111,7 @@ namespace DigitalProductionProgram.Templates
                             (SELECT Type FROM Processcard.Data WHERE PartID = @oldpartID AND TemplateID = @oldtemplateid AND (MachineIndex = @oldmachineindex OR COALESCE(@oldmachineindex, '') = '')))";
 
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@newpartID", newPartID);
                     cmd.Parameters.AddWithValue("@oldpartID", oldPartID);
                     if (oldMachineIndex == 0)

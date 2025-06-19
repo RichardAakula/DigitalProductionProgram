@@ -9,7 +9,7 @@ using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Equipment;
 using DigitalProductionProgram.Help;
-
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.Övrigt;
 using DigitalProductionProgram.PrintingServices;
@@ -84,7 +84,7 @@ namespace DigitalProductionProgram.Protocols.Skärmning_TEF
                     SELECT DISTINCT ProtocolDescriptionID, Type, ColumnIndex
                     FROM Protocol.Template WHERE (FormTemplateID = 12)
                     ORDER BY ColumnIndex";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                 con.Open();
                 var reader = cmd.ExecuteReader();
@@ -119,7 +119,7 @@ namespace DigitalProductionProgram.Protocols.Skärmning_TEF
                                 AND (ProtocolDescriptionID = (SELECT ID FROM Protocol.Description WHERE CodeText = 'Maskin') OR ProtocolDescriptionID = (SELECT ID FROM Protocol.Description WHERE CodeText = 'Sida'))
                             ORDER BY ProtocolDescriptionID
                         FOR XML PATH('')), 1, 1, '')";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                 cmd.Parameters.AddWithValue("@machineIndex", MachineIndex);
                 con.Open();
@@ -164,7 +164,7 @@ namespace DigitalProductionProgram.Protocols.Skärmning_TEF
                                     
                             WHERE OrderID = @id";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@id", Order.OrderID);
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
@@ -190,7 +190,7 @@ namespace DigitalProductionProgram.Protocols.Skärmning_TEF
                             AND template.revision = @revision
                         ORDER BY ColumnIndex";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 SQL_Parameter.NullableINT(cmd.Parameters, "@orderid", Order.OrderID);
                 cmd.Parameters.AddWithValue("@formtemplateid",11);
                 cmd.Parameters.AddWithValue("@revision", Korprotokoll.ProtocolTemplateRevision.OrderNr(Order.OrderID));
@@ -239,7 +239,7 @@ namespace DigitalProductionProgram.Protocols.Skärmning_TEF
                     AND template.FormTemplateID = @formtemplateid
                     ORDER BY ColumnIndex";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 SQL_Parameter.NullableINT(cmd.Parameters, "@partID", Order.PartID);
                 SQL_Parameter.NullableINT(cmd.Parameters, "@formtemplateid", 11);
                 var reader = cmd.ExecuteReader();
@@ -294,7 +294,7 @@ namespace DigitalProductionProgram.Protocols.Skärmning_TEF
                                 AND ColumnIndex % 2 = 0
                             ORDER BY ColumnIndex";
 
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 con.Open();
                 cmd.Parameters.AddWithValue("@partID", Order.PartID);
                 cmd.Parameters.AddWithValue("@formtemplateid", 12);
@@ -343,7 +343,7 @@ namespace DigitalProductionProgram.Protocols.Skärmning_TEF
                             AND FormTemplateID = @formtemplateid
                             AND protocol.ProtocolDescriptionID != 351
                        ORDER BY MachineIndex, Uppstart, ColumnIndex";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                 cmd.Parameters.AddWithValue("@formtemplateid", 12);
                 con.Open();
@@ -434,7 +434,7 @@ namespace DigitalProductionProgram.Protocols.Skärmning_TEF
             {
                 var query = $"SELECT Halvfabrikat_Benämning, Halvfabrikat_OrderNr FROM [Order].PreFab {Queries.WHERE_OrderID}";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@id", Order.OrderID);
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
@@ -453,7 +453,7 @@ namespace DigitalProductionProgram.Protocols.Skärmning_TEF
                 {
                     var query = $"UPDATE [Order].MainData SET {Column} = @value {Queries.WHERE_OrderID}";
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@value", value);
                     cmd.Parameters.AddWithValue("@id", Order.OrderID);
                     cmd.ExecuteNonQuery();
@@ -482,7 +482,7 @@ namespace DigitalProductionProgram.Protocols.Skärmning_TEF
                             SET Value = @value, TextValue = @textvalue
                     WHERE OrderID = @orderid AND ProtocolDescriptionID = @protocoldescriptionid";
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@protocoldescriptionid", protocol_Description_ID);
                     cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                     switch (type)
@@ -704,7 +704,7 @@ namespace DigitalProductionProgram.Protocols.Skärmning_TEF
                         INSERT INTO [Order].Data
                                 (OrderID, ProtocolDescriptionID, MachineIndex, Uppstart, Value, TextValue, BoolValue, DateValue)
                         VALUES  (@orderid, @protocoldescriptionid, @machineindex, @uppstart, @value, @textvalue, @boolvalue, @datevalue)";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     var value = values[i];
                     cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                     cmd.Parameters.AddWithValue("@protocoldescriptionid", List_ProtocolDescriptionID[i]);
@@ -765,7 +765,7 @@ namespace DigitalProductionProgram.Protocols.Skärmning_TEF
                             AND ProtocolDescriptionID = @protocoldescriptionid 
                             AND Uppstart = @uppstart";
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                     cmd.Parameters.AddWithValue("@machineIndex", tab_ctrl_Arbetskort.SelectedTab.TabIndex + 1);
                     cmd.Parameters.AddWithValue("@protocoldescriptionid", 174);

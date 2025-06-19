@@ -6,6 +6,7 @@ using System.Globalization;
 using System.Windows.Forms;
 using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.DatabaseManagement;
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.Övrigt;
 using DigitalProductionProgram.Protocols.Template_Management;
@@ -25,7 +26,7 @@ namespace DigitalProductionProgram.Protocols.LineClearance
                     var query = $@"SELECT LC_Name FROM [Order].MainData {Queries.WHERE_OrderID}";
 
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@id", Order.OrderID);
                     var value = cmd.ExecuteScalar();
                     return value != DBNull.Value;
@@ -41,7 +42,7 @@ namespace DigitalProductionProgram.Protocols.LineClearance
                     var query = $@"SELECT LC_Approved_Name FROM [Order].MainData WHERE OrderID = @orderid";
 
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                     var value = cmd.ExecuteScalar();
                     if (value == DBNull.Value)
@@ -101,7 +102,7 @@ namespace DigitalProductionProgram.Protocols.LineClearance
                     WHERE OrderID = @orderid";
 
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", OrderID);
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
@@ -127,7 +128,7 @@ namespace DigitalProductionProgram.Protocols.LineClearance
             {
                 var query = "UPDATE [Order].MainData SET LC_Name = @lc_name, LC_Date = @lc_date WHERE OrderID = @orderid";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                 cmd.Parameters.AddWithValue("@lc_name", name);
                 cmd.Parameters.AddWithValue("@lc_date", date);

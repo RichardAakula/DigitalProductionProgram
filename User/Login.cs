@@ -95,7 +95,7 @@ namespace DigitalProductionProgram.User
                     ON person.RoleID = roles.RoleID
                 WHERE Name = @name";
 
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@name", lbl_User.Text);
             con.Open();
             var reader = cmd.ExecuteReader();
@@ -125,7 +125,7 @@ namespace DigitalProductionProgram.User
                             ON log.UserID = person.UserID
                     WHERE HostID = (SELECT HostID FROM [Settings].General WHERE HostName = @hostname) AND Date > @date AND person.Name != '' ORDER BY Date DESC";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@hostname", Environment.MachineName);
                 cmd.Parameters.AddWithValue("@date", DateTime.Now.AddDays(-14));
                 var reader = cmd.ExecuteReader();
@@ -296,7 +296,7 @@ namespace DigitalProductionProgram.User
             using (var con = new SqlConnection(Database.cs_Protocol))
             {
                 var query = "UPDATE [User].Person SET Mail = @mail, Password = @password WHERE UserID = @userID";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@mail", tb_Mail.Text);
                 cmd.Parameters.AddWithValue("@password", PasswordManager.ConvertToHashedPassword(tb_NewPassword.Text));
                 cmd.Parameters.AddWithValue("@userID", Person.UserID);
@@ -385,7 +385,6 @@ namespace DigitalProductionProgram.User
                     Shake(this);
                     InfoText.Show(LanguageManager.GetString("password_Info_1"), CustomColors.InfoText_Color.Bad, "Warning!", this);
                     tb_Password.SelectAll();
-                    _ = Log.Activity.Stop($"Fel lösenord! Loggar in: Användare.Name = {Person.Name} - cb_Användare.Text = {lbl_User.Text} Användare.Lösenord = {Person.Password} - tb_Lösenord.Text = {tb_Password.Text}");
                     return;
                 }
 
@@ -447,7 +446,7 @@ namespace DigitalProductionProgram.User
                     JOIN [User].Roles as roles
                         ON person.RoleID = roles.RoleID
                     WHERE Name = @name";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@name", lbl_User.Text);
                     con.Open();
                     var reader = cmd.ExecuteReader();

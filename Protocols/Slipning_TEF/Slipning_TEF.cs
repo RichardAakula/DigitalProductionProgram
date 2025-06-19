@@ -3,6 +3,7 @@ using Microsoft.Data.SqlClient;
 using System.Windows.Forms;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Help;
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.PrintingServices;
 using DigitalProductionProgram.Protocols.Protocol;
@@ -20,7 +21,7 @@ namespace DigitalProductionProgram.Protocols.Slipning_TEF
                 {
                     var query = $@"SELECT Kasserad, Slipmaskin, Matarhjul_Hastighet, Matarhjul_Vinkel, Helix_Vinkel, Bladhöjd, Arbetsblad, Nr, Chimshöjd, Datum, Tid, AnstNr, Sign 
                                         FROM Korprotokoll_Slipning_Maskinparametrar {Queries.WHERE_OrderID} ORDER BY Datum, Tid";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@id", Order.OrderID);
                     con.Open();
                     dt.Load(cmd.ExecuteReader());

@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Equipment;
 using DigitalProductionProgram.Help;
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.PrintingServices;
 using DigitalProductionProgram.Processcards;
@@ -29,7 +30,7 @@ namespace DigitalProductionProgram.Protocols.Blandning_PTFE
                     WHERE OrderID = @orderid
                     ORDER BY uppstart DESC";
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     SQL_Parameter.NullableINT(cmd.Parameters, "@orderid", Order.OrderID);
                     var value = cmd.ExecuteScalar();
                     if (value != null)
@@ -73,7 +74,7 @@ namespace DigitalProductionProgram.Protocols.Blandning_PTFE
                         --AND revision = (SELECT ProtocolTemplateRevision FROM [Order].MainData WHERE OrderID = @orderid)
                     ORDER BY ColumnIndex";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@formtemplateid", 16);
                 cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                 var reader = cmd.ExecuteReader();
@@ -132,7 +133,7 @@ namespace DigitalProductionProgram.Protocols.Blandning_PTFE
                             AND FormTemplateID = @formtemplateid
                         ORDER BY uppstart, RowIndex";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 SQL_Parameter.NullableINT(cmd.Parameters, "@orderid", Order.OrderID);
                 cmd.Parameters.AddWithValue("@formtemplateid", 16);
                 var reader = cmd.ExecuteReader();
@@ -192,7 +193,7 @@ namespace DigitalProductionProgram.Protocols.Blandning_PTFE
                         INSERT INTO [Order].Data (OrderID, ProtocolDescriptionID, Uppstart, Ugn, Value, TextValue, BoolValue)
                         VALUES (@orderid, @protocoldescriptionid, @uppstart, @ugn, @value, @textvalue, NULL)";
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                     cmd.Parameters.AddWithValue("@protocoldescriptionid", pcID);
                     ParameterUppstart(cmd.Parameters, "@uppstart");
@@ -246,7 +247,7 @@ namespace DigitalProductionProgram.Protocols.Blandning_PTFE
             {
                 var query = @"DELETE FROM [Order].Data WHERE OrderID = @orderid AND uppstart = @row";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                 cmd.Parameters.AddWithValue("@row", row + 1);
 
@@ -294,7 +295,7 @@ namespace DigitalProductionProgram.Protocols.Blandning_PTFE
                 WHERE template.FormTemplateID = @formtemplateid
                 AND ColumnIndex = @colindex";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@formtemplateid", 16);
                 cmd.Parameters.AddWithValue("@colindex", col);
 

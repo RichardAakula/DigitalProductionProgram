@@ -2,6 +2,7 @@
 using System.Drawing.Printing;
 using System.Windows.Forms;
 using DigitalProductionProgram.DatabaseManagement;
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.Protocols.Protocol;
 using DigitalProductionProgram.Protocols.Template_Management;
@@ -77,7 +78,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                     {
                         const string query = @"SELECT TextValue FROM [Order].Data WHERE OrderID = @orderid AND ProtocolDescriptionID = 172";
 
-                        var cmd = new SqlCommand(query, con);
+                        var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                         cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                         con.Open();
                         var value = cmd.ExecuteScalar();
@@ -95,7 +96,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                     {
                         var query = @"SELECT textvalue FROM [Order].Data WHERE OrderID = @orderid AND ProtocolDescriptionID = 173";
 
-                        var cmd = new SqlCommand(query, con);
+                        var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                         cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                         con.Open();
                         var value = cmd.ExecuteScalar();
@@ -123,7 +124,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                                         AND uppstart = @uppstart
                                     ORDER BY RowIndex";
 
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     con.Open();
                     cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                     cmd.Parameters.AddWithValue("@maintemplateid", Templates_Protocol.MainTemplate.ID);
@@ -254,7 +255,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
 		                            ON descr.Id = template.ProtocolDescriptionID
                             WHERE pc_values.PartID = @partID
                             ORDER BY ColumnIndex, RowIndex";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     SQL_Parameter.NullableINT(cmd.Parameters, "@partID", Order.PartID);
                     var reader = cmd.ExecuteReader();
                     //int ctr = 0;
@@ -323,7 +324,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                             NULL
                         FROM [Order].PreFab WHERE OrderID = @orderid ORDER BY TempID";
 
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                     con.Open();
                     var reader = cmd.ExecuteReader();

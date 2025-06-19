@@ -30,7 +30,7 @@ namespace DigitalProductionProgram.MainWindow
             {
                 var query = $"SELECT WorkoperationID FROM Workoperation.QuickStartList WHERE HostID = (SELECT HostID FROM Settings.General WHERE HostName = @hostname) AND WorkoperationID = @workoperationid";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@hostname", Environment.MachineName);
                 cmd.Parameters.AddWithValue("@workoperationid", workoperationID);
                 var reader = cmd.ExecuteReader();
@@ -48,7 +48,7 @@ namespace DigitalProductionProgram.MainWindow
             {
                 var query = $"SELECT ID, Name, Description FROM Workoperation.Names ORDER BY Description";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 var reader = cmd.ExecuteReader();
                 if (reader.HasRows == false)
                 {
@@ -106,7 +106,7 @@ namespace DigitalProductionProgram.MainWindow
                 {
                     var query = "SELECT * FROM [Settings].QuickStart_Color WHERE WorkOperationID = (SELECT ID FROM Workoperation.Names WHERE Name = @workoperation AND ID IS NOT NULL)";
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@workoperation", Workoperation(id));
                     var reader = await cmd.ExecuteReaderAsync();
                     while (await reader.ReadAsync())
@@ -154,7 +154,7 @@ namespace DigitalProductionProgram.MainWindow
             {
                 var query = "SELECT COUNT(*) FROM Workoperation.QuickStartList WHERE HostID = (SELECT HostID FROM Settings.General WHERE HostName = @hostname)";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@hostname", Environment.MachineName);
                 object value = cmd.ExecuteScalar();
                 antal_arbetsOp = (int)value;
@@ -169,7 +169,7 @@ namespace DigitalProductionProgram.MainWindow
             {
                 var query = "SELECT WorkoperationID FROM Workoperation.QuickStartList WHERE HostID = (SELECT HostID FROM Settings.General WHERE HostName = @hostname)";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@hostname", Environment.MachineName);
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
@@ -187,7 +187,7 @@ namespace DigitalProductionProgram.MainWindow
                                 FROM [Order].MainData   
                                 WHERE WorkoperationID = @workoperationid 
                                     AND IsOrderDone = 'False' AND OrderNr != 'Q12345' AND Date_Start IS NOT NULL ORDER BY Datum DESC";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@workoperationid", workOperationID);
                 con.Open();
                 DataTable_SnabbÖppna.Load(cmd.ExecuteReader());

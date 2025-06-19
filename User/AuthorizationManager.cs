@@ -7,7 +7,7 @@ using System.Windows.Forms;
 using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Equipment;
-
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 
 namespace DigitalProductionProgram.User
@@ -102,7 +102,7 @@ namespace DigitalProductionProgram.User
         {
             using var con = new SqlConnection(Database.cs_Protocol);
             const string query = "SELECT CodeText, IsUserNameOnly, Info FROM Authorities.TemplateAuthorities ORDER BY CodeText";
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             con.Open();
             var reader = cmd.ExecuteReader();
             while (reader.Read())
@@ -112,7 +112,7 @@ namespace DigitalProductionProgram.User
         {
             using var con = new SqlConnection(Database.cs_Protocol);
             const string query = "SELECT CodeText, Info FROM Authorities.TemplateMail ORDER BY ID";
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             con.Open();
             var reader = cmd.ExecuteReader();
             while (reader.Read())
@@ -122,7 +122,7 @@ namespace DigitalProductionProgram.User
         {
             using var con = new SqlConnection(Database.cs_Protocol);
             const string query = "SELECT CodeText, Info FROM Authorities.TemplateWorkoperation ORDER BY ID";
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             con.Open();
             var reader = cmd.ExecuteReader();
             while (reader.Read())
@@ -133,7 +133,7 @@ namespace DigitalProductionProgram.User
             using (var con = new SqlConnection(Database.cs_Protocol))
             {
                 const string query = "SELECT CodeText, Info FROM Authorities.TemplateFactory ORDER BY ID";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 con.Open();
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
@@ -152,7 +152,7 @@ namespace DigitalProductionProgram.User
                     SELECT UserName 
                     FROM Authorities.CustomNames
                     WHERE TemplateID = (SELECT ID FROM Authorities.TemplateAuthorities WHERE CodeText = @codetext)";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@codetext", dgv_Template.CurrentCell.Value.ToString());
                 con.Open();
                 var reader = cmd.ExecuteReader();
@@ -173,7 +173,7 @@ namespace DigitalProductionProgram.User
                     SELECT Role 
                     FROM Authorities.CustomRoles
                     WHERE TemplateID = (SELECT ID FROM Authorities.TemplateAuthorities WHERE CodeText = @codetext)";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@codetext", dgv_Template.CurrentCell.Value.ToString());
                 con.Open();
                 var reader = cmd.ExecuteReader();
@@ -193,7 +193,7 @@ namespace DigitalProductionProgram.User
                     SELECT Mail 
                     FROM Authorities.CustomMail
                     WHERE TemplateID = (SELECT ID FROM Authorities.TemplateMail WHERE CodeText = @codetext)";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@codetext", dgv_Template.CurrentCell.Value.ToString());
                 con.Open();
                 var reader = cmd.ExecuteReader();
@@ -213,7 +213,7 @@ namespace DigitalProductionProgram.User
                     SELECT Workoperation 
                     FROM Authorities.CustomWorkoperation
                     WHERE TemplateID = (SELECT ID FROM Authorities.TemplateWorkoperation WHERE CodeText = @codetext)";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@codetext", dgv_Template.CurrentCell.Value.ToString());
                 con.Open();
                 var reader = cmd.ExecuteReader();
@@ -233,7 +233,7 @@ namespace DigitalProductionProgram.User
                     SELECT Factory 
                     FROM Authorities.CustomFactory
                     WHERE TemplateID = (SELECT ID FROM Authorities.TemplateFactory WHERE CodeText = @codetext)";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@codetext", dgv_Template.CurrentCell.Value.ToString());
                 con.Open();
                 var reader = cmd.ExecuteReader();
@@ -300,7 +300,7 @@ namespace DigitalProductionProgram.User
                     const string query = @"
                     INSERT INTO Authorities.CustomNames (TemplateID, Name)
                     VALUES ((SELECT ID FROM Authorities.TemplateAuthorities WHERE CodeText = @codetext), @name)";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@codetext", dgv_Template.CurrentCell.Value.ToString());
                     cmd.Parameters.AddWithValue("@name", btn_Add.Text);
                     con.Open();
@@ -323,7 +323,7 @@ namespace DigitalProductionProgram.User
                     var query = @"
                     INSERT INTO Authorities.CustomRoles (TemplateID, Role)
                     VALUES ((SELECT ID FROM Authorities.TemplateAuthorities WHERE CodeText = @codetext), @role)";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@codetext", dgv_Template.CurrentCell.Value.ToString());
                     cmd.Parameters.AddWithValue("@role", btn_Add.Text);
                     con.Open();
@@ -346,7 +346,7 @@ namespace DigitalProductionProgram.User
                 var query = @"
                     INSERT INTO Authorities.CustomMail (TemplateID, Mail)
                     VALUES ((SELECT ID FROM Authorities.TemplateMail WHERE CodeText = @codetext), @mail)";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@codetext", dgv_Template.CurrentCell.Value.ToString());
                 cmd.Parameters.AddWithValue("@mail", btn_Add.Text);
                 con.Open();
@@ -369,7 +369,7 @@ namespace DigitalProductionProgram.User
                 const string query = @"
                     INSERT INTO Authorities.CustomWorkoperation (TemplateID, Workoperation)
                     VALUES ((SELECT ID FROM Authorities.TemplateWorkoperation WHERE CodeText = @codetext),  @workoperation)";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@codetext", dgv_Template.CurrentCell.Value.ToString());
                 cmd.Parameters.AddWithValue("@workoperation", btn_Add.Text);
                 con.Open();
@@ -392,7 +392,7 @@ namespace DigitalProductionProgram.User
                 const string query = @"
                     INSERT INTO Authorities.CustomFactory (TemplateID, Factory)
                     VALUES ((SELECT ID FROM Authorities.TemplateFactory WHERE CodeText = @codetext),  @factory)";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@codetext", dgv_Template.CurrentCell.Value.ToString());
                 cmd.Parameters.AddWithValue("@factory", btn_Add.Text);
                 con.Open();
@@ -434,7 +434,7 @@ namespace DigitalProductionProgram.User
                     var query = @"
                     DELETE FROM Authorities.CustomNames
                     WHERE Name = @name AND TemplateID = (SELECT ID FROM Authorities.TemplateAuthorities WHERE CodeText = @codetext)";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@codetext", dgv_Template.CurrentCell.Value.ToString());
                     cmd.Parameters.AddWithValue("@name", dgv_Details.CurrentCell.Value);
                     con.Open();
@@ -450,7 +450,7 @@ namespace DigitalProductionProgram.User
                     var query = @"
                     DELETE FROM Authorities.CustomRoles
                     WHERE Role = @role AND TemplateID = (SELECT ID FROM Authorities.TemplateAuthorities WHERE CodeText = @codetext)";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@codetext", dgv_Template.CurrentCell.Value.ToString());
                     cmd.Parameters.AddWithValue("@role", dgv_Details.CurrentCell.Value);
                     con.Open();
@@ -467,7 +467,7 @@ namespace DigitalProductionProgram.User
                 var query = @"
                     DELETE FROM Authorities.CustomMail
                     WHERE Mail = @mail AND TemplateID = (SELECT ID FROM Authorities.TemplateMail WHERE CodeText = @codetext)";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@codetext", dgv_Template.CurrentCell.Value.ToString());
                 cmd.Parameters.AddWithValue("@mail", dgv_Details.CurrentCell.Value);
                 con.Open();
@@ -484,7 +484,7 @@ namespace DigitalProductionProgram.User
                 var query = @"
                     DELETE FROM Authorities.CustomWorkoperation
                     WHERE Workoperation = @workoperation AND TemplateID = (SELECT ID FROM Authorities.TemplateWorkoperation WHERE CodeText = @codetext)";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@codetext", dgv_Template.CurrentCell.Value.ToString());
                 cmd.Parameters.AddWithValue("@workoperation", dgv_Details.CurrentCell.Value);
                 con.Open();
@@ -499,7 +499,7 @@ namespace DigitalProductionProgram.User
                 var query = @"
                     DELETE FROM Authorities.CustomFactory
                     WHERE Factory = @factory AND TemplateID = (SELECT ID FROM Authorities.TemplateFactory WHERE CodeText = @codetext)";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@codetext", dgv_Template.CurrentCell.Value.ToString());
                 cmd.Parameters.AddWithValue("@factory", dgv_Details.CurrentCell.Value);
                 con.Open();

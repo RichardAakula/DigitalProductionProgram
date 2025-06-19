@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Help;
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.Övrigt;
 using DigitalProductionProgram.PrintingServices;
@@ -78,7 +79,7 @@ namespace DigitalProductionProgram.Protocols.Kragning_TEF
 	                        AND uppstart IS NOT NULL
                         ORDER BY uppstart, RowIndex";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 SQL_Parameter.NullableINT(cmd.Parameters, "@orderid", Order.OrderID);
                 cmd.Parameters.AddWithValue("@maintemplateid", Templates_Protocol.MainTemplate.ID);
                 var reader = cmd.ExecuteReader();
@@ -190,7 +191,7 @@ namespace DigitalProductionProgram.Protocols.Kragning_TEF
                         UPDATE [Order].Data 
                             SET value = @value, textvalue = @textvalue
                         WHERE OrderID = @orderid AND ProtocolDescriptionID = @protocoldescriptionid";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
 
                 cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                 cmd.Parameters.AddWithValue("@protocoldescriptionid", Protocol_Description_ID);
@@ -263,7 +264,7 @@ namespace DigitalProductionProgram.Protocols.Kragning_TEF
                     var query = @"
                         INSERT INTO [Order].Data (OrderID, ProtocolDescriptionID, uppstart, BoolValue)
                         VALUES (@orderid, @protocoldescriptionid, @uppstart, 'True')";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                     cmd.Parameters.AddWithValue("@protocoldescriptionid", 174);
                     cmd.Parameters.AddWithValue("@uppstart", dgv_Korprotokoll.CurrentCell.RowIndex + 1);

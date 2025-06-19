@@ -11,6 +11,7 @@ using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Help;
 using DigitalProductionProgram.Log;
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.Övrigt;
 using DigitalProductionProgram.PrintingServices;
@@ -44,7 +45,7 @@ namespace DigitalProductionProgram.Measure
                             FROM MeasureProtocol.MainData 
                             WHERE Discarded = 'True' AND OrderID = @orderid)";
 
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             con.Open();
             cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
             var value = cmd.ExecuteScalar();
@@ -271,7 +272,7 @@ namespace DigitalProductionProgram.Measure
                 else
                     query += $"ORDER BY Date {SortingOrder}, Bag, RowIndex, ColumnIndex";
 
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 con.Open();
                 cmd.Parameters.AddWithValue("@orderid", Order.OrderID); 
                 cmd.Parameters.AddWithValue("@maintemplateid", Templates_MeasureProtocol.MainTemplate.ID);
@@ -537,7 +538,7 @@ namespace DigitalProductionProgram.Measure
                 using (var con = new SqlConnection(Database.cs_Protocol))
                 {
                     const string query = "UPDATE Measureprotocol.MainData SET Discarded = 'True', ErrorCode = @errorcode WHERE OrderID = @orderid AND TempID = @tempid";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                     cmd.Parameters.AddWithValue("@errorcode", errorCode);
                     cmd.Parameters.AddWithValue("@tempid", tempid);
@@ -651,7 +652,7 @@ namespace DigitalProductionProgram.Measure
                     INSERT INTO MeasureProtocol.MainData
                     VALUES (@orderID, NULL, @date, NULL, @employeenumber, @sign, COALESCE((SELECT MAX(rowindex) + 1 FROM MeasureProtocol.MainData WHERE OrderID = @orderid), 1))";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderID", Order.OrderID);
                 cmd.Parameters.AddWithValue("@date", DateTime.Now);
                 cmd.Parameters.AddWithValue("@employeenumber", Person.EmployeeNr);
@@ -697,7 +698,7 @@ namespace DigitalProductionProgram.Measure
                         VALUES (@orderid, @descriptionid, @value, @textvalue, @boolvalue, @datevalue, COALESCE((SELECT MAX(rowindex) + 1 FROM MeasureProtocol.MainData WHERE OrderID = @orderid), 1))";
 
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                     cmd.Parameters.AddWithValue("@descriptionid", descriptionID);
                     switch (dataType)
@@ -759,7 +760,7 @@ namespace DigitalProductionProgram.Measure
                             AND RowIndex = @rowindex";
 
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                     cmd.Parameters.AddWithValue("@descriptionid", descriptionID);
                     SQL_Parameter.Int(cmd.Parameters, "@rowIndex", dgv_Measurements.CurrentCell.RowIndex + 1);

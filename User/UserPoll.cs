@@ -5,6 +5,7 @@ using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using DigitalProductionProgram.DatabaseManagement;
+using DigitalProductionProgram.MainWindow;
 
 namespace DigitalProductionProgram.User
 {
@@ -18,7 +19,7 @@ namespace DigitalProductionProgram.User
             using (var con = new SqlConnection(Database.cs_Protocol))
             {
                 var query = "SELECT * FROM [User].Gallup WHERE Done = 'True' AND Show_Result = 'True' AND Fråga = @fråga";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@namn", Person.Name);
                 cmd.Parameters.AddWithValue("@fråga", fråga);
                 con.Open();
@@ -38,7 +39,7 @@ namespace DigitalProductionProgram.User
                 using (var con = new SqlConnection(Database.cs_Protocol))
                 {
                     var query = "SELECT Vote_Last_Gallup FROM [User].Person WHERE EmployeeNumber = @employeenumber";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@employeenumber", Person.EmployeeNr);
                     con.Open();
                     return (bool)cmd.ExecuteScalar();
@@ -54,7 +55,7 @@ namespace DigitalProductionProgram.User
                 using (var con = new SqlConnection(Database.cs_Protocol))
                 {
                     var query = "SELECT Vote_Last_Gallup FROM [User].Person";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     con.Open();
                     var reader = cmd.ExecuteReader();
                     while (reader.Read())
@@ -98,7 +99,7 @@ namespace DigitalProductionProgram.User
             using (var con = new SqlConnection(Database.cs_Protocol))
             {
                  
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 con.Open();
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
@@ -134,7 +135,7 @@ namespace DigitalProductionProgram.User
             using (var con = new SqlConnection(Database.cs_Protocol))
             {
                 var query = "SELECT Svar_1, Svar_2, Svar_3, Svar_4 FROM [User].Gallup WHERE Fråga = @fråga";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@fråga", lbl_Fråga.Text);
                 con.Open();
                 var reader = cmd.ExecuteReader();
@@ -173,7 +174,7 @@ namespace DigitalProductionProgram.User
             using (var con = new SqlConnection(Database.cs_Protocol))
             {
                 var query = "UPDATE [User].Person SET Vote_Last_Gallup = 'True' WHERE Name = @name";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@name", Person.Name);
                 con.Open();
                 cmd.ExecuteScalar();     
@@ -197,7 +198,7 @@ namespace DigitalProductionProgram.User
 
             using (var con = new SqlConnection(Database.cs_Protocol))
             {
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@fråga", lbl_Fråga.Text);
                 con.Open();
                 cmd.ExecuteScalar();     

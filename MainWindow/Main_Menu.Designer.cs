@@ -134,11 +134,11 @@ namespace DigitalProductionProgram.MainWindow
             testCalendarToolStripMenuItem = new ToolStripMenuItem();
             Developer_AddLineClearance_Table = new ToolStripMenuItem();
             påskäggToolStripMenuItem = new ToolStripMenuItem();
+            Developer_CountSql_Queries = new ToolStripMenuItem();
             menuStrip = new MenuStrip();
             Menu_Equipment = new ToolStripMenuItem();
             Menu_Equipment_UseFilter = new ToolStripMenuItem();
             Menu_Equipment_UseSilpaket = new ToolStripMenuItem();
-            testarEnNyBranchToolStripMenuItem = new ToolStripMenuItem();
             menuStrip.SuspendLayout();
             SuspendLayout();
             // 
@@ -685,7 +685,7 @@ namespace DigitalProductionProgram.MainWindow
             // 
             // Menu_Developer
             // 
-            Menu_Developer.DropDownItems.AddRange(new ToolStripItem[] { Menu_Developer_GetOrderInfo, Menu_Developer_SendMailToAllUsers, Menu_Developer_AddGallup, Menu_Developer_CheckGallup, Menu_Developer_OpenRandomOrder, Menu_Developer_InsertHalvfabrikat, Menu_Developer_NewProtocol_Extrudering_TEF, Menu_Developer_Test_RGB, Menu_Developer_NewMeasureProtocol, Menu_Developer_MoveDataKorprotokollValues, Menu_Utvecklare_MoveDataFEP, Menu_Developer_Timer_test, moveProcesskortExtruderingTEFTillProcesscardDataToolStripMenuItem, raderaExtruderingTEFFrånProcesscardDataToolStripMenuItem, Menu_Developer_ExportHS_Data, kontrolleraFEPDataSomÄrFelPåExtruderToolStripMenuItem, Menu_Developer_GetDataForQuoting, Menu_Developer_INSERT_Rengjort, Menu_Developer_INSERT_Verktyg_Typ, testaNAntalKörningarPåArtikelNrToolStripMenuItem, Menu_Developer_AddThemePicture, Menu_Developer_TestNewProtocol, testCalendarToolStripMenuItem, Developer_AddLineClearance_Table, påskäggToolStripMenuItem, testarEnNyBranchToolStripMenuItem });
+            Menu_Developer.DropDownItems.AddRange(new ToolStripItem[] { Menu_Developer_GetOrderInfo, Menu_Developer_SendMailToAllUsers, Menu_Developer_AddGallup, Menu_Developer_CheckGallup, Menu_Developer_OpenRandomOrder, Menu_Developer_InsertHalvfabrikat, Menu_Developer_NewProtocol_Extrudering_TEF, Menu_Developer_Test_RGB, Menu_Developer_NewMeasureProtocol, Menu_Developer_MoveDataKorprotokollValues, Menu_Utvecklare_MoveDataFEP, Menu_Developer_Timer_test, moveProcesskortExtruderingTEFTillProcesscardDataToolStripMenuItem, raderaExtruderingTEFFrånProcesscardDataToolStripMenuItem, Menu_Developer_ExportHS_Data, kontrolleraFEPDataSomÄrFelPåExtruderToolStripMenuItem, Menu_Developer_GetDataForQuoting, Menu_Developer_INSERT_Rengjort, Menu_Developer_INSERT_Verktyg_Typ, testaNAntalKörningarPåArtikelNrToolStripMenuItem, Menu_Developer_AddThemePicture, Menu_Developer_TestNewProtocol, testCalendarToolStripMenuItem, Developer_AddLineClearance_Table, påskäggToolStripMenuItem, Developer_CountSql_Queries });
             Menu_Developer.ForeColor = Color.DeepSkyBlue;
             Menu_Developer.Name = "Menu_Developer";
             Menu_Developer.Size = new Size(81, 32);
@@ -896,6 +896,13 @@ namespace DigitalProductionProgram.MainWindow
             påskäggToolStripMenuItem.Text = "Påskägg";
             påskäggToolStripMenuItem.Click += påskäggToolStripMenuItem_Click;
             // 
+            // Developer_CountSql_Queries
+            // 
+            Developer_CountSql_Queries.Name = "Developer_CountSql_Queries";
+            Developer_CountSql_Queries.Size = new Size(401, 22);
+            Developer_CountSql_Queries.Text = "Räkna SQL Queries";
+            Developer_CountSql_Queries.Click += Developer_CountSql_Queries_Click;
+            // 
             // menuStrip
             // 
             menuStrip.BackColor = Color.Transparent;
@@ -945,12 +952,6 @@ namespace DigitalProductionProgram.MainWindow
             Menu_Equipment_UseSilpaket.Size = new Size(181, 22);
             Menu_Equipment_UseSilpaket.Text = "Använd Silpaket";
             Menu_Equipment_UseSilpaket.Click += Menu_Protocol_UseSilpaket_Click;
-            // 
-            // testarEnNyBranchToolStripMenuItem
-            // 
-            testarEnNyBranchToolStripMenuItem.Name = "testarEnNyBranchToolStripMenuItem";
-            testarEnNyBranchToolStripMenuItem.Size = new Size(401, 22);
-            testarEnNyBranchToolStripMenuItem.Text = "Testar en ny Branch";
             // 
             // Main_Menu
             // 
@@ -1077,6 +1078,6 @@ namespace DigitalProductionProgram.MainWindow
         private ToolStripMenuItem Menu_Protocol_ManageTemplates_MeasureProtocol;
         private ToolStripMenuItem Menu_Settings_ToolsCalculator;
         private ToolStripMenuItem påskäggToolStripMenuItem;
-        private ToolStripMenuItem testarEnNyBranchToolStripMenuItem;
+        private ToolStripMenuItem Developer_CountSql_Queries;
     }
 }

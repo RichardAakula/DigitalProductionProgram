@@ -241,7 +241,7 @@ namespace DigitalProductionProgram.Browse_Protocols
                             {extraQuery}
                         ORDER BY Date_Start DESC";
             con.Open();
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@workoperation", Order.WorkOperation.ToString());
             var reader = cmd.ExecuteReader();
             var isRoleAuthorized = CheckAuthority.IsRoleAuthorized(CheckAuthority.TemplateAuthorities.ManageOrderCounter, false);
@@ -577,7 +577,7 @@ namespace DigitalProductionProgram.Browse_Protocols
                     WHERE OrderID IN (SELECT OrderID FROM [Order].MainData WHERE Workoperation = @workoperation) 
                         AND ProtocolDescriptionID = @protocoldescriptionid
                     ORDER BY TextValue";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@workoperation", Order.WorkOperation.ToString());
                 cmd.Parameters.AddWithValue("@protocoldescriptionid", protocoldescriptionid);
                 con.Open();
@@ -617,7 +617,7 @@ namespace DigitalProductionProgram.Browse_Protocols
             using (var con = new SqlConnection(Database.cs_Protocol))
             {
                 const string query = @"SELECT FormTemplateID FROM Protocol.FormTemplate WHERE MainTemplateID = @maintemplateid";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@maintemplateid", Templates_Protocol.MainTemplate.ID);
                 con.Open();
                 var reader = cmd.ExecuteReader();

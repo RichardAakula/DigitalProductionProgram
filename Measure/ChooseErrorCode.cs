@@ -5,7 +5,7 @@ using System.Windows.Forms;
 using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Help;
-
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.PrintingServices;
 using DigitalProductionProgram.User;
@@ -48,7 +48,7 @@ namespace DigitalProductionProgram.Measure
             using (var con = new SqlConnection(Database.cs_Protocol))
             {
                 const string query = "SELECT Felkod, Beskrivning FROM MeasureProtocol.ErrorCodes WHERE Grupp = @grupp ORDER BY Felkod";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@grupp", Order.WorkOperation.ToString());
                 con.Open();
                 var reader = cmd.ExecuteReader();

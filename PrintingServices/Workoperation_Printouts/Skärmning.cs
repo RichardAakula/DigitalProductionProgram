@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Drawing.Printing;
 using System.Windows.Forms;
 using DigitalProductionProgram.DatabaseManagement;
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.Processcards;
 using static DigitalProductionProgram.PrintingServices.Workoperation_Printouts.Print_Protocol.PrintOut;
@@ -30,7 +31,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                     var query =
                         $"SELECT TextValue AS Machine, MachineIndex FROM [Order].Data WHERE OrderID = @orderid AND ProtocolDescriptionID = 349 GROUP BY TextValue, MachineIndex";
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                     dt.Load(cmd.ExecuteReader());
                 }
@@ -45,7 +46,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                 using (var con = new SqlConnection(Database.cs_Protocol))
                 {
                     var query = @"SELECT MAX (MachineIndex) FROM [Order].Data WHERE OrderID = @orderid";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                     con.Open();
                     var value = cmd.ExecuteScalar();
@@ -127,7 +128,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                     var query =
                         $"SELECT Halvfabrikat_Benämning, Halvfabrikat_OrderNr FROM [Order].PreFab {Queries.WHERE_OrderID}";
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@id", Order.OrderID);
                     var reader = cmd.ExecuteReader();
                     while (reader.Read())
@@ -199,7 +200,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                             AND template.FormTemplateID = @formtemplateid
                             ORDER BY ColumnIndex";
 
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     con.Open();
                     cmd.Parameters.AddWithValue("@partID", Order.PartID);
                     cmd.Parameters.AddWithValue("@formtemplateid", 11);
@@ -247,7 +248,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                                         AND template.revision = (SELECT ProtocolTemplateRevision FROM [Order].MainData WHERE OrderID = @orderid)
                                         ORDER BY ColumnIndex";
 
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     con.Open();
                     cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                     cmd.Parameters.AddWithValue("@maintemplateid", Templates_Protocol.MainTemplate.ID);   //formtemplid = 11
@@ -379,7 +380,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
 								AND ColumnIndex != 10
                             ORDER BY ColumnIndex";
 
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     con.Open();
                     cmd.Parameters.AddWithValue("@partID", Order.PartID);
                     cmd.Parameters.AddWithValue("@formtemplateid", 12);
@@ -449,7 +450,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
 							AND ColumnIndex > 1
                        ORDER BY Uppstart, ColumnIndex";
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                     cmd.Parameters.AddWithValue("@maintemplateid", Templates_Protocol.MainTemplate.ID);
                     cmd.Parameters.AddWithValue("@machine", MachineIndex);

@@ -2,7 +2,7 @@
 using Microsoft.Data.SqlClient;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Help;
-
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.PrintingServices;
 using DigitalProductionProgram.Protocols.Template_Management;
@@ -25,7 +25,7 @@ namespace DigitalProductionProgram.Measure
                         WHERE MeasureProtocolMainTemplateID = @formtemplateid
                         ORDER BY revision DESC";
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@formtemplateid", Templates_MeasureProtocol.MainTemplate.ID);
                     var value = cmd.ExecuteScalar();
                     return value?.ToString();
@@ -42,7 +42,7 @@ namespace DigitalProductionProgram.Measure
                 using (var con = new SqlConnection(Database.cs_Protocol))
                 {
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                     return (int)cmd.ExecuteScalar();
                 }
@@ -62,7 +62,7 @@ namespace DigitalProductionProgram.Measure
                         AND DescriptionId = 48
                         GROUP BY TextValue";
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                     var value = cmd.ExecuteScalar();
                     if (value != null)
@@ -86,7 +86,7 @@ namespace DigitalProductionProgram.Measure
                         AND DescriptionId = 37";//37 = Påse_Spole
                 else
                     query = @"SELECT COUNT(*) FROM MeasureProtocol.Data WHERE DescriptionId = 37";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 SQL_Parameter.String(cmd.Parameters, "@workoperation", workoperation);
                 con.Open();
                 return (int)cmd.ExecuteScalar();

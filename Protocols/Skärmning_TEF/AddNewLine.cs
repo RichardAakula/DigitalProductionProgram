@@ -3,6 +3,7 @@ using Microsoft.Data.SqlClient;
 using System.Windows.Forms;
 using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.DatabaseManagement;
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.Processcards;
 using DigitalProductionProgram.Övrigt;
 using DigitalProductionProgram.Settings;
@@ -29,7 +30,7 @@ namespace DigitalProductionProgram.Protocols.Skärmning_TEF
             {
                 const string query = "SELECT DISTINCT(TextValue) FROM [Order].Data WHERE ProtocolDescriptionID = (SELECT ID FROM Protocol.Description WHERE CodeText = 'Machine')"; //Maskin
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
                     cb_Linje.Items.Add(reader[0].ToString());

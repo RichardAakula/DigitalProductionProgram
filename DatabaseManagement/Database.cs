@@ -10,6 +10,10 @@ namespace DigitalProductionProgram.DatabaseManagement
     public partial class Database : Form
     {
         /// <summary>
+
+        public static int SQL_Counter = 0;
+
+        
         private const string ServerOTH = @"THAI-SRV1-SQL01\SQLEXPRESS";
         //private const string ServerOGO = "OPTISQL2017";
         private const string ServerOGO = "GOD-S1-SQL01";

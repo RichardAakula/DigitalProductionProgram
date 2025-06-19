@@ -6,6 +6,7 @@ using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Equipment;
 using DigitalProductionProgram.Help;
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.Measure;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.Övrigt;
@@ -24,7 +25,7 @@ namespace DigitalProductionProgram.Protocols.MainInfo
             {
                 var query = $@"SELECT DISTINCT ProdType FROM {tabell} WHERE WorkOperationID = (SELECT ID FROM Workoperation.Names WHERE Name = @workoperation AND ID IS NOT NULL)";
 
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 SQL_Parameter.String(cmd.Parameters, "@workoperation", Order.WorkOperation.ToString());
                 con.Open();
                 var reader = cmd.ExecuteReader();
@@ -61,7 +62,7 @@ namespace DigitalProductionProgram.Protocols.MainInfo
                 const string query = @"SELECT OrderNr, PartNr, ProdType, Customer, Rum_Temp, Rum_Fukt FROM [Order].MainData WHERE OrderID = @id";
 
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@id", OrderID);
                 var reader = cmd.ExecuteReader();
                 {
@@ -90,7 +91,7 @@ namespace DigitalProductionProgram.Protocols.MainInfo
                         AND ProtocolDescriptionID = (SELECT id FROM Protocol.Description WHERE codetext = @codetext) ";
 
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@id", OrderID);
                     cmd.Parameters.AddWithValue("@codetext", text);
                     var value = cmd.ExecuteScalar();
@@ -127,7 +128,7 @@ namespace DigitalProductionProgram.Protocols.MainInfo
                                 (@orderID, (SELECT id FROM Protocol.Description WHERE CodeText = 'WALL'), @wall, NULL),
                                 (@orderID, (SELECT id FROM Protocol.Description WHERE CodeText = 'LENGTH'), @length, NULL)";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderID", Order.OrderID);
 
                 switch (Order.WorkOperation)
@@ -168,7 +169,7 @@ namespace DigitalProductionProgram.Protocols.MainInfo
                                 UPDATE [Order].Data SET Value = @value
                                 WHERE OrderID = @orderid AND ProtocolDescriptionID = (SELECT ID from Protocol.Description WHERE CodeText = @codetext)";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                 cmd.Parameters.AddWithValue("@codetext", codetext);
                 SQL_Parameter.Double(cmd.Parameters, "@value", value);
@@ -183,7 +184,7 @@ namespace DigitalProductionProgram.Protocols.MainInfo
                                 UPDATE [Order].Data SET TextValue = @textvalue
                                 WHERE OrderID = @orderid AND ProtocolDescriptionID = (SELECT ID from Protocol.Description WHERE CodeText = @codetext)";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                 cmd.Parameters.AddWithValue("@codetext", codetext);
                 SQL_Parameter.Double(cmd.Parameters, "@value", textvalue);

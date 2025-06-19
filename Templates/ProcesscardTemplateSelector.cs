@@ -3,6 +3,7 @@ using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.eMail;
 using DigitalProductionProgram.Log;
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.PrintingServices;
 using DigitalProductionProgram.Processcards;
@@ -21,7 +22,7 @@ namespace DigitalProductionProgram.Templates
             var query = @"SELECT TOP(1) Framtagning_Processfönster FROM Processcard.MainData
                                 WHERE PartID = @partid";
 
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@partid", partID);
             con.Open();
             return Convert.ToBoolean(cmd.ExecuteScalar());
@@ -245,7 +246,7 @@ namespace DigitalProductionProgram.Templates
                 ))
                 ORDER BY PartGroupID, RevNr DESC;";
 
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             cmd.Parameters.Add("@partnr", SqlDbType.NVarChar).Value = Order.PartNumber;
             cmd.Parameters.Add("@workoperation", SqlDbType.NVarChar).Value = Order.WorkOperation.ToString();
             cmd.Parameters.Add("@IsOkSelectLatestRev", SqlDbType.Bit).Value = IsOkSelectLatestRev;
@@ -277,7 +278,7 @@ namespace DigitalProductionProgram.Templates
                     JOIN Workoperation.Names as names
 	                    ON prodlines.WorkoperationID = names.ID
                     WHERE ProductionLine = @prodline";
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             SQL_Parameter.String(cmd.Parameters, "@prodline", Order.ProdLine);
             con.Open();
             var reader = cmd.ExecuteReader();
@@ -303,7 +304,7 @@ namespace DigitalProductionProgram.Templates
                 WHERE RevisionRank = 1
                 ORDER BY Name;";
 
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@workoperationid", Order.WorkoperationID);
             con.Open();
             var reader = cmd.ExecuteReader();
@@ -340,7 +341,7 @@ namespace DigitalProductionProgram.Templates
 	                      AND WorkoperationID = @workoperationid
                     ORDER BY Name ";
 
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@workoperationid", Order.WorkoperationID);
             con.Open();
             var reader = cmd.ExecuteReader();
@@ -376,7 +377,7 @@ namespace DigitalProductionProgram.Templates
                             ON maintemplate.WorkoperationID = workoperation.ID
                     WHERE protocol.PartNr = @partnumber
                     ORDER BY maintemplate.Name";
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@partnumber", Order.PartNumber);
             con.Open();
             var reader = cmd.ExecuteReader();

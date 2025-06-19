@@ -77,7 +77,7 @@ namespace DigitalProductionProgram.Log
                     VALUES (@userid, @version, @time);
                 END";
             await con.OpenAsync();
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@userid", Person.UserID);
             cmd.Parameters.AddWithValue("@version", version);
             cmd.Parameters.AddWithValue("@time", duration.TotalSeconds);

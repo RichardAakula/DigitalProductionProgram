@@ -21,7 +21,7 @@ namespace DigitalProductionProgram.EasterEggs
         {
             using var con = new SqlConnection(Database.cs_Protocol);
             const string query = "SELECT COUNT(*) FROM Easter_Egg_Points WHERE Namn = @namn AND Game = @game";
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@namn", Person.Name);
             cmd.Parameters.AddWithValue("@game", game);
             con.Open();
@@ -34,7 +34,7 @@ namespace DigitalProductionProgram.EasterEggs
         {
             using var con = new SqlConnection(Database.cs_Protocol);
             var query = "SELECT COUNT(*) FROM Easter_Egg_Points WHERE Namn = @namn AND CAST (Datum AS date) = @date AND Game = @game";
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@namn", Person.Name);
             cmd.Parameters.AddWithValue("@game", game);
             cmd.Parameters.AddWithValue("@date", DateTime.Now.ToString("yyyy-MM-dd"));
@@ -49,7 +49,7 @@ namespace DigitalProductionProgram.EasterEggs
             var ctr = 0;
             using var con = new SqlConnection(Database.cs_Protocol);
             const string query = "SELECT DISTINCT Namn FROM Easter_Egg_Points WHERE Namn <> @namn AND Game = @game";
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@namn", Person.Name);
             cmd.Parameters.AddWithValue("@game", game);
             con.Open();
@@ -84,7 +84,7 @@ namespace DigitalProductionProgram.EasterEggs
             //    return;
             using var con = new SqlConnection(Database.cs_Protocol);
             var query = "INSERT INTO Easter_Egg_Points VALUES(@game, @namn, @datum, @level, @points)";
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@namn", Person.Name);
             cmd.Parameters.AddWithValue("@datum", DateTime.Now);
             cmd.Parameters.AddWithValue("@level", level);
@@ -101,7 +101,7 @@ namespace DigitalProductionProgram.EasterEggs
                 FROM Easter_Egg_Points
             WHERE Game = @game
             ORDER BY Points DESC";
-            using var cmd = new SqlCommand(query, con);
+            using var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@game", game);
             var dt = new DataTable();
             using var adapter = new SqlDataAdapter(cmd);

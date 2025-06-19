@@ -1,5 +1,6 @@
 ﻿using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Help;
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.PrintingServices;
 using DigitalProductionProgram.User;
 using Microsoft.Data.SqlClient;
@@ -28,7 +29,7 @@ namespace DigitalProductionProgram.EasterEggs
                     return isGameStarted.Value;
                 using var con = new SqlConnection(Database.cs_Protocol);
                 const string query = "SELECT COUNT(*) FROM Easter_Egg_Points WHERE Namn = @name AND Game = @game";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@name", Person.Name);
                 cmd.Parameters.AddWithValue("@game", GameName);
 
@@ -89,7 +90,7 @@ namespace DigitalProductionProgram.EasterEggs
                 {
                     using var con = new SqlConnection(Database.cs_Protocol);
                     const string query = "SELECT COUNT(*) FROM Easter_Egg_Points WHERE Namn = @name AND Game = @game AND Level = 2";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@name", Person.Name);
                     cmd.Parameters.AddWithValue("@game", GameName);
 

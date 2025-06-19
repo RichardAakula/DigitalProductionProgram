@@ -4,7 +4,7 @@ using Microsoft.Data.SqlClient;
 using System.Globalization;
 using System.Windows.Forms;
 using DigitalProductionProgram.DatabaseManagement;
-
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.Processcards;
 
@@ -59,7 +59,7 @@ namespace DigitalProductionProgram.Protocols.Skärmning_TEF
                     ORDER BY ColumnIndex, RowIndex";
 
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@partID", Order.PartID);
                 cmd.Parameters.AddWithValue("@formtemplateid", 12);
                 var reader = cmd.ExecuteReader();
@@ -94,7 +94,7 @@ namespace DigitalProductionProgram.Protocols.Skärmning_TEF
                         AND template.FormTemplateID = @formtemplateid
                     ORDER BY ColumnIndex";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 SQL_Parameter.NullableINT(cmd.Parameters, "@partID", Order.PartID);
                 cmd.Parameters.AddWithValue("@formtemplateid", 11);
                 var reader = cmd.ExecuteReader();
@@ -136,7 +136,7 @@ namespace DigitalProductionProgram.Protocols.Skärmning_TEF
 
                     COMMIT TRANSACTION";
 
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 Add_Parameters(cmd, parameters);
                 con.Open();
                 Manage_Processcards.Execute_cmd(cmd, ref IsOk);
@@ -375,7 +375,7 @@ namespace DigitalProductionProgram.Protocols.Skärmning_TEF
                         {Manage_Processcards.UPDATE_Processkort_Main}
 
                     COMMIT TRANSACTION";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 Add_Parameters(cmd, parameters);
                 con.Open();
                 Manage_Processcards.Execute_cmd(cmd, ref IsOk);

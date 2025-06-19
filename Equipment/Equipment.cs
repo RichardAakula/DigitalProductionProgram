@@ -4,6 +4,7 @@ using Microsoft.Data.SqlClient;
 using System.Linq;
 using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.DatabaseManagement;
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.User;
 
@@ -29,7 +30,7 @@ namespace DigitalProductionProgram.Equipment
                         AND ProtocolDescriptionID = 313";
                 var IsFilterhus = false;
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                 var value = cmd.ExecuteScalar();
                 if (value != null)
@@ -51,7 +52,7 @@ namespace DigitalProductionProgram.Equipment
                         WHERE PartID = @partID
                         AND TemplateID = (SELECT ID FROM Protocol.Template WHERE ProtocolDescriptionID = 313 AND FormTemplateID = 31)";
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@partID", Order.PartID);
                     var value = cmd.ExecuteScalar();
                     if (value != null)
@@ -129,7 +130,7 @@ namespace DigitalProductionProgram.Equipment
 
                 using var con = new SqlConnection(Database.cs_Protocol);
                 var query = @"SELECT DISTINCT ProdLine FROM Processcard.MainData ORDER BY ProdLine";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 con.Open();
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
@@ -161,7 +162,7 @@ namespace DigitalProductionProgram.Equipment
             using var con = new SqlConnection(Database.cs_ToolRegister);
             var query = "SELECT DISTINCT Typ FROM Register_Verktyg WHERE Sort = @codeName AND (Kasserad IS NULL OR Kasserad = '') ORDER BY Typ";
 
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@codeName", CodeName);
             con.Open();
             var reader = cmd.ExecuteReader();
@@ -184,7 +185,7 @@ namespace DigitalProductionProgram.Equipment
                 query += "AND Dimension_nom >= @min AND Dimension_nom <= @max ";
             query += "ORDER BY Dimension_nom";
             con.Open();
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@min", MIN);
             cmd.Parameters.AddWithValue("@max", MAX);
             SQL_Parameter.String(cmd.Parameters, "@typ", typ);
@@ -214,7 +215,7 @@ namespace DigitalProductionProgram.Equipment
 
 
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 SQL_Parameter.String(cmd.Parameters, "@sort", sort);
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
@@ -244,7 +245,7 @@ namespace DigitalProductionProgram.Equipment
                         FROM [Order].Data WHERE ProtocolDescriptionID = (SELECT ID FROM Protocol.Description WHERE CodeText COLLATE Latin1_General_BIN = @codetext COLLATE Latin1_General_BIN) 
                         ORDER BY TextValue";
 
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@codetext", codetext);
                 con.Open();
                 var reader = cmd.ExecuteReader();
@@ -263,7 +264,7 @@ namespace DigitalProductionProgram.Equipment
                 {
                     const string query = "SELECT DISTINCT Extruder FROM Extruder_Skruvar ORDER BY Extruder";
 
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     con.Open();
                     var reader = cmd.ExecuteReader();
                     while (reader.Read())
@@ -287,7 +288,7 @@ namespace DigitalProductionProgram.Equipment
                 else
                     query = $"SELECT DISTINCT ID_Nummer, Typ FROM {db_Table} WHERE Typ = @type";
 
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 con.Open();
                 SQL_Parameter.String(cmd.Parameters, "@type", type);
                 var reader = cmd.ExecuteReader();
@@ -330,7 +331,7 @@ namespace DigitalProductionProgram.Equipment
                 {
                     var query = "SELECT Skruv FROM Extruder_Skruvar WHERE Extruder = @extruder";
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@extruder", extruder);
                     var reader = cmd.ExecuteReader();
                     while (reader.Read())
@@ -346,7 +347,7 @@ namespace DigitalProductionProgram.Equipment
                     var query = "SELECT Typ, ID_Nummer FROM Register_Skruvar " +
                                 "WHERE ID_Nummer = @idNummer AND Typ > '' AND Typ IS NOT NULL AND Reserv = 'False' AND Inaktiv = 'False' AND (Kasserad IS NULL OR Kasserad = '')";
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@idNummer", id_Nummer);
                     var reader = cmd.ExecuteReader();
                     while (reader.Read())
@@ -368,7 +369,7 @@ namespace DigitalProductionProgram.Equipment
                                 SET boolvalue = @boolvalue
                             WHERE OrderID = @orderid AND ProtocolDescriptionID = 201";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                 cmd.Parameters.AddWithValue("@boolvalue", value);
                 cmd.ExecuteNonQuery();

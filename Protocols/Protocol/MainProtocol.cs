@@ -4,6 +4,7 @@ using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Equipment;
 using DigitalProductionProgram.Help;
 using DigitalProductionProgram.Log;
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.PrintingServices;
 using DigitalProductionProgram.Protocols.ExtraProtocols;
@@ -22,7 +23,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                     FROM Protocol.FormTemplate WHERE FormTemplateID = @formtemplateid";
 
             con.Open();
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@formtemplateid", formTemplateID);
             var value = cmd.ExecuteScalar();
             if (value != DBNull.Value)
@@ -38,7 +39,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                 using var con = new SqlConnection(Database.cs_Protocol);
                 const string query = @"
                     SELECT IsMultipleColumnsStartup FROM Protocol.FormTemplate WHERE MainTemplateID = @maintemplateID";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@maintemplateID", Templates_Protocol.MainTemplate.ID);
                 con.Open();
                 var reader = cmd.ExecuteReader();
@@ -60,7 +61,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                 using var con = new SqlConnection(Database.cs_Protocol);
                 const string query = @"
                     SELECT IsStartUpDates FROM Protocol.FormTemplate WHERE MainTemplateID = @maintemplateID";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@maintemplateID", Templates_Protocol.MainTemplate.ID);
                 con.Open();
                 var reader = cmd.ExecuteReader();
@@ -243,7 +244,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                 const string query = @"SELECT MainInfo_Template FROM Protocol.MainTemplate WHERE ID = @maintemplateid";
 
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@maintemplateid", Templates_Protocol.MainTemplate.ID);
                 var value = cmd.ExecuteScalar();
                 if (value != DBNull.Value)

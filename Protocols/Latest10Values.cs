@@ -7,6 +7,7 @@ using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.eMail;
 using DigitalProductionProgram.Log;
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.User;
 
@@ -63,7 +64,7 @@ namespace DigitalProductionProgram.Protocols
                     return;
                 }
                 con.Open();
-                SqlCommand cmd = new SqlCommand(query, con);
+                SqlCommand cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@partnr", Order.PartNumber);
                 cmd.Parameters.AddWithValue("@partID", Order.PartID);
                 cmd.Parameters.AddWithValue("@codetext", codetext);

@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Log;
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.Measure;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.Protocols;
@@ -57,7 +58,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                                 SELECT SUM(ColumnWidth), COUNT(*)
                                 FROM MeasureProtocol.Template
                                 WHERE MeasureProtocolMainTemplateID = @maintemplateid";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                     cmd.Parameters.AddWithValue("@maintemplateid", Templates_MeasureProtocol.MainTemplate.ID);
                     con.Open();
@@ -158,7 +159,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
             {
                 const string query = "SELECT * FROM MeasureInstruments.Mätdon WHERE OrderID = @id ORDER BY Row";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@id", Order.OrderID);
                 var reader = cmd.ExecuteReader();
                 var y = PrintVariables.MaxPaperHeight - 190;
@@ -191,7 +192,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
             {
                 var query = "SELECT * FROM MeasureInstruments.Mätdon WHERE OrderID = @id ORDER BY Row";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@id", Order.OrderID);
                 var reader = cmd.ExecuteReader();
                 var y = 680;
@@ -250,7 +251,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                 FROM MeasureProtocol.Template 
                 WHERE MeasureProtocolMainTemplateID = @maintemplateid                   
                 ORDER BY ColumnIndex";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@maintemplateid", Templates_MeasureProtocol.MainTemplate.ID);
                 con.Open();
                 var reader = cmd.ExecuteReader();
@@ -317,7 +318,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                         AND MeasureProtocolMainTemplateID = @maintemplateid
                         AND RowIndex BETWEEN @start AND @end
                     ORDER BY RowIndex, ColumnIndex";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
 
                     cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                     cmd.Parameters.AddWithValue("@maintemplateid", Templates_MeasureProtocol.MainTemplate.ID);
@@ -389,7 +390,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                                 WHERE OrderID = @orderid 
                                 AND RowIndex BETWEEN @start AND @end
                                 ORDER BY RowIndex";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
 
                     cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                     cmd.Parameters.AddWithValue("@start", FirstRowMeasurment);

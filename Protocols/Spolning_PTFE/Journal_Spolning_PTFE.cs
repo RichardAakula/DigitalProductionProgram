@@ -9,6 +9,7 @@ using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Equipment;
 using DigitalProductionProgram.Help;
 using DigitalProductionProgram.Log;
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.Övrigt;
 using DigitalProductionProgram.PrintingServices;
@@ -48,7 +49,7 @@ namespace DigitalProductionProgram.Protocols.Spolning_PTFE
                         FROM [Order].PreFab
                         WHERE OrderID IN (SELECT OrderID FROM [Order].MainData WHERE orderNr = @ordernr)";
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@ordernr", Order.OrderNumber);
                     var reader = cmd.ExecuteReader();
                     while (reader.Read())
@@ -91,7 +92,7 @@ namespace DigitalProductionProgram.Protocols.Spolning_PTFE
                 var query = @"
                         SELECT TOP(1) OrderID FROM [Order].MainData WHERE orderNr = @ordernr ORDER BY Operation";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@ordernr", lotnr);
                 var value = cmd.ExecuteScalar();
                 if (value != null)
@@ -113,7 +114,7 @@ namespace DigitalProductionProgram.Protocols.Spolning_PTFE
                             AND ProtocolDescriptionID = 152 
                             AND uppstart = (SELECT uppstart FROM [Order].Data WHERE OrderID = @orderid AND value = @fatnr AND ProtocolDescriptionID = 149)";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", OrderID(lotnr));
                 cmd.Parameters.AddWithValue("@fatnr", fatnr);
                 var value = cmd.ExecuteScalar();
@@ -142,7 +143,7 @@ namespace DigitalProductionProgram.Protocols.Spolning_PTFE
                         WHERE main.OrderID = @orderid 
                         AND Value = @påse AND DescriptionID = 37 AND Discarded = 'False'";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", OrderID(lotnr));
                 cmd.Parameters.AddWithValue("@påse", påse);
                 var value = cmd.ExecuteScalar();
@@ -163,7 +164,7 @@ namespace DigitalProductionProgram.Protocols.Spolning_PTFE
                             AND ProtocolDescriptionID = 154 
                             AND uppstart = (SELECT uppstart FROM [Order].Data WHERE OrderID = @orderid AND value = @fatnr AND ProtocolDescriptionID = 149)";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", OrderID(lotnr));
                 cmd.Parameters.AddWithValue("@fatnr", fatnr);
                 var value = cmd.ExecuteScalar();
@@ -185,7 +186,7 @@ namespace DigitalProductionProgram.Protocols.Spolning_PTFE
                         WHERE main.OrderID = @orderid 
                         AND Value = @påse AND DescriptionID = 37 AND Discarded = 'False'";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", OrderID(lotnr));
                 cmd.Parameters.AddWithValue("@påse", påse);
                 var value = cmd.ExecuteScalar();
@@ -207,7 +208,7 @@ namespace DigitalProductionProgram.Protocols.Spolning_PTFE
                         AND ProtocolDescriptionID = 80
                         ORDER BY uppstart";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", OrderID(lotnr));
                 var value = cmd.ExecuteScalar();
                 if (value != null)
@@ -230,7 +231,7 @@ namespace DigitalProductionProgram.Protocols.Spolning_PTFE
                         WHERE main.OrderID = @orderid 
                         AND Value = @påse AND DescriptionID = 56 AND Discarded = 'False'";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", OrderID(lotnr));
                 cmd.Parameters.AddWithValue("@påse", påse);
                 var value = cmd.ExecuteScalar();
@@ -326,7 +327,7 @@ namespace DigitalProductionProgram.Protocols.Spolning_PTFE
                    
                     ORDER BY ColumnIndex";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@protocolmaintemplateid", Templates_Protocol.MainTemplate.ID);
                 cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                 var reader = cmd.ExecuteReader();
@@ -396,7 +397,7 @@ namespace DigitalProductionProgram.Protocols.Spolning_PTFE
                             AND FormTemplateID = (SELECT FormTemplateID FROM Protocol.FormTemplate WHERE MainTemplateID = @protocolmaintemplateid)
                         ORDER BY uppstart, ColumnIndex";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 SQL_Parameter.NullableINT(cmd.Parameters, "@orderid", Order.OrderID);
                 cmd.Parameters.AddWithValue("@formtemplateid", 13);
                 cmd.Parameters.AddWithValue("@protocolmaintemplateid", Templates_Protocol.MainTemplate.ID);
@@ -448,7 +449,7 @@ namespace DigitalProductionProgram.Protocols.Spolning_PTFE
                     var query = @"
                         SELECT MAX(Uppstart) FROM [Order].Data WHERE OrderID = @orderid";
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                     var value = cmd.ExecuteScalar();
                     if (value is null)
@@ -488,7 +489,7 @@ namespace DigitalProductionProgram.Protocols.Spolning_PTFE
                         INSERT INTO [Order].Data (OrderID, ProtocolDescriptionID, Uppstart, Ugn, Value, TextValue, BoolValue)
                         VALUES (@orderid, @protocoldescriptionid, @uppstart, NULL, @value, @textvalue, @boolvalue)";
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                     cmd.Parameters.AddWithValue("@protocoldescriptionid", pcID);
                     cmd.Parameters.AddWithValue("@uppstart", uppstart);
@@ -560,7 +561,7 @@ namespace DigitalProductionProgram.Protocols.Spolning_PTFE
             {
                 var query = @"DELETE FROM [Order].Data WHERE OrderID = @orderid AND Uppstart = @row";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                 cmd.Parameters.AddWithValue("@row", EditRow);
 
@@ -623,7 +624,7 @@ namespace DigitalProductionProgram.Protocols.Spolning_PTFE
                   
 
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@protocolmaintemplateid", Templates_Protocol.MainTemplate.ID);
                 cmd.Parameters.AddWithValue("@colindex", dgv_Journal_Input.CurrentCell.ColumnIndex);
 

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Drawing;
+using System.Runtime.CompilerServices;
 using System.Windows.Forms;
+using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.EasterEggs;
 
 namespace DigitalProductionProgram.MainWindow
@@ -10,6 +12,9 @@ namespace DigitalProductionProgram.MainWindow
     {
         public static string? DPP_ServerStatus;
         private Main_Form? mainForm;
+        private static readonly object _lock = new();
+        public static readonly Dictionary<string, int> _methodSqlCounters = new();
+
 
         public ServerStatus()
         {
@@ -79,6 +84,24 @@ namespace DigitalProductionProgram.MainWindow
             };
         }
 
+        
+        public static void Add_Sql_Counter([CallerMemberName]string methodname = null)
+        {
+            Database.SQL_Counter++;
+            lock (_lock)
+            {
+                if (_methodSqlCounters.ContainsKey(methodname))
+                    _methodSqlCounters[methodname]++;
+                else
+                    _methodSqlCounters[methodname] = 1;
+            }
+
+        }
+
+        public void Set_Sql_Counter()
+        {
+            lbl_SQL_Queries.Text = Database.SQL_Counter.ToString();
+        }
         private void MonitorStatus_MouseHover(object sender, EventArgs e)
         {
             var tooltip = new ToolTip

@@ -3,6 +3,7 @@ using Microsoft.Data.SqlClient;
 using System.Drawing.Printing;
 using System.Windows.Forms;
 using DigitalProductionProgram.DatabaseManagement;
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.Processcards;
 using DigitalProductionProgram.Protocols.Blandning_PTFE;
@@ -95,7 +96,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                         WHERE FormTemplateID = @formtemplateid
                         ORDER BY ColumnIndex";
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@formtemplateid", 16);
                     cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                     var reader = cmd.ExecuteReader();
@@ -142,7 +143,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                                         AND Uppstart BETWEEN @start AND @end
                                         ORDER BY uppstart, ColumnIndex";
 
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     con.Open();
                     cmd.Parameters.AddWithValue("@maintemplateid", Templates_Protocol.MainTemplate.ID);
                     cmd.Parameters.AddWithValue("@orderid", Order.OrderID);

@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Equipment;
 using DigitalProductionProgram.Log;
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.PrintingServices;
 using ProgressBar = DigitalProductionProgram.ControlsManagement.ProgressBar;
 
@@ -29,7 +30,7 @@ namespace DigitalProductionProgram.User
                     SELECT Datum, Tid, TempID FROM Korprotokoll_Svetsning_Parametrar WHERE OrderID = @orderid AND MONTH(Datum) = @month AND YEAR(Datum) = @year
                     ORDER BY TempID";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", orderid);
                 cmd.Parameters.AddWithValue("@month", Month_1);
                 cmd.Parameters.AddWithValue("@year", Year_1);
@@ -56,7 +57,7 @@ namespace DigitalProductionProgram.User
                     SELECT Datum, Tid, TempID FROM Korprotokoll_Svetsning_Parametrar WHERE OrderID = @orderid AND MONTH(Datum) = @month AND YEAR(Datum) = @year 
                     ORDER BY TempID DESC";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", orderid);
                 cmd.Parameters.AddWithValue("@month", Month_1);
                 cmd.Parameters.AddWithValue("@year", Year_1);
@@ -163,7 +164,7 @@ namespace DigitalProductionProgram.User
                     + (SELECT COUNT(*) FROM Korprotokoll_Slipning_Produktion WHERE OrderID = @orderid AND Column_Index IS NULL AND AnstNr = @employeenumber AND MONTH(Date_Time) = @month AND YEAR(Date_Time) = @year) 
                     + (SELECT COUNT(*) FROM Korprotokoll_Svetsning_Parametrar WHERE OrderID = @orderid AND AnstNr = @employeenumber AND MONTH(Datum) = @month AND YEAR(Datum) = @year) ";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", orderid);
                 cmd.Parameters.AddWithValue("@employeenumber", AnstNr);
                 cmd.Parameters.AddWithValue("@month", Month_1);
@@ -180,7 +181,7 @@ namespace DigitalProductionProgram.User
                     + (SELECT COUNT(*) FROM Korprotokoll_Slipning_Produktion WHERE OrderID = @orderid AND Column_Index IS NULL AND MONTH(Date_Time) = @month AND YEAR(Date_Time) = @year) 
                     + (SELECT COUNT(*) FROM Korprotokoll_Svetsning_Parametrar WHERE OrderID = @orderid AND MONTH(Datum) = @month AND YEAR(Datum) = @year) ";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", id);
                 cmd.Parameters.AddWithValue("@month", Month_1);
                 cmd.Parameters.AddWithValue("@year", Year_1);
@@ -194,7 +195,7 @@ namespace DigitalProductionProgram.User
             {
                 var query = $"SELECT COUNT(*) FROM Log.ActivityLog  WHERE INFO LIKE '%{Person.Get_NameWithAnstNr(AnstNr)}%' AND MONTH(Date) = @month AND YEAR(Date) = @year";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@month", month);
                 cmd.Parameters.AddWithValue("@year", year);
                 return (int)cmd.ExecuteScalar();
@@ -208,7 +209,7 @@ namespace DigitalProductionProgram.User
             {
                 var query = @"SELECT COUNT(*) FROM [Order].MainData WHERE MONTH(Date_Start) = @month AND YEAR(Date_Start) = @year AND Name_Start = @namn";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@month", month);
                 cmd.Parameters.AddWithValue("@year", year);
                 cmd.Parameters.AddWithValue("@namn", Person.Get_NameWithAnstNr(AnstNr));
@@ -225,7 +226,7 @@ namespace DigitalProductionProgram.User
                     + (SELECT COUNT (DISTINCT OrderID) FROM Korprotokoll_Slipning_Produktion WHERE Column_Index IS NULL AND MONTH(Date_Time) = @month AND YEAR(Date_Time) = @year AND AnstNr = @employeenumber)
                     + (SELECT COUNT (DISTINCT OrderID) FROM Korprotokoll_Svetsning_Parametrar WHERE MONTH(Datum) = @month AND YEAR(Datum) = @year AND AnstNr = @employeenumber)";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@month", month);
                 cmd.Parameters.AddWithValue("@year", year);
                 cmd.Parameters.AddWithValue("@employeenumber", AnstNr);
@@ -243,7 +244,7 @@ namespace DigitalProductionProgram.User
                         + (SELECT COUNT (DISTINCT OrderID) FROM Korprotokoll_Slipning_Produktion WHERE Column_Index IS NULL AND MONTH(Date_Time) = @month AND YEAR(Date_Time) = @year AND AnstNr = @employeenumber)
                         + (SELECT COUNT(*) FROM Korprotokoll_Svetsning_Parametrar WHERE MONTH(Datum) = @month AND YEAR(Datum) = @year AND AnstNr = @employeenumber)";
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@month", month);
                     cmd.Parameters.AddWithValue("@year", year);
                     cmd.Parameters.AddWithValue("@employeenumber", AnstNr);
@@ -256,7 +257,7 @@ namespace DigitalProductionProgram.User
             {
                 var query = $@"SELECT COUNT(*) FROM Processcard.MainData WHERE MONTH(RevÄndratDatum) = @month AND YEAR(RevÄndratDatum) = @year AND UpprättatAv_Sign_AnstNr LIKE '%{AnstNr}'";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@month", month);
                 cmd.Parameters.AddWithValue("@year", year);
                 return (int)cmd.ExecuteScalar();
@@ -282,7 +283,7 @@ namespace DigitalProductionProgram.User
                                 AND MONTH(Date_Start) = @month AND YEAR(Date_Start) = @year 
                                 AND MONTH(Date_Stop) = @month AND YEAR(Date_Stop) = @year";
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@id", id);
                     cmd.Parameters.AddWithValue("@month", Month_1);
                     cmd.Parameters.AddWithValue("@year", Year_1);
@@ -516,7 +517,7 @@ namespace DigitalProductionProgram.User
                     UNION 
                     SELECT DISTINCT OrderID FROM Korprotokoll_Svetsning_Parametrar WHERE AnstNr = @employeenumber AND MONTH(Datum) = @month AND YEAR(Datum) = @year ";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@employeenumber", AnstNr);
                 cmd.Parameters.AddWithValue("@month", Month_1);
                 cmd.Parameters.AddWithValue("@year", Year_1);
@@ -565,7 +566,7 @@ namespace DigitalProductionProgram.User
                     var query = @"
                                 SELECT ProdLine FROM [Order].MainData WHERE OrderID = @orderid AND Date_Stop IS NOT NULL";
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@orderid", dt_OrderList.Rows[i]["OrderID"].ToString());
                     var reader = cmd.ExecuteReader();
                     while (reader.Read())
@@ -706,7 +707,7 @@ namespace DigitalProductionProgram.User
                         GROUP BY o.PartNr
                         ORDER BY TotalCount DESC;";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@name", Person.Name);
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
@@ -727,7 +728,7 @@ namespace DigitalProductionProgram.User
                                UNION
                                SELECT DISTINCT AnstNr FROM Korprotokoll_Svetsning_Parametrar WHERE OrderID = @orderid";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", id);
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
@@ -750,7 +751,7 @@ namespace DigitalProductionProgram.User
                                 + (SELECT COUNT(*) FROM Korprotokoll_Slipning_Produktion WHERE AnstNr = @employeenumber AND Column_Index IS NULL AND OrderID = @orderid)
                                 + (SELECT COUNT(*) FROM Korprotokoll_Svetsning_Parametrar WHERE AnstNr = @employeenumber AND OrderID = @orderid)";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", id);
                 cmd.Parameters.AddWithValue("@employeenumber", anstNr);
                 var antal = (int)cmd.ExecuteScalar();

@@ -33,7 +33,7 @@ namespace DigitalProductionProgram.MainWindow
                         ORDER BY Påse_Spole DESC";
 
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
 
                     var value = cmd.ExecuteScalar();
@@ -105,7 +105,7 @@ namespace DigitalProductionProgram.MainWindow
                             {
                                 var query = "SELECT Value FROM [Order].Data WHERE OrderID = @orderid AND ProtocolDescriptionID = 238";
                                 con.Open();
-                                var cmd = new SqlCommand(query, con);
+                                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                                 cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                                 var value = cmd.ExecuteScalar();
                                 if (value != null)
@@ -124,7 +124,7 @@ namespace DigitalProductionProgram.MainWindow
                                         WHERE PartID = @partid
                                             AND TemplateID = (SELECT Id FROM Protocol.Template WHERE FormTemplateID = 34 AND revision = (SELECT ProtocolTemplateRevision FROM [Order].MainData WHERE OrderID = @orderid) AND ProtocolDescriptionID = 238)";
                                     con.Open();
-                                    var cmd = new SqlCommand(query, con);
+                                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                                     SQL_Parameter.NullableINT(cmd.Parameters, "@partid", Order.PartID);
                                     cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
 
@@ -141,7 +141,7 @@ namespace DigitalProductionProgram.MainWindow
                             {
                                 var query = "SELECT Value FROM [Order].Data WHERE OrderID = @orderid AND ProtocolDescriptionID = 72";
                                 con.Open();
-                                var cmd = new SqlCommand(query, con);
+                                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                                 cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                                 var value = cmd.ExecuteScalar();
                                 if (value != null)
@@ -156,7 +156,7 @@ namespace DigitalProductionProgram.MainWindow
                                         WHERE PartID = @partid 
                                             AND TemplateID = (SELECT Id FROM Protocol.Template WHERE FormTemplateID = @formtemplateid AND revision = (SELECT ProtocolTemplateRevision FROM [Order].MainData WHERE OrderID = @orderid) AND ProtocolDescriptionID = 72)";
                                     con.Open();
-                                    var cmd = new SqlCommand(query, con);
+                                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                                     SQL_Parameter.NullableINT(cmd.Parameters, "@partid", Order.PartID);
                                     cmd.Parameters.AddWithValue("@workoperation", Order.WorkOperation.ToString());
                                     cmd.Parameters.AddWithValue("@formtemplateid", 35);
@@ -177,7 +177,7 @@ namespace DigitalProductionProgram.MainWindow
                                     WHERE OrderID = @orderid
                                     AND ProtocolDescriptionID = (SELECT id FROM Protocol.Description WHERE CodeText = 'ANTAL/PÅSE')";
                                 con.Open();
-                                var cmd = new SqlCommand(query, con);
+                                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                                 cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                                 var value = cmd.ExecuteScalar();
                                 if (value != null)

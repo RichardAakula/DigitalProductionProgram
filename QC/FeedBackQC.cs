@@ -12,6 +12,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 
 namespace DigitalProductionProgram.QC
@@ -34,7 +35,7 @@ namespace DigitalProductionProgram.QC
                     FROM Parts.FeedBackQC 
                     WHERE PartNumber = @partnumber AND IsDone = 'False'";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                 cmd.Parameters.AddWithValue("@partnumber", Order.PartNumber);
                 var reader = cmd.ExecuteReader();

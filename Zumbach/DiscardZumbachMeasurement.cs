@@ -4,7 +4,7 @@ using Microsoft.Data.SqlClient;
 using System.Windows.Forms;
 using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.DatabaseManagement;
-
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 
 namespace DigitalProductionProgram.Zumbach
@@ -34,7 +34,7 @@ namespace DigitalProductionProgram.Zumbach
                 using var con = new SqlConnection(Database.cs_Protocol);
                 var query = @"SELECT TOP(1) Discarded FROM Zumbach.Measurements
                                       WHERE OrderID = @orderid AND Bag = @bag AND Position = @pos";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                 cmd.Parameters.AddWithValue("@pos", i);
                 cmd.Parameters.AddWithValue("@bag", bag);

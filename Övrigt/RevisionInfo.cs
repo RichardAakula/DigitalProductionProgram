@@ -3,7 +3,7 @@ using System.Data;
 using Microsoft.Data.SqlClient;
 using System.Windows.Forms;
 using DigitalProductionProgram.DatabaseManagement;
-
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 
 namespace DigitalProductionProgram.Övrigt
@@ -29,7 +29,7 @@ namespace DigitalProductionProgram.Övrigt
                 con.Open();
                 const string query = "SELECT RevNr, RevInfo, UpprättatAv_Sign_AnstNr FROM Processcard.MainData WHERE PartGroupID = @partgroupid  ORDER BY RevNr DESC";
 
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 SQL_Parameter.Int(cmd.Parameters, "@partgroupid", Order.PartGroupID);
                 
                 var reader = cmd.ExecuteReader();

@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Help;
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.PrintingServices;
 using DigitalProductionProgram.Processcards;
@@ -92,7 +93,7 @@ namespace DigitalProductionProgram.Templates
                 LatestRevisions
                 WHERE rn = 1
                 ORDER BY Name";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 con.Open();
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
@@ -112,7 +113,7 @@ namespace DigitalProductionProgram.Templates
             using (var con = new SqlConnection(Database.cs_Protocol))
             {
                 const string query = @"SELECT DISTINCT Category FROM LineClearance.FormTemplate";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 con.Open();
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
@@ -129,7 +130,7 @@ namespace DigitalProductionProgram.Templates
             using (var con = new SqlConnection(Database.cs_Protocol))
             {
                 const string query = @"SELECT DISTINCT CenturiLink FROM LineClearance.MainTemplate";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 con.Open();
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
@@ -487,7 +488,7 @@ namespace DigitalProductionProgram.Templates
                         AND TemplateOrder IS NOT NULL 
                       
                     ORDER BY TemplateOrder";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@templatename", cb_TemplateName.Text);
                 cmd.Parameters.AddWithValue("@lineclearancerevision", cb_TemplateRevision.Text);
                 con.Open();
@@ -535,7 +536,7 @@ namespace DigitalProductionProgram.Templates
                 SELECT DISTINCT LineClearance_Revision
                 FROM LineClearance.MainTemplate
                 WHERE ProtocolMainTemplateID = (SELECT TOP(1) ID FROM Protocol.MainTemplate WHERE Name = @name ORDER BY LineClearance_Revision DESC)";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@name", cb_TemplateName.Text);
                 con.Open();
                 var reader = cmd.ExecuteReader();
@@ -558,7 +559,7 @@ namespace DigitalProductionProgram.Templates
                     SELECT DISTINCT LineClearance_Revision 
                     FROM LineClearance.MainTemplate 
                     WHERE ProtocolMainTemplateID = (SELECT TOP (1) ID From Protocol.MainTemplate WHERE Name = @templatename ORDER BY Revision DESC) ORDER BY LineClearance_Revision DESC";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@templatename", cb_TemplateName.Text); //Template_Management.TemplateControls.LineClearance.LineClearanceMainTemplateID);
                 con.Open();
                 var value = cmd.ExecuteScalar();
@@ -590,7 +591,7 @@ namespace DigitalProductionProgram.Templates
                 using (var con = new SqlConnection(Database.cs_Protocol))
                 {
                     const string query = @"SELECT DescriptionID, Tasks FROM LineClearance.Description ORDER BY Tasks";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     con.Open();
                     var dataAdapter = new SqlDataAdapter(query, con);
                     dataAdapter.Fill(dt_Tasks);
@@ -761,7 +762,7 @@ namespace DigitalProductionProgram.Templates
 	                                ON protocolTemplate.ID = lineclearancetemplate.ProtocolMainTemplateID
                             WHERE maindata.ProtocolMainTemplateID = (SELECT ProtocolMainTemplateID FROM LineClearance.MainTemplate WHERE MainTemplateID = @lineclearancemaintemplateid)
                                 AND protocolTemplate.LineClearance_Template = @lineclearancerevision";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     con.Open();
                     cmd.Parameters.AddWithValue("@lineclearancemaintemplateid", LineClearance_MainTemplateID);
                     cmd.Parameters.AddWithValue("@lineclearancerevision", lineClearanceRevision);
@@ -782,7 +783,7 @@ namespace DigitalProductionProgram.Templates
 	                    ON protocolTemplate.ID = lineclearancetemplate.ProtocolMainTemplateID
                     WHERE maindata.ProtocolMainTemplateID = (SELECT ProtocolMainTemplateID FROM LineClearance.MainTemplate WHERE MainTemplateID = @lineclearancemaintemplateid)
                         AND protocolTemplate.LineClearance_Template = @lineclearancerevision";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     con.Open();
                     cmd.Parameters.AddWithValue("@lineclearancemaintemplateid", LineClearance_MainTemplateID);
                     cmd.Parameters.AddWithValue("@lineclearancerevision", lineClearanceRevision);
@@ -820,7 +821,7 @@ namespace DigitalProductionProgram.Templates
                         FROM LineClearance.MainTemplate 
                         WHERE ProtocolMainTemplateID = @prototocolmaintemplateid
                         ORDER BY LineClearance_Revision DESC";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@prototocolmaintemplateid", Templates_Protocol.MainTemplate.ID);
                     con.Open();
                     var value = cmd.ExecuteScalar();
@@ -845,7 +846,7 @@ namespace DigitalProductionProgram.Templates
                         INSERT INTO LineClearance.MainTemplate (ProtocolMainTemplateID, LineClearance_Revision, IsApprovalRequired, CenturiLink, CreatedBy, CreatedDate)
                         VALUES (@protocolmaintemplateid, @revision, @isapprovalrequired, @centurilink, @createdby, @createddate)";
 
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.Add("@maintemplateid", SqlDbType.Int).Value = LineClearance_MainTemplateID;
 
                     cmd.Parameters.AddWithValue("@protocolmaintemplateid", Templates_Protocol.MainTemplate.ID);
@@ -878,7 +879,7 @@ namespace DigitalProductionProgram.Templates
                         
                         END CATCH";
 
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.Add("@maintemplateid", SqlDbType.Int).Value = LineClearance_MainTemplateID;
 
                     con.Open();
@@ -936,7 +937,7 @@ namespace DigitalProductionProgram.Templates
                                             @protocoldescriptionid,
                                             @rowindex
                                         )";
-                        var cmd = new SqlCommand(query, con);
+                        var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                         cmd.Parameters.AddWithValue("@templateorder", templateOrder);
                         //cmd.Parameters.AddWithValue("@maintemplateid", LineClearanceMainTemplateID);
                         cmd.Parameters.AddWithValue("@protocolmaintemplateid", Templates_Protocol.MainTemplate.ID);
@@ -961,7 +962,7 @@ namespace DigitalProductionProgram.Templates
                     WHERE template.FormTemplateID = @formtemplateid
                         AND RowIndex IS NOT NULL
                     ORDER BY RowIndex";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@formtemplateid", formTemplateID);
                     con.Open();
                     var reader = cmd.ExecuteReader();
@@ -991,7 +992,7 @@ namespace DigitalProductionProgram.Templates
                                        (SELECT MainTemplateID FROM LineClearance.MainTemplate WHERE ProtocolMainTemplateID = @protocolmaintemplateid AND LineClearance_Revision = @lcrevision), @templateorder, @category
                                    )";
 
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.Add("@maintemplateid", SqlDbType.Int).Value = MainTemplate.LineClearance_MainTemplateID;
                     cmd.Parameters.Add("@protocolmaintemplateid", SqlDbType.Int).Value = Templates_Protocol.MainTemplate.ID;
                     cmd.Parameters.Add("@templateorder", SqlDbType.Int).Value = templateOrder;

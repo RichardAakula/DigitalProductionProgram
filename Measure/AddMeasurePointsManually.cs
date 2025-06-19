@@ -42,7 +42,7 @@ namespace DigitalProductionProgram.Measure
             //        WHERE FormTemplateID = (SELECT ID FROM MeasureProtocol.FormTemplate WHERE WorkoperationID = @workoperationid) 
             //            AND Revision = (SELECT MeasureprotocolTemplateRevision FROM [Order].MainData WHERE OrderID = @orderid)
             //        ORDER BY ColumnIndex";
-            //    var cmd = new SqlCommand(query, con);
+            //    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             //    cmd.Parameters.AddWithValue("@workoperationid", Order.WorkoperationID);
             //    cmd.Parameters.AddWithValue("@orderid", Order.ID);
             //    cmd.CommandTimeout = 1800;

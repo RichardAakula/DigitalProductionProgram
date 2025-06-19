@@ -5,6 +5,7 @@ using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using DigitalProductionProgram.DatabaseManagement;
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 
 namespace DigitalProductionProgram.OrderHantering
@@ -23,7 +24,7 @@ namespace DigitalProductionProgram.OrderHantering
                 {
                     var query = @"SELECT COUNT(*) FROM [Order].Pictures
                         WHERE OrderID = @orderid";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     SQL_Parameter.NullableINT(cmd.Parameters, "@orderid", Order.OrderID);
                     con.Open();
                     int.TryParse(cmd.ExecuteScalar().ToString(), out var antal);
@@ -58,7 +59,7 @@ namespace DigitalProductionProgram.OrderHantering
             {
                 var query = "SELECT Picture, Picture_Index FROM [Order].Pictures WHERE OrderID = @orderid";
 
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                 con.Open();
                 var reader = cmd.ExecuteReader();
@@ -154,7 +155,7 @@ namespace DigitalProductionProgram.OrderHantering
             {
                 var query = "DELETE FROM [Order].Pictures WHERE OrderID = @orderid AND Picture_Index = @index";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                 cmd.Parameters.AddWithValue("@index", selected_Picture);
                 cmd.ExecuteNonQuery();

@@ -16,6 +16,7 @@ using Exception = System.Exception;
 using DigitalProductionProgram.Zumbach;
 using System.Text.Json;
 using DigitalProductionProgram.ControlsManagement;
+using DigitalProductionProgram.MainWindow;
 
 namespace DigitalProductionProgram.Settings
 {
@@ -238,7 +239,7 @@ namespace DigitalProductionProgram.Settings
                     var query = @"SELECT ExtraDescription FROM Parts.PartNrDescription WHERE description = @description";
 
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@description", description);
                     return cmd.ExecuteScalar().ToString();
                 }
@@ -251,7 +252,7 @@ namespace DigitalProductionProgram.Settings
                     var query = @"SELECT PartNr FROM Parts.PartNrSpecial WHERE PartNrDescriptionID = (SELECT id FROM Parts.PartNrDescription WHERE Description = @description)";
 
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@description", description);
                     dt.Load(cmd.ExecuteReader());
                     return dt;
@@ -267,7 +268,7 @@ namespace DigitalProductionProgram.Settings
                         const string query = @"SELECT Description FROM Parts.PartNrDescription WHERE id <> 3";
 
                         con.Open();
-                        var cmd = new SqlCommand(query, con);
+                        var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                         dt.Load(cmd.ExecuteReader());
                         return dt;
                     }
@@ -312,7 +313,7 @@ namespace DigitalProductionProgram.Settings
                                     INSERT INTO Parts.PartNrSpecial 
                                     VALUES (@partnr, (SELECT ID FROM Parts.PartNrDescription WHERE Description = @description))
                                 END";
-                        var cmd = new SqlCommand(query, con);
+                        var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                         cmd.Parameters.AddWithValue("@partnr", settings.tb_PartNr.Text);
                         cmd.Parameters.AddWithValue("@description", description);
                         con.Open();
@@ -346,7 +347,7 @@ namespace DigitalProductionProgram.Settings
                         using (var con = new SqlConnection(Database.cs_Protocol))
                         {
                             const string query = "DELETE FROM Parts.PartNrSpecial WHERE PartNr = @partnr AND PartNrDescriptionID = (SELECT id FROM Parts.PartNrDescription WHERE Description = @description)";
-                            var cmd = new SqlCommand(query, con);
+                            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                             cmd.Parameters.AddWithValue("@partnr", PartNr);
                             cmd.Parameters.AddWithValue("@description", description);
                             con.Open();
@@ -382,7 +383,7 @@ namespace DigitalProductionProgram.Settings
                     var query = @"
                             SELECT ID FROM MeasureInstruments.Templates WHERE MätdonsNr = @mätdon";
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@mätdon", Mätdon);
                     var value = cmd.ExecuteScalar();
                     if (value != null)
@@ -409,7 +410,7 @@ namespace DigitalProductionProgram.Settings
                     const string query = @"
                     SELECT MätdonsNr
                     FROM MeasureInstruments.Templates";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     var reader = cmd.ExecuteReader();
                     while (reader.Read())
                         Add_Control_flp(reader.GetString(0), settings.flp_Measureinstruments);
@@ -429,7 +430,7 @@ namespace DigitalProductionProgram.Settings
 	                        ON template.Template_ID = mätdon.ID
                     WHERE WorkOperation = @workoperation
                     ORDER BY MätdonsNr";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@workoperation", settings.cb_Workoperations_Measureinstruments.Text);
                     var reader = cmd.ExecuteReader();
                     while (reader.Read())
@@ -477,7 +478,7 @@ namespace DigitalProductionProgram.Settings
                     DELETE FROM MeasureInstruments.WorkOperationTemplate
                     WHERE WorkOperation = @workoperation";
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@workoperation", workoperation);
                     cmd.ExecuteNonQuery();
                 }
@@ -494,7 +495,7 @@ namespace DigitalProductionProgram.Settings
                             INSERT INTO MeasureInstruments.WorkOperationTemplate 
                             VALUES (@workoperation, @templateId)";
                         con.Open();
-                        var cmd = new SqlCommand(query, con);
+                        var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                         cmd.Parameters.AddWithValue("@workoperation", workoperation);
                         cmd.Parameters.AddWithValue("@templateId", Template_ID(lbl.Text));
                         cmd.ExecuteNonQuery();
@@ -573,7 +574,7 @@ namespace DigitalProductionProgram.Settings
                     const string query = @"
                     INSERT INTO [Settings].NotificationSubscriptions (NotificationID, NotificationItem, UserEmail)
                     VALUES (@notificationid, @notificationitem, @email)";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     SQL_Parameter.Int(cmd.Parameters, "@notificationid", settings.dgv_Notifications.Rows[settings.dgv_Notifications.CurrentCell.RowIndex].Cells["ID"].Value.ToString());
                     cmd.Parameters.AddWithValue("@notificationitem", settings.dgv_NotificationItems.Rows[settings.dgv_NotificationItems.CurrentCell.RowIndex].Cells["Name"].Value.ToString());
                     cmd.Parameters.AddWithValue("@email", settings.tb_Email.Text);
@@ -590,7 +591,7 @@ namespace DigitalProductionProgram.Settings
                     const string query = @"
                     DELETE FROM [Settings].NotificationSubscriptions
                     WHERE ID = @id";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@id", id);
                     con.Open();
                     cmd.ExecuteNonQuery();
@@ -678,7 +679,7 @@ namespace DigitalProductionProgram.Settings
                             WHERE NotificationID = 1
                                 AND NotificationItem = @notificationitem";
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@notificationitem", Order.WorkOperation.ToString());
                     var reader = cmd.ExecuteReader();
 
@@ -722,7 +723,7 @@ namespace DigitalProductionProgram.Settings
 
 
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@hostname", Environment.MachineName);
                 cmd.Parameters.AddWithValue("@workoperation", workoperation.ToString());
 
@@ -738,7 +739,7 @@ namespace DigitalProductionProgram.Settings
                     END 
                         ELSE INSERT INTO [Settings].General (HostName, MeasureOnly) VALUES (@hostname, @value)";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@hostname", Environment.MachineName);
                 cmd.Parameters.AddWithValue("@value", value);
                 cmd.ExecuteNonQuery();
@@ -754,7 +755,7 @@ namespace DigitalProductionProgram.Settings
                 var query = $"UPDATE [Settings].General SET {kolumn} = @value WHERE HostName = @hostname ";
 
 
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@hostname", Environment.MachineName);
                 if (ctrl is RadioButton || ctrl is CheckBox)
                     cmd.Parameters.AddWithValue("@value", flag);
@@ -787,7 +788,7 @@ namespace DigitalProductionProgram.Settings
                 if (string.IsNullOrEmpty(query))
                     InfoText.Show("Can not save new Profile, please contact Admin.", CustomColors.InfoText_Color.Bad, null);
 
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@hostname", Environment.MachineName);
                 con.Open();
                 cmd.ExecuteScalar();
@@ -804,7 +805,7 @@ namespace DigitalProductionProgram.Settings
                     FROM Settings.General 
                     WHERE HostName = @hostname";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@hostname", Environment.MachineName);
                 var value = cmd.ExecuteScalar();
                 return value?.ToString();
@@ -819,7 +820,7 @@ namespace DigitalProductionProgram.Settings
                         SELECT * FROM [Settings].General
                         WHERE general.HostName = @hostname";
 
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@hostname", Environment.MachineName);
                     con.Open();
                     var reader = cmd.ExecuteReader();

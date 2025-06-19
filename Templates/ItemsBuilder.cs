@@ -4,6 +4,7 @@ using System.Data;
 using Microsoft.Data.SqlClient;
 using System.Globalization;
 using System.Windows.Forms;
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.Templates;
 
 namespace DigitalProductionProgram.Protocols.Template_Management
@@ -31,7 +32,7 @@ namespace DigitalProductionProgram.Protocols.Template_Management
                         Item
                     FROM MeasureProtocol.ItemsList
                     WHERE MeasureProtocolMainTemplateID = @maintemplateid";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@maintemplateid", Templates_MeasureProtocol.MainTemplate.ID);
                 con.Open();
                 using (var reader = cmd.ExecuteReader())
@@ -78,7 +79,7 @@ namespace DigitalProductionProgram.Protocols.Template_Management
                 using (var con = new SqlConnection(Database.cs_Protocol))
                 {
                     const string query = @"SELECT DISTINCT Item FROM MeasureProtocol.ItemsList ORDER BY Item";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     con.Open();
                     var dataAdapter = new SqlDataAdapter(query, con);
                     dataAdapter.Fill(dt_Items);

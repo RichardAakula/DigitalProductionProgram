@@ -11,6 +11,7 @@ using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Equipment;
 using DigitalProductionProgram.Help;
 using DigitalProductionProgram.Log;
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.Monitor;
 using DigitalProductionProgram.Monitor.GET;
 using DigitalProductionProgram.OrderManagement;
@@ -34,7 +35,7 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
                 using (var con = new SqlConnection(Database.cs_Protocol))
                 {
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@id", Order.OrderID);
                     return (int)cmd.ExecuteScalar();
                 }
@@ -59,7 +60,7 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
                     FROM [Order].PreFab 
                     WHERE OrderID = @orderid 
                     ORDER BY Halvfabrikat_ArtikelNr, TempID";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", orderID);
                 con.Open();
                 dt.Load(cmd.ExecuteReader());
@@ -97,7 +98,7 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
                     SELECT Halvfabrikat_ArtikelNr AS '{LanguageManager.GetString("label_PartNumber")}', Halvfabrikat_OrderNr AS 'BatchNr:', Halvfabrikat_ID AS 'ID', Halvfabrikat_OD AS 'OD', Halvfabrikat_W AS 'W', TempID
                     FROM [Order].PreFab WHERE OrderID = @orderid 
                     ORDER BY Halvfabrikat_ArtikelNr, TempID";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", orderID);
                 con.Open();
                 dt.Load(cmd.ExecuteReader());
@@ -135,7 +136,7 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
                 {
                     var query = @"SELECT DISTINCT Halvfabrikat_OrderNr FROM [Order].PreFab ORDER BY Halvfabrikat_OrderNr";
 
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     con.Open();
                     var reader = cmd.ExecuteReader();
                     while (reader.Read())
@@ -153,7 +154,7 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
                 {
                     const string query = @"SELECT DISTINCT Halvfabrikat_Benämning FROM [Order].PreFab ORDER BY Halvfabrikat_Benämning";
 
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     con.Open();
                     var reader = cmd.ExecuteReader();
                     while (reader.Read())
@@ -205,7 +206,7 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
                             BestBeforeDate = @bestbeforedate
                         WHERE TempID = @tempid";
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@tempid", tempID);
                     cmd.Parameters.AddWithValue("@halv_ArtikelNr", artikelNr);
                    
@@ -230,7 +231,7 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
                 {
                     var query = $"UPDATE [Order].PreFab SET Extruder = @extruder WHERE OrderID = @orderid AND Halvfabrikat_ArtikelNr = @halv_ArtikelNr";
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                     cmd.Parameters.AddWithValue("@halv_ArtikelNr", artikelnr);
 
@@ -248,7 +249,7 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
             {
                 var query = $"UPDATE [Order].PreFab SET Halvfabrikat_OrderNr = @H_O WHERE OrderID = @orderid";
 
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                 cmd.Parameters.AddWithValue("@H_O", batchNr);
                 con.Open();
@@ -485,7 +486,7 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
                                             VALUES (@orderid, @partnumber, @description)";
 
 
-                            var cmd = new SqlCommand(query, con);
+                            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                             cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                             cmd.Parameters.AddWithValue("@partnumber", part.PartNumber);
                             SQL_Parameter.String(cmd.Parameters, "@description", part.Description);
@@ -529,7 +530,7 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
                         INSERT INTO [Order].PreFab (OrderID, Halvfabrikat_ArtikelNr, Halvfabrikat_Benämning)
                             VALUES (@id, @h_a, @h_b)";
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@id", Order.OrderID);
                     cmd.Parameters.AddWithValue("@h_a", tråd_artikelNr);
                     cmd.Parameters.AddWithValue("@h_b", tråd_Benämning);
@@ -552,7 +553,7 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
                             SELECT OrderID, Halvfabrikat_ArtikelNr, Halvfabrikat_Benämning, Halvfabrikat_ID, Halvfabrikat_OD, Halvfabrikat_W, BestBeforeDate, Length 
                             FROM [Order].PreFab WHERE OrderID = @orderid AND TempID = @tempid";
 
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     con.Open();
                     cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                     cmd.Parameters.AddWithValue("@tempid", tempId);
@@ -566,7 +567,7 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
                     const string query = @"
                             DELETE FROM [Order].PreFab WHERE TempID = @tempid";
 
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     con.Open();
                     cmd.Parameters.AddWithValue("@tempid", tempID);
                     cmd.ExecuteNonQuery();

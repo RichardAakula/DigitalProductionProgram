@@ -11,6 +11,7 @@ using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Equipment;
 using DigitalProductionProgram.Help;
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.PrintingServices;
 using DigitalProductionProgram.Processcards;
@@ -32,7 +33,7 @@ namespace DigitalProductionProgram.Templates
                 {
                     const string query = @"
                     SELECT COUNT(*) FROM Processcard.MainData WHERE ProtocolMainTemplateID = @maintemplateid";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     con.Open();
                     cmd.Parameters.AddWithValue("@maintemplateid", MainTemplate.ID);
                     var value = cmd.ExecuteScalar();
@@ -52,7 +53,7 @@ namespace DigitalProductionProgram.Templates
                 {
                     const string query = @"
                     SELECT COUNT(*) FROM [Order].MainData WHERE ProtocolMainTemplateID = @maintemplateid";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     con.Open();
                     cmd.Parameters.AddWithValue("@maintemplateid", MainTemplate.ID);
                     var value = cmd.ExecuteScalar();
@@ -219,7 +220,7 @@ namespace DigitalProductionProgram.Templates
                 SELECT DISTINCT Name
                 FROM Protocol.MainTemplate
                 ORDER BY Name";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 con.Open();
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
@@ -243,7 +244,7 @@ namespace DigitalProductionProgram.Templates
                 SELECT DISTINCT Revision
                 FROM Protocol.MainTemplate
                 WHERE Name = @name";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@name", cb_TemplateName.Text);
                 con.Open();
                 var reader = cmd.ExecuteReader();
@@ -265,7 +266,7 @@ namespace DigitalProductionProgram.Templates
             using (var con = new SqlConnection(Database.cs_Protocol))
             {
                 const string query = @"SELECT LineClearance_Revision as Revision FROM LineClearance.MainTemplate WHERE ProtocolTemplateName = @templatename";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@templatename", cb_TemplateName.Text);
                 con.Open();
                 var adapter = new SqlDataAdapter(cmd); // Use the SqlCommand object
@@ -512,7 +513,7 @@ namespace DigitalProductionProgram.Templates
                 SELECT DISTINCT Name
                 FROM Workoperation.Names
                 ORDER BY Name";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 con.Open();
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
@@ -691,7 +692,7 @@ namespace DigitalProductionProgram.Templates
                     WHERE formtemplate.MainTemplateID = (SELECT ID From Protocol.MainTemplate WHERE Name = @templatename AND Revision = @revision) 
                         AND TemplateOrder IS NOT NULL 
                     ORDER BY TemplateOrder, MachineIndex";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@templateName", cb_TemplateName.Text);
                 cmd.Parameters.AddWithValue("@revision", cb_TemplateRevision.Text);
                 con.Open();
@@ -736,7 +737,7 @@ namespace DigitalProductionProgram.Templates
             {
                 const string query =
                     @"SELECT DISTINCT Revision FROM Protocol.Template WHERE FormTemplateID IN (SELECT FormTemplateID FROM Protocol.FormTemplate WHERE MainTemplateID = @maintemplate) ORDER BY Revision DESC";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@maintemplate", MainTemplate.ID);
                 con.Open();
                 var value = cmd.ExecuteScalar();
@@ -766,7 +767,7 @@ namespace DigitalProductionProgram.Templates
                 using (var con = new SqlConnection(Database.cs_Protocol))
                 {
                     const string query = @"SELECT ID, CodeText, Unit FROM Protocol.Description WHERE Unit IS NOT NULL ORDER BY CodeText";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                     con.Open();
                     var dataAdapter = new SqlDataAdapter(query, con);
@@ -1013,7 +1014,7 @@ namespace DigitalProductionProgram.Templates
                     {
                         const string query =
                             @"SELECT IsProdLineUsedInProcesscard FROM Protocol.MainTemplate WHERE ID = @maintemplateid";
-                        var cmd = new SqlCommand(query, con);
+                        var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                         cmd.Parameters.AddWithValue("@maintemplateid", ID);
                         con.Open();
                         var result = cmd.ExecuteScalar();
@@ -1030,7 +1031,7 @@ namespace DigitalProductionProgram.Templates
                 {
                     const string query = @"
                     SELECT COUNT(*) FROM Processcard.MainData WHERE ProtocolMainTemplateID = @maintemplateid";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     con.Open();
                     cmd.Parameters.AddWithValue("@maintemplateid", ID);
                     var value = cmd.ExecuteScalar();
@@ -1048,7 +1049,7 @@ namespace DigitalProductionProgram.Templates
                 {
                     const string query = @"
                     SELECT COUNT(*) FROM [Order].MainData WHERE ProtocolMainTemplateID = @maintemplateid";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     con.Open();
                     cmd.Parameters.AddWithValue("@maintemplateid", Templates_Protocol.MainTemplate.ID);
                     var value = cmd.ExecuteScalar();
@@ -1066,7 +1067,7 @@ namespace DigitalProductionProgram.Templates
                 {
                     const string query = @"
                         SELECT * FROM Protocol.MainTemplate WHERE Name = @name AND Revision = @revision";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     con.Open();
                     cmd.Parameters.AddWithValue("@name", name);
                     cmd.Parameters.AddWithValue("@revision", revision);
@@ -1084,7 +1085,7 @@ namespace DigitalProductionProgram.Templates
                     const string query = @"
                         SELECT ProtocolMainTemplateID FROM Processcard.MainData WHERE PartID = @partid";
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@partID", partID);
                     object value = cmd.ExecuteScalar();
                     if (value != null)
@@ -1099,7 +1100,7 @@ namespace DigitalProductionProgram.Templates
                 using var con = new SqlConnection(Database.cs_Protocol);
                 const string query =
                     @"SELECT ID FROM Protocol.MainTemplate WHERE Name = @name AND Revision = @revision";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@name", templateName);
                 cmd.Parameters.AddWithValue("@revision", revision);
                 con.Open();
@@ -1114,7 +1115,7 @@ namespace DigitalProductionProgram.Templates
                     using var con = new SqlConnection(Database.cs_Protocol);
                     const string query =
                         @"SELECT ProtocolMainTemplateID FROM Processcard.MainData WHERE PartID = @partid";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@partid", Order.PartID);
                     con.Open();
                     var value = cmd.ExecuteScalar();
@@ -1139,7 +1140,7 @@ namespace DigitalProductionProgram.Templates
                 {
                     const string query = @"
                     SELECT ID FROM Protocol.MainTemplate WHERE Name = @name AND Revision = @revision";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     con.Open();
                     cmd.Parameters.AddWithValue("@name", name);
                     cmd.Parameters.AddWithValue("@revision", revision);
@@ -1249,7 +1250,7 @@ namespace DigitalProductionProgram.Templates
                                 @createdby, 
                                 @createddate
                             )";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@name", name);
                     cmd.Parameters.AddWithValue("@revision", revision);
                     cmd.Parameters.AddWithValue("@isusingprefab", isUsingPreFab);
@@ -1275,7 +1276,7 @@ namespace DigitalProductionProgram.Templates
                                 IsUsingPreFab = @isusingprefab, 
                                 LineClearance_Template = @lineclearancetemplate
                             WHERE ID = @protocolmaintemplateid";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@protocolmaintemplateid", ID);
                     cmd.Parameters.AddWithValue("@isusingprefab", isUsingPreFab);
                     cmd.Parameters.AddWithValue("@lineclearancetemplate", lineClearanceTemplate);
@@ -1300,7 +1301,7 @@ namespace DigitalProductionProgram.Templates
                     DELETE FROM Protocol.Template WHERE FormTemplateID IN (SELECT FormTemplateID FROM Protocol.FormTemplate WHERE MainTemplateID = @oldmaintemplateid)
                     DELETE FROM Protocol.FormTemplate WHERE MainTemplateID = @oldmaintemplateid
                     DELETE FROM Protocol.MainTemplate WHERE ID = @oldmaintemplateid";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     con.Open();
                     cmd.Parameters.AddWithValue("@oldmaintemplateid", ID);
                     cmd.ExecuteNonQuery();
@@ -1334,7 +1335,7 @@ namespace DigitalProductionProgram.Templates
                     WHERE FormTemplateID = @formtemplateid
                         AND MainTemplateID = (SELECT ID From Protocol.MainTemplate WHERE Name = @name AND Revision = @revision)
                         AND MachineIndex = @machineIndex";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@formtemplateid", formTemplateID);
                     cmd.Parameters.AddWithValue("@name", templateName);
                     cmd.Parameters.AddWithValue("@revision", templateRevision);
@@ -1423,7 +1424,7 @@ namespace DigitalProductionProgram.Templates
                             source.MainTemplateID
                         );";
 
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@templatename", templateName);
                     cmd.Parameters.AddWithValue("@revision", revision);
 
@@ -1450,7 +1451,7 @@ namespace DigitalProductionProgram.Templates
             //            WHERE FormTemplateID = @formtemplateid
             //                AND MainTemplateID = (SELECT ID FROM Protocol.MainTemplate WHERE Name = @templatename AND Revision = @revision)
             //                AND MachineIndex = @machineindex";
-            //        var cmd = new SqlCommand(query, con);
+            //        var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             //        cmd.Parameters.AddWithValue("@templatename", templateName);
             //        cmd.Parameters.AddWithValue("@revision", revision);
             //        cmd.Parameters.AddWithValue("@formtemplateid", formtemplateid);
@@ -1485,7 +1486,7 @@ namespace DigitalProductionProgram.Templates
                         AND RowIndex = @rowIndex 
                         AND revision = @revision";
 
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@formtemplateid", formTemplateid);
                     cmd.Parameters.AddWithValue("@rowIndex", row);
                     cmd.Parameters.AddWithValue("@colindex", col);
@@ -1532,7 +1533,7 @@ namespace DigitalProductionProgram.Templates
                         AND Revision = @revision
                         AND RowIndex IS NOT NULL
                     ORDER BY RowIndex, ColumnIndex";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@formtemplateid", formTemplateID);
                     cmd.Parameters.AddWithValue("@revision", revision);
                     con.Open();

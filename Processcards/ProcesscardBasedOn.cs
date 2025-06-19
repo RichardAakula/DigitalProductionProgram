@@ -6,6 +6,7 @@ using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Help;
 using DigitalProductionProgram.Log;
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.Övrigt;
 using DigitalProductionProgram.PrintingServices;
@@ -56,7 +57,7 @@ namespace DigitalProductionProgram.Processcards
                     WHERE PartID = @partid";
                 con.Open();
 
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@datum", date);
                 SQL_Parameter.NullableINT(cmd.Parameters, "@partid", partID);
                 cmd.Parameters.AddWithValue("@qaSign", qa_sign);
@@ -84,7 +85,7 @@ namespace DigitalProductionProgram.Processcards
 
 
             using var con = new SqlConnection(Database.cs_Protocol);
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             SQL_Parameter.NullableINT(cmd.Parameters, "@partid", Order.PartID);
 
             con.Open();

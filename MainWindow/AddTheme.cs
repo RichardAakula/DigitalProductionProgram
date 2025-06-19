@@ -54,7 +54,7 @@ namespace DigitalProductionProgram.MainWindow
                         INSERT INTO [Settings].Themes (Theme, Image)
                         VALUES (@theme, @image)";
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@image", ProfilePicture);
                     cmd.Parameters.AddWithValue("@theme", cb_Theme.Text);
 

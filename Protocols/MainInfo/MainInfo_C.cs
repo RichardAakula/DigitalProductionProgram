@@ -4,6 +4,7 @@ using Microsoft.Data.SqlClient;
 using System.Windows.Forms;
 using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.DatabaseManagement;
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.Protocols.Protocol;
 
@@ -21,7 +22,7 @@ namespace DigitalProductionProgram.Protocols.MainInfo
                     var query = "SELECT boolvalue FROM [Order].Data WHERE OrderID = @orderid AND ProtocolDescriptionID = 162";
                     var IsTempChecked = false;
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                     var value = cmd.ExecuteScalar();
                     if (value != null)
@@ -49,7 +50,7 @@ namespace DigitalProductionProgram.Protocols.MainInfo
             const string query = @"SELECT OrderNr, PartNr, ProdType, Customer, Amount FROM [Order].MainData WHERE OrderID = @orderid";
 
             con.Open();
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@orderid", OrderID);
             var reader = cmd.ExecuteReader();
             {
@@ -79,7 +80,7 @@ namespace DigitalProductionProgram.Protocols.MainInfo
                         SET boolvalue = @boolvalue
                         WHERE OrderID = @orderid AND ProtocolDescriptionID = (SELECT ID FROM Protocol.Description WHERE CodeText = 'TempKalibCheck')";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                 cmd.Parameters.AddWithValue("@uppstart", DBNull.Value);
                 cmd.Parameters.AddWithValue("@ugn", DBNull.Value);

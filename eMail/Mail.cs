@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Help;
-
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.PrintingServices;
 using DigitalProductionProgram.User;
@@ -28,7 +28,7 @@ namespace DigitalProductionProgram.eMail
                         SELECT * FROM Log.ActivityLog WHERE Info = 'Autotest Jira' 
                             AND Date BETWEEN CAST(FLOOR(CAST(GETDATE() AS FLOAT)) AS DATETIME)
                             AND DATEADD(DAY, 1, CAST(FLOOR(CAST(GETDATE() AS FLOAT)) AS DATETIME))";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 con.Open();
                 var reader = cmd.ExecuteReader();
                 if (reader.HasRows)
@@ -49,7 +49,7 @@ namespace DigitalProductionProgram.eMail
             const string query = "SELECT Mail FROM Authorities.CustomMail WHERE TemplateID = @id";
 
             con.Open();
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@id", id);
             var reader = cmd.ExecuteReader();
             while (reader.Read())
@@ -146,7 +146,7 @@ namespace DigitalProductionProgram.eMail
                 using var con = new SqlConnection(Database.cs_Protocol);
                 const string query = "SELECT * FROM Processcard.ProposedChanges WHERE OrderID = @orderid ORDER BY Datum";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                 var reader = cmd.ExecuteReader();
                 if (reader.HasRows == false)
@@ -193,7 +193,7 @@ namespace DigitalProductionProgram.eMail
             using var con = new SqlConnection(Database.cs_Protocol);
             const string query = @"INSERT INTO Parts.PartNrSpecial (PartNr, PartNrDescriptionID )
                                VALUES (@partNr, 3)";
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@partNr", Order.PartNumber);
             con.Open();
             cmd.ExecuteNonQuery();
@@ -239,7 +239,7 @@ namespace DigitalProductionProgram.eMail
             using var con = new SqlConnection(Database.cs_Protocol);
             const string query = "SELECT Mail FROM [User].Person WHERE Mail IS NOT NULL";
             con.Open();
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             var reader = cmd.ExecuteReader();
             while (reader.Read())
                 if (IsValidEmail(reader[0].ToString()))

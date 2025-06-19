@@ -9,7 +9,7 @@ using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Equipment;
 using DigitalProductionProgram.Help;
-
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.PrintingServices;
 
@@ -26,7 +26,7 @@ namespace DigitalProductionProgram.Measure
                 {
                     con.Open();
                     var query = @"SELECT * FROM MeasureInstruments.Templates ORDER BY MätdonsNr";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@id", Order.OrderID);
                     var reader = cmd.ExecuteReader();
                     var row = 0;
@@ -55,7 +55,7 @@ namespace DigitalProductionProgram.Measure
 	                        ON template.Template_ID = mätdon.ID
                     WHERE WorkOperation = @workoperation
                     ORDER BY MätdonsNr";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@id", Order.OrderID);
                 cmd.Parameters.AddWithValue("@workoperation", Order.WorkOperation.ToString());
                 var reader = cmd.ExecuteReader();
@@ -92,7 +92,7 @@ namespace DigitalProductionProgram.Measure
             {
                 con.Open();
                 var query = @"SELECT * FROM MeasureInstruments.Mätdon WHERE OrderID = @orderid ORDER BY Mätdon";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                 var reader = cmd.ExecuteReader();
                 var row = 0;
@@ -126,7 +126,7 @@ namespace DigitalProductionProgram.Measure
 	                        ON template.Template_ID = mätdon.ID
                     WHERE WorkOperation = @workoperation
                     ORDER BY MätdonsNr";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@workoperation", Order.WorkOperation.ToString());
                 var reader = cmd.ExecuteReader();
                 var row = 0;
@@ -181,7 +181,7 @@ namespace DigitalProductionProgram.Measure
                     ELSE
                         UPDATE MeasureInstruments.Mätdon SET Nr = @nr WHERE OrderID = @id AND Row = @row";
             con.Open();
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@id", Order.OrderID);
             cmd.Parameters.AddWithValue("@mätdon", Mätdon);
             SQL_Parameter.String(cmd.Parameters, "@nr", Nr, true);
@@ -201,7 +201,7 @@ namespace DigitalProductionProgram.Measure
                     var query = @"
                         DELETE FROM MeasureInstruments.Mätdon WHERE OrderID = @id AND Row = @row";
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@id", Order.OrderID);
                     cmd.Parameters.AddWithValue("@mätdon", MeasureInstrument);
                     cmd.Parameters.AddWithValue("@row", Row);

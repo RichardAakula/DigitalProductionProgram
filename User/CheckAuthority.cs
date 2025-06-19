@@ -6,7 +6,7 @@ using DigitalProductionProgram.ControlsManagement;
 using Microsoft.Data.SqlClient;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Help;
-
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.PrintingServices;
 
@@ -76,7 +76,7 @@ namespace DigitalProductionProgram.User
 
                 using var con = new SqlConnection(Database.cs_Protocol);
                 const string query = @"SELECT ID, CodeText FROM Authorities.TemplateAuthorities ORDER BY ID";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 con.Open();
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
@@ -135,7 +135,7 @@ namespace DigitalProductionProgram.User
             const string query = "SELECT * FROM Authorities.CustomWorkoperation WHERE TemplateID = @id AND Workoperation = @workoperation";
 
             con.Open();
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@id", (int)val);
             cmd.Parameters.AddWithValue("@workoperation", Order.WorkOperation.ToString());
             var reader = cmd.ExecuteReader();
@@ -151,7 +151,7 @@ namespace DigitalProductionProgram.User
             const string query = "SELECT * FROM Authorities.CustomFactory WHERE TemplateID = @id AND Factory = @factory";
 
             con.Open();
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@id", (int)val);
             cmd.Parameters.AddWithValue("@factory", Monitor.Monitor.factory.ToString());
             var reader = cmd.ExecuteReader();

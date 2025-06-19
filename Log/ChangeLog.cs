@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Reflection;
 using DigitalProductionProgram.DatabaseManagement;
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.PrintingServices;
 
 namespace DigitalProductionProgram.Log
@@ -18,7 +19,7 @@ namespace DigitalProductionProgram.Log
                 using var con = new SqlConnection(Database.cs_Protocol);
                 const string query = "SELECT Version, Description From Log.ChangeLog WHERE VisibleToUser = 'True' AND ID > (SELECT TOP(1) ID FROM Log.ChangeLog WHERE Version = @activeVersion ORDER BY ID DESC) ORDER BY ID DESC";
 
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@activeVersion", CurrentVersion.ToString());
                 con.Open();
                 var reader = cmd.ExecuteReader();
@@ -49,7 +50,7 @@ namespace DigitalProductionProgram.Log
                     using var con = new SqlConnection(Database.cs_Protocol);
                     const string query = "SELECT TOP(1) Version FROM Log.ChangeLog WHERE ReleaseDate IS NOT NULL ORDER BY ID DESC";
 
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     con.Open();
                     Version.TryParse((string)cmd.ExecuteScalar(), out var vers);
                     return vers;
@@ -158,7 +159,7 @@ namespace DigitalProductionProgram.Log
                     AND ReleaseDate IS NOT NULL
                     ORDER BY ID";
 
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@version", labelVersion.Text);
             con.Open();
 

@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Globalization;
 using System.Windows.Forms;
 using DigitalProductionProgram.DatabaseManagement;
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.Övrigt;
 using DigitalProductionProgram.Processcards;
@@ -47,11 +48,11 @@ namespace DigitalProductionProgram.Protocols.Kragning_TEF
                     WHERE FormTemplateID = @formtemplateid
                     AND ColumnIndex IS NOT NULL
                     ORDER BY RowIndex";
-            con.Open();
-            var cmd = new SqlCommand(query, con);
-            cmd.Parameters.AddWithValue("@formtemplateid", 8);
-            //cmd.Parameters.AddWithValue("@revision", Processcard.Active_Processcard_Revision(8));
-            var reader = cmd.ExecuteReader();
+                con.Open();
+                var cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@formtemplateid", 8);
+                //cmd.Parameters.AddWithValue("@revision", Processcard.Active_Processcard_Revision(8));
+                var reader = cmd.ExecuteReader();
 
             while (reader.Read())
             {
@@ -99,20 +100,20 @@ namespace DigitalProductionProgram.Protocols.Kragning_TEF
                     WHERE pc_data.PartID = @partID
                     
                     ORDER BY RowIndex, ColumnIndex";
-            con.Open();
-            var cmd = new SqlCommand(query, con);
-            SQL_Parameter.NullableINT(cmd.Parameters, "@partID", Order.PartID);
-            var reader = cmd.ExecuteReader();
-            while (reader.Read())
-            {
-                int.TryParse(reader["Type"].ToString(), out var type);
-                int.TryParse(reader["ColumnIndex"].ToString(), out var row);
-                int.TryParse(reader["RowIndex"].ToString(), out var col);
-                var value = string.Empty;
-                switch (type)
+                con.Open();
+                var cmd = new SqlCommand(query, con);
+                SQL_Parameter.NullableINT(cmd.Parameters, "@partID", Order.PartID);
+                var reader = cmd.ExecuteReader();
+                while (reader.Read())
                 {
-                    case 0://NumberValue
-                        int.TryParse(reader["Decimals"].ToString(), out var decimals);
+                    int.TryParse(reader["Type"].ToString(), out var type);
+                    int.TryParse(reader["ColumnIndex"].ToString(), out var row);
+                    int.TryParse(reader["RowIndex"].ToString(), out var col);
+                    var value = string.Empty;
+                    switch (type)
+                    {
+                        case 0://NumberValue
+                            int.TryParse(reader["Decimals"].ToString(), out var decimals);
 
                         if (double.TryParse(reader["Value"].ToString(), out var NumberValue) == false)
                             value = string.Empty;
@@ -226,7 +227,7 @@ namespace DigitalProductionProgram.Protocols.Kragning_TEF
                     COMMIT TRANSACTION";
 
                 
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@partid", Order.PartID);
                 if (parameters != null)
                     Add_Parameters(cmd, parameters);
@@ -245,7 +246,7 @@ namespace DigitalProductionProgram.Protocols.Kragning_TEF
                     query += $"{Manage_Processcards.UPDATE_Processkort_Main} ";
 
                 query += "COMMIT TRANSACTION";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@partid", Order.PartID);
                 if (parameters != null)
                     Add_Parameters(cmd, parameters);

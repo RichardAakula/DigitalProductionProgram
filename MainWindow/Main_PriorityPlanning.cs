@@ -91,6 +91,11 @@ namespace DigitalProductionProgram.MainWindow
             LanguageManager.TranslationHelper.TranslateControls(controls);
         }
 
+
+        private readonly Dictionary<string, bool> _orderExistCache = new();
+        private readonly Dictionary<string, int?> _partIdCache = new();
+        private readonly Dictionary<int, Part.ProcesscardStatus> _partStatusCache = new();
+
         public void Load_PriorityPlanning()
         {
             var dt = dt_PriorityPlan;
@@ -102,10 +107,27 @@ namespace DigitalProductionProgram.MainWindow
             var WorkCenter = Utilities.GetOneFromMonitor<Manufacturing.WorkCenters>($"filter=Number Eq'{tb_ProdGrupp.Text}'");
             if (WorkCenter is null)
                 return;
+
             var orderOperations = Utilities.GetFromMonitor<Manufacturing.ManufacturingOrderOperations>($"filter=WorkCenterId Eq'{WorkCenter.Id}' AND RestQuantity gt'0'", "orderby=Priority");
             var ctr = -1;
 
             Manage_WorkOperation.WorkOperations workOperation = new Manage_WorkOperation.WorkOperations();
+
+            // Fyll cache för order start-status
+            foreach (var row in orderOperations)
+            {
+                var ordernr = Utilities.GetOneFromMonitor<Manufacturing.ManufacturingOrders>($"filter=Id Eq'{row.ManufacturingOrderId}'");
+                if (ordernr == null) continue;
+
+                var key = $"{ordernr.OrderNumber}-{row.OperationNumber}";
+                if (!_orderExistCache.ContainsKey(key))
+                {
+                    bool isStarted = Order.IsOrder_Exist(ordernr.OrderNumber, row.OperationNumber.ToString());
+                    _orderExistCache[key] = isStarted;
+                }
+            }
+
+            // Bygg datatable med data och använd cachen för isStarted
             foreach (var row in orderOperations)
             {
                 ctr++;
@@ -115,20 +137,23 @@ namespace DigitalProductionProgram.MainWindow
                 if (ordernr == null)
                     continue;
 
-                dt.Rows.Add();
-                dt.Rows[dt.Rows.Count - 1]["OrderNr"] = ordernr.OrderNumber;
-                dt.Rows[dt.Rows.Count - 1]["Operation"] = row.OperationNumber;
-                dt.Rows[dt.Rows.Count - 1]["ArtikelNr"] = part.PartNumber;
-                dt.Rows[dt.Rows.Count - 1]["Benämning"] = part.Description;
-                dt.Rows[dt.Rows.Count - 1]["ProdLine"] = row.Description;
-                dt.Rows[dt.Rows.Count - 1]["Antal Rest"] = $"{row.RestQuantity:0}";
-                dt.Rows[dt.Rows.Count - 1]["Antal"] = $"{row.PlannedQuantity:0}";
-                dt.Rows[dt.Rows.Count - 1]["Total Tid"] = $"{ts.TotalHours:0.0}";
-                dt.Rows[dt.Rows.Count - 1]["Planerad Start"] = $"{row.PlannedStartDate:yyyy-MM-dd}";
-                dt.Rows[dt.Rows.Count - 1]["Planerad Stopp"] = $"{row.PlannedFinishDate:yyyy-MM-dd}";
-                dt.Rows[dt.Rows.Count - 1]["Order Startad"] = Order.IsOrder_Exist(ordernr.OrderNumber, row.OperationNumber.ToString());
-                dt.Rows[dt.Rows.Count - 1]["Processkort Godkänt"] = Part.IsPartNr_ApprovedQA;
+                var key = $"{ordernr.OrderNumber}-{row.OperationNumber}";
+                bool isStarted = false;
+                _orderExistCache.TryGetValue(key, out isStarted);
 
+                dt.Rows.Add();
+                dt.Rows[^1]["OrderNr"] = ordernr.OrderNumber;
+                dt.Rows[^1]["Operation"] = row.OperationNumber;
+                dt.Rows[^1]["ArtikelNr"] = part.PartNumber;
+                dt.Rows[^1]["Benämning"] = part.Description;
+                dt.Rows[^1]["ProdLine"] = row.Description;
+                dt.Rows[^1]["Antal Rest"] = $"{row.RestQuantity:0}";
+                dt.Rows[^1]["Antal"] = $"{row.PlannedQuantity:0}";
+                dt.Rows[^1]["Total Tid"] = $"{ts.TotalHours:0.0}";
+                dt.Rows[^1]["Planerad Start"] = $"{row.PlannedStartDate:yyyy-MM-dd}";
+                dt.Rows[^1]["Planerad Stopp"] = $"{row.PlannedFinishDate:yyyy-MM-dd}";
+                dt.Rows[^1]["Order Startad"] = isStarted;
+                dt.Rows[^1]["Processkort Godkänt"] = Part.IsPartNr_ApprovedQA;
 
                 dgv_PriorityPlanning.Invoke(new Action(() => dgv_PriorityPlanning.DataSource = dt));
                 dgv_PriorityPlanning.Invoke(new Action(() => dgv_PriorityPlanning.Columns["Order Startad"].Visible = false));
@@ -137,37 +162,69 @@ namespace DigitalProductionProgram.MainWindow
                 var partNr = dgv_PriorityPlanning.Rows[ctr].Cells["ArtikelNr"].Value.ToString();
                 var operation = row.OperationNumber;
                 var orderID = Order.GetOrderID(ordernr.OrderNumber, operation.ToString());
-               
+
                 if (workOperation == Manage_WorkOperation.WorkOperations.Nothing)
                     workOperation = Manage_WorkOperation.Load_WorkOperation(false, orderID, null, row.Description);
+                string partKey = $"{partNr}__{workOperation}";
+                if (!_partIdCache.TryGetValue(partKey, out var partID))
+                {
+                    partID = Part.Get_PartID(partNr, workOperation);
+                    _partIdCache[partKey] = partID;
+                }
+                if (!_partStatusCache.TryGetValue(partID ?? 0, out var status))
+                {
+                    status = Part.GetProcesscardStatus(partID);
+                    _partStatusCache[partID ?? 0] = status;
+                }
 
-                var partID = Part.Get_PartID(partNr, workOperation);
+                var rowObj = dgv_PriorityPlanning.Rows[ctr];
 
-                //GUL       Order startad
-                if (IsOrderStarted(ctr))
+                // GUL
+                if (bool.Parse(rowObj.Cells["Order Startad"].Value.ToString()))
+                {
+                    rowObj.DefaultCellStyle.BackColor = CustomColors.Warning_Back;
+                    rowObj.DefaultCellStyle.ForeColor = CustomColors.Warning_Front;
                     continue;
+                }
 
-                //GRÖN      Skall ej ha PROCESSKORT, OK Att starta
-                if (IsNoProcesscard(ctr, workOperation))
+                // RÖD
+                if (!status.IsApprovedQA && status.IsPartIDExist)
+                {
+                    rowObj.DefaultCellStyle.BackColor = CustomColors.Bad_Back;
+                    rowObj.DefaultCellStyle.ForeColor = CustomColors.Bad_Front;
                     continue;
-                //RÖD       Order ej godkänd av QA
-                if (IsNotApprovedByQA(ctr, partID))
-                    continue;
-                //Vit       Parametrar saknas
-                if (IsProcesscardMissing(ctr, partID))
-                    continue;
-                //Orange    PartNr utan processkort körd fler än 3 ggr - Processkort behövs - Kontakta arbetsledare
-                if (IsProcesscardMissingAndRunnedMoreThan3Times(ctr, partID))
-                    continue;
+                }
 
-                //Brun    Processkort under framarbetning och körd fler än 3 gånger - Kontakta arbetsledare
-                if (IsProcesscardUnderConstructionAndRunnedMoreThan3Times(ctr, operation, partID))
+                // VIT
+                if (!status.IsPartIDExist && status.TotalOrders < 3)
+                {
+                    rowObj.DefaultCellStyle.BackColor = CustomColors.Parametrar_Saknas_Back;
+                    rowObj.DefaultCellStyle.ForeColor = CustomColors.Parametrar_Saknas_Front;
                     continue;
-                //Grön      Order Ok att starta
-                if (IsOrderOkStart(ctr))
+                }
+
+                // ORANGE
+                if (!status.IsPartIDExist && status.TotalOrders >= 3)
+                {
+                    rowObj.DefaultCellStyle.BackColor = Color.DarkOrange;
+                    rowObj.DefaultCellStyle.ForeColor = Color.Brown;
                     continue;
+                }
+
+                // BRUN
+                if (status.IsUnderConstruction && status.TotalOrders > 2)
+                {
+                    rowObj.DefaultCellStyle.BackColor = Color.Brown;
+                    rowObj.DefaultCellStyle.ForeColor = Color.DarkOrange;
+                    continue;
+                }
+
+                // GRÖN OK ATT STARTA
+                rowObj.DefaultCellStyle.BackColor = CustomColors.Ok_Back;
+                rowObj.DefaultCellStyle.ForeColor = CustomColors.Ok_Front;
             }
         }
+
         private bool IsOrderStarted(int row)
         {
             if (bool.Parse(dgv_PriorityPlanning.Rows[row].Cells["Order Startad"].Value.ToString()))
@@ -247,7 +304,7 @@ namespace DigitalProductionProgram.MainWindow
                     WHERE QA_sign IS NULL AND Framtagning_Processfönster = 'False' AND Aktiv = 'True'
                     ORDER BY RevÄndratDatum";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 var reader = cmd.ExecuteReader();
                 dt.Load(reader);
             }
@@ -276,9 +333,8 @@ namespace DigitalProductionProgram.MainWindow
 
         private static bool Is_Processcard_Approved(string partnr, string workoperation, string prodline, string prodtype)
         {
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query = @"
+            using var con = new SqlConnection(Database.cs_Protocol);
+            var query = @"
                     SELECT QA_sign, Framtagning_Processfönster
                     FROM Processcard.MainData
                     WHERE PartNr = @partnr
@@ -287,24 +343,24 @@ namespace DigitalProductionProgram.MainWindow
                         AND (COALESCE(ProdType, '') = COALESCE(@prodtype, ''))
                    
                     ORDER BY RevNr DESC";
-                con.Open();
-                var cmd = new SqlCommand(query, con);
-                cmd.Parameters.AddWithValue("@partnr", partnr);
-                cmd.Parameters.AddWithValue("@workoperation", workoperation);
-                cmd.Parameters.AddWithValue("@prodline", prodline);
-                cmd.Parameters.AddWithValue("@prodtype", prodtype);
-                var reader = cmd.ExecuteReader();
-                while (reader.Read())
-                {
-                    var sign = reader[0].ToString();
-                    var framtagning = bool.Parse(reader[1].ToString());
-                    if (framtagning)
-                        return true;
-                    if (string.IsNullOrEmpty(sign))
-                        return false;
+            con.Open();
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            cmd.Parameters.AddWithValue("@partnr", partnr);
+            cmd.Parameters.AddWithValue("@workoperation", workoperation);
+            cmd.Parameters.AddWithValue("@prodline", prodline);
+            cmd.Parameters.AddWithValue("@prodtype", prodtype);
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                var sign = reader[0].ToString();
+                var framtagning = bool.Parse(reader[1].ToString());
+                if (framtagning)
                     return true;
-                }
+                if (string.IsNullOrEmpty(sign))
+                    return false;
+                return true;
             }
+
             return true;
         }
 
@@ -358,6 +414,8 @@ namespace DigitalProductionProgram.MainWindow
             Order.ProdLine = org_ProdLinje;
         }
 
-      
+
+        
+
     }
 }

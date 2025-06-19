@@ -4,6 +4,7 @@ using Microsoft.Data.SqlClient;
 using System.IO;
 using System.Windows.Forms;
 using DigitalProductionProgram.DatabaseManagement;
+using DigitalProductionProgram.MainWindow;
 
 namespace DigitalProductionProgram.User
 {
@@ -54,7 +55,7 @@ namespace DigitalProductionProgram.User
                     query = "INSERT INTO [User].Gallup (Fråga, SvarsAlternativ_1, SvarsAlternativ_2, SvarsAlternativ_3,SvarsAlternativ_4, Svar_1, Svar_2, Svar_3, Svar_4, Done, Show_Result) VALUES (@question, @svarAlt_1, @svarAlt_2, @svarAlt_3, @svarAlt_4, 0, 0, 0, 0, 'False', 'False')";
                 else
                     query = "INSERT INTO [User].Gallup (Fråga, Bild, SvarsAlternativ_1, SvarsAlternativ_2, SvarsAlternativ_3,SvarsAlternativ_4, Svar_1, Svar_2, Svar_3, Svar_4, Done, Show_Result) VALUES (@question, @img, @svarAlt_1, @svarAlt_2, @svarAlt_3, @svarAlt_4, 0, 0, 0, 0, 'False', 'False')";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 con.Open();
                 cmd.Parameters.AddWithValue("@question", tb_Fråga.Text);
                 cmd.Parameters.AddWithValue("@svarAlt_1", tb_SvarAlt_1.Text);
@@ -75,7 +76,7 @@ namespace DigitalProductionProgram.User
             using (var con = new SqlConnection(Database.cs_Protocol))
             {
                 var query = "UPDATE [User].Person SET Vote_Last_Gallup = 'False'";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 con.Open();
                 cmd.ExecuteScalar();     
             }
@@ -85,7 +86,7 @@ namespace DigitalProductionProgram.User
             using (var con = new SqlConnection(Database.cs_Protocol))
             {
                 var query = "SELECT * FROM [User].Gallup WHERE Done = 'False' AND Show_Result = 'False'";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 con.Open();
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
@@ -110,7 +111,7 @@ namespace DigitalProductionProgram.User
             using (var con = new SqlConnection(Database.cs_Protocol))
             {
                 var query = "UPDATE [User].Gallup SET Show_Result = 'True', Done = 'True' WHERE Fråga = @fråga";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@fråga",tb_Fråga.Text);
                 con.Open();
                 cmd.ExecuteNonQuery();

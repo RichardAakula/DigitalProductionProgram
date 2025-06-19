@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Drawing.Printing;
 using System.Windows.Forms;
 using DigitalProductionProgram.DatabaseManagement;
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.Protocols;
 using static DigitalProductionProgram.PrintingServices.Workoperation_Printouts.Print_Protocol.PrintOut;
@@ -33,7 +34,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                             FROM [Order].MainData
                             WHERE OrderID = @orderid";
 
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                     con.Open();
                     var reader = cmd.ExecuteReader();
@@ -88,7 +89,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                             ON svetsning.PartID = main.PartID
                         WHERE svetsning.PartID = @artID";
 
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@artID", Order.PartID);
                     con.Open();
                     var reader = cmd.ExecuteReader();
@@ -362,7 +363,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                             
                             FROM Korprotokoll_Svetsning_Maskinparametrar WHERE OrderID = @orderid";
 
-                        var cmd = new SqlCommand(query, con);
+                        var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                         cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                         con.Open();
                         var reader = cmd.ExecuteReader();
@@ -457,7 +458,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                         FROM(SELECT *, ROW_NUMBER() OVER(ORDER BY Datum, TID) AS RowNum
                             FROM Korprotokoll_Svetsning_Parametrar WHERE OrderID = @orderid) AS MyDerivedTable 
                             WHERE MyDerivedTable.RowNum BETWEEN @start and @slut";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                 cmd.Parameters.AddWithValue("@start", Measureprotocol.FirstRowMeasurment);
                 cmd.Parameters.AddWithValue("@slut", Measureprotocol.LastRowMeasurement);
@@ -513,7 +514,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                         {Queries.WHERE_OrderID} 
                         ORDER BY TempID";
 
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@id", Order.OrderID);
                     con.Open();
                     var reader = cmd.ExecuteReader();

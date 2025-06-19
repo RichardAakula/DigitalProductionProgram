@@ -3,6 +3,7 @@ using Microsoft.Data.SqlClient;
 using System.Drawing.Printing;
 using System.Windows.Forms;
 using DigitalProductionProgram.DatabaseManagement;
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.Processcards;
 using DigitalProductionProgram.Protocols.Protocol;
@@ -142,7 +143,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                         WHERE FormTemplateID = (SELECT FormTemplateID FROM Protocol.FormTemplate WHERE MainTemplateID = @protocolmaintemplateid)  
                         ORDER BY ColumnIndex";
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@protocolmaintemplateid", Templates_Protocol.MainTemplate.ID);
                     cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                     var reader = cmd.ExecuteReader();
@@ -191,7 +192,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                                         AND uppstart = @row
                                         ORDER BY uppstart, ColumnIndex";
 
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     con.Open();
                     cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                     cmd.Parameters.AddWithValue("@protocolmaintemplateid", Templates_Protocol.MainTemplate.ID);

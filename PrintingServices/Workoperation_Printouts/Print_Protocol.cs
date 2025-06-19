@@ -110,7 +110,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                         FROM RankedTemplates
                         WHERE rn = 1
                         AND RowIndex IS NOT NULL";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@maintemplateid", Templates_Protocol.MainTemplate.ID);
                     con.Open();
                    var value = cmd.ExecuteScalar();
@@ -130,7 +130,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                 using var con = new SqlConnection(Database.cs_Protocol);
                 const string query =
                     @"SELECT FormTemplateID FROM Protocol.FormTemplate WHERE MainTemplateID = @maintemplateid AND MachineIndex = @machineindex ORDER BY TemplateOrder";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@maintemplateid", Templates_Protocol.MainTemplate.ID);
                 cmd.Parameters.AddWithValue("@machineindex", PrintVariables.MachineIndex);
                 con.Open();
@@ -160,7 +160,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                         FROM RankedTemplates
                         WHERE rn = 1
                         AND RowIndex IS NOT NULL";
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@formtemplateid", formtemplateid);
             con.Open();
             var value = cmd.ExecuteScalar();
@@ -186,7 +186,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                             SELECT Processcard_ColWidth, RunProtocol_ColWidth 
                             FROM Protocol.FormTemplate
                             WHERE FormTemplateID = @formtemplateid";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@formtemplateid", formtemplateid);
                 con.Open();
                 var reader = cmd.ExecuteReader();
@@ -238,7 +238,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                                         )
                                     )";
                     //--AND formtemplate.MaintemplateID = @maintemplateid";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@formtemplateid", formtemplateid);
                     cmd.Parameters.AddWithValue("@maintemplateid", Templates_Protocol.MainTemplate.ID);
                     con.Open();
@@ -547,7 +547,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                         FROM Protocol.FormTemplate                           
                         WHERE FormTemplateID = @formtemplateid
                             AND MainTemplateID = @maintemplateid";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@formtemplateid", formtemplateid);
                 cmd.Parameters.AddWithValue("@maintemplateid", Templates_Protocol.MainTemplate.ID);
                 con.Open();
@@ -620,7 +620,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
             using (var con = new SqlConnection(Database.cs_Protocol))
             {
                 const string query = @"SELECT FormTemplateID, Category FROM LineClearance.FormTemplate WHERE MainTemplateID = @maintemplateid ORDER BY TemplateOrder";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@maintemplateid", Templates_LineClearance.MainTemplate.LineClearance_MainTemplateID);
                 con.Open();
                 var reader = cmd.ExecuteReader();
@@ -649,7 +649,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                 using (var con = new SqlConnection(Database.cs_Protocol))
                 {
                     const string query = @"SELECT * FROM Protocol.Template WHERE FormTemplateID = @formtemplateid AND (ColumnIndex = 0 OR ColumnIndex = 2)";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@formtemplateid", formtemplateid);
                     con.Open();
                     var reader = cmd.ExecuteReader();
@@ -667,7 +667,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                     {
                         const string query =
                             @"SELECT * FROM Protocol.Template WHERE FormTemplateID IN (SELECT FormTemplateID FROM Protocol.FormTemplate WHERE MainTemplateID = @maintemplateid) AND (ColumnIndex IN (0,1,2))";
-                        var cmd = new SqlCommand(query, con);
+                        var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                         cmd.Parameters.AddWithValue("@maintemplateid", Templates_Protocol.MainTemplate.ID);
                         con.Open();
                         var reader = cmd.ExecuteReader();
@@ -686,7 +686,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                     {
                         var query = $"SELECT COUNT(Row) FROM [Order].ExtraComments WHERE OrderID = @orderid";
                         con.Open();
-                        var cmd = new SqlCommand(query, con);
+                        var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                         cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                         var value = cmd.ExecuteScalar();
                         if (int.TryParse(value.ToString(), out var totalRows))
@@ -789,7 +789,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                         AND ProtocolDescriptionID = 
 	                        (SELECT ID FROM Protocol.Description WHERE CodeText = @codetext)";
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@id", Order.OrderID);
                     cmd.Parameters.AddWithValue("@codetext", text);
                     var reader = cmd.ExecuteReader();
@@ -832,7 +832,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                     using var con = new SqlConnection(Database.cs_Protocol);
                     const string query = "SELECT BoolValue, Value FROM [Order].Data WHERE OrderID = @orderid AND ProtocolDescriptionID = @protocoldescriptionid";
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                     cmd.Parameters.AddWithValue("@protocoldescriptionid", ProtocolDescriptionID[i]);
                     var reader = cmd.ExecuteReader();
@@ -865,7 +865,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                     const string query = @"SELECT LineClearance_Template FROM Protocol.MainTemplate WHERE ID = @maintemplateid";
 
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@maintemplateid", Templates_Protocol.MainTemplate.ID);
                     var value = cmd.ExecuteScalar();
                     LineClearanceTemplate = value == DBNull.Value ? null : (string)value;
@@ -1042,7 +1042,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                 {
                     const string query = "SELECT * FROM [Order].ExtraComments WHERE OrderID = @orderid AND Row BETWEEN @rowfrom AND @rowto ORDER BY Row";
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                     cmd.Parameters.AddWithValue("@rowfrom", PrintVariables.ExtraCommentRow_From);
                     cmd.Parameters.AddWithValue("@rowto", PrintVariables.ExtraCommentRow_To);
@@ -1137,7 +1137,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                             AND RowIndex IS NOT NULL
                         ORDER BY RowIndex";
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@formtemplateid", formtemplateid);
                     cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                     var reader = cmd.ExecuteReader();
@@ -1220,7 +1220,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                                 AND (COALESCE(pc_values.MachineIndex, 0) = COALESCE(@machineindex, 0))
                                 AND formtemplate.MainTemplateID = @maintemplateid
                             ORDER BY RowIndex, ColumnIndex";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     SQL_Parameter.NullableINT(cmd.Parameters, "@partID", Order.PartID);
                     cmd.Parameters.AddWithValue("@formtemplateid", formtemplateid);
                     cmd.Parameters.AddWithValue("@maintemplateid", Templates_Protocol.MainTemplate.ID);

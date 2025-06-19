@@ -2,6 +2,7 @@
 
 using System.Data;
 using DigitalProductionProgram.ControlsManagement;
+using DigitalProductionProgram.MainWindow;
 using Microsoft.Data.SqlClient;
 using DigitalProductionProgram.OrderManagement;
 
@@ -20,7 +21,7 @@ namespace DigitalProductionProgram.Zumbach
             using (var con = new SqlConnection(Database.cs_Protocol))
             {
                 var query = "SELECT DISTINCT Bag FROM Zumbach.Measurements WHERE OrderID = @orderid ORDER BY Bag";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                 con.Open();
 
@@ -64,7 +65,7 @@ namespace DigitalProductionProgram.Zumbach
                     SELECT 
                         (SELECT COUNT(*) FROM Zumbach.Measurements) AS TotalMeasurements,
                         (SELECT COUNT(*) FROM Zumbach.Data) AS TotalMeasurePoints";
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             con.Open();
             using var reader = cmd.ExecuteReader();
             if (reader.Read())

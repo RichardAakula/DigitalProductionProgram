@@ -7,7 +7,7 @@ using System.Windows.Forms;
 using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Help;
-
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.Övrigt;
 using DigitalProductionProgram.PrintingServices;
@@ -98,7 +98,7 @@ namespace DigitalProductionProgram.Protocols.Slipning_TEF
                     FROM Processkort_Slipning
                     WHERE PartID = @partID";
 
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@partID", Order.PartID);
                 con.Open();
                 var reader = cmd.ExecuteReader();
@@ -165,7 +165,7 @@ namespace DigitalProductionProgram.Protocols.Slipning_TEF
                     INSERT INTO Korprotokoll_Slipning_Maskinparametrar
                     VALUES (@id, 'False', @0, @1, @2, @3, @4, @5, @6, @chimsHöjd, @datum, @tid, @employeenumber, @sign)";
 
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
 
                 cmd.Parameters.AddWithValue("@id", Order.OrderID);
                 cmd.Parameters.AddWithValue("@datum", DateTime.Now.ToString("yyyy-MM-dd"));

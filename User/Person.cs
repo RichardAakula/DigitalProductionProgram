@@ -6,6 +6,7 @@ using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Help;
 using DigitalProductionProgram.Log;
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.Övrigt;
 using DigitalProductionProgram.PrintingServices;
 
@@ -26,7 +27,7 @@ namespace DigitalProductionProgram.User
                     WHERE IsActive = 'True'
                     ORDER BY Name";
 
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                
 
             con.Open();
@@ -51,7 +52,7 @@ namespace DigitalProductionProgram.User
                         THEN 0 
                         ELSE 1
                         END, RoleName";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 var reader = cmd.ExecuteReader();
 
                 while (reader.Read())
@@ -73,7 +74,7 @@ namespace DigitalProductionProgram.User
                 using var con = new SqlConnection(Database.cs_Protocol);
                 var query = "SELECT DISTINCT Mail FROM [User].Person";
 
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 con.Open();
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
@@ -97,7 +98,7 @@ namespace DigitalProductionProgram.User
             using var con = new SqlConnection(Database.cs_Protocol);
             const string query = "SELECT Picture FROM [User].Picture WHERE UserID = (SELECT UserID FROM [User].Person WHERE Name = @name)";
             con.Open();
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@name", name);
             var value = cmd.ExecuteScalar();
             if (value is null)
@@ -151,7 +152,7 @@ namespace DigitalProductionProgram.User
                         AND Year = @year 
                         AND Name = @namn";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@month", DateTime.Now.Month.ToString());
                 cmd.Parameters.AddWithValue("@year", DateTime.Now.Year.ToString());
                 cmd.Parameters.AddWithValue("@namn", Name);
@@ -166,7 +167,7 @@ namespace DigitalProductionProgram.User
             {
                 using var con = new SqlConnection(Database.cs_Protocol);
                 const string query = "SELECT COUNT(*) FROM Log.ActivityLog  WHERE Info = @info";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@info", $"Loggar in: {Name}");
                 con.Open();
                 return (int)cmd.ExecuteScalar();
@@ -179,7 +180,7 @@ namespace DigitalProductionProgram.User
                 using var con = new SqlConnection(Database.cs_Protocol);
                 var query = @"SELECT (SELECT COUNT(*) FROM Measureprotocol.MainData WHERE AnstNr = @employeenumber)";
 
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@employeenumber", EmployeeNr);
                 con.Open();
                 return (int)cmd.ExecuteScalar();
@@ -191,7 +192,7 @@ namespace DigitalProductionProgram.User
             {
                 using var con = new SqlConnection(Database.cs_Protocol);
                 const string query = "SELECT Points FROM [User].Person WHERE EmployeeNumber = @employeenumber";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@employeenumber", EmployeeNr);
                 con.Open();
                 return (int)cmd.ExecuteScalar();
@@ -204,7 +205,7 @@ namespace DigitalProductionProgram.User
                 return null;
             using var con = new SqlConnection(Database.cs_Protocol);
             const string query = "SELECT Signature FROM [User].Person WHERE Name = @name";
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@name", namn);
             con.Open();
             return (string)cmd.ExecuteScalar();
@@ -214,7 +215,7 @@ namespace DigitalProductionProgram.User
             using var con = new SqlConnection(Database.cs_Protocol);
             const string query = "SELECT Name FROM [User].Person WHERE EmployeeNumber = @employeenumber";
 
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@employeenumber", anstNr);
             con.Open();
             var name = cmd.ExecuteScalar();
@@ -227,7 +228,7 @@ namespace DigitalProductionProgram.User
             using var con = new SqlConnection(Database.cs_Protocol);
             const string query = "SELECT EmployeeNumber FROM [User].Person WHERE Name = @name";
 
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@name", name);
             con.Open();
             var value = cmd.ExecuteScalar();
@@ -238,7 +239,7 @@ namespace DigitalProductionProgram.User
             using var con = new SqlConnection(Database.cs_Protocol);
             const string query = "SELECT UserID FROM [User].Person WHERE EmployeeNumber = @employeenumber";
 
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@employeenumber", employeeNr);
             con.Open();
             return (int)cmd.ExecuteScalar();
@@ -248,7 +249,7 @@ namespace DigitalProductionProgram.User
             using var con = new SqlConnection(Database.cs_Protocol);
             const string query = "SELECT LastReadChangeLogVersion FROM [User].Person WHERE Name = @name";
 
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             con.Open();
             cmd.Parameters.AddWithValue("@name", name);
             var version = (string)cmd.ExecuteScalar();
@@ -265,7 +266,7 @@ namespace DigitalProductionProgram.User
             // int anstNr;
             var query = "SELECT EmployeeNumber FROM [User].Person WHERE Name = @name";
 
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@name", namn);
             con.Open();
             var value = cmd.ExecuteScalar();
@@ -279,7 +280,7 @@ namespace DigitalProductionProgram.User
             const string query = "SELECT Name FROM [User].Person ORDER BY Name";
               
             con.Open();
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             var reader = cmd.ExecuteReader();
             while (reader.Read())
                 cm.Items.Add(reader[0].ToString());
@@ -338,7 +339,7 @@ namespace DigitalProductionProgram.User
                     'True', 
                     'True'
                 )";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@name", name);
                 cmd.Parameters.AddWithValue("@signature", sign);
                 cmd.Parameters.AddWithValue("@employeenumber", anstNr);
@@ -372,7 +373,7 @@ namespace DigitalProductionProgram.User
                     WHERE Name = @name
                         AND (@lastreadchangelogversion > LastReadChangeLogVersion OR LastReadChangeLogVersion IS NULL)";
 
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@name", username);
             cmd.Parameters.AddWithValue("@lastreadchangelogversion", ChangeLog.HighestSelectedVersion.ToString());
 
@@ -394,7 +395,7 @@ namespace DigitalProductionProgram.User
                         UPDATE [User].Picture
                         SET Picture = @picture WHERE UserID = (SELECT UserID FROM [User].Person WHERE Name = @name)";
             con.Open();
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@picture", img);
             cmd.Parameters.AddWithValue("@name", name);
             if (img != null)
@@ -507,7 +508,7 @@ namespace DigitalProductionProgram.User
                 using (var con = new SqlConnection(Database.cs_Protocol))
                 {
                     var query = "SELECT Last_Point_Time FROM [User].Person WHERE EmployeeNumber = @employeenumber";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@employeenumber", Person.EmployeeNr);
                     con.Open();
                     DateTime.TryParse(cmd.ExecuteScalar().ToString(), out last_Point);
@@ -529,7 +530,7 @@ namespace DigitalProductionProgram.User
                 using (var con = new SqlConnection(Database.cs_Protocol))
                 {
                     var query = "UPDATE [User].Person SET Points = Points + @points, Last_Point_Time = @time WHERE EmployeeNumber = @employeenumber";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@employeenumber", Person.EmployeeNr);
                     cmd.Parameters.AddWithValue("@points", point);
                     cmd.Parameters.AddWithValue("@time", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));

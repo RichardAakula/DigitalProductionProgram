@@ -11,6 +11,7 @@ using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Help;
 using DigitalProductionProgram.Log;
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.Övrigt;
 using DigitalProductionProgram.PrintingServices;
@@ -26,9 +27,8 @@ namespace DigitalProductionProgram.Measure
         {
             if (Order.PartNumber is null)
                 return 0;
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query = @"
+            using var con = new SqlConnection(Database.cs_Protocol);
+            var query = @"
                     SELECT AVG(Value) 
                     FROM Measureprotocol.Data AS data
                     INNER JOIN MeasureProtocol.MainData AS maindata
@@ -42,15 +42,14 @@ namespace DigitalProductionProgram.Measure
                             WHERE RowNum = 2)
                     AND (Discarded = 'False' OR Discarded IS NULL)
                     AND DescriptionId = (SELECT Id FROM MeasureProtocol.Description WHERE CodeName = @codename)";
-                con.Open();
-                var cmd = new SqlCommand(query, con);
-                cmd.Parameters.AddWithValue("@partnumber", Order.PartNumber);
-                cmd.Parameters.AddWithValue("@codename", codename);
-                var value = cmd.ExecuteScalar();
-                if (value != null && value.GetType() != typeof(DBNull))
-                    return double.Parse(value.ToString());
-                return 0;
-            }
+            con.Open();
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            cmd.Parameters.AddWithValue("@partnumber", Order.PartNumber);
+            cmd.Parameters.AddWithValue("@codename", codename);
+            var value = cmd.ExecuteScalar();
+            if (value != null && value.GetType() != typeof(DBNull))
+                return double.Parse(value.ToString());
+            return 0;
         }
         private static double AvgValue_Measurement_Part(string? codename)
         {
@@ -65,7 +64,7 @@ namespace DigitalProductionProgram.Measure
                         AND (Discarded = 'False' OR Discarded IS NULL)
                         AND DescriptionId = (SELECT Id FROM MeasureProtocol.Description WHERE CodeName = @codename)";
             con.Open();
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             SQL_Parameter.NullableINT(cmd.Parameters, "@partid", Order.PartID);
             cmd.Parameters.AddWithValue("@codename", codename);
             var value = cmd.ExecuteScalar();
@@ -88,7 +87,7 @@ namespace DigitalProductionProgram.Measure
                     AND (Discarded = 'False' OR Discarded IS NULL)
                         AND DescriptionId = (SELECT Id FROM MeasureProtocol.Description WHERE CodeName = @codename)";
 
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             con.Open();
             cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
             cmd.Parameters.AddWithValue("@codename", parameterCode);
@@ -189,7 +188,7 @@ namespace DigitalProductionProgram.Measure
                         AND (Discarded = 'False' OR Discarded IS NULL)
                     GROUP BY Parameter_UserText,Parameter_Monitor, CodeName, Decimals, ColumnIndex
                     ORDER BY ColumnIndex";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                 cmd.Parameters.AddWithValue("@maintemplateid", Templates_MeasureProtocol.MainTemplate.ID);
                 con.Open();
@@ -416,7 +415,7 @@ namespace DigitalProductionProgram.Measure
                             AND (Discarded = 'False' OR Discarded IS NULL)
                             AND DescriptionId = (SELECT Id FROM MeasureProtocol.Description WHERE CodeName = @codename)";
 
-                        var cmd = new SqlCommand(query, con);
+                        var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                         con.Open();
                         cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                         cmd.Parameters.AddWithValue("@codename", codename);

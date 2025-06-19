@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using DigitalProductionProgram.Protocols.Protocol;
 using System.Globalization;
 using DigitalProductionProgram.ControlsManagement;
+using DigitalProductionProgram.MainWindow;
 
 namespace DigitalProductionProgram.Protocols
 {
@@ -41,7 +42,7 @@ namespace DigitalProductionProgram.Protocols
                 using (var con = new SqlConnection(Database.cs_Protocol))
                 {
                     var query = $"SELECT COUNT(*) FROM [Order].ExtraComments {Queries.WHERE_OrderID}";
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@id", Order.OrderID);
                     con.Open();
                     return (int)cmd.ExecuteScalar();
@@ -60,7 +61,7 @@ namespace DigitalProductionProgram.Protocols
                             {Queries.WHERE_OrderID} 
                             ORDER BY Row DESC";
                     con.Open();
-                    var cmd = new SqlCommand(query, con);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@id", Order.OrderID);
                     var reader = cmd.ExecuteReader();
                     while (reader.Read())
@@ -212,7 +213,7 @@ namespace DigitalProductionProgram.Protocols
             {
                 var query = $"SELECT * FROM [Order].ExtraComments {Queries.WHERE_OrderID} ORDER BY Row";
 
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@id", Order.OrderID);
                 con.Open();
                 var reader = cmd.ExecuteReader();
@@ -256,7 +257,7 @@ namespace DigitalProductionProgram.Protocols
                 var query = $@"UPDATE [Order].ExtraComments SET Spole = @spole, Kommentar = @kommentar, Datum = @datum 
                     WHERE OrderID = @orderid AND Row = @row";
                 con.Open();
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@spole", dgv_ExtraComments.Rows[row].Cells["Spool"].Value.ToString());
                 cmd.Parameters.AddWithValue("@kommentar", dgv_ExtraComments.Rows[row].Cells["Comments"].Value.ToString());
                 if (DateTime.TryParse(dgv_ExtraComments.Rows[row].Cells["Date"].Value.ToString(), out var dateTime) == false)
@@ -298,7 +299,7 @@ namespace DigitalProductionProgram.Protocols
             {
                 const string query = @"INSERT INTO [Order].ExtraComments (OrderID, Spole, Kommentar, Datum, AnstNr, is_Locked, Row)
                                      VALUES (@orderid, @spool, @comment, @date, @empnr, @islocked, @row)";
-                var cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
 
                 cmd.Parameters.AddWithValue("@spool", spool);

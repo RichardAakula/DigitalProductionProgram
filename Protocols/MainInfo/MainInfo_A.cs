@@ -3,6 +3,7 @@ using Microsoft.Data.SqlClient;
 using System.Windows.Forms;
 using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.DatabaseManagement;
+using DigitalProductionProgram.MainWindow;
 
 namespace DigitalProductionProgram.Protocols.MainInfo
 {
@@ -24,7 +25,7 @@ namespace DigitalProductionProgram.Protocols.MainInfo
             const string query = @"SELECT OrderNr, PartNr, ProdType, Customer, Amount FROM [Order].MainData WHERE OrderID = @orderid";
 
             con.Open();
-            var cmd = new SqlCommand(query, con);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@orderid", OrderID);
             var reader = cmd.ExecuteReader();
             {

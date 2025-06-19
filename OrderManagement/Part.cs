@@ -344,26 +344,22 @@ namespace DigitalProductionProgram.OrderManagement
         {
             get
             {
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    var query = "SELECT TOP(1) PartID FROM Processcard.MainData ORDER BY PartID DESC";
-                    con.Open();
-                    var cmd = new SqlCommand(query, con);
-                    var value = cmd.ExecuteScalar() ?? 0;
-                    return (int)value + 1;
-                }
+                using var con = new SqlConnection(Database.cs_Protocol);
+                var query = "SELECT TOP(1) PartID FROM Processcard.MainData ORDER BY PartID DESC";
+                con.Open();
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                var value = cmd.ExecuteScalar() ?? 0;
+                return (int)value + 1;
             }
         }
         public static void Create_NewPartGroup_ID()
         {
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query = "SELECT TOP(1) PartGroupID FROM Processcard.MainData ORDER BY PartGroupID DESC";
-                con.Open();
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                var value = cmd.ExecuteScalar() ?? 0;
-                Order.PartGroupID = (int) value + 1;
-            }
+            using var con = new SqlConnection(Database.cs_Protocol);
+            var query = "SELECT TOP(1) PartGroupID FROM Processcard.MainData ORDER BY PartGroupID DESC";
+            con.Open();
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            var value = cmd.ExecuteScalar() ?? 0;
+            Order.PartGroupID = (int) value + 1;
         }
 
         public static void Load_ProdLine()

@@ -54,7 +54,7 @@ namespace DigitalProductionProgram.Processcards
             var ctr = 0;
             using (var con = new SqlConnection(Database.cs_Protocol))
             {
-                var query = "SELECT DISTINCT ProdLine, ProdType FROM Processcard.MainData WHERE PartNr = @partnr AND WorkoperationID = (SELECT ID FROM Workoperation.Names WHERE Name = @workoperation AND ID IS NOT NULL) AND Aktiv = 'True'";
+                var query = "SELECT DISTINCT ProdLine, ProdType FROM Processcard.MainData WHERE PartNr = @partnr AND WorkoperationID = (SELECT ID FROM Workoperation.Names WHERE Name = @workoperation AND ID IS NOT NULL)";//" AND Aktiv = 'True'"; //Inaktiva Processkort behöver räknas med och visas men operatör skall inte kunna starta det
                 con.Open();
                 var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@partnr", partNr);
@@ -102,15 +102,13 @@ namespace DigitalProductionProgram.Processcards
             {
                 if (Order.PartID is null)
                     return true;
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    const string query = "SELECT Framtagning_Processfönster FROM Processcard.MainData WHERE PartID = @partid";
-                    con.Open();
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    cmd.Parameters.AddWithValue("@partid", Order.PartID);
-                    var value = cmd.ExecuteScalar();
-                    return !bool.TryParse(value.ToString(), out var isunderconstruction) || isunderconstruction;
-                }
+                using var con = new SqlConnection(Database.cs_Protocol);
+                const string query = "SELECT Framtagning_Processfönster FROM Processcard.MainData WHERE PartID = @partid";
+                con.Open();
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                cmd.Parameters.AddWithValue("@partid", Order.PartID);
+                var value = cmd.ExecuteScalar();
+                return !bool.TryParse(value.ToString(), out var isunderconstruction) || isunderconstruction;
             }
         }
 

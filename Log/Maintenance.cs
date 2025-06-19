@@ -4,7 +4,6 @@ using Microsoft.Data.SqlClient;
 using System;
 using System.Diagnostics;
 using DigitalProductionProgram.MainWindow;
-using DigitalProductionProgram.Övrigt;
 
 namespace DigitalProductionProgram.Log
 {
@@ -22,7 +21,7 @@ namespace DigitalProductionProgram.Log
                     con.Open();
                     var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@now", DateTime.Now);
-                    stop = DateTime.Parse(cmd.ExecuteScalar().ToString());
+                    stop = DateTime.Parse(cmd.ExecuteScalar().ToString() ?? string.Empty);
                 }
                 return stop.Subtract(now);
             }
@@ -39,7 +38,7 @@ namespace DigitalProductionProgram.Log
                     con.Open();
                     var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@now", DateTime.Now);
-                    start = DateTime.Parse(cmd.ExecuteScalar().ToString());
+                    start = DateTime.Parse(cmd.ExecuteScalar().ToString() ?? string.Empty);
                 }
 
                 return now.Subtract(start);
@@ -54,7 +53,7 @@ namespace DigitalProductionProgram.Log
                 con.Open();
                 var cmd = new SqlCommand(query, con);
                 cmd.Parameters.AddWithValue("@now", DateTime.Now);
-                return DateTime.Parse(cmd.ExecuteScalar().ToString());
+                return DateTime.Parse(cmd.ExecuteScalar().ToString() ?? string.Empty);
             }
         }
 
@@ -114,7 +113,7 @@ namespace DigitalProductionProgram.Log
                 con.Open();
                 var cmd = new SqlCommand(query, con);
                 cmd.Parameters.AddWithValue("@now", DateTime.Now);
-                return cmd.ExecuteScalar().ToString();
+                return cmd.ExecuteScalar().ToString() ?? string.Empty;
             }
         }
 

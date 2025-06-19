@@ -1,6 +1,15 @@
+<<<<<<< HEAD
 MainPackage=C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram 4.3.10.3\DPP_Installer\bin\x86\Release\Install DPP_4.3.10.3_x86.msix
 SymbolPackage=C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram 4.3.10.3\DPP_Installer\obj\x86\Release\Symbols\Install DPP_4.3.10.3_x86.appxsym
 ResourcePack=C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram 4.3.10.3\DPP_Installer\bin\x86\Release\Install DPP_4.3.10.3_scale-100.msix
 ResourcePack=C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram 4.3.10.3\DPP_Installer\bin\x86\Release\Install DPP_4.3.10.3_scale-125.msix
 ResourcePack=C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram 4.3.10.3\DPP_Installer\bin\x86\Release\Install DPP_4.3.10.3_scale-150.msix
 ResourcePack=C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram 4.3.10.3\DPP_Installer\bin\x86\Release\Install DPP_4.3.10.3_scale-400.msix
+=======
+MainPackage=C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram 4.3.9.8\DPP_Installer\bin\x86\Release\Install DPP_4.3.9.2_x86.msix
+SymbolPackage=C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram 4.3.9.8\DPP_Installer\obj\x86\Release\Symbols\Install DPP_4.3.9.2_x86.appxsym
+ResourcePack=C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram 4.3.9.8\DPP_Installer\bin\x86\Release\Install DPP_4.3.9.2_scale-100.msix
+ResourcePack=C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram 4.3.9.8\DPP_Installer\bin\x86\Release\Install DPP_4.3.9.2_scale-125.msix
+ResourcePack=C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram 4.3.9.8\DPP_Installer\bin\x86\Release\Install DPP_4.3.9.2_scale-150.msix
+ResourcePack=C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram 4.3.9.8\DPP_Installer\bin\x86\Release\Install DPP_4.3.9.2_scale-400.msix
+>>>>>>> 6971207ba0edf11163f318ebd8725f90b144c355

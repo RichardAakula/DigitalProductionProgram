@@ -836,19 +836,26 @@ namespace DigitalProductionProgram.Processcards
                     foreach (DataGridViewRow row in module.dgv_Module.Rows)
                     {
                         var codetext = row.Cells["col_CodeText"].Value;
+                        if (string.IsNullOrEmpty(codetext?.ToString()))
+                            continue;
+                        
                         var min = row.Cells["col_Min"].Value;
                         var nom = row.Cells["col_Nom"].Value;
                         var max = row.Cells["col_Max"].Value;
-                        if (!string.IsNullOrEmpty(codetext.ToString()))
+                        var allAreNull = min == null && nom == null && max == null;
+
+                        if (!allAreNull)
                             dt.Rows.Add(codetext, min, nom, max);
                     }
-                    dataTables_ProcessData.Add(dt);
+                    if (dt.Rows.Count > 0)
+                        dataTables_ProcessData.Add(dt);
                 }
             }
         }
 
         private void Load_ProcessDataFromOldTemplateRevision()
         {
+            int test = dataTables_ProcessData.Count;
             foreach (var machine in flp_Machines.Controls.OfType<Machine>())
             {
                 foreach (TableLayoutPanel tlp in machine.Controls)
@@ -1206,6 +1213,7 @@ namespace DigitalProductionProgram.Processcards
                 return;
             Templates_Protocol.MainTemplate.Revision = cb_TemplateRevision.Text;
             Templates_Protocol.MainTemplate.Set_MainTemplateID(cb_ProtocolTemplateName.Text, cb_TemplateRevision.Text);
+            CopyProcessDataToNewTemplateRevision();
             Load_Data_Processcard(false, true);
         }
         private void TemplateName_SelectedIndexChanged(object sender, EventArgs e)

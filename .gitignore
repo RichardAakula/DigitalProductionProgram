@@ -1,30 +1,38 @@
-# Ignore Visual Studio stuff
-.vs/
-*.user
-*.suo
-*.appxmanifest
-# Build output
+# Byggmappar
 bin/
 obj/
 
-# NuGet
-*.nupkg
+# Visual Studio-filer
+.vs/
+*.user
+*.suo
+
+# Paket
 packages/
+*.nupkg
 *.snupkg
 
-# Debug/Release config
+# Andra filer att ignorera
 *.log
-*.tlog
+*.cache
 *.pdb
+*.mdb
 
-# Others
-*.dbmdl
-*.bak
-*.tmp
+# Testresultat
+TestResults/
 
-# Rider/ReSharper/etc (if ever)
+# Rider-specifikt
 .idea/
-*.DotSettings.user
-*.suo 
- 
+
+# MSBuild temporära filer
+*.tmp
+*.temp
+*.vspscc
+
+# Node.js om det finns
+node_modules/
+
+# Om du använder JetBrains
+*.dotCover
+
  

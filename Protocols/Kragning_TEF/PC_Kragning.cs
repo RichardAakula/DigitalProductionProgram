@@ -263,7 +263,7 @@ namespace DigitalProductionProgram.Protocols.Kragning_TEF
         private void Kragningsdon_Nr_TextChanged(object sender, EventArgs e)
         {
             if (Module.IsOkToSave)
-                KP_Kragning.INSERT_Data(dgv_Korprotokoll, 173,0, Kragningsdon_Nr.Text, 1);
+                KP_Kragning.INSERT_Data_Kragning(dgv_Korprotokoll, 173,0, Kragningsdon_Nr.Text, 1);
         }
     }
 }

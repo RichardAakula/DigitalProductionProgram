@@ -22,16 +22,14 @@ namespace DigitalProductionProgram.OrderManagement
                 get
                 {
                     var list = new List<string>();
-                    using (var con = new SqlConnection(Database.cs_Protocol))
-                    {
-                        const string query = @"SELECT Description FROM Workoperation.Names ORDER BY Description";
-                        var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                    using var con = new SqlConnection(Database.cs_Protocol);
+                    const string query = @"SELECT Description FROM Workoperation.Names ORDER BY Description";
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                         
-                        con.Open();
-                        var reader = cmd.ExecuteReader();
-                        while (reader.Read())
-                            list.Add(reader["Description"].ToString());
-                    }
+                    con.Open();
+                    var reader = cmd.ExecuteReader();
+                    while (reader.Read())
+                        list.Add(reader["Description"].ToString());
 
                     return list;
                 }
@@ -73,21 +71,19 @@ namespace DigitalProductionProgram.OrderManagement
         private static List<string> List_WorkOperationsUsingSameProdLine(string? prodline)
         {
             var names = new List<string>();
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                const string query = @"
+            using var con = new SqlConnection(Database.cs_Protocol);
+            const string query = @"
                     SELECT WorkoperationID, Name
                     FROM Workoperation.ProductionLines as prodlines
                     JOIN Workoperation.Names as names
 	                    ON prodlines.WorkoperationID = names.ID
                     WHERE ProductionLine = @prodline";
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                SQL_Parameter.String(cmd.Parameters, "@prodline", prodline);
-                con.Open();
-                var reader = cmd.ExecuteReader();
-                while (reader.Read())
-                    names.Add(reader["Name"].ToString());
-            }
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            SQL_Parameter.String(cmd.Parameters, "@prodline", prodline);
+            con.Open();
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+                names.Add(reader["Name"].ToString());
             return names;
         }
 
@@ -271,9 +267,8 @@ namespace DigitalProductionProgram.OrderManagement
                 return (WorkOperations)Enum.Parse(typeof(WorkOperations), WorkOperation);
             }
 
-            return WorkOperations.Nothing;
         }
-        private static WorkOperations Load_WorkOperationProdLine(bool IsUserChooseArbOperation, string? prodline)
+        public static WorkOperations Load_WorkOperationProdLine(bool IsUserChooseArbOperation, string? prodline)
         {
             if (string.IsNullOrEmpty(prodline))
                 prodline = Order.ProdLine;
@@ -291,30 +286,29 @@ namespace DigitalProductionProgram.OrderManagement
 
             if (Order.WorkOperation != WorkOperations.Nothing)
                 return Order.WorkOperation;
-        
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                const string query = "SELECT Name FROM Workoperation.Names WHERE ID = (SELECT TOP(1) WorkoperationID FROM Workoperation.ProductionLines WHERE ProductionLine = @prodline) AND ID IS NOT NULL";
-                con.Open();
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                if (string.IsNullOrEmpty(prodline))
-                    Part.Load_ProdLine();
-                cmd.Parameters.AddWithValue("@prodline", prodline);
-                if (string.IsNullOrEmpty(prodline))
-                    return WorkOperations.Nothing;
 
-                Enum.TryParse((string)cmd.ExecuteScalar(), out WorkOperations workOperation);
+            using var con = new SqlConnection(Database.cs_Protocol);
+            const string query = "SELECT Name FROM Workoperation.Names WHERE ID = (SELECT TOP(1) WorkoperationID FROM Workoperation.ProductionLines WHERE ProductionLine = @prodline) AND ID IS NOT NULL";
+            con.Open();
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            if (string.IsNullOrEmpty(prodline))
+                Part.Load_ProdLine();
+            cmd.Parameters.AddWithValue("@prodline", prodline);
+            if (string.IsNullOrEmpty(prodline))
+                return WorkOperations.Nothing;
 
-                if (workOperation != WorkOperations.Nothing || IsProductionLineConnectedToWorkoperation(prodline))
-                    return workOperation;
-                //Om Ordern ej finns tidigare laddas WorkOperation baserat på Prodlinje
-                if (IsUserChooseArbOperation == false)
-                    return WorkOperations.Nothing;
-                InfoText.Show($"{LanguageManager.GetString("workoperations_Info_1_1")} ({prodline}) {LanguageManager.GetString("workoperations_Info_1_2")}", CustomColors.InfoText_Color.Warning, "Warning!", null);
-                var WorkOperation = new Manage_WorkOperation();
-                WorkOperation.ShowDialog();
-                return Order.WorkOperation;
-            }
+            Enum.TryParse((string)cmd.ExecuteScalar(), out WorkOperations workOperation);
+
+            if (workOperation != WorkOperations.Nothing || IsProductionLineConnectedToWorkoperation(prodline))
+                return workOperation;
+            //Om Ordern ej finns tidigare laddas WorkOperation baserat på Prodlinje
+            if (IsUserChooseArbOperation == false)
+                return WorkOperations.Nothing;
+            InfoText.Show($"{LanguageManager.GetString("workoperations_Info_1_1")} ({prodline}) {LanguageManager.GetString("workoperations_Info_1_2")}", CustomColors.InfoText_Color.Warning, "Warning!", null);
+            var WorkOperation = new Manage_WorkOperation();
+            WorkOperation.ShowDialog();
+            return Order.WorkOperation;
         }
+       // private static WorkOperations Load_WorkOperaion()
     }
 }

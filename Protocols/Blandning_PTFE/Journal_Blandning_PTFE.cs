@@ -17,7 +17,7 @@ namespace DigitalProductionProgram.Protocols.Blandning_PTFE
 {
     public partial class Journal_Blandning_PTFE : UserControl
     {
-        public Warning warning;
+        public Warning? warning;
         public static int TotalRows
         {
             get
@@ -42,7 +42,8 @@ namespace DigitalProductionProgram.Protocols.Blandning_PTFE
         }
 
         private int uppstart;
-        public static string row_User;
+        public static string? row_User;
+        private readonly Dictionary<int, (int Type, int? Decimals, int? MaxChars)> dict_TemplateRules = new();
 
         private void ParameterUppstart(SqlParameterCollection collection, string param)
         {
@@ -56,13 +57,16 @@ namespace DigitalProductionProgram.Protocols.Blandning_PTFE
         {
             InitializeComponent();
         }
-
+        private void Journal_Blandning_PTFE_Load(object sender, EventArgs e)
+        {
+            LoadTemplateRules();
+        }
         public void Load_Info()
         {
             dgv_Journal.Columns.Clear();
             dgv_Journal_Input.Columns.Clear();
             //Temp  LuftFukt  LC  PTFE-Typ  Pig.ArtNr  LotNr   Pig.LotNr  FatNr
-            int[] width = { 50,     90,       65,           80,        80,     90,        75, 35, 60, 65, 120, 50, 50, 70, 45, 45 };
+            int[] width = { 50, 90, 65, 80, 80, 90, 75, 35, 60, 65, 120, 50, 50, 70, 45, 45 };
             using (var con = new SqlConnection(Database.cs_Protocol))
             {
                 var query = @"
@@ -87,7 +91,7 @@ namespace DigitalProductionProgram.Protocols.Blandning_PTFE
                         Name = reader[0].ToString(),
                         CellTemplate = new DataGridViewTextBoxCell(),
                         Width = width[ctr],
-                        
+
                     };
                     var col1 = new DataGridViewColumn
                     {
@@ -169,6 +173,28 @@ namespace DigitalProductionProgram.Protocols.Blandning_PTFE
                 }
             }
         }
+        private void LoadTemplateRules()
+        {
+            using var con = new SqlConnection(Database.cs_Protocol);
+            con.Open();
+            var cmd = new SqlCommand(@"
+                SELECT ColumnIndex, Type, Decimals, MaxChars
+                FROM Protocol.Template
+                WHERE FormTemplateID = @id", con);
+            cmd.Parameters.AddWithValue("@id", 16);
+
+            using var reader = cmd.ExecuteReader();
+            ServerStatus.Add_Sql_Counter();
+            while (reader.Read())
+            {
+                var colIndex = Convert.ToInt32(reader["ColumnIndex"]);
+                var type = Convert.ToInt32(reader["Type"]);
+                int? decimals = reader["Decimals"] == DBNull.Value ? null : Convert.ToInt32(reader["Decimals"]);
+                int? maxchars = reader["MaxChars"] == DBNull.Value ? null : Convert.ToInt32(reader["MaxChars"]);
+
+                dict_TemplateRules[colIndex] = (type, decimals, maxchars);
+            }
+        }
 
         private void SaveRow_Click(object sender, EventArgs e)
         {
@@ -184,7 +210,7 @@ namespace DigitalProductionProgram.Protocols.Blandning_PTFE
             foreach (DataGridViewColumn column in dgv_Journal_Input.Columns)
             {
                 var cell = dgv_Journal_Input.Rows[0].Cells[column.Index];
-                var pcID = Protocol_Description.Protocol_Description_ID_Col(column.Index,  16);
+                var pcID = Protocol_Description.Protocol_Description_ID_Col(column.Index, 16);
                 var type = Module.DatabaseManagement.ValueType(pcID, 16);
 
                 using (var con = new SqlConnection(Database.cs_Protocol))
@@ -243,101 +269,97 @@ namespace DigitalProductionProgram.Protocols.Blandning_PTFE
 
             dgv_Journal.Rows.RemoveAt(row);
 
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query = @"DELETE FROM [Order].Data WHERE OrderID = @orderid AND uppstart = @row";
-                con.Open();
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
-                cmd.Parameters.AddWithValue("@row", row + 1);
+            using var con = new SqlConnection(Database.cs_Protocol);
+            var query = @"DELETE FROM [Order].Data WHERE OrderID = @orderid AND uppstart = @row";
+            con.Open();
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
+            cmd.Parameters.AddWithValue("@row", row + 1);
 
-                cmd.ExecuteNonQuery();
-            }
+            cmd.ExecuteNonQuery();
         }
 
         private void EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
         {
             var tb = (DataGridViewTextBoxEditingControl)e.Control;
-            tb.KeyPress += AllowedChars_KeyPress;
+            tb.KeyPress += AllowedChars_KeyPress_Blandning_PTFE;
             tb.ShortcutsEnabled = false;
         }
-        private void AllowedChars_KeyPress(object sender, KeyPressEventArgs e)
+        private void AllowedChars_KeyPress_Blandning_PTFE(object? sender, KeyPressEventArgs e)
         {
             if (char.IsControl(e.KeyChar))
+                return;
+
+            var col = dgv_Journal_Input.CurrentCell.ColumnIndex;
+
+            // Vissa kolumner får ej fyllas i
+            if (col is 8)
             {
-                e.Handled = false;
+                InfoText.Show("Detta fält kan du inte skriva i, du måste välja från listan som dyker upp när du aktiverar fältet.", CustomColors.InfoText_Color.Info, null, this);
+                e.Handled = true;
+                return;
+            }
+            if (col is 2 or 10 or 14 or 15)
+            {
+                InfoText.Show("Denna ruta fylls i automatiskt när du Sparar raden.", CustomColors.InfoText_Color.Info, null, this);
+                e.Handled = true;
+                // Flytta fokus till nästa
+                int nextCol;
+                if (col is 14 or 15)
+                {
+                    var headerName = Protocol_Description.Codetext(156);
+                    var colIndex = dgv_Journal_Input.Columns
+                        .Cast<DataGridViewColumn>()
+                        .FirstOrDefault(c => c.HeaderText == headerName)?.Index ?? -1;
+
+                    nextCol = colIndex;
+                }
+                else
+                    nextCol = col + 1;
+                
+                
+                if (nextCol < dgv_Journal_Input.Columns.Count)
+                    dgv_Journal_Input.CurrentCell = dgv_Journal_Input.Rows[0].Cells[nextCol];
                 return;
             }
 
-            var col = dgv_Journal_Input.CurrentCell.ColumnIndex;
-            switch (col)
-            {//Avbryter vid dessa kolumner som ej skall fyllas i
-                case 2:
-                case 10:
-                    InfoText.Show("Denna ruta fylls i automatiskt när du Sparar raden.", CustomColors.InfoText_Color.Info, null,this);
-                    e.Handled = true;
-                    if (dgv_Journal_Input.CurrentCell.ColumnIndex < dgv_Journal_Input.Columns.Count - 1)
-                        dgv_Journal_Input.CurrentCell = dgv_Journal_Input.Rows[0].Cells[col + 1];
-                    return;
-                case 14:
-                case 15:
-                    InfoText.Show("Denna ruta fylls i automatiskt när du Sparar raden.", CustomColors.InfoText_Color.Info, null,this);
-                    e.Handled = true;
-                    if (dgv_Journal_Input.CurrentCell.ColumnIndex < dgv_Journal_Input.Columns.Count - 1)
-                        dgv_Journal_Input.CurrentCell = dgv_Journal_Input.Rows[0].Cells[Protocol_Description.Codetext(156)];
-                    return;
-            }
-            using (var con = new SqlConnection(Database.cs_Protocol))
+            if (dict_TemplateRules.TryGetValue(col, out var rule))
             {
-                var query = @"
-                SELECT template.Type, template.Decimals, template.Maxchars
-                FROM Protocol.Template as template
-                WHERE template.FormTemplateID = @formtemplateid
-                AND ColumnIndex = @colindex";
-                con.Open();
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@formtemplateid", 16);
-                cmd.Parameters.AddWithValue("@colindex", col);
+                var (type, decimals, maxchars) = rule;
 
-                var reader = cmd.ExecuteReader();
-                while (reader.Read())
+                switch (type)
                 {
-                    int.TryParse(reader["Type"].ToString(), out var type);
-                    int.TryParse(reader["Decimals"].ToString(), out var decimals);
-                    if (int.TryParse(reader["MaxChars"].ToString(), out var maxchars))
-                    {
-                        switch (type)
+                    case 0: // Siffra
+                        if (decimals > 0)
                         {
-                            case 0:
-                                if (decimals > 0)
-                                {
-                                    if (!char.IsDigit(e.KeyChar) && e.KeyChar != ',' && e.KeyChar != '-')
-                                    {
-                                        e.Handled = true;
-                                        return;
-                                    }
-                                    e.Handled = false;
-                                    return;
-
-                                }
-                                if (!char.IsDigit(e.KeyChar) && e.KeyChar != '-')
-                                {
-                                    e.Handled = true;
-                                    return;
-                                }
-
-                                e.Handled = false;
-                                return;
-
-                            case 1:
-                            case 2:
-                                e.Handled = false;
-                                return;
+                            if (!char.IsDigit(e.KeyChar) && e.KeyChar != ',' && e.KeyChar != '-')
+                                e.Handled = true;
                         }
-                    }
+                        else
+                        {
+                            if (!char.IsDigit(e.KeyChar) && e.KeyChar != '-')
+                                e.Handled = true;
+                        }
+                        break;
+
+                    case 1: // Text
+                    case 2: // Alfanumerisk
+                        e.Handled = false;
+                        break;
+
+                    default:
+                        e.Handled = true;
+                        break;
                 }
             }
+            else
+            {
+                // Om kolumn ej hittas i template: förhindra inmatning
+                e.Handled = true;
+            }
         }
+
+        
         private void Journal_Input_CellEnter(object sender, DataGridViewCellEventArgs e)
         {
             var items = new List<string?>();
@@ -361,6 +383,6 @@ namespace DigitalProductionProgram.Protocols.Blandning_PTFE
             choose_Item.ShowDialog();
         }
 
-        
+       
     }
 }

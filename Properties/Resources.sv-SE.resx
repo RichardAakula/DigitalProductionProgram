@@ -2302,4 +2302,7 @@ Kontakta Admin vid behov.</value>
   <data name="btnZumbach" xml:space="preserve">
     <value>F6-Zumbach-mätning</value>
   </data>
+  <data name="label_InactiveProcesscard" xml:space="preserve">
+    <value>Processkortet är inaktivt.</value>
+  </data>
 </root>

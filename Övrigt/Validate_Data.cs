@@ -621,7 +621,6 @@ namespace DigitalProductionProgram.Övrigt
                 SELECT Type, Decimals, MaxChars, IsList_Processcard, IsList_Protocol, IsOkWriteText
                 FROM Protocol.Template
                 WHERE FormTemplateID = @formtemplateid
-                    
                     AND RowIndex = @row";
                 con.Open();
                 var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();

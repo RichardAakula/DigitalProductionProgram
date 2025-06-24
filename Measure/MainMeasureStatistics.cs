@@ -108,10 +108,11 @@ namespace DigitalProductionProgram.Measure
         }
         private static double Min_Value_MätData(string? codename, double sl_min)
         {
-            var min = Math.Min(GetMeasurementValue("MIN", codename), Math.Max(AvgValue_Measurement_LastOrder(codename), GetMeasurementValue("MIN", codename)));
+            var value = GetMeasurementValue("MIN", codename);
+            var min = Math.Min(value, Math.Max(AvgValue_Measurement_LastOrder(codename), value));
             return Math.Min(Math.Max(min, sl_min), min);
         }
-        public static int Max_Bag => (int)GetMeasurementValue("MAX", "Bag");
+        //public static int Max_Bag => (int)GetMeasurementValue("MAX", "Bag");
         public static string? active_MeasureCode;
         public static int MeasureStatsHeight;
         public static string? ChartCodename = string.Empty;
@@ -333,12 +334,20 @@ namespace DigitalProductionProgram.Measure
             [SuppressMessage("ReSharper.DPA", "DPA0005: Database issues")]
             private static void Initialize_Chart_MainForm(Chart chart, string? codename, string codetext)
             {
+                chart.Titles.Clear();
+                chart.Series.Clear();
+                chart.ChartAreas.Clear();
+                chart.Legends.Clear();
+
+
                 var slMax = new StripLine();
                 var slMin = new StripLine();
 
                 chart.Dock = DockStyle.Fill;
 
                 chart.Titles.Add(codetext);
+                if (chart.Series.Any(s => s.Name == codename))
+                    return;
                 chart.Series.Add(codename);
                 var serie1 = LanguageManager.GetString("chartSerieMeasurepoints1");
                 var serie2 = LanguageManager.GetString("chartSerieMeasurepoints2");

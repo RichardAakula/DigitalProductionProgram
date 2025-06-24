@@ -1,13 +1,10 @@
-﻿using System;
-using Microsoft.Data.SqlClient;
-using System.Diagnostics;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using DigitalProductionProgram.DatabaseManagement;
+﻿using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
-using DigitalProductionProgram.Övrigt;
 using DigitalProductionProgram.User;
+using Microsoft.Data.SqlClient;
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
 
 namespace DigitalProductionProgram.Log
 {
@@ -30,7 +27,7 @@ namespace DigitalProductionProgram.Log
             StartTime = DateTime.Now;
         }
 
-        public static async Task Stop(string info, double tid = 0)
+        public static async Task Stop(string info, double tid = 0, [CallerMemberName] string? methodname = null)
         {
             double LoadingTime = tid == 0 ? laddTid.TotalMilliseconds / 1000 : tid;
             if (LoadingTime > 100)
@@ -40,15 +37,17 @@ namespace DigitalProductionProgram.Log
                 await using var con = new SqlConnection(Database.cs_Protocol);
                 await using var cmd = new SqlCommand(@"
             INSERT INTO Log.ActivityLog 
-            (HostID, UserID, OrderID, Version, Date, LoadingTime, Info, Resolution, WindowsVersion)
+            (HostID, UserID, OrderID, Program, Version, Date, LoadingTime, Info, Resolution, WindowsVersion)
             VALUES 
-            ((SELECT HostID FROM [Settings].General WHERE HostName = @hostname), @userid, @orderid, @version, @date, @loadingtime, @info, @resolution, @windowsversion)", con);
+            ((SELECT HostID FROM [Settings].General WHERE HostName = @hostname), @userid, @orderid, @methodname, @version, @date, @loadingtime, @info, @resolution, @windowsversion)", con);
                 await con.OpenAsync();
-                cmd.Parameters.AddWithValue("@date", DateTime.Now);
+                
                 cmd.Parameters.AddWithValue("@hostname", HostName);
                 SQL_Parameter.Int(cmd.Parameters, "@userid", Person.UserID);
-                SQL_Parameter.Int(cmd.Parameters, "orderid", Order.OrderID);
+                SQL_Parameter.Int(cmd.Parameters, "@orderid", Order.OrderID);
+                cmd.Parameters.AddWithValue("@methodname", methodname);
                 cmd.Parameters.AddWithValue("@version", ChangeLog.CurrentVersion.ToString());
+                cmd.Parameters.AddWithValue("@date", DateTime.Now);
                 cmd.Parameters.AddWithValue("@loadingtime", (decimal)Math.Min(LoadingTime, 99999.999));
                 cmd.Parameters.AddWithValue("@info", info);
                 cmd.Parameters.AddWithValue("@resolution", $"{Program.ScreenWidth} x {Program.ScreenHeight}");

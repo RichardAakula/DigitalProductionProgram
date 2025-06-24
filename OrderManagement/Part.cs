@@ -213,28 +213,61 @@ namespace DigitalProductionProgram.OrderManagement
             var value = cmd.ExecuteScalar();
             Order.PartID = value as int?;
         }
-        public static int? Get_PartID(string? PartNr, Manage_WorkOperation.WorkOperations WorkOperation)
+        public static Dictionary<string, int?> Get_PartIDs_Batch(IEnumerable<(string PartNr, Manage_WorkOperation.WorkOperations WorkOp)> keys)
         {
             using var con = new SqlConnection(Database.cs_Protocol);
-            var query = "SELECT PartID FROM Processcard.MainData WHERE PartNr = @partnr AND WorkOperationID = (SELECT ID FROM Workoperation.Names WHERE Name = @workoperation AND ID IS NOT NULL) ";
-            if (Processcard.IsMultipleProcesscard(WorkOperation, PartNr))
+            con.Open();
+
+            var results = new Dictionary<string, int?>();
+            var values = new List<string>();
+            var cmd = new SqlCommand();
+            int i = 0;
+
+            foreach (var key in keys.Distinct())
             {
-                if (!string.IsNullOrEmpty(Order.ProdLine))
-                    query += "AND ProdLine = @prodline ";
-                if (!string.IsNullOrEmpty(Order.ProdType))
-                    query += "AND ProdType = @prodtyp ";
+                var pPart = $"@part{i}";
+                var pOp = $"@op{i}";
+                values.Add($"({pPart}, {pOp})");
+                cmd.Parameters.AddWithValue(pPart, key.PartNr);
+                cmd.Parameters.AddWithValue(pOp, key.WorkOp.ToString());
+                i++;
             }
 
-            query += "ORDER BY revNr DESC";
-            con.Open();
-            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-            cmd.Parameters.AddWithValue("@partnr", PartNr);
-            cmd.Parameters.AddWithValue("@workoperation", WorkOperation.ToString());
-            SQL_Parameter.String(cmd.Parameters, "@prodline", Order.ProdLine);
-            SQL_Parameter.String(cmd.Parameters, "@prodtyp", Order.ProdType);
-            var value = cmd.ExecuteScalar();
-            return (int?)value;
+            if (values.Count == 0)
+                return results;
+
+            cmd.Connection = con;
+
+            // Vi skapar en inline tabell (VALUES) och joinar med MainData för att hämta senaste revision
+            cmd.CommandText = $@"
+            SELECT 
+                input.partnr,
+                w.Name AS WorkOperation,
+                CASE 
+                    WHEN COUNT(DISTINCT md.PartGroupID) > 1 THEN 0
+                    ELSE MAX(md.PartID)
+                END AS PartID
+            FROM 
+                (VALUES {string.Join(",", values)}) AS input(partnr, workopname)
+                JOIN Workoperation.Names w ON w.Name = input.workopname
+                LEFT JOIN Processcard.MainData md ON md.PartNr = input.partnr AND md.WorkOperationID = w.ID
+            GROUP BY input.partnr, w.Name";
+
+
+            using var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                var partNr = reader["partnr"].ToString();
+                var workOp = reader["WorkOperation"].ToString();
+                var partID = reader["PartID"] as int?;
+                string key = $"{partNr}__{workOp}";
+                results[key] = partID;
+            }
+
+            return results;
         }
+
+
         public static Dictionary<string, int?> LoadPartIDCache(IEnumerable<(string PartNr, string WorkOpStr)> combos)
         {
             var result = new Dictionary<string, int?>();
@@ -278,6 +311,7 @@ namespace DigitalProductionProgram.OrderManagement
             public bool IsUnderConstruction { get; set; }
             public int TotalOrders { get; set; }
             public bool IsApprovedQA { get; set; }
+            public bool IsMultipleProcesscard { get; set; } = false;
         }
 
         public static ProcesscardStatus GetProcesscardStatus(int? partID)
@@ -320,6 +354,148 @@ namespace DigitalProductionProgram.OrderManagement
 
             return result;
         }
+        //public static Dictionary<int, ProcesscardStatus> GetProcesscardStatuses(IEnumerable<int> partIDs)
+        //{
+        //    var result = new Dictionary<int, ProcesscardStatus>();
+
+        //    // Hantera partID = 0 som specialfall PartID 0 = Artiklar med flera Processkort som ej går att hantera från Monitor
+        //    var zeroIDs = partIDs.Where(id => id == 0).Distinct();
+        //    foreach (var zeroID in zeroIDs)
+        //    {
+        //        result[zeroID] = new ProcesscardStatus
+        //        {
+        //            IsPartIDExist = true,
+        //            IsUnderConstruction = false,
+        //            TotalOrders = 0,
+        //            IsApprovedQA = false,
+        //            IsMultipleProcesscard = true // <-- markerar specialfallet
+        //        };
+        //    }
+
+        //    // Hantera övriga
+        //    var idList = partIDs.Distinct().Where(id => id != 0).ToList();
+        //    if (idList.Count == 0)
+        //        return result;
+
+        //    using var con = new SqlConnection(Database.cs_Protocol);
+        //    con.Open();
+
+        //    var cmd = new SqlCommand();
+        //    var paramNames = new List<string>();
+        //    for (int i = 0; i < idList.Count; i++)
+        //    {
+        //        var paramName = $"@id{i}";
+        //        cmd.Parameters.AddWithValue(paramName, idList[i]);
+        //        paramNames.Add(paramName);
+        //    }
+
+        //    cmd.Connection = con;
+        //    cmd.CommandText = $@"
+        //        SELECT 
+        //            md.PartID,
+        //            COUNT(*) AS PartExists,
+        //            SUM(CASE WHEN md.Framtagning_Processfönster = 'True' THEN 1 ELSE 0 END) AS UnderConstruction,
+        //            (
+        //                SELECT COUNT(*) 
+        //                FROM [Order].MainData o 
+        //                WHERE o.PartID = md.PartID AND o.IsOrderDone = 'True'
+        //            ) AS TotalOrders,
+        //            (
+        //                SELECT TOP(1) 
+        //                CASE 
+        //                    WHEN md2.Framtagning_Processfönster = 'True' THEN 1
+        //                    WHEN md2.QA_sign IS NOT NULL AND (md2.Validerat = 'True' OR md2.Historiska_Data = 'True') THEN 1
+        //                ELSE 0
+        //                END
+        //                FROM Processcard.MainData md2
+        //                WHERE md2.PartID = md.PartID
+        //                ORDER BY md2.RevNr DESC
+        //            ) AS IsApprovedQA
+        //        FROM Processcard.MainData md
+        //        WHERE md.PartID IN ({string.Join(",", paramNames)})
+        //        GROUP BY md.PartID";
+
+        //    using var reader = cmd.ExecuteReader();
+        //    while (reader.Read())
+        //    {
+        //        int partID = (int)reader["PartID"];
+        //        var status = new ProcesscardStatus
+        //        {
+        //            IsPartIDExist = (int)reader["PartExists"] > 0,
+        //            IsUnderConstruction = (int)reader["UnderConstruction"] > 0,
+        //            TotalOrders = (int)reader["TotalOrders"],
+        //            IsApprovedQA = (int)reader["IsApprovedQA"] > 0,
+        //            IsMultipleProcesscard = false // <-- normalfallet
+        //        };
+        //        result[partID] = status;
+        //    }
+
+        //    return result;
+        //}
+        public static Dictionary<int, ProcesscardStatus> GetProcesscardStatuses(Dictionary<int, bool> partIDsWithMultipleFlag)
+        {
+            var result = new Dictionary<int, ProcesscardStatus>();
+
+            var partIDs = partIDsWithMultipleFlag.Keys.ToList();
+            if (partIDs.Count == 0)
+                return result;
+
+            using var con = new SqlConnection(Database.cs_Protocol);
+            con.Open();
+
+            var cmd = new SqlCommand();
+            var paramNames = new List<string>();
+            for (int i = 0; i < partIDs.Count; i++)
+            {
+                var paramName = $"@id{i}";
+                cmd.Parameters.AddWithValue(paramName, partIDs[i]);
+                paramNames.Add(paramName);
+            }
+
+            cmd.Connection = con;
+            cmd.CommandText = $@"
+SELECT 
+    md.PartID,
+    COUNT(*) AS PartExists,
+    SUM(CASE WHEN md.Framtagning_Processfönster = 'True' THEN 1 ELSE 0 END) AS UnderConstruction,
+    (
+        SELECT COUNT(*) 
+        FROM [Order].MainData o 
+        WHERE o.PartID = md.PartID AND o.IsOrderDone = 'True'
+    ) AS TotalOrders,
+    (
+        SELECT TOP(1) 
+            CASE 
+                WHEN md2.Framtagning_Processfönster = 'True' THEN 1
+                WHEN md2.QA_sign IS NOT NULL AND (md2.Validerat = 'True' OR md2.Historiska_Data = 'True') THEN 1
+                ELSE 0
+            END
+        FROM Processcard.MainData md2
+        WHERE md2.PartID = md.PartID
+        ORDER BY md2.RevNr DESC
+    ) AS IsApprovedQA
+FROM Processcard.MainData md
+WHERE md.PartID IN ({string.Join(",", paramNames)})
+GROUP BY md.PartID";
+
+            using var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                int partID = (int)reader["PartID"];
+                var status = new ProcesscardStatus
+                {
+                    IsPartIDExist = (int)reader["PartExists"] > 0,
+                    IsUnderConstruction = (int)reader["UnderConstruction"] > 0,
+                    TotalOrders = (int)reader["TotalOrders"],
+                    IsApprovedQA = (int)reader["IsApprovedQA"] > 0,
+                    IsMultipleProcesscard = partIDsWithMultipleFlag.TryGetValue(partID, out bool isMulti) && isMulti
+                };
+                result[partID] = status;
+            }
+
+            return result;
+        }
+
 
 
 
@@ -364,23 +540,21 @@ namespace DigitalProductionProgram.OrderManagement
 
         public static void Load_ProdLine()
         {
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                string query;
-                if (Order.OrderID != null)
-                    query = @"SELECT ProdLine FROM [Order].MainData WHERE PartID = @partid AND OrderID = @orderid";
-                else
-                    query = @"SELECT ProdLine FROM [Order].MainData WHERE PartID = @partid";
+            using var con = new SqlConnection(Database.cs_Protocol);
+            string query;
+            if (Order.OrderID != null)
+                query = @"SELECT ProdLine FROM [Order].MainData WHERE PartID = @partid AND OrderID = @orderid";
+            else
+                query = @"SELECT ProdLine FROM [Order].MainData WHERE PartID = @partid";
 
-                con.Open();
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                SQL_Parameter.NullableINT(cmd.Parameters, "@partid", Order.PartID);
-                if (Order.OrderID != null)
-                    cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
-                if (string.IsNullOrEmpty(Order.PartNumber))
-                    return;
-                Order.ProdLine = (string)cmd.ExecuteScalar();
-            }
+            con.Open();
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            SQL_Parameter.NullableINT(cmd.Parameters, "@partid", Order.PartID);
+            if (Order.OrderID != null)
+                cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
+            if (string.IsNullOrEmpty(Order.PartNumber))
+                return;
+            Order.ProdLine = (string)cmd.ExecuteScalar();
         }
         public static bool IsPartNr_Exist(string PartNr, string WorkOperation, string ProdLine, string ProdType)
         {

@@ -230,7 +230,7 @@ namespace DigitalProductionProgram.Protocols.Kragning_TEF
         private void Påse_Spole_TextChanged(object sender, EventArgs e)
         {
             if (Module.IsOkToSave)
-                KP_Kragning.INSERT_Data(KP_Kragning.dgv_Korprotokoll, 172, 0, Påse_Spole.Text, 1);
+                KP_Kragning.INSERT_Data_Kragning(KP_Kragning.dgv_Korprotokoll, 172, 0, Påse_Spole.Text, 1);
         }
     }
 }

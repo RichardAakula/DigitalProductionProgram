@@ -24,9 +24,10 @@ namespace DigitalProductionProgram.Protocols.Spolning_PTFE
 {
     public partial class Journal_Spolning_PTFE : UserControl
     {
-        public Warning warning;
+        public Warning? warning;
         private int? EditRow;
-        public static string row_User;
+        public static string row_User = null!;
+        private readonly Dictionary<int, (int? Type, int? Decimals, int? MaxChars)> dict_TemplateRules = new();
 
         public static int[] InputBoxes_Width
         {
@@ -156,8 +157,8 @@ namespace DigitalProductionProgram.Protocols.Spolning_PTFE
         }
         private static string Nafta_Percent(string? lotnr, int fatnr)
         {
-           using (var con = new SqlConnection(Database.cs_Protocol))
-           {
+            using (var con = new SqlConnection(Database.cs_Protocol))
+            {
                 var query = @"
                         SELECT value FROM [Order].Data 
                         WHERE OrderID = @orderid 
@@ -170,9 +171,9 @@ namespace DigitalProductionProgram.Protocols.Spolning_PTFE
                 var value = cmd.ExecuteScalar();
                 if (value != null)
                     return value.ToString();
-           }
+            }
 
-           return null;
+            return null;
         }
         private static string Measureprotocol_Sign(string? lotnr, int påse)
         {
@@ -257,6 +258,10 @@ namespace DigitalProductionProgram.Protocols.Spolning_PTFE
         {
             InitializeComponent();
         }
+        private void Journal_Spolning_PTFE_Load(object sender, EventArgs e)
+        {
+            Load_TemplateRules_Spolning();
+        }
 
         private void Add_Extra_InfoLabels()
         {
@@ -265,7 +270,7 @@ namespace DigitalProductionProgram.Protocols.Spolning_PTFE
                 Text = "BLANDNING",
                 TextAlign = ContentAlignment.MiddleCenter,
                 Left = InputBoxes_Width[0] + InputBoxes_Width[1] + InputBoxes_Width[2] + InputBoxes_Width[3],
-                Width = Extra_Label_Width(new[]{"178","147","149","154"}),
+                Width = Extra_Label_Width(new[] { "178", "147", "149", "154" }),
                 BorderStyle = BorderStyle.FixedSingle
             };
             var lbl_Blandning_2 = new Label
@@ -273,7 +278,7 @@ namespace DigitalProductionProgram.Protocols.Spolning_PTFE
                 Text = "BLANDNING STRIPES",
                 TextAlign = ContentAlignment.MiddleCenter,
                 Left = InputBoxes_Width[0] + InputBoxes_Width[1] + InputBoxes_Width[2] + +InputBoxes_Width[3] + lbl_Blandning.Width - 1,
-                Width = Extra_Label_Width(new[] { "200","197","198","199" }),
+                Width = Extra_Label_Width(new[] { "200", "197", "198", "199" }),
                 BorderStyle = BorderStyle.FixedSingle
             };
             var lbl_Extr_Sintr = new Label
@@ -281,15 +286,15 @@ namespace DigitalProductionProgram.Protocols.Spolning_PTFE
                 Text = "EXTRUDER OCH SINTRING",
                 TextAlign = ContentAlignment.MiddleCenter,
                 Left = InputBoxes_Width[0] + InputBoxes_Width[1] + InputBoxes_Width[2] + InputBoxes_Width[3] + lbl_Blandning.Width - 1 + lbl_Blandning_2.Width - 1,
-                Width = Extra_Label_Width(new[] {"182","183","184","202" }),
+                Width = Extra_Label_Width(new[] { "182", "183", "184", "202" }),
                 BorderStyle = BorderStyle.FixedSingle
             };
             var lbl_Kontrollspolning = new Label
             {
                 Text = "KONTROLLSPOLNING",
                 TextAlign = ContentAlignment.MiddleCenter,
-                Left = InputBoxes_Width[0] + InputBoxes_Width[1] + InputBoxes_Width[2] + InputBoxes_Width[3] + lbl_Blandning.Width - 1 + lbl_Blandning_2.Width - 1 +  lbl_Extr_Sintr.Width - 1,
-                Width = Extra_Label_Width(new[] { "187","188","189","190","191","171","157","158" }),
+                Left = InputBoxes_Width[0] + InputBoxes_Width[1] + InputBoxes_Width[2] + InputBoxes_Width[3] + lbl_Blandning.Width - 1 + lbl_Blandning_2.Width - 1 + lbl_Extr_Sintr.Width - 1,
+                Width = Extra_Label_Width(new[] { "187", "188", "189", "190", "191", "171", "157", "158" }),
                 BorderStyle = BorderStyle.FixedSingle
             };
 
@@ -343,7 +348,7 @@ namespace DigitalProductionProgram.Protocols.Spolning_PTFE
                         CellTemplate = new DataGridViewTextBoxCell(),
                         Width = InputBoxes_Width[ctr],
                     };
-                   
+
                     var col1 = new DataGridViewColumn
                     {
                         HeaderText = reader[0].ToString(),
@@ -373,7 +378,7 @@ namespace DigitalProductionProgram.Protocols.Spolning_PTFE
             };
             dgv_Journal.Columns.Add(col);
             dgv_Journal_Input.Rows.Add();
-           
+
             Width = dgv_Journal_Input.Width;
 
             if (Part.IsPartNrSpecial("Spolning Stripes") == false)
@@ -407,7 +412,7 @@ namespace DigitalProductionProgram.Protocols.Spolning_PTFE
                 {
                     int.TryParse(reader["Type"].ToString(), out var type);
                     int.TryParse(reader["Uppstart"].ToString(), out var row);
-                   
+
                     int.TryParse(reader["ColumnIndex"].ToString(), out var col);
                     if (col == 0)
                         dgv_Journal.Rows.Add();
@@ -439,7 +444,34 @@ namespace DigitalProductionProgram.Protocols.Spolning_PTFE
                 }
             }
         }
+        private void Load_TemplateRules_Spolning()
+        {
+            dict_TemplateRules.Clear();
 
+            using var con = new SqlConnection(Database.cs_Protocol);
+            con.Open();
+
+            var query = @"
+                SELECT t.ColumnIndex, t.Type, t.Decimals, t.MaxChars
+                FROM Protocol.Template t
+                WHERE t.FormTemplateID = (SELECT FormTemplateID FROM Protocol.FormTemplate WHERE MainTemplateID = @mainID)";
+
+            using var cmd = new SqlCommand(query, con);
+            ServerStatus.Add_Sql_Counter();
+            cmd.Parameters.AddWithValue("@mainID", Templates_Protocol.MainTemplate.ID);
+
+            using var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                var colIndex = Convert.ToInt32(reader["ColumnIndex"]);
+                var type = Convert.ToInt32(reader["Type"]);
+                int? decimals = reader["Decimals"] == DBNull.Value ? null : Convert.ToInt32(reader["Decimals"]);
+                int? maxchars = reader["MaxChars"] == DBNull.Value ? null : Convert.ToInt32(reader["MaxChars"]);
+
+                //if (colIndex.HasValue)
+                dict_TemplateRules[colIndex] = (type, decimals, maxchars);
+            }
+        }
         private static int Last_StartUp
         {
             get
@@ -480,7 +512,7 @@ namespace DigitalProductionProgram.Protocols.Spolning_PTFE
                 var cell = dgv_Journal_Input.Rows[0].Cells[column.Index];
                 var pcID = Protocol_Description.Protocol_Description_ID_Col(column.Index, 13);
                 var type = Module.DatabaseManagement.ValueType(pcID, 13);
-               
+
                 if (EditRow != null)
                     uppstart = (int)EditRow;
                 using (var con = new SqlConnection(Database.cs_Protocol))
@@ -518,7 +550,7 @@ namespace DigitalProductionProgram.Protocols.Spolning_PTFE
                     }
                     cmd.ExecuteNonQuery();
                 }
-                
+
             }
             _ = Activity.Stop($"Användare överför mätning Uppstart = {uppstart}. TotalRows = {dgv_Journal.Rows.Count}");
             dgv_Journal_Input.Rows.Clear();
@@ -571,102 +603,91 @@ namespace DigitalProductionProgram.Protocols.Spolning_PTFE
         private void EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
         {
             var tb = (DataGridViewTextBoxEditingControl)e.Control;
-            tb.KeyPress += AllowedChars_KeyPress;
+            tb.KeyPress += AllowedChars_KeyPress_Spolning_PTFE;
             tb.ShortcutsEnabled = false;
         }
-        private void AllowedChars_KeyPress(object sender, KeyPressEventArgs e)
+        private void AllowedChars_KeyPress_Spolning_PTFE(object? sender, KeyPressEventArgs e)
         {
             if (char.IsControl(e.KeyChar))
+                return;
+
+            var colIndex = dgv_Journal_Input.CurrentCell.ColumnIndex;
+            var colName = dgv_Journal_Input.Columns[colIndex].Name;
+            int.TryParse(colName, out int protocolDescriptionID);
+
+            // Spärrade kolumner
+            if (protocolDescriptionID is 178 or 182 or 187 or 157 or 158)
             {
-                e.Handled = false;
+                string msg = protocolDescriptionID switch
+                {
+                    178 or 182 => "Klicka i rutan för att välja datum.",
+                    187 => "Klicka i denna ruta för att bekräfta att slangen är ok.",
+                    157 or 158 => "Denna ruta fylls i automatiskt när du Sparar raden.",
+                    _ => "Denna ruta är spärrad."
+                };
+
+                InfoText.Show(msg, CustomColors.InfoText_Color.Warning, "Warning!", this);
+                e.Handled = true;
+
+                // Hoppa vidare till nästa kolumn
+                int nextCol = protocolDescriptionID switch
+                {
+                    187 => colIndex + 1,
+                    157 or 158 => dgv_Journal_Input.Columns.Contains("192") ? dgv_Journal_Input.Columns["192"].Index : colIndex + 1,
+                    _ => colIndex + 1
+                };
+
+                if (nextCol < dgv_Journal_Input.Columns.Count)
+                    dgv_Journal_Input.CurrentCell = dgv_Journal_Input.Rows[0].Cells[nextCol];
+
                 return;
             }
 
-            var protocoldescriptionid = int.Parse(dgv_Journal_Input.Columns[dgv_Journal_Input.CurrentCell.ColumnIndex].Name);
-           
-            switch (protocoldescriptionid)
+            // Begränsa specifikt för 189 och 191 (bara 1,2,3)
+            if (protocolDescriptionID is 189 or 191)
             {
-                //Avbryter vid dessa kolumner som ej skall fyllas i
-                case 178: //Blandning Datum
-                case 182: //Sintring Datum
-                    InfoText.Show("Klicka i rutan för att välja datum.", CustomColors.InfoText_Color.Warning, "Warning!", this);
+                if (e.KeyChar is not ('1' or '2' or '3'))
                     e.Handled = true;
-                    return;
-                case 187: //a) Bra Slang
-                    InfoText.Show("Klicka i denna ruta för att bekräfta att slangen är ok.", CustomColors.InfoText_Color.Warning, "Warning!", this);
-                    e.Handled = true;
-                    dgv_Journal_Input.CurrentCell = dgv_Journal_Input.Rows[0].Cells[dgv_Journal_Input.CurrentCell.ColumnIndex + 1];
-                    e.Handled = true;
-                    return;
-                case 189: // b) Yta Klump ut
-                case 191: // b) Smuts på Yta
-                    if (e.KeyChar != '1' && e.KeyChar != '2' && e.KeyChar != '3')
-                    {
-                        e.Handled = true;
-                        return;
-                    }
-                    return;
-                case 157: //Sign
-                case 158: //AnstNr
-                    InfoText.Show("Denna ruta fylls i automatiskt när du Sparar raden.", CustomColors.InfoText_Color.Info, null,this);
-                    e.Handled = true;
-                    dgv_Journal_Input.CurrentCell = dgv_Journal_Input.Rows[0].Cells["192"];
-                    return;
-                }
+                return;
+            }
 
-            using (var con = new SqlConnection(Database.cs_Protocol))
+            // Validera mot regler
+            if (dict_TemplateRules.TryGetValue(colIndex, out var rule))
             {
-                var query = @"
-                SELECT Type, Decimals, MaxChars
-                FROM Protocol.Template
-                WHERE template.FormTemplateID = (SELECT FormTemplateID FROM Protocol.FormTemplate WHERE MainTemplateID = @protocolmaintemplateid)
-                    AND ColumnIndex = @colindex";
-                  
+                var (type, decimals, _) = rule;
 
-                con.Open();
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@protocolmaintemplateid", Templates_Protocol.MainTemplate.ID);
-                cmd.Parameters.AddWithValue("@colindex", dgv_Journal_Input.CurrentCell.ColumnIndex);
-
-                var reader = cmd.ExecuteReader();
-                while (reader.Read())
+                switch (type)
                 {
-                    int.TryParse(reader["Type"].ToString(), out var type);
-                    int.TryParse(reader["Decimals"].ToString(), out var decimals);
-                    if (int.TryParse(reader["MaxChars"].ToString(), out var maxchars))
-                    {
-                        switch (type)
+                    case 0: // Numerisk
+                        if (decimals > 0)
                         {
-                            case 0:
-                                if (decimals > 0)
-                                {
-                                    if (!char.IsDigit(e.KeyChar) && e.KeyChar != ',' && e.KeyChar != '-')
-                                    {
-                                        e.Handled = true;
-                                        return;
-                                    }
-                                    e.Handled = false;
-                                    return;
-
-                                }
-                                if (!char.IsDigit(e.KeyChar) && e.KeyChar != '-')
-                                {
-                                    e.Handled = true;
-                                    return;
-                                }
-
-                                e.Handled = false;
-                                return;
-
-                            case 1:
-                            case 2:
-                                e.Handled = false;
-                                return;
+                            if (!char.IsDigit(e.KeyChar) && e.KeyChar != ',' && e.KeyChar != '-')
+                                e.Handled = true;
                         }
-                    }
+                        else
+                        {
+                            if (!char.IsDigit(e.KeyChar) && e.KeyChar != '-')
+                                e.Handled = true;
+                        }
+                        break;
+
+                    case 1: // Text
+                    case 2: // Alfanum
+                        e.Handled = false;
+                        break;
+
+                    default:
+                        e.Handled = true;
+                        break;
                 }
             }
+            else
+            {
+                // Kolumn finns ej i mall: blockera
+                e.Handled = true;
+            }
         }
+
         private void Journal_Input_CellEnter(object sender, DataGridViewCellEventArgs e)
         {
             List<string?> items = null;
@@ -683,7 +704,7 @@ namespace DigitalProductionProgram.Protocols.Spolning_PTFE
 
             if (items is null)
                 return;
-            var choose_Item = new Choose_Item(items, new[] { dgv_Journal_Input.Rows[0].Cells[e.ColumnIndex] }, null, 0,0,true);
+            var choose_Item = new Choose_Item(items, new[] { dgv_Journal_Input.Rows[0].Cells[e.ColumnIndex] }, null, 0, 0, true);
             choose_Item.ShowDialog();
         }
         private void Journal_Input_CellValueChanged(object sender, DataGridViewCellEventArgs e)
@@ -761,5 +782,7 @@ namespace DigitalProductionProgram.Protocols.Spolning_PTFE
 
             dgv_Journal.Sort(dgv_Journal.Columns["RowIndex"], sortDirection);
         }
+
+        
     }
 }

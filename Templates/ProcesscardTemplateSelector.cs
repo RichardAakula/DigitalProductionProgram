@@ -153,7 +153,7 @@ namespace DigitalProductionProgram.Templates
         }
         private void Translate_Form()
         {
-            Control[] controls = { label_Header, label_Green, label_Brown, label_Orange, label_Red };
+            Control[] controls = { label_Header, label_Green, label_Brown, label_Orange, label_Red, label_InactiveProcesscard };
             LanguageManager.TranslationHelper.TranslateControls(controls);
         }
         private void Load_Processcard(bool IsOkSelectLatestRev)
@@ -208,6 +208,7 @@ namespace DigitalProductionProgram.Templates
                         Historiska_Data, 
                         Validerat,  
                         Framtagning_Processfönster,
+                        Aktiv,
                         ROW_NUMBER() OVER (PARTITION BY PartGroupID ORDER BY RevNr DESC) AS RowNum, -- Latest revision first
                         COUNT(*) OVER (PARTITION BY PartGroupID) AS TotalRevisions,
                         MIN(RevNr) OVER (PARTITION BY PartGroupID) AS FirstRev, -- First revision 
@@ -236,6 +237,7 @@ namespace DigitalProductionProgram.Templates
                     Historiska_Data, 
                     Validerat, 
                     Framtagning_Processfönster,
+                    Aktiv,
                     LatestRev,
                     CASE WHEN RevNr = LatestRev THEN 1 ELSE 0 END AS LatestRevSelected
                 FROM OrderedRevisions
@@ -263,10 +265,11 @@ namespace DigitalProductionProgram.Templates
                 var revNr = reader["RevNr"].ToString();
                 var latestRevNr = reader["LatestRev"].ToString();
                 var isLatestRevNrSelected = Convert.ToBoolean(reader["LatestRevSelected"]);
+                var isActive = Convert.ToBoolean(reader["Aktiv"]);
 
-                Add_Button_Processcard(text, Order.WorkOperation.ToString(), prodType, prodLine, revNr, partid, partGroupID, !IsOperatorStartingOrder, true, latestRevNr, isLatestRevNrSelected);
+                Add_Button_Processcard(text, Order.WorkOperation.ToString(), prodType, prodLine, revNr, partid, partGroupID, !IsOperatorStartingOrder, true, latestRevNr, isLatestRevNrSelected, isActive);
             }
-            Add_Button_Processcard("Processkort saknas", Order.WorkOperation.ToString(), null, null, null, null, null, true, false, null, true);
+            Add_Button_Processcard("Processkort saknas", Order.WorkOperation.ToString(), null, null, null, null, null, true, false, null, true, true);
             totalLabels--; //"Processkort saknas" ska inte räknas med i totalen, den är bara en fallback-knapp om inget annat finns.
         }
         private void Add_Workoperations()
@@ -389,7 +392,7 @@ namespace DigitalProductionProgram.Templates
             }
         }
 
-        private void Add_Button_Processcard(string? text, string workoperation, string? prodtype, string? prodline, string? revNr, int? partid, int? partGroupID, bool isProcesscardOkToStart, bool isOkCheckPartNumber, string? latestRevNr, bool isLatestRevNrSelected)
+        private void Add_Button_Processcard(string? text, string workoperation, string? prodtype, string? prodline, string? revNr, int? partid, int? partGroupID, bool isProcesscardOkToStart, bool isOkCheckPartNumber, string? latestRevNr, bool isLatestRevNrSelected, bool isActive)
         {
             totalLabels++;
             var btn = CreateButton(text, Button_Processcard_MouseClick, null, workoperation, revNr, prodtype, prodline, partid, partGroupID, isProcesscardOkToStart, isLatestRevNrSelected, latestRevNr);
@@ -397,7 +400,7 @@ namespace DigitalProductionProgram.Templates
             Height += btn.Height + 3;
 
             if (isOkCheckPartNumber && IsOperatorStartingOrder)
-                SetForeColor_Label(btn, partid);
+                SetForeColor_Label(btn, partid, isActive);
         }
         private void Add_Button_ProtocolTemplate(string? templatename, string? text, int id, string? workoperation = null, string? prodtype = null, string? prodline = null, int? partid = null, int? partGroupID = null, bool isProcesscardOkToStart = false, bool isOkCheckPartNumber = false)
         {
@@ -425,8 +428,18 @@ namespace DigitalProductionProgram.Templates
             Height += btn.Height + 3;
         }
 
-        private void SetForeColor_Label(Button btn, int? partID)
+        private void SetForeColor_Label(Button btn, int? partID, bool isActive)
         {
+            if (isActive == false)
+            {
+                btn.ForeColor = CustomColors.Bad_Back;
+                btn.BackColor = CustomColors.Bad_Front;
+                btn.Cursor = Cursors.No;
+                btn.Click -= Button_Processcard_MouseClick;
+                //btn.Enabled = false;
+                return;
+            }
+
             if (btn.Text == $"{LanguageManager.GetString("chooseProcesscard_Info_1")} / ")
             {
                 btn.ForeColor = CustomColors.Ok_Front;
@@ -437,22 +450,18 @@ namespace DigitalProductionProgram.Templates
             //Om Processkort under Framarbetning och mindre än tre ordrar körda
             if (IsDevelopmentOfProcessCard(partID) && Part.TotalOrders_PartID(partID) > 2)
             {
-                // IsProcesscardOkStart[i] = true;
                 btn.ForeColor = Color.DarkOrange;
                 btn.BackColor = Color.Brown;
             }
-
             //Godkänd av QA eller under framtagning av Processkort och körd under 3 gånger
             else if (Processcard.IsApproved_By_QA(partID) || (IsDevelopmentOfProcessCard(partID) && Part.TotalOrders_PartID(partID) < 3))
             {
-                // IsProcesscardOkStart[i] = true;
                 btn.ForeColor = CustomColors.Ok_Front;
                 btn.BackColor = CustomColors.Ok_Back;
             }
             //Ej godkänd av QA
             else
             {
-                // IsProcesscardOkStart[i] = false;
                 btn.ForeColor = CustomColors.Bad_Front;
                 btn.BackColor = CustomColors.Bad_Back;
             }

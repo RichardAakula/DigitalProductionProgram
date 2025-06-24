@@ -37,6 +37,7 @@ namespace DigitalProductionProgram.Templates
             label_Brown = new Label();
             label_Red = new Label();
             tlp_InfoLabels = new TableLayoutPanel();
+            label_InactiveProcesscard = new Label();
             tlp_InfoLabels.SuspendLayout();
             SuspendLayout();
             // 
@@ -75,7 +76,7 @@ namespace DigitalProductionProgram.Templates
             label_Green.Location = new Point(4, 0);
             label_Green.Margin = new Padding(4, 0, 4, 0);
             label_Green.Name = "label_Green";
-            label_Green.Size = new Size(776, 25);
+            label_Green.Size = new Size(776, 20);
             label_Green.TabIndex = 2;
             label_Green.Text = "Order Ok att starta";
             // 
@@ -86,10 +87,10 @@ namespace DigitalProductionProgram.Templates
             label_Orange.Dock = DockStyle.Fill;
             label_Orange.Font = new Font("Segoe UI", 10.25F);
             label_Orange.ForeColor = Color.Brown;
-            label_Orange.Location = new Point(4, 25);
+            label_Orange.Location = new Point(4, 20);
             label_Orange.Margin = new Padding(4, 0, 4, 0);
             label_Orange.Name = "label_Orange";
-            label_Orange.Size = new Size(776, 25);
+            label_Orange.Size = new Size(776, 20);
             label_Orange.TabIndex = 14;
             label_Orange.Text = "ArtikelNr utan processkort körd fler än 3 ggr - Processkort behövs - Kontakta arbetsledare";
             // 
@@ -100,10 +101,10 @@ namespace DigitalProductionProgram.Templates
             label_Brown.Dock = DockStyle.Fill;
             label_Brown.Font = new Font("Segoe UI", 10.25F);
             label_Brown.ForeColor = Color.DarkOrange;
-            label_Brown.Location = new Point(4, 50);
+            label_Brown.Location = new Point(4, 40);
             label_Brown.Margin = new Padding(4, 0, 4, 0);
             label_Brown.Name = "label_Brown";
-            label_Brown.Size = new Size(776, 25);
+            label_Brown.Size = new Size(776, 20);
             label_Brown.TabIndex = 13;
             label_Brown.Text = "Processkort under framarbetning och körd fler än 3 gånger - Kontakta arbetsledare";
             // 
@@ -114,10 +115,10 @@ namespace DigitalProductionProgram.Templates
             label_Red.Dock = DockStyle.Fill;
             label_Red.Font = new Font("Segoe UI", 10.25F);
             label_Red.ForeColor = Color.FromArgb(156, 0, 6);
-            label_Red.Location = new Point(4, 75);
+            label_Red.Location = new Point(4, 60);
             label_Red.Margin = new Padding(4, 0, 4, 0);
             label_Red.Name = "label_Red";
-            label_Red.Size = new Size(776, 27);
+            label_Red.Size = new Size(776, 20);
             label_Red.TabIndex = 2;
             label_Red.Text = "Ej godkänd av QA";
             // 
@@ -125,7 +126,7 @@ namespace DigitalProductionProgram.Templates
             // 
             tlp_InfoLabels.ColumnCount = 1;
             tlp_InfoLabels.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
-            tlp_InfoLabels.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 23F));
+            tlp_InfoLabels.Controls.Add(label_InactiveProcesscard, 0, 4);
             tlp_InfoLabels.Controls.Add(label_Red, 0, 3);
             tlp_InfoLabels.Controls.Add(label_Brown, 0, 2);
             tlp_InfoLabels.Controls.Add(label_Orange, 0, 1);
@@ -134,13 +135,28 @@ namespace DigitalProductionProgram.Templates
             tlp_InfoLabels.Location = new Point(0, 60);
             tlp_InfoLabels.Margin = new Padding(4, 3, 4, 3);
             tlp_InfoLabels.Name = "tlp_InfoLabels";
-            tlp_InfoLabels.RowCount = 4;
-            tlp_InfoLabels.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
-            tlp_InfoLabels.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
-            tlp_InfoLabels.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
-            tlp_InfoLabels.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
+            tlp_InfoLabels.RowCount = 5;
+            tlp_InfoLabels.RowStyles.Add(new RowStyle(SizeType.Percent, 20F));
+            tlp_InfoLabels.RowStyles.Add(new RowStyle(SizeType.Percent, 20F));
+            tlp_InfoLabels.RowStyles.Add(new RowStyle(SizeType.Percent, 20F));
+            tlp_InfoLabels.RowStyles.Add(new RowStyle(SizeType.Percent, 20F));
+            tlp_InfoLabels.RowStyles.Add(new RowStyle(SizeType.Percent, 20F));
             tlp_InfoLabels.Size = new Size(784, 102);
             tlp_InfoLabels.TabIndex = 0;
+            // 
+            // label_InactiveProcesscard
+            // 
+            label_InactiveProcesscard.AutoSize = true;
+            label_InactiveProcesscard.BackColor = Color.FromArgb(156, 0, 6);
+            label_InactiveProcesscard.Dock = DockStyle.Fill;
+            label_InactiveProcesscard.Font = new Font("Segoe UI", 10.25F);
+            label_InactiveProcesscard.ForeColor = Color.FromArgb(255, 199, 206);
+            label_InactiveProcesscard.Location = new Point(4, 80);
+            label_InactiveProcesscard.Margin = new Padding(4, 0, 4, 0);
+            label_InactiveProcesscard.Name = "label_InactiveProcesscard";
+            label_InactiveProcesscard.Size = new Size(776, 22);
+            label_InactiveProcesscard.TabIndex = 15;
+            label_InactiveProcesscard.Text = "Processkortet är inaktivt";
             // 
             // ProcesscardTemplateSelector
             // 
@@ -173,5 +189,6 @@ namespace DigitalProductionProgram.Templates
         private Label label_Brown;
         private Label label_Red;
         private TableLayoutPanel tlp_InfoLabels;
+        private Label label_InactiveProcesscard;
     }
 }

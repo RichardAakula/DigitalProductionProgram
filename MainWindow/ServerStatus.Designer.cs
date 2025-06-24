@@ -92,7 +92,7 @@ namespace DigitalProductionProgram.MainWindow
             lbl_MonitorStatus.TabIndex = 895;
             lbl_MonitorStatus.Text = "M";
             lbl_MonitorStatus.TextAlign = ContentAlignment.TopCenter;
-            lbl_MonitorStatus.Click += lbl_MonitorStatus_Click;
+            lbl_MonitorStatus.Click += FlyingEasterEggClick_Click;
             lbl_MonitorStatus.MouseHover += MonitorStatus_MouseHover;
             // 
             // tlp_Main

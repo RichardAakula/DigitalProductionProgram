@@ -13,7 +13,7 @@ namespace DigitalProductionProgram.MainWindow
         public static string? DPP_ServerStatus;
         private Main_Form? mainForm;
         private static readonly object _lock = new();
-        public static readonly Dictionary<string, int> _methodSqlCounters = new();
+        public static readonly Dictionary<string, int> dictMethodsSqlCounter = new();
 
 
         public ServerStatus()
@@ -84,16 +84,16 @@ namespace DigitalProductionProgram.MainWindow
             };
         }
 
-        
+        [DebuggerStepThrough]
         public static void Add_Sql_Counter([CallerMemberName]string methodname = null)
         {
             Database.SQL_Counter++;
             lock (_lock)
             {
-                if (_methodSqlCounters.ContainsKey(methodname))
-                    _methodSqlCounters[methodname]++;
+                if (dictMethodsSqlCounter.ContainsKey(methodname))
+                    dictMethodsSqlCounter[methodname]++;
                 else
-                    _methodSqlCounters[methodname] = 1;
+                    dictMethodsSqlCounter[methodname] = 1;
             }
 
         }
@@ -126,7 +126,7 @@ namespace DigitalProductionProgram.MainWindow
             tooltip.SetToolTip(lbl_DPP_Status, DPP_ServerStatus);
         }
 
-        private void lbl_MonitorStatus_Click(object sender, EventArgs e)
+        private void FlyingEasterEggClick_Click(object sender, EventArgs e)
         {
             if (mainForm != null && EasterEgg_HighScore.IsOkStartGame("Flying Easter Egg", mainForm))
             {

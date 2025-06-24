@@ -289,8 +289,8 @@ namespace DigitalProductionProgram.MainWindow
                     var item = (Operation_Description)t;
                     if (item.Operation == operation)
                     {
-                        cb_Operation.SelectedValue = operation;
-                        mainForm.Operation_SelectedIndexChanged(cb_Operation, EventArgs.Empty);
+                        cb_Operation.SelectedValue = operation;   
+                        //mainForm.Operation_SelectedIndexChanged(cb_Operation, EventArgs.Empty);  --Denna rad skall inte behövas, raden ovanför gör samma sak, vet inte varför den kommit hit
                         return;
                     }
                 }

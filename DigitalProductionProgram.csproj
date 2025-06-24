@@ -8,8 +8,8 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 
 		<ApplicationIcon>NewIcon.ico</ApplicationIcon>
-		<AssemblyVersion>4.3.10.3</AssemblyVersion>
-		<FileVersion>4.3.10.3</FileVersion>
+		<AssemblyVersion>4.3.10.6</AssemblyVersion>
+		<FileVersion>4.3.10.6</FileVersion>
 
 		<!-- ✅ Matchar arkitektur: -->
 		<PlatformTarget>x86</PlatformTarget>
@@ -195,7 +195,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="EPPlus" Version="8.0.1" />
+	  <PackageReference Include="EPPlus" Version="8.0.1" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="6.0.1" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.4" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.4" />

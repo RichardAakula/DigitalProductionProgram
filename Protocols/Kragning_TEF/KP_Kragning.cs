@@ -159,22 +159,21 @@ namespace DigitalProductionProgram.Protocols.Kragning_TEF
                 var protocol_Description_ID = Protocol_Description.Protocol_Description_ID_Row(cell.ColumnIndex, 8);
                 var type = Module.DatabaseManagement.ValueType(protocol_Description_ID, 8);
                 
-                INSERT_Data(dgv_Korprotokoll, protocol_Description_ID, uppstart, cell.Value.ToString(), type);
+                INSERT_Data_Kragning(dgv_Korprotokoll, protocol_Description_ID, uppstart, cell.Value.ToString(), type);
             }
 
             var date = DateTime.Now.ToString("yyyy-MM-dd HH:mm");
-            INSERT_Data(dgv_Korprotokoll, 171, uppstart, date, 3);
-            INSERT_Data(dgv_Korprotokoll, 158, uppstart, Person.EmployeeNr, 0);
-            INSERT_Data(dgv_Korprotokoll, 157, uppstart, Person.Sign, 1);
+            INSERT_Data_Kragning(dgv_Korprotokoll, 171, uppstart, date, 3);
+            INSERT_Data_Kragning(dgv_Korprotokoll, 158, uppstart, Person.EmployeeNr, 0);
+            INSERT_Data_Kragning(dgv_Korprotokoll, 157, uppstart, Person.Sign, 1);
         }
 
-        public static void INSERT_Data(DataGridView dgv_Korprotokoll, int? Protocol_Description_ID, int uppstart, string? value, int type)
+        public static void INSERT_Data_Kragning(DataGridView dgv_Korprotokoll, int? Protocol_Description_ID, int uppstart, string? value, int type)
         {
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                string query;
-                    if (uppstart == 0)
-                        query = @"
+            using var con = new SqlConnection(Database.cs_Protocol);
+            string query;
+            if (uppstart == 0)
+                query = @"
                     IF NOT EXISTS (SELECT * FROM [Order].Data WHERE OrderID = @orderid AND ProtocolDescriptionID = @protocoldescriptionid)
                         INSERT INTO [Order].Data (OrderID, ProtocolDescriptionID, value, textvalue)
                         VALUES (@orderid, @protocoldescriptionid, @value, @textvalue)
@@ -182,8 +181,8 @@ namespace DigitalProductionProgram.Protocols.Kragning_TEF
                          UPDATE [Order].Data 
                             SET value = @value, textvalue = @textvalue
                         WHERE OrderID = @orderid AND ProtocolDescriptionID = @protocoldescriptionid";
-                    else
-                        query = @"
+            else
+                query = @"
                     IF NOT EXISTS (SELECT * FROM [Order].Data WHERE OrderID = @orderid AND ProtocolDescriptionID = @protocoldescriptionid AND Uppstart = @uppstart)
                         INSERT INTO [Order].Data (OrderID, ProtocolDescriptionID, uppstart, value, textvalue)
                         VALUES (@orderid, @protocoldescriptionid, @uppstart, @value, @textvalue)
@@ -191,37 +190,36 @@ namespace DigitalProductionProgram.Protocols.Kragning_TEF
                         UPDATE [Order].Data 
                             SET value = @value, textvalue = @textvalue
                         WHERE OrderID = @orderid AND ProtocolDescriptionID = @protocoldescriptionid";
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
 
-                cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
-                cmd.Parameters.AddWithValue("@protocoldescriptionid", Protocol_Description_ID);
-                if (uppstart == 0)
-                    cmd.Parameters.AddWithValue("@uppstart", DBNull.Value);
-                else
-                    cmd.Parameters.AddWithValue("@uppstart", uppstart);
-                switch (type)
-                {
-                    case 0://NumberValue
-                        SQL_Parameter.Double(cmd.Parameters, "@value", value);
+            cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
+            cmd.Parameters.AddWithValue("@protocoldescriptionid", Protocol_Description_ID);
+            if (uppstart == 0)
+                cmd.Parameters.AddWithValue("@uppstart", DBNull.Value);
+            else
+                cmd.Parameters.AddWithValue("@uppstart", uppstart);
+            switch (type)
+            {
+                case 0://NumberValue
+                    SQL_Parameter.Double(cmd.Parameters, "@value", value);
+                    cmd.Parameters.AddWithValue("@textvalue", DBNull.Value);
+                    break;
+                case 1://TextValue
+                    if (value != null)
+                        SQL_Parameter.String(cmd.Parameters, "@textvalue", value);
+                    else
                         cmd.Parameters.AddWithValue("@textvalue", DBNull.Value);
-                        break;
-                    case 1://TextValue
-                        if (value != null)
-                            SQL_Parameter.String(cmd.Parameters, "@textvalue", value);
-                        else
-                            cmd.Parameters.AddWithValue("@textvalue", DBNull.Value);
-                        cmd.Parameters.AddWithValue("@value", DBNull.Value);
-                        break;
-                    case 3: //DateTime
-                        if (value != null)
-                            SQL_Parameter.String(cmd.Parameters, "@textvalue", value);
-                        cmd.Parameters.AddWithValue("@value", DBNull.Value);
-                        break;
-                }
-
-                con.Open();
-                cmd.ExecuteNonQuery();
+                    cmd.Parameters.AddWithValue("@value", DBNull.Value);
+                    break;
+                case 3: //DateTime
+                    if (value != null)
+                        SQL_Parameter.String(cmd.Parameters, "@textvalue", value);
+                    cmd.Parameters.AddWithValue("@value", DBNull.Value);
+                    break;
             }
+
+            con.Open();
+            cmd.ExecuteNonQuery();
         }
         private void Transfer_Click(object sender, EventArgs e)
         {
@@ -279,9 +277,9 @@ namespace DigitalProductionProgram.Protocols.Kragning_TEF
         private void EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
         {
             var tb = (DataGridViewTextBoxEditingControl)e.Control;
-            tb.KeyPress += AllowedChars_KeyPress;
+            tb.KeyPress += AllowedChars_KeyPress_Kragning_TEF;
         }
-        private void AllowedChars_KeyPress(object sender, KeyPressEventArgs e)
+        private void AllowedChars_KeyPress_Kragning_TEF(object? sender, KeyPressEventArgs e)
         {
             var col = dgv_Korprotokoll_Inputdata.CurrentCell.ColumnIndex;
             if (char.IsControl(e.KeyChar))

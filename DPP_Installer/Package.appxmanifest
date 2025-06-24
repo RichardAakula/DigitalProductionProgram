@@ -9,11 +9,7 @@
   <Identity
     Name="com.Optinova.digitalproductionprogram"
     Publisher="CN=Richard Aakula, OU=OIC, OU=Holding, OU=AX, OU=Sympa, OU=Users, OU=Optinova, DC=OPTINOVA, DC=FI"
-<<<<<<< HEAD
-    Version="4.3.10.0" />
-=======
-    Version="4.3.9.9" />
->>>>>>> 6971207ba0edf11163f318ebd8725f90b144c355
+    Version="4.3.10.6" />
 
   <Properties>
     <DisplayName>Digital Production Program</DisplayName>

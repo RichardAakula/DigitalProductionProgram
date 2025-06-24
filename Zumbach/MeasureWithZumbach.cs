@@ -1247,7 +1247,7 @@ namespace DigitalProductionProgram.Zumbach
             }
         }
 
-        private void CheckBox_LogData_CheckedChanged(object sender, EventArgs e)
+        private void CheckBox_LogData_CheckedChanged(object? sender, EventArgs e)
         {
             Order.Set_IsOrderDone();
             if (Order.IsOrderDone)
@@ -1338,7 +1338,6 @@ namespace DigitalProductionProgram.Zumbach
         }
         private void StopLogData()
         {
-            //this.SuspendLayout();
             chb_LogData.CheckedChanged -= CheckBox_LogData_CheckedChanged;
             chb_LogData.Invoke(new Action(() => chb_LogData.Checked = false));
             chb_LogData.CheckedChanged += CheckBox_LogData_CheckedChanged;
@@ -1350,27 +1349,40 @@ namespace DigitalProductionProgram.Zumbach
             bgw_Random.Dispose();
             ctr_RndOD = 0;
 
-            if (ZumbachData.Rows.Count - startRow > 10 && IsSaved == false)
+            int totalRows = ZumbachData.Rows.Count - startRow;
+            if (totalRows > 10 && !IsSaved)
             {
                 IsSaved = true;
                 SortOut_BadData_Zumbach();
 
-                if (ZumbachData.Rows.Count - startRow < 50)
+                bool IsOkSaveData = true;
+                if (totalRows < 50)
                 {
-                    InfoText.Question($"{LanguageManager.GetString("zumbach_Info_6_1")} {ZumbachData.Rows.Count - startRow} {LanguageManager.GetString("zumbach_Info_6_2")}\n{LanguageManager.GetString("zumbach_Info_6_3")}", CustomColors.InfoText_Color.Warning, "Warning!", this);
-                    if (InfoText.answer == InfoText.Answer.Yes)
-                    {
-                        Save_ZumbachData.INSERT_Measurement((byte)Measurement, (byte)position);
-                        for (var i = startRow; i < ZumbachData.Rows.Count - DeleteMeasurements; i++)
-                            Save_ZumbachData.INSERT_Data(double.Parse(ZumbachData.Rows[i]["OD"].ToString()), position, Measurement);
-                    }
-                }
-                else
-                {
+                    InfoText.Question(
+                        $"{LanguageManager.GetString("zumbach_Info_6_1")} {totalRows} {LanguageManager.GetString("zumbach_Info_6_2")}\n{LanguageManager.GetString("zumbach_Info_6_3")}",
+                        CustomColors.InfoText_Color.Warning, "Warning!", this);
 
+                    IsOkSaveData = InfoText.answer == InfoText.Answer.Yes;
+                }
+
+                if (IsOkSaveData)
+                {
                     Save_ZumbachData.INSERT_Measurement((byte)Measurement, (byte)position);
+
+                    var dataTable = new DataTable();
+                    dataTable.Columns.Add("OrderID", typeof(int));
+                    dataTable.Columns.Add("Bag", typeof(int));
+                    dataTable.Columns.Add("Position", typeof(int));
+                    dataTable.Columns.Add("OD", typeof(double));
+                    var orderID = Order.OrderID;
+
                     for (var i = startRow; i < ZumbachData.Rows.Count - DeleteMeasurements; i++)
-                        Save_ZumbachData.INSERT_Data(double.Parse(ZumbachData.Rows[i]["OD"].ToString()), position, Measurement);
+                    {
+                        if (double.TryParse(ZumbachData.Rows[i]["OD"].ToString(), out double od))
+                            dataTable.Rows.Add(orderID, Measurement, position, od);
+                    }
+
+                    Save_ZumbachData.INSERT_Data_Bulk(dataTable, position, Measurement);
                 }
 
                 if (chb_AutoPosByte.Checked)
@@ -1381,10 +1393,10 @@ namespace DigitalProductionProgram.Zumbach
             }
 
             Task.Factory.StartNew(ChangeTheme);
-
             Calculate_Data();
             _ = Log.Activity.Stop("Loggar data Zumbach:");
         }
+
         private void SortOut_BadData_Zumbach()
         {
             //Sorterar bort 5 första samt 15 sista värden pga ofta felaktiga
@@ -1395,7 +1407,7 @@ namespace DigitalProductionProgram.Zumbach
             }
             for (var i = 0; i < 10; i++)
             {
-                var dr = ZumbachData.Rows[ZumbachData.Rows.Count - 1];
+                var dr = ZumbachData.Rows[^1];
                 dr.Delete();
             }
         }
@@ -1748,23 +1760,25 @@ L       - Startar/Avslutar Loggning.
                 cmd.ExecuteNonQuery();
                 con.Close();
             }
-            public static void INSERT_Data(double od, int position, int påse)
-            {//Datumformatet i datorn måste ändras till yyyy-MM-dd 
-                var query = @"INSERT INTO Zumbach.Data (OrderID, Bag, Position, OD) 
-                                    VALUES (@orderid, @bag, @position, @od)";
-
-                var con = new SqlConnection(Database.cs_Protocol);
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            public static void INSERT_Data_Bulk(DataTable data, int position, int bag)
+            {
+                using var con = new SqlConnection(Database.cs_Protocol);
                 con.Open();
-                cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
-                cmd.Parameters.AddWithValue("@bag", påse);
-                cmd.Parameters.AddWithValue("@od", od);
-                cmd.Parameters.AddWithValue("@position", position);
-                cmd.ExecuteNonQuery();
-                con.Close();
+
+                using var bulk = new SqlBulkCopy(con)
+                {
+                    DestinationTableName = "Zumbach.Data",
+                    BatchSize = 1000
+                };
+
+                bulk.ColumnMappings.Add("OrderID", "OrderID");
+                bulk.ColumnMappings.Add("Bag", "Bag");
+                bulk.ColumnMappings.Add("Position", "Position");
+                bulk.ColumnMappings.Add("OD", "OD");
+
+                bulk.WriteToServer(data);
             }
         }
-
 
     }
 }

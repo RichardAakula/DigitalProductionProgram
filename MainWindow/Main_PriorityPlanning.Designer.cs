@@ -40,7 +40,6 @@ namespace DigitalProductionProgram.MainWindow
             tlp_InfoLabels = new TableLayoutPanel();
             label_Brown = new Label();
             label_Red = new Label();
-            label_Orange = new Label();
             label_Blue = new Label();
             label_White = new Label();
             label_Yellow = new Label();
@@ -87,9 +86,8 @@ namespace DigitalProductionProgram.MainWindow
             // 
             tlp_InfoLabels.ColumnCount = 1;
             tlp_InfoLabels.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
-            tlp_InfoLabels.Controls.Add(label_Brown, 0, 5);
-            tlp_InfoLabels.Controls.Add(label_Red, 0, 6);
-            tlp_InfoLabels.Controls.Add(label_Orange, 0, 4);
+            tlp_InfoLabels.Controls.Add(label_Brown, 0, 4);
+            tlp_InfoLabels.Controls.Add(label_Red, 0, 5);
             tlp_InfoLabels.Controls.Add(label_Blue, 0, 3);
             tlp_InfoLabels.Controls.Add(label_White, 0, 2);
             tlp_InfoLabels.Controls.Add(label_Yellow, 0, 1);
@@ -98,15 +96,15 @@ namespace DigitalProductionProgram.MainWindow
             tlp_InfoLabels.Location = new Point(350, 0);
             tlp_InfoLabels.Margin = new Padding(0);
             tlp_InfoLabels.Name = "tlp_InfoLabels";
-            tlp_InfoLabels.RowCount = 7;
+            tlp_InfoLabels.RowCount = 6;
             tlp_Main.SetRowSpan(tlp_InfoLabels, 4);
-            tlp_InfoLabels.RowStyles.Add(new RowStyle(SizeType.Percent, 14.28571F));
-            tlp_InfoLabels.RowStyles.Add(new RowStyle(SizeType.Percent, 14.28571F));
-            tlp_InfoLabels.RowStyles.Add(new RowStyle(SizeType.Percent, 14.28571F));
-            tlp_InfoLabels.RowStyles.Add(new RowStyle(SizeType.Percent, 14.28571F));
-            tlp_InfoLabels.RowStyles.Add(new RowStyle(SizeType.Percent, 14.28571F));
-            tlp_InfoLabels.RowStyles.Add(new RowStyle(SizeType.Percent, 14.28571F));
-            tlp_InfoLabels.RowStyles.Add(new RowStyle(SizeType.Percent, 14.28571F));
+            tlp_InfoLabels.RowStyles.Add(new RowStyle(SizeType.Percent, 16.666666F));
+            tlp_InfoLabels.RowStyles.Add(new RowStyle(SizeType.Percent, 16.666666F));
+            tlp_InfoLabels.RowStyles.Add(new RowStyle(SizeType.Percent, 16.666666F));
+            tlp_InfoLabels.RowStyles.Add(new RowStyle(SizeType.Percent, 16.666666F));
+            tlp_InfoLabels.RowStyles.Add(new RowStyle(SizeType.Percent, 16.666666F));
+            tlp_InfoLabels.RowStyles.Add(new RowStyle(SizeType.Percent, 16.666666F));
+            tlp_InfoLabels.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
             tlp_InfoLabels.Size = new Size(653, 140);
             tlp_InfoLabels.TabIndex = 7;
             // 
@@ -116,10 +114,10 @@ namespace DigitalProductionProgram.MainWindow
             label_Brown.Dock = DockStyle.Fill;
             label_Brown.Font = new Font("Lucida Sans", 9.75F);
             label_Brown.ForeColor = Color.DarkOrange;
-            label_Brown.Location = new Point(4, 95);
+            label_Brown.Location = new Point(4, 92);
             label_Brown.Margin = new Padding(4, 0, 4, 0);
             label_Brown.Name = "label_Brown";
-            label_Brown.Size = new Size(645, 19);
+            label_Brown.Size = new Size(645, 23);
             label_Brown.TabIndex = 16;
             label_Brown.Text = "Processkort under framarbetning, och processkort behöver fastslås.\r\n\r\n";
             // 
@@ -129,25 +127,12 @@ namespace DigitalProductionProgram.MainWindow
             label_Red.Dock = DockStyle.Fill;
             label_Red.Font = new Font("Lucida Sans", 9.75F);
             label_Red.ForeColor = Color.FromArgb(156, 0, 6);
-            label_Red.Location = new Point(4, 114);
+            label_Red.Location = new Point(4, 115);
             label_Red.Margin = new Padding(4, 0, 4, 0);
             label_Red.Name = "label_Red";
-            label_Red.Size = new Size(645, 26);
+            label_Red.Size = new Size(645, 25);
             label_Red.TabIndex = 15;
             label_Red.Text = "Processkort ej godkänt av QA";
-            // 
-            // label_Orange
-            // 
-            label_Orange.BackColor = Color.DarkOrange;
-            label_Orange.Dock = DockStyle.Fill;
-            label_Orange.Font = new Font("Lucida Sans", 9.75F);
-            label_Orange.ForeColor = Color.Brown;
-            label_Orange.Location = new Point(4, 76);
-            label_Orange.Margin = new Padding(4, 0, 4, 0);
-            label_Orange.Name = "label_Orange";
-            label_Orange.Size = new Size(645, 19);
-            label_Orange.TabIndex = 14;
-            label_Orange.Text = "Processkort saknas och behöver upprättas.";
             // 
             // label_Blue
             // 
@@ -155,10 +140,10 @@ namespace DigitalProductionProgram.MainWindow
             label_Blue.Dock = DockStyle.Fill;
             label_Blue.Font = new Font("Lucida Sans", 9.75F);
             label_Blue.ForeColor = Color.DarkSlateGray;
-            label_Blue.Location = new Point(4, 57);
+            label_Blue.Location = new Point(4, 69);
             label_Blue.Margin = new Padding(4, 0, 4, 0);
             label_Blue.Name = "label_Blue";
-            label_Blue.Size = new Size(645, 19);
+            label_Blue.Size = new Size(645, 23);
             label_Blue.TabIndex = 12;
             label_Blue.Text = "Multipla processkort finns ";
             // 
@@ -168,10 +153,10 @@ namespace DigitalProductionProgram.MainWindow
             label_White.Dock = DockStyle.Fill;
             label_White.Font = new Font("Lucida Sans", 9.75F);
             label_White.ForeColor = Color.Red;
-            label_White.Location = new Point(4, 38);
+            label_White.Location = new Point(4, 46);
             label_White.Margin = new Padding(4, 0, 4, 0);
             label_White.Name = "label_White";
-            label_White.Size = new Size(645, 19);
+            label_White.Size = new Size(645, 23);
             label_White.TabIndex = 13;
             label_White.Text = "Processkort saknas";
             // 
@@ -181,10 +166,10 @@ namespace DigitalProductionProgram.MainWindow
             label_Yellow.Dock = DockStyle.Fill;
             label_Yellow.Font = new Font("Lucida Sans", 9.75F);
             label_Yellow.ForeColor = Color.FromArgb(156, 101, 0);
-            label_Yellow.Location = new Point(4, 19);
+            label_Yellow.Location = new Point(4, 23);
             label_Yellow.Margin = new Padding(4, 0, 4, 0);
             label_Yellow.Name = "label_Yellow";
-            label_Yellow.Size = new Size(645, 19);
+            label_Yellow.Size = new Size(645, 23);
             label_Yellow.TabIndex = 4;
             label_Yellow.Text = "Order startad";
             // 
@@ -197,7 +182,7 @@ namespace DigitalProductionProgram.MainWindow
             label_Green.Location = new Point(4, 0);
             label_Green.Margin = new Padding(4, 0, 4, 0);
             label_Green.Name = "label_Green";
-            label_Green.Size = new Size(645, 19);
+            label_Green.Size = new Size(645, 23);
             label_Green.TabIndex = 3;
             label_Green.Text = "Order Ok att starta";
             // 
@@ -333,15 +318,14 @@ namespace DigitalProductionProgram.MainWindow
         private TableLayoutPanel tlp_InfoLabels;
         private Label label_Green;
         private Label label_Yellow;
-        private Label label_Orange;
         private Label label_Blue;
         private Label label_White;
         private Label label_Brown;
-        private Label label_Red;
         private TableLayoutPanel tlp_Main;
         public DataGridView dgv_PriorityPlanning;
         public TextBox tb_ProdBenämning;
         public TextBox tb_ProdGrupp;
         private Button btn_RefreshPriorityPlan;
+        private Label label_Red;
     }
 }

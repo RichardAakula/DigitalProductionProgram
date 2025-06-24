@@ -2309,4 +2309,7 @@ Contact Admin if necessary.</value>
   <data name="btnZumbach" xml:space="preserve">
     <value>F6-Zumbach-measurement</value>
   </data>
+  <data name="label_InactiveProcesscard" xml:space="preserve">
+    <value>This Process card is inactive.</value>
+  </data>
 </root>

@@ -15,6 +15,8 @@ using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.Templates;
 using Microsoft.Data.SqlClient;
 
+
+
 namespace DigitalProductionProgram.Measure
 {
     internal class Measure_ControlManagement

@@ -113,7 +113,7 @@ namespace DigitalProductionProgram.DatabaseManagement
                 cmd.Parameters.AddWithValue("@workoperationid", Order.WorkoperationID);
                 SQL_Parameter.Int(cmd.Parameters, "@protocolmaintemplateid", Templates_Protocol.MainTemplate.ID);
                 SQL_Parameter.NullableINT(cmd.Parameters, "@lineclearancetemplateid", Templates_LineClearance.MainTemplate.LineClearance_MainTemplateID);
-                cmd.Parameters.AddWithValue("@measureprotocolmaintemplateid", Templates_MeasureProtocol.MainTemplate.ID);
+                SQL_Parameter.NullableINT(cmd.Parameters, "@measureprotocolmaintemplateid", Templates_MeasureProtocol.MainTemplate.ID);
                 cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                 cmd.Parameters.AddWithValue("@ordernr", Order.OrderNumber);
                 cmd.Parameters.AddWithValue("@operation", Order.Operation);
@@ -123,7 +123,6 @@ namespace DigitalProductionProgram.DatabaseManagement
                 SQL_Parameter.String(cmd.Parameters, "@prodtype", Order.ProdType);
                 cmd.Parameters.AddWithValue("@amount", Order.Amount);
                 cmd.Parameters.AddWithValue("@unit", Order.Enhet);
-               // cmd.Parameters.AddWithValue("@date", DateTime.Now);
                 cmd.Parameters.AddWithValue("@name_start", Person.Name);
                 cmd.Parameters.AddWithValue("@date_start", Order.StartTime);
                 cmd.Parameters.AddWithValue("@description", Order.Description);

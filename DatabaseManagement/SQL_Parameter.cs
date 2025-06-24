@@ -33,9 +33,7 @@ namespace DigitalProductionProgram.DatabaseManagement
                 return collection.AddWithValue(param, DBNull.Value);
             if (!double.TryParse(text.ToString(), out var value)) 
                 return collection.AddWithValue(param, DBNull.Value);
-            if (!double.IsNaN(value))
-                return collection.AddWithValue(param, value);
-            return collection.AddWithValue(param, DBNull.Value);
+            return !double.IsNaN(value) ? collection.AddWithValue(param, value) : collection.AddWithValue(param, DBNull.Value);
         }
         public static SqlParameter Int(SqlParameterCollection collection, string param, object? text)
         {
@@ -47,15 +45,11 @@ namespace DigitalProductionProgram.DatabaseManagement
         }
         public static SqlParameter Byte_ZeroEqNULL(SqlParameterCollection collection, string param, byte value)
         {
-            if (value == 0)
-                return collection.AddWithValue(param, DBNull.Value);
-            return collection.AddWithValue(param, value);
+            return value == 0 ? collection.AddWithValue(param, DBNull.Value) : collection.AddWithValue(param, value);
         }
         public static SqlParameter NullableINT(SqlParameterCollection collection, string param, int? value)
         {
-            if (value is null)
-                return collection.AddWithValue(param, DBNull.Value);
-            return collection.AddWithValue(param, value);
+            return value is null ? collection.AddWithValue(param, DBNull.Value) : collection.AddWithValue(param, value);
         }
         public static SqlParameter String(SqlParameterCollection collection, string param, string? value, bool IsNA_Ok = false)
         {

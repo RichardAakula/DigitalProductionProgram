@@ -119,12 +119,12 @@ namespace DigitalProductionProgram.MainWindow
         // Denna rad måste finnas för utskrifterna
         private readonly Manage_PrintOuts print = new Manage_PrintOuts();
         private readonly BlackBackground black;
-        private FlyingEasterEgg? flyingEgg;
-        public static ProgressBar pBar;
-        private Timer? eggTimer;
-        private Bitmap? easterEggImage;
-        private Point eggPosition;
-        private Random rand = new Random();
+       // private FlyingEasterEgg? flyingEgg;
+       // public static ProgressBar pBar;
+       // private Timer? eggTimer;
+       // private Bitmap? easterEggImage;
+       // private Point eggPosition;
+       // private Random rand = new Random();
 
 
 
@@ -1007,7 +1007,7 @@ namespace DigitalProductionProgram.MainWindow
         private int counter_ReLoginMonitor = 0;
         private int timer_counterPlaneratStopp = 60;
         public static int timer_ReloginMonitor = 600000;
-        private int timer_CheckForUpdate = 10;
+        private int timer_CheckForUpdate = 30;//30 sekunder
 
         private Timer timer_Master;
         private async void MasterTimer_Tick(object? sender, EventArgs e)
@@ -1100,7 +1100,7 @@ namespace DigitalProductionProgram.MainWindow
             if (InfoText.answer == InfoText.Answer.No)
             {
                 _ = Activity.Stop($"Användare {Person.Name} uppdaterade INTE programmet.");
-                timer_CheckForUpdate = 300; // 5 timmar
+                timer_CheckForUpdate = 7200; // 2 timmar
             }
             else
             {
@@ -1175,6 +1175,11 @@ namespace DigitalProductionProgram.MainWindow
             ControlManager.Close_All_Körprotokoll();
 
             SaveData.Reset_Processcard_Open(false);
+            var topMethod = ServerStatus.dictMethodsSqlCounter
+                .OrderByDescending(kv => kv.Value)
+                .FirstOrDefault();
+
+            _ = Activity.Stop($"Stänger DPP: Antal SQL_Frågor: {Database.SQL_Counter}. {topMethod.Key}-({topMethod.Value})");
         }
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
         {

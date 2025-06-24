@@ -293,16 +293,15 @@ namespace DigitalProductionProgram.MainWindow
                 return;
             }
 
-            if (string.IsNullOrEmpty(Order.RevNr) && Processcard.IsPartNrExist)
+            if (!Processcard.IsPartNrExist)
             {
                 InfoText.Show(LanguageManager.GetString("changeProcesscard_Info_2"), CustomColors.InfoText_Color.Warning, "Warning", this);
                 return;
             }
 
-            var chooseProcesscard_ChangeProcesscard = new ProcesscardTemplateSelector(false, true, false, false);
+            var chooseProcesscard_ChangeProcesscard = new ProcesscardTemplateSelector(true, true, false, false);
             chooseProcesscard_ChangeProcesscard.ShowDialog();
-            if (Order.PartID is null)
-                return;
+           
             using (var con = new SqlConnection(Database.cs_Protocol))
             {
                 var query = @"
@@ -311,10 +310,11 @@ namespace DigitalProductionProgram.MainWindow
                         WHERE OrderID = @orderid";
                 var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
-                cmd.Parameters.AddWithValue("@partID", Order.PartID);
-                cmd.Parameters.AddWithValue("@revNr", Order.RevNr);
-                cmd.Parameters.AddWithValue("@prodline", Order.ProdLine);
-                cmd.Parameters.AddWithValue("@prodtyp", Order.ProdType);
+                SQL_Parameter.NullableINT(cmd.Parameters, "@partID", Order.PartID);
+                SQL_Parameter.String(cmd.Parameters, "@revNr", Order.RevNr);
+                SQL_Parameter.String(cmd.Parameters, "@prodline", Order.ProdLine);
+                SQL_Parameter.String(cmd.Parameters, "@prodtyp", Order.ProdType);
+
 
                 con.Open();
                 cmd.ExecuteNonQuery();
@@ -981,7 +981,7 @@ Protocol.MainTemplate.Revision = {Templates_Protocol.MainTemplate.Revision}"
             var sb = new StringBuilder();
             sb.AppendLine($"Totalt antal SQL-anrop: {Database.SQL_Counter}\n\n");
 
-            foreach (var kvp in ServerStatus._methodSqlCounters.OrderByDescending(x => x.Value))
+            foreach (var kvp in ServerStatus.dictMethodsSqlCounter.OrderByDescending(x => x.Value))
             {
                 sb.AppendLine($"{kvp.Key}: {kvp.Value} anrop");
             }
@@ -992,7 +992,7 @@ Protocol.MainTemplate.Revision = {Templates_Protocol.MainTemplate.Revision}"
         }
         private void Developer_Clear_Sql_Queries_Click(object sender, EventArgs e)
         {
-            ServerStatus._methodSqlCounters.Clear();
+            ServerStatus.dictMethodsSqlCounter.Clear();
             Database.SQL_Counter = 0;
         }
 

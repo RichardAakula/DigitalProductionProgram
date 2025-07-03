@@ -17,25 +17,20 @@ namespace DigitalProductionProgram.User
         public static string ConvertFromHashedPassword(string password)
         {
             // Create SHA-512 hash
-            using (SHA512 sha512 = SHA512.Create())
-            {
-                byte[] hashBytes = sha512.ComputeHash(Encoding.UTF8.GetBytes(password));
-                return BitConverter.ToString(hashBytes).Replace("-", "").ToLower();
-            }
+            using SHA512 sha512 = SHA512.Create();
+            byte[] hashBytes = sha512.ComputeHash(Encoding.UTF8.GetBytes(password));
+            return BitConverter.ToString(hashBytes).Replace("-", "").ToLower();
         }
         public static string ConvertToHashedPassword(string password)
         {
-            using (var sha512 = SHA512.Create())
+            using var sha512 = SHA512.Create();
+            var hashBytes = sha512.ComputeHash(Encoding.UTF8.GetBytes(password));
+            var builder = new StringBuilder();
+            foreach (var b in hashBytes)
             {
-                var hashBytes = sha512.ComputeHash(Encoding.UTF8.GetBytes(password));
-                var builder = new StringBuilder();
-                foreach (var b in hashBytes)
-                {
-                    builder.Append(b.ToString("x2")); // Convert to hexadecimal
-                }
-                return builder.ToString();
+                builder.Append(b.ToString("x2")); // Convert to hexadecimal
             }
-
+            return builder.ToString();
         }
 
 

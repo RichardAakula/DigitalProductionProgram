@@ -163,7 +163,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
         {
             foreach (Module module in tlp_Machine.Controls)
             {
-                if (IsOkAddStartUp(StartUp(module.dgv_Module.Columns[module.dgv_Module.Columns.Count - 1].HeaderText)))
+                if (IsOkAddStartUp(StartUp(module.dgv_Module.Columns[^1].HeaderText)))
                 {
                     if (module.IsModuleUsedWithMultipleColumnsStartup)
                         module.AddStartup(NextStartup, 1);

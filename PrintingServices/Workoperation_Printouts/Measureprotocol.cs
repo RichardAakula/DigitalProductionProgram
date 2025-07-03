@@ -383,49 +383,47 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
             var start_x = X_DateValue;
             if (!string.IsNullOrEmpty(Order.OrderNumber))
             {
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    const string query = @"
+                using var con = new SqlConnection(Database.cs_Protocol);
+                const string query = @"
                                 SELECT Discarded, Date, ErrorCode, AnstNr, Sign, RowIndex
                                 FROM MeasureProtocol.MainData
                                 WHERE OrderID = @orderid 
                                 AND RowIndex BETWEEN @start AND @end
                                 ORDER BY RowIndex";
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
 
-                    cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
-                    cmd.Parameters.AddWithValue("@start", FirstRowMeasurment);
-                    cmd.Parameters.AddWithValue("@end", LastRowMeasurement);
-                    con.Open();
-                    var reader = cmd.ExecuteReader();
-                    var x = start_x;
-                    while (reader.Read())
+                cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
+                cmd.Parameters.AddWithValue("@start", FirstRowMeasurment);
+                cmd.Parameters.AddWithValue("@end", LastRowMeasurement);
+                con.Open();
+                var reader = cmd.ExecuteReader();
+                var x = start_x;
+                while (reader.Read())
+                {
+                    RowIndex = int.Parse(reader["RowIndex"].ToString()) - FirstRowMeasurment;
+                    var y = 196 + RowIndex * RowHeight;
+
+                    DateTime.TryParse(reader["Date"].ToString(), out var date);
+                    var dateTimeFormat = CultureInfo.CurrentCulture.DateTimeFormat;
+                    var formattedDate = date.ToString($"{dateTimeFormat.ShortDatePattern} {dateTimeFormat.ShortTimePattern}", CultureInfo.CurrentCulture);
+                    Print.Text_Operatör(e, formattedDate, x + width_Date / 2, y + 4, width_Date, true, true);
+                    x += width_Date;
+                    Print.Text_Operatör(e, reader["ErrorCode"].ToString(), x + width_ErrorCode / 2, y + 4, width_ErrorCode, true, true);
+                    x += width_ErrorCode;
+                    Print.Text_Operatör(e, reader["AnstNr"].ToString(), x + width_EmplNr / 2, y + 4, width_EmplNr, true, true);
+                    x += width_EmplNr;
+                    Print.Text_Operatör(e, reader["Sign"].ToString(), x + width_Sign / 2, y + 4, width_Sign, true, true);
+
+                    bool.TryParse(reader["Discarded"].ToString(), out var IsDiscarded);
+                    if(IsDiscarded)
                     {
-                        RowIndex = int.Parse(reader["RowIndex"].ToString()) - FirstRowMeasurment;
-                        var y = 196 + RowIndex * RowHeight;
-
-                        DateTime.TryParse(reader["Date"].ToString(), out var date);
-                        var dateTimeFormat = CultureInfo.CurrentCulture.DateTimeFormat;
-                        var formattedDate = date.ToString($"{dateTimeFormat.ShortDatePattern} {dateTimeFormat.ShortTimePattern}", CultureInfo.CurrentCulture);
-                        Print.Text_Operatör(e, formattedDate, x + width_Date / 2, y + 4, width_Date, true, true);
-                        x += width_Date;
-                        Print.Text_Operatör(e, reader["ErrorCode"].ToString(), x + width_ErrorCode / 2, y + 4, width_ErrorCode, true, true);
-                        x += width_ErrorCode;
-                        Print.Text_Operatör(e, reader["AnstNr"].ToString(), x + width_EmplNr / 2, y + 4, width_EmplNr, true, true);
-                        x += width_EmplNr;
-                        Print.Text_Operatör(e, reader["Sign"].ToString(), x + width_Sign / 2, y + 4, width_Sign, true, true);
-
-                        bool.TryParse(reader["Discarded"].ToString(), out var IsDiscarded);
-                        if(IsDiscarded)
-                        {
-                            var x2 = X_DateValue + width_Date + width_EmplNr + width_ErrorCode + width_Sign;
-                            var pt1 = new Point(28, y + 11);
-                            var pt2 = new Point(x2, y + 11);
-                            e.Graphics.DrawLine(CustomFonts.thinBlack, pt1, pt2);
-                        }
-
-                        x = start_x;
+                        var x2 = X_DateValue + width_Date + width_EmplNr + width_ErrorCode + width_Sign;
+                        var pt1 = new Point(28, y + 11);
+                        var pt2 = new Point(x2, y + 11);
+                        e.Graphics.DrawLine(CustomFonts.thinBlack, pt1, pt2);
                     }
+
+                    x = start_x;
                 }
             }
         }

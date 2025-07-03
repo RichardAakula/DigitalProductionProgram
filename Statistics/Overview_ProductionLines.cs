@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using Microsoft.Data.SqlClient;
-using System.Drawing;
-using System.Windows.Forms;
+﻿using Microsoft.Data.SqlClient;
 using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.Övrigt;
-using ProgressBar = DigitalProductionProgram.ControlsManagement.ProgressBar;
+using CustomProgressBar = DigitalProductionProgram.ControlsManagement.CustomProgressBar;
 
 namespace DigitalProductionProgram.Statistics
 {
@@ -26,7 +21,7 @@ namespace DigitalProductionProgram.Statistics
 
         private readonly List<ProductionLines> productionLines = new List<ProductionLines>();
         private readonly List<Panel> panels = new List<Panel>();
-        private readonly ProgressBar pbar;
+        private readonly CustomProgressBar pbar;
 
 
 
@@ -36,7 +31,7 @@ namespace DigitalProductionProgram.Statistics
             InitializeComponent();
             Translate_Form();
 
-            pbar = new ProgressBar();
+            pbar = new CustomProgressBar();
             pbar.Show();
             panel_Main.HorizontalScroll.Visible = false;
             screenWidth = Screen.FromControl(this).Bounds.Size.Width;
@@ -46,7 +41,7 @@ namespace DigitalProductionProgram.Statistics
             Load_ProdLines();
             PrintInfo();
             timer_UpdateInfo.Start();
-            ProgressBar.close();
+            CustomProgressBar.close();
 
             Order.Restore_TempOrderInfo();
         }

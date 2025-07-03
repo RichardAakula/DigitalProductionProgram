@@ -289,9 +289,6 @@
   <data name="form" xml:space="preserve">
     <value />
   </data>
-  <data name="SELECT_OrderNr_ActiveOrdersForUser" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\SELECT_OrderNr_ActiveOrdersForUser.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;iso-8859-1</value>
-  </data>
   <data name="Expand" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Down_Single1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -1869,6 +1866,33 @@
     <value />
   </data>
   <data name="label_InactiveProcesscard" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="user_PasswordUpdated" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="label_ResetPasswordInfo" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="btn_ConfirmCode" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="btn_NewCode" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="btn_ConfirmNewCode" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="resetPassword_CodeExpired" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="resetPassword_TimeLeft" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="resetPassword_MaxAttemptsReached" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="resetPassword_WrongCode" xml:space="preserve">
     <value></value>
   </data>
 </root>

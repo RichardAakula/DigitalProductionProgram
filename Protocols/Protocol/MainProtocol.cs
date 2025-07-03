@@ -32,6 +32,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
             return null;
         }
 
+        private readonly int TotalMachines;
         public static bool IsUsingMultipleColumnsStartUp
         {
             get
@@ -120,12 +121,12 @@ namespace DigitalProductionProgram.Protocols.Protocol
             Translate_Form();
 
             Module.IsOkToSave = false;
-
+            TotalMachines = Machine.TotalMachines;
             AddMainInfo();
             LoadData();
 
            // float percent = 100f / Machine.TotalMachines;
-            for (int i = 0; i < Machine.TotalMachines; i++)
+            for (int i = 0; i < TotalMachines; i++)
                 AddMachine(i + 1);
 
             if (Korprotokoll.IsProtocol_Open_By_AnotherUser(this) || string.IsNullOrEmpty(Person.EmployeeNr) || Order.IsOrderDone || LineClearance.LineClearance.IsLineClearanceDone == false)
@@ -496,7 +497,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
         {
             foreach (Machine machine in flp_Machines.Controls)
             {
-                 machine.Width = Machine.TotalMachines > 0 ? (flp_Machines.Width / Machine.TotalMachines) - 10 : flp_Machines.Width - 10;
+                 machine.Width = TotalMachines > 0 ? (flp_Machines.Width / TotalMachines) - 10 : flp_Machines.Width - 10;
             }
         }
     }

@@ -2305,4 +2305,31 @@ Kontakta Admin vid behov.</value>
   <data name="label_InactiveProcesscard" xml:space="preserve">
     <value>Processkortet är inaktivt.</value>
   </data>
+  <data name="user_PasswordUpdated" xml:space="preserve">
+    <value>Ditt lösenord är nu uppdaterat</value>
+  </data>
+  <data name="label_ResetPasswordInfo" xml:space="preserve">
+    <value>Vi har skickat en kod till din e-post. Skriv in den nedan.</value>
+  </data>
+  <data name="btn_ConfirmCode" xml:space="preserve">
+    <value>Bekräfta kod</value>
+  </data>
+  <data name="btn_NewCode" xml:space="preserve">
+    <value>Skicka ny kod</value>
+  </data>
+  <data name="btn_ConfirmNewCode" xml:space="preserve">
+    <value>Bekräfta kod</value>
+  </data>
+  <data name="resetPassword_CodeExpired" xml:space="preserve">
+    <value>Koden har gått ut. Klicka på 'Skicka ny kod'.</value>
+  </data>
+  <data name="resetPassword_TimeLeft" xml:space="preserve">
+    <value>Koden är giltig i:</value>
+  </data>
+  <data name="resetPassword_MaxAttemptsReached" xml:space="preserve">
+    <value>För många felaktiga försök.</value>
+  </data>
+  <data name="resetPassword_WrongCode" xml:space="preserve">
+    <value>Fel kod. Försök kvar:</value>
+  </data>
 </root>

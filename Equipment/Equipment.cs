@@ -198,40 +198,38 @@ namespace DigitalProductionProgram.Equipment
         {
             var list = new List<string?>();
 
-            using (var con = new SqlConnection(Database.cs_ToolRegister))
+            using var con = new SqlConnection(Database.cs_ToolRegister);
+            string query;
+            if (is_Show_Typ == false || !string.IsNullOrEmpty(sort))
+                query = $"SELECT DISTINCT {kolumn} ";
+            else
+                query = $"SELECT DISTINCT {kolumn}, Typ ";
+
+            query += $"FROM {register} ";
+
+            if (string.IsNullOrEmpty(nom_Typ) == false && nom_Typ != "N/A" && string.IsNullOrEmpty(sort))
+                query += $"WHERE Typ = '{nom_Typ}' ";
+            if (!string.IsNullOrEmpty(sort))
+                query += "WHERE Sort = @sort AND (Kasserad IS NULL OR Kasserad = '')";
+
+
+            con.Open();
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            SQL_Parameter.String(cmd.Parameters, "@sort", sort);
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
             {
-                string query;
-                if (is_Show_Typ == false || !string.IsNullOrEmpty(sort))
-                    query = $"SELECT DISTINCT {kolumn} ";
-                else
-                    query = $"SELECT DISTINCT {kolumn}, Typ ";
-
-                query += $"FROM {register} ";
-
-                if (string.IsNullOrEmpty(nom_Typ) == false && nom_Typ != "N/A" && string.IsNullOrEmpty(sort))
-                    query += $"WHERE Typ = '{nom_Typ}' ";
-                if (!string.IsNullOrEmpty(sort))
-                    query += "WHERE Sort = @sort AND (Kasserad IS NULL OR Kasserad = '')";
-
-
-                con.Open();
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                SQL_Parameter.String(cmd.Parameters, "@sort", sort);
-                var reader = cmd.ExecuteReader();
-                while (reader.Read())
+                if (!Blacklist_Utrustning.Contains(reader[0].ToString()))
                 {
-                    if (!Blacklist_Utrustning.Contains(reader[0].ToString()))
-                    {
-                        if (is_Show_Typ == false || !string.IsNullOrEmpty(sort))
-                            list.Add(reader[0].ToString());
-                        else
-                            list.Add($"{reader[0]} : ({reader[1]})");
-
-                    }
+                    if (is_Show_Typ == false || !string.IsNullOrEmpty(sort))
+                        list.Add(reader[0].ToString());
+                    else
+                        list.Add($"{reader[0]} : ({reader[1]})");
 
                 }
-                list.Add("N/A");
+
             }
+            list.Add("N/A");
             return list;
 
         }

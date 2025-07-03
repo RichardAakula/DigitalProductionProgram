@@ -130,7 +130,7 @@ namespace DigitalProductionProgram.Help
         public static void PromptForText(string Question, CustomColors.InfoText_Color color, string? header, Control? Form, List<string?> list_Items)
         {
             Change_GUI_BackColor(color);
-          //  form = Form;
+         
             infoText = new InfoText
             {
                 TopMost = true
@@ -239,7 +239,11 @@ namespace DigitalProductionProgram.Help
              };
              if (InputTextList is null == false)
                  infoText.tb_Return_Text.Click += Items_Click;
-             infoText.tlp_Main.Controls.Add(infoText.tb_Return_Text, 1, 2);
+             infoText.tb_Return_Text.TextChanged += (sender, e) =>
+             {
+                return_Text = infoText.tb_Return_Text.Text;
+             };
+            infoText.tlp_Main.Controls.Add(infoText.tb_Return_Text, 1, 2);
                
              infoText.btn_Yes.Visible = false;
              infoText.btn_No.Visible = true;
@@ -247,7 +251,6 @@ namespace DigitalProductionProgram.Help
              infoText.btn_No.Text = "Avbryt";
              infoText.tlp_Main.RowStyles[2].Height = 80;
              infoText.tlp_Main.RowStyles[3].Height = 20;
-             //infoText.tlp_Main.RowStyles[4].Height = 40;
            
         }
         private static void Change_GUI_Return_Value()
@@ -470,10 +473,12 @@ namespace DigitalProductionProgram.Help
             timer_Second_ctr.Stop();
             return_Text = string.Empty;
            
+
             Close();
         }
         private void Ok_Click(object sender, EventArgs e)
         {
+           // return_Text = tb_Return_Text.Text;
             Close();
         }
         private void InfoText_Close_Click(object sender, EventArgs e)
@@ -490,8 +495,8 @@ namespace DigitalProductionProgram.Help
         {
             if (answer != Answer.No)
             {
-                if (tb_Return_Text is null == false)
-                    return_Text = tb_Return_Text.Text;
+               // if (tb_Return_Text is null == false)
+                //  return_Text = tb_Return_Text.Text;
                 //if (IsInputValue)
                 //    return_Text = num_Return_Value.Value.ToString(CultureInfo.InvariantCulture);
             }

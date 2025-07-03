@@ -26,21 +26,19 @@ namespace DigitalProductionProgram.MainWindow
         {
             get
             {
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    var query = @"
+                using var con = new SqlConnection(Database.cs_Protocol);
+                var query = @"
                         SELECT TOP(1) Påse_Spole FROM  WHERE OrderID = @orderid
                         ORDER BY Påse_Spole DESC";
 
-                    con.Open();
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
+                con.Open();
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
 
-                    var value = cmd.ExecuteScalar();
-                    if (value != null)
-                        return (int)cmd.ExecuteScalar();
-                    return 1;
-                }
+                var value = cmd.ExecuteScalar();
+                if (value != null)
+                    return (int)cmd.ExecuteScalar();
+                return 1;
             }
         }
         public static int Antal_Totalt(string antal)
@@ -225,7 +223,7 @@ namespace DigitalProductionProgram.MainWindow
             BackColor = Teman.backColor_ExtraInfo;
             Teman.IterateThroughControls(tlp_ProvInfo, Teman.foreColor_ExtraInfo);
         }
-        public void Clear_ProvInfo()
+        public void ClearData()
         {
             tb_StartPåse.Text = string.Empty;
             tb_SlutPåse.Text = string.Empty;

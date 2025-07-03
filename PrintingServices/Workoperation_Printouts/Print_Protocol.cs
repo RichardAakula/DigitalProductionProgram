@@ -533,7 +533,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
             Order_INFO(e);
             e.Graphics?.DrawString(LanguageManager.GetString("print_IsValueCritical"), CustomFonts.parametrarFont_Bold, CustomFonts.black, LeftMargin, 130);
             e.Graphics?.DrawString(LanguageManager.GetString("print_OutOfTolerance"), CustomFonts.parametrarFont_Bold, CustomFonts.black, LeftMargin, 141);
-
+            PrintOut.LoadUsedColumns();
             PageWidth = e.PageBounds.Width;
             PageHeight = e.PageBounds.Height;
             var y = 153;
@@ -644,6 +644,44 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
 
         internal class PrintOut
         {
+            public static Dictionary<(int row, int formtemplateid), List<int>> UsedColumns { get; } = new();
+            public static void LoadUsedColumns()
+            {
+                UsedColumns.Clear();
+
+                using var con = new SqlConnection(Database.cs_Protocol);
+                var query = @"
+                SELECT template.FormTemplateID, template.RowIndex, template.ColumnIndex
+                FROM Protocol.Template AS template
+                JOIN Protocol.Description AS descr ON descr.ID = template.ProtocolDescriptionID
+                WHERE template.FormTemplateID IN (SELECT FormTemplateID FROM Protocol.FormTemplate WHERE MainTemplateID = @maintemplateid) AND template.RowIndex IS NOT NULL";
+
+                var cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@maintemplateid", Templates_Protocol.MainTemplate.ID);
+
+                con.Open(); ServerStatus.Add_Sql_Counter();
+                var reader = cmd.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    var formId = Convert.ToInt32(reader["FormTemplateID"]);
+                    var row = Convert.ToInt32(reader["RowIndex"]);
+                    if (reader["ColumnIndex"] is DBNull)
+                        continue;
+
+                    var col = Convert.ToInt32(reader["ColumnIndex"]);
+
+                    var key = (row, formId);
+                    if (!UsedColumns.TryGetValue(key, out var list))
+                    {
+                        list = new List<int>();
+                        UsedColumns[key] = list;
+                    }
+
+                    list.Add(col);
+                }
+            }
+
             private static bool IsModuleOnlyNomValues(int formtemplateid)
             {
                 using (var con = new SqlConnection(Database.cs_Protocol))
@@ -1079,6 +1117,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
             public static void PrintModule(PrintPageEventArgs e, int formtemplateid, int y, string moduleName, int processcard_ColWidth, int runProtocol_ColWidth, ref int totalrows, bool isHeaderVisible, bool isModuleUsingOven)
             {
                 var isModuleOnlyNomValues = IsModuleOnlyNomValues(formtemplateid);
+
                 Protocol_Template(e, y, moduleName, formtemplateid, processcard_ColWidth, ref totalrows, isHeaderVisible);
                 Processcard_Parameters(e, y, formtemplateid, PrintVariables.MachineIndex, isHeaderVisible);
                 int x;
@@ -1124,89 +1163,96 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                     y += RowHeight;
                 }
 
-                using (var con = new SqlConnection(Database.cs_Protocol))
+                using var con = new SqlConnection(Database.cs_Protocol);
+                const string query = @"
+                SELECT DISTINCT 
+                    descr.CodeText, 
+                    unit.UnitName AS Unit, 
+                    template.RowIndex, 
+                    template.ColumnIndex, 
+                    template.IsValueCritical
+                FROM Protocol.Template AS template
+                JOIN Protocol.Description AS descr
+                    ON descr.ID = template.ProtocolDescriptionID
+                LEFT JOIN Protocol.Unit AS unit
+                    ON descr.UnitID = unit.ID
+                JOIN Protocol.FormTemplate AS formtemplate
+                    ON template.FormTemplateID = formtemplate.FormTemplateID
+                WHERE template.FormTemplateID = @formtemplateid
+                    AND template.RowIndex IS NOT NULL
+                ORDER BY template.RowIndex";
+                con.Open();
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                cmd.Parameters.AddWithValue("@formtemplateid", formtemplateid);
+                cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
+                var reader = cmd.ExecuteReader();
+                var isModuleOnlyNomValues = IsModuleOnlyNomValues(formtemplateid);
+                while (reader.Read())
                 {
-                    const string query = @"
-                        SELECT DISTINCT CodeText, Unit, RowIndex, ColumnIndex, IsValueCritical
-                        FROM Protocol.Template as template
-                            JOIN Protocol.Description as descr
-                                ON descr.id = template.ProtocolDescriptionID
-                            JOIN Protocol.FormTemplate as formtemplate
-		                        ON template.FormTemplateID = formtemplate.FormTemplateID
-                        WHERE template.FormTemplateID = @formtemplateid
-                            AND RowIndex IS NOT NULL
-                        ORDER BY RowIndex";
-                    con.Open();
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    cmd.Parameters.AddWithValue("@formtemplateid", formtemplateid);
-                    cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
-                    var reader = cmd.ExecuteReader();
-                    var isModuleOnlyNomValues = IsModuleOnlyNomValues(formtemplateid);
-                    while (reader.Read())
+                    int.TryParse(reader["RowIndex"].ToString(), out var row);
+                    var codetext = reader["CodeText"].ToString();
+                    var unit = reader["Unit"].ToString();
+                    bool.TryParse(reader["IsValueCritical"].ToString(), out bool isValueCritical);
+
+                    var x = StartPointProcesscard;
+
+                    if (int.TryParse(reader["ColumnIndex"].ToString(), out var col) == false)
                     {
-                        int.TryParse(reader["RowIndex"].ToString(), out var row);
-                        var codetext = reader["CodeText"].ToString();
-                        var unit = reader["Unit"].ToString();
-                        bool.TryParse(reader["IsValueCritical"].ToString(), out bool isValueCritical);
+                        Print.Protocol_InfoText(e, codetext, isValueCritical, 44, y + RowHeight * row + 3, 154, false, true);             //Skriver ut CodeText
+                        if (isModuleOnlyNomValues)
+                            Print.Filled_Rectangle(e, CustomFonts.empty_Space, x, y + RowHeight * row, colWidth, RowHeight);
+                        else
+                            Print.Filled_Rectangle(e, CustomFonts.empty_Space, x, y + RowHeight * row, colWidth * 3, RowHeight);
 
-                        var x = StartPointProcesscard;
+                        Print.Print_Unit(e, unit, 196, y + RowHeight * row, RowHeight, 46);
+                        Print.Thin_Rectangle(e, 42, y + RowHeight * row, 154, RowHeight);
+                        totalrows++;
+                        continue;
+                    }
 
-                        if (int.TryParse(reader["ColumnIndex"].ToString(), out var col) == false)
-                        {
-                            Print.Protocol_InfoText(e, codetext, isValueCritical, 44, y + RowHeight * row + 3, 154, false, true);             //Skriver ut CodeText
+                    switch (col)
+                    {
+                        case 1:
                             if (isModuleOnlyNomValues)
-                                Print.Filled_Rectangle(e, CustomFonts.empty_Space, x, y + RowHeight * row, colWidth, RowHeight);
+                                Print.Filled_Rectangle(e, CustomFonts.nom, x, y + RowHeight * row, colWidth, RowHeight);                         //NOM bakgrund Går över MIN/NOM/MAX
                             else
-                                Print.Filled_Rectangle(e, CustomFonts.empty_Space, x, y + RowHeight * row, colWidth * 3, RowHeight);
-
+                                Print.Filled_Rectangle(e, CustomFonts.nom, x + colWidth * col, y + RowHeight * row, colWidth, RowHeight);      //NOM bakgrund: Går över NOM
+                            Print.Thin_Rectangle(e, 42, y + RowHeight * row, 154, RowHeight);                                            //Rutor runt CodeText
+                            Print.Protocol_InfoText(e, codetext, isValueCritical, 44, y + RowHeight * row + 3, 154, false, true);         //Skriver ut CodeText
                             Print.Print_Unit(e, unit, 196, y + RowHeight * row, RowHeight, 46);
-                            Print.Thin_Rectangle(e, 42, y + RowHeight * row, 154, RowHeight);
                             totalrows++;
-                            continue;
-                        }
+                            break;
+                        case 0:
+                        case 2:
+                            Print.Filled_Rectangle(e, CustomFonts.min_max, x + colWidth * col, y + RowHeight * row, colWidth, RowHeight);
+                            break;
+                    }
 
-                        switch (col)
+                    if (isModuleOnlyNomValues == false)
+                    {//Gör oanvända rutor "svarta"
+                        if (UsedColumns.TryGetValue((row, formtemplateid), out var usedCols))
                         {
-                            case 1:
-                                if (isModuleOnlyNomValues)
-                                    Print.Filled_Rectangle(e, CustomFonts.nom, x, y + RowHeight * row, colWidth, RowHeight);                         //NOM bakgrund Går över MIN/NOM/MAX
-                                else
-                                    Print.Filled_Rectangle(e, CustomFonts.nom, x + colWidth * col, y + RowHeight * row, colWidth, RowHeight);      //NOM bakgrund: Går över NOM
-                                Print.Thin_Rectangle(e, 42, y + RowHeight * row, 154, RowHeight);                                            //Rutor runt CodeText
-                                Print.Protocol_InfoText(e, codetext, isValueCritical, 44, y + RowHeight * row + 3, 154, false, true);         //Skriver ut CodeText
-                                Print.Print_Unit(e, unit, 196, y + RowHeight * row, RowHeight, 46);
-                                totalrows++;
-                                break;
-                            case 0:
-                            case 2:
-                                Print.Filled_Rectangle(e, CustomFonts.min_max, x + colWidth * col, y + RowHeight * row, colWidth, RowHeight);
-                                break;
-                        }
-
-                        if (isModuleOnlyNomValues == false)
-                        {//Gör oanvända rutor "svarta"
                             for (var column = 2; column < 5; column++)
                             {
-                                if (Processcard.List_UsedColumnsProcesscard(row, formtemplateid).Contains(column - 2))
+                                if (usedCols.Contains(column - 2))
                                     continue;
 
                                 Print.Filled_Rectangle(e, CustomFonts.empty_Space, x + colWidth * (column - 2), y + RowHeight * row, colWidth, RowHeight);
                             }
                         }
-
                     }
-                    Print.Processcard.LEFT_Header(e, new[] { leftHeader }, totalrows * RowHeight, y);
+
                 }
+                Print.Processcard.LEFT_Header(e, new[] { leftHeader }, totalrows * RowHeight, y);
             }
             public static void Processcard_Parameters(PrintPageEventArgs e, int y, int formtemplateid, int machineindex, bool isHeaderVisible)
             {
                 var isModuleOnlyNomValues = IsModuleOnlyNomValues(formtemplateid);
                 if (isHeaderVisible)
                     y += PrintVariables.RowHeight;
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    con.Open();
-                    var query = @"
+                using var con = new SqlConnection(Database.cs_Protocol);
+                con.Open();
+                var query = @"
                             SELECT ColumnIndex, RowIndex, Value, TextValue, template.Type, template.Decimals, Processcard_ColWidth
                             FROM Protocol.Template AS template
 	                            JOIN Processcard.Data AS pc_values
@@ -1220,42 +1266,41 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                                 AND (COALESCE(pc_values.MachineIndex, 0) = COALESCE(@machineindex, 0))
                                 AND formtemplate.MainTemplateID = @maintemplateid
                             ORDER BY RowIndex, ColumnIndex";
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    SQL_Parameter.NullableINT(cmd.Parameters, "@partID", Order.PartID);
-                    cmd.Parameters.AddWithValue("@formtemplateid", formtemplateid);
-                    cmd.Parameters.AddWithValue("@maintemplateid", Templates_Protocol.MainTemplate.ID);
-                    cmd.Parameters.AddWithValue("@machineindex", machineindex);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                SQL_Parameter.NullableINT(cmd.Parameters, "@partID", Order.PartID);
+                cmd.Parameters.AddWithValue("@formtemplateid", formtemplateid);
+                cmd.Parameters.AddWithValue("@maintemplateid", Templates_Protocol.MainTemplate.ID);
+                cmd.Parameters.AddWithValue("@machineindex", machineindex);
 
-                    var reader = cmd.ExecuteReader();
+                var reader = cmd.ExecuteReader();
 
-                    while (reader.Read())
-                    {
-                        int? column = null;
-                        int x = StartPointProcesscard;
-                        var value = string.Empty;
-                        int.TryParse(reader["Type"].ToString(), out var type);
-                        if (int.TryParse(reader["ColumnIndex"].ToString(), out var col))
-                            column = col;
-                        int.TryParse(reader["RowIndex"].ToString(), out var row);
-                        int.TryParse(reader["Processcard_ColWidth"].ToString(), out var colWidth);
+                while (reader.Read())
+                {
+                    int? column = null;
+                    int x = StartPointProcesscard;
+                    var value = string.Empty;
+                    int.TryParse(reader["Type"].ToString(), out var type);
+                    if (int.TryParse(reader["ColumnIndex"].ToString(), out var col))
+                        column = col;
+                    int.TryParse(reader["RowIndex"].ToString(), out var row);
+                    int.TryParse(reader["Processcard_ColWidth"].ToString(), out var colWidth);
                         
-                        switch (type)
-                        {
-                            case 0:
-                                int.TryParse(reader["Decimals"].ToString(), out var decimals);
-                                value = double.TryParse(reader["Value"].ToString(), out var NumberValue) == false ? string.Empty : Processcard.Format_Value(NumberValue, decimals);
-                                break;
-                            case 1:
-                                value = reader["TextValue"].ToString();
-                                break;
-                        }
-                        if (column is null)
-                            continue;
-                        if (isModuleOnlyNomValues)
-                            Print.Protocol_InfoText(e, value, false, x + colWidth * (int)column / 2, y + PrintVariables.RowHeight * row + 2, colWidth, true, true);
-                        else
-                            Print.Protocol_InfoText(e, value, false, x + colWidth * (int)column + colWidth / 2, y + PrintVariables.RowHeight * row + 2, colWidth, true, true);
+                    switch (type)
+                    {
+                        case 0:
+                            int.TryParse(reader["Decimals"].ToString(), out var decimals);
+                            value = double.TryParse(reader["Value"].ToString(), out var NumberValue) == false ? string.Empty : Processcard.Format_Value(NumberValue, decimals);
+                            break;
+                        case 1:
+                            value = reader["TextValue"].ToString();
+                            break;
                     }
+                    if (column is null)
+                        continue;
+                    if (isModuleOnlyNomValues)
+                        Print.Protocol_InfoText(e, value, false, x + colWidth * (int)column / 2, y + PrintVariables.RowHeight * row + 2, colWidth, true, true);
+                    else
+                        Print.Protocol_InfoText(e, value, false, x + colWidth * (int)column + colWidth / 2, y + PrintVariables.RowHeight * row + 2, colWidth, true, true);
                 }
             }
         }

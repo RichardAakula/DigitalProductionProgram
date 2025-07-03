@@ -17,15 +17,13 @@ namespace DigitalProductionProgram.Protocols.Slipning_TEF
             get
             {
                 var dt = new DataTable();
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    var query = $@"SELECT Kasserad, Slipmaskin, Matarhjul_Hastighet, Matarhjul_Vinkel, Helix_Vinkel, Bladhöjd, Arbetsblad, Nr, Chimshöjd, Datum, Tid, AnstNr, Sign 
+                using var con = new SqlConnection(Database.cs_Protocol);
+                var query = $@"SELECT Kasserad, Slipmaskin, Matarhjul_Hastighet, Matarhjul_Vinkel, Helix_Vinkel, Bladhöjd, Arbetsblad, Nr, Chimshöjd, Datum, Tid, AnstNr, Sign 
                                         FROM Korprotokoll_Slipning_Maskinparametrar {Queries.WHERE_OrderID} ORDER BY Datum, Tid";
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    cmd.Parameters.AddWithValue("@id", Order.OrderID);
-                    con.Open();
-                    dt.Load(cmd.ExecuteReader());
-                }
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                cmd.Parameters.AddWithValue("@id", Order.OrderID);
+                con.Open();
+                dt.Load(cmd.ExecuteReader());
                 return dt;
             }
         }
@@ -34,8 +32,9 @@ namespace DigitalProductionProgram.Protocols.Slipning_TEF
         public Slipning_TEF()
         {
             InitializeComponent();
+            Part.SetPartNrSpecial("Extra Parametrar Slipning_TEF");
 
-            if (Part.IsPartNrSpecial("Extra Parametrar Slipning_TEF") == false)
+            if (Part.IsPartNrSpecial == false)
                 Width = 907;
            
             MainProtocol.Produktion.Fill_Inledande_LotNr();

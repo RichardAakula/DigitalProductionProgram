@@ -86,52 +86,52 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
 
             public static void Headers(PrintPageEventArgs e)
             {
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    var query = @"
+                Part.SetPartNrSpecial("Blandning Pigment");
+
+                using var con = new SqlConnection(Database.cs_Protocol);
+                var query = @"
                         SELECT DISTINCT CodeText, ColumnIndex
                         FROM Protocol.Template as template
                             JOIN Protocol.Description as descr
                                 ON descr.id = template.ProtocolDescriptionID
                         WHERE FormTemplateID = @formtemplateid
                         ORDER BY ColumnIndex";
-                    con.Open();
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    cmd.Parameters.AddWithValue("@formtemplateid", 16);
-                    cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
-                    var reader = cmd.ExecuteReader();
-                    //int x = 26;
-                    var col = 0;
-                    while (reader.Read())
+                con.Open();
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                cmd.Parameters.AddWithValue("@formtemplateid", 16);
+                cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
+                var reader = cmd.ExecuteReader();
+                //int x = 26;
+                var col = 0;
+                while (reader.Read())
+                {
+                    int.TryParse(reader["ColumnIndex"].ToString(), out var ColumnIndex);
+                    var codetext = reader["CodeText"].ToString();
+                    
+                    if (Part.IsPartNrSpecial == false)
                     {
-                        int.TryParse(reader["ColumnIndex"].ToString(), out var ColumnIndex);
-                        var codetext = reader["CodeText"].ToString();
-                        if (Part.IsPartNrSpecial("Blandning Pigment") == false)
-                        {
-                            if (ColumnIndex == 4 || ColumnIndex == 6 || ColumnIndex == 9) 
-                                continue;
-                            Print.Thin_Rectangle(e, x_NoPigment[col], 150, width_NoPigment[col], 26);
-                            var x = x_NoPigment[col] + width_NoPigment[col] / 2;
-                            Print.Print_Rubrik(e, codetext, x, 155, width_NoPigment[col],  true);
-                            col++;
+                        if (ColumnIndex == 4 || ColumnIndex == 6 || ColumnIndex == 9) 
+                            continue;
+                        Print.Thin_Rectangle(e, x_NoPigment[col], 150, width_NoPigment[col], 26);
+                        var x = x_NoPigment[col] + width_NoPigment[col] / 2;
+                        Print.Print_Rubrik(e, codetext, x, 155, width_NoPigment[col],  true);
+                        col++;
                             
-                        }
-                        else
-                        {
-                            Print.Thin_Rectangle(e, x_Pigment[col], 150, width_Pigment[col], 26);
-                            var x = x_Pigment[col] + width_Pigment[col] / 2;
-                            Print.Print_Rubrik(e, codetext, x, 155, width_Pigment[col],  true);
-                            col++;
+                    }
+                    else
+                    {
+                        Print.Thin_Rectangle(e, x_Pigment[col], 150, width_Pigment[col], 26);
+                        var x = x_Pigment[col] + width_Pigment[col] / 2;
+                        Print.Print_Rubrik(e, codetext, x, 155, width_Pigment[col],  true);
+                        col++;
                             
-                        }
                     }
                 }
             }
             public static void Journal_Values(PrintPageEventArgs e, int y)
             {
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    const string query = @"
+                using var con = new SqlConnection(Database.cs_Protocol);
+                const string query = @"
                                SELECT DISTINCT Value, TextValue, Uppstart, Ugn, ColumnIndex, template.Type, template.Decimals
                                     FROM [Order].Data AS protocol
                                         JOIN Protocol.Template as template
@@ -143,61 +143,60 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                                         AND Uppstart BETWEEN @start AND @end
                                         ORDER BY uppstart, ColumnIndex";
 
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    con.Open();
-                    cmd.Parameters.AddWithValue("@maintemplateid", Templates_Protocol.MainTemplate.ID);
-                    cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
-                    cmd.Parameters.AddWithValue("@start", Measureprotocol.FirstRowMeasurment);
-                    cmd.Parameters.AddWithValue("@end", Measureprotocol.LastRowMeasurement);
-                    var reader = cmd.ExecuteReader();
-                    var col = 0;
-                    while (reader.Read())
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                con.Open();
+                cmd.Parameters.AddWithValue("@maintemplateid", Templates_Protocol.MainTemplate.ID);
+                cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
+                cmd.Parameters.AddWithValue("@start", Measureprotocol.FirstRowMeasurment);
+                cmd.Parameters.AddWithValue("@end", Measureprotocol.LastRowMeasurement);
+                var reader = cmd.ExecuteReader();
+                var col = 0;
+                while (reader.Read())
+                {
+                    int.TryParse(reader["Type"].ToString(), out var type);
+                    int.TryParse(reader["ColumnIndex"].ToString(), out var ColumnIndex);
+                    if (ColumnIndex == 0)
                     {
-                        int.TryParse(reader["Type"].ToString(), out var type);
-                        int.TryParse(reader["ColumnIndex"].ToString(), out var ColumnIndex);
-                        if (ColumnIndex == 0)
-                        {
-                            col = 0;
-                            y += RowHeight;
-                        }
+                        col = 0;
+                        y += RowHeight;
+                    }
                             
-                        var value = string.Empty;
+                    var value = string.Empty;
 
 
-                        switch (type)
-                        {
-                            case 0:
-                                int.TryParse(reader["Decimals"].ToString(), out var decimals);
-                                if (double.TryParse(reader["value"].ToString(), out var NumberValue) == false)
-                                    value = string.Empty;
-                                else
-                                    value = Processcard.Format_Value(NumberValue, decimals);
-                                break;
-                            case 1:
-                                value = reader["textvalue"].ToString();
-                                break;
-                        }
+                    switch (type)
+                    {
+                        case 0:
+                            int.TryParse(reader["Decimals"].ToString(), out var decimals);
+                            if (double.TryParse(reader["value"].ToString(), out var NumberValue) == false)
+                                value = string.Empty;
+                            else
+                                value = Processcard.Format_Value(NumberValue, decimals);
+                            break;
+                        case 1:
+                            value = reader["textvalue"].ToString();
+                            break;
+                    }
 
-                        if (Part.IsPartNrSpecial("Blandning Pigment") == false)
-                        {
-                            if (ColumnIndex == 4 || ColumnIndex == 6 || ColumnIndex == 9)
-                                continue;
-                            var x = x_NoPigment[col] + width_NoPigment[col] / 2;
-                            Print.Thin_Rectangle(e, x_NoPigment[col], y, width_NoPigment[col], RowHeight);
-                            Print.Text_Operatör(e, value, x, y+4, width_Pigment[col], true, true);
-                            col++;
+                    if (Part.IsPartNrSpecial == false)
+                    {
+                        if (ColumnIndex == 4 || ColumnIndex == 6 || ColumnIndex == 9)
+                            continue;
+                        var x = x_NoPigment[col] + width_NoPigment[col] / 2;
+                        Print.Thin_Rectangle(e, x_NoPigment[col], y, width_NoPigment[col], RowHeight);
+                        Print.Text_Operatör(e, value, x, y+4, width_Pigment[col], true, true);
+                        col++;
 
-                        }
-                        else
-                        {
-                            var x = x_Pigment[col] + width_Pigment[col] / 2;
-                            Print.Thin_Rectangle(e, x_Pigment[col], y, width_Pigment[col], RowHeight);
-                            Print.Text_Operatör(e, value, x, y+4, width_Pigment[col], true, true);
-                            col++;
-                        }
+                    }
+                    else
+                    {
+                        var x = x_Pigment[col] + width_Pigment[col] / 2;
+                        Print.Thin_Rectangle(e, x_Pigment[col], y, width_Pigment[col], RowHeight);
+                        Print.Text_Operatör(e, value, x, y+4, width_Pigment[col], true, true);
+                        col++;
+                    }
 
                        
-                    }
                 }
             }
             public static void Extra_Info(PrintPageEventArgs e)

@@ -31,851 +31,909 @@ namespace DigitalProductionProgram.Templates
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Templates_Protocol));
-            this.flp_Main = new System.Windows.Forms.FlowLayoutPanel();
-            this.dgv_CodeText = new System.Windows.Forms.DataGridView();
-            this.tb_ModuleName = new System.Windows.Forms.TextBox();
-            this.cb_TemplateName = new System.Windows.Forms.ComboBox();
-            this.btn_SaveNewTemplate = new System.Windows.Forms.Button();
-            this.btn_UpdateTemplate = new System.Windows.Forms.Button();
-            this.label_ModuleName = new System.Windows.Forms.Label();
-            this.label_TemplateName = new System.Windows.Forms.Label();
-            this.label_Revision = new System.Windows.Forms.Label();
-            this.chb_IsUsingPreFab = new System.Windows.Forms.CheckBox();
-            this.btn_NewModule = new System.Windows.Forms.Button();
-            this.tb_FilterCodeText = new System.Windows.Forms.TextBox();
-            this.label_FilterCodeText = new System.Windows.Forms.Label();
-            this.btn_ConnectPartNr_NewTemplate = new System.Windows.Forms.Button();
-            this.btn_PreviewTemplate = new System.Windows.Forms.Button();
-            this.cb_LineClearance_Revision = new System.Windows.Forms.ComboBox();
-            this.label_LineClearanceTemplate = new System.Windows.Forms.Label();
-            this.cb_TemplateRevision = new System.Windows.Forms.ComboBox();
-            this.btn_DeleteTemplate = new System.Windows.Forms.Button();
-            this.cb_MainInfo_Template = new System.Windows.Forms.ComboBox();
-            this.label_MainInfoTemplate = new System.Windows.Forms.Label();
-            this.btn_ConnectPartNr_NewRevision = new System.Windows.Forms.Button();
-            this.pb_RenameModule = new System.Windows.Forms.PictureBox();
-            this.btn_CodeTextUp = new System.Windows.Forms.PictureBox();
-            this.btn_CodeTextDown = new System.Windows.Forms.PictureBox();
-            this.btn_ModuleUp = new System.Windows.Forms.PictureBox();
-            this.btn_ModuleDown = new System.Windows.Forms.PictureBox();
-            this.btn_DeleteCodeText = new System.Windows.Forms.PictureBox();
-            this.btn_DeleteModule = new System.Windows.Forms.PictureBox();
-            this.label_Buttons_CodeText = new System.Windows.Forms.Label();
-            this.label_Buttons_Module = new System.Windows.Forms.Label();
-            this.label_TotalConnectedProcesscards = new System.Windows.Forms.Label();
-            this.btn_NewRevision = new System.Windows.Forms.Button();
-            this.toolTip = new System.Windows.Forms.ToolTip(this.components);
-            this.label_WorkoperationName = new System.Windows.Forms.Label();
-            this.label_CreatedBy = new System.Windows.Forms.Label();
-            this.label_CreatedDate = new System.Windows.Forms.Label();
-            this.tlp_ExtraInfo = new System.Windows.Forms.TableLayoutPanel();
-            this.label_TotalConnectedOrders = new System.Windows.Forms.Label();
-            this.lbl_CreatedDate = new System.Windows.Forms.Label();
-            this.lbl_CreatedBy = new System.Windows.Forms.Label();
-            this.chb_IsProductionLineNeeded = new System.Windows.Forms.CheckBox();
-            this.tlp_Bottom = new System.Windows.Forms.TableLayoutPanel();
-            this.web_PDF_Viewer = new System.Windows.Forms.WebBrowser();
-            this.flp_ObjectManagement = new System.Windows.Forms.FlowLayoutPanel();
-            this.gbx_Module = new System.Windows.Forms.GroupBox();
-            this.gbx_Protocol_Template = new System.Windows.Forms.GroupBox();
-            this.tb_Workoperation = new System.Windows.Forms.TextBox();
-            this.gbx_CodeText = new System.Windows.Forms.GroupBox();
-            this.tlp_Top = new System.Windows.Forms.TableLayoutPanel();
-            ((System.ComponentModel.ISupportInitialize)(this.dgv_CodeText)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pb_RenameModule)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.btn_CodeTextUp)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.btn_CodeTextDown)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.btn_ModuleUp)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.btn_ModuleDown)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.btn_DeleteCodeText)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.btn_DeleteModule)).BeginInit();
-            this.tlp_ExtraInfo.SuspendLayout();
-            this.tlp_Bottom.SuspendLayout();
-            this.flp_ObjectManagement.SuspendLayout();
-            this.gbx_Module.SuspendLayout();
-            this.gbx_Protocol_Template.SuspendLayout();
-            this.gbx_CodeText.SuspendLayout();
-            this.tlp_Top.SuspendLayout();
-            this.SuspendLayout();
+            components = new Container();
+            ComponentResourceManager resources = new ComponentResourceManager(typeof(Templates_Protocol));
+            flp_Main = new FlowLayoutPanel();
+            dgv_CodeText = new DataGridView();
+            tb_ModuleName = new TextBox();
+            cb_TemplateName = new ComboBox();
+            btn_SaveNewTemplate = new Button();
+            btn_UpdateTemplate = new Button();
+            label_ModuleName = new Label();
+            label_TemplateName = new Label();
+            label_Revision = new Label();
+            chb_IsUsingPreFab = new CheckBox();
+            btn_NewModule = new Button();
+            tb_FilterCodeText = new TextBox();
+            label_FilterCodeText = new Label();
+            btn_ConnectPartNr_NewTemplate = new Button();
+            btn_PreviewTemplate = new Button();
+            cb_LineClearance_Revision = new ComboBox();
+            label_LineClearanceTemplate = new Label();
+            cb_TemplateRevision = new ComboBox();
+            btn_DeleteTemplate = new Button();
+            cb_MainInfo_Template = new ComboBox();
+            label_MainInfoTemplate = new Label();
+            btn_ConnectPartNr_NewRevision = new Button();
+            pb_RenameModule = new PictureBox();
+            btn_CodeTextUp = new PictureBox();
+            btn_CodeTextDown = new PictureBox();
+            btn_ModuleUp = new PictureBox();
+            btn_ModuleDown = new PictureBox();
+            btn_DeleteCodeText = new PictureBox();
+            btn_DeleteModule = new PictureBox();
+            label_Buttons_CodeText = new Label();
+            label_Buttons_Module = new Label();
+            label_TotalConnectedProcesscards = new Label();
+            btn_NewRevision = new Button();
+            toolTip = new ToolTip(components);
+            label_WorkoperationName = new Label();
+            label_CreatedBy = new Label();
+            label_CreatedDate = new Label();
+            tlp_ExtraInfo = new TableLayoutPanel();
+            label_TotalConnectedOrders = new Label();
+            lbl_CreatedDate = new Label();
+            lbl_CreatedBy = new Label();
+            chb_IsProductionLineNeeded = new CheckBox();
+            tlp_Bottom = new TableLayoutPanel();
+            web_PDF_Viewer = new WebBrowser();
+            flp_ObjectManagement = new FlowLayoutPanel();
+            gbx_Module = new GroupBox();
+            gbx_Protocol_Template = new GroupBox();
+            tb_Workoperation = new TextBox();
+            gbx_CodeText = new GroupBox();
+            tb_NewUnit = new TextBox();
+            tb_NewCodeText = new TextBox();
+            btn_AddCodeText = new Button();
+            tlp_Top = new TableLayoutPanel();
+            ((ISupportInitialize)dgv_CodeText).BeginInit();
+            ((ISupportInitialize)pb_RenameModule).BeginInit();
+            ((ISupportInitialize)btn_CodeTextUp).BeginInit();
+            ((ISupportInitialize)btn_CodeTextDown).BeginInit();
+            ((ISupportInitialize)btn_ModuleUp).BeginInit();
+            ((ISupportInitialize)btn_ModuleDown).BeginInit();
+            ((ISupportInitialize)btn_DeleteCodeText).BeginInit();
+            ((ISupportInitialize)btn_DeleteModule).BeginInit();
+            tlp_ExtraInfo.SuspendLayout();
+            tlp_Bottom.SuspendLayout();
+            flp_ObjectManagement.SuspendLayout();
+            gbx_Module.SuspendLayout();
+            gbx_Protocol_Template.SuspendLayout();
+            gbx_CodeText.SuspendLayout();
+            tlp_Top.SuspendLayout();
+            SuspendLayout();
             // 
             // flp_Main
             // 
-            this.flp_Main.AutoScroll = true;
-            this.flp_Main.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(81)))), ((int)(((byte)(85)))), ((int)(((byte)(92)))));
-            this.tlp_Bottom.SetColumnSpan(this.flp_Main, 5);
-            this.flp_Main.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flp_Main.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flp_Main.Location = new System.Drawing.Point(329, 244);
-            this.flp_Main.MaximumSize = new System.Drawing.Size(1320, 2000);
-            this.flp_Main.Name = "flp_Main";
-            this.flp_Main.Size = new System.Drawing.Size(1015, 714);
-            this.flp_Main.TabIndex = 0;
-            this.flp_Main.WrapContents = false;
+            flp_Main.AutoScroll = true;
+            flp_Main.BackColor = Color.FromArgb(81, 85, 92);
+            tlp_Bottom.SetColumnSpan(flp_Main, 5);
+            flp_Main.Dock = DockStyle.Fill;
+            flp_Main.FlowDirection = FlowDirection.TopDown;
+            flp_Main.Location = new Point(385, 287);
+            flp_Main.Margin = new Padding(4, 3, 4, 3);
+            flp_Main.MaximumSize = new Size(1540, 2308);
+            flp_Main.Name = "flp_Main";
+            tlp_Bottom.SetRowSpan(flp_Main, 2);
+            flp_Main.Size = new Size(1183, 819);
+            flp_Main.TabIndex = 0;
+            flp_Main.WrapContents = false;
             // 
             // dgv_CodeText
             // 
-            this.dgv_CodeText.AllowUserToAddRows = false;
-            this.dgv_CodeText.AllowUserToDeleteRows = false;
-            this.dgv_CodeText.AllowUserToResizeColumns = false;
-            this.dgv_CodeText.AllowUserToResizeRows = false;
-            this.dgv_CodeText.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
-            this.dgv_CodeText.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(81)))), ((int)(((byte)(85)))), ((int)(((byte)(92)))));
-            this.dgv_CodeText.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgv_CodeText.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgv_CodeText.Location = new System.Drawing.Point(5, 241);
-            this.dgv_CodeText.Margin = new System.Windows.Forms.Padding(0);
-            this.dgv_CodeText.MultiSelect = false;
-            this.dgv_CodeText.Name = "dgv_CodeText";
-            this.dgv_CodeText.ReadOnly = true;
-            this.dgv_CodeText.RowHeadersVisible = false;
-            this.dgv_CodeText.Size = new System.Drawing.Size(255, 720);
-            this.dgv_CodeText.TabIndex = 2;
-            this.dgv_CodeText.Visible = false;
-            this.dgv_CodeText.CellMouseDown += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.CodeText_CellMouseDown);
-            this.dgv_CodeText.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.CodeText_ColumnHeaderMouseClick);
-            this.dgv_CodeText.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.CodeText_KeyPress);
+            dgv_CodeText.AllowUserToAddRows = false;
+            dgv_CodeText.AllowUserToDeleteRows = false;
+            dgv_CodeText.AllowUserToResizeColumns = false;
+            dgv_CodeText.AllowUserToResizeRows = false;
+            dgv_CodeText.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
+            dgv_CodeText.BackgroundColor = Color.FromArgb(81, 85, 92);
+            dgv_CodeText.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgv_CodeText.Dock = DockStyle.Fill;
+            dgv_CodeText.Location = new Point(6, 354);
+            dgv_CodeText.Margin = new Padding(0);
+            dgv_CodeText.MultiSelect = false;
+            dgv_CodeText.Name = "dgv_CodeText";
+            dgv_CodeText.ReadOnly = true;
+            dgv_CodeText.RowHeadersVisible = false;
+            dgv_CodeText.Size = new Size(298, 755);
+            dgv_CodeText.TabIndex = 2;
+            dgv_CodeText.Visible = false;
+            dgv_CodeText.CellMouseDown += CodeText_CellMouseDown;
+            dgv_CodeText.ColumnHeaderMouseClick += CodeText_ColumnHeaderMouseClick;
+            dgv_CodeText.KeyPress += CodeText_KeyPress;
             // 
             // tb_ModuleName
             // 
-            this.tb_ModuleName.Font = new System.Drawing.Font("Lucida Sans", 8.25F);
-            this.tb_ModuleName.Location = new System.Drawing.Point(4, 90);
-            this.tb_ModuleName.Margin = new System.Windows.Forms.Padding(1, 0, 0, 0);
-            this.tb_ModuleName.Multiline = true;
-            this.tb_ModuleName.Name = "tb_ModuleName";
-            this.tb_ModuleName.Size = new System.Drawing.Size(248, 25);
-            this.tb_ModuleName.TabIndex = 3;
-            this.tb_ModuleName.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.ModuleName_KeyPress);
+            tb_ModuleName.Font = new Font("Lucida Sans", 8.25F);
+            tb_ModuleName.Location = new Point(5, 104);
+            tb_ModuleName.Margin = new Padding(1, 0, 0, 0);
+            tb_ModuleName.Multiline = true;
+            tb_ModuleName.Name = "tb_ModuleName";
+            tb_ModuleName.Size = new Size(289, 28);
+            tb_ModuleName.TabIndex = 3;
+            tb_ModuleName.KeyPress += ModuleName_KeyPress;
             // 
             // cb_TemplateName
             // 
-            this.cb_TemplateName.Font = new System.Drawing.Font("Lucida Sans", 11.25F);
-            this.cb_TemplateName.FormattingEnabled = true;
-            this.cb_TemplateName.Location = new System.Drawing.Point(3, 192);
-            this.cb_TemplateName.Margin = new System.Windows.Forms.Padding(0);
-            this.cb_TemplateName.Name = "cb_TemplateName";
-            this.cb_TemplateName.Size = new System.Drawing.Size(345, 25);
-            this.cb_TemplateName.TabIndex = 4;
-            this.cb_TemplateName.SelectedIndexChanged += new System.EventHandler(this.Template_Name_SelectedIndexChanged);
-            this.cb_TemplateName.TextChanged += new System.EventHandler(this.TemplateName_TextChanged);
+            cb_TemplateName.Font = new Font("Lucida Sans", 11.25F);
+            cb_TemplateName.FormattingEnabled = true;
+            cb_TemplateName.Location = new Point(4, 222);
+            cb_TemplateName.Margin = new Padding(0);
+            cb_TemplateName.Name = "cb_TemplateName";
+            cb_TemplateName.Size = new Size(402, 25);
+            cb_TemplateName.TabIndex = 4;
+            cb_TemplateName.SelectedIndexChanged += Template_Name_SelectedIndexChanged;
+            cb_TemplateName.TextChanged += TemplateName_TextChanged;
             // 
             // btn_SaveNewTemplate
             // 
-            this.btn_SaveNewTemplate.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(185)))), ((int)(((byte)(188)))), ((int)(((byte)(189)))));
-            this.btn_SaveNewTemplate.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btn_SaveNewTemplate.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btn_SaveNewTemplate.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btn_SaveNewTemplate.Font = new System.Drawing.Font("Lucida Sans", 10.25F);
-            this.btn_SaveNewTemplate.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(63)))), ((int)(((byte)(116)))), ((int)(((byte)(140)))));
-            this.btn_SaveNewTemplate.Location = new System.Drawing.Point(5, 5);
-            this.btn_SaveNewTemplate.Margin = new System.Windows.Forms.Padding(5, 0, 0, 0);
-            this.btn_SaveNewTemplate.Name = "btn_SaveNewTemplate";
-            this.btn_SaveNewTemplate.Size = new System.Drawing.Size(245, 31);
-            this.btn_SaveNewTemplate.TabIndex = 1;
-            this.btn_SaveNewTemplate.Text = "Spara Mall";
-            this.btn_SaveNewTemplate.UseVisualStyleBackColor = false;
-            this.btn_SaveNewTemplate.Click += new System.EventHandler(this.Save_Template_Click);
+            btn_SaveNewTemplate.BackColor = Color.FromArgb(185, 188, 189);
+            btn_SaveNewTemplate.Cursor = Cursors.Hand;
+            btn_SaveNewTemplate.Dock = DockStyle.Fill;
+            btn_SaveNewTemplate.FlatStyle = FlatStyle.Flat;
+            btn_SaveNewTemplate.Font = new Font("Lucida Sans", 10.25F);
+            btn_SaveNewTemplate.ForeColor = Color.FromArgb(63, 116, 140);
+            btn_SaveNewTemplate.Location = new Point(6, 6);
+            btn_SaveNewTemplate.Margin = new Padding(6, 0, 0, 0);
+            btn_SaveNewTemplate.Name = "btn_SaveNewTemplate";
+            btn_SaveNewTemplate.Size = new Size(286, 36);
+            btn_SaveNewTemplate.TabIndex = 1;
+            btn_SaveNewTemplate.Text = "Spara Mall";
+            btn_SaveNewTemplate.UseVisualStyleBackColor = false;
+            btn_SaveNewTemplate.Click += Save_Template_Click;
             // 
             // btn_UpdateTemplate
             // 
-            this.btn_UpdateTemplate.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(185)))), ((int)(((byte)(188)))), ((int)(((byte)(189)))));
-            this.btn_UpdateTemplate.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btn_UpdateTemplate.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btn_UpdateTemplate.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btn_UpdateTemplate.Font = new System.Drawing.Font("Lucida Sans", 10.25F);
-            this.btn_UpdateTemplate.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(63)))), ((int)(((byte)(116)))), ((int)(((byte)(140)))));
-            this.btn_UpdateTemplate.Location = new System.Drawing.Point(5, 36);
-            this.btn_UpdateTemplate.Margin = new System.Windows.Forms.Padding(5, 0, 0, 0);
-            this.btn_UpdateTemplate.Name = "btn_UpdateTemplate";
-            this.btn_UpdateTemplate.Size = new System.Drawing.Size(245, 31);
-            this.btn_UpdateTemplate.TabIndex = 1;
-            this.btn_UpdateTemplate.Text = "Uppdatera Mall";
-            this.btn_UpdateTemplate.UseVisualStyleBackColor = false;
-            this.btn_UpdateTemplate.Click += new System.EventHandler(this.Update_Template_Click);
+            btn_UpdateTemplate.BackColor = Color.FromArgb(185, 188, 189);
+            btn_UpdateTemplate.Cursor = Cursors.Hand;
+            btn_UpdateTemplate.Dock = DockStyle.Fill;
+            btn_UpdateTemplate.FlatStyle = FlatStyle.Flat;
+            btn_UpdateTemplate.Font = new Font("Lucida Sans", 10.25F);
+            btn_UpdateTemplate.ForeColor = Color.FromArgb(63, 116, 140);
+            btn_UpdateTemplate.Location = new Point(6, 42);
+            btn_UpdateTemplate.Margin = new Padding(6, 0, 0, 0);
+            btn_UpdateTemplate.Name = "btn_UpdateTemplate";
+            btn_UpdateTemplate.Size = new Size(286, 36);
+            btn_UpdateTemplate.TabIndex = 1;
+            btn_UpdateTemplate.Text = "Uppdatera Mall";
+            btn_UpdateTemplate.UseVisualStyleBackColor = false;
+            btn_UpdateTemplate.Click += Update_Template_Click;
             // 
             // label_ModuleName
             // 
-            this.label_ModuleName.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(239)))), ((int)(((byte)(228)))), ((int)(((byte)(177)))));
-            this.label_ModuleName.Font = new System.Drawing.Font("Lucida Sans", 10.25F);
-            this.label_ModuleName.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(57)))), ((int)(((byte)(108)))), ((int)(((byte)(121)))));
-            this.label_ModuleName.Location = new System.Drawing.Point(4, 55);
-            this.label_ModuleName.Margin = new System.Windows.Forms.Padding(1, 0, 0, 1);
-            this.label_ModuleName.Name = "label_ModuleName";
-            this.label_ModuleName.Size = new System.Drawing.Size(248, 34);
-            this.label_ModuleName.TabIndex = 8;
-            this.label_ModuleName.Text = "Modul-namn, den vertikala texten till vänster om modulen.\r\n";
+            label_ModuleName.BackColor = Color.FromArgb(239, 228, 177);
+            label_ModuleName.Font = new Font("Lucida Sans", 10.25F);
+            label_ModuleName.ForeColor = Color.FromArgb(57, 108, 121);
+            label_ModuleName.Location = new Point(5, 63);
+            label_ModuleName.Margin = new Padding(1, 0, 0, 1);
+            label_ModuleName.Name = "label_ModuleName";
+            label_ModuleName.Size = new Size(289, 39);
+            label_ModuleName.TabIndex = 8;
+            label_ModuleName.Text = "Modul-namn, den vertikala texten till vänster om modulen.\r\n";
             // 
             // label_TemplateName
             // 
-            this.label_TemplateName.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(239)))), ((int)(((byte)(228)))), ((int)(((byte)(177)))));
-            this.label_TemplateName.Font = new System.Drawing.Font("Lucida Sans", 10.25F);
-            this.label_TemplateName.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(57)))), ((int)(((byte)(108)))), ((int)(((byte)(121)))));
-            this.label_TemplateName.Location = new System.Drawing.Point(4, 166);
-            this.label_TemplateName.Margin = new System.Windows.Forms.Padding(0);
-            this.label_TemplateName.Name = "label_TemplateName";
-            this.label_TemplateName.Size = new System.Drawing.Size(343, 24);
-            this.label_TemplateName.TabIndex = 8;
-            this.label_TemplateName.Text = "Mallens namn:";
+            label_TemplateName.BackColor = Color.FromArgb(239, 228, 177);
+            label_TemplateName.Font = new Font("Lucida Sans", 10.25F);
+            label_TemplateName.ForeColor = Color.FromArgb(57, 108, 121);
+            label_TemplateName.Location = new Point(5, 192);
+            label_TemplateName.Margin = new Padding(0);
+            label_TemplateName.Name = "label_TemplateName";
+            label_TemplateName.Size = new Size(400, 28);
+            label_TemplateName.TabIndex = 8;
+            label_TemplateName.Text = "Mallens namn:";
             // 
             // label_Revision
             // 
-            this.label_Revision.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(239)))), ((int)(((byte)(228)))), ((int)(((byte)(177)))));
-            this.label_Revision.Font = new System.Drawing.Font("Lucida Sans", 10.25F);
-            this.label_Revision.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(57)))), ((int)(((byte)(108)))), ((int)(((byte)(121)))));
-            this.label_Revision.Location = new System.Drawing.Point(348, 166);
-            this.label_Revision.Margin = new System.Windows.Forms.Padding(0);
-            this.label_Revision.Name = "label_Revision";
-            this.label_Revision.Size = new System.Drawing.Size(69, 24);
-            this.label_Revision.TabIndex = 9;
-            this.label_Revision.Text = "Revision";
+            label_Revision.BackColor = Color.FromArgb(239, 228, 177);
+            label_Revision.Font = new Font("Lucida Sans", 10.25F);
+            label_Revision.ForeColor = Color.FromArgb(57, 108, 121);
+            label_Revision.Location = new Point(406, 192);
+            label_Revision.Margin = new Padding(0);
+            label_Revision.Name = "label_Revision";
+            label_Revision.Size = new Size(80, 28);
+            label_Revision.TabIndex = 9;
+            label_Revision.Text = "Revision";
             // 
             // chb_IsUsingPreFab
             // 
-            this.chb_IsUsingPreFab.AutoSize = true;
-            this.chb_IsUsingPreFab.Font = new System.Drawing.Font("Lucida Sans", 11.25F);
-            this.chb_IsUsingPreFab.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(187)))), ((int)(((byte)(215)))), ((int)(((byte)(228)))));
-            this.chb_IsUsingPreFab.Location = new System.Drawing.Point(6, 23);
-            this.chb_IsUsingPreFab.Name = "chb_IsUsingPreFab";
-            this.chb_IsUsingPreFab.Size = new System.Drawing.Size(188, 21);
-            this.chb_IsUsingPreFab.TabIndex = 10;
-            this.chb_IsUsingPreFab.Text = "Används Halvfabrikat?";
-            this.chb_IsUsingPreFab.UseVisualStyleBackColor = true;
+            chb_IsUsingPreFab.AutoSize = true;
+            chb_IsUsingPreFab.Font = new Font("Lucida Sans", 11.25F);
+            chb_IsUsingPreFab.ForeColor = Color.FromArgb(187, 215, 228);
+            chb_IsUsingPreFab.Location = new Point(7, 27);
+            chb_IsUsingPreFab.Margin = new Padding(4, 3, 4, 3);
+            chb_IsUsingPreFab.Name = "chb_IsUsingPreFab";
+            chb_IsUsingPreFab.Size = new Size(188, 21);
+            chb_IsUsingPreFab.TabIndex = 10;
+            chb_IsUsingPreFab.Text = "Används Halvfabrikat?";
+            chb_IsUsingPreFab.UseVisualStyleBackColor = true;
             // 
             // btn_NewModule
             // 
-            this.btn_NewModule.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(185)))), ((int)(((byte)(188)))), ((int)(((byte)(189)))));
-            this.btn_NewModule.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btn_NewModule.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btn_NewModule.Font = new System.Drawing.Font("Lucida Sans", 10.25F);
-            this.btn_NewModule.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(63)))), ((int)(((byte)(116)))), ((int)(((byte)(140)))));
-            this.btn_NewModule.Location = new System.Drawing.Point(3, 25);
-            this.btn_NewModule.Margin = new System.Windows.Forms.Padding(0);
-            this.btn_NewModule.Name = "btn_NewModule";
-            this.btn_NewModule.Size = new System.Drawing.Size(249, 30);
-            this.btn_NewModule.TabIndex = 11;
-            this.btn_NewModule.Text = "Lägg till Modul";
-            this.btn_NewModule.UseVisualStyleBackColor = false;
-            this.btn_NewModule.Click += new System.EventHandler(this.NewModule_Click);
+            btn_NewModule.BackColor = Color.FromArgb(185, 188, 189);
+            btn_NewModule.Cursor = Cursors.Hand;
+            btn_NewModule.FlatStyle = FlatStyle.Flat;
+            btn_NewModule.Font = new Font("Lucida Sans", 10.25F);
+            btn_NewModule.ForeColor = Color.FromArgb(63, 116, 140);
+            btn_NewModule.Location = new Point(4, 29);
+            btn_NewModule.Margin = new Padding(0);
+            btn_NewModule.Name = "btn_NewModule";
+            btn_NewModule.Size = new Size(290, 35);
+            btn_NewModule.TabIndex = 11;
+            btn_NewModule.Text = "Lägg till Modul";
+            btn_NewModule.UseVisualStyleBackColor = false;
+            btn_NewModule.Click += NewModule_Click;
             // 
             // tb_FilterCodeText
             // 
-            this.tb_FilterCodeText.Font = new System.Drawing.Font("Lucida Sans", 8.25F);
-            this.tb_FilterCodeText.Location = new System.Drawing.Point(4, 49);
-            this.tb_FilterCodeText.Margin = new System.Windows.Forms.Padding(1, 0, 0, 0);
-            this.tb_FilterCodeText.Multiline = true;
-            this.tb_FilterCodeText.Name = "tb_FilterCodeText";
-            this.tb_FilterCodeText.Size = new System.Drawing.Size(248, 25);
-            this.tb_FilterCodeText.TabIndex = 3;
-            this.tb_FilterCodeText.TextChanged += new System.EventHandler(this.FilterCodeText_TextChanged);
-            this.tb_FilterCodeText.Enter += new System.EventHandler(this.FilterCodeText_Enter);
+            tb_FilterCodeText.Font = new Font("Lucida Sans", 8.25F);
+            tb_FilterCodeText.Location = new Point(5, 57);
+            tb_FilterCodeText.Margin = new Padding(1, 0, 0, 0);
+            tb_FilterCodeText.Multiline = true;
+            tb_FilterCodeText.Name = "tb_FilterCodeText";
+            tb_FilterCodeText.Size = new Size(289, 28);
+            tb_FilterCodeText.TabIndex = 3;
+            tb_FilterCodeText.TextChanged += FilterCodeText_TextChanged;
+            tb_FilterCodeText.Enter += FilterCodeText_Enter;
             // 
             // label_FilterCodeText
             // 
-            this.label_FilterCodeText.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(239)))), ((int)(((byte)(228)))), ((int)(((byte)(177)))));
-            this.label_FilterCodeText.Font = new System.Drawing.Font("Lucida Sans", 10.25F);
-            this.label_FilterCodeText.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(57)))), ((int)(((byte)(108)))), ((int)(((byte)(121)))));
-            this.label_FilterCodeText.Location = new System.Drawing.Point(4, 24);
-            this.label_FilterCodeText.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
-            this.label_FilterCodeText.Name = "label_FilterCodeText";
-            this.label_FilterCodeText.Size = new System.Drawing.Size(248, 24);
-            this.label_FilterCodeText.TabIndex = 8;
-            this.label_FilterCodeText.Text = "Filtrera texten";
+            label_FilterCodeText.BackColor = Color.FromArgb(239, 228, 177);
+            label_FilterCodeText.Font = new Font("Lucida Sans", 10.25F);
+            label_FilterCodeText.ForeColor = Color.FromArgb(57, 108, 121);
+            label_FilterCodeText.Location = new Point(5, 28);
+            label_FilterCodeText.Margin = new Padding(0, 0, 0, 1);
+            label_FilterCodeText.Name = "label_FilterCodeText";
+            label_FilterCodeText.Size = new Size(289, 28);
+            label_FilterCodeText.TabIndex = 8;
+            label_FilterCodeText.Text = "Filtrera texten";
             // 
             // btn_ConnectPartNr_NewTemplate
             // 
-            this.btn_ConnectPartNr_NewTemplate.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(185)))), ((int)(((byte)(188)))), ((int)(((byte)(189)))));
-            this.btn_ConnectPartNr_NewTemplate.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btn_ConnectPartNr_NewTemplate.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btn_ConnectPartNr_NewTemplate.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btn_ConnectPartNr_NewTemplate.Font = new System.Drawing.Font("Lucida Sans", 10.25F);
-            this.btn_ConnectPartNr_NewTemplate.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(63)))), ((int)(((byte)(116)))), ((int)(((byte)(140)))));
-            this.btn_ConnectPartNr_NewTemplate.Location = new System.Drawing.Point(250, 5);
-            this.btn_ConnectPartNr_NewTemplate.Margin = new System.Windows.Forms.Padding(0);
-            this.btn_ConnectPartNr_NewTemplate.Name = "btn_ConnectPartNr_NewTemplate";
-            this.btn_ConnectPartNr_NewTemplate.Size = new System.Drawing.Size(250, 31);
-            this.btn_ConnectPartNr_NewTemplate.TabIndex = 1;
-            this.btn_ConnectPartNr_NewTemplate.Text = "Koppla Aktiv Mall till Processkort";
-            this.btn_ConnectPartNr_NewTemplate.UseVisualStyleBackColor = false;
-            this.btn_ConnectPartNr_NewTemplate.Click += new System.EventHandler(this.ConnectTemplate_Click);
+            btn_ConnectPartNr_NewTemplate.BackColor = Color.FromArgb(185, 188, 189);
+            btn_ConnectPartNr_NewTemplate.Cursor = Cursors.Hand;
+            btn_ConnectPartNr_NewTemplate.Dock = DockStyle.Fill;
+            btn_ConnectPartNr_NewTemplate.FlatStyle = FlatStyle.Flat;
+            btn_ConnectPartNr_NewTemplate.Font = new Font("Lucida Sans", 10.25F);
+            btn_ConnectPartNr_NewTemplate.ForeColor = Color.FromArgb(63, 116, 140);
+            btn_ConnectPartNr_NewTemplate.Location = new Point(292, 6);
+            btn_ConnectPartNr_NewTemplate.Margin = new Padding(0);
+            btn_ConnectPartNr_NewTemplate.Name = "btn_ConnectPartNr_NewTemplate";
+            btn_ConnectPartNr_NewTemplate.Size = new Size(292, 36);
+            btn_ConnectPartNr_NewTemplate.TabIndex = 1;
+            btn_ConnectPartNr_NewTemplate.Text = "Koppla Aktiv Mall till Processkort";
+            btn_ConnectPartNr_NewTemplate.UseVisualStyleBackColor = false;
+            btn_ConnectPartNr_NewTemplate.Click += ConnectTemplate_Click;
             // 
             // btn_PreviewTemplate
             // 
-            this.btn_PreviewTemplate.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(185)))), ((int)(((byte)(188)))), ((int)(((byte)(189)))));
-            this.btn_PreviewTemplate.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btn_PreviewTemplate.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btn_PreviewTemplate.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btn_PreviewTemplate.Font = new System.Drawing.Font("Lucida Sans", 10.25F);
-            this.btn_PreviewTemplate.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(63)))), ((int)(((byte)(116)))), ((int)(((byte)(140)))));
-            this.btn_PreviewTemplate.Location = new System.Drawing.Point(250, 67);
-            this.btn_PreviewTemplate.Margin = new System.Windows.Forms.Padding(0);
-            this.btn_PreviewTemplate.Name = "btn_PreviewTemplate";
-            this.btn_PreviewTemplate.Size = new System.Drawing.Size(250, 33);
-            this.btn_PreviewTemplate.TabIndex = 1;
-            this.btn_PreviewTemplate.Text = "Förhandsgranska Mall";
-            this.btn_PreviewTemplate.UseVisualStyleBackColor = false;
-            this.btn_PreviewTemplate.Click += new System.EventHandler(this.PreviewTemplate_Click);
+            btn_PreviewTemplate.BackColor = Color.FromArgb(185, 188, 189);
+            btn_PreviewTemplate.Cursor = Cursors.Hand;
+            btn_PreviewTemplate.Dock = DockStyle.Fill;
+            btn_PreviewTemplate.FlatStyle = FlatStyle.Flat;
+            btn_PreviewTemplate.Font = new Font("Lucida Sans", 10.25F);
+            btn_PreviewTemplate.ForeColor = Color.FromArgb(63, 116, 140);
+            btn_PreviewTemplate.Location = new Point(292, 78);
+            btn_PreviewTemplate.Margin = new Padding(0);
+            btn_PreviewTemplate.Name = "btn_PreviewTemplate";
+            btn_PreviewTemplate.Size = new Size(292, 37);
+            btn_PreviewTemplate.TabIndex = 1;
+            btn_PreviewTemplate.Text = "Förhandsgranska Mall";
+            btn_PreviewTemplate.UseVisualStyleBackColor = false;
+            btn_PreviewTemplate.Click += PreviewTemplate_Click;
             // 
             // cb_LineClearance_Revision
             // 
-            this.cb_LineClearance_Revision.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cb_LineClearance_Revision.Font = new System.Drawing.Font("Lucida Sans", 11.25F);
-            this.cb_LineClearance_Revision.FormattingEnabled = true;
-            this.cb_LineClearance_Revision.Location = new System.Drawing.Point(22, 71);
-            this.cb_LineClearance_Revision.Margin = new System.Windows.Forms.Padding(0);
-            this.cb_LineClearance_Revision.Name = "cb_LineClearance_Revision";
-            this.cb_LineClearance_Revision.Size = new System.Drawing.Size(49, 25);
-            this.cb_LineClearance_Revision.TabIndex = 12;
-            this.cb_LineClearance_Revision.SelectedIndexChanged += new System.EventHandler(this.LineClearance_Revision_SelectedIndexChanged);
+            cb_LineClearance_Revision.DropDownStyle = ComboBoxStyle.DropDownList;
+            cb_LineClearance_Revision.Font = new Font("Lucida Sans", 11.25F);
+            cb_LineClearance_Revision.FormattingEnabled = true;
+            cb_LineClearance_Revision.Location = new Point(26, 82);
+            cb_LineClearance_Revision.Margin = new Padding(0);
+            cb_LineClearance_Revision.Name = "cb_LineClearance_Revision";
+            cb_LineClearance_Revision.Size = new Size(56, 25);
+            cb_LineClearance_Revision.TabIndex = 12;
+            cb_LineClearance_Revision.SelectedIndexChanged += LineClearance_Revision_SelectedIndexChanged;
             // 
             // label_LineClearanceTemplate
             // 
-            this.label_LineClearanceTemplate.AutoSize = true;
-            this.label_LineClearanceTemplate.Font = new System.Drawing.Font("Lucida Sans", 11.25F);
-            this.label_LineClearanceTemplate.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(187)))), ((int)(((byte)(215)))), ((int)(((byte)(228)))));
-            this.label_LineClearanceTemplate.Location = new System.Drawing.Point(81, 75);
-            this.label_LineClearanceTemplate.Margin = new System.Windows.Forms.Padding(20, 0, 3, 0);
-            this.label_LineClearanceTemplate.Name = "label_LineClearanceTemplate";
-            this.label_LineClearanceTemplate.Size = new System.Drawing.Size(715, 17);
-            this.label_LineClearanceTemplate.TabIndex = 13;
-            this.label_LineClearanceTemplate.Text = "Revision för LineClearance. Gå till Hantering av Mallar för LineClearance för att" +
-    " se hur den ser ut.\r\n";
+            label_LineClearanceTemplate.AutoSize = true;
+            label_LineClearanceTemplate.Font = new Font("Lucida Sans", 11.25F);
+            label_LineClearanceTemplate.ForeColor = Color.FromArgb(187, 215, 228);
+            label_LineClearanceTemplate.Location = new Point(94, 87);
+            label_LineClearanceTemplate.Margin = new Padding(23, 0, 4, 0);
+            label_LineClearanceTemplate.Name = "label_LineClearanceTemplate";
+            label_LineClearanceTemplate.Size = new Size(715, 17);
+            label_LineClearanceTemplate.TabIndex = 13;
+            label_LineClearanceTemplate.Text = "Revision för LineClearance. Gå till Hantering av Mallar för LineClearance för att se hur den ser ut.\r\n";
             // 
             // cb_TemplateRevision
             // 
-            this.cb_TemplateRevision.Font = new System.Drawing.Font("Lucida Sans", 11.25F);
-            this.cb_TemplateRevision.FormattingEnabled = true;
-            this.cb_TemplateRevision.Location = new System.Drawing.Point(347, 192);
-            this.cb_TemplateRevision.Margin = new System.Windows.Forms.Padding(0);
-            this.cb_TemplateRevision.Name = "cb_TemplateRevision";
-            this.cb_TemplateRevision.Size = new System.Drawing.Size(71, 25);
-            this.cb_TemplateRevision.TabIndex = 14;
-            this.cb_TemplateRevision.Text = "A";
-            this.cb_TemplateRevision.SelectedIndexChanged += new System.EventHandler(this.Template_RevisionNr_SelectedIndexChanged);
-            this.cb_TemplateRevision.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.Revision_KeyPress);
+            cb_TemplateRevision.Font = new Font("Lucida Sans", 11.25F);
+            cb_TemplateRevision.FormattingEnabled = true;
+            cb_TemplateRevision.Location = new Point(405, 222);
+            cb_TemplateRevision.Margin = new Padding(0);
+            cb_TemplateRevision.Name = "cb_TemplateRevision";
+            cb_TemplateRevision.Size = new Size(82, 25);
+            cb_TemplateRevision.TabIndex = 14;
+            cb_TemplateRevision.Text = "A";
+            cb_TemplateRevision.SelectedIndexChanged += Template_RevisionNr_SelectedIndexChanged;
+            cb_TemplateRevision.KeyPress += Revision_KeyPress;
             // 
             // btn_DeleteTemplate
             // 
-            this.btn_DeleteTemplate.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(185)))), ((int)(((byte)(188)))), ((int)(((byte)(189)))));
-            this.btn_DeleteTemplate.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btn_DeleteTemplate.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btn_DeleteTemplate.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btn_DeleteTemplate.Font = new System.Drawing.Font("Lucida Sans", 10.25F);
-            this.btn_DeleteTemplate.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(63)))), ((int)(((byte)(116)))), ((int)(((byte)(140)))));
-            this.btn_DeleteTemplate.Location = new System.Drawing.Point(5, 67);
-            this.btn_DeleteTemplate.Margin = new System.Windows.Forms.Padding(5, 0, 0, 0);
-            this.btn_DeleteTemplate.Name = "btn_DeleteTemplate";
-            this.btn_DeleteTemplate.Size = new System.Drawing.Size(245, 33);
-            this.btn_DeleteTemplate.TabIndex = 1;
-            this.btn_DeleteTemplate.Text = "Radera Mall";
-            this.btn_DeleteTemplate.UseVisualStyleBackColor = false;
-            this.btn_DeleteTemplate.Click += new System.EventHandler(this.Delete_Template_Click);
+            btn_DeleteTemplate.BackColor = Color.FromArgb(185, 188, 189);
+            btn_DeleteTemplate.Cursor = Cursors.Hand;
+            btn_DeleteTemplate.Dock = DockStyle.Fill;
+            btn_DeleteTemplate.FlatStyle = FlatStyle.Flat;
+            btn_DeleteTemplate.Font = new Font("Lucida Sans", 10.25F);
+            btn_DeleteTemplate.ForeColor = Color.FromArgb(63, 116, 140);
+            btn_DeleteTemplate.Location = new Point(6, 78);
+            btn_DeleteTemplate.Margin = new Padding(6, 0, 0, 0);
+            btn_DeleteTemplate.Name = "btn_DeleteTemplate";
+            btn_DeleteTemplate.Size = new Size(286, 37);
+            btn_DeleteTemplate.TabIndex = 1;
+            btn_DeleteTemplate.Text = "Radera Mall";
+            btn_DeleteTemplate.UseVisualStyleBackColor = false;
+            btn_DeleteTemplate.Click += Delete_Template_Click;
             // 
             // cb_MainInfo_Template
             // 
-            this.cb_MainInfo_Template.Font = new System.Drawing.Font("Lucida Sans", 11.25F);
-            this.cb_MainInfo_Template.FormattingEnabled = true;
-            this.cb_MainInfo_Template.Items.AddRange(new object[] {
-            "A",
-            "B",
-            "C"});
-            this.cb_MainInfo_Template.Location = new System.Drawing.Point(22, 102);
-            this.cb_MainInfo_Template.Margin = new System.Windows.Forms.Padding(0);
-            this.cb_MainInfo_Template.Name = "cb_MainInfo_Template";
-            this.cb_MainInfo_Template.Size = new System.Drawing.Size(49, 25);
-            this.cb_MainInfo_Template.TabIndex = 12;
+            cb_MainInfo_Template.Font = new Font("Lucida Sans", 11.25F);
+            cb_MainInfo_Template.FormattingEnabled = true;
+            cb_MainInfo_Template.Items.AddRange(new object[] { "A", "B", "C" });
+            cb_MainInfo_Template.Location = new Point(26, 118);
+            cb_MainInfo_Template.Margin = new Padding(0);
+            cb_MainInfo_Template.Name = "cb_MainInfo_Template";
+            cb_MainInfo_Template.Size = new Size(56, 25);
+            cb_MainInfo_Template.TabIndex = 12;
             // 
             // label_MainInfoTemplate
             // 
-            this.label_MainInfoTemplate.AutoSize = true;
-            this.label_MainInfoTemplate.Font = new System.Drawing.Font("Lucida Sans", 11.25F);
-            this.label_MainInfoTemplate.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(187)))), ((int)(((byte)(215)))), ((int)(((byte)(228)))));
-            this.label_MainInfoTemplate.Location = new System.Drawing.Point(81, 106);
-            this.label_MainInfoTemplate.Margin = new System.Windows.Forms.Padding(20, 0, 3, 0);
-            this.label_MainInfoTemplate.Name = "label_MainInfoTemplate";
-            this.label_MainInfoTemplate.Size = new System.Drawing.Size(603, 17);
-            this.label_MainInfoTemplate.TabIndex = 13;
-            this.label_MainInfoTemplate.Text = "Mall för Main Info (Välj mall och Förhandsgranska mallen för att se hur den ser u" +
-    "t)\r\n";
+            label_MainInfoTemplate.AutoSize = true;
+            label_MainInfoTemplate.Font = new Font("Lucida Sans", 11.25F);
+            label_MainInfoTemplate.ForeColor = Color.FromArgb(187, 215, 228);
+            label_MainInfoTemplate.Location = new Point(94, 122);
+            label_MainInfoTemplate.Margin = new Padding(23, 0, 4, 0);
+            label_MainInfoTemplate.Name = "label_MainInfoTemplate";
+            label_MainInfoTemplate.Size = new Size(603, 17);
+            label_MainInfoTemplate.TabIndex = 13;
+            label_MainInfoTemplate.Text = "Mall för Main Info (Välj mall och Förhandsgranska mallen för att se hur den ser ut)\r\n";
             // 
             // btn_ConnectPartNr_NewRevision
             // 
-            this.btn_ConnectPartNr_NewRevision.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(185)))), ((int)(((byte)(188)))), ((int)(((byte)(189)))));
-            this.btn_ConnectPartNr_NewRevision.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btn_ConnectPartNr_NewRevision.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btn_ConnectPartNr_NewRevision.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btn_ConnectPartNr_NewRevision.Font = new System.Drawing.Font("Lucida Sans", 10.25F);
-            this.btn_ConnectPartNr_NewRevision.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(63)))), ((int)(((byte)(116)))), ((int)(((byte)(140)))));
-            this.btn_ConnectPartNr_NewRevision.Location = new System.Drawing.Point(250, 36);
-            this.btn_ConnectPartNr_NewRevision.Margin = new System.Windows.Forms.Padding(0);
-            this.btn_ConnectPartNr_NewRevision.Name = "btn_ConnectPartNr_NewRevision";
-            this.btn_ConnectPartNr_NewRevision.Size = new System.Drawing.Size(250, 31);
-            this.btn_ConnectPartNr_NewRevision.TabIndex = 1;
-            this.btn_ConnectPartNr_NewRevision.Text = "Koppla Artikelnr till ny Revision";
-            this.btn_ConnectPartNr_NewRevision.UseVisualStyleBackColor = false;
-            this.btn_ConnectPartNr_NewRevision.Visible = false;
-            this.btn_ConnectPartNr_NewRevision.Click += new System.EventHandler(this.ConnectPartNr_NewRevision_Click);
+            btn_ConnectPartNr_NewRevision.BackColor = Color.FromArgb(185, 188, 189);
+            btn_ConnectPartNr_NewRevision.Cursor = Cursors.Hand;
+            btn_ConnectPartNr_NewRevision.Dock = DockStyle.Fill;
+            btn_ConnectPartNr_NewRevision.FlatStyle = FlatStyle.Flat;
+            btn_ConnectPartNr_NewRevision.Font = new Font("Lucida Sans", 10.25F);
+            btn_ConnectPartNr_NewRevision.ForeColor = Color.FromArgb(63, 116, 140);
+            btn_ConnectPartNr_NewRevision.Location = new Point(292, 42);
+            btn_ConnectPartNr_NewRevision.Margin = new Padding(0);
+            btn_ConnectPartNr_NewRevision.Name = "btn_ConnectPartNr_NewRevision";
+            btn_ConnectPartNr_NewRevision.Size = new Size(292, 36);
+            btn_ConnectPartNr_NewRevision.TabIndex = 1;
+            btn_ConnectPartNr_NewRevision.Text = "Koppla Artikelnr till ny Revision";
+            btn_ConnectPartNr_NewRevision.UseVisualStyleBackColor = false;
+            btn_ConnectPartNr_NewRevision.Visible = false;
+            btn_ConnectPartNr_NewRevision.Click += ConnectPartNr_NewRevision_Click;
             // 
             // pb_RenameModule
             // 
-            this.pb_RenameModule.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.pb_RenameModule.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("pb_RenameModule.BackgroundImage")));
-            this.pb_RenameModule.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.pb_RenameModule.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.pb_RenameModule.Location = new System.Drawing.Point(9, 27);
-            this.pb_RenameModule.Margin = new System.Windows.Forms.Padding(0, 0, 0, 5);
-            this.pb_RenameModule.Name = "pb_RenameModule";
-            this.pb_RenameModule.Size = new System.Drawing.Size(42, 41);
-            this.pb_RenameModule.TabIndex = 5;
-            this.pb_RenameModule.TabStop = false;
-            this.toolTip.SetToolTip(this.pb_RenameModule, "Fyll i det nya namnet till vänster ");
-            this.pb_RenameModule.Click += new System.EventHandler(this.RenameModule_Click);
+            pb_RenameModule.Anchor = AnchorStyles.None;
+            pb_RenameModule.BackgroundImage = (Image)resources.GetObject("pb_RenameModule.BackgroundImage");
+            pb_RenameModule.BackgroundImageLayout = ImageLayout.Stretch;
+            pb_RenameModule.Cursor = Cursors.Hand;
+            pb_RenameModule.Location = new Point(6, 29);
+            pb_RenameModule.Margin = new Padding(0, 0, 0, 6);
+            pb_RenameModule.Name = "pb_RenameModule";
+            pb_RenameModule.Size = new Size(49, 47);
+            pb_RenameModule.TabIndex = 5;
+            pb_RenameModule.TabStop = false;
+            toolTip.SetToolTip(pb_RenameModule, "Fyll i det nya namnet till vänster ");
+            pb_RenameModule.Click += RenameModule_Click;
             // 
             // btn_CodeTextUp
             // 
-            this.btn_CodeTextUp.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.btn_CodeTextUp.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("btn_CodeTextUp.BackgroundImage")));
-            this.btn_CodeTextUp.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.btn_CodeTextUp.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btn_CodeTextUp.Location = new System.Drawing.Point(17, 238);
-            this.btn_CodeTextUp.Margin = new System.Windows.Forms.Padding(3, 3, 3, 5);
-            this.btn_CodeTextUp.Name = "btn_CodeTextUp";
-            this.btn_CodeTextUp.Size = new System.Drawing.Size(26, 29);
-            this.btn_CodeTextUp.TabIndex = 3;
-            this.btn_CodeTextUp.TabStop = false;
-            this.btn_CodeTextUp.Click += new System.EventHandler(this.CodeTextUp_Click);
+            btn_CodeTextUp.Anchor = AnchorStyles.None;
+            btn_CodeTextUp.BackgroundImage = (Image)resources.GetObject("btn_CodeTextUp.BackgroundImage");
+            btn_CodeTextUp.BackgroundImageLayout = ImageLayout.Stretch;
+            btn_CodeTextUp.Cursor = Cursors.Hand;
+            btn_CodeTextUp.Location = new Point(16, 268);
+            btn_CodeTextUp.Margin = new Padding(4, 3, 4, 6);
+            btn_CodeTextUp.Name = "btn_CodeTextUp";
+            btn_CodeTextUp.Size = new Size(30, 33);
+            btn_CodeTextUp.TabIndex = 3;
+            btn_CodeTextUp.TabStop = false;
+            btn_CodeTextUp.Click += CodeTextUp_Click;
             // 
             // btn_CodeTextDown
             // 
-            this.btn_CodeTextDown.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.btn_CodeTextDown.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("btn_CodeTextDown.BackgroundImage")));
-            this.btn_CodeTextDown.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.btn_CodeTextDown.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btn_CodeTextDown.Location = new System.Drawing.Point(17, 275);
-            this.btn_CodeTextDown.Margin = new System.Windows.Forms.Padding(3, 3, 3, 5);
-            this.btn_CodeTextDown.Name = "btn_CodeTextDown";
-            this.btn_CodeTextDown.Size = new System.Drawing.Size(26, 29);
-            this.btn_CodeTextDown.TabIndex = 4;
-            this.btn_CodeTextDown.TabStop = false;
-            this.btn_CodeTextDown.Click += new System.EventHandler(this.CodeTextDown_Click);
+            btn_CodeTextDown.Anchor = AnchorStyles.None;
+            btn_CodeTextDown.BackgroundImage = (Image)resources.GetObject("btn_CodeTextDown.BackgroundImage");
+            btn_CodeTextDown.BackgroundImageLayout = ImageLayout.Stretch;
+            btn_CodeTextDown.Cursor = Cursors.Hand;
+            btn_CodeTextDown.Location = new Point(16, 310);
+            btn_CodeTextDown.Margin = new Padding(4, 3, 4, 6);
+            btn_CodeTextDown.Name = "btn_CodeTextDown";
+            btn_CodeTextDown.Size = new Size(30, 33);
+            btn_CodeTextDown.TabIndex = 4;
+            btn_CodeTextDown.TabStop = false;
+            btn_CodeTextDown.Click += CodeTextDown_Click;
             // 
             // btn_ModuleUp
             // 
-            this.btn_ModuleUp.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.btn_ModuleUp.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("btn_ModuleUp.BackgroundImage")));
-            this.btn_ModuleUp.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.btn_ModuleUp.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btn_ModuleUp.Location = new System.Drawing.Point(17, 73);
-            this.btn_ModuleUp.Margin = new System.Windows.Forms.Padding(0, 0, 0, 5);
-            this.btn_ModuleUp.Name = "btn_ModuleUp";
-            this.btn_ModuleUp.Size = new System.Drawing.Size(26, 29);
-            this.btn_ModuleUp.TabIndex = 2;
-            this.btn_ModuleUp.TabStop = false;
-            this.btn_ModuleUp.Click += new System.EventHandler(this.ModuleUp_Click);
+            btn_ModuleUp.Anchor = AnchorStyles.None;
+            btn_ModuleUp.BackgroundImage = (Image)resources.GetObject("btn_ModuleUp.BackgroundImage");
+            btn_ModuleUp.BackgroundImageLayout = ImageLayout.Stretch;
+            btn_ModuleUp.Cursor = Cursors.Hand;
+            btn_ModuleUp.Location = new Point(16, 82);
+            btn_ModuleUp.Margin = new Padding(0, 0, 0, 6);
+            btn_ModuleUp.Name = "btn_ModuleUp";
+            btn_ModuleUp.Size = new Size(30, 33);
+            btn_ModuleUp.TabIndex = 2;
+            btn_ModuleUp.TabStop = false;
+            btn_ModuleUp.Click += ModuleUp_Click;
             // 
             // btn_ModuleDown
             // 
-            this.btn_ModuleDown.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.btn_ModuleDown.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("btn_ModuleDown.BackgroundImage")));
-            this.btn_ModuleDown.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.btn_ModuleDown.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btn_ModuleDown.Location = new System.Drawing.Point(17, 110);
-            this.btn_ModuleDown.Margin = new System.Windows.Forms.Padding(3, 3, 3, 5);
-            this.btn_ModuleDown.Name = "btn_ModuleDown";
-            this.btn_ModuleDown.Size = new System.Drawing.Size(26, 29);
-            this.btn_ModuleDown.TabIndex = 2;
-            this.btn_ModuleDown.TabStop = false;
-            this.btn_ModuleDown.Click += new System.EventHandler(this.ModuleDown_Click);
+            btn_ModuleDown.Anchor = AnchorStyles.None;
+            btn_ModuleDown.BackgroundImage = (Image)resources.GetObject("btn_ModuleDown.BackgroundImage");
+            btn_ModuleDown.BackgroundImageLayout = ImageLayout.Stretch;
+            btn_ModuleDown.Cursor = Cursors.Hand;
+            btn_ModuleDown.Location = new Point(16, 124);
+            btn_ModuleDown.Margin = new Padding(4, 3, 4, 6);
+            btn_ModuleDown.Name = "btn_ModuleDown";
+            btn_ModuleDown.Size = new Size(30, 33);
+            btn_ModuleDown.TabIndex = 2;
+            btn_ModuleDown.TabStop = false;
+            btn_ModuleDown.Click += ModuleDown_Click;
             // 
             // btn_DeleteCodeText
             // 
-            this.btn_DeleteCodeText.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.btn_DeleteCodeText.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("btn_DeleteCodeText.BackgroundImage")));
-            this.btn_DeleteCodeText.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.btn_DeleteCodeText.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btn_DeleteCodeText.Location = new System.Drawing.Point(9, 312);
-            this.btn_DeleteCodeText.Margin = new System.Windows.Forms.Padding(3, 3, 3, 5);
-            this.btn_DeleteCodeText.Name = "btn_DeleteCodeText";
-            this.btn_DeleteCodeText.Size = new System.Drawing.Size(41, 41);
-            this.btn_DeleteCodeText.TabIndex = 1;
-            this.btn_DeleteCodeText.TabStop = false;
-            this.toolTip.SetToolTip(this.btn_DeleteCodeText, "Radera markerad rad");
-            this.btn_DeleteCodeText.Click += new System.EventHandler(this.DeleteCodeText_Click);
+            btn_DeleteCodeText.Anchor = AnchorStyles.None;
+            btn_DeleteCodeText.BackgroundImage = (Image)resources.GetObject("btn_DeleteCodeText.BackgroundImage");
+            btn_DeleteCodeText.BackgroundImageLayout = ImageLayout.Stretch;
+            btn_DeleteCodeText.Cursor = Cursors.Hand;
+            btn_DeleteCodeText.Location = new Point(7, 352);
+            btn_DeleteCodeText.Margin = new Padding(4, 3, 4, 6);
+            btn_DeleteCodeText.Name = "btn_DeleteCodeText";
+            btn_DeleteCodeText.Size = new Size(48, 47);
+            btn_DeleteCodeText.TabIndex = 1;
+            btn_DeleteCodeText.TabStop = false;
+            toolTip.SetToolTip(btn_DeleteCodeText, "Radera markerad rad");
+            btn_DeleteCodeText.Click += DeleteCodeText_Click;
             // 
             // btn_DeleteModule
             // 
-            this.btn_DeleteModule.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.btn_DeleteModule.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("btn_DeleteModule.BackgroundImage")));
-            this.btn_DeleteModule.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.btn_DeleteModule.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btn_DeleteModule.Location = new System.Drawing.Point(9, 147);
-            this.btn_DeleteModule.Margin = new System.Windows.Forms.Padding(3, 3, 3, 25);
-            this.btn_DeleteModule.Name = "btn_DeleteModule";
-            this.btn_DeleteModule.Size = new System.Drawing.Size(41, 41);
-            this.btn_DeleteModule.TabIndex = 1;
-            this.btn_DeleteModule.TabStop = false;
-            this.toolTip.SetToolTip(this.btn_DeleteModule, "Radera markerad modul");
-            this.btn_DeleteModule.Click += new System.EventHandler(this.DeleteModule_Click);
+            btn_DeleteModule.Anchor = AnchorStyles.None;
+            btn_DeleteModule.BackgroundImage = (Image)resources.GetObject("btn_DeleteModule.BackgroundImage");
+            btn_DeleteModule.BackgroundImageLayout = ImageLayout.Stretch;
+            btn_DeleteModule.Cursor = Cursors.Hand;
+            btn_DeleteModule.Location = new Point(7, 166);
+            btn_DeleteModule.Margin = new Padding(4, 3, 4, 29);
+            btn_DeleteModule.Name = "btn_DeleteModule";
+            btn_DeleteModule.Size = new Size(48, 47);
+            btn_DeleteModule.TabIndex = 1;
+            btn_DeleteModule.TabStop = false;
+            toolTip.SetToolTip(btn_DeleteModule, "Radera markerad modul");
+            btn_DeleteModule.Click += DeleteModule_Click;
             // 
             // label_Buttons_CodeText
             // 
-            this.label_Buttons_CodeText.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.label_Buttons_CodeText.AutoSize = true;
-            this.label_Buttons_CodeText.Font = new System.Drawing.Font("Lucida Sans", 11.25F, System.Drawing.FontStyle.Bold);
-            this.label_Buttons_CodeText.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(235)))), ((int)(((byte)(156)))));
-            this.label_Buttons_CodeText.Location = new System.Drawing.Point(8, 213);
-            this.label_Buttons_CodeText.Margin = new System.Windows.Forms.Padding(3, 0, 3, 5);
-            this.label_Buttons_CodeText.Name = "label_Buttons_CodeText";
-            this.label_Buttons_CodeText.Size = new System.Drawing.Size(43, 17);
-            this.label_Buttons_CodeText.TabIndex = 0;
-            this.label_Buttons_CodeText.Text = "Text";
+            label_Buttons_CodeText.Anchor = AnchorStyles.None;
+            label_Buttons_CodeText.AutoSize = true;
+            label_Buttons_CodeText.Font = new Font("Lucida Sans", 11.25F, FontStyle.Bold);
+            label_Buttons_CodeText.ForeColor = Color.FromArgb(255, 235, 156);
+            label_Buttons_CodeText.Location = new Point(9, 242);
+            label_Buttons_CodeText.Margin = new Padding(4, 0, 4, 6);
+            label_Buttons_CodeText.Name = "label_Buttons_CodeText";
+            label_Buttons_CodeText.Size = new Size(43, 17);
+            label_Buttons_CodeText.TabIndex = 0;
+            label_Buttons_CodeText.Text = "Text";
             // 
             // label_Buttons_Module
             // 
-            this.label_Buttons_Module.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.label_Buttons_Module.AutoSize = true;
-            this.label_Buttons_Module.Font = new System.Drawing.Font("Lucida Sans", 11.25F, System.Drawing.FontStyle.Bold);
-            this.label_Buttons_Module.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(235)))), ((int)(((byte)(156)))));
-            this.label_Buttons_Module.Location = new System.Drawing.Point(3, 0);
-            this.label_Buttons_Module.Margin = new System.Windows.Forms.Padding(3, 0, 3, 10);
-            this.label_Buttons_Module.Name = "label_Buttons_Module";
-            this.label_Buttons_Module.Size = new System.Drawing.Size(54, 17);
-            this.label_Buttons_Module.TabIndex = 0;
-            this.label_Buttons_Module.Text = "Modul";
+            label_Buttons_Module.Anchor = AnchorStyles.None;
+            label_Buttons_Module.AutoSize = true;
+            label_Buttons_Module.Font = new Font("Lucida Sans", 11.25F, FontStyle.Bold);
+            label_Buttons_Module.ForeColor = Color.FromArgb(255, 235, 156);
+            label_Buttons_Module.Location = new Point(4, 0);
+            label_Buttons_Module.Margin = new Padding(4, 0, 4, 12);
+            label_Buttons_Module.Name = "label_Buttons_Module";
+            label_Buttons_Module.Size = new Size(54, 17);
+            label_Buttons_Module.TabIndex = 0;
+            label_Buttons_Module.Text = "Modul";
             // 
             // label_TotalConnectedProcesscards
             // 
-            this.label_TotalConnectedProcesscards.AutoSize = true;
-            this.tlp_ExtraInfo.SetColumnSpan(this.label_TotalConnectedProcesscards, 2);
-            this.label_TotalConnectedProcesscards.Dock = System.Windows.Forms.DockStyle.Right;
-            this.label_TotalConnectedProcesscards.Font = new System.Drawing.Font("Lucida Sans", 11.25F);
-            this.label_TotalConnectedProcesscards.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(187)))), ((int)(((byte)(215)))), ((int)(((byte)(228)))));
-            this.label_TotalConnectedProcesscards.Location = new System.Drawing.Point(159, 70);
-            this.label_TotalConnectedProcesscards.Name = "label_TotalConnectedProcesscards";
-            this.label_TotalConnectedProcesscards.Size = new System.Drawing.Size(291, 24);
-            this.label_TotalConnectedProcesscards.TabIndex = 16;
-            this.label_TotalConnectedProcesscards.Text = "Antal Processkort kopplade till mallen:";
-            this.label_TotalConnectedProcesscards.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            label_TotalConnectedProcesscards.AutoSize = true;
+            tlp_ExtraInfo.SetColumnSpan(label_TotalConnectedProcesscards, 2);
+            label_TotalConnectedProcesscards.Dock = DockStyle.Right;
+            label_TotalConnectedProcesscards.Font = new Font("Lucida Sans", 11.25F);
+            label_TotalConnectedProcesscards.ForeColor = Color.FromArgb(187, 215, 228);
+            label_TotalConnectedProcesscards.Location = new Point(234, 82);
+            label_TotalConnectedProcesscards.Margin = new Padding(4, 0, 4, 0);
+            label_TotalConnectedProcesscards.Name = "label_TotalConnectedProcesscards";
+            label_TotalConnectedProcesscards.Size = new Size(291, 26);
+            label_TotalConnectedProcesscards.TabIndex = 16;
+            label_TotalConnectedProcesscards.Text = "Antal Processkort kopplade till mallen:";
+            label_TotalConnectedProcesscards.TextAlign = ContentAlignment.MiddleRight;
             // 
             // btn_NewRevision
             // 
-            this.btn_NewRevision.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(185)))), ((int)(((byte)(188)))), ((int)(((byte)(189)))));
-            this.btn_NewRevision.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btn_NewRevision.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btn_NewRevision.Font = new System.Drawing.Font("Lucida Sans", 10.25F);
-            this.btn_NewRevision.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(63)))), ((int)(((byte)(116)))), ((int)(((byte)(140)))));
-            this.btn_NewRevision.Location = new System.Drawing.Point(419, 192);
-            this.btn_NewRevision.Margin = new System.Windows.Forms.Padding(1, 0, 0, 0);
-            this.btn_NewRevision.Name = "btn_NewRevision";
-            this.btn_NewRevision.Size = new System.Drawing.Size(104, 24);
-            this.btn_NewRevision.TabIndex = 1;
-            this.btn_NewRevision.Text = "Ny Revision";
-            this.toolTip.SetToolTip(this.btn_NewRevision, "Vänsterklicka för att stega upp en revision, högerklicka för att stega ner en rev" +
-        "ision.");
-            this.btn_NewRevision.UseVisualStyleBackColor = false;
-            this.btn_NewRevision.MouseDown += new System.Windows.Forms.MouseEventHandler(this.NewRevision_MouseDown);
+            btn_NewRevision.BackColor = Color.FromArgb(185, 188, 189);
+            btn_NewRevision.Cursor = Cursors.Hand;
+            btn_NewRevision.FlatStyle = FlatStyle.Flat;
+            btn_NewRevision.Font = new Font("Lucida Sans", 10.25F);
+            btn_NewRevision.ForeColor = Color.FromArgb(63, 116, 140);
+            btn_NewRevision.Location = new Point(489, 222);
+            btn_NewRevision.Margin = new Padding(1, 0, 0, 0);
+            btn_NewRevision.Name = "btn_NewRevision";
+            btn_NewRevision.Size = new Size(121, 28);
+            btn_NewRevision.TabIndex = 1;
+            btn_NewRevision.Text = "Ny Revision";
+            toolTip.SetToolTip(btn_NewRevision, "Vänsterklicka för att stega upp en revision, högerklicka för att stega ner en revision.");
+            btn_NewRevision.UseVisualStyleBackColor = false;
+            btn_NewRevision.MouseDown += NewRevision_MouseDown;
             // 
             // label_WorkoperationName
             // 
-            this.label_WorkoperationName.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(239)))), ((int)(((byte)(228)))), ((int)(((byte)(177)))));
-            this.label_WorkoperationName.Font = new System.Drawing.Font("Lucida Sans", 10.25F);
-            this.label_WorkoperationName.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(57)))), ((int)(((byte)(108)))), ((int)(((byte)(121)))));
-            this.label_WorkoperationName.Location = new System.Drawing.Point(525, 166);
-            this.label_WorkoperationName.Margin = new System.Windows.Forms.Padding(1, 0, 0, 1);
-            this.label_WorkoperationName.Name = "label_WorkoperationName";
-            this.label_WorkoperationName.Size = new System.Drawing.Size(492, 24);
-            this.label_WorkoperationName.TabIndex = 8;
-            this.label_WorkoperationName.Text = "Arbetsoperation:";
+            label_WorkoperationName.BackColor = Color.FromArgb(239, 228, 177);
+            label_WorkoperationName.Font = new Font("Lucida Sans", 10.25F);
+            label_WorkoperationName.ForeColor = Color.FromArgb(57, 108, 121);
+            label_WorkoperationName.Location = new Point(612, 192);
+            label_WorkoperationName.Margin = new Padding(1, 0, 0, 1);
+            label_WorkoperationName.Name = "label_WorkoperationName";
+            label_WorkoperationName.Size = new Size(574, 28);
+            label_WorkoperationName.TabIndex = 8;
+            label_WorkoperationName.Text = "Arbetsoperation:";
             // 
             // label_CreatedBy
             // 
-            this.label_CreatedBy.AutoSize = true;
-            this.label_CreatedBy.Dock = System.Windows.Forms.DockStyle.Right;
-            this.label_CreatedBy.Font = new System.Drawing.Font("Lucida Sans", 11.25F);
-            this.label_CreatedBy.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(187)))), ((int)(((byte)(215)))), ((int)(((byte)(228)))));
-            this.label_CreatedBy.Location = new System.Drawing.Point(10, 1);
-            this.label_CreatedBy.Name = "label_CreatedBy";
-            this.label_CreatedBy.Size = new System.Drawing.Size(138, 22);
-            this.label_CreatedBy.TabIndex = 16;
-            this.label_CreatedBy.Text = "Mallen skapad av:";
+            label_CreatedBy.AutoSize = true;
+            label_CreatedBy.Dock = DockStyle.Right;
+            label_CreatedBy.Font = new Font("Lucida Sans", 11.25F);
+            label_CreatedBy.ForeColor = Color.FromArgb(187, 215, 228);
+            label_CreatedBy.Location = new Point(34, 1);
+            label_CreatedBy.Margin = new Padding(4, 0, 4, 0);
+            label_CreatedBy.Name = "label_CreatedBy";
+            label_CreatedBy.Size = new Size(138, 26);
+            label_CreatedBy.TabIndex = 16;
+            label_CreatedBy.Text = "Mallen skapad av:";
             // 
             // label_CreatedDate
             // 
-            this.label_CreatedDate.AutoSize = true;
-            this.label_CreatedDate.Dock = System.Windows.Forms.DockStyle.Right;
-            this.label_CreatedDate.Font = new System.Drawing.Font("Lucida Sans", 11.25F);
-            this.label_CreatedDate.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(187)))), ((int)(((byte)(215)))), ((int)(((byte)(228)))));
-            this.label_CreatedDate.Location = new System.Drawing.Point(32, 24);
-            this.label_CreatedDate.Name = "label_CreatedDate";
-            this.label_CreatedDate.Size = new System.Drawing.Size(116, 22);
-            this.label_CreatedDate.TabIndex = 16;
-            this.label_CreatedDate.Text = "Mallen skapad:";
+            label_CreatedDate.AutoSize = true;
+            label_CreatedDate.Dock = DockStyle.Right;
+            label_CreatedDate.Font = new Font("Lucida Sans", 11.25F);
+            label_CreatedDate.ForeColor = Color.FromArgb(187, 215, 228);
+            label_CreatedDate.Location = new Point(56, 28);
+            label_CreatedDate.Margin = new Padding(4, 0, 4, 0);
+            label_CreatedDate.Name = "label_CreatedDate";
+            label_CreatedDate.Size = new Size(116, 26);
+            label_CreatedDate.TabIndex = 16;
+            label_CreatedDate.Text = "Mallen skapad:";
             // 
             // tlp_ExtraInfo
             // 
-            this.tlp_ExtraInfo.CellBorderStyle = System.Windows.Forms.TableLayoutPanelCellBorderStyle.Single;
-            this.tlp_ExtraInfo.ColumnCount = 2;
-            this.tlp_ExtraInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 150F));
-            this.tlp_ExtraInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlp_ExtraInfo.Controls.Add(this.label_TotalConnectedOrders, 0, 2);
-            this.tlp_ExtraInfo.Controls.Add(this.lbl_CreatedDate, 1, 1);
-            this.tlp_ExtraInfo.Controls.Add(this.lbl_CreatedBy, 1, 0);
-            this.tlp_ExtraInfo.Controls.Add(this.label_CreatedDate, 0, 1);
-            this.tlp_ExtraInfo.Controls.Add(this.label_CreatedBy, 0, 0);
-            this.tlp_ExtraInfo.Controls.Add(this.label_TotalConnectedProcesscards, 0, 3);
-            this.tlp_ExtraInfo.Dock = System.Windows.Forms.DockStyle.Right;
-            this.tlp_ExtraInfo.Location = new System.Drawing.Point(1721, 5);
-            this.tlp_ExtraInfo.Margin = new System.Windows.Forms.Padding(0);
-            this.tlp_ExtraInfo.Name = "tlp_ExtraInfo";
-            this.tlp_ExtraInfo.Padding = new System.Windows.Forms.Padding(0, 0, 5, 0);
-            this.tlp_ExtraInfo.RowCount = 4;
-            this.tlp_Top.SetRowSpan(this.tlp_ExtraInfo, 3);
-            this.tlp_ExtraInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
-            this.tlp_ExtraInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
-            this.tlp_ExtraInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
-            this.tlp_ExtraInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
-            this.tlp_ExtraInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tlp_ExtraInfo.Size = new System.Drawing.Size(459, 95);
-            this.tlp_ExtraInfo.TabIndex = 18;
+            tlp_ExtraInfo.CellBorderStyle = TableLayoutPanelCellBorderStyle.Single;
+            tlp_ExtraInfo.ColumnCount = 2;
+            tlp_ExtraInfo.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 175F));
+            tlp_ExtraInfo.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            tlp_ExtraInfo.Controls.Add(label_TotalConnectedOrders, 0, 2);
+            tlp_ExtraInfo.Controls.Add(lbl_CreatedDate, 1, 1);
+            tlp_ExtraInfo.Controls.Add(lbl_CreatedBy, 1, 0);
+            tlp_ExtraInfo.Controls.Add(label_CreatedDate, 0, 1);
+            tlp_ExtraInfo.Controls.Add(label_CreatedBy, 0, 0);
+            tlp_ExtraInfo.Controls.Add(label_TotalConnectedProcesscards, 0, 3);
+            tlp_ExtraInfo.Dock = DockStyle.Right;
+            tlp_ExtraInfo.Location = new Point(2007, 6);
+            tlp_ExtraInfo.Margin = new Padding(0);
+            tlp_ExtraInfo.Name = "tlp_ExtraInfo";
+            tlp_ExtraInfo.Padding = new Padding(0, 0, 6, 0);
+            tlp_ExtraInfo.RowCount = 4;
+            tlp_Top.SetRowSpan(tlp_ExtraInfo, 3);
+            tlp_ExtraInfo.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
+            tlp_ExtraInfo.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
+            tlp_ExtraInfo.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
+            tlp_ExtraInfo.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
+            tlp_ExtraInfo.RowStyles.Add(new RowStyle(SizeType.Absolute, 23F));
+            tlp_ExtraInfo.Size = new Size(536, 109);
+            tlp_ExtraInfo.TabIndex = 18;
             // 
             // label_TotalConnectedOrders
             // 
-            this.label_TotalConnectedOrders.AutoSize = true;
-            this.tlp_ExtraInfo.SetColumnSpan(this.label_TotalConnectedOrders, 2);
-            this.label_TotalConnectedOrders.Dock = System.Windows.Forms.DockStyle.Right;
-            this.label_TotalConnectedOrders.Font = new System.Drawing.Font("Lucida Sans", 11.25F);
-            this.label_TotalConnectedOrders.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(187)))), ((int)(((byte)(215)))), ((int)(((byte)(228)))));
-            this.label_TotalConnectedOrders.Location = new System.Drawing.Point(199, 47);
-            this.label_TotalConnectedOrders.Name = "label_TotalConnectedOrders";
-            this.label_TotalConnectedOrders.Size = new System.Drawing.Size(251, 22);
-            this.label_TotalConnectedOrders.TabIndex = 16;
-            this.label_TotalConnectedOrders.Text = "Antal Ordrar kopplade till mallen:";
-            this.label_TotalConnectedOrders.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            label_TotalConnectedOrders.AutoSize = true;
+            tlp_ExtraInfo.SetColumnSpan(label_TotalConnectedOrders, 2);
+            label_TotalConnectedOrders.Dock = DockStyle.Right;
+            label_TotalConnectedOrders.Font = new Font("Lucida Sans", 11.25F);
+            label_TotalConnectedOrders.ForeColor = Color.FromArgb(187, 215, 228);
+            label_TotalConnectedOrders.Location = new Point(274, 55);
+            label_TotalConnectedOrders.Margin = new Padding(4, 0, 4, 0);
+            label_TotalConnectedOrders.Name = "label_TotalConnectedOrders";
+            label_TotalConnectedOrders.Size = new Size(251, 26);
+            label_TotalConnectedOrders.TabIndex = 16;
+            label_TotalConnectedOrders.Text = "Antal Ordrar kopplade till mallen:";
+            label_TotalConnectedOrders.TextAlign = ContentAlignment.MiddleRight;
             // 
             // lbl_CreatedDate
             // 
-            this.lbl_CreatedDate.AutoSize = true;
-            this.lbl_CreatedDate.BackColor = System.Drawing.Color.Transparent;
-            this.lbl_CreatedDate.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lbl_CreatedDate.Font = new System.Drawing.Font("Lucida Sans", 11.25F, System.Drawing.FontStyle.Bold);
-            this.lbl_CreatedDate.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(235)))), ((int)(((byte)(156)))));
-            this.lbl_CreatedDate.Location = new System.Drawing.Point(152, 24);
-            this.lbl_CreatedDate.Margin = new System.Windows.Forms.Padding(0);
-            this.lbl_CreatedDate.Name = "lbl_CreatedDate";
-            this.lbl_CreatedDate.Size = new System.Drawing.Size(301, 22);
-            this.lbl_CreatedDate.TabIndex = 18;
-            this.lbl_CreatedDate.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            lbl_CreatedDate.AutoSize = true;
+            lbl_CreatedDate.BackColor = Color.Transparent;
+            lbl_CreatedDate.Dock = DockStyle.Fill;
+            lbl_CreatedDate.Font = new Font("Lucida Sans", 11.25F, FontStyle.Bold);
+            lbl_CreatedDate.ForeColor = Color.FromArgb(255, 235, 156);
+            lbl_CreatedDate.Location = new Point(177, 28);
+            lbl_CreatedDate.Margin = new Padding(0);
+            lbl_CreatedDate.Name = "lbl_CreatedDate";
+            lbl_CreatedDate.Size = new Size(352, 26);
+            lbl_CreatedDate.TabIndex = 18;
+            lbl_CreatedDate.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // lbl_CreatedBy
             // 
-            this.lbl_CreatedBy.AutoSize = true;
-            this.lbl_CreatedBy.BackColor = System.Drawing.Color.Transparent;
-            this.lbl_CreatedBy.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lbl_CreatedBy.Font = new System.Drawing.Font("Lucida Sans", 11.25F, System.Drawing.FontStyle.Bold);
-            this.lbl_CreatedBy.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(235)))), ((int)(((byte)(156)))));
-            this.lbl_CreatedBy.Location = new System.Drawing.Point(152, 1);
-            this.lbl_CreatedBy.Margin = new System.Windows.Forms.Padding(0);
-            this.lbl_CreatedBy.Name = "lbl_CreatedBy";
-            this.lbl_CreatedBy.Size = new System.Drawing.Size(301, 22);
-            this.lbl_CreatedBy.TabIndex = 17;
-            this.lbl_CreatedBy.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            lbl_CreatedBy.AutoSize = true;
+            lbl_CreatedBy.BackColor = Color.Transparent;
+            lbl_CreatedBy.Dock = DockStyle.Fill;
+            lbl_CreatedBy.Font = new Font("Lucida Sans", 11.25F, FontStyle.Bold);
+            lbl_CreatedBy.ForeColor = Color.FromArgb(255, 235, 156);
+            lbl_CreatedBy.Location = new Point(177, 1);
+            lbl_CreatedBy.Margin = new Padding(0);
+            lbl_CreatedBy.Name = "lbl_CreatedBy";
+            lbl_CreatedBy.Size = new Size(352, 26);
+            lbl_CreatedBy.TabIndex = 17;
+            lbl_CreatedBy.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // chb_IsProductionLineNeeded
             // 
-            this.chb_IsProductionLineNeeded.AutoSize = true;
-            this.chb_IsProductionLineNeeded.Font = new System.Drawing.Font("Lucida Sans", 11.25F);
-            this.chb_IsProductionLineNeeded.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(187)))), ((int)(((byte)(215)))), ((int)(((byte)(228)))));
-            this.chb_IsProductionLineNeeded.Location = new System.Drawing.Point(6, 47);
-            this.chb_IsProductionLineNeeded.Name = "chb_IsProductionLineNeeded";
-            this.chb_IsProductionLineNeeded.Size = new System.Drawing.Size(181, 21);
-            this.chb_IsProductionLineNeeded.TabIndex = 10;
-            this.chb_IsProductionLineNeeded.Text = "Multipla Processkort?";
-            this.chb_IsProductionLineNeeded.UseVisualStyleBackColor = true;
+            chb_IsProductionLineNeeded.AutoSize = true;
+            chb_IsProductionLineNeeded.Font = new Font("Lucida Sans", 11.25F);
+            chb_IsProductionLineNeeded.ForeColor = Color.FromArgb(187, 215, 228);
+            chb_IsProductionLineNeeded.Location = new Point(7, 54);
+            chb_IsProductionLineNeeded.Margin = new Padding(4, 3, 4, 3);
+            chb_IsProductionLineNeeded.Name = "chb_IsProductionLineNeeded";
+            chb_IsProductionLineNeeded.Size = new Size(181, 21);
+            chb_IsProductionLineNeeded.TabIndex = 10;
+            chb_IsProductionLineNeeded.Text = "Multipla Processkort?";
+            chb_IsProductionLineNeeded.UseVisualStyleBackColor = true;
             // 
             // tlp_Bottom
             // 
-            this.tlp_Bottom.ColumnCount = 8;
-            this.tlp_Bottom.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 255F));
-            this.tlp_Bottom.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 66F));
-            this.tlp_Bottom.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 49F));
-            this.tlp_Bottom.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 295F));
-            this.tlp_Bottom.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 70F));
-            this.tlp_Bottom.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 105F));
-            this.tlp_Bottom.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 502F));
-            this.tlp_Bottom.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 828F));
-            this.tlp_Bottom.Controls.Add(this.flp_Main, 2, 2);
-            this.tlp_Bottom.Controls.Add(this.dgv_CodeText, 0, 2);
-            this.tlp_Bottom.Controls.Add(this.web_PDF_Viewer, 7, 2);
-            this.tlp_Bottom.Controls.Add(this.flp_ObjectManagement, 1, 2);
-            this.tlp_Bottom.Controls.Add(this.gbx_Module, 0, 0);
-            this.tlp_Bottom.Controls.Add(this.gbx_Protocol_Template, 2, 0);
-            this.tlp_Bottom.Controls.Add(this.gbx_CodeText, 0, 1);
-            this.tlp_Bottom.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tlp_Bottom.Location = new System.Drawing.Point(0, 100);
-            this.tlp_Bottom.Name = "tlp_Bottom";
-            this.tlp_Bottom.Padding = new System.Windows.Forms.Padding(5, 20, 5, 0);
-            this.tlp_Bottom.RowCount = 3;
-            this.tlp_Bottom.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 123F));
-            this.tlp_Bottom.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 98F));
-            this.tlp_Bottom.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 8F));
-            this.tlp_Bottom.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tlp_Bottom.Size = new System.Drawing.Size(2180, 961);
-            this.tlp_Bottom.TabIndex = 875;
+            tlp_Bottom.ColumnCount = 8;
+            tlp_Bottom.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 298F));
+            tlp_Bottom.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 77F));
+            tlp_Bottom.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 57F));
+            tlp_Bottom.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 344F));
+            tlp_Bottom.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 82F));
+            tlp_Bottom.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 122F));
+            tlp_Bottom.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 586F));
+            tlp_Bottom.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 966F));
+            tlp_Bottom.Controls.Add(flp_Main, 2, 2);
+            tlp_Bottom.Controls.Add(dgv_CodeText, 0, 3);
+            tlp_Bottom.Controls.Add(web_PDF_Viewer, 7, 2);
+            tlp_Bottom.Controls.Add(flp_ObjectManagement, 1, 2);
+            tlp_Bottom.Controls.Add(gbx_Module, 0, 0);
+            tlp_Bottom.Controls.Add(gbx_Protocol_Template, 2, 0);
+            tlp_Bottom.Controls.Add(gbx_CodeText, 0, 1);
+            tlp_Bottom.Dock = DockStyle.Fill;
+            tlp_Bottom.Location = new Point(0, 115);
+            tlp_Bottom.Margin = new Padding(4, 3, 4, 3);
+            tlp_Bottom.Name = "tlp_Bottom";
+            tlp_Bottom.Padding = new Padding(6, 23, 6, 0);
+            tlp_Bottom.RowCount = 4;
+            tlp_Bottom.RowStyles.Add(new RowStyle(SizeType.Absolute, 142F));
+            tlp_Bottom.RowStyles.Add(new RowStyle(SizeType.Absolute, 119F));
+            tlp_Bottom.RowStyles.Add(new RowStyle(SizeType.Absolute, 70F));
+            tlp_Bottom.RowStyles.Add(new RowStyle(SizeType.Absolute, 25F));
+            tlp_Bottom.Size = new Size(2543, 1109);
+            tlp_Bottom.TabIndex = 875;
             // 
             // web_PDF_Viewer
             // 
-            this.web_PDF_Viewer.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.web_PDF_Viewer.Location = new System.Drawing.Point(1350, 244);
-            this.web_PDF_Viewer.MinimumSize = new System.Drawing.Size(20, 20);
-            this.web_PDF_Viewer.Name = "web_PDF_Viewer";
-            this.web_PDF_Viewer.Size = new System.Drawing.Size(822, 714);
-            this.web_PDF_Viewer.TabIndex = 16;
+            web_PDF_Viewer.Dock = DockStyle.Fill;
+            web_PDF_Viewer.Location = new Point(1576, 287);
+            web_PDF_Viewer.Margin = new Padding(4, 3, 4, 3);
+            web_PDF_Viewer.MinimumSize = new Size(23, 23);
+            web_PDF_Viewer.Name = "web_PDF_Viewer";
+            tlp_Bottom.SetRowSpan(web_PDF_Viewer, 2);
+            web_PDF_Viewer.Size = new Size(958, 819);
+            web_PDF_Viewer.TabIndex = 16;
             // 
             // flp_ObjectManagement
             // 
-            this.flp_ObjectManagement.Controls.Add(this.label_Buttons_Module);
-            this.flp_ObjectManagement.Controls.Add(this.pb_RenameModule);
-            this.flp_ObjectManagement.Controls.Add(this.btn_ModuleUp);
-            this.flp_ObjectManagement.Controls.Add(this.btn_ModuleDown);
-            this.flp_ObjectManagement.Controls.Add(this.btn_DeleteModule);
-            this.flp_ObjectManagement.Controls.Add(this.label_Buttons_CodeText);
-            this.flp_ObjectManagement.Controls.Add(this.btn_CodeTextUp);
-            this.flp_ObjectManagement.Controls.Add(this.btn_CodeTextDown);
-            this.flp_ObjectManagement.Controls.Add(this.btn_DeleteCodeText);
-            this.flp_ObjectManagement.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flp_ObjectManagement.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flp_ObjectManagement.Location = new System.Drawing.Point(260, 241);
-            this.flp_ObjectManagement.Margin = new System.Windows.Forms.Padding(0);
-            this.flp_ObjectManagement.Name = "flp_ObjectManagement";
-            this.flp_ObjectManagement.Size = new System.Drawing.Size(66, 720);
-            this.flp_ObjectManagement.TabIndex = 17;
+            flp_ObjectManagement.Controls.Add(label_Buttons_Module);
+            flp_ObjectManagement.Controls.Add(pb_RenameModule);
+            flp_ObjectManagement.Controls.Add(btn_ModuleUp);
+            flp_ObjectManagement.Controls.Add(btn_ModuleDown);
+            flp_ObjectManagement.Controls.Add(btn_DeleteModule);
+            flp_ObjectManagement.Controls.Add(label_Buttons_CodeText);
+            flp_ObjectManagement.Controls.Add(btn_CodeTextUp);
+            flp_ObjectManagement.Controls.Add(btn_CodeTextDown);
+            flp_ObjectManagement.Controls.Add(btn_DeleteCodeText);
+            flp_ObjectManagement.Dock = DockStyle.Fill;
+            flp_ObjectManagement.FlowDirection = FlowDirection.TopDown;
+            flp_ObjectManagement.Location = new Point(304, 284);
+            flp_ObjectManagement.Margin = new Padding(0);
+            flp_ObjectManagement.Name = "flp_ObjectManagement";
+            tlp_Bottom.SetRowSpan(flp_ObjectManagement, 2);
+            flp_ObjectManagement.Size = new Size(77, 825);
+            flp_ObjectManagement.TabIndex = 17;
             // 
             // gbx_Module
             // 
-            this.gbx_Module.Controls.Add(this.btn_NewModule);
-            this.gbx_Module.Controls.Add(this.label_ModuleName);
-            this.gbx_Module.Controls.Add(this.tb_ModuleName);
-            this.gbx_Module.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.gbx_Module.Font = new System.Drawing.Font("Lucida Sans", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.gbx_Module.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(239)))), ((int)(((byte)(228)))), ((int)(((byte)(177)))));
-            this.gbx_Module.Location = new System.Drawing.Point(5, 20);
-            this.gbx_Module.Margin = new System.Windows.Forms.Padding(0);
-            this.gbx_Module.Name = "gbx_Module";
-            this.gbx_Module.Size = new System.Drawing.Size(255, 123);
-            this.gbx_Module.TabIndex = 18;
-            this.gbx_Module.TabStop = false;
-            this.gbx_Module.Text = "Modul";
+            gbx_Module.Controls.Add(btn_NewModule);
+            gbx_Module.Controls.Add(label_ModuleName);
+            gbx_Module.Controls.Add(tb_ModuleName);
+            gbx_Module.Dock = DockStyle.Fill;
+            gbx_Module.Font = new Font("Lucida Sans", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            gbx_Module.ForeColor = Color.FromArgb(239, 228, 177);
+            gbx_Module.Location = new Point(6, 23);
+            gbx_Module.Margin = new Padding(0);
+            gbx_Module.Name = "gbx_Module";
+            gbx_Module.Padding = new Padding(4, 3, 4, 3);
+            gbx_Module.Size = new Size(298, 142);
+            gbx_Module.TabIndex = 18;
+            gbx_Module.TabStop = false;
+            gbx_Module.Text = "Modul";
             // 
             // gbx_Protocol_Template
             // 
-            this.tlp_Bottom.SetColumnSpan(this.gbx_Protocol_Template, 5);
-            this.gbx_Protocol_Template.Controls.Add(this.tb_Workoperation);
-            this.gbx_Protocol_Template.Controls.Add(this.label_Revision);
-            this.gbx_Protocol_Template.Controls.Add(this.chb_IsUsingPreFab);
-            this.gbx_Protocol_Template.Controls.Add(this.cb_TemplateRevision);
-            this.gbx_Protocol_Template.Controls.Add(this.chb_IsProductionLineNeeded);
-            this.gbx_Protocol_Template.Controls.Add(this.cb_LineClearance_Revision);
-            this.gbx_Protocol_Template.Controls.Add(this.cb_TemplateName);
-            this.gbx_Protocol_Template.Controls.Add(this.label_LineClearanceTemplate);
-            this.gbx_Protocol_Template.Controls.Add(this.cb_MainInfo_Template);
-            this.gbx_Protocol_Template.Controls.Add(this.btn_NewRevision);
-            this.gbx_Protocol_Template.Controls.Add(this.label_MainInfoTemplate);
-            this.gbx_Protocol_Template.Controls.Add(this.label_TemplateName);
-            this.gbx_Protocol_Template.Controls.Add(this.label_WorkoperationName);
-            this.gbx_Protocol_Template.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.gbx_Protocol_Template.Font = new System.Drawing.Font("Lucida Sans", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.gbx_Protocol_Template.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(239)))), ((int)(((byte)(228)))), ((int)(((byte)(177)))));
-            this.gbx_Protocol_Template.Location = new System.Drawing.Point(326, 20);
-            this.gbx_Protocol_Template.Margin = new System.Windows.Forms.Padding(0);
-            this.gbx_Protocol_Template.Name = "gbx_Protocol_Template";
-            this.tlp_Bottom.SetRowSpan(this.gbx_Protocol_Template, 2);
-            this.gbx_Protocol_Template.Size = new System.Drawing.Size(1021, 221);
-            this.gbx_Protocol_Template.TabIndex = 19;
-            this.gbx_Protocol_Template.TabStop = false;
-            this.gbx_Protocol_Template.Text = "Protokoll Mall";
+            tlp_Bottom.SetColumnSpan(gbx_Protocol_Template, 5);
+            gbx_Protocol_Template.Controls.Add(tb_Workoperation);
+            gbx_Protocol_Template.Controls.Add(label_Revision);
+            gbx_Protocol_Template.Controls.Add(chb_IsUsingPreFab);
+            gbx_Protocol_Template.Controls.Add(cb_TemplateRevision);
+            gbx_Protocol_Template.Controls.Add(chb_IsProductionLineNeeded);
+            gbx_Protocol_Template.Controls.Add(cb_LineClearance_Revision);
+            gbx_Protocol_Template.Controls.Add(cb_TemplateName);
+            gbx_Protocol_Template.Controls.Add(label_LineClearanceTemplate);
+            gbx_Protocol_Template.Controls.Add(cb_MainInfo_Template);
+            gbx_Protocol_Template.Controls.Add(btn_NewRevision);
+            gbx_Protocol_Template.Controls.Add(label_MainInfoTemplate);
+            gbx_Protocol_Template.Controls.Add(label_TemplateName);
+            gbx_Protocol_Template.Controls.Add(label_WorkoperationName);
+            gbx_Protocol_Template.Dock = DockStyle.Fill;
+            gbx_Protocol_Template.Font = new Font("Lucida Sans", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            gbx_Protocol_Template.ForeColor = Color.FromArgb(239, 228, 177);
+            gbx_Protocol_Template.Location = new Point(381, 23);
+            gbx_Protocol_Template.Margin = new Padding(0);
+            gbx_Protocol_Template.Name = "gbx_Protocol_Template";
+            gbx_Protocol_Template.Padding = new Padding(4, 3, 4, 3);
+            tlp_Bottom.SetRowSpan(gbx_Protocol_Template, 2);
+            gbx_Protocol_Template.Size = new Size(1191, 261);
+            gbx_Protocol_Template.TabIndex = 19;
+            gbx_Protocol_Template.TabStop = false;
+            gbx_Protocol_Template.Text = "Protokoll Mall";
             // 
             // tb_Workoperation
             // 
-            this.tb_Workoperation.Location = new System.Drawing.Point(526, 193);
-            this.tb_Workoperation.Name = "tb_Workoperation";
-            this.tb_Workoperation.Size = new System.Drawing.Size(492, 23);
-            this.tb_Workoperation.TabIndex = 15;
-            this.tb_Workoperation.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Workoperation_MouseDown);
+            tb_Workoperation.Location = new Point(614, 223);
+            tb_Workoperation.Margin = new Padding(4, 3, 4, 3);
+            tb_Workoperation.Name = "tb_Workoperation";
+            tb_Workoperation.Size = new Size(573, 23);
+            tb_Workoperation.TabIndex = 15;
+            tb_Workoperation.MouseDown += Workoperation_MouseDown;
             // 
             // gbx_CodeText
             // 
-            this.gbx_CodeText.Controls.Add(this.label_FilterCodeText);
-            this.gbx_CodeText.Controls.Add(this.tb_FilterCodeText);
-            this.gbx_CodeText.Font = new System.Drawing.Font("Lucida Sans", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.gbx_CodeText.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(239)))), ((int)(((byte)(228)))), ((int)(((byte)(177)))));
-            this.gbx_CodeText.Location = new System.Drawing.Point(5, 143);
-            this.gbx_CodeText.Margin = new System.Windows.Forms.Padding(0);
-            this.gbx_CodeText.Name = "gbx_CodeText";
-            this.gbx_CodeText.Size = new System.Drawing.Size(255, 88);
-            this.gbx_CodeText.TabIndex = 19;
-            this.gbx_CodeText.TabStop = false;
-            this.gbx_CodeText.Text = "Processparametrar/Enhet";
+            gbx_CodeText.Controls.Add(tb_NewUnit);
+            gbx_CodeText.Controls.Add(tb_NewCodeText);
+            gbx_CodeText.Controls.Add(btn_AddCodeText);
+            gbx_CodeText.Controls.Add(label_FilterCodeText);
+            gbx_CodeText.Controls.Add(tb_FilterCodeText);
+            gbx_CodeText.Dock = DockStyle.Fill;
+            gbx_CodeText.Font = new Font("Lucida Sans", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            gbx_CodeText.ForeColor = Color.FromArgb(239, 228, 177);
+            gbx_CodeText.Location = new Point(6, 165);
+            gbx_CodeText.Margin = new Padding(0);
+            gbx_CodeText.Name = "gbx_CodeText";
+            gbx_CodeText.Padding = new Padding(4, 3, 4, 3);
+            tlp_Bottom.SetRowSpan(gbx_CodeText, 2);
+            gbx_CodeText.Size = new Size(298, 189);
+            gbx_CodeText.TabIndex = 19;
+            gbx_CodeText.TabStop = false;
+            gbx_CodeText.Text = "Processparametrar/Enhet";
+            // 
+            // tb_NewUnit
+            // 
+            tb_NewUnit.Font = new Font("Lucida Sans", 8.25F);
+            tb_NewUnit.Location = new Point(209, 155);
+            tb_NewUnit.Margin = new Padding(1, 0, 0, 0);
+            tb_NewUnit.Multiline = true;
+            tb_NewUnit.Name = "tb_NewUnit";
+            tb_NewUnit.Size = new Size(85, 28);
+            tb_NewUnit.TabIndex = 14;
+            tb_NewUnit.Enter += NewUnit_Enter;
+            // 
+            // tb_NewCodeText
+            // 
+            tb_NewCodeText.Font = new Font("Lucida Sans", 8.25F);
+            tb_NewCodeText.Location = new Point(5, 155);
+            tb_NewCodeText.Margin = new Padding(1, 0, 0, 0);
+            tb_NewCodeText.Multiline = true;
+            tb_NewCodeText.Name = "tb_NewCodeText";
+            tb_NewCodeText.Size = new Size(203, 28);
+            tb_NewCodeText.TabIndex = 13;
+            tb_NewCodeText.Enter += NewCodeText_Enter;
+            // 
+            // btn_AddCodeText
+            // 
+            btn_AddCodeText.BackColor = Color.FromArgb(185, 188, 189);
+            btn_AddCodeText.Cursor = Cursors.Hand;
+            btn_AddCodeText.FlatStyle = FlatStyle.Flat;
+            btn_AddCodeText.Font = new Font("Lucida Sans", 10.25F);
+            btn_AddCodeText.ForeColor = Color.FromArgb(63, 116, 140);
+            btn_AddCodeText.Location = new Point(4, 115);
+            btn_AddCodeText.Margin = new Padding(0);
+            btn_AddCodeText.Name = "btn_AddCodeText";
+            btn_AddCodeText.Size = new Size(290, 35);
+            btn_AddCodeText.TabIndex = 12;
+            btn_AddCodeText.Text = "Lägg till Parameter/enhet";
+            btn_AddCodeText.UseVisualStyleBackColor = false;
+            btn_AddCodeText.Click += AddNewCodeText_Unit_Click;
             // 
             // tlp_Top
             // 
-            this.tlp_Top.ColumnCount = 3;
-            this.tlp_Top.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 250F));
-            this.tlp_Top.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 250F));
-            this.tlp_Top.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tlp_Top.Controls.Add(this.tlp_ExtraInfo, 2, 0);
-            this.tlp_Top.Controls.Add(this.btn_PreviewTemplate, 1, 2);
-            this.tlp_Top.Controls.Add(this.btn_ConnectPartNr_NewRevision, 1, 1);
-            this.tlp_Top.Controls.Add(this.btn_DeleteTemplate, 0, 2);
-            this.tlp_Top.Controls.Add(this.btn_SaveNewTemplate, 0, 0);
-            this.tlp_Top.Controls.Add(this.btn_UpdateTemplate, 0, 1);
-            this.tlp_Top.Controls.Add(this.btn_ConnectPartNr_NewTemplate, 1, 0);
-            this.tlp_Top.Dock = System.Windows.Forms.DockStyle.Top;
-            this.tlp_Top.Location = new System.Drawing.Point(0, 0);
-            this.tlp_Top.Name = "tlp_Top";
-            this.tlp_Top.Padding = new System.Windows.Forms.Padding(0, 5, 0, 0);
-            this.tlp_Top.RowCount = 3;
-            this.tlp_Top.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tlp_Top.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tlp_Top.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tlp_Top.Size = new System.Drawing.Size(2180, 100);
-            this.tlp_Top.TabIndex = 877;
+            tlp_Top.ColumnCount = 3;
+            tlp_Top.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 292F));
+            tlp_Top.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 292F));
+            tlp_Top.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 23F));
+            tlp_Top.Controls.Add(tlp_ExtraInfo, 2, 0);
+            tlp_Top.Controls.Add(btn_PreviewTemplate, 1, 2);
+            tlp_Top.Controls.Add(btn_ConnectPartNr_NewRevision, 1, 1);
+            tlp_Top.Controls.Add(btn_DeleteTemplate, 0, 2);
+            tlp_Top.Controls.Add(btn_SaveNewTemplate, 0, 0);
+            tlp_Top.Controls.Add(btn_UpdateTemplate, 0, 1);
+            tlp_Top.Controls.Add(btn_ConnectPartNr_NewTemplate, 1, 0);
+            tlp_Top.Dock = DockStyle.Top;
+            tlp_Top.Location = new Point(0, 0);
+            tlp_Top.Margin = new Padding(4, 3, 4, 3);
+            tlp_Top.Name = "tlp_Top";
+            tlp_Top.Padding = new Padding(0, 6, 0, 0);
+            tlp_Top.RowCount = 3;
+            tlp_Top.RowStyles.Add(new RowStyle(SizeType.Percent, 33.33333F));
+            tlp_Top.RowStyles.Add(new RowStyle(SizeType.Percent, 33.33333F));
+            tlp_Top.RowStyles.Add(new RowStyle(SizeType.Percent, 33.33333F));
+            tlp_Top.Size = new Size(2543, 115);
+            tlp_Top.TabIndex = 877;
             // 
             // Templates_Protocol
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.AutoScroll = true;
-            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(6)))), ((int)(((byte)(81)))), ((int)(((byte)(87)))));
-            this.ClientSize = new System.Drawing.Size(2180, 1061);
-            this.Controls.Add(this.tlp_Bottom);
-            this.Controls.Add(this.tlp_Top);
-            this.Name = "Templates_Protocol";
-            this.Text = "Manage Templates";
-            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
-            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Manage_Templates_FormClosed);
-            this.Load += new System.EventHandler(this.Manage_Templates_Load);
-            this.Resize += new System.EventHandler(this.Manage_Templates_Resize);
-            ((System.ComponentModel.ISupportInitialize)(this.dgv_CodeText)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pb_RenameModule)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.btn_CodeTextUp)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.btn_CodeTextDown)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.btn_ModuleUp)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.btn_ModuleDown)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.btn_DeleteCodeText)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.btn_DeleteModule)).EndInit();
-            this.tlp_ExtraInfo.ResumeLayout(false);
-            this.tlp_ExtraInfo.PerformLayout();
-            this.tlp_Bottom.ResumeLayout(false);
-            this.flp_ObjectManagement.ResumeLayout(false);
-            this.flp_ObjectManagement.PerformLayout();
-            this.gbx_Module.ResumeLayout(false);
-            this.gbx_Module.PerformLayout();
-            this.gbx_Protocol_Template.ResumeLayout(false);
-            this.gbx_Protocol_Template.PerformLayout();
-            this.gbx_CodeText.ResumeLayout(false);
-            this.gbx_CodeText.PerformLayout();
-            this.tlp_Top.ResumeLayout(false);
-            this.ResumeLayout(false);
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            AutoScroll = true;
+            BackColor = Color.FromArgb(6, 81, 87);
+            ClientSize = new Size(2543, 1224);
+            Controls.Add(tlp_Bottom);
+            Controls.Add(tlp_Top);
+            Margin = new Padding(4, 3, 4, 3);
+            Name = "Templates_Protocol";
+            Text = "Manage Templates";
+            WindowState = FormWindowState.Maximized;
+            FormClosed += Manage_Templates_FormClosed;
+            Load += Manage_Templates_Load;
+            Resize += Manage_Templates_Resize;
+            ((ISupportInitialize)dgv_CodeText).EndInit();
+            ((ISupportInitialize)pb_RenameModule).EndInit();
+            ((ISupportInitialize)btn_CodeTextUp).EndInit();
+            ((ISupportInitialize)btn_CodeTextDown).EndInit();
+            ((ISupportInitialize)btn_ModuleUp).EndInit();
+            ((ISupportInitialize)btn_ModuleDown).EndInit();
+            ((ISupportInitialize)btn_DeleteCodeText).EndInit();
+            ((ISupportInitialize)btn_DeleteModule).EndInit();
+            tlp_ExtraInfo.ResumeLayout(false);
+            tlp_ExtraInfo.PerformLayout();
+            tlp_Bottom.ResumeLayout(false);
+            flp_ObjectManagement.ResumeLayout(false);
+            flp_ObjectManagement.PerformLayout();
+            gbx_Module.ResumeLayout(false);
+            gbx_Module.PerformLayout();
+            gbx_Protocol_Template.ResumeLayout(false);
+            gbx_Protocol_Template.PerformLayout();
+            gbx_CodeText.ResumeLayout(false);
+            gbx_CodeText.PerformLayout();
+            tlp_Top.ResumeLayout(false);
+            ResumeLayout(false);
 
         }
 
@@ -931,5 +989,8 @@ namespace DigitalProductionProgram.Templates
         private GroupBox gbx_Protocol_Template;
         private GroupBox gbx_CodeText;
         private TextBox tb_Workoperation;
+        private TextBox tb_NewUnit;
+        private TextBox tb_NewCodeText;
+        private Button btn_AddCodeText;
     }
 }

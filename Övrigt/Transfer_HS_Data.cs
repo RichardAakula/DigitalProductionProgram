@@ -12,7 +12,7 @@ using DigitalProductionProgram.Monitor.GET;
 
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.PrintingServices;
-using ProgressBar = DigitalProductionProgram.ControlsManagement.ProgressBar;
+using ProgressBar = DigitalProductionProgram.ControlsManagement.CustomProgressBar;
 
 namespace DigitalProductionProgram.Övrigt
 {
@@ -381,10 +381,12 @@ namespace DigitalProductionProgram.Övrigt
                 File.WriteAllText(saveFile.FileName, sb.ToString());
                 InfoText.Question(LanguageManager.GetString("transferDataExcel_1"), CustomColors.InfoText_Color.Info, "Open file?");
                 if (InfoText.answer == InfoText.Answer.Yes)
-                    Process.Start(saveFile.FileName);
+                    Process.Start(new ProcessStartInfo
+                    {
+                        FileName = saveFile.FileName,
+                        UseShellExecute = true
+                    });
             }
-
-
 
         }
         public static class Get_QuoteData

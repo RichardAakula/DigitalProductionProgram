@@ -27,8 +27,6 @@ namespace DigitalProductionProgram.MainWindow
     public partial class Main_Buttons : UserControl
     {
         private Color color_FButton;
-        private bool IsArtikelCompound;
-
 
         public Main_Buttons()
         {
@@ -137,8 +135,8 @@ namespace DigitalProductionProgram.MainWindow
                 }
 
                 Frequency_Marking.Visible = FrequencyMarking.IsLäcksökning;
-                IsArtikelCompound = Part.IsPartNrSpecial("Kompoundering");
-                if (IsArtikelCompound)
+                Part.SetPartNrSpecial("Kompoundering");
+                if (Part.IsPartNrSpecial)
                     Change_GUI_Show_Compund();
             }
         }
@@ -240,7 +238,7 @@ namespace DigitalProductionProgram.MainWindow
         }
         public void F4_SearchOldProtocols(object sender, EventArgs? e)
         {
-            Browse_Protocols.Browse_Protocols.Is_BrowsingProtocols = true;
+            
             if (BrowseOldOrders.Visible == false)
                 return;
 
@@ -279,7 +277,7 @@ namespace DigitalProductionProgram.MainWindow
                 case Manage_WorkOperation.WorkOperations.Spolning_PTFE:
                 case Manage_WorkOperation.WorkOperations.Svetsning:
                 case Manage_WorkOperation.WorkOperations.Synergy_PTFE:
-                   
+                    Browse_Protocols.Browse_Protocols.Is_BrowsingProtocols = true;
                     var bp = new Browse_Protocols.Browse_Protocols(Order.PartNumber);
                     var cs = Screen.FromControl(this);
                     bp.Location = cs.WorkingArea.Location;

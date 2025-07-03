@@ -589,8 +589,7 @@ namespace DigitalProductionProgram.Measure
                     .DefaultIfEmpty(0)  // Prevents "Sequence contains no elements"
                     .Max();
 
-
-                if (Part.IsPartNrSpecial("Spolning Special Mätprotokoll"))
+                if (Part.IsPartNrSpecial)
                 {
                     if (Is4LastMeasuresSameSpool)
                         numeric.Value = maxValue + 1;

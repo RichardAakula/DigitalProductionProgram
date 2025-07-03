@@ -15,7 +15,7 @@ namespace DigitalProductionProgram.Equipment
         {
                 var list = new List<string>();
                 using var con = new SqlConnection(Database.cs_Protocol);
-                const string query = @"SELECT DISTINCT textvalue
+                const string query = @"SELECT DISTINCT TextValue
                     FROM [Order].Data WHERE ProtocolDescriptionID = 10";
                 con.Open();
                 var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
@@ -27,7 +27,6 @@ namespace DigitalProductionProgram.Equipment
                     list.Add(reader[0].ToString());
                 return list;
         }
-       
       
         public static List<string?> Extruders(string codetext, int? orderid = 0)
         {
@@ -78,17 +77,15 @@ namespace DigitalProductionProgram.Equipment
             get
             {
                 var list = new List<string>();
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    var query = @"
+                using var con = new SqlConnection(Database.cs_Protocol);
+                var query = @"
                         SELECT DISTINCT TextValue
                         FROM [Order].Data WHERE ProtocolDescriptionID = 73";
-                    con.Open();
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    var reader = cmd.ExecuteReader();
-                    while (reader.Read())
-                        list.Add(reader[0].ToString());
-                }
+                con.Open();
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                var reader = cmd.ExecuteReader();
+                while (reader.Read())
+                    list.Add(reader[0].ToString());
                 return list;
             }
         }
@@ -97,19 +94,17 @@ namespace DigitalProductionProgram.Equipment
             get
             {
                 var list = new List<string>();
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    //ProtocolDescriptionID 159 = HS MASKIN
-                    var query = @"
+                using var con = new SqlConnection(Database.cs_Protocol);
+                //ProtocolDescriptionID 159 = HS MASKIN
+                var query = @"
                         SELECT DISTINCT TextValue 
                         FROM [Order].Data WHERE ProtocolDescriptionID = 159";
 
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    con.Open();
-                    var reader = cmd.ExecuteReader();
-                    while (reader.Read())
-                        list.Add(reader[0].ToString());
-                }
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                con.Open();
+                var reader = cmd.ExecuteReader();
+                while (reader.Read())
+                    list.Add(reader[0].ToString());
                 return list;
 
             }
@@ -118,20 +113,17 @@ namespace DigitalProductionProgram.Equipment
         {
             get
             {
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    const string query = @"SELECT DISTINCT ProdLine FROM [Order].MainData 
+                using var con = new SqlConnection(Database.cs_Protocol);
+                const string query = @"SELECT DISTINCT ProdLine FROM [Order].MainData 
                                 ORDER BY ProdLine";
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    con.Open();
-                    var reader = cmd.ExecuteReader();
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                con.Open();
+                var reader = cmd.ExecuteReader();
 
-                    var list = new List<string>();
-                    while (reader.Read())
-                        list.Add(reader[0].ToString());
-                    return list;
-
-                }
+                var list = new List<string>();
+                while (reader.Read())
+                    list.Add(reader[0].ToString());
+                return list;
             }
         }
 
@@ -141,21 +133,19 @@ namespace DigitalProductionProgram.Equipment
             {
                 if (Order.OrderID is null)
                     return string.Empty;
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                { 
-                    const string query = @"
+                using var con = new SqlConnection(Database.cs_Protocol);
+                const string query = @"
                         SELECT TextValue 
                         FROM [Order].Data 
                         WHERE OrderID = @orderid 
                             AND ProtocolDescriptionID = 159
                             AND Uppstart = 1";
 
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
-                    con.Open();
-                    var value = cmd.ExecuteScalar();
-                    return value is null ? string.Empty : value.ToString();
-                }
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
+                con.Open();
+                var value = cmd.ExecuteScalar();
+                return value is null ? string.Empty : value.ToString();
             }
         }
 

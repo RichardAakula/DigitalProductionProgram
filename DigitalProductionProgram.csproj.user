@@ -10,6 +10,9 @@
     <Compile Update="Browse_Protocols\OrderList.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Update="ControlsManagement\BetaOverlayForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="ControlsManagement\ProgressBar.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -330,6 +333,9 @@
     </Compile>
     <Compile Update="User\ProfileCard.cs">
       <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="User\ResetPassword.cs">
+      <SubType>Form</SubType>
     </Compile>
     <Compile Update="User\UserPoll.cs">
       <SubType>Form</SubType>

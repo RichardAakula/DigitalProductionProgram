@@ -265,7 +265,7 @@ namespace DigitalProductionProgram.Templates
                 var revNr = reader["RevNr"].ToString();
                 var latestRevNr = reader["LatestRev"].ToString();
                 var isLatestRevNrSelected = Convert.ToBoolean(reader["LatestRevSelected"]);
-                var isActive = Convert.ToBoolean(reader["Aktiv"]);
+                var isActive = Convert.ToInt32(reader["Aktiv"]) == 1;
 
                 Add_Button_Processcard(text, Order.WorkOperation.ToString(), prodType, prodLine, revNr, partid, partGroupID, !IsOperatorStartingOrder, true, latestRevNr, isLatestRevNrSelected, isActive);
             }

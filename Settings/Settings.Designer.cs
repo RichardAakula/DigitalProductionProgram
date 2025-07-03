@@ -33,9 +33,6 @@ namespace DigitalProductionProgram.Settings
         private void InitializeComponent()
         {
             components = new Container();
-            System.Text.ASCIIEncoding asciiEncodingSealed1 = new System.Text.ASCIIEncoding();
-            System.Text.DecoderReplacementFallback decoderReplacementFallback1 = new System.Text.DecoderReplacementFallback();
-            System.Text.EncoderReplacementFallback encoderReplacementFallback1 = new System.Text.EncoderReplacementFallback();
             DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             ComponentResourceManager resources = new ComponentResourceManager(typeof(Settings));
@@ -48,7 +45,6 @@ namespace DigitalProductionProgram.Settings
             DataGridViewCellStyle dataGridViewCellStyle9 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle10 = new DataGridViewCellStyle();
             folder_Sökväg = new FolderBrowserDialog();
-            serialPort1 = new SerialPort(components);
             timer_AddPoints = new System.Windows.Forms.Timer(components);
             page_Measureinstruments = new TabPage();
             tlp_Main = new TableLayoutPanel();
@@ -132,28 +128,6 @@ namespace DigitalProductionProgram.Settings
             // folder_Sökväg
             // 
             folder_Sökväg.SelectedPath = "K:\\";
-            // 
-            // serialPort1
-            // 
-            serialPort1.BaudRate = 9600;
-            serialPort1.DataBits = 8;
-            serialPort1.DiscardNull = false;
-            serialPort1.DtrEnable = false;
-           // asciiEncodingSealed1.DecoderFallback = decoderReplacementFallback1;
-           // asciiEncodingSealed1.EncoderFallback = encoderReplacementFallback1;
-            serialPort1.Encoding = asciiEncodingSealed1;
-            serialPort1.Handshake = Handshake.XOnXOff;
-            serialPort1.NewLine = "\n";
-            serialPort1.Parity = Parity.Even;
-            serialPort1.ParityReplace = 63;
-            serialPort1.PortName = "COM1";
-            serialPort1.ReadBufferSize = 4096;
-            serialPort1.ReadTimeout = -1;
-            serialPort1.ReceivedBytesThreshold = 1;
-            serialPort1.RtsEnable = false;
-            serialPort1.StopBits = StopBits.One;
-            serialPort1.WriteBufferSize = 2048;
-            serialPort1.WriteTimeout = -1;
             // 
             // timer_AddPoints
             // 
@@ -497,6 +471,7 @@ namespace DigitalProductionProgram.Settings
             dgv_Parts_Description.RowHeadersVisible = false;
             tlp_SpecialParts.SetRowSpan(dgv_Parts_Description, 5);
             dgv_Parts_Description.RowTemplate.Height = 24;
+            dgv_Parts_Description.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgv_Parts_Description.Size = new Size(420, 537);
             dgv_Parts_Description.TabIndex = 874;
             // 
@@ -1132,7 +1107,6 @@ namespace DigitalProductionProgram.Settings
         #endregion
 
         private FolderBrowserDialog folder_Sökväg;
-        private SerialPort serialPort1;
         private System.Windows.Forms.Timer timer_AddPoints;
         private TabPage page_Measureinstruments;
         private TableLayoutPanel tlp_Main;

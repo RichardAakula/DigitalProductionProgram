@@ -41,7 +41,7 @@ namespace DigitalProductionProgram.Protocols.Kragning_TEF
 
             using var con = new SqlConnection(Database.cs_Protocol);
             var query = @"
-                    SELECT DISTINCT codetext, unit, RowIndex, ColumnIndex, template.Type, template.Decimals
+                    SELECT DISTINCT CodeText, RowIndex, ColumnIndex, template.Type, template.Decimals
                     FROM Protocol.Template as template
 	                    JOIN Protocol.Description as descr
 		                    ON descr.Id = template.ProtocolDescriptionID
@@ -60,18 +60,18 @@ namespace DigitalProductionProgram.Protocols.Kragning_TEF
                 int.TryParse(reader["ColumnIndex"].ToString(), out var col);
                 int.TryParse(reader["Type"].ToString(), out var type);
                 int.TryParse(reader["Decimals"].ToString(), out var decimals);
-                switch (type)
-                {
-                    case 0: //NumberValue
-                        if (decimals > 0)
-                            Processcard.Rows_double.Add(row);
-                        else
-                            Processcard.Rows_int.Add(row);
-                        break;
-                    case 1: //TextValue
-                        Processcard.Rows_string.Add(row);
-                        break;
-                }
+               // switch (type)
+              //  {
+                    //case 0: //NumberValue
+                    //    if (decimals > 0)
+                    //        Processcard.Rows_double.Add(row);
+                    //    else
+                    //        Processcard.Rows_int.Add(row);
+                    //    break;
+                    //case 1: //TextValue
+                    //    Processcard.Rows_string.Add(row);
+                    //    break;
+               // }
                 switch (col)
                 {
                     case 0://MIN

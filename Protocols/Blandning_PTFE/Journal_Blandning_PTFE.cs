@@ -70,13 +70,20 @@ namespace DigitalProductionProgram.Protocols.Blandning_PTFE
             using (var con = new SqlConnection(Database.cs_Protocol))
             {
                 var query = @"
-                    SELECT DISTINCT CodeText, Unit, RowIndex, ColumnIndex, template.Type, template.Decimals
-                    FROM Protocol.Template as template
-	                    JOIN Protocol.Description as descr
-		                    ON descr.Id = template.ProtocolDescriptionID
-                    WHERE FormTemplateID = @formtemplateid
-                        --AND revision = (SELECT ProtocolTemplateRevision FROM [Order].MainData WHERE OrderID = @orderid)
-                    ORDER BY ColumnIndex";
+                SELECT DISTINCT 
+                    descr.CodeText, 
+                    unit.UnitName AS Unit,
+                    template.RowIndex, 
+                    template.ColumnIndex, 
+                    template.Type, 
+                    template.Decimals
+                FROM Protocol.Template AS template
+                JOIN Protocol.Description AS descr 
+                    ON descr.Id = template.ProtocolDescriptionID
+                LEFT JOIN Protocol.Unit AS unit 
+                    ON unit.Id = descr.UnitID
+                WHERE template.FormTemplateID = @formtemplateid
+                ORDER BY template.ColumnIndex";
                 con.Open();
                 var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@formtemplateid", 16);
@@ -113,7 +120,7 @@ namespace DigitalProductionProgram.Protocols.Blandning_PTFE
 
         private void Hide_Pigment_Columns()
         {
-            if (Part.IsPartNrSpecial("Blandning Pigment") == false)
+            if (Part.IsPartNrSpecial == false)
             {
                 int[] columns = { 4, 6, 9 };
                 foreach (var column in columns)

@@ -20,7 +20,7 @@ using DigitalProductionProgram.Protocols.MainInfo;
 using DigitalProductionProgram.Protocols.Protocol;
 using DigitalProductionProgram.Templates;
 using DigitalProductionProgram.User;
-using ProgressBar = DigitalProductionProgram.ControlsManagement.ProgressBar;
+using ProgressBar = DigitalProductionProgram.ControlsManagement.CustomProgressBar;
 
 namespace DigitalProductionProgram.Processcards
 {
@@ -270,7 +270,6 @@ namespace DigitalProductionProgram.Processcards
             Set_Height_tlp_Protocol();
 
             ProcesscardBasedOn.lbl_RevNr.Click += RevNrChanged;
-            this.SizeChanged += (s, e) => Change_Width();
         }
 
        
@@ -685,34 +684,6 @@ namespace DigitalProductionProgram.Processcards
         }
 
 
-        //private void ClearTemplate()
-        //{
-        //    tlp_Machines.Controls.Clear();
-        //    if (tlp_Machines.ColumnCount > 1)
-        //    {
-        //        int columnToRemove = tlp_Machines.ColumnCount - 1;
-
-        //        // 1. Ta bort kontroller i kolumnen
-        //        for (int i = tlp_Machines.Controls.Count - 1; i >= 0; i--)
-        //        {
-        //            var control = tlp_Machines.Controls[i];
-        //            var position = tlp_Machines.GetColumn(control);
-        //            if (position == columnToRemove)
-        //            {
-        //                tlp_Machines.Controls.RemoveAt(i);
-        //            }
-        //        }
-
-        //        // 2. Ta bort ColumnStyle
-        //        if (tlp_Machines.ColumnStyles.Count > columnToRemove)
-        //            tlp_Machines.ColumnStyles.RemoveAt(columnToRemove);
-
-        //        // 3. Sänk ColumnCount
-        //        tlp_Machines.ColumnCount--;
-
-        //    }
-
-        //}
         private void ClearTemplate()
         {
             // 1. Rensa alla kontroller
@@ -755,9 +726,7 @@ namespace DigitalProductionProgram.Processcards
             ActiveTemplateRevision = Templates_Protocol.MainTemplate.Revision;
 
             for (int i = 0; i < Machine.TotalMachines; i++)
-            {
                 AddMachine(i, i + 1, ref width);
-            }
             
             tlp_Main.ColumnStyles[0].Width = width + 26;
             if (dataTables_ProcessData.Count > 0)
@@ -765,7 +734,6 @@ namespace DigitalProductionProgram.Processcards
                 //InfoText.Show("Laddar data från tidigare mall till den nya mallen", CustomColors.InfoText_Color.Info, string.Empty,this);
                 Load_ProcessDataFromOldTemplateRevision();
             }
-            Change_Width();
         }
 
 
@@ -787,37 +755,6 @@ namespace DigitalProductionProgram.Processcards
             flp_Machines.Controls.Add(machine);
 
         }
-
-        private void Change_Width()
-        {
-            //var totalWidth = 0;
-            //var ctr = 0;
-            //foreach (Machine machine in tlp_Machines.Controls)
-            //{
-            //    // Hämta första modulen i denna maskin
-            //    var firstModule = machine.tlp_Machine.Controls
-            //        .OfType<Module>()
-            //        .FirstOrDefault();
-            //    if (firstModule == null)
-            //        continue;
-
-            //    var width = firstModule.Controls.
-            //        OfType<DataGridView>().
-            //        Sum(dgv => dgv.Columns.
-            //            Cast<DataGridViewColumn>().
-            //            Where(c => c.Visible).
-            //            Sum(col => col.Width));
-            //    if (machine.tlp_Machine.VerticalScroll.Visible)
-            //        width += SystemInformation.VerticalScrollBarWidth;
-            //    width += 20; //LabelLeftHeader
-            //    tlp_Machines.ColumnStyles[ctr].Width = width;
-            //    totalWidth += width;
-            //    ctr++;
-            //}
-
-            //tlp_Main.ColumnStyles[0].Width = totalWidth + 16;
-        }
-
 
         private readonly List<DataTable> dataTables_ProcessData = new();
         private void CopyProcessDataToNewTemplateRevision()
@@ -1526,7 +1463,6 @@ HS-Machine = {Equipment.Equipment.HS_Machine}", CustomColors.InfoText_Color.Info
                 cmd.ExecuteScalar();
             }
         }
-
 
 
 

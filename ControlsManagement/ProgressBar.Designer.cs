@@ -3,7 +3,7 @@ using System.Windows.Forms;
 
 namespace DigitalProductionProgram.ControlsManagement
 {
-    partial class ProgressBar
+    partial class CustomProgressBar
     {
         /// <summary>
         /// Required designer variable.

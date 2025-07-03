@@ -68,6 +68,7 @@ namespace DigitalProductionProgram.User
             lbl_NewUser = new Label();
             lbl_EditUser = new Label();
             lbl_User = new Label();
+            btn_ResetPassword = new Button();
             panel_Top = new Panel();
             pb_Info = new PictureBox();
             lbl_Date = new Label();
@@ -540,6 +541,7 @@ namespace DigitalProductionProgram.User
             tlp_Bottom.Controls.Add(lbl_EditUser, 2, 0);
             tlp_Bottom.Controls.Add(label_Password, 0, 2);
             tlp_Bottom.Controls.Add(lbl_User, 0, 1);
+            tlp_Bottom.Controls.Add(btn_ResetPassword, 1, 0);
             tlp_Bottom.Dock = DockStyle.Fill;
             tlp_Bottom.Location = new Point(0, 0);
             tlp_Bottom.Margin = new Padding(4, 3, 4, 3);
@@ -622,6 +624,25 @@ namespace DigitalProductionProgram.User
             lbl_User.TabIndex = 52;
             lbl_User.TextChanged += User_TextChanged;
             lbl_User.Click += Users_Click;
+            // 
+            // btn_ResetPassword
+            // 
+            btn_ResetPassword.AutoSize = true;
+            btn_ResetPassword.BackColor = Color.Transparent;
+            btn_ResetPassword.Cursor = Cursors.Hand;
+            btn_ResetPassword.Dock = DockStyle.Left;
+            btn_ResetPassword.FlatAppearance.BorderSize = 0;
+            btn_ResetPassword.FlatStyle = FlatStyle.Flat;
+            btn_ResetPassword.ForeColor = SystemColors.Info;
+            btn_ResetPassword.Location = new Point(206, 0);
+            btn_ResetPassword.Margin = new Padding(0);
+            btn_ResetPassword.Name = "btn_ResetPassword";
+            btn_ResetPassword.Size = new Size(114, 24);
+            btn_ResetPassword.TabIndex = 53;
+            btn_ResetPassword.Text = "Glömt lösenordet?";
+            btn_ResetPassword.UseVisualStyleBackColor = false;
+            btn_ResetPassword.Visible = false;
+            btn_ResetPassword.Click += btn_ResetPassword_Click;
             // 
             // panel_Top
             // 
@@ -772,5 +793,6 @@ namespace DigitalProductionProgram.User
         private Label label_ConfirmPassword;
         private Label label_InfoPassword_1;
         private Label label_InfoPassword_2;
+        private Button btn_ResetPassword;
     }
 }

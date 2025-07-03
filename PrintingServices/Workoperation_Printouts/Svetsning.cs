@@ -391,7 +391,12 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                 Print.Rubrik(e, "Produktion / Svetsning", margin, PrintVariables.Y, PrintVariables.MaxPaperWidth - margin);
                 e.Graphics.DrawString("Inledande", CustomFonts.A10_B, CustomFonts.black, 28, PrintVariables.Y + 32); e.Graphics.DrawString("Inspektion, färdig svets", CustomFonts.A10_B, CustomFonts.black, 368, PrintVariables.Y + 32);
 
-                e.Graphics.DrawString("Skärmat", CustomFonts.A8, CustomFonts.black, 50, PrintVariables.Y + 52); 
+                string text = "Skärmat";
+                Part.SetPartNrSpecial("Svetsning TEF Stumning");
+                if (Part.IsPartNrSpecial)
+                    text = "Mjukspets";
+
+                e.Graphics.DrawString(text, CustomFonts.A8, CustomFonts.black, 50, PrintVariables.Y + 52); 
                 Print.Thin_Rectangle(e, margin, PrintVariables.Y + 50, 104, 15);
                 e.Graphics.DrawString("LotNr", CustomFonts.A8, CustomFonts.black, 42, PrintVariables.Y + 81); 
                 Print.Thin_Rectangle(e, margin, PrintVariables.Y + 65, 104, 45); 

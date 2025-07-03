@@ -90,7 +90,10 @@ namespace DigitalProductionProgram.Övrigt
             else
                 rb_Text_Tips_Trix.Dock = DockStyle.Top;
         }
-       
+        public void ClearData()
+        {
+            rb_Text_Tips_Trix.Text = string.Empty;
+        }
 
 
     }

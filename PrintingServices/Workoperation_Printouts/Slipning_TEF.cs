@@ -145,15 +145,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
         public static PrintDocument Print_Protocol_Extra = new PrintDocument();
         private static PrintVariables.TotalPrintOuts totalPrintOuts;
 
-        private static int RowMultiplier
-        {
-            get
-            {
-                if (Part.IsPartNrSpecial("Extra Parametrar Slipning_TEF"))
-                    return 17;
-                return 14;
-            }
-        }
+        private static int RowMultiplier => Part.IsPartNrSpecial ? 17 : 14;
 
         public Slipning_TEF()
         {
@@ -170,6 +162,8 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
 
         public static void Print_PreviewOrder(bool IsPrinting)
         {
+            Part.SetPartNrSpecial("Extra Parametrar Slipning_TEF");
+
             Measureprotocol.FirstRowMeasurment = 0;
             Measureprotocol.LastRowMeasurement = 25 * RowMultiplier;
             PrintVariables.Active_PrintOut = 1;
@@ -228,7 +222,8 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
             PrintVariables.Y += 126;
             PrintOut.Print_Maskinparametrar_Protocol(e);
             PrintVariables.Y += 2;
-            if (Part.IsPartNrSpecial("Extra Parametrar Slipning_TEF"))
+            Part.SetPartNrSpecial("Extra Parametrar Slipning_TEF");
+            if (Part.IsPartNrSpecial)  
             {
                 PrintOut.ExtraParametrar_Print_Produktion_Rubriker_Rutor(e);
                 PrintOut.ExtraParametrar_Print_Produktion_Parametrar(e);
@@ -249,7 +244,8 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
             PageHeader(e, "Protokoll för sammanfogning av slang, Slipning", totalPrintOuts.TotalPages);
             Order_INFO(e);
             PrintVariables.Y = 135;
-            if (Part.IsPartNrSpecial("Extra Parametrar Slipning_TEF"))
+            Part.SetPartNrSpecial("Extra Parametrar Slipning_TEF");
+            if (Part.IsPartNrSpecial)
             {
                 PrintOut.ExtraParametrar_Print_Produktion_Rubriker_Rutor(e);
                 PrintOut.ExtraParametrar_Print_Produktion_Parametrar(e);
@@ -346,9 +342,8 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                     PrintVariables.Y + 73, PrintVariables.Y + 73, PrintVariables.Y + 73, 
                     PrintVariables.Y + 92, PrintVariables.Y + 92, PrintVariables.Y + 92, PrintVariables.Y + 92, PrintVariables.Y + 92, PrintVariables.Y + 92, 
                     PrintVariables.Y + 110, PrintVariables.Y + 110, PrintVariables.Y + 110 };
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    const string query = @"
+                using var con = new SqlConnection(Database.cs_Protocol);
+                const string query = @"
                     SELECT 
                         Matarhjul_Vinkel_min, 
                         Bladhöjd_min, 
@@ -367,29 +362,26 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
 	                    JOIN Processcard.MainData as main
 		                    ON slipning.PartID = main.PartID
                     WHERE slipning.PartID = @partID";
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    cmd.Parameters.AddWithValue("@partID", Order.PartID);
-                    con.Open();
-                    var reader = cmd.ExecuteReader();
-                    while (reader.Read())
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                cmd.Parameters.AddWithValue("@partID", Order.PartID);
+                con.Open();
+                var reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    for (int i = 0; i < 12; i++)
                     {
-                        for (int i = 0; i < 12; i++)
-                        {
-                            var value = reader[i].ToString();
-                            e.Graphics.DrawString(value, CustomFonts.parametrarFont, CustomFonts.parametrar_clr, x_arr[i] - Print.StringWidth(value, CustomFonts.parametrarFont, e.Graphics) / 2, yy[i]);
-                        }
-                        
+                        var value = reader[i].ToString();
+                        e.Graphics.DrawString(value, CustomFonts.parametrarFont, CustomFonts.parametrar_clr, x_arr[i] - Print.StringWidth(value, CustomFonts.parametrarFont, e.Graphics) / 2, yy[i]);
                     }
+                        
                 }
-                
             }
             public static void Print_Maskinparametrar_Protocol(PrintPageEventArgs e)
             {
                 if (!string.IsNullOrEmpty(Order.OrderNumber))
                 {
-                    using (var con = new SqlConnection(Database.cs_Protocol))
-                    {
-                        var query = $@"
+                    using var con = new SqlConnection(Database.cs_Protocol);
+                    var query = $@"
                                     SELECT 
                                         Slipmaskin,             68,  70,
                                         Matarhjul_Hastighet,    138, 65,
@@ -406,24 +398,23 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                                         Kasserad
                                     FROM Korprotokoll_Slipning_Maskinparametrar WHERE OrderID = @orderid";
 
-                        var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                        cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
-                        con.Open();
-                        var reader = cmd.ExecuteReader();
-                        while (reader.Read())
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                    cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
+                    con.Open();
+                    var reader = cmd.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        for (var i = 0; i < reader.FieldCount - 1; i+= 3)
                         {
-                            for (var i = 0; i < reader.FieldCount - 1; i+= 3)
-                            {
-                                var x = int.Parse(reader[i + 1].ToString());
-                                var width = int.Parse(reader[i + 2].ToString());
-                                Print.Thin_Rectangle(e, x, PrintVariables.Y, width, 18);
-                                Print.Text_Operatör(e, reader[i].ToString(), x + width / 2 + 2, PrintVariables.Y + 3, width, true);//+130
-                            }
-                            Print.Filled_Rectangle(e, CustomFonts.empty_Space,522, PrintVariables.Y, 50, 18);//+127
-                            if ((bool)reader["Kasserad"])
-                                e.Graphics.DrawLine(CustomFonts.thickBlack, 30, PrintVariables.Y + 6, 755, PrintVariables.Y + 133);//+133
-                            PrintVariables.Y += 18;
+                            var x = int.Parse(reader[i + 1].ToString());
+                            var width = int.Parse(reader[i + 2].ToString());
+                            Print.Thin_Rectangle(e, x, PrintVariables.Y, width, 18);
+                            Print.Text_Operatör(e, reader[i].ToString(), x + width / 2 + 2, PrintVariables.Y + 3, width, true);//+130
                         }
+                        Print.Filled_Rectangle(e, CustomFonts.empty_Space,522, PrintVariables.Y, 50, 18);//+127
+                        if ((bool)reader["Kasserad"])
+                            e.Graphics.DrawLine(CustomFonts.thickBlack, 30, PrintVariables.Y + 6, 755, PrintVariables.Y + 133);//+133
+                        PrintVariables.Y += 18;
                     }
                 }
             }
@@ -437,7 +428,8 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                 e.Graphics.DrawString("Godkänd, färdig produkt", CustomFonts.A10_B, CustomFonts.black, 330, PrintVariables.Y + 26);
 
                 var text = "Skärmat";
-                if (Part.IsPartNrSpecial("Svetsning TEF Stumning"))
+                Part.SetPartNrSpecial("Svetsning TEF Stumning");
+                if (Part.IsPartNrSpecial)
                     text = "Mjukspets";
                 e.Graphics.DrawString(text, CustomFonts.A8, CustomFonts.black, 50, PrintVariables.Y + 49); 
                 Print.Thin_Rectangle(e, PrintVariables.LeftMargin, PrintVariables.Y + 47, 104, 25);

@@ -12,7 +12,7 @@ using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.PrintingServices;
 using DigitalProductionProgram.Processcards;
 using DigitalProductionProgram.User;
-using ProgressBar = DigitalProductionProgram.ControlsManagement.ProgressBar;
+using ProgressBar = DigitalProductionProgram.ControlsManagement.CustomProgressBar;
 
 namespace DigitalProductionProgram.Templates
 {

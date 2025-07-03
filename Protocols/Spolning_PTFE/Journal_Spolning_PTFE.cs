@@ -319,18 +319,23 @@ namespace DigitalProductionProgram.Protocols.Spolning_PTFE
             {
                 const string query = @"
                     SELECT DISTINCT 
-                        CodeText, 
-                        Unit, 
-                        RowIndex, 
-                        ColumnIndex, 
+                        descr.CodeText, 
+                        unit.UnitName AS Unit,
+                        template.RowIndex, 
+                        template.ColumnIndex, 
                         template.Type, 
-                        template.Decimals, ProtocolDescriptionID
-                    FROM Protocol.Template as template
-	                    JOIN Protocol.Description as descr
-		                    ON descr.Id = template.ProtocolDescriptionID
-                    WHERE FormTemplateID = (SELECT FormTemplateID FROM Protocol.FormTemplate WHERE MainTemplateID = @protocolmaintemplateid)
-                   
-                    ORDER BY ColumnIndex";
+                        template.Decimals, 
+                        template.ProtocolDescriptionID
+                    FROM Protocol.Template AS template
+                        JOIN Protocol.Description AS descr ON descr.Id = template.ProtocolDescriptionID
+                        LEFT JOIN Protocol.Unit AS unit ON unit.Id = descr.UnitID
+                    WHERE template.FormTemplateID = 
+                    (
+                        SELECT FormTemplateID 
+                        FROM Protocol.FormTemplate 
+                        WHERE MainTemplateID = @protocolmaintemplateid
+                    )
+                    ORDER BY template.ColumnIndex";
                 con.Open();
                 var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@protocolmaintemplateid", Templates_Protocol.MainTemplate.ID);
@@ -381,7 +386,7 @@ namespace DigitalProductionProgram.Protocols.Spolning_PTFE
 
             Width = dgv_Journal_Input.Width;
 
-            if (Part.IsPartNrSpecial("Spolning Stripes") == false)
+            if (Part.IsPartNrSpecial == false)
                 Hide_Stripes_Columns();
 
             Add_Extra_InfoLabels();

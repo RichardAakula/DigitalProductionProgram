@@ -21,24 +21,48 @@ namespace DigitalProductionProgram.Övrigt
 {
     internal class Validate_Data
     {
+        private static string CodeText(string name, int uppstart, int maskin)
+        {
+            //Hämtar ut ett namn som används för att meddela Processtekniker vilken parameter som behöver uppdateras.
+            string text;
+            var namn = name;
+            if (namn.Contains("tb_"))
+            {
+                namn = name.Remove(0, 3);
+                if (namn.Contains('_'))
+                    namn = namn.Remove(namn.Length - 2, 2);
+            }
+
+            if (maskin == 0)
+                text = $"{namn} - {LanguageManager.GetString("protocol_Info_2")}: {uppstart}";
+            else
+                text = $"{namn} - {LanguageManager.GetString("machine")}: {maskin} - {LanguageManager.GetString("protocol_Info_2")}: {uppstart}";
+
+            //Används för att kontrollera att namn + maskin ej redan finns Meddela Processtekniker Mailet
+            if (uppstart == 0 && maskin != 0)
+                text = $"{namn} - {LanguageManager.GetString("machine")}: {maskin}";
+
+            if (uppstart == 0 && maskin == 0)
+                text = $"{namn}";
+
+            return text;
+        }
         private static string Description_Codetext(int row, int formtemplateid)
         {
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query = @"
+            using var con = new SqlConnection(Database.cs_Protocol);
+            var query = @"
                     SELECT CodeText
                     FROM Protocol.Description
                            
                     WHERE id = (SELECT TOP(1) ProtocolDescriptionID FROM Protocol.Template 
                                     WHERE FormTemplateID = @formtemplateid
                                     AND RowIndex = @row)";
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                con.Open();
-                cmd.Parameters.AddWithValue("@formtemplateid", formtemplateid);
-                cmd.Parameters.AddWithValue("@row", row);
-                var value = cmd.ExecuteScalar();
-                return value?.ToString();
-            }
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            con.Open();
+            cmd.Parameters.AddWithValue("@formtemplateid", formtemplateid);
+            cmd.Parameters.AddWithValue("@row", row);
+            var value = cmd.ExecuteScalar();
+            return value?.ToString();
         }
 
         public static void ValidateData(DataGridViewCell cell, int row, bool IsValueCritical, int formtemplateid, int protocolDescriptionID, string? Min, string? Nom, string? Max, string? Value = null)
@@ -182,7 +206,7 @@ namespace DigitalProductionProgram.Övrigt
             if (cell != null)
                 if (cell.ReadOnly)
                     return;
-            var Value = Tools.NomID_HS_Pipe(text);
+            var Value = Tools.RegisterList.NomID_HS_Pipe(text);
 
             Value_CellOrControl(isNomValueCritical, codetext, protocolDescriptionID, null, null, Value, nom, cell, null, uppstart);
         }
@@ -354,45 +378,19 @@ namespace DigitalProductionProgram.Övrigt
                 ChangeColor_TextBox(name, protocolDescriptionID, control, IsErrorAndValidated, IsErrorAndHistoricalData, IsOnlyWarning, IsOk, uppstart, maskin);
         }
 
-        private static string CodeName(string name, int uppstart, int maskin)
-        {
-            string text;
-            var namn = name;
-            if (namn.Contains("tb_"))
-            {
-                namn = name.Remove(0, 3);
-                if (namn.Contains('_'))
-                    namn = namn.Remove(namn.Length - 2, 2);
-            }
-
-            if (maskin == 0)
-                text = $"{namn} - {LanguageManager.GetString("protocol_Info_2")}: {uppstart}";
-            else
-                text = $"{namn} - {LanguageManager.GetString("machine")}: {maskin} - {LanguageManager.GetString("protocol_Info_2")}: {uppstart}";
-            
-            //Används för att kontrollera att namn + maskin ej redan finns Meddela Processtekniker Mailet
-            if (uppstart == 0 && maskin != 0)
-                text = $"{namn} - {LanguageManager.GetString("machine")}: {maskin}";
-
-            if (uppstart == 0 && maskin == 0)
-                text = $"{namn}";
-
-            return text;
-        }
+        
 
         public static bool IsFieldReportedTo_Processtekniker(string text)
         {
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query = $"SELECT * FROM Processcard.ProposedChanges {Queries.WHERE_OrderID} AND Rubrik LIKE '%{text}%'";
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@id", Order.OrderID);
-                con.Open();
-                var reader = cmd.ExecuteReader();
-                if (reader.HasRows)
-                    return true;
-                return false;
-            }
+            using var con = new SqlConnection(Database.cs_Protocol);
+            var query = $"SELECT * FROM Processcard.ProposedChanges {Queries.WHERE_OrderID} AND Rubrik LIKE '%{text}%'";
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            cmd.Parameters.AddWithValue("@id", Order.OrderID);
+            con.Open();
+            var reader = cmd.ExecuteReader();
+            if (reader.HasRows)
+                return true;
+            return false;
         }
        
         private static void ChangeColor_TextBox(string codetext, int protocolDescriptionID, Control ctrl, bool IsErrorAndValidated, bool IsErrorAndHistoricalData, bool IsOnlyWarning, bool IsOk, int uppstart, int maskin = 0)
@@ -525,13 +523,13 @@ namespace DigitalProductionProgram.Övrigt
             //Om körprotokollet håller på öppnas skippas detta.
             //Om Fältet är meddelat sen tidigare så skippas detta.
             //Om ordern körs på Holding skippas detta steg
-            if (Module.IsOkToSave == false || IsFieldReportedTo_Processtekniker(CodeName(codetext, 0, maskin)) || Monitor.Monitor.factory == Monitor.Monitor.Factory.Holding)
+            if (Module.IsOkToSave == false || IsFieldReportedTo_Processtekniker(CodeText(codetext, 0, maskin)) || Monitor.Monitor.factory == Monitor.Monitor.Factory.Holding)
             {
                 Processcard_Changes.IsMessageSaved = true;
                 return;
             }
 
-            var Codename = CodeName(codetext, uppstart, maskin);
+            var Codename = CodeText(codetext, uppstart, maskin);
             string rubrik;
             string? text;
             if (is_OnlyNomValue)
@@ -539,7 +537,7 @@ namespace DigitalProductionProgram.Övrigt
                 text = $"{LanguageManager.GetString("validateData_Info_2_1")} {Codename} {LanguageManager.GetString("validateData_Info_2_2")}";
 
                 rubrik = $"{LanguageManager.GetString("validateData_Info_3_1")} <br />" +
-                         $"{CodeName(codetext, uppstart, maskin)} {LanguageManager.GetString("validateData_Info_3_2")} <br />" +
+                         $"{CodeText(codetext, uppstart, maskin)} {LanguageManager.GetString("validateData_Info_3_2")} <br />" +
                          $"{LanguageManager.GetString("validateData_Info_3_3")}";
             }
             else
@@ -562,7 +560,7 @@ namespace DigitalProductionProgram.Övrigt
             //Om körprotokollet öppnas skippas detta.
             //Om Fältet är meddelat sen tidigare så skippas detta.
             //Om ordern körs på Holding skippas detta steg
-            if (Module.IsOkToSave == false || IsFieldReportedTo_Processtekniker(CodeName(codetext, 0, maskin)) || Monitor.Monitor.factory == Monitor.Monitor.Factory.Holding)
+            if (Module.IsOkToSave == false || IsFieldReportedTo_Processtekniker(CodeText(codetext, 0, maskin)) || Monitor.Monitor.factory == Monitor.Monitor.Factory.Holding)
             {
                 if (Module.IsOkToSave)
                     InfoText.Show(LanguageManager.GetString("validateData_Info_6"), CustomColors.InfoText_Color.Bad, "Warning!");
@@ -573,7 +571,7 @@ namespace DigitalProductionProgram.Övrigt
             {
                 var text = string.Format($"{LanguageManager.GetString("validateData_Info_8")}", Person.Role);
                 var rubrik = $"{LanguageManager.GetString("validateData_Info_7_3")} <br />" +
-                                 $"{CodeName(codetext, uppstart, maskin)} {LanguageManager.GetString("validateData_Info_7_4")} <br />" +
+                                 $"{CodeText(codetext, uppstart, maskin)} {LanguageManager.GetString("validateData_Info_7_4")} <br />" +
                                  $"{LanguageManager.GetString("validateData_Info_3_3")}";
                 
                 InfoText.Question(text, CustomColors.InfoText_Color.Bad, "Warning");
@@ -591,7 +589,7 @@ namespace DigitalProductionProgram.Övrigt
             {
                 var text = $"{LanguageManager.GetString("validateData_Info_9_1")}";
                 var rubrik = $"{LanguageManager.GetString("validateData_Info_9_2")} <br />" +
-                                 $"{CodeName(codetext, uppstart, maskin)} {LanguageManager.GetString("validateData_Info_9_3")} <br />" +
+                                 $"{CodeText(codetext, uppstart, maskin)} {LanguageManager.GetString("validateData_Info_9_3")} <br />" +
                                  $"{LanguageManager.GetString("validateData_Info_3_3")}";
                
 

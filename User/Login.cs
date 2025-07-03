@@ -20,7 +20,7 @@ namespace DigitalProductionProgram.User
     {
 
         private byte[]? ProfilePicture;
-        
+
         public bool SvarÖppnaOrder;
         public bool IsOkEdit_Mode
         {
@@ -84,7 +84,7 @@ namespace DigitalProductionProgram.User
 
             ProfileCard.Translate_Form();
         }
-       
+
         private void Load_User_Info()
         {
             using var con = new SqlConnection(Database.cs_Protocol);
@@ -228,22 +228,26 @@ namespace DigitalProductionProgram.User
             tb_Förnamn.SelectAll();
             tb_Mail.Clear();
         }
-        private Task CheckVersion()
+        private async Task CheckVersion()
         {
-            var lastReadVersion = Person.LastReadChangeLogVersion(lbl_User.Text);
+            var lastReadVersion = await Person.LastReadChangeLogVersion(lbl_User.Text);
+            var currentVersion = ChangeLog.CurrentVersion;
 
-            if (lastReadVersion == new Version("0.0.0.0"))
+            if (lastReadVersion == null || lastReadVersion == new Version(0, 0, 0, 0))
             {
-                var changeLog = new ChangeLog(Version.Parse("1.0.0.0"));
+                var changeLog = new ChangeLog(new Version(1, 0, 0, 0));
                 changeLog.ShowDialog();
-                return Task.CompletedTask;
+                return;
             }
 
-            if (lastReadVersion < ChangeLog.CurrentVersion)
+            if (lastReadVersion < currentVersion)
             {
                 InfoText.Question(
-                    $"{LanguageManager.GetString("login_Info_1_1")} {lastReadVersion} {LanguageManager.GetString("login_Info_1_2")} {ChangeLog.CurrentVersion}\n" +
-                    $"{LanguageManager.GetString("login_Info_1_3")}", CustomColors.InfoText_Color.Info, LanguageManager.GetString("login_Info_1_4"), this);
+                    $"{LanguageManager.GetString("login_Info_1_1")} {lastReadVersion} {LanguageManager.GetString("login_Info_1_2")} {currentVersion}\n" +
+                    $"{LanguageManager.GetString("login_Info_1_3")}",
+                    CustomColors.InfoText_Color.Info,
+                    LanguageManager.GetString("login_Info_1_4"),
+                    this);
 
                 if (InfoText.answer == InfoText.Answer.Yes)
                 {
@@ -256,12 +260,46 @@ namespace DigitalProductionProgram.User
                     watch.Stop();
                     var time = watch.Elapsed.TotalSeconds;
 
-                    //await Activity.AddTimeUserRead(lastVersion.ToString(), time);
+                    // await Activity.AddTimeUserRead(lastReadVersion.ToString(), time);
                 }
             }
-
-            return Task.CompletedTask;
         }
+
+
+        //private Task CheckVersion()
+        //{
+        //    var lastReadVersion = Person.LastReadChangeLogVersion(lbl_User.Text);
+
+        //    if (lastReadVersion == new Version("0.0.0.0"))
+        //    {
+        //        var changeLog = new ChangeLog(Version.Parse("1.0.0.0"));
+        //        changeLog.ShowDialog();
+        //        return Task.CompletedTask;
+        //    }
+
+        //    if (lastReadVersion < ChangeLog.CurrentVersion)
+        //    {
+        //        InfoText.Question(
+        //            $"{LanguageManager.GetString("login_Info_1_1")} {lastReadVersion} {LanguageManager.GetString("login_Info_1_2")} {ChangeLog.CurrentVersion}\n" +
+        //            $"{LanguageManager.GetString("login_Info_1_3")}", CustomColors.InfoText_Color.Info, LanguageManager.GetString("login_Info_1_4"), this);
+
+        //        if (InfoText.answer == InfoText.Answer.Yes)
+        //        {
+        //            var watch = new Stopwatch();
+        //            watch.Start();
+
+        //            var changeLog = new ChangeLog(lastReadVersion);
+        //            changeLog.ShowDialog();
+
+        //            watch.Stop();
+        //            var time = watch.Elapsed.TotalSeconds;
+
+        //            //await Activity.AddTimeUserRead(lastVersion.ToString(), time);
+        //        }
+        //    }
+
+        //    return Task.CompletedTask;
+        //}
 
 
 
@@ -446,7 +484,8 @@ namespace DigitalProductionProgram.User
                     JOIN [User].Roles as roles
                         ON person.RoleID = roles.RoleID
                     WHERE Name = @name";
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                    var cmd = new SqlCommand(query, con);
+                    ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@name", lbl_User.Text);
                     con.Open();
                     var reader = cmd.ExecuteReader();
@@ -461,6 +500,7 @@ namespace DigitalProductionProgram.User
                         ProfileCard.lbl_Role.Text = Person.Role = reader["RoleName"].ToString();
                     }
                 }
+
                 ProfileCard.pb_Image.Image = Person.ProfilePicture(lbl_User.Text);
 
 
@@ -471,7 +511,10 @@ namespace DigitalProductionProgram.User
                     ProfileCard.GetLatestOrderForOperaton(Person.EmployeeNr);
                 ShowVisitkort();
                 tb_Password.Focus();
+                btn_ResetPassword.Visible = true;
             }
+            else
+                btn_ResetPassword.Visible = false;
         }
 
         private void Buttons_MouseEnter(object sender, EventArgs e)
@@ -578,6 +621,10 @@ namespace DigitalProductionProgram.User
             }
         }
 
-        
+        private void btn_ResetPassword_Click(object sender, EventArgs e)
+        {
+            ResetPassword resetPassword = new ResetPassword();
+            resetPassword.ShowDialog();
+        }
     }
 }

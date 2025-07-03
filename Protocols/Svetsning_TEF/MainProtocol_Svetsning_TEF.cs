@@ -113,7 +113,8 @@ namespace DigitalProductionProgram.Protocols.Svetsning_TEF
         }
         private void Initialize_Label_Skärmat()
         {
-            if (Part.IsPartNrSpecial("Svetsning TEF Stumning"))
+            Part.SetPartNrSpecial("Svetsning TEF Stumning");
+            if (Part.IsPartNrSpecial)
                 label_Inledande_Skärmat.Text = "Mjukspets";
         }
         private void Load_Data_Korprotokoll_MaskinParametrar()

@@ -5,10 +5,10 @@ using Application = System.Windows.Forms.Application;
 
 namespace DigitalProductionProgram.ControlsManagement
 {
-    public partial class ProgressBar : Form
+    public partial class CustomProgressBar : Form
     {
        
-        public ProgressBar(int Total_Bars = 1)
+        public CustomProgressBar(int Total_Bars = 1)
         {
             InitializeComponent();
           

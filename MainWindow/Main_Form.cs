@@ -22,7 +22,7 @@ using DigitalProductionProgram.Protocols;
 using DigitalProductionProgram.QC;
 using DigitalProductionProgram.User;
 using Pictures = DigitalProductionProgram.OrderHantering.Pictures;
-using ProgressBar = DigitalProductionProgram.ControlsManagement.ProgressBar;
+using CustomProgressBar = DigitalProductionProgram.ControlsManagement.CustomProgressBar;
 using Timer = System.Windows.Forms.Timer;
 
 namespace DigitalProductionProgram.MainWindow
@@ -30,9 +30,7 @@ namespace DigitalProductionProgram.MainWindow
 
     public partial class Main_Form : Form
     {
-       // public static Timer Timer_UpdateChart = new Timer();
-       // public static Timer Timer_ChangeGrade = new Timer();
-       // public static Timer Timer_ReloginMonitor = new Timer();
+        public static Timer Timer_UpdateSQL_Counter = new Timer();
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
@@ -117,19 +115,8 @@ namespace DigitalProductionProgram.MainWindow
 
         private int ctr_Info_Planerat_Stopp;
         // Denna rad måste finnas för utskrifterna
-        private readonly Manage_PrintOuts print = new Manage_PrintOuts();
+        private readonly Manage_PrintOuts? print;
         private readonly BlackBackground black;
-       // private FlyingEasterEgg? flyingEgg;
-       // public static ProgressBar pBar;
-       // private Timer? eggTimer;
-       // private Bitmap? easterEggImage;
-       // private Point eggPosition;
-       // private Random rand = new Random();
-
-
-
-
-        //----------- UPPSTART --------------------------------------------------
         public Main_Form(BlackBackground back)
         {
             this.Visible = false;
@@ -143,7 +130,7 @@ namespace DigitalProductionProgram.MainWindow
             MainMenu.mainForm = this;
             OrderInformation.mainForm = this;
 
-            Initialize_Timers();
+            print = new Manage_PrintOuts();
             Monitor.Monitor.lbl_Monitorstatus = Serverstatus.lbl_MonitorStatus;
             Monitor.Monitor.panel_Monitorstatus = Serverstatus.panel_MonitorStatus;
             Login_Monitor.Login_API();
@@ -186,13 +173,7 @@ namespace DigitalProductionProgram.MainWindow
 
             Text = "Digital Production Program - " + ChangeLog.CurrentVersion;
             Refresh();
-            if (IsBetaMode)
-            {
-                Text = "DPP in BETA MODE";
-                if (Environment.MachineName != "OH-ID61")
-                    InfoText.Show(LanguageManager.GetString("warning_Testdatabase"), CustomColors.InfoText_Color.Bad, "Warning");
-                Change_GUI_BetaMode();
-            }
+           
 
             Mail.AutoTestJira();
             CheckForMaintenanceWork();
@@ -220,6 +201,10 @@ namespace DigitalProductionProgram.MainWindow
                     black.Close();
             }
             await Activity.Stop("Uppstart av program");
+            Initialize_Timers();
+            if (IsBetaMode)
+                ChangeToBetaMode();
+
         }
         protected override void SetVisibleCore(bool value)
         {
@@ -237,8 +222,10 @@ namespace DigitalProductionProgram.MainWindow
         private void AUTOLOGIN_SUPERADMIN()
         {
             IsLoadingPriorityPlan = true;
-            
-            
+            Timer_UpdateSQL_Counter.Start();
+            Timer_UpdateSQL_Counter.Interval = 1000; // 1 sekund
+            Timer_UpdateSQL_Counter.Tick += (s, e) => Serverstatus.Set_Sql_Counter();
+
             //if (Database.IsGodby____ + Database.IsGodbyBeta + Database.IsGodbyThai + Database.IsThai_____ > 1)
             Serverstatus.lbl_SQL_Queries.Visible = true;
             Person.Name = "Richard Aakula";
@@ -304,7 +291,7 @@ namespace DigitalProductionProgram.MainWindow
         private void Initialize_Timers()
         {
             timer_Master = new Timer();
-            timer_Master.Interval = 1000; // 1 sekund
+            timer_Master.Interval = 60000; // 1 minut
             timer_Master.Tick += MasterTimer_Tick;
             timer_Master.Start();
         }
@@ -477,20 +464,15 @@ namespace DigitalProductionProgram.MainWindow
             lbl_Percent.Text = $"{Convert.ToInt32(Grade.percent_Grade(Grade.grade) * 100)} %";
         }
 
-        private void Change_GUI_BetaMode()
+        private void ChangeToBetaMode()
         {
+            if (Environment.MachineName != "OH-ID61")
+                InfoText.Show(LanguageManager.GetString("warning_Testdatabase"), CustomColors.InfoText_Color.Bad, "Warning");
             tlp_Left.BackColor = OrderInformation.BackColor = panel_Right.BackColor = Color.Pink;
-
-            var lbl_Beta = new Label
-            {
-                Text = "BETA Mode",
-                BackColor = Color.Pink,
-                ForeColor = Color.Brown,
-                Dock = DockStyle.Fill,
-                Font = new Font("Palatino LinoType", 50),
-                TextAlign = ContentAlignment.MiddleCenter
-            };
-            tlp_MainWindow.Controls.Add(lbl_Beta, 3, 3);
+            if (Environment.MachineName == "THAI-DPP-TEST01" || Environment.MachineName == "OH-ID61")
+                return;
+            var betaOverlay = new BetaOverlayForm(this);
+            betaOverlay.Show();
         }
 
         public void Change_Theme()
@@ -565,6 +547,9 @@ namespace DigitalProductionProgram.MainWindow
             if (IsOkStartOrder == false)
                 return;
 
+            Part.SetPartNrSpecial("BioBurden Samples");
+            Order.IsUsingBioBurdenSamples = Part.IsPartNrSpecial;
+
             Load_MainForm();
             PriorityPlanning.tb_ProdGrupp.Text = OrderInformation.lbl_ProdGroup.Text;
 
@@ -589,6 +574,8 @@ namespace DigitalProductionProgram.MainWindow
             Load_MeasurePoints();
 
             Task.Factory.StartNew(() => measureStats.Add_MeasureInformation_MainForm(panelChart, tlp_MainWindow));
+            Task.Factory.StartNew(MainMeasureStatistics.LoadAvgValuesForLastOrder);
+            Task.Factory.StartNew(MainMeasureStatistics.LoadAvgValuesForPart);
 
             Tools.Load_HSPipes();
 
@@ -627,7 +614,7 @@ namespace DigitalProductionProgram.MainWindow
 
             Buttons.panel_Pictures.Visible = true;
 
-            ProgressBar.close();
+            CustomProgressBar.close();
             Activate();
             //OrderInformation.tb_OrderNr.SelectionLength = 0;
             Cursor = Cursors.Arrow;
@@ -643,7 +630,7 @@ namespace DigitalProductionProgram.MainWindow
 
             lbl_ExtraInfo.Text = Part.ExtraInfo_Part;
 
-            AQL.Clear_ProvInfo();
+            AQL.ClearData();
             TipsAndTrix.LoadData();
             AQL.Initialize_QC_ProvuttagInfo();
         }
@@ -680,6 +667,8 @@ namespace DigitalProductionProgram.MainWindow
             tlp_ExtraInfo.Visible = false;
             Buttons.Change_GUI_Buttons();
             Order.Clear_Order();
+            TipsAndTrix.ClearData();
+            AQL.ClearData();
             FeedBackQC.Visible = false;
 
             OrderInformation.cb_Operation.SelectedIndexChanged -= Operation_SelectedIndexChanged;
@@ -1005,15 +994,15 @@ namespace DigitalProductionProgram.MainWindow
         private int counter_PlaneratStopp = 0;
         private int counter_UpdateChart = 0;
         private int counter_ReLoginMonitor = 0;
-        private int timer_counterPlaneratStopp = 60;
+        private int timer_counterPlaneratStopp = 60;  // 1 timme
         public static int timer_ReloginMonitor = 600000;
-        private int timer_CheckForUpdate = 30;//30 sekunder
+        private int timer_CheckForUpdate = 5; //5 minut
 
-        private Timer timer_Master;
+        private Timer? timer_Master;
         private async void MasterTimer_Tick(object? sender, EventArgs e)
         {
             timer_Master.Stop();
-            // Varje sekund
+            // Varje minut
             counter_ChangeGrade++;
             counter_PlaneratStopp++;
             counter_CheckForUpdate++;
@@ -1024,32 +1013,32 @@ namespace DigitalProductionProgram.MainWindow
 
             Serverstatus.Set_Sql_Counter(); // Uppdatera serverstatus varje sekund
 
-            // 60 sek: Kontrollera planerat stopp
+            // 60 minuter: Kontrollera planerat stopp
             if (counter_PlaneratStopp >= timer_counterPlaneratStopp)
             {
                 counter_PlaneratStopp = 0;
                 CheckForMaintenanceWork();
             }
 
-            // 100 sek: Kontrollera mätpunkter
-            if (counter_CheckMätpunkter >= 100 && Person.Role == "SuperAdmin")
+            // 5 minuter: Kontrollera mätpunkter
+            if (counter_CheckMätpunkter >= 5 && Person.Role == "SuperAdmin")
             {
                 counter_CheckMätpunkter = 0;
                 MainMeasureStatistics.ValidateMeasurements.AverageValues();
             }
-            // 10 sek: Kolla efter uppdatering
+            // 5 minut: Kolla efter uppdatering
             if (counter_CheckForUpdate >= timer_CheckForUpdate)
             {
                 counter_CheckForUpdate = 0;
                 CheckForUpdate();
             }
             //60 sek: Hantera inloggning mot Monitor API
-           // if (counter_ReLoginMonitor >= timer_ReloginMonitor)
-           //     ReLogin_Monitor();
+            // if (counter_ReLoginMonitor >= timer_ReloginMonitor)
+            //     ReLogin_Monitor();
 
          
             // 5 min: Kolla uppdatering och statistik
-            if (counter_UpdateChart >= 300)
+            if (counter_UpdateChart >= 5)
             {
                 counter_UpdateChart = 0;
                 _ = Task.Run(() => measureStats.Add_MeasureInformation_MainForm(panelChart, tlp_MainWindow));
@@ -1058,7 +1047,7 @@ namespace DigitalProductionProgram.MainWindow
             }
 
             // 10 min: Ändra GUI-grade
-            if (counter_ChangeGrade >= 600)
+            if (counter_ChangeGrade >= 10)
             {
                 counter_ChangeGrade = 0;
                 Change_GUI_Grade();
@@ -1100,7 +1089,7 @@ namespace DigitalProductionProgram.MainWindow
             if (InfoText.answer == InfoText.Answer.No)
             {
                 _ = Activity.Stop($"Användare {Person.Name} uppdaterade INTE programmet.");
-                timer_CheckForUpdate = 7200; // 2 timmar
+                timer_CheckForUpdate = 120; // 2 timmar
             }
             else
             {
@@ -1155,7 +1144,7 @@ namespace DigitalProductionProgram.MainWindow
             //Mindre än 8 timmar kvar till planerat stopp
             if (Maintenance.Time_Left_Stop.TotalHours < 8)
             {
-                timer_counterPlaneratStopp = 60; // 30 minuter
+                timer_counterPlaneratStopp = 30; // 30 minuter
                 clr = CustomColors.InfoText_Color.Bad;
             }
                 

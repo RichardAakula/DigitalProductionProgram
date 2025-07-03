@@ -21,7 +21,7 @@ using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Text;
 using Color = System.Drawing.Color;
-using ProgressBar = DigitalProductionProgram.ControlsManagement.ProgressBar;
+using ProgressBar = DigitalProductionProgram.ControlsManagement.CustomProgressBar;
 
 namespace DigitalProductionProgram.MainWindow
 {
@@ -117,11 +117,13 @@ namespace DigitalProductionProgram.MainWindow
         private void Menu_Arkiv_NyOrder_Click(object sender, EventArgs e)
         {
             Order.Clear_Order();
+            mainForm.Clear_Mainform();
             mainForm.OrderInformation.Clear();
             mainForm.OrderInformation.tb_OrderNr.Focus();
             mainForm.measurePoints.ClearMeasurePoints();
             mainForm.measureStats.ClearData();
             mainForm.OrderInformation.tb_OrderNr.Enabled = true;
+            
 
             if (MainMeasureStatistics.Charts.chart != null && MainMeasureStatistics.Charts.chart.Series[0].Points.Count > 0)
             {
@@ -548,27 +550,7 @@ namespace DigitalProductionProgram.MainWindow
         }
 
         //----------HJÄLP----------
-        private void Menu_Help_VisaHjälp_Click(object sender, EventArgs e)
-        {
-            Points.Add_Points(5, "Visa Hjälp");
-            Log.Activity.Start();
-            try
-            {
-                var powerPointPath = "V:\\Elektroniska Körprotokoll\\V.3.0\\Manual\\Digitala Körprotokoll_.ppsx";
-                var powerPointFilePath = "V:\\Elektroniska Körprotokoll\\V.3.0\\Manual\\Digitala Körprotokoll_.ppsx";
-
-                var powerPoint = new Process();
-                powerPoint.StartInfo.FileName = powerPointPath;
-                powerPoint.StartInfo.Arguments = " /S " + powerPointFilePath;
-                powerPoint.Start();
-            }
-            catch (Exception exc)
-            {
-                _ = Log.Activity.Stop($"try-catch: Visa Hjälp - Error - {exc}");
-            }
-
-            _ = Log.Activity.Stop("Visa Hjälp");
-        }
+        
         private void Menu_Help_RapporteraFel_Click(object sender, EventArgs e)
         {
             Process.Start(new ProcessStartInfo

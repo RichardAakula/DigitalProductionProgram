@@ -8,8 +8,8 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 
 		<ApplicationIcon>NewIcon.ico</ApplicationIcon>
-		<AssemblyVersion>4.3.10.6</AssemblyVersion>
-		<FileVersion>4.3.10.6</FileVersion>
+		<AssemblyVersion>4.3.10.8</AssemblyVersion>
+		<FileVersion>4.3.10.8</FileVersion>
 
 		<!-- ✅ Matchar arkitektur: -->
 		<PlatformTarget>x86</PlatformTarget>

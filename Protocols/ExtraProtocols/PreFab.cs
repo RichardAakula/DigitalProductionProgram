@@ -32,13 +32,11 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
                 if (string.IsNullOrEmpty(Order.OrderNumber))
                     return 0;
                 var query = $"SELECT COUNT(*) FROM [Order].PreFab {Queries.WHERE_OrderID}";
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    con.Open();
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    cmd.Parameters.AddWithValue("@id", Order.OrderID);
-                    return (int)cmd.ExecuteScalar();
-                }
+                using var con = new SqlConnection(Database.cs_Protocol);
+                con.Open();
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                cmd.Parameters.AddWithValue("@id", Order.OrderID);
+                return (int)cmd.ExecuteScalar();
             }
         }
 
@@ -150,16 +148,14 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
             get
             {
                 var list = new List<string?>();
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    const string query = @"SELECT DISTINCT Halvfabrikat_Benämning FROM [Order].PreFab ORDER BY Halvfabrikat_Benämning";
+                using var con = new SqlConnection(Database.cs_Protocol);
+                const string query = @"SELECT DISTINCT Halvfabrikat_Benämning FROM [Order].PreFab ORDER BY Halvfabrikat_Benämning";
 
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    con.Open();
-                    var reader = cmd.ExecuteReader();
-                    while (reader.Read())
-                        list.Add(reader[0].ToString());
-                }
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                con.Open();
+                var reader = cmd.ExecuteReader();
+                while (reader.Read())
+                    list.Add(reader[0].ToString());
                 return list;
             }
         }
@@ -333,7 +329,7 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
                 }
                 if (items != null)
                 {
-                    var choose_Item = new Choose_Item(items, new[] { dgv.Rows[e.RowIndex].Cells[e.ColumnIndex] }, null, 0, 0, true);
+                    var choose_Item = new Choose_Item(items, new[] { dgv.Rows[e.RowIndex].Cells[e.ColumnIndex] }, null, 0, 0, false);
                     choose_Item.ShowDialog();
                 }
 
@@ -532,19 +528,17 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
                     tempId = int.Parse(DataTable_Halvfabrikat_Krympslang(Order.OrderID).Rows[row]["TempID"].ToString());
                 else
                     tempId = int.Parse(DataTable_PreFab(Order.OrderID, true).Rows[row]["TempID"].ToString());
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    const string query = @"
+                using var con = new SqlConnection(Database.cs_Protocol);
+                const string query = @"
                             INSERT INTO [Order].PreFab (OrderID, Halvfabrikat_ArtikelNr, Halvfabrikat_Benämning, Halvfabrikat_ID, Halvfabrikat_OD, Halvfabrikat_W, BestBeforeDate, Length)
                             SELECT OrderID, Halvfabrikat_ArtikelNr, Halvfabrikat_Benämning, Halvfabrikat_ID, Halvfabrikat_OD, Halvfabrikat_W, BestBeforeDate, Length 
                             FROM [Order].PreFab WHERE OrderID = @orderid AND TempID = @tempid";
 
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    con.Open();
-                    cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
-                    cmd.Parameters.AddWithValue("@tempid", tempId);
-                    cmd.ExecuteNonQuery();
-                }
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                con.Open();
+                cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
+                cmd.Parameters.AddWithValue("@tempid", tempId);
+                cmd.ExecuteNonQuery();
             }
             public static void DELETE_Row(int tempID)
             {

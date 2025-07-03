@@ -26,15 +26,13 @@ namespace DigitalProductionProgram.Protocols.Slipning_TEF
             get
             {
                 var dt = new DataTable();
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    var query = @"SELECT PartNr FROM Parts.PartNrSpecial WHERE PartNrDescriptionID = (SELECT id FROM Parts.PartNrDescription WHERE description = 'Extra Parametrar Slipning_TEF')";
+                using var con = new SqlConnection(Database.cs_Protocol);
+                var query = @"SELECT PartNr FROM Parts.PartNrSpecial WHERE PartNrDescriptionID = (SELECT id FROM Parts.PartNrDescription WHERE description = 'Extra Parametrar Slipning_TEF')";
 
-                    con.Open();
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    dt.Load(cmd.ExecuteReader());
-                    return dt;
-                }
+                con.Open();
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                dt.Load(cmd.ExecuteReader());
+                return dt;
             }
         }
         private Control[] Control_Produktion_Parametrar
@@ -78,6 +76,7 @@ namespace DigitalProductionProgram.Protocols.Slipning_TEF
         public Produktion_Slipning_TEF()
         {
             InitializeComponent();
+            
             dgv_Produktion.MouseWheel += Scroll_MouseWheel;
         }
         public void Fill_Inledande_LotNr()
@@ -86,7 +85,7 @@ namespace DigitalProductionProgram.Protocols.Slipning_TEF
         }
         public void Change_GUI()
         {
-            if (Part.IsPartNrSpecial("Extra Parametrar Slipning_TEF") == false)
+            if (Part.IsPartNrSpecial == false)
             {
                 //Döljer dom extra kolumnerna vid körning med dubbla halvfabrikat
                 tlp_Main.ColumnStyles[5].Width = 0;
@@ -155,7 +154,7 @@ namespace DigitalProductionProgram.Protocols.Slipning_TEF
 
             Load_Data();
             ControlManager.Clear_TextBoxes(Control_Produktion_Parametrar);
-            if (Part.IsPartNrSpecial("Extra Parametrar Slipning_TEF"))
+            if (Part.IsPartNrSpecial)
                 ControlManager.Clear_TextBoxes(new[] {tb_Mjukslang_OD_lång, tb_Hållfasthet_Newton_lång, tb_Hållfasthet_Procent_lång});
             ControlManager.Unlock_Controls(Control_Produktion_Parametrar);
             ControlManager.Unlock_Controls(new Control[] { lbl_Edit_Row_Produktion, lbl_Kassera_Produktion });
@@ -175,7 +174,7 @@ namespace DigitalProductionProgram.Protocols.Slipning_TEF
             
             for (var col = 0; col < 16; col++)
             {
-                if (Part.IsPartNrSpecial("Extra Parametrar Slipning_TEF") == false && (col == 4 || col == 12 || col == 14))
+                if (Part.IsPartNrSpecial == false && (col == 4 || col == 12 || col == 14))
                     continue;
                 tlp_Main.GetControlFromPosition(col + 1, 6).Text = dgv_Produktion.Rows[Editing_Row].Cells[col].Value.ToString();
             }
@@ -358,7 +357,7 @@ namespace DigitalProductionProgram.Protocols.Slipning_TEF
                         break;
                        
                     default:
-                        if (Part.IsPartNrSpecial("Extra Parametrar Slipning_TEF") == false && col is 4 or 12 or 14)
+                        if (Part.IsPartNrSpecial == false && col is 4 or 12 or 14)
                             continue;
 
                         var ctrl = tlp_Main.GetControlFromPosition(col + 1, 6);

@@ -276,7 +276,7 @@ namespace DigitalProductionProgram.Measure
             if (double.IsNaN(value) || string.IsNullOrEmpty(text))
             {
                 foreColor = Color.Red;
-                text = "NaN";
+                text = "N/A";
             }
                 
             var lbl = new Label
@@ -290,10 +290,8 @@ namespace DigitalProductionProgram.Measure
                 Font = font,
                 Margin = new Padding(0, 0, 0, 0),
                 TextAlign = content,
-                //Cursor = Cursors.Hand,
             };
             flp.Controls.Add(lbl);
-            //flp.Invoke(new Action(() => flp.Controls.Add(lbl)));
         }
         
         

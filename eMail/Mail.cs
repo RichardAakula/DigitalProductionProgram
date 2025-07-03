@@ -183,7 +183,8 @@ namespace DigitalProductionProgram.eMail
         }
         public static void NotifyCustomerServiceMissingMeasurepoints()
         {
-            if (Part.IsPartNrSpecial("MissingMeasurepoints") || Person.Role == "SuperAdmin")
+            Part.SetPartNrSpecial("MissingMeasurepoints");
+            if (Part.IsPartNrSpecial || Person.Role == "SuperAdmin")
                 return;
             InfoText.Show($"{LanguageManager.GetString("mail_MissingMeasurePoints_1")}", CustomColors.InfoText_Color.Warning, null);
 
@@ -233,6 +234,17 @@ namespace DigitalProductionProgram.eMail
             Mail.Send(LanguageManager.GetString("mail_ApproveProcesscard"), 8);
         }
 
+        public static void NotifyUserCodeResetPassword(string? code)
+        {
+            var mail = new MailMessage();
+            mail.To.Add(Person.Mail);
+            Mail.Body = "Hej, <br /><br />" +
+                        $"Du har begärt att återställa ditt lösenord i Digital Production Program.<br />" +
+                        $"Använd följande kod för att återställa ditt lösenord:<br /> <b>{code}</b><br />" +
+                        "Koden är giltig i 2 minuter.<br /><br />" +
+                        "Om du inte har begärt detta, vänligen ignorera detta meddelande.<br /><br />";
+            Mail.Send($"Återställning av lösenord för Digital Production Program", 0, mail);
+        }
         public static void NotifyAllUsersSpecificInfo()
         {
             var mailMessage = new MailMessage();

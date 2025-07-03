@@ -10,7 +10,7 @@ namespace DigitalProductionProgram.Zumbach
 {
     internal class Zumbach
     {
-       public static void Load_DataTable_Measurements(ControlsManagement.ProgressBar pbar)
+       public static void Load_DataTable_Measurements(ControlsManagement.CustomProgressBar pbar)
         {
             int ctr = 0;
             DataTable_Measurements = new DataTable();

@@ -1,38 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using Microsoft.Data.SqlClient;
-using System.Windows.Forms;
+﻿using Microsoft.Data.SqlClient;
 using DigitalProductionProgram.DatabaseManagement;
 using OfficeOpenXml;
-using OfficeOpenXml.Style;
-using System.IO;
 using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.Processcards;
 using DigitalProductionProgram.Protocols;
-using OfficeOpenXml;
 using Module = DigitalProductionProgram.Protocols.Protocol.Module;
-using ProgressBar = DigitalProductionProgram.ControlsManagement.ProgressBar;
+using ProgressBar = DigitalProductionProgram.ControlsManagement.CustomProgressBar;
 
 namespace DigitalProductionProgram.Browse_Protocols
 {
     internal class Export_Data_Excel
     {
         
-        public static List<string> orderlist;
-
         [Obsolete]
         public static void StartExport(DataGridView dgv)
         {
             StartExport_Extrudering_FEP(dgv);
-
         }
 
        
 
-[Obsolete("Obsolete")]
-private static void StartExport_Extrudering_FEP(DataGridView dgv)
+    [Obsolete("Obsolete")]
+    private static void StartExport_Extrudering_FEP(DataGridView dgv)
     {
         var orgOrderID = Order.OrderID;
         var pbar = new ProgressBar();
@@ -87,8 +77,8 @@ private static void StartExport_Extrudering_FEP(DataGridView dgv)
 
 
 
-        private static void Export_Sheet_Tools(ExcelWorksheet sheet, int excelRow, int row, int uppstart, DataGridView dgv_Orderlist)
-    {
+    private static void Export_Sheet_Tools(ExcelWorksheet sheet, int excelRow, int row, int uppstart, DataGridView dgv_Orderlist)
+    { 
         using var con = new SqlConnection(Database.cs_Protocol);
         var query = @"
         SELECT DISTINCT Value, TextValue, DateValue, MachineIndex, Uppstart, RowIndex, template.Decimals, template.Type

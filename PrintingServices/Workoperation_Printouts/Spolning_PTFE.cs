@@ -35,6 +35,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
 
         public static void PrintPreview_Order(bool IsPrinting)
         {
+            Part.SetPartNrSpecial("Spolning Stripes");
             Print_Protocol.totalPrintOuts = new PrintVariables.TotalPrintOuts
             {
                 PagesSpolning = (int)Math.Ceiling((double)Module.TotalStartUps / 24)
@@ -133,54 +134,51 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
             }
             public static void Headers(PrintPageEventArgs e)
             {
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    var query = @"
+                using var con = new SqlConnection(Database.cs_Protocol);
+                var query = @"
                         SELECT DISTINCT codetext, ColumnIndex
                         FROM Protocol.Template as template
                             JOIN Protocol.Description as descr
                                 ON descr.id = template.ProtocolDescriptionID
                         WHERE FormTemplateID = (SELECT FormTemplateID FROM Protocol.FormTemplate WHERE MainTemplateID = @protocolmaintemplateid)  
                         ORDER BY ColumnIndex";
-                    con.Open();
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    cmd.Parameters.AddWithValue("@protocolmaintemplateid", Templates_Protocol.MainTemplate.ID);
-                    cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
-                    var reader = cmd.ExecuteReader();
-                    var x = 26;
-                    var col = 0;
-                    while (reader.Read())
+                con.Open();
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                cmd.Parameters.AddWithValue("@protocolmaintemplateid", Templates_Protocol.MainTemplate.ID);
+                cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
+                var reader = cmd.ExecuteReader();
+                var x = 26;
+                var col = 0;
+                while (reader.Read())
+                {
+                    int.TryParse(reader["ColumnIndex"].ToString(), out var ColumnIndex);
+                    var codetext = reader["codetext"].ToString();
+                    if (Part.IsPartNrSpecial == false)
                     {
-                        int.TryParse(reader["ColumnIndex"].ToString(), out var ColumnIndex);
-                        var codetext = reader["codetext"].ToString();
-                        if (Part.IsPartNrSpecial("Spolning Stripes") == false)
-                        {
-                            if (ColumnIndex > 6 && ColumnIndex < 11)
-                                continue;
-                            PrintingServices.Print.Thin_Rectangle(e, x, 150, width_NoPigment[col], 45);
-                            var x_text = x + width_NoPigment[col] / 2;
-                            PrintingServices.Print.Print_Rubrik(e, codetext, x_text, 155, width_NoPigment[col],  true);
-                            if (col < width_NoPigment.Length - 1)
-                                x += width_NoPigment[col];
-                            col++;
-                        }
-                        else
-                        {
-                            PrintingServices.Print.Thin_Rectangle(e, x, 150, width_Pigment[col], 45);
-                            var x_text = x + width_Pigment[col] / 2;
-                            PrintingServices.Print.Print_Rubrik(e, codetext, x_text, 155, width_Pigment[col],  true);
-                            if (col < width_Pigment.Length - 1)
-                                x += width_Pigment[col];
-                            col++;
-                        }
+                        if (ColumnIndex > 6 && ColumnIndex < 11)
+                            continue;
+                        PrintingServices.Print.Thin_Rectangle(e, x, 150, width_NoPigment[col], 45);
+                        var x_text = x + width_NoPigment[col] / 2;
+                        PrintingServices.Print.Print_Rubrik(e, codetext, x_text, 155, width_NoPigment[col],  true);
+                        if (col < width_NoPigment.Length - 1)
+                            x += width_NoPigment[col];
+                        col++;
+                    }
+                    else
+                    {
+                        PrintingServices.Print.Thin_Rectangle(e, x, 150, width_Pigment[col], 45);
+                        var x_text = x + width_Pigment[col] / 2;
+                        PrintingServices.Print.Print_Rubrik(e, codetext, x_text, 155, width_Pigment[col],  true);
+                        if (col < width_Pigment.Length - 1)
+                            x += width_Pigment[col];
+                        col++;
                     }
                 }
             }
             public static void Journal_Values(PrintPageEventArgs e, int row, int y)
             {
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    var query = @"
+                using var con = new SqlConnection(Database.cs_Protocol);
+                var query = @"
                                SELECT DISTINCT Value, TextValue, Uppstart, Ugn, ColumnIndex, template.Type, template.Decimals
                                     FROM [Order].Data AS protocol
                                         JOIN Protocol.Template as template
@@ -192,75 +190,74 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                                         AND uppstart = @row
                                         ORDER BY uppstart, ColumnIndex";
 
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    con.Open();
-                    cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
-                    cmd.Parameters.AddWithValue("@protocolmaintemplateid", Templates_Protocol.MainTemplate.ID);
-                    cmd.Parameters.AddWithValue("@row", row);
-                    var reader = cmd.ExecuteReader();
-                    var col = 0;
-                    var x = 26;
-                    while (reader.Read())
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                con.Open();
+                cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
+                cmd.Parameters.AddWithValue("@protocolmaintemplateid", Templates_Protocol.MainTemplate.ID);
+                cmd.Parameters.AddWithValue("@row", row);
+                var reader = cmd.ExecuteReader();
+                var col = 0;
+                var x = 26;
+                while (reader.Read())
+                {
+                    int.TryParse(reader["Type"].ToString(), out var type);
+                    int.TryParse(reader["ColumnIndex"].ToString(), out var ColumnIndex);
+                    var value = string.Empty;
+
+                    switch (type)
                     {
-                        int.TryParse(reader["Type"].ToString(), out var type);
-                        int.TryParse(reader["ColumnIndex"].ToString(), out var ColumnIndex);
-                        var value = string.Empty;
+                        case 0:
+                            int.TryParse(reader["Decimals"].ToString(), out var decimals);
+                            if (double.TryParse(reader["Value"].ToString(), out var NumberValue) == false)
+                                value = string.Empty;
+                            else
+                                value = Processcard.Format_Value(NumberValue, decimals);
+                            break;
+                        case 1:
+                            value = reader["TextValue"].ToString();
+                            break;
+                        case 2:
+                            value = "\u221A";
+                            break;
+                        case 3:
+                            if (DateTime.TryParse(reader["TextValue"].ToString(), out var date) == false)
+                                break;
+                            if (date.TimeOfDay.TotalSeconds == 0)
+                                value = date.ToString("yyyy-MM-dd");
+                            else
+                                value = date.ToString("yyyy-MM-dd HH:mm");
+                            break;
+                    }
 
-                        switch (type)
+                    if (Part.IsPartNrSpecial == false)
+                    {
+                        if (ColumnIndex is > 6 and < 11)
+                            continue;
+                        try
                         {
-                            case 0:
-                                int.TryParse(reader["Decimals"].ToString(), out var decimals);
-                                if (double.TryParse(reader["Value"].ToString(), out var NumberValue) == false)
-                                    value = string.Empty;
-                                else
-                                    value = Processcard.Format_Value(NumberValue, decimals);
-                                break;
-                            case 1:
-                                value = reader["TextValue"].ToString();
-                                break;
-                            case 2:
-                                value = "\u221A";
-                                break;
-                            case 3:
-                                if (DateTime.TryParse(reader["TextValue"].ToString(), out var date) == false)
-                                    break;
-                                if (date.TimeOfDay.TotalSeconds == 0)
-                                    value = date.ToString("yyyy-MM-dd");
-                                else
-                                    value = date.ToString("yyyy-MM-dd HH:mm");
-                                break;
+                            PrintingServices.Print.Thin_Rectangle(e, x, y, width_NoPigment[col], RowHeight);
                         }
-
-                        if (Part.IsPartNrSpecial("Spolning Stripes") == false)
+                        catch
                         {
-                            if (ColumnIndex > 6 && ColumnIndex < 11)
-                                continue;
-                            try
-                            {
-                                PrintingServices.Print.Thin_Rectangle(e, x, y, width_NoPigment[col], RowHeight);
-                            }
-                            catch
-                            {
-                                if (Person.Role == "SuperAdmin")
-                                    MessageBox.Show(row.ToString());
-                            } 
+                            if (Person.Role == "SuperAdmin")
+                                MessageBox.Show(row.ToString());
+                        } 
                             
-                            var x_text = x + width_NoPigment[col] / 2;
-                            PrintingServices.Print.Text_Operatör(e, value, x_text, y + 4, width_NoPigment[col], true, true);
-                            if (col < width_NoPigment.Length - 1)
-                                x += width_NoPigment[col];
-                            col++;
+                        var x_text = x + width_NoPigment[col] / 2;
+                        PrintingServices.Print.Text_Operatör(e, value, x_text, y + 4, width_NoPigment[col], true, true);
+                        if (col < width_NoPigment.Length - 1)
+                            x += width_NoPigment[col];
+                        col++;
 
-                        }
-                        else
-                        {
-                            PrintingServices.Print.Thin_Rectangle(e, x, y, width_Pigment[col], RowHeight);
-                            var x_text = x + width_Pigment[col] / 2;
-                            PrintingServices.Print.Text_Operatör(e, value, x_text, y + 4, width_Pigment[col], true, true);
-                            if (col < width_Pigment.Length - 1)
-                                x += width_Pigment[col];
-                            col++;
-                        }
+                    }
+                    else
+                    {
+                        PrintingServices.Print.Thin_Rectangle(e, x, y, width_Pigment[col], RowHeight);
+                        var x_text = x + width_Pigment[col] / 2;
+                        PrintingServices.Print.Text_Operatör(e, value, x_text, y + 4, width_Pigment[col], true, true);
+                        if (col < width_Pigment.Length - 1)
+                            x += width_Pigment[col];
+                        col++;
                     }
                 }
             }

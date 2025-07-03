@@ -244,17 +244,16 @@ namespace DigitalProductionProgram.User
             con.Open();
             return (int)cmd.ExecuteScalar();
         }
-        public static Version? LastReadChangeLogVersion(string name)
+        public static async Task<Version?> LastReadChangeLogVersion(string name)
         {
-            using var con = new SqlConnection(Database.cs_Protocol);
+            await using var con = new SqlConnection(Database.cs_Protocol);
             const string query = "SELECT LastReadChangeLogVersion FROM [User].Person WHERE Name = @name";
 
             var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             con.Open();
             cmd.Parameters.AddWithValue("@name", name);
-            var version = (string)cmd.ExecuteScalar();
-            var vers = new Version(version);
-            return vers;
+            var result = await cmd.ExecuteScalarAsync();
+            return Version.TryParse(result?.ToString(), out var ver) ? ver : null;
         }
 
 
@@ -362,23 +361,46 @@ namespace DigitalProductionProgram.User
            
             InfoText.Show($"{name} {LanguageManager.GetString("user_AddedInSystem")}", CustomColors.InfoText_Color.Ok, null);
         }
-        public static async Task UpdateLastReadChangelogVersion(string? username)
+        public static void UpdatePassword( string newPassword)
         {
-            if (ChangeLog.HighestSelectedVersion is null)
-                return;
-            await using var con = new SqlConnection(Database.cs_Protocol);
+            using var con = new SqlConnection(Database.cs_Protocol);
             const string query = @"
-                    UPDATE [User].Person
-                    SET LastReadChangeLogVersion = @lastreadchangelogversion
-                    WHERE Name = @name
-                        AND (@lastreadchangelogversion > LastReadChangeLogVersion OR LastReadChangeLogVersion IS NULL)";
+                UPDATE [User].Person
+                SET Password = @password
+                WHERE UserID = @userid";
 
-            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-            cmd.Parameters.AddWithValue("@name", username);
-            cmd.Parameters.AddWithValue("@lastreadchangelogversion", ChangeLog.HighestSelectedVersion.ToString());
+            using var cmd = new SqlCommand(query, con);
+            ServerStatus.Add_Sql_Counter();
+
+            cmd.Parameters.AddWithValue("@userid", Person.UserID);
+            cmd.Parameters.AddWithValue("@password", PasswordManager.ConvertToHashedPassword(newPassword));
 
             con.Open();
-            await cmd.ExecuteNonQueryAsync();
+        }
+
+        public static async Task UpdateLastReadChangelogVersion(string? username)
+        {
+            if (ChangeLog.HighestSelectedVersion is null || username is null)
+                return;
+
+            var newVersion = new Version(ChangeLog.HighestSelectedVersion.ToString());
+            var currentVersion = await LastReadChangeLogVersion(username);
+
+            if (currentVersion == null || newVersion > currentVersion)
+            {
+                await using var con = new SqlConnection(Database.cs_Protocol);
+                const string query = @"
+                UPDATE [User].Person
+                SET LastReadChangeLogVersion = @lastreadchangelogversion
+                WHERE Name = @name";
+
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                cmd.Parameters.AddWithValue("@name", username);
+                cmd.Parameters.AddWithValue("@lastreadchangelogversion", newVersion.ToString());
+
+                con.Open();
+                await cmd.ExecuteNonQueryAsync();
+            }
         }
 
 

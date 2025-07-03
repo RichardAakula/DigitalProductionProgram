@@ -19,7 +19,7 @@ using DigitalProductionProgram.PrintingServices;
 using DigitalProductionProgram.PrintingServices.Workoperation_Printouts;
 using DigitalProductionProgram.Protocols;
 using DigitalProductionProgram.User;
-using ProgressBar = DigitalProductionProgram.ControlsManagement.ProgressBar;
+using CustomProgressBar = DigitalProductionProgram.ControlsManagement.CustomProgressBar;
 
 namespace DigitalProductionProgram.Zumbach
 {
@@ -75,7 +75,7 @@ namespace DigitalProductionProgram.Zumbach
             return base.ProcessCmdKey(ref msg, keyData);
         }
 
-        private ProgressBar pbar;
+        private CustomProgressBar pbar;
         private readonly PrintPreviewDialog preview_Chart = new();
         private readonly PrintDocument print_Chart = new();
         private readonly ToolTip tooltip = new();
@@ -218,7 +218,7 @@ namespace DigitalProductionProgram.Zumbach
         {
             InitializeComponent();
             serialPort = new SerialPort();
-            pbar = new ProgressBar { Location = pos.Bounds.Location };
+            pbar = new CustomProgressBar { Location = pos.Bounds.Location };
 
             Translate_Form();
 
@@ -360,7 +360,7 @@ namespace DigitalProductionProgram.Zumbach
         private void LoadData_Order()
         {
             ClearAllDataChart();
-            var bar = new ProgressBar();
+            var bar = new CustomProgressBar();
             bar.Show();
 
             var query = chb_Sortera_Bort_Kasserade.Checked ? @"
@@ -470,7 +470,7 @@ namespace DigitalProductionProgram.Zumbach
         {
             ClearAllDataChart();
             var point = new Point(0, 0);
-            var progressBar = new ProgressBar();
+            var progressBar = new CustomProgressBar();
             progressBar.Show();
             progressBar.Set_ValueProgressBar(0, "Laddar ner data från hela artikeln");
 

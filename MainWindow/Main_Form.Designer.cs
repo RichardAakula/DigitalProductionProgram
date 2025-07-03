@@ -939,7 +939,6 @@ namespace DigitalProductionProgram.MainWindow
         private System.Windows.Forms.Timer timer_ReLogin_Monitor;
         public ServerStatus Serverstatus;
         private QC.FeedBackQC FeedBackQC;
-        private Övrigt.TipsAndTrix TipsAndTrix;
         private Panel panel_Right;
         public TableLayoutPanel tlp_QuickOpen;
         private Label label_Filter;
@@ -952,5 +951,6 @@ namespace DigitalProductionProgram.MainWindow
         private SplitContainer splitContainer_Right;
         private ActiveOrdersUser ActiveOrdersUser;
         private Statistics_DPP Statistics_DPP;
+        public Övrigt.TipsAndTrix TipsAndTrix;
     }
 }

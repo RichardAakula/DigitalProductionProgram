@@ -4348,27 +4348,6 @@ namespace DigitalProductionProgram.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SELECT DISTINCT TOP(5) OrderNr, Operation,  Back_Red, Back_Green, Back_Blue, Fore_Red, Fore_Green, Fore_Blue 
-        ///FROM Measureprotocol.MainData AS mp
-        ///	JOIN [Order].MainData as main
-        ///		ON mp.OrderID = main.OrderID 
-        ///	JOIN [Settings].QuickStart_Color as color
-        ///		ON main.WorkoperationID = color.WorkoperationID	
-        ///
-        ///WHERE AnstNr = @employeenumber AND main.IsOrderDone = &apos;False&apos;
-        ///AND mp.Date &gt; @thisyear
-        ///
-        ///UNION
-        ///
-        ///SELECT DISTINCT TOP(5) OrderNr, Operation,  Back_Red, Back_Green, Back_Blue, Fore_Red, Fore_Green, For [rest of string was truncated]&quot;;.
-        /// </summary>
-        internal static string SELECT_OrderNr_ActiveOrdersForUser {
-            get {
-                return ResourceManager.GetString("SELECT_OrderNr_ActiveOrdersForUser", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
         internal static string selectTemplateError {

@@ -2312,4 +2312,28 @@ Contact Admin if necessary.</value>
   <data name="label_InactiveProcesscard" xml:space="preserve">
     <value>This Process card is inactive.</value>
   </data>
+  <data name="label_ResetPasswordInfo" xml:space="preserve">
+    <value>We’ve sent a code to your email. Enter it below.</value>
+  </data>
+  <data name="btn_ConfirmCode" xml:space="preserve">
+    <value>Confirm code</value>
+  </data>
+  <data name="btn_NewCode" xml:space="preserve">
+    <value>Send new code</value>
+  </data>
+  <data name="btn_ConfirmNewCode" xml:space="preserve">
+    <value>Confirm code</value>
+  </data>
+  <data name="resetPassword_CodeExpired" xml:space="preserve">
+    <value>The code has expired. Click 'Send new code'.</value>
+  </data>
+  <data name="resetPassword_TimeLeft" xml:space="preserve">
+    <value>The code is valid for:</value>
+  </data>
+  <data name="resetPassword_MaxAttemptsReached" xml:space="preserve">
+    <value>Too many failed attempts.</value>
+  </data>
+  <data name="resetPassword_WrongCode" xml:space="preserve">
+    <value>Incorrect code. Attempts left:</value>
+  </data>
 </root>

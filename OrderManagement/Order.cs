@@ -20,7 +20,7 @@ using DigitalProductionProgram.QC;
 using DigitalProductionProgram.Templates;
 using DigitalProductionProgram.User;
 using static DigitalProductionProgram.OrderManagement.Manage_WorkOperation;
-using ProgressBar = DigitalProductionProgram.ControlsManagement.ProgressBar;
+using CustomProgressBar = DigitalProductionProgram.ControlsManagement.CustomProgressBar;
 
 namespace DigitalProductionProgram.OrderManagement
 {
@@ -390,13 +390,15 @@ namespace DigitalProductionProgram.OrderManagement
                 var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", OrderID);
                 con.Open();
-                return cmd.ExecuteScalar().ToString();
+                return cmd.ExecuteScalar().ToString() ?? string.Empty;
             }
         }
         public static string Rating
         {
             get
             {
+                if (string.IsNullOrEmpty(OrderNumber) || OrderID is null)
+                    return string.Empty;
                 using var con = new SqlConnection(Database.cs_Protocol);
                 const string query = "SELECT Points FROM [Order].MainData WHERE OrderID = @orderid";
                 var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
@@ -514,7 +516,7 @@ namespace DigitalProductionProgram.OrderManagement
                 return false;
             }
         }
-
+        public static bool IsUsingBioBurdenSamples { get; set; }
 
 
 
@@ -562,14 +564,14 @@ namespace DigitalProductionProgram.OrderManagement
         }
         public static void Check_BioBurden_Samples(int mätning, int totalAmount, Control form)
         {
-            if (Part.IsPartNrSpecial("BioBurden Samples") == false)
+            if (Order.IsUsingBioBurdenSamples == false)
                 return;
             if (totalAmount == 0)
                 return;
             
             var percent_Order = mätning / (Amount / (double)totalAmount);
 
-            if (percent_Order > 0.45 && percent_Order < 0.50)
+            if (percent_Order is > 0.45 and < 0.50)
                 InfoText.Show("Du har snart kört halva ordern så var beredd på att ta Bioburden prover.", CustomColors.InfoText_Color.Info, "Info", form);
 
             if (!(percent_Order >= 0.50) || Korprotokoll.IsBioburdenSamplesTaken) 
@@ -764,7 +766,7 @@ namespace DigitalProductionProgram.OrderManagement
                 {
                     InfoText.Show(LanguageManager.GetString("startOrder_NeedLogin"), CustomColors.InfoText_Color.Warning, "Warning", form);
 
-                    ProgressBar.close();
+                    CustomProgressBar.close();
                     return true;
                 }
                 return false;
@@ -780,7 +782,7 @@ namespace DigitalProductionProgram.OrderManagement
                 {
                     InfoText.Show(LanguageManager.GetString("startOrder_NoWorkoperation"), CustomColors.InfoText_Color.Bad, "Warning", form);
 
-                    ProgressBar.close();
+                    CustomProgressBar.close();
                     return false;
                 }
 
@@ -791,7 +793,7 @@ namespace DigitalProductionProgram.OrderManagement
             {
                 main.Clear_Mainform();
                 main.OrderInformation.tb_OrderNr.Focus();
-                ProgressBar.close();
+                CustomProgressBar.close();
                 //IsOkStartOrder = false;
             }
             public static void New_Order(Main_Form main, ref bool IsOkStartOrder)
@@ -1170,7 +1172,8 @@ namespace DigitalProductionProgram.OrderManagement
 
             private static bool Is_MeasureEquipmentFilledIn(Main_Form main)
             {
-                if (Part.IsPartNrSpecial("Kompoundering"))
+                Part.SetPartNrSpecial("Kompoundering");
+                if (Part.IsPartNrSpecial)
                     return true;
                 using var con = new SqlConnection(Database.cs_Protocol);
                 var query = $"SELECT * FROM MeasureInstruments.Mätdon {Queries.WHERE_OrderID}";
@@ -1178,14 +1181,12 @@ namespace DigitalProductionProgram.OrderManagement
                 cmd.Parameters.AddWithValue("@id", OrderID);
                 con.Open();
                 var reader = cmd.ExecuteReader();
-                var IsOk = true;
                 while (reader.Read())
                 {
-                    IsOk = !string.IsNullOrEmpty(reader["Nr"].ToString());
+                    var IsOk = !string.IsNullOrEmpty(reader["Nr"].ToString());
                     if (IsOk == false)
                         return ShowMessage(LanguageManager.GetString("finishOrder_MeasureEq_1"), main);
                 }
-
                         
                 if (reader.HasRows == false)
                     return ShowMessage(LanguageManager.GetString("finishOrder_MeasureEq_2"), main);

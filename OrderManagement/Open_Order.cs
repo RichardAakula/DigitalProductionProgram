@@ -7,21 +7,21 @@ using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Equipment;
 using DigitalProductionProgram.MainWindow;
-using ProgressBar = DigitalProductionProgram.ControlsManagement.ProgressBar;
+using CustomProgressBar = DigitalProductionProgram.ControlsManagement.CustomProgressBar;
 
 namespace DigitalProductionProgram.OrderManagement
 {
     public partial class Open_Order : Form
     {
         public bool svarÖppna;
-        private readonly ProgressBar pbar;
-        private DataTable dt_Korprotokoll_MainData;
+        private readonly CustomProgressBar pbar;
+        private DataTable? dt_Korprotokoll_MainData;
         private bool IsOkFilterData;
 
         public Open_Order()
         {
             InitializeComponent();
-            pbar = new ProgressBar();
+            pbar = new CustomProgressBar();
             Translate_Form();
         }
         private void Öppna_Load(object sender, EventArgs e)

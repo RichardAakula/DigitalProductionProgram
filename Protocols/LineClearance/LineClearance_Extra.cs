@@ -394,17 +394,15 @@ namespace DigitalProductionProgram.Protocols.LineClearance
 
         private void LineClearance_Save_Comments_FormClosed(object sender, FormClosedEventArgs e)
         {
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                con.Open();
-                var query =
-                    $@"UPDATE [Order].MainData SET LC_Comments = @comments {Queries.WHERE_OrderID}";
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@id", Order.OrderID);
-                cmd.Parameters.AddWithValue("@comments", tb_Comments.Text);
+            using var con = new SqlConnection(Database.cs_Protocol);
+            con.Open();
+            var query =
+                $@"UPDATE [Order].MainData SET LC_Comments = @comments {Queries.WHERE_OrderID}";
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            cmd.Parameters.AddWithValue("@id", Order.OrderID);
+            cmd.Parameters.AddWithValue("@comments", tb_Comments.Text);
 
-                cmd.ExecuteNonQuery();
-            }
+            cmd.ExecuteNonQuery();
         }
 
         private void InstructionLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)

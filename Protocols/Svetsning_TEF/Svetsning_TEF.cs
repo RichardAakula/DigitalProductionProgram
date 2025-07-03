@@ -15,15 +15,13 @@ namespace DigitalProductionProgram.Protocols.Svetsning_TEF
             get
             {
                 var dt = new DataTable();
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    var query = $@"SELECT Kasserad, Inledande_OrderNr, Inledande_Påse, Inledande_UppmättPinne, Inledande_ID, Inledande_OD, Inledande_Längd, Inspektion_Utsida, Inspektion_Insida, Datum, Tid, AnstNr, Sign, TempID
+                using var con = new SqlConnection(Database.cs_Protocol);
+                var query = $@"SELECT Kasserad, Inledande_OrderNr, Inledande_Påse, Inledande_UppmättPinne, Inledande_ID, Inledande_OD, Inledande_Längd, Inspektion_Utsida, Inspektion_Insida, Datum, Tid, AnstNr, Sign, TempID
                                         FROM Korprotokoll_Svetsning_Parametrar {Queries.WHERE_OrderID} ORDER BY Datum, Tid";
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    cmd.Parameters.AddWithValue("@id", Order.OrderID);
-                    con.Open();
-                    dt.Load(cmd.ExecuteReader());
-                }
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                cmd.Parameters.AddWithValue("@id", Order.OrderID);
+                con.Open();
+                dt.Load(cmd.ExecuteReader());
                 return dt;
             }
         }
@@ -32,15 +30,13 @@ namespace DigitalProductionProgram.Protocols.Svetsning_TEF
             get
             {
                 var dt = new DataTable();
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    var query = $@"SELECT Kasserad, Svets, Tid_Förvärme, Svetsförflyttning, Tid_Bindvärme, Tid_Kylluft, Temperatur, Pinne_OD_Stål, Pinne_OD_PTFE,Värmebackar_Bredd, Värmebackar_Hål, Datum, Tid, AnstNr, Sign 
+                using var con = new SqlConnection(Database.cs_Protocol);
+                var query = $@"SELECT Kasserad, Svets, Tid_Förvärme, Svetsförflyttning, Tid_Bindvärme, Tid_Kylluft, Temperatur, Pinne_OD_Stål, Pinne_OD_PTFE,Värmebackar_Bredd, Värmebackar_Hål, Datum, Tid, AnstNr, Sign 
                                         FROM Korprotokoll_Svetsning_Maskinparametrar {Queries.WHERE_OrderID} ORDER BY Datum, Tid";
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    cmd.Parameters.AddWithValue("@id", Order.OrderID);
-                    con.Open();
-                    dt.Load(cmd.ExecuteReader());
-                }
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                cmd.Parameters.AddWithValue("@id", Order.OrderID);
+                con.Open();
+                dt.Load(cmd.ExecuteReader());
                 return dt;
             }
         }

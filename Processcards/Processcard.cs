@@ -29,9 +29,9 @@ namespace DigitalProductionProgram.Processcards
 
         
 
-        public static readonly List<int> Rows_double = new List<int>();
-        public static readonly List<int> Rows_int = new List<int>();
-        public static readonly List<int> Rows_string = new List<int>();
+        //public static readonly List<int> Rows_double = new List<int>();
+        //public static readonly List<int> Rows_int = new List<int>();
+        //public static readonly List<int> Rows_string = new List<int>();
 
         public static bool IsNotUsingProcesscard(WorkOperations workoperation)
         {
@@ -112,32 +112,6 @@ namespace DigitalProductionProgram.Processcards
             }
         }
 
-        public static List<int> List_UsedColumnsProcesscard(int row, int formtemplateid)
-        {
-            var list = new List<int>();
-            using var con = new SqlConnection(Database.cs_Protocol);
-            var query = @"
-                        SELECT ColumnIndex FROM Protocol.Template as template
-                            JOIN Protocol.Description as descr
-                                ON descr.id = template.ProtocolDescriptionID
-                        WHERE FormTemplateID = @formtemplateid
-                        AND RowIndex = @row ";
-            //AND revision = @revision";    //Denna bör gå att vara utan vid nya versionen med Flexibla Protokoll
-            con.Open();
-            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-            cmd.Parameters.AddWithValue("@workoperation", Order.WorkOperation.ToString());
-            cmd.Parameters.AddWithValue("@formtemplateid", formtemplateid);
-            cmd.Parameters.AddWithValue("@row", row);
-            //cmd.Parameters.AddWithValue("@revision", Active_Processcard_Revision(formtemplateid));
-            var reader = cmd.ExecuteReader();
-            while (reader.Read())
-            {
-                if (int.TryParse(reader["ColumnIndex"].ToString(), out var col))
-                    list.Add(col);
-            }
-
-            return list;
-        }
         
         public static string Latest_Processcard_Revision(int formtemplateid)
         {
@@ -176,25 +150,23 @@ namespace DigitalProductionProgram.Processcards
 
         public static int? TemplateID(int row, int col, int formtemplateid)
         {
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query = @"
+            using var con = new SqlConnection(Database.cs_Protocol);
+            var query = @"
                     SELECT ID FROM Protocol.Template 
                     WHERE FormTemplateID = @formtemplateid
                         AND ColumnIndex = @colIndex 
                         AND RowIndex = @rowIndex 
                         AND Revision = @revision";
 
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@workoperation", Order.WorkOperation.ToString());
-                cmd.Parameters.AddWithValue("@formtemplateid", formtemplateid);
-                cmd.Parameters.AddWithValue("@colIndex", col);
-                cmd.Parameters.AddWithValue("@rowIndex", row);
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            cmd.Parameters.AddWithValue("@workoperation", Order.WorkOperation.ToString());
+            cmd.Parameters.AddWithValue("@formtemplateid", formtemplateid);
+            cmd.Parameters.AddWithValue("@colIndex", col);
+            cmd.Parameters.AddWithValue("@rowIndex", row);
                 
-                con.Open();
-                var value = cmd.ExecuteScalar();
-                return (int?)value;
-            }
+            con.Open();
+            var value = cmd.ExecuteScalar();
+            return (int?)value;
         }
         public static int ValueType(int? templ_ID)
         {
@@ -219,9 +191,8 @@ namespace DigitalProductionProgram.Processcards
             if (IsMultipleExtruder)
                 Cell_Min = 5;
 
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query = @"
+            using var con = new SqlConnection(Database.cs_Protocol);
+            var query = @"
                     SELECT ColumnIndex, RowIndex, Value, TextValue, template.Type, template.Decimals
                     FROM Protocol.Template AS template
                         JOIN Processcard.Data AS pc_data
@@ -233,45 +204,43 @@ namespace DigitalProductionProgram.Processcards
                     AND template.FormTemplateID = @formtemplateid
                     AND (COALESCE(MachineIndex, 0) = COALESCE(@machineindex, 0))
                     ORDER BY RowIndex, ColumnIndex";
-                con.Open();
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                SQL_Parameter.NullableINT(cmd.Parameters, "@partID", Order.PartID);
-                cmd.Parameters.AddWithValue("@formtemplateid", formtemplateid);
-                if (IsMultipleExtruder)
-                    cmd.Parameters.AddWithValue("@machineindex", 2);
-                else
-                    cmd.Parameters.AddWithValue("@machineindex", DBNull.Value);
-                var reader = cmd.ExecuteReader();
+            con.Open();
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            SQL_Parameter.NullableINT(cmd.Parameters, "@partID", Order.PartID);
+            cmd.Parameters.AddWithValue("@formtemplateid", formtemplateid);
+            if (IsMultipleExtruder)
+                cmd.Parameters.AddWithValue("@machineindex", 2);
+            else
+                cmd.Parameters.AddWithValue("@machineindex", DBNull.Value);
+            var reader = cmd.ExecuteReader();
                 
-                while (reader.Read())
+            while (reader.Read())
+            {
+                int.TryParse(reader["type"].ToString(), out var type);
+                int.TryParse(reader["ColumnIndex"].ToString(), out var col);
+                int.TryParse(reader["RowIndex"].ToString(), out var row);
+                var value = string.Empty;
+                switch (type)
                 {
-                    int.TryParse(reader["type"].ToString(), out var type);
-                    int.TryParse(reader["ColumnIndex"].ToString(), out var col);
-                    int.TryParse(reader["RowIndex"].ToString(), out var row);
-                    var value = string.Empty;
-                    switch (type)
-                    {
-                        case 0://NumberValue
-                            int.TryParse(reader["Decimals"].ToString(), out var decimals);
+                    case 0://NumberValue
+                        int.TryParse(reader["Decimals"].ToString(), out var decimals);
 
-                            if (double.TryParse(reader["Value"].ToString(), out var NumberValue) == false)
-                                value = string.Empty;
-                            else
-                                value = Format_Value(NumberValue, decimals);
-                            break;
-                        case 1://TextValue
-                            value = reader["TextValue"].ToString();
-                            break;
-                    }
-                    dgv_Processkort.Rows[row].Cells[Cell_Min + col].Value = value;
+                        if (double.TryParse(reader["Value"].ToString(), out var NumberValue) == false)
+                            value = string.Empty;
+                        else
+                            value = Format_Value(NumberValue, decimals);
+                        break;
+                    case 1://TextValue
+                        value = reader["TextValue"].ToString();
+                        break;
                 }
+                dgv_Processkort.Rows[row].Cells[Cell_Min + col].Value = value;
             }
         }
         public static string Load_Data(int? partid, string codetext, int formtemplateid)
         {
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                const string query = @"
+            using var con = new SqlConnection(Database.cs_Protocol);
+            const string query = @"
                     SELECT DISTINCT Value, CodeText, TextValue, descr.Decimals, descr.Type
                     FROM Processcard.Data as processcard
                         JOIN Protocol.Template as template
@@ -282,39 +251,39 @@ namespace DigitalProductionProgram.Processcards
                             AND MachineIndex = 1
                             AND CodeText = @codetext
                             AND Revision = @revision";
-                con.Open();
-                var cmd = new SqlCommand(query, con)
+            con.Open();
+            var cmd = new SqlCommand(query, con)
+            {
+                CommandType = CommandType.Text
+            };
+            SQL_Parameter.NullableINT(cmd.Parameters, "@partid", partid);
+            cmd.Parameters.AddWithValue("@codetext", codetext);
+            //cmd.Parameters.AddWithValue("@revision", Active_Processcard_Revision(formtemplateid));
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                int.TryParse(reader["type"].ToString(), out var type);
+                var value = string.Empty;
+                switch (type)
                 {
-                    CommandType = CommandType.Text
-                };
-                SQL_Parameter.NullableINT(cmd.Parameters, "@partid", partid);
-                cmd.Parameters.AddWithValue("@codetext", codetext);
-                //cmd.Parameters.AddWithValue("@revision", Active_Processcard_Revision(formtemplateid));
-                var reader = cmd.ExecuteReader();
-                while (reader.Read())
-                {
-                    int.TryParse(reader["type"].ToString(), out var type);
-                    var value = string.Empty;
-                    switch (type)
-                    {
-                        case 0: //NumberValue
-                            int.TryParse(reader["Decimals"].ToString(), out var decimals);
-                            if (double.TryParse(reader["Value"].ToString(), out var NumberValue) == false)
-                                value = string.Empty;
-                            else
-                                value = Format_Value(NumberValue, decimals);
-                            break;
-                        case 1://TextValue
-                            value = reader["TextValue"].ToString();
-                            break;
-                    }
-
-                    if (string.IsNullOrEmpty(value))
-                        value = "N/A";
-
-                    return value;
+                    case 0: //NumberValue
+                        int.TryParse(reader["Decimals"].ToString(), out var decimals);
+                        if (double.TryParse(reader["Value"].ToString(), out var NumberValue) == false)
+                            value = string.Empty;
+                        else
+                            value = Format_Value(NumberValue, decimals);
+                        break;
+                    case 1://TextValue
+                        value = reader["TextValue"].ToString();
+                        break;
                 }
+
+                if (string.IsNullOrEmpty(value))
+                    value = "N/A";
+
+                return value;
             }
+
             return null;
         }
 

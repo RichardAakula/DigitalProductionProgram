@@ -11,6 +11,7 @@ namespace DigitalProductionProgram.Protocols.Blandning_PTFE
     {
         public Blandning_PTFE()
         {
+            Part.SetPartNrSpecial("Blandning Pigment");
             InitializeComponent();
            
             Load_Data();
@@ -20,6 +21,7 @@ namespace DigitalProductionProgram.Protocols.Blandning_PTFE
                 MainProtocol.Journal.btn_SaveRow.Enabled = false;
                 MainProtocol.Journal.btn_EditRow.Enabled = false;
             }
+           
             Change_FormWidth();
             MainProtocol.Journal.btn_EditRow.Click += Btn_EditRow_Click;
 
@@ -38,10 +40,7 @@ namespace DigitalProductionProgram.Protocols.Blandning_PTFE
 
         public void Change_FormWidth()
         {
-            if (Part.IsPartNrSpecial("Blandning Pigment") == false)
-                Width = 871;
-            else
-                Width = 1092;
+            Width = Part.IsPartNrSpecial == false ? 871 : 1092;
         }
 
         private void Load_Data()

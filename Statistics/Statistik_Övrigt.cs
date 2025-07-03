@@ -6,7 +6,7 @@ using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Log;
 using DigitalProductionProgram.MainWindow;
 using static DigitalProductionProgram.OrderManagement.Teman;
-using ProgressBar = DigitalProductionProgram.ControlsManagement.ProgressBar;
+using ProgressBar = DigitalProductionProgram.ControlsManagement.CustomProgressBar;
 
 
 namespace DigitalProductionProgram.Statistics

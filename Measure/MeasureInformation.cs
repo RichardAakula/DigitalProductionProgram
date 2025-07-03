@@ -13,25 +13,6 @@ namespace DigitalProductionProgram.Measure
    
     internal class MeasureInformation
     {
-        public static string Latest_Measureprotocol_Revision
-        {
-            get
-            {
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    var query = @"
-                        SELECT TOP(1) revision 
-                        FROM Measureprotocol.MainTemplate	                    
-                        WHERE MeasureProtocolMainTemplateID = @formtemplateid
-                        ORDER BY revision DESC";
-                    con.Open();
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    cmd.Parameters.AddWithValue("@formtemplateid", Templates_MeasureProtocol.MainTemplate.ID);
-                    var value = cmd.ExecuteScalar();
-                    return value?.ToString();
-                }
-            }
-        }
 
         public static int TotalMeasurmentsByOperators
         {

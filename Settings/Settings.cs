@@ -4,6 +4,7 @@ using Microsoft.Data.SqlClient;
 using System.Globalization;
 using System.IO.Ports;
 using System.Net.Mail;
+using System.Text;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.eMail;
 using DigitalProductionProgram.Equipment;
@@ -27,13 +28,29 @@ namespace DigitalProductionProgram.Settings
 
         public static string? ProdLine_LoadingPLan { get; set; }
         private Zumbach? zumbach;
-
+        private SerialPort serialPort1;
         private bool IsOkAddPoints;
-
+        
 
         public Settings()
         {
             InitializeComponent();
+            serialPort1 = new SerialPort
+            {
+                PortName = "COM1",
+                ReadTimeout = 5000,
+                WriteTimeout = 5000,
+                BaudRate = 9600,
+                DataBits = 8,
+                StopBits = StopBits.One,
+                Parity = Parity.None,
+                Handshake = Handshake.None
+            };
+            serialPort1.Encoding = Encoding.GetEncoding(
+                "us-ascii",
+                new EncoderReplacementFallback("?"),
+                new DecoderReplacementFallback("?")
+            );
             Translate_Form();
 
             Lock_Controls();
@@ -64,7 +81,7 @@ namespace DigitalProductionProgram.Settings
         private void Lock_Controls()
         {
             chb_OnlyForMeasurements.Enabled = CheckAuthority.IsRoleAuthorized(CheckAuthority.TemplateAuthorities.ChangeComputerForMeasurementOnly, false);
-           
+
         }
         private void Page_Selecting(object sender, TabControlCancelEventArgs e)
         {
@@ -305,20 +322,18 @@ namespace DigitalProductionProgram.Settings
                 if (!string.IsNullOrEmpty(settings.tb_PartNr.Text))
                 {
                     var description = settings.dgv_Parts_Description.Rows[settings.dgv_Parts_Description.CurrentCell.RowIndex].Cells[0].Value.ToString();
-                    using (var con = new SqlConnection(Database.cs_Protocol))
-                    {
-                        var query = @"
+                    using var con = new SqlConnection(Database.cs_Protocol);
+                    var query = @"
                             IF NOT EXISTS (SELECT * FROM Parts.PartNrSpecial WHERE PartNr = @partnr AND PartNrDescriptionID = (SELECT id FROM Parts.PartNrDescription WHERE Description = @description))
                                 BEGIN
                                     INSERT INTO Parts.PartNrSpecial 
                                     VALUES (@partnr, (SELECT ID FROM Parts.PartNrDescription WHERE Description = @description))
                                 END";
-                        var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                        cmd.Parameters.AddWithValue("@partnr", settings.tb_PartNr.Text);
-                        cmd.Parameters.AddWithValue("@description", description);
-                        con.Open();
-                        cmd.ExecuteScalar();
-                    }
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                    cmd.Parameters.AddWithValue("@partnr", settings.tb_PartNr.Text);
+                    cmd.Parameters.AddWithValue("@description", description);
+                    con.Open();
+                    cmd.ExecuteScalar();
                 }
                 else
                     InfoText.Show("Fyll i ett artikelnr före du försöker lägga till det.", CustomColors.InfoText_Color.Warning, "Warning!", settings);
@@ -848,8 +863,7 @@ namespace DigitalProductionProgram.Settings
             }
         }
 
-
-        
+       
     }
 
 }

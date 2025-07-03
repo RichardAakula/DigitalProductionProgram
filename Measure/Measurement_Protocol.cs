@@ -69,7 +69,6 @@ namespace DigitalProductionProgram.Measure
 
 
         private string SortingOrder;
-        public static bool IsPartNrSpecial_Spolning;
        
         private bool IsOkSaveData
         {
@@ -86,7 +85,7 @@ namespace DigitalProductionProgram.Measure
                 Control? control = null;
                 foreach (Control? ctrl in flp_InputControls.Controls)
                 {
-                    if (IsPartNrSpecial_Spolning && (ctrl == InputControl(flp_InputControls, new[] { "ID"}) || ctrl == InputControl(flp_InputControls, new[] { "OD"}) || ctrl == InputControl(flp_InputControls, new[] { "Wall"})))
+                    if (Part.IsPartNrSpecial && (ctrl == InputControl(flp_InputControls, new[] { "ID"}) || ctrl == InputControl(flp_InputControls, new[] { "OD"}) || ctrl == InputControl(flp_InputControls, new[] { "Wall"})))
                         continue;
 
                     if (ctrl is IMandatoryControl isMandatoryControl)
@@ -146,7 +145,8 @@ namespace DigitalProductionProgram.Measure
         public Measurement_Protocol()
         {
             Calculate.Reset_Values();
-            IsPartNrSpecial_Spolning = Part.IsPartNrSpecial("Spolning Special Mätprotokoll");
+            Part.SetPartNrSpecial("Spolning Special Mätprotokoll");
+            
             SortingOrder = "ASC";
             if (CheckAuthority.IsWorkoperationAuthorized(CheckAuthority.TemplateWorkoperation.SortMeasurementsDESC))
                 SortingOrder = "DESC";

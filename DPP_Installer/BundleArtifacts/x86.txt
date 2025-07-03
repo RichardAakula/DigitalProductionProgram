@@ -1,6 +1,6 @@
-MainPackage=C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram 4.3.10.5\DPP_Installer\bin\x86\Release\Install DPP_4.3.10.5_x86.msix
-SymbolPackage=C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram 4.3.10.5\DPP_Installer\obj\x86\Release\Symbols\Install DPP_4.3.10.5_x86.appxsym
-ResourcePack=C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram 4.3.10.5\DPP_Installer\bin\x86\Release\Install DPP_4.3.10.5_scale-100.msix
-ResourcePack=C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram 4.3.10.5\DPP_Installer\bin\x86\Release\Install DPP_4.3.10.5_scale-125.msix
-ResourcePack=C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram 4.3.10.5\DPP_Installer\bin\x86\Release\Install DPP_4.3.10.5_scale-150.msix
-ResourcePack=C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram 4.3.10.5\DPP_Installer\bin\x86\Release\Install DPP_4.3.10.5_scale-400.msix
+MainPackage=C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram 4.3.10.7\DPP_Installer\bin\x86\Release\Install DPP_4.3.10.7_x86.msix
+SymbolPackage=C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram 4.3.10.7\DPP_Installer\obj\x86\Release\Symbols\Install DPP_4.3.10.7_x86.appxsym
+ResourcePack=C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram 4.3.10.7\DPP_Installer\bin\x86\Release\Install DPP_4.3.10.7_scale-100.msix
+ResourcePack=C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram 4.3.10.7\DPP_Installer\bin\x86\Release\Install DPP_4.3.10.7_scale-125.msix
+ResourcePack=C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram 4.3.10.7\DPP_Installer\bin\x86\Release\Install DPP_4.3.10.7_scale-150.msix
+ResourcePack=C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram 4.3.10.7\DPP_Installer\bin\x86\Release\Install DPP_4.3.10.7_scale-400.msix

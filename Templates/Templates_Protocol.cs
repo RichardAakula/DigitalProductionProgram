@@ -1,13 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using Microsoft.Data.SqlClient;
-using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using DigitalProductionProgram.ControlsManagement;
+﻿using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Equipment;
 using DigitalProductionProgram.Help;
@@ -17,7 +8,17 @@ using DigitalProductionProgram.PrintingServices;
 using DigitalProductionProgram.Processcards;
 using DigitalProductionProgram.Protocols.Template_Management;
 using DigitalProductionProgram.User;
-using ProgressBar = DigitalProductionProgram.ControlsManagement.ProgressBar;
+using Microsoft.Data.SqlClient;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Drawing;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using static DigitalProductionProgram.Templates.Templates_Protocol;
+using ProgressBar = DigitalProductionProgram.ControlsManagement.CustomProgressBar;
 
 namespace DigitalProductionProgram.Templates
 {
@@ -64,14 +65,14 @@ namespace DigitalProductionProgram.Templates
 
             }
         }
-        
+
 
         public static DataGridView dgv_ProtocolsActive_Main;
         public static DataGridView dgv_Active_ModuleInfo;
         public static Panel panel_Active;
         public static Label label_Active_ModuleName;
         public PreviewTemplate preview;
-     
+
 
         public static List<string> List_TemplateNames = new List<string>();
         public static List<string> List_RevisionNr = new List<string>();
@@ -119,10 +120,10 @@ namespace DigitalProductionProgram.Templates
                 IsOkSaveTemplateChanged?.Invoke(null, e);
             }
         }
-       
 
-       
-       
+
+
+
         private bool IsOkSaveTemplate
         {
             get
@@ -168,7 +169,7 @@ namespace DigitalProductionProgram.Templates
         {
             TemplateButtons.IsOkUpdateTemplateChanged += (sender, e) =>
             {
-               Update_UpdateButton();
+                Update_UpdateButton();
             };
 
             TemplateButtons.IsOkSaveTemplateChanged += (sender, e) =>
@@ -177,7 +178,7 @@ namespace DigitalProductionProgram.Templates
             };
         }
 
-      
+
 
         private void Update_SaveButton()
         {
@@ -206,7 +207,7 @@ namespace DigitalProductionProgram.Templates
             }
         }
 
-       
+
 
         private void Fill_MainTemplate_Names()
         {
@@ -262,7 +263,7 @@ namespace DigitalProductionProgram.Templates
         {
             var dataTable = new DataTable();
             dataTable.Columns.Add("Revision", typeof(string)); // Define the column
-            
+
             using (var con = new SqlConnection(Database.cs_Protocol))
             {
                 const string query = @"SELECT LineClearance_Revision as Revision FROM LineClearance.MainTemplate WHERE ProtocolTemplateName = @templatename";
@@ -324,7 +325,7 @@ namespace DigitalProductionProgram.Templates
                 InfoText.Show("Denna Revision finns redan, om du vill spara en ny mall måste du ändra Revision först.", CustomColors.InfoText_Color.Bad, "Warning!", this);
                 return;
             }
-            
+
             MainTemplate.Save_NewTemplate(cb_TemplateName.Text, cb_TemplateRevision.Text, chb_IsUsingPreFab.Checked, chb_IsProductionLineNeeded.Checked, cb_LineClearance_Revision.Text, cb_MainInfo_Template.Text, tb_Workoperation.Text, flp_Main);
 
             InfoText.Question("" +
@@ -425,7 +426,7 @@ namespace DigitalProductionProgram.Templates
             cb_TemplateName.SelectedIndex = -1;
 
         }
-        
+
         private void ConnectTemplate_Click(object sender, EventArgs e)
         {
             var partsManager = new Connect_Templates(cb_TemplateName.Text, cb_TemplateRevision.Text, false, Connect_Templates.SourceType.Type_Protocols);
@@ -502,7 +503,16 @@ namespace DigitalProductionProgram.Templates
             TemplateButtons.IsOkUpdateTemplate = false;
             tb_ModuleName.Text = string.Empty;
         }
-
+        private void AddNewCodeText_Unit_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(tb_NewCodeText.Text) || string.IsNullOrEmpty(tb_NewUnit.Text))
+            {
+                InfoText.Show("Fyll i både parameter och enhet före du sparar data.", CustomColors.InfoText_Color.Bad, "Warning!", this);
+                return;
+            }
+            CodeText.InsertNewCodeText(tb_NewCodeText.Text, tb_NewUnit.Text);
+            CodeText.LoadData(dgv_CodeText);
+        }
 
         private void Workoperation_MouseDown(object sender, MouseEventArgs e)
         {
@@ -519,7 +529,7 @@ namespace DigitalProductionProgram.Templates
                 while (reader.Read())
                     list.Add(reader.GetString(0));
             }
-            Control[] controls = {tb_Workoperation};
+            Control[] controls = { tb_Workoperation };
             var chooseWorkoperation = new Choose_Item(list, controls, false);
             chooseWorkoperation.ShowDialog();
         }
@@ -628,6 +638,29 @@ namespace DigitalProductionProgram.Templates
                 TemplateButtons.IsOkUpdateTemplate = false;
             }
         }
+        private void NewCodeText_Enter(object sender, EventArgs e)
+        {
+            List<string> listCodeText = CodeText.dt_CodeText.AsEnumerable()
+                .Select(row => row.Field<string>("CodeText"))
+                .Where(codeText => !string.IsNullOrEmpty(codeText)) // Filter out empty code texts
+                .Distinct() // Ensure uniqueness
+                .ToList();
+
+            var choose_Item = new Choose_Item(listCodeText, new[] { tb_NewCodeText }, false, true);
+            choose_Item.ShowDialog();
+        }
+        private void NewUnit_Enter(object sender, EventArgs e)
+        {
+            List<string> listUnit = CodeText.dt_CodeText.AsEnumerable()
+                .Select(row => row.Field<string>("Unit"))
+                .Where(unit => !string.IsNullOrEmpty(unit)) // Filter out empty units
+                .Distinct() // Ensure uniqueness
+                .ToList();
+
+            var choose_Item = new Choose_Item(listUnit, new[] { tb_NewUnit }, false, true);
+            choose_Item.ShowDialog();
+        }
+
         private void IsUsingExtraLineClearance_Click(object sender, EventArgs e)
         {
             ((CheckBox)sender).Checked = !((CheckBox)sender).Checked;
@@ -749,7 +782,6 @@ namespace DigitalProductionProgram.Templates
         {
             Order.Restore_TempOrderInfo();
         }
-
         private void Manage_Templates_Resize(object sender, EventArgs e)
         {
             tlp_ExtraInfo.Left = ClientSize.Width - tlp_ExtraInfo.Width;
@@ -766,7 +798,16 @@ namespace DigitalProductionProgram.Templates
                 dt_CodeText = new DataTable();
                 using (var con = new SqlConnection(Database.cs_Protocol))
                 {
-                    const string query = @"SELECT ID, CodeText, Unit FROM Protocol.Description WHERE Unit IS NOT NULL ORDER BY CodeText";
+                    const string query = @"
+                    SELECT 
+                        description.ID, 
+                        description.CodeText, 
+                        unit.UnitName AS Unit
+                    FROM Protocol.Description AS description
+                    LEFT JOIN Protocol.Unit AS unit
+                        ON description.UnitID = unit.ID
+                    WHERE description.UnitID IS NOT NULL
+                    ORDER BY description.CodeText";
                     var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                     con.Open();
@@ -780,6 +821,42 @@ namespace DigitalProductionProgram.Templates
             }
             public static DataTable? dt_CodeText;
 
+            public static void InsertNewCodeText(string codeText, string unit)
+            {
+                int unitID;
+                using var con = new SqlConnection(Database.cs_Protocol);
+                ServerStatus.Add_Sql_Counter();
+                con.Open();
+
+                // 1. Kontrollera om Unit finns
+                var cmdCheckUnit = new SqlCommand("SELECT ID FROM Protocol.Unit WHERE UnitName = @unit", con);
+                cmdCheckUnit.Parameters.AddWithValue("@unit", unit);
+                var result = cmdCheckUnit.ExecuteScalar();
+
+                if (result != null)
+                    unitID = Convert.ToInt32(result);
+                else
+                {
+                    // Insert ny unit
+                    var cmdInsertUnit = new SqlCommand("INSERT INTO Protocol.Unit (UnitName) VALUES (@unit); SELECT SCOPE_IDENTITY();", con);
+                    cmdInsertUnit.Parameters.AddWithValue("@unit", unit);
+                    unitID = Convert.ToInt32(cmdInsertUnit.ExecuteScalar());
+                }
+
+                // 2. Kontrollera om CodeText+UnitID finns
+                var cmdCheckDescription = new SqlCommand("SELECT ID FROM Protocol.Description WHERE CodeText = @codetext AND UnitID = @unitid", con);
+                cmdCheckDescription.Parameters.AddWithValue("@codetext", codeText);
+                cmdCheckDescription.Parameters.AddWithValue("@unitid", unitID);
+                var descrResult = cmdCheckDescription.ExecuteScalar();
+
+                if (descrResult == null)
+                {
+                    var cmdInsertDescription = new SqlCommand("INSERT INTO Protocol.Description (CodeText, UnitID) VALUES (@codetext, @unitid)", con);
+                    cmdInsertDescription.Parameters.AddWithValue("@codetext", codeText);
+                    cmdInsertDescription.Parameters.AddWithValue("@unitid", unitID);
+                    cmdInsertDescription.ExecuteNonQuery();
+                }
+            }
         }
 
         public class TemplateControls
@@ -825,8 +902,8 @@ namespace DigitalProductionProgram.Templates
                     Name = name,
                     RowHeadersVisible = false,
                     ScrollBars = ScrollBars.None,
-                    
-                    
+
+
 
                 };
 
@@ -986,7 +1063,7 @@ namespace DigitalProductionProgram.Templates
             // Handles checkbox column changes
             private static void HandleCheckboxColumn()
             {
-               TemplateButtons.isOkUpdateTemplate = false; // Assuming you have this variable defined
+                TemplateButtons.isOkUpdateTemplate = false; // Assuming you have this variable defined
             }
             private static void ChangePanelHeight(DataGridView dgv)
             {
@@ -995,7 +1072,7 @@ namespace DigitalProductionProgram.Templates
             }
 
         }
-       
+
 
 
 
@@ -1522,142 +1599,143 @@ namespace DigitalProductionProgram.Templates
             }
             public static void Load_Data(string revision, int? formTemplateID)
             {
-                using (var con = new SqlConnection(Database.cs_Protocol))
+                using var con = new SqlConnection(Database.cs_Protocol);
+                const string query = @"
+                SELECT 
+                    template.ProtocolDescriptionID, 
+                    description.CodeText, 
+                    unit.UnitName AS Unit, 
+                    template.ColumnIndex, 
+                    template.RowIndex, 
+                    template.Type, 
+                    template.Decimals, 
+                    template.IsUsedInProcesscard, 
+                    template.IsValueCritical, 
+                    template.IsList_Processcard, 
+                    template.IsList_Protocol, 
+                    template.IsOkWriteText, 
+                    template.IsRequired
+                FROM Protocol.Template AS template
+                INNER JOIN Protocol.Description AS description
+                    ON template.ProtocolDescriptionID = description.ID
+                LEFT JOIN Protocol.Unit AS unit
+                    ON description.UnitID = unit.ID
+                WHERE template.FormTemplateID = @formtemplateid
+                    AND template.Revision = @revision
+                    AND template.RowIndex IS NOT NULL
+                ORDER BY template.RowIndex, template.ColumnIndex";
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                cmd.Parameters.AddWithValue("@formtemplateid", formTemplateID);
+                cmd.Parameters.AddWithValue("@revision", revision);
+                con.Open();
+                var reader = cmd.ExecuteReader();
+
+                while (reader.Read())
                 {
-                    const string query = @"
-                    SELECT ProtocolDescriptionID, CodeText, Unit, ColumnIndex, RowIndex, Type, Decimals, IsUsedInProcesscard, IsValueCritical, IsList_Processcard, IsList_Protocol, IsOkWriteText, IsRequired 
-                    FROM Protocol.Template as template
-                    INNER JOIN Protocol.Description as description
-                        ON template.ProtocolDescriptionID = description.ID
-                    WHERE template.FormTemplateID = @formtemplateid
-                        AND Revision = @revision
-                        AND RowIndex IS NOT NULL
-                    ORDER BY RowIndex, ColumnIndex";
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    cmd.Parameters.AddWithValue("@formtemplateid", formTemplateID);
-                    cmd.Parameters.AddWithValue("@revision", revision);
-                    con.Open();
-                    var reader = cmd.ExecuteReader();
+                    int.TryParse(reader["ProtocolDescriptionID"].ToString(), out var protocoldescriptionID);
+                    var codetext = reader["CodeText"].ToString();
 
-                    while (reader.Read())
+                    int.TryParse(reader["Type"].ToString(), out var type);
+                    bool.TryParse(reader["IsRequired"].ToString(), out var isRequired);
+                    bool.TryParse(reader["IsOkWriteText"].ToString(), out var isOkWriteText);
+
+                    if (bool.TryParse(reader["IsUsedInProcesscard"].ToString(), out var isUsedInProcesscard) ==
+                        false)
+                        isUsedInProcesscard = true;
+                    if (bool.TryParse(reader["IsValueCritical"].ToString(), out var isNomValueCritical) ==
+                        false)
+                        isNomValueCritical = true;
+                    if (bool.TryParse(reader["IsList_Processcard"].ToString(), out var isListProcesscard) ==
+                        false)
+                        isListProcesscard = true;
+                    if (bool.TryParse(reader["IsList_Protocol"].ToString(), out var isListProtocol) == false)
+                        isListProtocol = true;
+
+
+                    if (TemplateControls.IsCodeTextExistInModule(dgv_ProtocolsActive_Main, codetext) == false)
                     {
-                        int.TryParse(reader["ProtocolDescriptionID"].ToString(), out var protocoldescriptionID);
-                        var codetext = reader["CodeText"].ToString();
+                        dgv_ProtocolsActive_Main.Rows.Add();
+                        dgv_ProtocolsActive_Main.Rows[^1].Cells["col_ProtocolDescriptionID"]
+                            .Value = protocoldescriptionID;
+                        dgv_ProtocolsActive_Main.Rows[^1].Cells["col_Unit"].Value = reader["Unit"].ToString();
+                        dgv_ProtocolsActive_Main.Rows[^1].Cells["col_CodeText"].Value = reader["CodeText"].ToString();
+                        dgv_ProtocolsActive_Main.Rows[^1].Cells["col_IsOkWriteOwnText"].Value = isOkWriteText;
 
-                        int.TryParse(reader["Type"].ToString(), out var type);
-                        bool.TryParse(reader["IsRequired"].ToString(), out var isRequired);
-                        bool.TryParse(reader["IsOkWriteText"].ToString(), out var isOkWriteText);
-
-                        if (bool.TryParse(reader["IsUsedInProcesscard"].ToString(), out var isUsedInProcesscard) ==
-                            false)
-                            isUsedInProcesscard = true;
-                        if (bool.TryParse(reader["IsValueCritical"].ToString(), out var isNomValueCritical) ==
-                            false)
-                            isNomValueCritical = true;
-                        if (bool.TryParse(reader["IsList_Processcard"].ToString(), out var isListProcesscard) ==
-                            false)
-                            isListProcesscard = true;
-                        if (bool.TryParse(reader["IsList_Protocol"].ToString(), out var isListProtocol) == false)
-                            isListProtocol = true;
-
-
-                        if (TemplateControls.IsCodeTextExistInModule(dgv_ProtocolsActive_Main, codetext) == false)
-                        {
-                            dgv_ProtocolsActive_Main.Rows.Add();
-                            dgv_ProtocolsActive_Main.Rows[dgv_ProtocolsActive_Main.Rows.Count - 1].Cells["col_ProtocolDescriptionID"]
-                                .Value = protocoldescriptionID;
-                            dgv_ProtocolsActive_Main.Rows[dgv_ProtocolsActive_Main.Rows.Count - 1].Cells["col_Unit"].Value =
-                                reader["Unit"].ToString();
-                            dgv_ProtocolsActive_Main.Rows[dgv_ProtocolsActive_Main.Rows.Count - 1].Cells["col_CodeText"].Value =
-                                reader["CodeText"].ToString();
-                            dgv_ProtocolsActive_Main.Rows[dgv_ProtocolsActive_Main.Rows.Count - 1].Cells["col_IsOkWriteOwnText"]
-                                .Value = isOkWriteText;
-
-                        }
-
-                        if (int.TryParse(reader["Decimals"].ToString(), out var decimals))
-                            dgv_ProtocolsActive_Main.Rows[dgv_ProtocolsActive_Main.Rows.Count - 1].Cells["col_Decimals"].Value =
-                                decimals;
-                        else
-                            dgv_ProtocolsActive_Main.Rows[dgv_ProtocolsActive_Main.Rows.Count - 1].Cells["col_Decimals"].Value =
-                                string.Empty;
-
-                        if (int.TryParse(reader["ColumnIndex"].ToString(), out var column))
-                        {
-                            switch (column)
-                            {
-                                case 0:
-                                    dgv_ProtocolsActive_Main.Rows[dgv_ProtocolsActive_Main.Rows.Count - 1].Cells["col_MIN"].Value =
-                                        true;
-                                    break;
-                                case 1:
-                                    dgv_ProtocolsActive_Main.Rows[dgv_ProtocolsActive_Main.Rows.Count - 1].Cells["col_NOM"].Value =
-                                        true;
-                                    break;
-                                case 2:
-                                    dgv_ProtocolsActive_Main.Rows[dgv_ProtocolsActive_Main.Rows.Count - 1].Cells["col_MAX"].Value =
-                                        true;
-                                    break;
-                            }
-                        }
-                        else
-                        {
-                            dgv_ProtocolsActive_Main.Rows[dgv_ProtocolsActive_Main.Rows.Count - 1].Cells["col_MIN"].Value = false;
-                            dgv_ProtocolsActive_Main.Rows[dgv_ProtocolsActive_Main.Rows.Count - 1].Cells["col_NOM"].Value = false;
-                            dgv_ProtocolsActive_Main.Rows[dgv_ProtocolsActive_Main.Rows.Count - 1].Cells["col_MAX"].Value = false;
-                        }
-
-                        dgv_ProtocolsActive_Main.Rows[dgv_ProtocolsActive_Main.Rows.Count - 1].Cells["col_DataType"].Value = type;
-                        dgv_ProtocolsActive_Main.Rows[dgv_ProtocolsActive_Main.Rows.Count - 1].Cells["col_UsedInProcesscard"].Value = isUsedInProcesscard;
-                        dgv_ProtocolsActive_Main.Rows[dgv_ProtocolsActive_Main.Rows.Count - 1].Cells["col_ValueCritical"].Value = isNomValueCritical;
-                        dgv_ProtocolsActive_Main.Rows[dgv_ProtocolsActive_Main.Rows.Count - 1].Cells["col_ProcesscardList"].Value = isListProcesscard;
-                        dgv_ProtocolsActive_Main.Rows[dgv_ProtocolsActive_Main.Rows.Count - 1].Cells["col_ProtocolList"].Value = isListProtocol;
-                        dgv_ProtocolsActive_Main.Rows[dgv_ProtocolsActive_Main.Rows.Count - 1].Cells["col_IsOKWriteOwnText"].Value =
-                            isOkWriteText;
-                        dgv_ProtocolsActive_Main.Rows[dgv_ProtocolsActive_Main.Rows.Count - 1].Cells["col_Required"].Value =
-                            isRequired;
                     }
+
+                    if (int.TryParse(reader["Decimals"].ToString(), out var decimals))
+                        dgv_ProtocolsActive_Main.Rows[^1].Cells["col_Decimals"].Value = decimals;
+                    else
+                        dgv_ProtocolsActive_Main.Rows[^1].Cells["col_Decimals"].Value = string.Empty;
+
+                    if (int.TryParse(reader["ColumnIndex"].ToString(), out var column))
+                    {
+                        switch (column)
+                        {
+                            case 0:
+                                dgv_ProtocolsActive_Main.Rows[^1].Cells["col_MIN"].Value = true;
+                                break;
+                            case 1:
+                                dgv_ProtocolsActive_Main.Rows[^1].Cells["col_NOM"].Value = true;
+                                break;
+                            case 2:
+                                dgv_ProtocolsActive_Main.Rows[^1].Cells["col_MAX"].Value =
+                                    true;
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        dgv_ProtocolsActive_Main.Rows[^1].Cells["col_MIN"].Value = false;
+                        dgv_ProtocolsActive_Main.Rows[^1].Cells["col_NOM"].Value = false;
+                        dgv_ProtocolsActive_Main.Rows[^1].Cells["col_MAX"].Value = false;
+                    }
+
+                    dgv_ProtocolsActive_Main.Rows[^1].Cells["col_DataType"].Value = type;
+                    dgv_ProtocolsActive_Main.Rows[^1].Cells["col_UsedInProcesscard"].Value = isUsedInProcesscard;
+                    dgv_ProtocolsActive_Main.Rows[^1].Cells["col_ValueCritical"].Value = isNomValueCritical;
+                    dgv_ProtocolsActive_Main.Rows[^1].Cells["col_ProcesscardList"].Value = isListProcesscard;
+                    dgv_ProtocolsActive_Main.Rows[^1].Cells["col_ProtocolList"].Value = isListProtocol;
+                    dgv_ProtocolsActive_Main.Rows[^1].Cells["col_IsOKWriteOwnText"].Value = isOkWriteText;
+                    dgv_ProtocolsActive_Main.Rows[^1].Cells["col_Required"].Value = isRequired;
                 }
             }
             public static void Save_Data(string templateName, DataGridView dgv, string revision, int templateOrder, int machineIndex, int formTemplateID)
             {
-                using (var con = new SqlConnection(Database.cs_Protocol))
+                using var con = new SqlConnection(Database.cs_Protocol);
+                con.Open(); // Open connection ONCE
+
+                foreach (DataGridViewRow row in dgv.Rows)
                 {
-                    con.Open(); // Open connection ONCE
+                    var columnIndex = 0;
 
-                    foreach (DataGridViewRow row in dgv.Rows)
+                    bool isUsedInProcesscard = row.Cells["col_UsedInProcesscard"].Value != null &&
+                                               bool.TryParse(row.Cells["col_UsedInProcesscard"].Value.ToString(), out bool temp) && temp;
+
+                    // Get FormTemplateID once and reuse it
+                    if (formTemplateID == 0)
                     {
-                        var columnIndex = 0;
-
-                        bool isUsedInProcesscard = row.Cells["col_UsedInProcesscard"].Value != null &&
-                                                   bool.TryParse(row.Cells["col_UsedInProcesscard"].Value.ToString(), out bool temp) && temp;
-
-                        // Get FormTemplateID once and reuse it
-                        if (formTemplateID == 0)
-                        {
-                            using (var cmd = new SqlCommand(@"
+                        using var cmd = new SqlCommand(@"
                                 SELECT FormTemplateID FROM Protocol.FormTemplate 
                                 WHERE MainTemplateID = (SELECT ID FROM Protocol.MainTemplate WHERE Name = @templatename AND Revision = @revision) 
                                     AND TemplateOrder = @templateorder 
-                                    AND MachineIndex = @machineindex", con))
-                            {
-                                cmd.Parameters.AddWithValue("@templatename", templateName);
-                                cmd.Parameters.AddWithValue("@revision", revision);
-                                cmd.Parameters.AddWithValue("@templateorder", templateOrder);
-                                cmd.Parameters.AddWithValue("@machineindex", machineIndex);
-                                var value = cmd.ExecuteScalar();
-                                int.TryParse(value.ToString(), out formTemplateID);
-                            }
-                        }
+                                    AND MachineIndex = @machineindex", con);
+                        cmd.Parameters.AddWithValue("@templatename", templateName);
+                        cmd.Parameters.AddWithValue("@revision", revision);
+                        cmd.Parameters.AddWithValue("@templateorder", templateOrder);
+                        cmd.Parameters.AddWithValue("@machineindex", machineIndex);
+                        var value = cmd.ExecuteScalar();
+                        int.TryParse(value.ToString(), out formTemplateID);
+                    }
 
-                        for (var col = dgv.Columns.Count - 3; col < dgv.Columns.Count; col++)
+                    for (var col = dgv.Columns.Count - 3; col < dgv.Columns.Count; col++)
+                    {
+                        // Existing insert/update logic
+                        bool IsColumnUsed = row.Cells[col].Value != null &&
+                                            bool.TryParse(row.Cells[col].Value.ToString(), out temp) && temp;
+                        if (IsColumnUsed || columnIndex == 1)
                         {
-                            // Existing insert/update logic
-                            bool IsColumnUsed = row.Cells[col].Value != null &&
-                                                bool.TryParse(row.Cells[col].Value.ToString(), out temp) && temp;
-                            if (IsColumnUsed || columnIndex == 1)
-                            {
-                                using (var cmd = new SqlCommand(@"
+                            using var cmd = new SqlCommand(@"
                                INSERT INTO Protocol.Template 
                                    (
                                        Revision, 
@@ -1689,34 +1767,31 @@ namespace DigitalProductionProgram.Templates
                                        @isokwriteowntext, 
                                        @isrequired, 
                                        @protocoldescriptionid
-                                   )", con))
-                                {
-                                    cmd.Parameters.AddWithValue("@revision", (object)revision ?? DBNull.Value);
-                                    cmd.Parameters.AddWithValue("@formtemplateid", formTemplateID);
-                                    if (isUsedInProcesscard)
-                                        cmd.Parameters.AddWithValue("@columnindex", columnIndex);
-                                    else
-                                        cmd.Parameters.AddWithValue("@columnindex", DBNull.Value);
-                                    cmd.Parameters.AddWithValue("@rowindex", row.Index);
-                                    SQL_Parameter.Int(cmd.Parameters, "@type", row.Cells["col_DataType"].Value);
-                                    SQL_Parameter.Int(cmd.Parameters, "@decimals", row.Cells["col_Decimals"].Value);
-                                    SQL_Parameter.Int(cmd.Parameters, "@protocoldescriptionid", row.Cells["col_ProtocolDescriptionID"].Value);
-                                    SQL_Parameter.Boolean(cmd.Parameters, "@isusedinprocesscard", row.Cells["col_UsedInProcesscard"].Value, true);
-                                    SQL_Parameter.Boolean(cmd.Parameters, "@isvaluecritical", row.Cells["col_ValueCritical"].Value, true);
-                                    SQL_Parameter.Boolean(cmd.Parameters, "@islistprocesscard", row.Cells["col_ProcesscardList"].Value, true);
-                                    SQL_Parameter.Boolean(cmd.Parameters, "@islistprotocol", row.Cells["col_ProtocolList"].Value, true);
-                                    SQL_Parameter.Boolean(cmd.Parameters, "@isokwriteowntext", row.Cells["col_IsOkWriteOwnText"].Value, true);
-                                    SQL_Parameter.Boolean(cmd.Parameters, "@isrequired", row.Cells["col_Required"].Value, true);
+                                   )", con);
+                            cmd.Parameters.AddWithValue("@revision", (object)revision ?? DBNull.Value);
+                            cmd.Parameters.AddWithValue("@formtemplateid", formTemplateID);
+                            if (isUsedInProcesscard)
+                                cmd.Parameters.AddWithValue("@columnindex", columnIndex);
+                            else
+                                cmd.Parameters.AddWithValue("@columnindex", DBNull.Value);
+                            cmd.Parameters.AddWithValue("@rowindex", row.Index);
+                            SQL_Parameter.Int(cmd.Parameters, "@type", row.Cells["col_DataType"].Value);
+                            SQL_Parameter.Int(cmd.Parameters, "@decimals", row.Cells["col_Decimals"].Value);
+                            SQL_Parameter.Int(cmd.Parameters, "@protocoldescriptionid", row.Cells["col_ProtocolDescriptionID"].Value);
+                            SQL_Parameter.Boolean(cmd.Parameters, "@isusedinprocesscard", row.Cells["col_UsedInProcesscard"].Value, true);
+                            SQL_Parameter.Boolean(cmd.Parameters, "@isvaluecritical", row.Cells["col_ValueCritical"].Value, true);
+                            SQL_Parameter.Boolean(cmd.Parameters, "@islistprocesscard", row.Cells["col_ProcesscardList"].Value, true);
+                            SQL_Parameter.Boolean(cmd.Parameters, "@islistprotocol", row.Cells["col_ProtocolList"].Value, true);
+                            SQL_Parameter.Boolean(cmd.Parameters, "@isokwriteowntext", row.Cells["col_IsOkWriteOwnText"].Value, true);
+                            SQL_Parameter.Boolean(cmd.Parameters, "@isrequired", row.Cells["col_Required"].Value, true);
 
-                                    cmd.ExecuteNonQuery();
-                                }
-                            }
-
-                            columnIndex++;
+                            cmd.ExecuteNonQuery();
                         }
 
+                        columnIndex++;
                     }
-                } // Connection disposed here
+
+                }
             }
 
             public static void Update_Data(string templateName, DataGridView dgv, string revision, int templateOrder, int machineIndex, int formTemplateID)
@@ -1786,7 +1861,7 @@ namespace DigitalProductionProgram.Templates
                                 else
                                     cmd.Parameters.AddWithValue("@columnindex", DBNull.Value);
                                 cmd.Parameters.AddWithValue("@rowindex", row.Index);
-                                
+
                                 cmd.ExecuteNonQuery();
                             }
 

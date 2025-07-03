@@ -120,7 +120,6 @@ namespace DigitalProductionProgram.Protocols.Protocol
         }
         private string? Value(int col, int protocolDescriptionID)
         {
-
             foreach (DataGridViewRow row in dgv_Module.Rows)
             {
                 if (row.Cells["col_ProtocolDescriptionID"].Value != null &&
@@ -217,16 +216,34 @@ namespace DigitalProductionProgram.Protocols.Protocol
             using (var con = new SqlConnection(Database.cs_Protocol))
             {
                 var query = $@"
-                    SELECT ProtocolDescriptionID, CodeText, Unit, ColumnIndex, RowIndex, Type, Decimals, IsUsedInProcesscard, IsValueCritical, IsList_Processcard, IsList_Protocol, IsOkWriteText, IsRequired, IsAuthenticationNeeded, IsMultipleColumnsStartup, IsStartUpDates
-                    FROM Protocol.Template as template
-                    INNER JOIN Protocol.Description as description
-                        ON template.ProtocolDescriptionID = description.ID
-                    INNER JOIN Protocol.FormTemplate as formtemplate
-                        ON template.FormTemplateID = formtemplate.FormTemplateID
-                    WHERE template.FormTemplateID = @formtemplateid
-                        AND MainTemplateID = @maintemplateid
-                        AND RowIndex IS NOT NULL
-                    ORDER BY RowIndex, ColumnIndex";
+                SELECT 
+                    template.ProtocolDescriptionID, 
+                    description.CodeText, 
+                    unit.UnitName AS Unit,
+                    template.ColumnIndex, 
+                    template.RowIndex, 
+                    template.Type, 
+                    template.Decimals, 
+                    template.IsUsedInProcesscard, 
+                    template.IsValueCritical, 
+                    template.IsList_Processcard, 
+                    template.IsList_Protocol, 
+                    template.IsOkWriteText, 
+                    template.IsRequired, 
+                    formtemplate.IsAuthenticationNeeded, 
+                    formtemplate.IsMultipleColumnsStartup, 
+                    formtemplate.IsStartUpDates
+                FROM Protocol.Template AS template
+                INNER JOIN Protocol.Description AS description
+                    ON template.ProtocolDescriptionID = description.ID
+                LEFT JOIN Protocol.Unit AS unit
+                    ON description.UnitID = unit.ID
+                INNER JOIN Protocol.FormTemplate AS formtemplate
+                    ON template.FormTemplateID = formtemplate.FormTemplateID
+                WHERE template.FormTemplateID = @formtemplateid
+                    AND formtemplate.MainTemplateID = @maintemplateid
+                    AND template.RowIndex IS NOT NULL
+                ORDER BY template.RowIndex, template.ColumnIndex";
                 var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@formtemplateid", FormTemplateID);
                 cmd.Parameters.AddWithValue("@maintemplateid", Templates_Protocol.MainTemplate.ID);
@@ -702,6 +719,8 @@ namespace DigitalProductionProgram.Protocols.Protocol
         }
         public void Module_ShowSpecialItems_CellRightMouseDown(object sender, DataGridViewCellMouseEventArgs e)
         {
+            if (Browse_Protocols.Browse_Protocols.Is_BrowsingProtocols)
+                return;
             if (IsOkShowList == false || dgv_Module.Columns[e.ColumnIndex].ReadOnly)
                 return;
             if (IsAuthenticationNeeded && e.RowIndex > dgv_Module.Rows.Count - 3)
@@ -727,7 +746,6 @@ namespace DigitalProductionProgram.Protocols.Protocol
 
             if (e.Button == MouseButtons.Right)
             {
-
                 bool.TryParse(dgv_Module.Rows[row].Cells["col_IsOkWriteText"].Value.ToString(), out var isOkWriteText);
                 bool.TryParse(dgv_Module.Rows[e.RowIndex].Cells["col_IsList_Protocol"].Value.ToString(), out var IsListProtocol);
                 int.TryParse(dgv_Module.Columns[e.ColumnIndex].HeaderText, out var startup);
@@ -823,7 +841,10 @@ namespace DigitalProductionProgram.Protocols.Protocol
                             break;
                         case 83: //MUNSTYCKE
                             cells = new[] { dgv_Module.Rows[e.RowIndex].Cells[col], dgv_Module.Rows[e.RowIndex + 1].Cells[col] };
-                            DieType = Value(col, 310);
+                            if (Order.WorkOperation == Manage_WorkOperation.WorkOperations.Extrudering_FEP)
+                                DieType = "Munstycken FEP";
+                            else
+                                DieType = Value(col, 310);
                             items = DigitalProductionProgram.Equipment.Equipment.List_Tool(DieType, MIN_Value(dgv_Row), MAX_Value(dgv_Row));
                             IsItemsMultipleColumns = true;
                             break;
@@ -832,7 +853,10 @@ namespace DigitalProductionProgram.Protocols.Protocol
                             break;
                         case 209: //KÄRNA
                             cells = new[] { dgv_Module.Rows[e.RowIndex].Cells[col], dgv_Module.Rows[e.RowIndex + 1].Cells[col] };
-                            DieType = Value(col, 311);
+                            if (Order.WorkOperation == Manage_WorkOperation.WorkOperations.Extrudering_FEP)
+                                TipType = "Kanyler FEP";
+                            else
+                                TipType = Value(col, 311);
                             items = DigitalProductionProgram.Equipment.Equipment.List_Tool(TipType, MIN_Value(dgv_Row), MAX_Value(dgv_Row));
                             IsItemsMultipleColumns = true;
                             break;
@@ -863,10 +887,10 @@ namespace DigitalProductionProgram.Protocols.Protocol
                         case 75:    //RÖR ID# POS 1
                         case 160:   //RÖR ID# POS 2
                         case 161:   //RÖR ID# POS 3
-                            items = Tools.List_HS_PipeID(isProcesscardUnderManagement);
+                            items = Tools.RegisterList.List_HS_PipeID(isProcesscardUnderManagement);
                             break;
                         case 71:    //HACKHYLSA
-                            items = Tools.List_HS_Hackhylsa;
+                            items = Tools.RegisterList.List_HS_Hackhylsa;
                             break;
                         case 73:    //UPPTAGARE/HACK
                             items = Machines.HS_Upptagare;
@@ -937,13 +961,13 @@ namespace DigitalProductionProgram.Protocols.Protocol
             switch (protocolDescriptionID)
             {
                 case 75:
-                    Order.HS_Pipe_1 = Tools.HS_Pipe(protocolDescriptionID);
+                    Order.HS_Pipe_1 = Tools.PreviousOrders.HS_Pipe(protocolDescriptionID);
                     break;
                 case 160:
-                    Order.HS_Pipe_2 = Tools.HS_Pipe(protocolDescriptionID);
+                    Order.HS_Pipe_2 = Tools.PreviousOrders.HS_Pipe(protocolDescriptionID);
                     break;
                 case 161:
-                    Order.HS_Pipe_3 = Tools.HS_Pipe(protocolDescriptionID);
+                    Order.HS_Pipe_3 = Tools.PreviousOrders.HS_Pipe(protocolDescriptionID);
                     break;
                 case 83:
                 case 209:
@@ -1389,9 +1413,8 @@ namespace DigitalProductionProgram.Protocols.Protocol
             public static void Copy_FromLastOrder(DataGridView dgv_Protocol, int formtemplateid, int machineindex)
             {
                 var lastOrderID = Order.LastOrderID;
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    var query = @"
+                using var con = new SqlConnection(Database.cs_Protocol);
+                const string query = @"
                                 SELECT DISTINCT Value, TextValue, DateValue, MachineIndex, Uppstart, Ugn, RowIndex, template.Decimals, template.Type
                                 FROM [Order].Data AS protocol
 	                                JOIN Protocol.Template as template
@@ -1405,48 +1428,47 @@ namespace DigitalProductionProgram.Protocols.Protocol
                                     AND RowIndex > 1
                                     AND Uppstart = 1
                                 ORDER BY RowIndex";
-                    con.Open();
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    SQL_Parameter.NullableINT(cmd.Parameters, "@orderid", lastOrderID);
-                    cmd.Parameters.AddWithValue("@formtemplateid", formtemplateid);
-                    cmd.Parameters.AddWithValue("@machineindex", machineindex);
-                    var reader = cmd.ExecuteReader();
-                    while (reader.Read())
+                con.Open();
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                SQL_Parameter.NullableINT(cmd.Parameters, "@orderid", lastOrderID);
+                cmd.Parameters.AddWithValue("@formtemplateid", formtemplateid);
+                cmd.Parameters.AddWithValue("@machineindex", machineindex);
+                var reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    int.TryParse(reader["type"].ToString(), out var type);
+                    int.TryParse(reader["RowIndex"].ToString(), out var row);
+                    if (row == dgv_Protocol.Rows.Count - 2)
+                        return;
+                    var value = string.Empty;
+                    switch (type)
                     {
-                        int.TryParse(reader["type"].ToString(), out var type);
-                        int.TryParse(reader["RowIndex"].ToString(), out var row);
-                        if (row == dgv_Protocol.Rows.Count - 2)
-                            return;
-                        var value = string.Empty;
-                        switch (type)
-                        {
-                            case 0: //NumberValue
-                                int.TryParse(reader["Decimals"].ToString(), out var decimals);
-                                if (double.TryParse(reader["Value"].ToString(), out var NumberValue) == false)
-                                    value = string.Empty;
-                                else
-                                    value = Processcard.Format_Value(NumberValue, decimals);
-                                break;
-                            case 1: //TextValue
-                                value = reader["TextValue"].ToString();
-                                break;
-                            case 2: //BoolValue
-                                break;
-                            case 3: //DateValue
-                                if (DateTime.TryParse(reader["datevalue"].ToString(), out var date))
-                                    value = date.ToString("yyyy-MM-dd HH:mm");
-                                break;
-                        }
+                        case 0: //NumberValue
+                            int.TryParse(reader["Decimals"].ToString(), out var decimals);
+                            if (double.TryParse(reader["Value"].ToString(), out var NumberValue) == false)
+                                value = string.Empty;
+                            else
+                                value = Processcard.Format_Value(NumberValue, decimals);
+                            break;
+                        case 1: //TextValue
+                            value = reader["TextValue"].ToString();
+                            break;
+                        case 2: //BoolValue
+                            break;
+                        case 3: //DateValue
+                            if (DateTime.TryParse(reader["datevalue"].ToString(), out var date))
+                                value = date.ToString("yyyy-MM-dd HH:mm");
+                            break;
+                    }
 
-                        if (string.IsNullOrEmpty(value))
-                            value = "N/A";
+                    if (string.IsNullOrEmpty(value))
+                        value = "N/A";
 
-                        var cell = dgv_Protocol.Rows[row].Cells[dgv_Protocol.Columns.Count - 1];
-                        if (Browse_Protocols.Browse_Protocols.Is_BrowsingProtocols == false && cell.Visible)
-                        {
-                            cell.Selected = true;
-                            cell.Value = value;
-                        }
+                    var cell = dgv_Protocol.Rows[row].Cells[dgv_Protocol.Columns.Count - 1];
+                    if (Browse_Protocols.Browse_Protocols.Is_BrowsingProtocols == false && cell.Visible)
+                    {
+                        cell.Selected = true;
+                        cell.Value = value;
                     }
                 }
             }

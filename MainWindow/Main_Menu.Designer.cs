@@ -135,11 +135,12 @@ namespace DigitalProductionProgram.MainWindow
             Developer_AddLineClearance_Table = new ToolStripMenuItem();
             påskäggToolStripMenuItem = new ToolStripMenuItem();
             Developer_CountSql_Queries = new ToolStripMenuItem();
+            Developer_Clear_Sql_Queries = new ToolStripMenuItem();
             menuStrip = new MenuStrip();
             Menu_Equipment = new ToolStripMenuItem();
             Menu_Equipment_UseFilter = new ToolStripMenuItem();
             Menu_Equipment_UseSilpaket = new ToolStripMenuItem();
-            Developer_Clear_Sql_Queries = new ToolStripMenuItem();
+            testaChartToolStripMenuItem = new ToolStripMenuItem();
             menuStrip.SuspendLayout();
             SuspendLayout();
             // 
@@ -686,7 +687,7 @@ namespace DigitalProductionProgram.MainWindow
             // 
             // Menu_Developer
             // 
-            Menu_Developer.DropDownItems.AddRange(new ToolStripItem[] { Menu_Developer_GetOrderInfo, Menu_Developer_SendMailToAllUsers, Menu_Developer_AddGallup, Menu_Developer_CheckGallup, Menu_Developer_OpenRandomOrder, Menu_Developer_InsertHalvfabrikat, Menu_Developer_NewProtocol_Extrudering_TEF, Menu_Developer_Test_RGB, Menu_Developer_NewMeasureProtocol, Menu_Developer_MoveDataKorprotokollValues, Menu_Utvecklare_MoveDataFEP, Menu_Developer_Timer_test, moveProcesskortExtruderingTEFTillProcesscardDataToolStripMenuItem, raderaExtruderingTEFFrånProcesscardDataToolStripMenuItem, Menu_Developer_ExportHS_Data, kontrolleraFEPDataSomÄrFelPåExtruderToolStripMenuItem, Menu_Developer_GetDataForQuoting, Menu_Developer_INSERT_Rengjort, Menu_Developer_INSERT_Verktyg_Typ, testaNAntalKörningarPåArtikelNrToolStripMenuItem, Menu_Developer_AddThemePicture, Menu_Developer_TestNewProtocol, testCalendarToolStripMenuItem, Developer_AddLineClearance_Table, påskäggToolStripMenuItem, Developer_CountSql_Queries, Developer_Clear_Sql_Queries });
+            Menu_Developer.DropDownItems.AddRange(new ToolStripItem[] { Menu_Developer_GetOrderInfo, Menu_Developer_SendMailToAllUsers, Menu_Developer_AddGallup, Menu_Developer_CheckGallup, Menu_Developer_OpenRandomOrder, Menu_Developer_InsertHalvfabrikat, Menu_Developer_NewProtocol_Extrudering_TEF, Menu_Developer_Test_RGB, Menu_Developer_NewMeasureProtocol, Menu_Developer_MoveDataKorprotokollValues, Menu_Utvecklare_MoveDataFEP, Menu_Developer_Timer_test, moveProcesskortExtruderingTEFTillProcesscardDataToolStripMenuItem, raderaExtruderingTEFFrånProcesscardDataToolStripMenuItem, Menu_Developer_ExportHS_Data, kontrolleraFEPDataSomÄrFelPåExtruderToolStripMenuItem, Menu_Developer_GetDataForQuoting, Menu_Developer_INSERT_Rengjort, Menu_Developer_INSERT_Verktyg_Typ, testaNAntalKörningarPåArtikelNrToolStripMenuItem, Menu_Developer_AddThemePicture, Menu_Developer_TestNewProtocol, testCalendarToolStripMenuItem, Developer_AddLineClearance_Table, påskäggToolStripMenuItem, Developer_CountSql_Queries, Developer_Clear_Sql_Queries, testaChartToolStripMenuItem });
             Menu_Developer.ForeColor = Color.DeepSkyBlue;
             Menu_Developer.Name = "Menu_Developer";
             Menu_Developer.Size = new Size(81, 32);
@@ -904,6 +905,13 @@ namespace DigitalProductionProgram.MainWindow
             Developer_CountSql_Queries.Text = "Räkna SQL Queries";
             Developer_CountSql_Queries.Click += Developer_CountSql_Queries_Click;
             // 
+            // Developer_Clear_Sql_Queries
+            // 
+            Developer_Clear_Sql_Queries.Name = "Developer_Clear_Sql_Queries";
+            Developer_Clear_Sql_Queries.Size = new Size(401, 22);
+            Developer_Clear_Sql_Queries.Text = "Töm SQL Queries";
+            Developer_Clear_Sql_Queries.Click += Developer_Clear_Sql_Queries_Click;
+            // 
             // menuStrip
             // 
             menuStrip.BackColor = Color.Transparent;
@@ -954,12 +962,12 @@ namespace DigitalProductionProgram.MainWindow
             Menu_Equipment_UseSilpaket.Text = "Använd Silpaket";
             Menu_Equipment_UseSilpaket.Click += Menu_Protocol_UseSilpaket_Click;
             // 
-            // Developer_Clear_Sql_Queries
+            // testaChartToolStripMenuItem
             // 
-            Developer_Clear_Sql_Queries.Name = "Developer_Clear_Sql_Queries";
-            Developer_Clear_Sql_Queries.Size = new Size(401, 22);
-            Developer_Clear_Sql_Queries.Text = "Töm SQL Queries";
-            Developer_Clear_Sql_Queries.Click += Developer_Clear_Sql_Queries_Click;
+            testaChartToolStripMenuItem.Name = "testaChartToolStripMenuItem";
+            testaChartToolStripMenuItem.Size = new Size(401, 22);
+            testaChartToolStripMenuItem.Text = "Testa Chart";
+            testaChartToolStripMenuItem.Click += testaChartToolStripMenuItem_Click;
             // 
             // Main_Menu
             // 
@@ -1088,5 +1096,6 @@ namespace DigitalProductionProgram.MainWindow
         private ToolStripMenuItem påskäggToolStripMenuItem;
         private ToolStripMenuItem Developer_CountSql_Queries;
         private ToolStripMenuItem Developer_Clear_Sql_Queries;
+        private ToolStripMenuItem testaChartToolStripMenuItem;
     }
 }

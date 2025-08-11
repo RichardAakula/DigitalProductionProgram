@@ -1,14 +1,4 @@
-﻿using System;
-using System.Configuration;
-using System.Data;
-using System.Diagnostics.CodeAnalysis;
-using Microsoft.Data.SqlClient;
-using System.Drawing;
-using System.Globalization;
-using System.Linq;
-using System.Windows.Forms;
-using System.Windows.Forms.DataVisualization.Charting;
-using DigitalProductionProgram.ControlsManagement;
+﻿using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Help;
 using DigitalProductionProgram.Log;
@@ -19,89 +9,24 @@ using DigitalProductionProgram.PrintingServices;
 using DigitalProductionProgram.Protocols.Template_Management;
 using DigitalProductionProgram.Templates;
 using DigitalProductionProgram.User;
+using LiveChartsCore;
+using LiveChartsCore.Defaults;
+using LiveChartsCore.Measure;
+using LiveChartsCore.Measure;
+using LiveChartsCore.SkiaSharpView;
+using LiveChartsCore.SkiaSharpView.Painting;
+using LiveChartsCore.SkiaSharpView.WinForms;
+using Microsoft.Data.SqlClient;
+using SkiaSharp;
+//using System.Windows.Forms.DataVisualization.Charting;
+using System.Collections.ObjectModel;
 
 namespace DigitalProductionProgram.Measure
 {
     public partial class MainMeasureStatistics : UserControl
     {
-        public static Dictionary<string, double> dict_AverageValuesForLastOrder = new();
-        public static Dictionary<string, double> dict_AverageValuesForPart = new();
-        public static void LoadAvgValuesForLastOrder()
-        {
-            dict_AverageValuesForLastOrder.Clear();
-
-            if (Order.PartNumber is null)
-                return;
-
-            using var con = new SqlConnection(Database.cs_Protocol);
-            const string query = @"
-            SELECT d.CodeName, AVG(data.Value) AS AvgValue
-            FROM Measureprotocol.Data AS data
-            INNER JOIN MeasureProtocol.MainData AS maindata
-                ON data.OrderID = maindata.OrderID
-                AND data.RowIndex = maindata.RowIndex
-            INNER JOIN MeasureProtocol.Description AS d
-                ON data.DescriptionId = d.Id
-            WHERE data.OrderID = 
-            (SELECT OrderID FROM (
-                SELECT TOP(2) OrderID, ROW_NUMBER() OVER (ORDER BY Date_Start DESC) AS RowNum
-                FROM [Order].MainData 
-                WHERE PartNr = @partnumber
-            ) AS tables
-            WHERE RowNum = 2)
-                AND (maindata.Discarded = 'False' OR maindata.Discarded IS NULL)
-            GROUP BY d.CodeName";
-
-            using var cmd = new SqlCommand(query, con);
-            ServerStatus.Add_Sql_Counter();
-            cmd.Parameters.AddWithValue("@partnumber", Order.PartNumber);
-
-            con.Open();
-            using var reader = cmd.ExecuteReader();
-            while (reader.Read())
-            {
-                string code = reader.GetString(0);
-                double val = reader.IsDBNull(1) ? 0 : reader.GetDouble(1);
-                dict_AverageValuesForLastOrder[code] = val;
-            }
-        }
-        public static void LoadAvgValuesForPart()
-        {
-            dict_AverageValuesForPart.Clear();
-
-            if (Order.PartID == null || Order.PartID == 0)
-                return;
-
-            using var con = new SqlConnection(Database.cs_Protocol);
-            const string query = @"
-        SELECT d.CodeName, AVG(data.Value) AS AvgValue
-        FROM Measureprotocol.Data AS data 
-        INNER JOIN MeasureProtocol.MainData AS maindata
-            ON data.OrderID = maindata.OrderID
-            AND data.RowIndex = maindata.RowIndex
-        INNER JOIN MeasureProtocol.Description AS d
-            ON data.DescriptionId = d.Id
-        WHERE EXISTS (
-            SELECT * FROM [Order].MainData AS om 
-            WHERE om.OrderID = data.OrderID AND om.PartID = @partid
-        )
-        AND (maindata.Discarded = 'False' OR maindata.Discarded IS NULL)
-        GROUP BY d.CodeName";
-
-            using var cmd = new SqlCommand(query, con);
-            ServerStatus.Add_Sql_Counter();
-            SQL_Parameter.NullableINT(cmd.Parameters, "@partid", Order.PartID);
-
-            con.Open();
-            using var reader = cmd.ExecuteReader();
-            while (reader.Read())
-            {
-                string code = reader.GetString(0);
-                double val = reader.IsDBNull(1) ? 0 : reader.GetDouble(1);
-                dict_AverageValuesForPart[code] = val;
-            }
-        }
-
+       
+        private static MeasurementChart? measurementChart;
         //private static double AvgValue_Measurement_Part(string? codename)
         //{
         //    using var con = new SqlConnection(Database.cs_Protocol);
@@ -153,26 +78,7 @@ namespace DigitalProductionProgram.Measure
         }
 
        
-        private static double? chart_Maximum_Yvalue(string codename, double sl_max)
-        {
-            var value = GetMeasurementValue("MAX", codename);
-            if (dict_AverageValuesForLastOrder.TryGetValue(codename, out var val) == false)
-                return Math.Max(GetMeasurementValue("MAX", codename), sl_max);
-            var max = Math.Max(val, value);
-            return Math.Max(max, sl_max);
-        }
-        private static double chart_Minimum_Yvalue(string codename, double sl_min)
-        {
-            var value = GetMeasurementValue("MIN", codename);
-            if (dict_AverageValuesForLastOrder.TryGetValue(codename, out var val) == false)
-                return Math.Min(value, sl_min);
-
-            var min = Math.Min(value, val);
-            return Math.Max(min, sl_min);
-
-            //var min = Math.Min(value, Math.Max(val, value));
-            //return Math.Min(Math.Max(min, sl_min), min);
-        }
+        
         //public static int Max_Bag => (int)GetMeasurementValue("MAX", "Bag");
         public static string? active_MeasureCode;
         public static int MeasureStatsHeight;
@@ -212,87 +118,117 @@ namespace DigitalProductionProgram.Measure
                         .Concat(flp_Min.Controls.OfType<Label>()))
                 lbl2.Text = string.Empty;
         }
-        public void Add_MeasureInformation_MainForm(Panel? panel, TableLayoutPanel tlp_MainWindow)
+
+        public async Task Add_MeasureInformation_MainForm(MeasurementChart _measurementChart, TableLayoutPanel tlp_MainWindow)
         {
+            measurementChart = _measurementChart;
             if (Order.OrderID is null || Templates_MeasureProtocol.MainTemplate.ID == 0 || Templates_MeasureProtocol.MainTemplate.ID is null)
                 return;
+
             Invoke(new Action(() => DrawingControl.SuspendDrawing(this)));
 
             foreach (var flp in tlp_Main.Controls.OfType<FlowLayoutPanel>())
                 flp.Invoke(new Action(() => flp.Controls.Clear()));
-            Charts.panel_Chart = panel;
+
             MeasureStatsHeight = label_MeasureInformation.Height + (int)tlp_Main.RowStyles[0].Height + 2;
-            
-            using (var con = new SqlConnection(Database.cs_Protocol))
+
+            var measureDataList = new List<(string Parameter_UserText, string Parameter_Monitor, int Decimals, decimal Average, decimal Min, decimal Max)>();
+
+            await using (var con = new SqlConnection(Database.cs_Protocol))
             {
                 const string query = @"
-                    SELECT 
-                        Parameter_UserText, 
-                        Parameter_Monitor, 
-                        Decimals, 
-                        AVG(Value) AS Average, 
-                        MIN(Value) AS Min, 
-                        MAX(Value) AS Max
-                    FROM MeasureProtocol.Template AS main
-                    JOIN MeasureProtocol.Description AS description
-                        ON main.DescriptionID = description.Id
-                    JOIN MeasureProtocol.Data as data
-                        ON main.DescriptionID = data.DescriptionId
-                    JOIN MeasureProtocol.MainData as maindata
-                        ON data.OrderID = maindata.OrderID 
-                            AND data.RowIndex = maindata.RowIndex
-    
-                    WHERE main.MeasureProtocolMainTemplateID = @maintemplateid
-                        AND description.IsMeasureValue = 'True'
-                        AND data.OrderID = @orderid
-                        AND (Discarded = 'False' OR Discarded IS NULL)
-                    GROUP BY Parameter_UserText,Parameter_Monitor, CodeName, Decimals, ColumnIndex
-                    ORDER BY ColumnIndex";
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
-                cmd.Parameters.AddWithValue("@maintemplateid", Templates_MeasureProtocol.MainTemplate.ID);
-                con.Open();
-                var reader = cmd.ExecuteReader();
-                while (reader.Read())
+             SELECT 
+                 Parameter_UserText, 
+                 Parameter_Monitor, 
+                 Decimals, 
+                 AVG(Value) AS Average, 
+                 MIN(Value) AS Min, 
+                 MAX(Value) AS Max
+             FROM MeasureProtocol.Template AS main
+             JOIN MeasureProtocol.Description AS description
+                 ON main.DescriptionID = description.Id
+             JOIN MeasureProtocol.Data as data
+                 ON main.DescriptionID = data.DescriptionId
+             JOIN MeasureProtocol.MainData as maindata
+                 ON data.OrderID = maindata.OrderID 
+                     AND data.RowIndex = maindata.RowIndex
+             WHERE main.MeasureProtocolMainTemplateID = @maintemplateid
+                 AND description.IsMeasureValue = 'True'
+                 AND data.OrderID = @orderid
+                 AND (Discarded = 'False' OR Discarded IS NULL)
+             GROUP BY Parameter_UserText,Parameter_Monitor, CodeName, Decimals, ColumnIndex
+             ORDER BY ColumnIndex";
+
+                await using (var cmd = new SqlCommand(query, con))
                 {
-                    var parameterText = reader["Parameter_UserText"].ToString();
-                    var textwidth = TextRenderer.MeasureText(parameterText, new Font("Segoe UI", 9, FontStyle.Bold)).Width;
-                    var labelHeight = textwidth > flp_Codenames.Width - 10 ? 40 : 20;
-                    if (string.IsNullOrEmpty(ChartCodename))
+                    ServerStatus.Add_Sql_Counter();
+                    cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
+                    cmd.Parameters.AddWithValue("@maintemplateid", Templates_MeasureProtocol.MainTemplate.ID);
+
+                    await con.OpenAsync();
+
+                    await using (var reader = await cmd.ExecuteReaderAsync())
                     {
-                        ChartCodename = reader["Parameter_Monitor"].ToString();
-                        ChartCodeText = parameterText;
-                    }
+                        while (await reader.ReadAsync())
+                        {
+                            var parameterUserText = reader["Parameter_UserText"].ToString() ?? string.Empty;
+                            var parameterMonitor = reader["Parameter_Monitor"].ToString() ?? string.Empty;
+                            var decimals = int.TryParse(reader["Decimals"].ToString(), out var d) ? d : 0;
+                            var avg = reader["Average"] != DBNull.Value ? Convert.ToDecimal(reader["Average"]) : 0m;
+                            var min = reader["Min"] != DBNull.Value ? Convert.ToDecimal(reader["Min"]) : 0m;
+                            var max = reader["Max"] != DBNull.Value ? Convert.ToDecimal(reader["Max"]) : 0m;
 
-                    if (!string.IsNullOrEmpty(ChartCodename) && !string.IsNullOrEmpty(ChartCodeText))
-                    {
-                        Add_Label(flp_Codenames, $"{parameterText}:", reader["Parameter_Monitor"].ToString(), labelHeight, FontStyle.Bold, ContentAlignment.MiddleRight);
-                        MeasureStatsHeight += labelHeight + 2;
-
-                        int.TryParse(reader["Decimals"].ToString(), out var decimals);
-                        var avg = AggregateValue(reader["Average"], decimals);
-                        var min = AggregateValue(reader["Min"], decimals);
-                        var max = AggregateValue(reader["Max"], decimals);
-                        Add_Label(flp_Average, FormatDisplayValue(avg), null, labelHeight);
-                        Add_Label(flp_Min, FormatDisplayValue(min), null, labelHeight);
-                        Add_Label(flp_Max, FormatDisplayValue(max), null, labelHeight);
-
+                            measureDataList.Add((parameterUserText, parameterMonitor, decimals, avg, min, max));
+                        }
                     }
                 }
             }
-            
+
+            Invoke(() =>
+            {
+                foreach (var item in measureDataList)
+                {
+                    var parameterText = item.Parameter_UserText;
+                    var textwidth = TextRenderer.MeasureText(parameterText, new Font("Segoe UI", 9, FontStyle.Bold)).Width;
+                    var labelHeight = textwidth > flp_Codenames.Width - 10 ? 40 : 20;
+
+                    if (string.IsNullOrEmpty(ChartCodename))
+                    {
+                        ChartCodename = item.Parameter_Monitor;
+                        ChartCodeText = parameterText;
+                    }
+
+                    Add_Label(flp_Codenames, $"{parameterText}:", item.Parameter_Monitor, labelHeight, FontStyle.Bold, ContentAlignment.MiddleRight);
+                    MeasureStatsHeight += labelHeight + 2;
+
+                    var avg = AggregateValue(item.Average, item.Decimals);
+                    var min = AggregateValue(item.Min, item.Decimals);
+                    var max = AggregateValue(item.Max, item.Decimals);
+
+                    Add_Label(flp_Average, FormatDisplayValue(avg), null, labelHeight);
+                    Add_Label(flp_Min, FormatDisplayValue(min), null, labelHeight);
+                    Add_Label(flp_Max, FormatDisplayValue(max), null, labelHeight);
+                }
+            });
 
             if (!string.IsNullOrEmpty(ChartCodename))
-                Charts.Add_Data_Chart_MainForm(panel, ChartCodename, ChartCodeText);
+            {
+                await Task.Run(() => measurementChart.Add_Data_Chart_MainForm(ChartCodename, ChartCodeText));
+            }
             else
             {
-                _ = Activity.Stop($"Felsökning rött kryss över chart: ChartCodeText={ChartCodeText}\n" +
-                                      $"OrderID = {Order.OrderID} Measureprotocol.MainTemplateID = {Templates_MeasureProtocol.MainTemplate.ID}");
-
+                await measurementChart.RemoveChart();
+                if (ChartCodeText != null)
+                    _ = Activity.Stop($"Felsökning rött kryss över chart: ChartCodeText={ChartCodeText}\n" +
+                                  $"OrderID = {Order.OrderID} Measureprotocol.MainTemplateID = {Templates_MeasureProtocol.MainTemplate.ID}");
             }
+
             tlp_MainWindow.Invoke(new Action<TableLayoutPanel>(SetHeight), tlp_MainWindow);
-            Invoke( () => DrawingControl.ResumeDrawing(this));
+            Invoke(() => DrawingControl.ResumeDrawing(this));
         }
+
+
+      
         private double AggregateValue(object value, int decimals)
         {
             if (double.TryParse(value?.ToString(), out var result))
@@ -337,7 +273,7 @@ namespace DigitalProductionProgram.Measure
             flp.Invoke(new Action(() => flp.Controls.Add(lbl)));
 
         }
-        public static void Mätdata_Row_Click(object sender, EventArgs e)
+        public static async void Mätdata_Row_Click(object sender, EventArgs e)
         {
             var label = (Label)sender;
             var mått = label.Name;
@@ -345,7 +281,8 @@ namespace DigitalProductionProgram.Measure
                 Load_MätStatistik();
             
             active_MeasureCode = mått;
-            Charts.Add_Data_Chart_MainForm(Charts.panel_Chart, mått, label.Text);
+
+            await measurementChart?.Add_Data_Chart_MainForm(mått, label.Text);
         }
 
         private void ShowStats_Click(object sender, EventArgs e)
@@ -366,152 +303,6 @@ namespace DigitalProductionProgram.Measure
             _ = Activity.Stop($"Mätstatistik för order: {Order.OrderNumber}");
         }
 
-        public static class Charts
-        {
-            public static Panel? panel_Chart;
-            public static Chart chart;
-            private static double? Y_Axis_MaxValue(string? codename, double sl_max)
-            {
-                var usl = MeasurePoints.Tolerances.ActiveTolerance(codename, "USL") * 1.005;
-                var max_chart = chart_Maximum_Yvalue(codename, sl_max) * 1.005;
-                if (MeasurePoints.Tolerances.ActiveTolerance(codename, "USL") != null)
-                    if (max_chart != null)
-                        if (usl != null)
-                            return Math.Ceiling(Math.Max(usl.Value, max_chart.Value) * 100) / 100;
-                if (max_chart != null) 
-                    return Math.Ceiling(max_chart.Value * 100) / 100;
-                return null;
-            }
-            private static double? Y_Axis_MinValue(string? codename, double sl_min)
-            {
-                var lsl = MeasurePoints.Tolerances.ActiveTolerance(codename, "LSL") * 0.995;
-                double? min_chart = chart_Minimum_Yvalue(codename, sl_min) * 0.995;
-
-                if (MeasurePoints.Tolerances.ActiveTolerance(codename, "LSL") == null) 
-                    return Math.Floor(min_chart.Value * 100) / 100;
-                if (lsl == null) 
-                    return Math.Floor(min_chart.Value * 100) / 100;
-                var min = Math.Floor(Math.Min(lsl.Value, min_chart.Value) * 100) / 100;
-                return min;
-            }
-
-            [SuppressMessage("ReSharper.DPA", "DPA0005: Database issues")]
-            private static void Initialize_Chart_MainForm(Chart chart, string? codename, string codetext)
-            {
-                chart.Titles.Clear();
-                chart.Series.Clear();
-                chart.ChartAreas.Clear();
-                chart.Legends.Clear();
-
-
-                var slMax = new StripLine();
-                var slMin = new StripLine();
-
-                chart.Dock = DockStyle.Fill;
-
-                chart.Titles.Add(codetext);
-                if (chart.Series.Any(s => s.Name == codename))
-                    return;
-                chart.Series.Add(codename);
-                var serie1 = LanguageManager.GetString("chartSerieMeasurepoints1");
-                var serie2 = LanguageManager.GetString("chartSerieMeasurepoints2");
-                chart.Series.Add(serie1);
-                chart.Series.Add(serie2);
-
-                foreach (var serie in chart.Series)
-                    serie.ChartType = SeriesChartType.Line;
-
-                chart.Series[0].Color = Color.Yellow;
-                chart.Series[1].Color = Color.Green;
-                chart.Series[2].Color = Color.DeepSkyBlue;
-                chart.Series[0].LegendText = $"{codetext}";
-                chart.Series[1].LegendText = serie1;
-                chart.Series[2].LegendText = serie2;
-                chart.Titles[0].ForeColor = Color.Goldenrod;
-                chart.Titles[0].Font = new Font("Lucida Sans", 11f, FontStyle.Regular);
-                chart.ChartAreas.Add("chart_Area");
-                chart.ChartAreas[0].AxisY.StripLines.Add(slMax);
-                chart.ChartAreas[0].AxisY.StripLines.Add(slMin);
-                chart.ChartAreas[0].BackColor = Color.Transparent;
-                chart.ChartAreas[0].AxisX.MajorGrid.LineColor = Color.Transparent;
-                chart.ChartAreas[0].AxisY.MajorGrid.LineColor = Color.Transparent;
-                chart.ChartAreas[0].AxisX.LineColor = Color.Transparent;
-                chart.ChartAreas[0].AxisY.LineColor = Color.Transparent;
-                chart.ChartAreas[0].AxisX.LabelStyle.ForeColor = Color.White;
-                chart.ChartAreas[0].AxisY.LabelStyle.ForeColor = Color.White;
-
-                chart.Legends.Add("legend");
-                chart.Legends[0].ForeColor = Color.White;
-                chart.Legends[0].BackColor = Color.Transparent;
-
-
-                slMax.BorderColor = Color.Red;
-                slMin.BorderColor = Color.Red;
-                slMin.BorderWidth = 1;
-                slMax.BorderWidth = 1;
-
-                chart.ChartAreas[0].AxisY.Maximum = (double)Y_Axis_MaxValue(codename, slMax.IntervalOffset);
-                chart.ChartAreas[0].AxisY.Minimum = (double)Y_Axis_MinValue(codename, slMin.IntervalOffset);
-
-                if (Y_Axis_MaxValue(codename, slMax.IntervalOffset) < Y_Axis_MinValue(codename, slMin.IntervalOffset))
-                    chart.ChartAreas[0].AxisY.Maximum = (double)Y_Axis_MinValue(codename, slMin.IntervalOffset) + 1;
-
-                chart.ChartAreas[0].AxisX.Minimum = 1;
-               
-                var USL = MeasurePoints.Tolerances.ActiveTolerance(codename, "USL");
-                var LSL = MeasurePoints.Tolerances.ActiveTolerance(codename, "LSL");
-                                   
-                if (USL != null)
-                    slMax.IntervalOffset = MeasurePoints.Tolerances.ActiveTolerance(codename, "USL").Value;
-                
-                if (LSL != null)
-                    slMin.IntervalOffset = MeasurePoints.Tolerances.ActiveTolerance(codename, "LSL").Value;
-            }
-            public static void Add_Data_Chart_MainForm(Panel? panel, string? codename, string? codetext)
-            {
-                chart = new Chart
-                {
-                    BackColor = Color.Transparent
-                };
-                panel?.Invoke(() => panel.Controls.Clear());
-
-                Initialize_Chart_MainForm(chart, codename, codetext);
-                    
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    const string query = @"
-                            SELECT Value
-                            FROM Measureprotocol.Data AS data
-                            INNER JOIN Measureprotocol.MainData as maindata
-                                ON data.OrderID = maindata.OrderID
-                                    AND data.RowIndex = maindata.RowIndex
-                            WHERE data.OrderID = @orderid
-                            AND (Discarded = 'False' OR Discarded IS NULL)
-                            AND DescriptionId = (SELECT Id FROM MeasureProtocol.Description WHERE CodeName = @codename)";
-
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    con.Open();
-                    cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
-                    cmd.Parameters.AddWithValue("@codename", codename);
-                    var reader = cmd.ExecuteReader();
-                    var ctr = 0;
-                    while (reader.Read())
-                    {
-                        if (!double.TryParse(reader["Value"].ToString(), out var result)) 
-                            continue;
-                        chart.Series[0].Points.AddXY(ctr, result);
-                        if (dict_AverageValuesForLastOrder.TryGetValue(codename, out var averageValueLastOrder))
-                            chart.Series[1].Points.AddXY(ctr, averageValueLastOrder);
-                        if (dict_AverageValuesForPart.TryGetValue(codename, out var averageValuePart))
-                            chart.Series[2].Points.AddXY(ctr, averageValuePart);
-                        ctr++;
-                    }
-                }
-                panel?.Invoke(() => panel.Controls.Add(chart));
-                }
-
-            
-        }
         public class ValidateMeasurements
         {
             public static void AverageValues()

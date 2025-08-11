@@ -22,7 +22,7 @@
             BEGIN
                 BEGIN TRANSACTION
                     INSERT INTO Settings.General (HostName, Company, Theme, ProdLine_LoadingPlan, MeasureOnly, Load_ZumbachControlLimits, CultureInfo)
-                    SELECT @computer, Company, Theme, ProdLine_LoadingPlan, MeasureOnly, Load_ZumbachControlLimits, CultureInfo
+                    SELECT @hostname, Company, Theme, ProdLine_LoadingPlan, MeasureOnly, Load_ZumbachControlLimits, CultureInfo
                     FROM Settings.General
                     WHERE HostName = 'Standard'
 
@@ -34,7 +34,7 @@
                         BEGIN
                             BEGIN TRANSACTION
                                 INSERT INTO Settings.General (HostName, Company, Theme, ProdLine_LoadingPlan, MeasureOnly, Load_ZumbachControlLimits, CultureInfo)
-                                    SELECT @computer, Company, Theme, ProdLine_LoadingPlan, MeasureOnly, Load_ZumbachControlLimits, CultureInfo
+                                    SELECT @hostname, Company, Theme, ProdLine_LoadingPlan, MeasureOnly, Load_ZumbachControlLimits, CultureInfo
                                     FROM Settings.General
                                     WHERE HostName = 'Standard'
 

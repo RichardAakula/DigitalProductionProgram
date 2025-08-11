@@ -1895,4 +1895,16 @@
   <data name="resetPassword_WrongCode" xml:space="preserve">
     <value></value>
   </data>
+  <data name="processcardNotNeedSigning" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="processcardAlreadyEstablished" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="legendAverageValuePartNr" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="legendAverageLastOrder" xml:space="preserve">
+    <value></value>
+  </data>
 </root>

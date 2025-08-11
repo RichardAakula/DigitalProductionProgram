@@ -909,7 +909,7 @@ namespace DigitalProductionProgram.OrderManagement
                         return false;
                     if (PartID is null)
                         return true;
-                    RevNr = Processkort_General.Last_RevNr();
+                    RevNr = Processkort_General.LoadRevNr();
                     return true;
                 }
             }   
@@ -924,7 +924,7 @@ namespace DigitalProductionProgram.OrderManagement
                     case WorkOperations.Extrudering_FEP:
                         Korprotokoll.Save_Date_StartUp1();
                         Korprotokoll.Save_Data("", 213, 0, 1, 1);//Zon 1
-                        SaveData.UPDATE_Korprotokoll_Main_From_Processkort_Main();
+                        //SaveData.UPDATE_Korprotokoll_Main_From_Processkort_Main();
                         PreFab.SaveData.INSERT_Halvfabrikat();
                         MainInfo_B.INSERT_Measurepoints_Korprotokoll();
                         break;
@@ -932,14 +932,14 @@ namespace DigitalProductionProgram.OrderManagement
                     case WorkOperations.Extrudering_Termo:
                     case WorkOperations.Extrudering_Tryck:
                         Korprotokoll.Save_Date_StartUp1();
-                        SaveData.UPDATE_Korprotokoll_Main_From_Processkort_Main();
+                       // SaveData.UPDATE_Korprotokoll_Main_From_Processkort_Main();
                         PreFab.SaveData.INSERT_Halvfabrikat();
                         MainInfo_B.INSERT_Measurepoints_Korprotokoll();
                         break;
 
                     case WorkOperations.Extrusion_HS:
                         Korprotokoll.Save_Date_StartUp1();
-                        SaveData.UPDATE_Korprotokoll_Main_From_Processkort_Main();
+                       // SaveData.UPDATE_Korprotokoll_Main_From_Processkort_Main();
                         PreFab.SaveData.INSERT_Halvfabrikat();
                         MainInfo_B.INSERT_Measurepoints_Korprotokoll();
                         break;
@@ -952,7 +952,7 @@ namespace DigitalProductionProgram.OrderManagement
 
                     case WorkOperations.Krympslangsblåsning:
                     case WorkOperations.HeatShrink:
-                        SaveData.UPDATE_Korprotokoll_Main_From_Processkort_Main();
+                        //SaveData.UPDATE_Korprotokoll_Main_From_Processkort_Main();
                         PreFab.SaveData.INSERT_Halvfabrikat();
                         break;
 
@@ -964,23 +964,23 @@ namespace DigitalProductionProgram.OrderManagement
                     case WorkOperations.Kragning_PTFE:
                     case WorkOperations.Kragning_K22_PTFE:
                         MainInfo_B.INSERT_Measurepoints_Korprotokoll();
-                        SaveData.UPDATE_Korprotokoll_Main_From_Processkort_Main();
+                       // SaveData.UPDATE_Korprotokoll_Main_From_Processkort_Main();
                         break;
 
                     case WorkOperations.Skärmning:
-                        SaveData.UPDATE_Korprotokoll_Main_From_Processkort_Main();
+                        //SaveData.UPDATE_Korprotokoll_Main_From_Processkort_Main();
                         PreFab.SaveData.INSERT_Skärmning();
                         break;
 
-                    case WorkOperations.Kragning_TEF:
-                    case WorkOperations.Slipning:
-                    case WorkOperations.Svetsning:
-                        SaveData.UPDATE_Korprotokoll_Main_From_Processkort_Main();
-                        break;
+                    //case WorkOperations.Kragning_TEF:
+                    //case WorkOperations.Slipning:
+                    //case WorkOperations.Svetsning:
+                    //    SaveData.UPDATE_Korprotokoll_Main_From_Processkort_Main();
+                    //    break;
 
                     case WorkOperations.Synergy_PTFE:
                         MainInfo_B.INSERT_Measurepoints_Korprotokoll();
-                        SaveData.UPDATE_Korprotokoll_Main_From_Processkort_Main();
+                       // SaveData.UPDATE_Korprotokoll_Main_From_Processkort_Main();
                         PreFab.SaveData.INSERT_Halvfabrikat();
                         break;
                 }

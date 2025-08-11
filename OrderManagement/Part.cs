@@ -82,7 +82,7 @@ namespace DigitalProductionProgram.OrderManagement
             var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             SQL_Parameter.NullableINT(cmd.Parameters, "@partid", partID);
             con.Open();
-            if (string.IsNullOrEmpty(Processkort_General.Last_RevNr(partID)))
+            if (string.IsNullOrEmpty(Processkort_General.LoadRevNr(partID)))
                 return 0;
             return (int)cmd.ExecuteScalar();
         }
@@ -174,19 +174,20 @@ namespace DigitalProductionProgram.OrderManagement
             if (Order.PartNumber is null)
                 return;
             using var con = new SqlConnection(Database.cs_Protocol);
+
             var query = new StringBuilder(@"
-                    WITH OrderedRevisions AS (
-                        SELECT 
-                        PartID, 
-                        RevNr,
-                        QA_sign,
-                        ROW_NUMBER() OVER (ORDER BY revNr DESC) AS RowNum,
-                        COUNT(*) OVER () AS TotalRevisions -- Count total revisions
-                    FROM Processcard.MainData 
-                        WHERE PartNr = @partnr 
-                        AND WorkOperationID = (SELECT ID FROM Workoperation.Names WHERE Name = @workoperation AND ID IS NOT NULL) 
-                        AND Aktiv = 'True'
-                        ");
+            WITH OrderedRevisions AS (
+                SELECT 
+                    PartID, 
+                    RevNr,
+                    QA_sign,
+                    Framtagning_Processfönster,
+                    ROW_NUMBER() OVER (ORDER BY revNr DESC) AS RowNum,
+                    COUNT(*) OVER () AS TotalRevisions
+                FROM Processcard.MainData 
+                WHERE PartNr = @partnr 
+                AND WorkOperationID = (SELECT ID FROM Workoperation.Names WHERE Name = @workoperation AND ID IS NOT NULL) 
+                AND Aktiv = 'True'");
 
             if (isMultipleProcesscard)
             {
@@ -197,13 +198,43 @@ namespace DigitalProductionProgram.OrderManagement
                     query.Append(" AND ProdType = @prodtyp ");
             }
 
-            query.Append(@")
-                    SELECT PartID FROM OrderedRevisions
-                    WHERE (QA_sign IS NOT NULL AND RowNum = 1)  -- Latest approved revision
-                        OR (QA_sign IS NULL AND RowNum = 2)   -- Previous revision if latest is not approved
-                        OR (RowNum = 1 AND TotalRevisions = 1) -- Special case: If only one revision exists, select it regardless of QA_sign
-                    ORDER BY RowNum
-                    OFFSET 0 ROWS FETCH NEXT 1 ROWS ONLY; -- Ensure only one record is returned");
+            query.Append(")");
+
+            if (IsOperatorStartingOrder)
+            {
+                // Behåll original logik: prioritera QA-godkänd revision
+                //Om Framtagning_Processfönster = True, tillåt även revisioner utan QA_sign
+                //Annars krävs QA_sign
+                query.Append(@"
+                , Filtered AS (
+                    SELECT TOP 1 PartID, RevNr
+                    FROM OrderedRevisions
+                    WHERE (Framtagning_Processfönster = 'True') 
+                        OR (Framtagning_Processfönster = 'False' AND QA_sign IS NOT NULL)
+                    ORDER BY RevNr DESC
+                ),
+                LatestRev AS (
+                    SELECT MAX(RevNr) AS MaxRevNr
+                    FROM OrderedRevisions
+                )
+                SELECT 
+                    f.PartID, 
+                    f.RevNr,
+                    l.MaxRevNr,
+                    CASE WHEN f.RevNr = l.MaxRevNr THEN 'True' ELSE 'False' END AS LatestRevision
+                FROM Filtered f
+                CROSS JOIN LatestRev l");
+            }
+            else
+            {
+                // Ny logik: hämta alltid senaste revision oavsett QA_sign
+                query.Append(@"
+                SELECT PartID FROM OrderedRevisions
+                WHERE RowNum = 1
+                ORDER BY RowNum
+                OFFSET 0 ROWS FETCH NEXT 1 ROWS ONLY");
+            }
+
 
             con.Open();
             using var cmd = new SqlCommand(query.ToString(), con);
@@ -211,9 +242,25 @@ namespace DigitalProductionProgram.OrderManagement
             cmd.Parameters.AddWithValue("@workoperation", WorkOperation);
             SQL_Parameter.String(cmd.Parameters, "@prodline", Order.ProdLine);
             SQL_Parameter.String(cmd.Parameters, "@prodtyp", Order.ProdType);
+            var isLatestRevision = true;
+            var latestRevNr = string.Empty;
+            var startedRevNr = string.Empty;
+            using (var reader = cmd.ExecuteReader())
+            {
+                if (reader.Read())
+                {
+                    Order.PartID = reader["PartID"] as int?;
+                    if (IsOperatorStartingOrder)
+                    {
+                        isLatestRevision = reader["LatestRevision"] as string == "True";
+                        latestRevNr = reader["MaxRevNr"] as string ?? string.Empty;
+                        startedRevNr = reader["RevNr"] as string ?? string.Empty;
+                    }
+                }
+            }
 
-            var value = cmd.ExecuteScalar();
-            Order.PartID = value as int?;
+            if (isLatestRevision == false)
+                Mail.NotifyQAPartNumberNeedApproval(latestRevNr, startedRevNr);
         }
         public static Dictionary<string, int?> Get_PartIDs_Batch(IEnumerable<(string PartNr, Manage_WorkOperation.WorkOperations WorkOp)> keys)
         {

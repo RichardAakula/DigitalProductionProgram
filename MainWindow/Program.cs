@@ -100,11 +100,15 @@ namespace DigitalProductionProgram.MainWindow
             //Kontrollerar att alla databaskopplingar är ok, annars får användaren välja  
             Load_DatabaseSettings();
 
-            if (IsDatabaseConnectionMissing)
-            {
-                var cs = new Database();
-                cs.ShowDialog();
-            }
+
+            //Test test = new Test("Test", "Testar att ladda en testform med en graf");
+            //test.ShowDialog();
+            //return;
+            //if (IsDatabaseConnectionMissing)
+            //{
+            //    var cs = new Database();
+            //    cs.ShowDialog();
+            //}
 
             //Order.WorkOperation = Manage_WorkOperation.WorkOperations.Extrudering_Termo;
 

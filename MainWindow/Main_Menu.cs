@@ -123,14 +123,12 @@ namespace DigitalProductionProgram.MainWindow
             mainForm.measurePoints.ClearMeasurePoints();
             mainForm.measureStats.ClearData();
             mainForm.OrderInformation.tb_OrderNr.Enabled = true;
-            
 
-            if (MainMeasureStatistics.Charts.chart != null && MainMeasureStatistics.Charts.chart.Series[0].Points.Count > 0)
-            {
-                MainMeasureStatistics.Charts.chart.Series[0].Points.Clear();
-                MainMeasureStatistics.Charts.chart.Series[1].Points.Clear();
-                MainMeasureStatistics.Charts.chart.Series[2].Points.Clear();
-            }
+            //här
+            //foreach (var series in MeasurementChart.chart.Series)
+            //    if (series.Values is IList<double> values)
+            //        values.Clear();
+
 
             mainForm.Change_GUI_OrderEjKlar();
             _ = Log.Activity.Stop("Användare klickar på Ny Order");
@@ -162,7 +160,7 @@ namespace DigitalProductionProgram.MainWindow
                 mainForm.OrderInformation.cb_Operation.SelectedIndexChanged += mainForm.Operation_SelectedIndexChanged;
 
                 Menu_Order_OrderDone.Enabled = true;
-                mainForm.StartOrLoadOrder(true);
+                _ = mainForm.StartOrLoadOrder(true);
             }
 
             Cursor = Cursors.Arrow;
@@ -210,7 +208,7 @@ namespace DigitalProductionProgram.MainWindow
             {
                 SaveData.UPDATE_Unlock_OrderDone();
                 mainForm.BackColor = Color.FromArgb(25, 25, 25);
-                mainForm.StartOrLoadOrder(true);
+                _ = mainForm.StartOrLoadOrder(true);
                 //mainForm.Open();
                 Menu_Order_OrderDone.Enabled = true;
             }
@@ -273,7 +271,7 @@ namespace DigitalProductionProgram.MainWindow
             mainForm.OrderInformation.cb_Operation.Text = Order.Operation;
 
             //Order.Start.Save_MainInfo();
-            mainForm.StartOrLoadOrder(true);
+            _ = mainForm.StartOrLoadOrder(true);
             mainForm.Change_GUI_MainForm();
 
             _ = Log.Activity.Stop($"{Person.Name} Skapar Testorder");
@@ -303,7 +301,7 @@ namespace DigitalProductionProgram.MainWindow
 
             var chooseProcesscard_ChangeProcesscard = new ProcesscardTemplateSelector(true, true, false, false);
             chooseProcesscard_ChangeProcesscard.ShowDialog();
-           
+
             using (var con = new SqlConnection(Database.cs_Protocol))
             {
                 var query = @"
@@ -550,7 +548,7 @@ namespace DigitalProductionProgram.MainWindow
         }
 
         //----------HJÄLP----------
-        
+
         private void Menu_Help_RapporteraFel_Click(object sender, EventArgs e)
         {
             Process.Start(new ProcessStartInfo
@@ -951,7 +949,7 @@ Protocol.MainTemplate.Revision = {Templates_Protocol.MainTemplate.Revision}"
             mainForm.OrderInformation.cb_Operation.SelectedIndexChanged += mainForm.Operation_SelectedIndexChanged;
 
 
-            mainForm.StartOrLoadOrder(true);
+            _ = mainForm.StartOrLoadOrder(true);
         }
         private void Menu_Developer_WhosIsLoggedIn_Click(object sender, EventArgs e)
         {
@@ -1400,6 +1398,10 @@ ORDER BY OrderID DESC ";
             easterEgg.ShowDialog();
         }
 
-        
+        private void testaChartToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Test test = new Test("TestCode", "TestText");
+            test.ShowDialog();
+        }
     }
 }

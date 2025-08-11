@@ -88,11 +88,17 @@
     <Compile Update="MainWindow\Main_RollingInformation.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Update="MainWindow\MeasurementChart.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Update="MainWindow\MonitorUsers.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Update="MainWindow\ServerStatus.cs">
       <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="MainWindow\Test.cs">
+      <SubType>Form</SubType>
     </Compile>
     <Compile Update="Statistics\Statistics_DPP.cs">
       <SubType>UserControl</SubType>

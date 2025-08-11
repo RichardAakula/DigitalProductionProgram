@@ -39,25 +39,40 @@ namespace DigitalProductionProgram.Processcards
             }
         }
 
-        public static string? Last_RevNr(int? partID = null)
+        public static string? LoadRevNr(int? partID = null)
         {
             if (partID == null)
                 partID = Order.PartID;
             if (Order.PartID is null || Order.PartID == 0)
                 return null;
-            using (var con = new SqlConnection(Database.cs_Protocol))
+            using var con = new SqlConnection(Database.cs_Protocol);
+            const string query = "SELECT RevNr FROM Processcard.MainData WHERE PartID = @partid";
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            con.Open();
+            SQL_Parameter.NullableINT(cmd.Parameters, "@partid", partID);
+            if (string.IsNullOrEmpty((string)cmd.ExecuteScalar()))
+                return string.Empty;
+            return (string)cmd.ExecuteScalar();
+        }
+        public static string? LoadProdType
+        {
+            get
             {
-                const string query = "SELECT RevNr FROM Processcard.MainData WHERE PartID = @partid";
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                if (Order.PartID is null || Order.PartID == 0)
+                    return null;
+                using var con = new SqlConnection(Database.cs_Protocol);
+                const string query = "SELECT ProdType FROM Processcard.MainData WHERE PartID = @partid";
+                var cmd = new SqlCommand(query, con);
+                ServerStatus.Add_Sql_Counter();
                 con.Open();
-                SQL_Parameter.NullableINT(cmd.Parameters, "@partid", partID);
+                SQL_Parameter.NullableINT(cmd.Parameters, "@partid", Order.PartID);
                 if (string.IsNullOrEmpty((string)cmd.ExecuteScalar()))
                     return string.Empty;
                 return (string)cmd.ExecuteScalar();
             }
         }
-        
-       
-       
+
+
+
     }
 }

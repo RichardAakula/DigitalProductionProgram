@@ -42,28 +42,26 @@ namespace DigitalProductionProgram.OrderManagement
             {
                 if (Monitor.Monitor.factory == Monitor.Monitor.Factory.Thailand && Person.Role == "SuperAdmin")
                     return null;
-                using (var con = new SqlConnection(Database.cs_Protocol))
+                using var con = new SqlConnection(Database.cs_Protocol);
+                var query = "SELECT TOP(1) Image FROM [Settings].Themes WHERE Theme = @theme ORDER BY NEWID()";
+                con.Open();
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                cmd.Parameters.AddWithValue("@theme", Theme.ToString());
+                object value;
+                try
                 {
-                    var query = "SELECT TOP(1) Image FROM [Settings].Themes WHERE Theme = @theme ORDER BY NEWID()";
-                    con.Open();
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    cmd.Parameters.AddWithValue("@theme", Theme.ToString());
-                    object value;
-                    try
-                    {
-                        value = cmd.ExecuteScalar();
-                    }
-                    catch (SqlException exc)
-                    {
-                        return null;
-                    }
-                    
-                    if (value is null)
-                        return null;
-                    var img = (byte[])value;
-                    var ms = new MemoryStream(img);
-                    return Image.FromStream(ms);
+                    value = cmd.ExecuteScalar();
                 }
+                catch (SqlException exc)
+                {
+                    return null;
+                }
+                    
+                if (value is null)
+                    return null;
+                var img = (byte[])value;
+                var ms = new MemoryStream(img);
+                return Image.FromStream(ms);
             }
         }
 
@@ -126,7 +124,8 @@ namespace DigitalProductionProgram.OrderManagement
             backColor_Buttons = Color.FromArgb(180, Color.Black);
             foreColor_Buttons = CustomColors.CoolGrey_Font;
 
-            backColor_OrderInformation = backColor_Chart = Color.FromArgb(140, Color.Black);
+            backColor_OrderInformation = Color.FromArgb(140, Color.Black);
+            backColor_Chart = Color.RosyBrown;
             foreColor_OrderInformation = Color.Snow;
 
             backColor_ExtraInfo = Color.FromArgb(140, Color.Black);
@@ -154,7 +153,8 @@ namespace DigitalProductionProgram.OrderManagement
             backColor_Buttons = Color.FromArgb(180, Color.DarkGreen);
             foreColor_Buttons = Color.Snow;
 
-            backColor_OrderInformation = backColor_Chart = Color.FromArgb(140, Color.Black);
+            backColor_OrderInformation =  Color.FromArgb(140, Color.Black);
+            backColor_Chart = Color.DarkGreen;
             foreColor_OrderInformation = Color.Snow;
 
             backColor_ExtraInfo = Color.FromArgb(140, Color.Black);
@@ -181,7 +181,8 @@ namespace DigitalProductionProgram.OrderManagement
             backColor_Buttons = Color.FromArgb(180, Color.Black);
             foreColor_Buttons = Color.DeepSkyBlue;
 
-            backColor_OrderInformation = backColor_Chart = Color.FromArgb(140, Color.Black);
+            backColor_OrderInformation =  Color.FromArgb(140, Color.Black);
+            backColor_Chart = Color.DeepSkyBlue;
             foreColor_OrderInformation = Color.Snow;
 
             backColor_ExtraInfo = Color.FromArgb(140, Color.Black);
@@ -209,6 +210,7 @@ namespace DigitalProductionProgram.OrderManagement
             foreColor_Buttons = Color.Yellow;
 
             backColor_OrderInformation = backColor_Chart = Color.FromArgb(140, Color.Black);
+            backColor_Chart = Color.DarkGoldenrod;
             foreColor_OrderInformation = Color.LightGoldenrodYellow;
 
             backColor_ExtraInfo = Color.FromArgb(140, Color.Black);
@@ -235,7 +237,8 @@ namespace DigitalProductionProgram.OrderManagement
             backColor_Buttons = Color.FromArgb(180, Color.DarkBlue);
             foreColor_Buttons = Color.LightSkyBlue;
 
-            backColor_OrderInformation = backColor_Chart = Color.FromArgb(140, Color.Blue);
+            backColor_OrderInformation =  Color.FromArgb(140, Color.Blue);
+            backColor_Chart = Color.Blue;
             foreColor_OrderInformation = Color.LightGoldenrodYellow;
 
             backColor_ExtraInfo = Color.FromArgb(140, Color.Black);
@@ -262,7 +265,8 @@ namespace DigitalProductionProgram.OrderManagement
             backColor_Buttons = Color.FromArgb(180, Color.Black);
             foreColor_Buttons = Color.FloralWhite;
 
-            backColor_OrderInformation = backColor_Chart = Color.FromArgb(140, Color.White);
+            backColor_OrderInformation = Color.FromArgb(140, Color.White);
+            backColor_Chart = Color.Black;
             foreColor_OrderInformation = Color.Black;
 
             backColor_ExtraInfo = Color.FromArgb(140, Color.Black);
@@ -289,7 +293,8 @@ namespace DigitalProductionProgram.OrderManagement
             backColor_Buttons = Color.FromArgb(200, Color.Black);
             foreColor_Buttons = Color.FloralWhite;
 
-            backColor_OrderInformation = backColor_Chart = Color.FromArgb(140, Color.Black);
+            backColor_OrderInformation =  Color.FromArgb(140, Color.Black);
+            backColor_Chart = Color.Black;
             foreColor_OrderInformation = Color.NavajoWhite;
 
             backColor_ExtraInfo = Color.FromArgb(140, Color.Black);
@@ -316,7 +321,8 @@ namespace DigitalProductionProgram.OrderManagement
             backColor_Buttons = Color.FromArgb(200, Color.Black);
             foreColor_Buttons = Color.FloralWhite;
 
-            backColor_OrderInformation = backColor_Chart = Color.FromArgb(140, Color.Black);
+            backColor_OrderInformation = Color.FromArgb(140, Color.Black);
+            backColor_Chart = Color.Gray;
             foreColor_OrderInformation = Color.NavajoWhite;
 
             backColor_ExtraInfo = Color.Snow;
@@ -343,7 +349,8 @@ namespace DigitalProductionProgram.OrderManagement
             backColor_Buttons = Color.FromArgb(200, Color.DeepPink);
             foreColor_Buttons = Color.LightPink;
 
-            backColor_OrderInformation = backColor_Chart = Color.FromArgb(190, Color.DarkOrchid);
+            backColor_OrderInformation = Color.FromArgb(190, Color.DarkOrchid);
+            backColor_Chart = Color.Orchid;
             foreColor_OrderInformation = Color.NavajoWhite;
 
             backColor_ExtraInfo = Color.FromArgb(180, Color.Black);
@@ -370,7 +377,8 @@ namespace DigitalProductionProgram.OrderManagement
             backColor_Buttons = Color.FromArgb(200, Color.DarkSlateGray);
             foreColor_Buttons = Color.Sienna;
 
-            backColor_OrderInformation = backColor_Chart = Color.FromArgb(190, Color.Black);
+            backColor_OrderInformation = Color.FromArgb(190, Color.Black);
+            backColor_Chart = Color.Sienna;
             foreColor_OrderInformation = Color.Sienna;
 
             backColor_ExtraInfo = Color.FromArgb(180, Color.Black);
@@ -397,7 +405,8 @@ namespace DigitalProductionProgram.OrderManagement
             backColor_Buttons = Color.FromArgb(200, Color.DarkSlateGray);
             foreColor_Buttons = Color.PaleGreen;
 
-            backColor_OrderInformation = backColor_Chart = Color.FromArgb(190, Color.Black);
+            backColor_OrderInformation = Color.FromArgb(190, Color.Black);
+            backColor_Chart = Color.DarkSlateGray;
             foreColor_OrderInformation = Color.OldLace;
 
             backColor_ExtraInfo = Color.FromArgb(180, Color.Black);
@@ -424,7 +433,8 @@ namespace DigitalProductionProgram.OrderManagement
             backColor_Buttons = Color.FromArgb(35, 35, 35);
             foreColor_Buttons = Color.PaleVioletRed;
 
-            backColor_OrderInformation = backColor_Chart = Color.FromArgb(190, Color.Black);
+            backColor_OrderInformation = Color.FromArgb(190, Color.Black);
+            backColor_Chart = Color.BurlyWood;
             foreColor_OrderInformation = Color.DarkRed;
 
             backColor_ExtraInfo = Color.FromArgb(190, Color.Black);
@@ -450,7 +460,8 @@ namespace DigitalProductionProgram.OrderManagement
             backColor_Buttons = Color.FromArgb(35, 35, 35);
             foreColor_Buttons = Color.MistyRose;
 
-            backColor_OrderInformation = backColor_Chart = Color.FromArgb(190, Color.Black);
+            backColor_OrderInformation = Color.FromArgb(190, Color.Black);
+            backColor_Chart = Color.PaleVioletRed;
             foreColor_OrderInformation = Color.PaleVioletRed;
 
             backColor_ExtraInfo = Color.FromArgb(190, Color.Black);
@@ -475,7 +486,8 @@ namespace DigitalProductionProgram.OrderManagement
             backColor_Buttons = Color.FromArgb(30, 30, 35);
             foreColor_Buttons = Color.MistyRose;
 
-            backColor_OrderInformation = backColor_Chart = Color.FromArgb(200, Color.Black);
+            backColor_OrderInformation = Color.FromArgb(200, Color.Black);
+            backColor_Chart = Color.FromArgb(38, 38, 38);
             foreColor_OrderInformation = Color.DarkGray;
 
             backColor_ExtraInfo = Color.FromArgb(200, Color.Black);
@@ -502,7 +514,8 @@ namespace DigitalProductionProgram.OrderManagement
             backColor_Buttons = Color.FromArgb(35, 78, 35);
             foreColor_Buttons = Color.MistyRose;
 
-            backColor_OrderInformation = backColor_Chart = Color.FromArgb(180, Color.DarkGreen);
+            backColor_OrderInformation = Color.FromArgb(180, Color.DarkGreen);
+            backColor_Chart = Color.FromArgb(35, 78, 35);
             foreColor_OrderInformation = Color.White;
 
             backColor_ExtraInfo = Color.FromArgb(190, Color.Black);
@@ -529,7 +542,8 @@ namespace DigitalProductionProgram.OrderManagement
             backColor_Buttons = Color.FromArgb(30, 30, 35);
             foreColor_Buttons = Color.MistyRose;
 
-            backColor_OrderInformation = backColor_Chart = Color.FromArgb(180, Color.Black);
+            backColor_OrderInformation = Color.FromArgb(180, Color.Black);
+            backColor_Chart = Color.FromArgb(20,20,20);
             foreColor_OrderInformation = Color.PaleGoldenrod;
 
             backColor_ExtraInfo = Color.FromArgb(190, Color.Black);

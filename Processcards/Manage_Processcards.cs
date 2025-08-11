@@ -1045,7 +1045,7 @@ namespace DigitalProductionProgram.Processcards
         private bool IsLoadingData;
         private void Revision_CellEnter(object sender, DataGridViewCellEventArgs e)
         {
-            if (IsLoadingData)
+            if (IsLoadingData || e.RowIndex < 0)
                 return;
             IsLoadingData = true;
             cb_TemplateRevision.SelectedIndexChanged -= ProtocolTemplateRevision_SelectedIndexChanged;
@@ -1059,7 +1059,7 @@ namespace DigitalProductionProgram.Processcards
             cb_TemplateRevision.SelectedIndexChanged += ProtocolTemplateRevision_SelectedIndexChanged;
             IsLoadingData = false;
         }
-        private void PartNr_Enter(object sender, EventArgs e)
+        private void SelectPartNr(object sender, EventArgs e)
         {
             var artikelNr_Aktiv = chb_HideInactive_PartNr.Checked;
             var list = new List<string?>();

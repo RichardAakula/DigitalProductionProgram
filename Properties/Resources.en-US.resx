@@ -2336,4 +2336,16 @@ Contact Admin if necessary.</value>
   <data name="resetPassword_WrongCode" xml:space="preserve">
     <value>Incorrect code. Attempts left:</value>
   </data>
+  <data name="processcardNotNeedSigning" xml:space="preserve">
+    <value>Processcards during Development do not require approval.</value>
+  </data>
+  <data name="processcardAlreadyEstablished" xml:space="preserve">
+    <value>The process card has already been established and signed.</value>
+  </data>
+  <data name="legendAverageValuePartNr" xml:space="preserve">
+    <value>Average per Part Number</value>
+  </data>
+  <data name="legendAverageLastOrder" xml:space="preserve">
+    <value>Average Latest Order</value>
+  </data>
 </root>

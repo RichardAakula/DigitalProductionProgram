@@ -640,6 +640,7 @@ namespace DigitalProductionProgram.Templates
         }
         private void NewCodeText_Enter(object sender, EventArgs e)
         {
+            return;
             List<string> listCodeText = CodeText.dt_CodeText.AsEnumerable()
                 .Select(row => row.Field<string>("CodeText"))
                 .Where(codeText => !string.IsNullOrEmpty(codeText)) // Filter out empty code texts
@@ -1213,16 +1214,14 @@ namespace DigitalProductionProgram.Templates
             }
             public static void Set_MainTemplateID(string name, string revision)
             {
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    const string query = @"
+                using var con = new SqlConnection(Database.cs_Protocol);
+                const string query = @"
                     SELECT ID FROM Protocol.MainTemplate WHERE Name = @name AND Revision = @revision";
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    con.Open();
-                    cmd.Parameters.AddWithValue("@name", name);
-                    cmd.Parameters.AddWithValue("@revision", revision);
-                    ID = (int)cmd.ExecuteScalar();
-                }
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                con.Open();
+                cmd.Parameters.AddWithValue("@name", name);
+                cmd.Parameters.AddWithValue("@revision", revision);
+                ID = (int)cmd.ExecuteScalar();
             }
             public static void Load_Data(string name, string revision, CheckBox chb_UsingPreFab, CheckBox chb_IsUsingProdLine, ComboBox cb_LineClearanceTemplate, ComboBox cb_MainInfoTemplate)
             {

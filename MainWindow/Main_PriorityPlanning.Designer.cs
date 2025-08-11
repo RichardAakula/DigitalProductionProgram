@@ -290,6 +290,7 @@ namespace DigitalProductionProgram.MainWindow
             dgv_PriorityPlanning.ScrollBars = ScrollBars.Vertical;
             dgv_PriorityPlanning.Size = new Size(902, 361);
             dgv_PriorityPlanning.TabIndex = 8;
+            dgv_PriorityPlanning.CellMouseDown += Copy_Text_MouseDown;
             // 
             // Main_Priorityplanning
             // 

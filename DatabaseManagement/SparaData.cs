@@ -53,10 +53,10 @@ namespace DigitalProductionProgram.DatabaseManagement
         public static void INSERT_Korprotokoll_MainData()
         {
             //Här är ProdType null om inte operatören fått välja Processkort
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                con.Open();
-                const string query = @"
+            //Om ProdType är null så behöver UPDATE_Korprotokoll_Main_From_Processkort_Main() köras för att hämta ProdType från Processkort.MainData
+            using var con = new SqlConnection(Database.cs_Protocol);
+            con.Open();
+            const string query = @"
                         
                 INSERT INTO [Order].MainData 
                 (
@@ -109,76 +109,29 @@ namespace DigitalProductionProgram.DatabaseManagement
                     'False'
                 )";
 
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@workoperationid", Order.WorkoperationID);
-                SQL_Parameter.Int(cmd.Parameters, "@protocolmaintemplateid", Templates_Protocol.MainTemplate.ID);
-                SQL_Parameter.NullableINT(cmd.Parameters, "@lineclearancetemplateid", Templates_LineClearance.MainTemplate.LineClearance_MainTemplateID);
-                SQL_Parameter.NullableINT(cmd.Parameters, "@measureprotocolmaintemplateid", Templates_MeasureProtocol.MainTemplate.ID);
-                cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
-                cmd.Parameters.AddWithValue("@ordernr", Order.OrderNumber);
-                cmd.Parameters.AddWithValue("@operation", Order.Operation);
-                SQL_Parameter.NullableINT(cmd.Parameters, "@partid", Order.PartID);
-                cmd.Parameters.AddWithValue("@partnr", Order.PartNumber);
-                SQL_Parameter.String(cmd.Parameters, "@prodline", Order.ProdLine);
-                SQL_Parameter.String(cmd.Parameters, "@prodtype", Order.ProdType);
-                cmd.Parameters.AddWithValue("@amount", Order.Amount);
-                cmd.Parameters.AddWithValue("@unit", Order.Enhet);
-                cmd.Parameters.AddWithValue("@name_start", Person.Name);
-                cmd.Parameters.AddWithValue("@date_start", Order.StartTime);
-                cmd.Parameters.AddWithValue("@description", Order.Description);
-                SQL_Parameter.String(cmd.Parameters, "@customer", Order.Customer);
-                cmd.Parameters.AddWithValue("@prodgroup", Order.ProdGroup);
-                SQL_Parameter.String(cmd.Parameters, "@revNr", Order.RevNr);
-                cmd.Parameters.AddWithValue("@version", ChangeLog.CurrentVersion.ToString());
-                cmd.ExecuteNonQuery();
-            }
-        }
-
-        
-        public static void INSERT_Operatör_Tid_Läsa_MyAnalysis(double seconds)
-        {
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query = @"IF NOT EXISTS (SELECT * FROM [User].TimeReadChangeLog WHERE UserID = @userid AND Month = @month AND Year = @year)
-                                    INSERT INTO [User].TimeReadChangeLog (UserID, Month, Year, Time) VALUES (@userid, @month, @year, @time)";
-                con.Open();
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@userid", Person.UserID);
-                cmd.Parameters.AddWithValue("@month", DateTime.Now.Month.ToString());
-                cmd.Parameters.AddWithValue("@year", DateTime.Now.Year.ToString());
-                cmd.Parameters.AddWithValue("@time", seconds);
-                cmd.ExecuteNonQuery();
-            }
-        }
-        public static void INSERT_Order_Rating(string point)
-        {
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query = $@"UPDATE [Order].MainData SET Points = @point {Queries.WHERE_OrderID}";
-
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@partnr", Order.PartNumber);
-                cmd.Parameters.AddWithValue("@id", Order.OrderID);
-                cmd.Parameters.AddWithValue("@point", point);
-                con.Open();
-                cmd.ExecuteScalar();
-            }
-        }
-
-
-
-
-        public static void UPDATE_Användare_Seen_Gallup_Result()
-        {
-            using var con = new SqlConnection(Database.cs_Protocol);
-            var query = "UPDATE [User].Person SET Seen_Gallup_result = 'True' WHERE EmployeeNumber = @employeenumber";
-            var cmd = new SqlCommand(query, con);
-            cmd.Parameters.AddWithValue("@employeenumber", Person.EmployeeNr);
-            con.Open();
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            cmd.Parameters.AddWithValue("@workoperationid", Order.WorkoperationID);
+            SQL_Parameter.Int(cmd.Parameters, "@protocolmaintemplateid", Templates_Protocol.MainTemplate.ID);
+            SQL_Parameter.NullableINT(cmd.Parameters, "@lineclearancetemplateid", Templates_LineClearance.MainTemplate.LineClearance_MainTemplateID);
+            SQL_Parameter.NullableINT(cmd.Parameters, "@measureprotocolmaintemplateid", Templates_MeasureProtocol.MainTemplate.ID);
+            cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
+            cmd.Parameters.AddWithValue("@ordernr", Order.OrderNumber);
+            cmd.Parameters.AddWithValue("@operation", Order.Operation);
+            SQL_Parameter.NullableINT(cmd.Parameters, "@partid", Order.PartID);
+            cmd.Parameters.AddWithValue("@partnr", Order.PartNumber);
+            SQL_Parameter.String(cmd.Parameters, "@prodline", Order.ProdLine);
+            SQL_Parameter.String(cmd.Parameters, "@prodtype", Processkort_General.LoadProdType);
+            cmd.Parameters.AddWithValue("@amount", Order.Amount);
+            cmd.Parameters.AddWithValue("@unit", Order.Enhet);
+            cmd.Parameters.AddWithValue("@name_start", Person.Name);
+            cmd.Parameters.AddWithValue("@date_start", Order.StartTime);
+            cmd.Parameters.AddWithValue("@description", Order.Description);
+            SQL_Parameter.String(cmd.Parameters, "@customer", Order.Customer);
+            cmd.Parameters.AddWithValue("@prodgroup", Order.ProdGroup);
+            SQL_Parameter.String(cmd.Parameters, "@revNr", Processkort_General.LoadRevNr());
+            cmd.Parameters.AddWithValue("@version", ChangeLog.CurrentVersion.ToString());
             cmd.ExecuteNonQuery();
         }
-
-
         public static void UPDATE_Korprotokoll_Main_From_Processkort_Main()
         {
             //Improvement: RevNr kanske inte behöver uppdateras här? Det har sitt rätta värde före det kommer hit, men måste kollas ordentligt
@@ -203,13 +156,55 @@ namespace DigitalProductionProgram.DatabaseManagement
             SQL_Parameter.Int(cmd.Parameters, "@workoperationid", Order.WorkoperationID);
             SQL_Parameter.Int(cmd.Parameters, "@orderid", Order.OrderID);
             if (string.IsNullOrEmpty(Order.RevNr))
-                cmd.Parameters.AddWithValue("@revNr", Processkort_General.Last_RevNr());//Vet inte varför denna kontroll finns här, kolla om breakpåointen nånsin utlöses och varför isåfall, troligen kan detta tas bort
+                cmd.Parameters.AddWithValue("@revNr", Processkort_General.LoadRevNr());//Vet inte varför denna kontroll finns här, kolla om breakpåointen nånsin utlöses och varför isåfall, troligen kan detta tas bort
             else//Om Testorder skapats så skall revNr vara Order.RevNr annars skall det automatiskt hämtas från Senaste_RevNr_Processkort
                 cmd.Parameters.AddWithValue("@revNr", Order.RevNr);
             con.Open();
 
             cmd.ExecuteNonQuery();
         }
+
+        public static void INSERT_Operatör_Tid_Läsa_MyAnalysis(double seconds)
+        {
+            using var con = new SqlConnection(Database.cs_Protocol);
+            var query = @"IF NOT EXISTS (SELECT * FROM [User].TimeReadChangeLog WHERE UserID = @userid AND Month = @month AND Year = @year)
+                                    INSERT INTO [User].TimeReadChangeLog (UserID, Month, Year, Time) VALUES (@userid, @month, @year, @time)";
+            con.Open();
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            cmd.Parameters.AddWithValue("@userid", Person.UserID);
+            cmd.Parameters.AddWithValue("@month", DateTime.Now.Month.ToString());
+            cmd.Parameters.AddWithValue("@year", DateTime.Now.Year.ToString());
+            cmd.Parameters.AddWithValue("@time", seconds);
+            cmd.ExecuteNonQuery();
+        }
+        public static void INSERT_Order_Rating(string point)
+        {
+            using var con = new SqlConnection(Database.cs_Protocol);
+            var query = $@"UPDATE [Order].MainData SET Points = @point {Queries.WHERE_OrderID}";
+
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            cmd.Parameters.AddWithValue("@partnr", Order.PartNumber);
+            cmd.Parameters.AddWithValue("@id", Order.OrderID);
+            cmd.Parameters.AddWithValue("@point", point);
+            con.Open();
+            cmd.ExecuteScalar();
+        }
+
+
+
+
+        public static void UPDATE_Användare_Seen_Gallup_Result()
+        {
+            using var con = new SqlConnection(Database.cs_Protocol);
+            var query = "UPDATE [User].Person SET Seen_Gallup_result = 'True' WHERE EmployeeNumber = @employeenumber";
+            var cmd = new SqlCommand(query, con);
+            cmd.Parameters.AddWithValue("@employeenumber", Person.EmployeeNr);
+            con.Open();
+            cmd.ExecuteNonQuery();
+        }
+
+
+       
         public static void UPDATE_Korprotokoll_Parametrar_Kassera(string db_Tabell, string datum, string tid, string anstNr)
         {
             using var con = new SqlConnection(Database.cs_Protocol);
@@ -245,22 +240,19 @@ namespace DigitalProductionProgram.DatabaseManagement
         
         public static void UPDATE_Order_EndTime(DateTime endTime)
         {
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                const string query = "UPDATE [Order].MainData SET Date_Stop = @stop WHERE OrderID = @orderid AND Date_Stop IS NULL";
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
-                cmd.Parameters.AddWithValue("@stop", endTime);
-                con.Open();
-                cmd.ExecuteNonQuery();
-            }
+            using var con = new SqlConnection(Database.cs_Protocol);
+            const string query = "UPDATE [Order].MainData SET Date_Stop = @stop WHERE OrderID = @orderid AND Date_Stop IS NULL";
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
+            cmd.Parameters.AddWithValue("@stop", endTime);
+            con.Open();
+            cmd.ExecuteNonQuery();
         }
 
         public static void INSERT_LastStartUp_EndDate()
         {
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query = $@"
+            using var con = new SqlConnection(Database.cs_Protocol);
+            var query = $@"
                         IF NOT EXISTS (
                             SELECT * 
                             FROM [Order].Data 
@@ -274,16 +266,15 @@ namespace DigitalProductionProgram.DatabaseManagement
                             VALUES (
                                 @orderid, 240, 1, @startup, @value, @textvalue, @boolvalue, @datevalue)
                         END";
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
-                cmd.Parameters.AddWithValue("@startup", Module.TotalStartUps);
-                cmd.Parameters.AddWithValue("@value", DBNull.Value);
-                cmd.Parameters.AddWithValue("@textvalue", DBNull.Value);
-                cmd.Parameters.AddWithValue("@boolvalue", DBNull.Value);
-                cmd.Parameters.AddWithValue("@datevalue", DateTime.Now);
-                con.Open();
-                cmd.ExecuteNonQuery();
-            }
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
+            cmd.Parameters.AddWithValue("@startup", Module.TotalStartUps);
+            cmd.Parameters.AddWithValue("@value", DBNull.Value);
+            cmd.Parameters.AddWithValue("@textvalue", DBNull.Value);
+            cmd.Parameters.AddWithValue("@boolvalue", DBNull.Value);
+            cmd.Parameters.AddWithValue("@datevalue", DateTime.Now);
+            con.Open();
+            cmd.ExecuteNonQuery();
         }
         public static void UPDATE_OrderKlar()
         {

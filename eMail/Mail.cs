@@ -225,12 +225,12 @@ namespace DigitalProductionProgram.eMail
             Send(string.Format(LanguageManager.GetString("mail_Subject_NotifyOrderStartCount"), Order.PartNumber, 6), 4);
         }
 
-        public static void NotifyQAPartNumberNeedApproval(string? latestRevNr)
+        public static void NotifyQAPartNumberNeedApproval(string? latestRevNr, string startedRevNr)
         {
             if (Browse_Protocols.Browse_Protocols.Is_BrowsingProtocols)
                 return;
             InfoText.Show(string.Format(LanguageManager.GetString("mail_ApproveProcesscard_1"), Order.RevNr), CustomColors.InfoText_Color.Warning, "Warning!");
-            Mail.Body = string.Format(LanguageManager.GetString("mail_ApproveProcesscard_2"), Order.PartNumber, latestRevNr, Order.ProdLine, Order.ProdGroup, Order.WorkOperation, Order.OrderNumber, Order.Operation, Order.RevNr);
+            Mail.Body = string.Format(LanguageManager.GetString("mail_ApproveProcesscard_2"), Order.PartNumber, latestRevNr, Order.ProdLine, Order.ProdGroup, Order.WorkOperation, Order.OrderNumber, Order.Operation, startedRevNr);
             Mail.Send(LanguageManager.GetString("mail_ApproveProcesscard"), 8);
         }
 

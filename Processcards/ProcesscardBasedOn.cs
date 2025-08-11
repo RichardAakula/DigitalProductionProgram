@@ -159,6 +159,11 @@ namespace DigitalProductionProgram.Processcards
         {
             if (CheckAuthority.IsRoleAuthorized(CheckAuthority.TemplateAuthorities.ApproveProcessCard) == false)
                return;
+            if(rb_FramtagningAvProcessfönster.Checked)
+            {
+                InfoText.Show(LanguageManager.GetString("processcardNotNeedSigning"), CustomColors.InfoText_Color.Bad, "Warning!");
+                return;
+            }
             if (!string.IsNullOrEmpty(lbl_QA_Sign.Text))
             {
                 InfoText.Show(LanguageManager.GetString("processcardAlreadySigned"), CustomColors.InfoText_Color.Ok, "Warning!");
@@ -182,6 +187,11 @@ namespace DigitalProductionProgram.Processcards
         }
         private void UpprättatAv_Sign_AnstNr_Click(object sender, EventArgs e)
         {
+            if (string.IsNullOrEmpty(lbl_UpprättatAv_Sign_AnstNr.Text) == false)
+            {               
+                InfoText.Show(LanguageManager.GetString("processcardAlreadyEstablished"), CustomColors.InfoText_Color.Ok, "Warning!");
+                return;
+            }
             if (Manage_Processcards.IsProcesscardUnderManagement == false)
                 return;
             if (CheckAuthority.IsRoleAuthorized(CheckAuthority.TemplateAuthorities.ManageProcesscards) == false)

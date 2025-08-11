@@ -45,7 +45,6 @@ namespace DigitalProductionProgram.MainWindow
             tlp_ExtraInfo = new TableLayoutPanel();
             lbl_ExtraInfo = new Label();
             label_ExtraInfo = new Label();
-            panelChart = new Panel();
             measurePoints = new MeasurePoints();
             measureStats = new MainMeasureStatistics();
             OrderInformation = new Main_OrderInformation();
@@ -90,6 +89,7 @@ namespace DigitalProductionProgram.MainWindow
             splitContainer_Right = new SplitContainer();
             tlp_MainWindow = new TableLayoutPanel();
             Statistics_DPP = new Statistics_DPP();
+            measurementChart = new MeasurementChart();
             ((ISupportInitialize)pb_Info_UserPoints).BeginInit();
             tlp_ExtraInfo.SuspendLayout();
             panel_Right.SuspendLayout();
@@ -202,18 +202,6 @@ namespace DigitalProductionProgram.MainWindow
             label_ExtraInfo.Text = "Extrainformation:";
             label_ExtraInfo.TextAlign = ContentAlignment.MiddleCenter;
             label_ExtraInfo.Visible = false;
-            // 
-            // panelChart
-            // 
-            panelChart.BackColor = Color.Transparent;
-            tlp_MainWindow.SetColumnSpan(panelChart, 2);
-            panelChart.Dock = DockStyle.Fill;
-            panelChart.Location = new Point(6, 361);
-            panelChart.Margin = new Padding(6, 2, 0, 0);
-            panelChart.Name = "panelChart";
-            panelChart.Size = new Size(928, 345);
-            panelChart.TabIndex = 913;
-            panelChart.Visible = false;
             // 
             // measurePoints
             // 
@@ -812,11 +800,11 @@ namespace DigitalProductionProgram.MainWindow
             tlp_MainWindow.Controls.Add(tlp_ExtraInfo, 4, 3);
             tlp_MainWindow.Controls.Add(lbl_Rating, 2, 2);
             tlp_MainWindow.Controls.Add(AQL, 4, 0);
-            tlp_MainWindow.Controls.Add(panelChart, 0, 4);
             tlp_MainWindow.Controls.Add(OrderInformation, 0, 0);
             tlp_MainWindow.Controls.Add(measurePoints, 0, 3);
             tlp_MainWindow.Controls.Add(measureStats, 1, 3);
-            tlp_MainWindow.Controls.Add(Statistics_DPP, 2, 4);
+            tlp_MainWindow.Controls.Add(Statistics_DPP, 3, 4);
+            tlp_MainWindow.Controls.Add(measurementChart, 0, 4);
             tlp_MainWindow.Dock = DockStyle.Fill;
             tlp_MainWindow.Location = new Point(0, 0);
             tlp_MainWindow.Margin = new Padding(4, 3, 3, 3);
@@ -833,13 +821,25 @@ namespace DigitalProductionProgram.MainWindow
             // Statistics_DPP
             // 
             Statistics_DPP.BackColor = Color.Transparent;
-            tlp_MainWindow.SetColumnSpan(Statistics_DPP, 3);
+            tlp_MainWindow.SetColumnSpan(Statistics_DPP, 2);
             Statistics_DPP.Dock = DockStyle.Fill;
-            Statistics_DPP.Location = new Point(938, 362);
+            Statistics_DPP.Location = new Point(1000, 362);
             Statistics_DPP.Margin = new Padding(4, 3, 4, 3);
             Statistics_DPP.Name = "Statistics_DPP";
-            Statistics_DPP.Size = new Size(377, 341);
+            Statistics_DPP.Size = new Size(315, 341);
             Statistics_DPP.TabIndex = 920;
+            // 
+            // measurementChart
+            // 
+            measurementChart.BackColor = Color.Transparent;
+            tlp_MainWindow.SetColumnSpan(measurementChart, 3);
+            measurementChart.Dock = DockStyle.Fill;
+            measurementChart.Location = new Point(6, 361);
+            measurementChart.Margin = new Padding(6, 2, 0, 0);
+            measurementChart.Name = "measurementChart";
+            measurementChart.Size = new Size(990, 345);
+            measurementChart.TabIndex = 921;
+            measurementChart.Visible = false;
             // 
             // Main_Form
             // 
@@ -910,7 +910,6 @@ namespace DigitalProductionProgram.MainWindow
         public TableLayoutPanel tlp_Top;
         public TableLayoutPanel tlp_ExtraInfo;
         private System.Windows.Forms.Timer timer_Check_MeasurePoints;
-        public Panel panelChart;
         private System.Windows.Forms.Timer timer_Check_If_Maintenance_Has_Started;
         private Main_RollingInformation RollingInformation;
         public MainMeasureStatistics measureStats;
@@ -952,5 +951,6 @@ namespace DigitalProductionProgram.MainWindow
         private ActiveOrdersUser ActiveOrdersUser;
         private Statistics_DPP Statistics_DPP;
         public Övrigt.TipsAndTrix TipsAndTrix;
+        private MeasurementChart measurementChart;
     }
 }

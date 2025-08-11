@@ -115,29 +115,30 @@ namespace DigitalProductionProgram.Measure
         }
         private void Add_MätdonFromTemplate()
         {
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                con.Open();
-                var query = @"
+            using var con = new SqlConnection(Database.cs_Protocol);
+            con.Open();
+            var query = @"
                     SELECT MätdonsNr
                     FROM MeasureInstruments.WorkOperationTemplate as template
                         INNER JOIN MeasureInstruments.Templates as mätdon
 	                        ON template.Template_ID = mätdon.ID
                     WHERE WorkOperation = @workoperation
                     ORDER BY MätdonsNr";
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@workoperation", Order.WorkOperation.ToString());
-                var reader = cmd.ExecuteReader();
-                var row = 0;
-                while (reader.Read())
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            cmd.Parameters.AddWithValue("@workoperation", Order.WorkOperation.ToString());
+            var reader = cmd.ExecuteReader();
+            var row = 0;
+            while (reader.Read())
+            {
+                if (dgv_Mätdon.Columns.Count > 0)
                 {
                     dgv_Mätdon.Rows.Add();
                     dgv_Mätdon.Rows[row].HeaderCell.Value = reader["MätdonsNr"].ToString();
                     dgv_Mätdon.Rows[row].Cells[1].Value = row + 1;
                     Save_Mätdon(reader["MätdonsNr"].ToString(), null, row + 1);
                     row++;
-
                 }
+
             }
         }
         public void Mätdon_CellValueChanged(object sender, DataGridViewCellEventArgs e)

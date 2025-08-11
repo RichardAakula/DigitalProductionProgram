@@ -644,9 +644,9 @@ namespace DigitalProductionProgram.Processcards
             tb_PartNr.Name = "tb_PartNr";
             tb_PartNr.Size = new Size(159, 24);
             tb_PartNr.TabIndex = 1010;
-            tb_PartNr.Click += PartNr_Enter;
+            tb_PartNr.Click += SelectPartNr;
             tb_PartNr.TextChanged += PartNr_TextChanged;
-            tb_PartNr.Enter += PartNr_Enter;
+            tb_PartNr.Enter += SelectPartNr;
             // 
             // label_ProtocolTemplateRevision
             // 

@@ -45,7 +45,7 @@ namespace DigitalProductionProgram.MainWindow
         {
             InitializeComponent();
 
-            
+
         }
 
 
@@ -55,7 +55,7 @@ namespace DigitalProductionProgram.MainWindow
 
             if (Monitor.Monitor.WorkCenters is null || Monitor.Monitor.WorkCenters.Count == 0)
                 return;
-            
+
             if (tb_ProdGrupp.Text == "0")
                 return;
             if (Monitor.Monitor.WorkCenters.TryGetValue(tb_ProdGrupp.Text, out var prodGroup))
@@ -68,7 +68,7 @@ namespace DigitalProductionProgram.MainWindow
             BackColor = dgv_PriorityPlanning.BackgroundColor = Teman.backColor_PriorityPlan;
             label_ProductionSchedule.ForeColor = label_ProdGroup.ForeColor = Teman.foreColor_PriorityPlan;
         }
-      
+
         public void Change_GUI_OrderNotFinished()
         {
             Visible = true;
@@ -98,8 +98,8 @@ namespace DigitalProductionProgram.MainWindow
         private readonly Dictionary<string, bool> dictIsOrderExist = new();
         private readonly Dictionary<string, int?> dictOrderID = new();
         private readonly Dictionary<string, int?> dictPartID = new();
-        private  Dictionary<int, Part.ProcesscardStatus> dictPartStatus = new();
-       
+        private Dictionary<int, Part.ProcesscardStatus> dictPartStatus = new();
+
         public static Dictionary<string, (bool IsStarted, int? OrderID)> LoadOrderExistCache(List<(string OrderNumber, string OperationNumber)> neededChecks)
         {
             var result = new Dictionary<string, (bool, int?)>();
@@ -173,7 +173,7 @@ namespace DigitalProductionProgram.MainWindow
             var orderOperations = Utilities.GetFromMonitor<Manufacturing.ManufacturingOrderOperations>($"filter=WorkCenterId Eq'{WorkCenter.Id}' AND RestQuantity gt'0'", "orderby=Priority");
             var ctr = -1;
 
-            
+
 
             // Fyll cache för order start-status
             var neededChecks = new List<(string OrderNumber, string OperationNumber)>();
@@ -224,11 +224,11 @@ namespace DigitalProductionProgram.MainWindow
                 dt.Rows[^1]["Planerad Stopp"] = $"{row.PlannedFinishDate:yyyy-MM-dd}";
                 dt.Rows[^1]["Order Startad"] = isStarted;
                 dt.Rows[^1]["Processkort Godkänt"] = Part.IsPartNr_ApprovedQA;
-                
-                
+
+
             }
 
-           
+
             dgv_PriorityPlanning.Invoke(new Action(() => dgv_PriorityPlanning.DataSource = dt));
             dgv_PriorityPlanning.Invoke(new Action(() => dgv_PriorityPlanning.Columns["Order Startad"].Visible = false));
             dgv_PriorityPlanning.Invoke(new Action(() => dgv_PriorityPlanning.Columns["Processkort Godkänt"].Visible = false));
@@ -265,10 +265,10 @@ namespace DigitalProductionProgram.MainWindow
                 .Select(r => Convert.ToInt32(r["PartID"]))
                 .Distinct()
                 .ToDictionary(id => id, id => id == 0); // ==0 => IsMultipleProcesscard
-                                            //.Select(r => r["PartID"])
-                                            //.Where(val => val != DBNull.Value)
-                                            //.Select(val => Convert.ToInt32(val))
-                                            //.ToList();
+                                                        //.Select(r => r["PartID"])
+                                                        //.Where(val => val != DBNull.Value)
+                                                        //.Select(val => Convert.ToInt32(val))
+                                                        //.ToList();
 
             dictPartStatus = Part.GetProcesscardStatuses(allPartIDs);
         }
@@ -322,7 +322,7 @@ namespace DigitalProductionProgram.MainWindow
                     rowObj.DefaultCellStyle.ForeColor = Color.DarkOrange;
                     continue;
                 }
-                
+
                 // GRÖN OK ATT STARTA
                 rowObj.DefaultCellStyle.BackColor = CustomColors.Ok_Back;
                 rowObj.DefaultCellStyle.ForeColor = CustomColors.Ok_Front;
@@ -341,7 +341,7 @@ namespace DigitalProductionProgram.MainWindow
         }
         private bool IsNoProcesscard(int row, Manage_WorkOperation.WorkOperations workoperation)
         {
-            if (!Processcard.IsNotUsingProcesscard(workoperation)) 
+            if (!Processcard.IsNotUsingProcesscard(workoperation))
                 return false;
             dgv_PriorityPlanning.Rows[row].DefaultCellStyle.BackColor = CustomColors.Ok_Back;
             dgv_PriorityPlanning.Rows[row].DefaultCellStyle.ForeColor = CustomColors.Ok_Front;
@@ -349,7 +349,7 @@ namespace DigitalProductionProgram.MainWindow
         }
         private bool IsNotApprovedByQA(int row, int? partID)
         {
-            if (bool.Parse(dgv_PriorityPlanning.Rows[row].Cells["Processkort Godkänt"].Value.ToString()) || !Part.IsPartID_Exist(partID)) 
+            if (bool.Parse(dgv_PriorityPlanning.Rows[row].Cells["Processkort Godkänt"].Value.ToString()) || !Part.IsPartID_Exist(partID))
                 return false;
             dgv_PriorityPlanning.Rows[row].DefaultCellStyle.BackColor = CustomColors.Bad_Back;
             dgv_PriorityPlanning.Rows[row].DefaultCellStyle.ForeColor = CustomColors.Bad_Front;
@@ -357,9 +357,9 @@ namespace DigitalProductionProgram.MainWindow
         }
         private bool IsProcesscardMissing(int row, int? partID)
         {
-            if (Part.IsPartID_Exist(partID)) 
+            if (Part.IsPartID_Exist(partID))
                 return false;
-            if (Part.TotalOrders_WithoutProcesscard >= 3) 
+            if (Part.TotalOrders_WithoutProcesscard >= 3)
                 return false;
             dgv_PriorityPlanning.Rows[row].DefaultCellStyle.BackColor = CustomColors.Parametrar_Saknas_Back;
             dgv_PriorityPlanning.Rows[row].DefaultCellStyle.ForeColor = CustomColors.Parametrar_Saknas_Front;
@@ -367,9 +367,9 @@ namespace DigitalProductionProgram.MainWindow
         }
         private bool IsProcesscardMissingAndRunnedMoreThan3Times(int row, int? partID)
         {
-            if (Part.IsPartID_Exist(partID)) 
+            if (Part.IsPartID_Exist(partID))
                 return false;
-            if (Part.TotalOrders_WithoutProcesscard <= 2) 
+            if (Part.TotalOrders_WithoutProcesscard <= 2)
                 return false;
             dgv_PriorityPlanning.Rows[row].DefaultCellStyle.BackColor = Color.DarkOrange;
             dgv_PriorityPlanning.Rows[row].DefaultCellStyle.ForeColor = Color.Brown;
@@ -377,7 +377,7 @@ namespace DigitalProductionProgram.MainWindow
         }
         private bool IsProcesscardUnderConstructionAndRunnedMoreThan3Times(int row, int operation, int? partID)
         {
-            if (!Part.IsPartNr_UnderConstruction(partID) || Part.TotalOrders_PartID(partID) <= 2) 
+            if (!Part.IsPartNr_UnderConstruction(partID) || Part.TotalOrders_PartID(partID) <= 2)
                 return false;
             dgv_PriorityPlanning.Rows[row].DefaultCellStyle.BackColor = Color.Brown;
             dgv_PriorityPlanning.Rows[row].DefaultCellStyle.ForeColor = Color.DarkOrange;
@@ -385,7 +385,7 @@ namespace DigitalProductionProgram.MainWindow
         }
         private bool IsOrderOkStart(int row)
         {
-            if (bool.Parse(dgv_PriorityPlanning.Rows[row].Cells["Order Startad"].Value.ToString())) 
+            if (bool.Parse(dgv_PriorityPlanning.Rows[row].Cells["Order Startad"].Value.ToString()))
                 return false;
             dgv_PriorityPlanning.Rows[row].DefaultCellStyle.BackColor = CustomColors.Ok_Back;
             dgv_PriorityPlanning.Rows[row].DefaultCellStyle.ForeColor = CustomColors.Ok_Front;
@@ -484,7 +484,7 @@ namespace DigitalProductionProgram.MainWindow
 
             var choose_Item = new Choose_Item(dt, new Control[] { tb_ProdGrupp, tb_ProdBenämning }, false);
             choose_Item.ShowDialog();
-            
+
         }
         private void ProdGrupp_TextChanged(object sender, EventArgs e)
         {
@@ -510,16 +510,28 @@ namespace DigitalProductionProgram.MainWindow
             var org_ProdLinje = Order.ProdLine;
             if (Order.WorkOperation == Manage_WorkOperation.WorkOperations.Nothing) //Denna är inte helt säker på att kan vara här, kolla tillräckligt många gånger att det inte medför problem. Testat 2 gånger nu
                 Enum.TryParse(Manage_WorkOperation.Workoperation(Order.OrderID), out Order.WorkOperation);
-            
+
             if (Order.IsOrderDone == false)
                 Load_PriorityPlanning();
-            
+
             Settings.Settings.SaveData.UPDATE_Setting("ProdLine_LoadingPlan", tb_ProdGrupp, tb_ProdGrupp.Text);
             Order.ProdLine = org_ProdLinje;
         }
 
+       
 
-        
+        private void Copy_Text_MouseDown(object sender, DataGridViewCellMouseEventArgs e)
+        {
 
+            if (e.Button == MouseButtons.Right && e.RowIndex >= 0 && e.ColumnIndex >= 0)
+            {
+                var cell = dgv_PriorityPlanning.Rows[e.RowIndex].Cells[e.ColumnIndex];
+                if (cell.Value != null)
+                {
+                    Clipboard.SetText(cell.Value.ToString());
+                }
+            }
+
+        }
     }
 }

@@ -207,6 +207,8 @@ namespace DigitalProductionProgram.MainWindow
                         StartPosition = FormStartPosition.Manual,
                         Location = screen.Bounds.Location
                     };
+                    if (mp is null)
+                        return;
                     mp.Show();
                     MeasureInformation.IsOpening = false;
                 }

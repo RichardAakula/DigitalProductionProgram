@@ -2332,4 +2332,16 @@ Kontakta Admin vid behov.</value>
   <data name="resetPassword_WrongCode" xml:space="preserve">
     <value>Fel kod. Försök kvar:</value>
   </data>
+  <data name="processcardNotNeedSigning" xml:space="preserve">
+    <value>Processkort under Framtagning behöver inte godkännas.</value>
+  </data>
+  <data name="processcardAlreadyEstablished" xml:space="preserve">
+    <value>Processkortet är redan etablerat och signerat.</value>
+  </data>
+  <data name="legendAverageValuePartNr" xml:space="preserve">
+    <value>Medelvärde per Artikel</value>
+  </data>
+  <data name="legendAverageLastOrder" xml:space="preserve">
+    <value>Medelvärde Senaste Order</value>
+  </data>
 </root>

@@ -27,34 +27,28 @@ namespace DigitalProductionProgram.Templates
         {
             get
             {
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    const string query = @"
+                using var con = new SqlConnection(Database.cs_Protocol);
+                const string query = @"
                     SELECT COUNT(*) FROM Processcard.MainData WHERE MeasureProtocolMainTemplateID = @maintemplateid";
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    con.Open();
-                    cmd.Parameters.AddWithValue("@maintemplateid", MainTemplate.ID);
-                    var value = cmd.ExecuteScalar();
-                    return value == null ? 0 : int.Parse(value.ToString() ?? string.Empty);
-                }
-
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                con.Open();
+                cmd.Parameters.AddWithValue("@maintemplateid", MainTemplate.ID);
+                var value = cmd.ExecuteScalar();
+                return value == null ? 0 : int.Parse(value.ToString() ?? string.Empty);
             }
         }
         public static int TotalConnectedOrdersToTemplate
         {
             get
             {
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    const string query = @"
+                using var con = new SqlConnection(Database.cs_Protocol);
+                const string query = @"
                     SELECT COUNT(*) FROM [Order].MainData WHERE MeasureProtocolMainTemplateID = @maintemplateid";
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    con.Open();
-                    cmd.Parameters.AddWithValue("@maintemplateid", MainTemplate.ID);
-                    var value = cmd.ExecuteScalar();
-                    return value == null ? 0 : int.Parse(value.ToString() ?? string.Empty);
-                }
-
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                con.Open();
+                cmd.Parameters.AddWithValue("@maintemplateid", MainTemplate.ID);
+                var value = cmd.ExecuteScalar();
+                return value == null ? 0 : int.Parse(value.ToString() ?? string.Empty);
             }
         }
 
@@ -784,13 +778,13 @@ namespace DigitalProductionProgram.Templates
             internal static string? Name { get; set; }
             public static int? ID { get; set; }
             internal static string? Revision { get; set; }
-            internal static string TemplateMonitor { get; set; }
+            internal static string? TemplateMonitor { get; set; }
             internal static bool IsAmountEditable { get; set; }
             internal static bool IsExtraInputBoxesEnabled { get; set; }
             internal static bool IsExtraInputBoxes_2Layer { get; set; }
             internal static bool IsExtraInputBoxes_SecondMeasurement { get; set; }
             internal static bool IsExtraFieldForCutterEnabled { get; set; }
-            internal static string Workoperation { get; set; }
+            internal static string? Workoperation { get; set; }
 
             public static void Set_MainTemplateID(ref bool IsOkStartOrder)
             {
@@ -808,8 +802,6 @@ namespace DigitalProductionProgram.Templates
                         ID = int.Parse(value.ToString());
                         return;
                     }
-
-                    return;
                 }
 
                 var chooseTemplate = new ProcesscardTemplateSelector(ProcesscardTemplateSelector.TemplateType.TemplateMeasureProtocol);

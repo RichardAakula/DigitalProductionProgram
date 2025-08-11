@@ -107,7 +107,7 @@ namespace DigitalProductionProgram.MainWindow
         public static bool IsAutoOpenOrder = false;
         public static bool IsAutoLoginSuperAdmin = true;
 
-        private const string? develop_OrderNr = "A67613";
+        private const string? develop_OrderNr = "H67876";
         private const string? develop_Operation = "10";
         public static Timer? timer_StatsDPP;
 
@@ -266,7 +266,7 @@ namespace DigitalProductionProgram.MainWindow
                     Order.Load_OrderID(Order.OrderNumber, Order.Operation);
                     Order.Load_ProdLine();
                     Order.WorkOperation = Manage_WorkOperation.Load_WorkOperation();
-                    StartOrLoadOrder(true);
+                    _ = StartOrLoadOrder(true);
                     //Open();
                     Order.Set_NumberOfLayers();
                     //Task.Factory.StartNew(() => measureStats.Add_MeasureInformation_MainForm(panelChart, tlp_MainWindow));
@@ -315,10 +315,10 @@ namespace DigitalProductionProgram.MainWindow
         public void Change_GUI_Form()
         {
             if (InvokeRequired)
-                Invoke(new Action(Change_GUI_Form));
+                Invoke(Change_GUI_Form);
             else
             {
-                Control[] controls = { panelChart, measurePoints, measureStats };
+                Control[] controls = {  measurePoints, measureStats };
                 foreach (var ctrl in controls)
                     ctrl.Visible = false;
 
@@ -382,7 +382,7 @@ namespace DigitalProductionProgram.MainWindow
             TipsAndTrix.Visible = false;
             tlp_MainWindow.BackgroundImage = null;
 
-            measurePoints.tlp_Main.BackColor = measureStats.BackColor = panelChart.BackColor = tlp_ExtraInfo.BackColor = panelChart.BackColor = Color.Transparent;
+            measurePoints.tlp_Main.BackColor = measureStats.BackColor = measurementChart.BackColor = tlp_ExtraInfo.BackColor = Color.Transparent;
 
             tlp_Left.BackColor = Color.FromArgb(100, 20, 44, 20);
             BackColor = Color.FromArgb(20, 44, 20);
@@ -490,23 +490,23 @@ namespace DigitalProductionProgram.MainWindow
             {
                 panel_Right.BackColor = Teman.backColor_RightPanel;
                 tlp_Left.BackColor = Teman.backColor_LeftPanel;
-                BeginInvoke(new Action(() => OrderInformation.Change_Theme()));
+                BeginInvoke(() => OrderInformation.Change_Theme());
             }
 
-            panelChart.BackColor = Teman.backColor_Chart;
+            measurementChart.BackColor = Teman.backColor_Chart;
             tlp_ExtraInfo.BackColor = TipsAndTrix.label_Tips_Trix.BackColor = TipsAndTrix.pb_Info_Tips_Trix.BackColor = Teman.backColor_ExtraInfo;
             lbl_ExtraInfo.ForeColor = Teman.foreColor_ExtraInfo;
 
-            BeginInvoke(new Action(() => panel_Bottom.BackColor = Teman.backColor_Panels));
+            BeginInvoke(() => panel_Bottom.BackColor = Teman.backColor_Panels);
 
-            BeginInvoke(new Action(() => MainMenu.Change_Theme()));
-            BeginInvoke(new Action(() => Buttons.Change_Theme()));
-            BeginInvoke(new Action(() => measureStats.Change_Theme()));
-            BeginInvoke(new Action(() => measurePoints.Change_Theme()));
-            BeginInvoke(new Action(() => RollingInformation.Change_Theme()));
-            BeginInvoke(new Action(() => PriorityPlanning.Change_Theme()));
-            BeginInvoke(new Action(() => AQL.Change_Theme()));
-            BeginInvoke(new Action(() => ActiveOrdersUser.Change_Theme()));
+            BeginInvoke(() => MainMenu.Change_Theme());
+            BeginInvoke(() => Buttons.Change_Theme());
+            BeginInvoke(() => measureStats.Change_Theme());
+            BeginInvoke(() => measurePoints.Change_Theme());
+            BeginInvoke(() => RollingInformation.Change_Theme());
+            BeginInvoke(() => PriorityPlanning.Change_Theme());
+            BeginInvoke(() => AQL.Change_Theme());
+            BeginInvoke(() => ActiveOrdersUser.Change_Theme());
 
 
             Set_GUI_Theme_Krympslang();
@@ -515,7 +515,7 @@ namespace DigitalProductionProgram.MainWindow
 
 
         //---------------------------------------------STARTA ORDER---------------------------------------------
-        public void StartOrLoadOrder(bool IsOperationOk)
+        public async Task StartOrLoadOrder(bool IsOperationOk)
         {
             MainMeasureStatistics.ChartCodeText = string.Empty;
             MainMeasureStatistics.ChartCodename = string.Empty;
@@ -572,10 +572,14 @@ namespace DigitalProductionProgram.MainWindow
             // Stoppa MainTimer eventuellt om det blir problem
             Order.Set_NumberOfLayers();
             Load_MeasurePoints();
+            //Task.Factory.StartNew(MeasurementChart.LoadAvgValuesForLastOrder);
+            //Task.Factory.StartNew(MeasurementChart.LoadAvgValuesForPart);
+            MeasurementChart.LoadAvgValuesForLastOrder();
+            MeasurementChart.LoadAvgValuesForPart();
 
-            Task.Factory.StartNew(() => measureStats.Add_MeasureInformation_MainForm(panelChart, tlp_MainWindow));
-            Task.Factory.StartNew(MainMeasureStatistics.LoadAvgValuesForLastOrder);
-            Task.Factory.StartNew(MainMeasureStatistics.LoadAvgValuesForPart);
+            await measureStats.Add_MeasureInformation_MainForm(measurementChart, tlp_MainWindow);
+
+            //Task.Factory.StartNew(() => measureStats.Add_MeasureInformation_MainForm(panelChart, tlp_MainWindow));
 
             Tools.Load_HSPipes();
 
@@ -586,12 +590,12 @@ namespace DigitalProductionProgram.MainWindow
 
             MainMenu.Unlock_Korprotokoll_Menu();
         }
-        public void Operation_SelectedIndexChanged(object? sender, EventArgs e)
+        public async void Operation_SelectedIndexChanged(object? sender, EventArgs e)
         {
             if (OrderInformation.cb_Operation.SelectedIndex > -1 & !string.IsNullOrEmpty(OrderInformation.cb_Operation.Text) & !string.IsNullOrEmpty(OrderInformation.tb_OrderNr.Text))
             {
                 OrderInformation.cb_Operation.BackColor = Color.White;
-                StartOrLoadOrder(false);
+                await StartOrLoadOrder(false);
                 OrderInformation.tb_OrderNr.Enabled = false;
             }
         }
@@ -663,7 +667,8 @@ namespace DigitalProductionProgram.MainWindow
             Cursor = Cursors.Arrow;
             measurePoints.Visible = false;
             measureStats.Visible = false;
-            panelChart.Visible = false;
+            
+            measurementChart.Visible = false;
             tlp_ExtraInfo.Visible = false;
             Buttons.Change_GUI_Buttons();
             Order.Clear_Order();
@@ -750,7 +755,7 @@ namespace DigitalProductionProgram.MainWindow
             if (string.IsNullOrEmpty(Order.WorkOperation.ToString()) || Order.WorkOperation == Manage_WorkOperation.WorkOperations.Nothing)
                 InfoText.Show(LanguageManager.GetString("quickOpen_Info_3"), CustomColors.InfoText_Color.Bad, "Warning", this);
             Points.Add_Points(1, "Snabböppna Order");
-            StartOrLoadOrder(true);
+            _ = StartOrLoadOrder(true);
             dgv.ClearSelection();
 
 
@@ -816,7 +821,7 @@ namespace DigitalProductionProgram.MainWindow
             if (frmLogin.SvarÖppnaOrder)
             {
                 OrderInformation.tb_OrderNr.Text = Order.OrderNumber;
-                StartOrLoadOrder(true);
+                _ = StartOrLoadOrder(true);
 
                 var mp = new Measurement_Protocol
                 {
@@ -854,7 +859,7 @@ namespace DigitalProductionProgram.MainWindow
                 Order.Load_OrderID(ordernr, operation);
                 Order.Load_ProdLine();
                 Order.WorkOperation = Manage_WorkOperation.Load_WorkOperation();
-                StartOrLoadOrder(true);
+                _ = StartOrLoadOrder(true);
             }
 
             #endregion
@@ -1041,7 +1046,8 @@ namespace DigitalProductionProgram.MainWindow
             if (counter_UpdateChart >= 5)
             {
                 counter_UpdateChart = 0;
-                _ = Task.Run(() => measureStats.Add_MeasureInformation_MainForm(panelChart, tlp_MainWindow));
+                
+                _ = Task.Run(() => measureStats.Add_MeasureInformation_MainForm(measurementChart, tlp_MainWindow));
 
                 await Statistics_DPP.Load_StatisticsAsync();
             }

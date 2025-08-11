@@ -500,7 +500,7 @@ namespace DigitalProductionProgram.Templates
             Order.RevNr = lbl?.RevNr;
 
             if (lbl?.IsLatestRevNrSelected == false && IsOperatorStartingOrder)
-                Mail.NotifyQAPartNumberNeedApproval(lbl.LatestRevNr);
+                Mail.NotifyQAPartNumberNeedApproval(lbl.LatestRevNr, Order.RevNr);
 
             _ = Activity.Stop($"TemplateSelector: Valde Processkort {lbl?.Text}");
             IsAborted = false;

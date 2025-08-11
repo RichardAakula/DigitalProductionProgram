@@ -1,4 +1,4 @@
-﻿namespace DigitalProductionProgram.MainWindow
+﻿namespace DigitalProductionProgram.Measure
 {
     partial class MeasurementChart
     {

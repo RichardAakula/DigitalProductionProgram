@@ -1,22 +1,19 @@
-﻿using DigitalProductionProgram.DatabaseManagement;
-using DigitalProductionProgram.Measure;
+﻿using System.Collections.ObjectModel;
+using DigitalProductionProgram.ControlsManagement;
+using DigitalProductionProgram.DatabaseManagement;
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 using LiveChartsCore;
 using LiveChartsCore.Defaults;
 using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.Painting;
+using LiveChartsCore.SkiaSharpView.Painting.Effects;
 using LiveChartsCore.SkiaSharpView.WinForms;
 using Microsoft.Data.SqlClient;
 using SkiaSharp;
-using LiveChartsCore.SkiaSharpView.Painting.Effects;
-
-using System;
-using System.Collections.ObjectModel;
-using DigitalProductionProgram.ControlsManagement;
-using LiveChartsCore.SkiaSharpView.Drawing.Geometries;
 using Axis = LiveChartsCore.SkiaSharpView.Axis;
 
-namespace DigitalProductionProgram.MainWindow
+namespace DigitalProductionProgram.Measure
 {
     public partial class MeasurementChart : UserControl
     {

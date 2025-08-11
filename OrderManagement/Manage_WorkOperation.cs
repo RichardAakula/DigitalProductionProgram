@@ -112,6 +112,7 @@ namespace DigitalProductionProgram.OrderManagement
             Bump_PTFE = 20,
             Slitting_PTFE = 21,
             Extrusion_HS = 22,
+            Kragning_K20_TEF = 23,
             Plockning_PTFE,
             Spetsformning_PTFE
         }
@@ -120,15 +121,13 @@ namespace DigitalProductionProgram.OrderManagement
             get
             {
                 var list = new List<string>();
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    con.Open();
-                    const string query = @"SELECT Name FROM [Workoperation].Names ORDER BY Name";
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    var reader = cmd.ExecuteReader();
-                    while (reader.Read())
-                        list.Add(reader[0].ToString());
-                }
+                using var con = new SqlConnection(Database.cs_Protocol);
+                con.Open();
+                const string query = @"SELECT Name FROM [Workoperation].Names ORDER BY Name";
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                var reader = cmd.ExecuteReader();
+                while (reader.Read())
+                    list.Add(reader[0].ToString());
                 return list;
             }
         }

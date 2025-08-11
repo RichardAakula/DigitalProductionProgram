@@ -65,7 +65,7 @@ namespace DigitalProductionProgram.OrderManagement
             }
         }
 
-        public static Color backColor_Panels, backColor_LeftPanel, backColor_RightPanel, backColor_Main, backColor_Buttons, backColor_Menu, backColor_PriorityPlan, backColor_OrderInformation, backColor_MeasurePoints, backColor_MeasureStats, backColor_Chart, backColor_ExtraInfo,
+        public static Color backColor_ChartStats, backColor_Panels, backColor_LeftPanel, backColor_RightPanel, backColor_Main, backColor_Buttons, backColor_Menu, backColor_PriorityPlan, backColor_OrderInformation, backColor_MeasurePoints, backColor_MeasureStats, backColor_Chart, backColor_ExtraInfo,
             foreColor_LeftPanel, foreColor_Buttons, foreColor_PriorityPlan, foreColor_OrderInformation, foreColor_MeasurePoints, foreColor_MeasureStats, foreColor_ExtraInfo,  foreColor_Menu;
 
         public static Dictionary<string, Action> load_Themes
@@ -126,6 +126,7 @@ namespace DigitalProductionProgram.OrderManagement
 
             backColor_OrderInformation = Color.FromArgb(140, Color.Black);
             backColor_Chart = Color.RosyBrown;
+            backColor_ChartStats = Color.RosyBrown;
             foreColor_OrderInformation = Color.Snow;
 
             backColor_ExtraInfo = Color.FromArgb(140, Color.Black);
@@ -573,7 +574,7 @@ namespace DigitalProductionProgram.OrderManagement
         public static void Optinova()
         {
             Theme = Themes.Optinova;
-            backColor_Main = Color.FromArgb(35, 35, 35); //CustomColors.LightGrey;
+            backColor_Main = Color.FromArgb(35, 35, 35); 
 
             backColor_Menu = CustomColors.Teal;
             foreColor_Menu = CustomColors.Teal_Font;
@@ -585,7 +586,7 @@ namespace DigitalProductionProgram.OrderManagement
             foreColor_OrderInformation = CustomColors.Blue_Font;
 
             backColor_Chart = CustomColors.Teal;
-
+            backColor_ChartStats = Color.FromArgb(35, 35, 35);
             backColor_ExtraInfo = CustomColors.Blue;
             foreColor_ExtraInfo = CustomColors.Blue_Font;
 

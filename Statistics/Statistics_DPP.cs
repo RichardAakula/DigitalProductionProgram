@@ -1,13 +1,23 @@
-﻿using System.Windows.Forms.DataVisualization.Charting;
-using DigitalProductionProgram.DatabaseManagement;
+﻿using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.EasterEggs;
 using DigitalProductionProgram.MainWindow;
+using DigitalProductionProgram.OrderManagement;
+using LiveChartsCore;
+using LiveChartsCore.Kernel.Sketches;
+using LiveChartsCore.SkiaSharpView;
+using LiveChartsCore.SkiaSharpView.Painting;
+using LiveChartsCore.SkiaSharpView.WinForms;
 using Microsoft.Data.SqlClient;
+using SkiaSharp;
+using SkiaSharp.Views.Desktop;
 
 namespace DigitalProductionProgram.Statistics
 {
     public partial class Statistics_DPP : UserControl
     {
+
+       
+
         private const string Query_LastMonth = @"
                     WITH TimeIntervals AS 
                     (
@@ -237,27 +247,45 @@ ORDER BY v.Major DESC, v.Minor DESC, v.Patch DESC, v.Build DESC;";
 
         public async Task CreateChartAsync(string legendText, string query)
         {
+            this.Controls.Clear(); // Clear existing controls in the panel
             var data = await LoadChartDataAsync(query);
-
-            chart_Statistics.Series[0].Points.Clear();
-            chart_Statistics.Series[0].LegendText = legendText;
-            chart_Statistics.Legends[0].Docking = Docking.Top;
-            chart_Statistics.Legends[0].Alignment = StringAlignment.Far;
-            chart_Statistics.Legends[0].IsDockedInsideChartArea = false;
-            chart_Statistics.Legends[0].LegendStyle = LegendStyle.Table;
-            chart_Statistics.Legends[0].Position.Auto = false;
-            chart_Statistics.Legends[0].Position = new ElementPosition(5, 2, 90, 10);
-
-            foreach (var (label, value) in data)
+            var values = data.Select(d => (double)d.Value).ToArray();
+            var labels = data.Select(d => d.Label).ToArray();
+            var columnSeries = new ColumnSeries<double>
             {
-                chart_Statistics.Series[0].Points.AddXY(label, value);
-            }
+                Values = values,
+                Name = legendText,
+                Stroke = new SolidColorPaint(SKColors.SteelBlue, 1),
+            };
+            var chart_Stats = new CartesianChart
+            {
+                Dock = DockStyle.Fill,
+                Name = "chart_Stats",
+                Text = legendText,
+                BackColor = Teman.backColor_ChartStats,
+                LegendPosition = LiveChartsCore.Measure.LegendPosition.Top,
+                LegendTextPaint = new SolidColorPaint(SKColors.White, 1),
+                LegendTextSize = 12,
+                XAxes = new[]
+                {
+                    new Axis
+                    {
+                        Labels = labels,
+                        TextSize = 10,
+                        LabelsRotation = -45,
+                        LabelsPaint = new SolidColorPaint(SKColors.White),
+                    }
+                },
+                Series = new ISeries[] { columnSeries },
+            };
+            
+            chart_Stats.MouseDown += chart_Statistics_MouseDown;
 
-            chart_Statistics.ChartAreas[0].AxisX.LabelStyle.Angle = -45;
-            chart_Statistics.ChartAreas[0].AxisX.MajorGrid.Enabled = false;
+            // this.BackColor = Color.Transparent;
+            this.Controls.Add(chart_Stats);
         }
 
-       
+
         private void panelStatistics_Click(object sender, MouseEventArgs e)
         {
             //EasterEgg_Code.HandleStatisticsClick(this, e.Location);

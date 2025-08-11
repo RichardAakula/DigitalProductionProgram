@@ -20,50 +20,39 @@ namespace DigitalProductionProgram.Processcards
      
         private readonly bool IsProcesscard;
         private readonly bool IsOperatorStartingOrder;
-        private bool IsAutoSelectTemplate;
+        private readonly bool IsAutoSelectTemplate;
 
+        public class LabelWorkOperation : Label
+        {
+            public string Name { get; set; }
+            public string Description { get; set; }
 
-        //private List<Manage_WorkOperation.WorkOperations> WorkOperations
-        //{
-        //    get
-        //    {
-        //        var list = new List<Manage_WorkOperation.WorkOperations>();
-        //        using (var con = new SqlConnection(Database.cs_Protocol))
-        //        {
-        //            con.Open();
-        //            var query = @"
-        //            SELECT Name FROM Workoperation.Names";
-        //            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-        //            var reader = cmd.ExecuteReader();
+        }
 
-        //            while (reader.Read())
-        //            { 
-        //               var operation = (Manage_WorkOperation.WorkOperations)Enum.Parse(typeof(Manage_WorkOperation.WorkOperations), reader[0].ToString());
-        //               list.Add(operation);
-        //            }
-        //        }
-        //        return list;
-        //    }
-        //}
-        private List<string> WorkOperations
+        private List<LabelWorkOperation> WorkOperations
         {
             get
             {
-                var list = new List<string>();
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    con.Open();
-                    const string query = @"
-                    SELECT Name FROM Workoperation.Names";
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    var reader = cmd.ExecuteReader();
+                var list = new List<LabelWorkOperation>();
+                using var con = new SqlConnection(Database.cs_Protocol);
+                con.Open();
+                const string query = @"
+                    SELECT Name, Description FROM Workoperation.Names";
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                var reader = cmd.ExecuteReader();
 
-                    while (reader.Read())
+                while (reader.Read())
+                {
+
+                    var operation = new LabelWorkOperation
                     {
-                        var operation = reader[0].ToString();
-                        list.Add(operation);
-                    }
+                        Name = reader["Name"].ToString(),
+                        Description = reader["Description"].ToString()
+                    };
+                    list.Add(operation);
+
                 }
+
                 return list;
             }
         }
@@ -108,13 +97,14 @@ namespace DigitalProductionProgram.Processcards
         private void Fill_flp_Arbetsoperationer()
         {
             //foreach(Manage_WorkOperation.WorkOperations WorkOperation in WorkOperations)
-            foreach (string WorkOperation in WorkOperations)
+            foreach (var operation in WorkOperations)
             {
-                if (WorkOperation != "Nothing")
+                if (operation.Name != "Nothing")
                 {
-                    var lbl = new Label
+                    var lbl = new LabelWorkOperation
                     {
-                        Text = WorkOperation.ToString(),
+                        Name = operation.Name,
+                        Text = operation.Description,
                         ForeColor = Color.FromArgb(112,198,176),
                         Font = new Font("Segoe UI", 12, FontStyle.Bold),
                         AutoSize = true,
@@ -129,8 +119,8 @@ namespace DigitalProductionProgram.Processcards
         }
         private void WorkOperation_Click(object sender, EventArgs e)
         {
-            var lbl = (Label)sender;
-            Order.WorkOperation = (Manage_WorkOperation.WorkOperations)Enum.Parse(typeof(Manage_WorkOperation.WorkOperations), lbl.Text);
+            var lbl = (LabelWorkOperation)sender;
+            Order.WorkOperation = (Manage_WorkOperation.WorkOperations)Enum.Parse(typeof(Manage_WorkOperation.WorkOperations), lbl.Name);
             Load_NewForm();
         }
 

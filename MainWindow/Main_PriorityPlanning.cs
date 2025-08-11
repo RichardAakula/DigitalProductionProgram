@@ -328,69 +328,7 @@ namespace DigitalProductionProgram.MainWindow
                 rowObj.DefaultCellStyle.ForeColor = CustomColors.Ok_Front;
             }
         }
-
-        private bool IsOrderStarted(int row)
-        {
-            if (bool.Parse(dgv_PriorityPlanning.Rows[row].Cells["Order Startad"].Value.ToString()))
-            {
-                dgv_PriorityPlanning.Rows[row].DefaultCellStyle.BackColor = CustomColors.Warning_Back;
-                dgv_PriorityPlanning.Rows[row].DefaultCellStyle.ForeColor = CustomColors.Warning_Front;
-                return true;
-            }
-            return false;
-        }
-        private bool IsNoProcesscard(int row, Manage_WorkOperation.WorkOperations workoperation)
-        {
-            if (!Processcard.IsNotUsingProcesscard(workoperation))
-                return false;
-            dgv_PriorityPlanning.Rows[row].DefaultCellStyle.BackColor = CustomColors.Ok_Back;
-            dgv_PriorityPlanning.Rows[row].DefaultCellStyle.ForeColor = CustomColors.Ok_Front;
-            return true;
-        }
-        private bool IsNotApprovedByQA(int row, int? partID)
-        {
-            if (bool.Parse(dgv_PriorityPlanning.Rows[row].Cells["Processkort Godkänt"].Value.ToString()) || !Part.IsPartID_Exist(partID))
-                return false;
-            dgv_PriorityPlanning.Rows[row].DefaultCellStyle.BackColor = CustomColors.Bad_Back;
-            dgv_PriorityPlanning.Rows[row].DefaultCellStyle.ForeColor = CustomColors.Bad_Front;
-            return true;
-        }
-        private bool IsProcesscardMissing(int row, int? partID)
-        {
-            if (Part.IsPartID_Exist(partID))
-                return false;
-            if (Part.TotalOrders_WithoutProcesscard >= 3)
-                return false;
-            dgv_PriorityPlanning.Rows[row].DefaultCellStyle.BackColor = CustomColors.Parametrar_Saknas_Back;
-            dgv_PriorityPlanning.Rows[row].DefaultCellStyle.ForeColor = CustomColors.Parametrar_Saknas_Front;
-            return true;
-        }
-        private bool IsProcesscardMissingAndRunnedMoreThan3Times(int row, int? partID)
-        {
-            if (Part.IsPartID_Exist(partID))
-                return false;
-            if (Part.TotalOrders_WithoutProcesscard <= 2)
-                return false;
-            dgv_PriorityPlanning.Rows[row].DefaultCellStyle.BackColor = Color.DarkOrange;
-            dgv_PriorityPlanning.Rows[row].DefaultCellStyle.ForeColor = Color.Brown;
-            return true;
-        }
-        private bool IsProcesscardUnderConstructionAndRunnedMoreThan3Times(int row, int operation, int? partID)
-        {
-            if (!Part.IsPartNr_UnderConstruction(partID) || Part.TotalOrders_PartID(partID) <= 2)
-                return false;
-            dgv_PriorityPlanning.Rows[row].DefaultCellStyle.BackColor = Color.Brown;
-            dgv_PriorityPlanning.Rows[row].DefaultCellStyle.ForeColor = Color.DarkOrange;
-            return true;
-        }
-        private bool IsOrderOkStart(int row)
-        {
-            if (bool.Parse(dgv_PriorityPlanning.Rows[row].Cells["Order Startad"].Value.ToString()))
-                return false;
-            dgv_PriorityPlanning.Rows[row].DefaultCellStyle.BackColor = CustomColors.Ok_Back;
-            dgv_PriorityPlanning.Rows[row].DefaultCellStyle.ForeColor = CustomColors.Ok_Front;
-            return true;
-        }
+       
 
         public void Load_PriorityPlanning_QA_NotApprovedProcesscards(DataGridView dgv)
         {

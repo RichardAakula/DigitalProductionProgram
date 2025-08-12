@@ -2348,4 +2348,7 @@ Contact Admin if necessary.</value>
   <data name="legendAverageLastOrder" xml:space="preserve">
     <value>Average Latest Order</value>
   </data>
+  <data name="col_CodeText_Header" xml:space="preserve">
+    <value>Black text = Critical Value</value>
+  </data>
 </root>

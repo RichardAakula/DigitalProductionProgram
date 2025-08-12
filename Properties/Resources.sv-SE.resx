@@ -2344,4 +2344,7 @@ Kontakta Admin vid behov.</value>
   <data name="legendAverageLastOrder" xml:space="preserve">
     <value>Medelvärde Senaste Order</value>
   </data>
+  <data name="col_CodeText_Header" xml:space="preserve">
+    <value>Svart Text = Kritiskt värde</value>
+  </data>
 </root>

@@ -699,6 +699,7 @@ namespace DigitalProductionProgram.Templates
             // 
             // tlp_Bottom
             // 
+            tlp_Bottom.AutoScroll = true;
             tlp_Bottom.ColumnCount = 8;
             tlp_Bottom.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 298F));
             tlp_Bottom.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 77F));

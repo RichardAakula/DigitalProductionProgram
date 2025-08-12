@@ -512,6 +512,8 @@ namespace DigitalProductionProgram.Templates
             }
             CodeText.InsertNewCodeText(tb_NewCodeText.Text, tb_NewUnit.Text);
             CodeText.LoadData(dgv_CodeText);
+            tb_NewCodeText.Text = string.Empty;
+            tb_NewUnit.Text = string.Empty;
         }
 
         private void Workoperation_MouseDown(object sender, MouseEventArgs e)

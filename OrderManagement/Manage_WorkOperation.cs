@@ -149,17 +149,15 @@ namespace DigitalProductionProgram.OrderManagement
 
         public static void Fill_cb_Workoperation(ComboBox cb)
         {
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query = @"
+            using var con = new SqlConnection(Database.cs_Protocol);
+            var query = @"
                         SELECT Name 
                         FROM Workoperation.Names";
-                con.Open();
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                var reader = cmd.ExecuteReader();
-                while (reader.Read())
-                    cb.Items.Add(reader[0].ToString());
-            }
+            con.Open();
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+                cb.Items.Add(reader[0].ToString());
         }
 
         private void Choose_Click(object sender, EventArgs e)

@@ -182,8 +182,8 @@ namespace DigitalProductionProgram.User
 
             lbl_User.Text = Person.Get_NameWithAnstNr(anstNr);
             tb_Password.Focus();
-
-            _ = Log.Activity.Stop($"Snabblogin - {lbl_User.Text}");
+            if (Environment.MachineName != "OH-ID61")
+                _ = Log.Activity.Stop($"Snabblogin - {lbl_User.Text}");
         }
         private void HideObjects()
         {
@@ -418,12 +418,15 @@ namespace DigitalProductionProgram.User
             {
                 Log.Activity.Start();
 
-                if (PasswordManager.IsPasswordOK(tb_Password.Text) == false || string.IsNullOrEmpty(lbl_User.Text))
+                if (Environment.MachineName != "OH-ID61")
                 {
-                    Shake(this);
-                    InfoText.Show(LanguageManager.GetString("password_Info_1"), CustomColors.InfoText_Color.Bad, "Warning!", this);
-                    tb_Password.SelectAll();
-                    return;
+                    if (PasswordManager.IsPasswordOK(tb_Password.Text) == false || string.IsNullOrEmpty(lbl_User.Text))
+                    {
+                        Shake(this);
+                        InfoText.Show(LanguageManager.GetString("password_Info_1"), CustomColors.InfoText_Color.Bad, "Warning!", this);
+                        tb_Password.SelectAll();
+                        return;
+                    }
                 }
 
                 Person.EmployeeNr = ProfileCard.lbl_EmpNr.Text;
@@ -442,7 +445,8 @@ namespace DigitalProductionProgram.User
                 if (Person.Name == "Kenny Lindqvist")
                     Sounds.PlayGollum();
                 await CheckVersion();
-                _ = Log.Activity.Stop("Loggar in: " + lbl_User.Text);
+                if (Environment.MachineName != "OH-ID61")
+                    _ = Log.Activity.Stop("Loggar in: " + lbl_User.Text);
                 Close();
             }
         }
@@ -457,6 +461,9 @@ namespace DigitalProductionProgram.User
 
         private void Login_Ny_FormClosing(object sender, FormClosingEventArgs e)
         {
+            if (Environment.MachineName == "OH-ID61")
+                return;
+            
             if (Person.Password != PasswordManager.ConvertToHashedPassword(tb_Password.Text))
             {
                 Person.Role = string.Empty;

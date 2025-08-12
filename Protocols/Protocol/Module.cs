@@ -174,6 +174,10 @@ namespace DigitalProductionProgram.Protocols.Protocol
             typeof(DataGridView).InvokeMember("DoubleBuffered",
                 BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.SetProperty,
                 null, dgv_Module, new object[] { true });
+
+            dgv_Module.Columns["col_CodeText"].HeaderCell.Style.ForeColor = Color.Black;
+            dgv_Module.Columns["col_CodeText"].HeaderCell.Style.Font = new Font("Arial", 8, FontStyle.Bold);
+            dgv_Module.Columns["col_CodeText"].HeaderText = LanguageManager.GetString("col_CodeText_Header");
         }
 
         private void Label_LEFT_Paint(object sender, PaintEventArgs e)

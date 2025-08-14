@@ -106,6 +106,7 @@ namespace DigitalProductionProgram.MainWindow
         public static bool IsOpenRandomOrder = false;
         public static bool IsAutoOpenOrder = false;
         public static bool IsAutoLoginSuperAdmin = true;
+        public static string adminHostName = "OH-ID61";
 
         private const string? develop_OrderNr = "H67876";
         private const string? develop_Operation = "10";

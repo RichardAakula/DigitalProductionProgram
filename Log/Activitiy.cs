@@ -43,7 +43,10 @@ namespace DigitalProductionProgram.Log
                 await con.OpenAsync();
                 
                 cmd.Parameters.AddWithValue("@hostname", HostName);
-                SQL_Parameter.Int(cmd.Parameters, "@userid", Person.UserID);
+                if (Environment.MachineName == Main_Form.adminHostName && Person.Name != "Richard Aakula")
+                    cmd.Parameters.AddWithValue("@userid", 0);
+                else
+                    SQL_Parameter.Int(cmd.Parameters, "@userid", Person.UserID);
                 SQL_Parameter.Int(cmd.Parameters, "@orderid", Order.OrderID);
                 cmd.Parameters.AddWithValue("@methodname", methodname);
                 cmd.Parameters.AddWithValue("@version", ChangeLog.CurrentVersion.ToString());

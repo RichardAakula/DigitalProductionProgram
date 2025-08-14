@@ -278,6 +278,6 @@ namespace DigitalProductionProgram.EasterEggs
         private Label label_Info;
         private Label lbl_Avsluta;
         private DataGridView dgv_Text;
-        private DataGridViewTextBoxColumn Text;
+        private new DataGridViewTextBoxColumn Text;
     }
 }

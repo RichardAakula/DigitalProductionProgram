@@ -126,6 +126,7 @@ namespace DigitalProductionProgram.Processcards
                         return false;
                     }
                 }
+
                 switch(Order.WorkOperation)
                 {
                     case Manage_WorkOperation.WorkOperations.Extrudering_PTFE:

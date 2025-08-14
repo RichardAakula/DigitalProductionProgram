@@ -124,9 +124,8 @@ namespace DigitalProductionProgram.Protocols.Skärmning_TEF
         }
         public void Save_Data(ref bool IsOk, List<SqlParameter> parameters)
         {
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query = $@"
+            using var con = new SqlConnection(Database.cs_Protocol);
+            var query = $@"
                     BEGIN TRANSACTION
                         INSERT INTO Processcard.Data (PartID, TemplateID, Value, TextValue, Type)
                         VALUES {INSERT_ValuesFormTemplateID_12} 
@@ -136,11 +135,10 @@ namespace DigitalProductionProgram.Protocols.Skärmning_TEF
 
                     COMMIT TRANSACTION";
 
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                Add_Parameters(cmd, parameters);
-                con.Open();
-                Manage_Processcards.Execute_cmd(cmd, ref IsOk);
-            }
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            Add_Parameters(cmd, parameters);
+            con.Open();
+            Manage_Processcards.Execute_cmd(cmd, ref IsOk);
         }
 
        

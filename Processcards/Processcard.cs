@@ -155,8 +155,7 @@ namespace DigitalProductionProgram.Processcards
                     SELECT ID FROM Protocol.Template 
                     WHERE FormTemplateID = @formtemplateid
                         AND ColumnIndex = @colIndex 
-                        AND RowIndex = @rowIndex 
-                        AND Revision = @revision";
+                        AND RowIndex = @rowIndex";
 
             var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@workoperation", Order.WorkOperation.ToString());
@@ -170,18 +169,16 @@ namespace DigitalProductionProgram.Processcards
         }
         public static int ValueType(int? templ_ID)
         {
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query = @"
+            using var con = new SqlConnection(Database.cs_Protocol);
+            var query = @"
                     SELECT type FROM Protocol.Template
                     WHERE ID = @id";
 
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@id", templ_ID);
-                con.Open();
-                var value = cmd.ExecuteScalar();
-                return int.Parse(value.ToString());
-            }
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            cmd.Parameters.AddWithValue("@id", templ_ID);
+            con.Open();
+            var value = cmd.ExecuteScalar();
+            return int.Parse(value.ToString());
         }
 
         
@@ -544,9 +541,8 @@ namespace DigitalProductionProgram.Processcards
             
             public static void Save_MainData(ref bool IsOk, int PartID, List<SqlParameter> parameters = null)
             {
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    const string query = @"
+                using var con = new SqlConnection(Database.cs_Protocol);
+                const string query = @"
                     INSERT INTO Processcard.MainData 
                     (
                         PartID, 
@@ -594,13 +590,12 @@ namespace DigitalProductionProgram.Processcards
                         'True'
                     )";
 
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    cmd.Parameters.AddWithValue("@partid", PartID);
-                    cmd.Parameters.AddWithValue("@name", Templates_MeasureProtocol.MainTemplate.Name);
-                    Add_Parameters(cmd, parameters, PartID);
-                    con.Open();
-                    Manage_Processcards.Execute_cmd(cmd, ref IsOk);
-                }
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                cmd.Parameters.AddWithValue("@partid", PartID);
+                cmd.Parameters.AddWithValue("@name", Templates_MeasureProtocol.MainTemplate.Name);
+                Add_Parameters(cmd, parameters, PartID);
+                con.Open();
+                Manage_Processcards.Execute_cmd(cmd, ref IsOk);
             }
             public void Save_Data(string revision, ref bool IsOk)
             {
@@ -622,9 +617,8 @@ namespace DigitalProductionProgram.Processcards
            
             public static void Update_MainData(ref bool IsOk, List<SqlParameter> parameters = null)
             {
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    const string query = @"
+                using var con = new SqlConnection(Database.cs_Protocol);
+                const string query = @"
                     UPDATE Processcard.MainData 
                     SET 
                         ProdType = @prodtype, 
@@ -638,13 +632,12 @@ namespace DigitalProductionProgram.Processcards
                         Validerade_Loter = @validerade_Loter 
                     WHERE PartID = @partID";
 
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    cmd.Parameters.AddWithValue("@partid", Order.PartID);
-                    cmd.Parameters.AddWithValue("@name", Templates_MeasureProtocol.MainTemplate.Name);
-                    Add_Parameters(cmd, parameters, (int)Order.PartID);
-                    con.Open();
-                    Manage_Processcards.Execute_cmd(cmd, ref IsOk);
-                }
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                cmd.Parameters.AddWithValue("@partid", Order.PartID);
+                cmd.Parameters.AddWithValue("@name", Templates_MeasureProtocol.MainTemplate.Name);
+                Add_Parameters(cmd, parameters, (int)Order.PartID);
+                con.Open();
+                Manage_Processcards.Execute_cmd(cmd, ref IsOk);
             }
             public void Update_Data(string revision, ref bool IsOk)
             {
@@ -652,13 +645,11 @@ namespace DigitalProductionProgram.Processcards
                 if (query is null)
                     return;
 
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    cmd.Parameters.AddWithValue("@partID", Order.PartID);
-                    con.Open();
-                    Manage_Processcards.Execute_cmd(cmd, ref IsOk);
-                }
+                using var con = new SqlConnection(Database.cs_Protocol);
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                cmd.Parameters.AddWithValue("@partID", Order.PartID);
+                con.Open();
+                Manage_Processcards.Execute_cmd(cmd, ref IsOk);
             }
         }
 

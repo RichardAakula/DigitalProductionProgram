@@ -1910,4 +1910,7 @@
   <data name="col_CodeText_Header" xml:space="preserve">
     <value></value>
   </data>
+  <data name="processcard_MissingInfo_MeasurementTemplate" xml:space="preserve">
+    <value></value>
+  </data>
 </root>

@@ -2347,4 +2347,8 @@ Kontakta Admin vid behov.</value>
   <data name="col_CodeText_Header" xml:space="preserve">
     <value>Svart Text = Kritiskt värde</value>
   </data>
+  <data name="processcard_MissingInfo_MeasurementTemplate" xml:space="preserve">
+    <value>Du har inte valt en mall för Mätprotokollet. 
+Skall denna operation vara utan Mätprotokoll?</value>
+  </data>
 </root>

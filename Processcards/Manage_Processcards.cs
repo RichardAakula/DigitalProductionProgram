@@ -33,7 +33,7 @@ namespace DigitalProductionProgram.Processcards
         public static string INSERT_INTO_Processkort_Main =>
             @"
                 INSERT INTO Processcard.MainData 
-                    (PartID, PartGroupID, PartNr, RevNr, ProdLine, ProdType, MainTemplateID, WorkOperationID, Extra_Info, GodkäntDatum, RevÄndratDatum, QA_sign, UpprättatAv_Sign_AnstNr, RevInfo,
+                    (PartID, PartGroupID, PartNr, RevNr, ProdLine, ProdType, ProtocolMainTemplateID, WorkOperationID, Extra_Info, GodkäntDatum, RevÄndratDatum, QA_sign, UpprättatAv_Sign_AnstNr, RevInfo,
                         Historiska_Data, Validerat, Framtagning_Processfönster, Validerade_Loter, Aktiv)
                 VALUES 
                     (@partid, @partgroupid, @partnr, @revNr, @prodline, @prodtype, @maintemplateid, (SELECT ID FROM Workoperation.Names WHERE Name = @workoperation AND ID IS NOT NULL), @extraInfo, NULL,  @revÄndratDatum, NULL, @upprättatAvSign, @revInfo, 
@@ -116,7 +116,7 @@ namespace DigitalProductionProgram.Processcards
                     InfoText.Show($"{LanguageManager.GetString("missingPartNumber_1")} ({tb_NewPartNr.Text}) {LanguageManager.GetString("missingPartNumber_2")}", CustomColors.InfoText_Color.Bad, "Warning!", this);
                     return false;
                 }
-                Control?[] control = {tb_NewPartNr, ProcesscardBasedOn.lbl_RevNr, ProcesscardBasedOn.lbl_UpprättatAv_Sign_AnstNr, tb_RevInfo, cb_MeasureProtocolTemplateName };
+                Control?[] control = {tb_NewPartNr, ProcesscardBasedOn.lbl_RevNr, ProcesscardBasedOn.lbl_UpprättatAv_Sign_AnstNr, tb_RevInfo };
                 foreach (var ctrl in control)
                 {
                     if (string.IsNullOrEmpty(ctrl.Text))

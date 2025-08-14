@@ -2351,4 +2351,8 @@ Contact Admin if necessary.</value>
   <data name="col_CodeText_Header" xml:space="preserve">
     <value>Black text = Critical Value</value>
   </data>
+  <data name="processcard_MissingInfo_MeasurementTemplate" xml:space="preserve">
+    <value>You have not selected a template for the Measurement Protocol.
+Should this operation proceed without a Measurement Protocol?</value>
+  </data>
 </root>

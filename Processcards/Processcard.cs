@@ -602,17 +602,15 @@ namespace DigitalProductionProgram.Processcards
                 var data = INSERT_Values(revision);
                 if (data is null)
                     return;
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    var query = $@"
+                using var con = new SqlConnection(Database.cs_Protocol);
+                var query = $@"
                         INSERT INTO Processcard.Data (PartID, TemplateID, MachineIndex, Value, TextValue, Type)
                         VALUES {data} ";
 
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    cmd.Parameters.AddWithValue("@partid", Order.PartID);
-                    con.Open();
-                    Manage_Processcards.Execute_cmd(cmd, ref IsOk);
-                }
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                cmd.Parameters.AddWithValue("@partid", Order.PartID);
+                con.Open();
+                Manage_Processcards.Execute_cmd(cmd, ref IsOk);
             }
            
             public static void Update_MainData(ref bool IsOk, List<SqlParameter> parameters = null)

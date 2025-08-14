@@ -21,7 +21,7 @@ namespace DigitalProductionProgram.MainWindow
 
         private class OrderLabel : Label
         {
-            public string? OrderID { get; init; }
+            public int? OrderID { get; init; }
         }
 
         public ActiveOrdersUser()
@@ -64,21 +64,15 @@ namespace DigitalProductionProgram.MainWindow
                     SELECT DISTINCT TOP(5) OrderNr, Operation, mp.OrderID,  Back_Red, Back_Green, Back_Blue, Fore_Red, Fore_Green, Fore_Blue
                     FROM Measureprotocol.MainData AS mp
                 JOIN[Order].MainData as main
-
-                ON mp.OrderID = main.OrderID
-
+                    ON mp.OrderID = main.OrderID
                 JOIN[Settings].QuickStart_Color as color
-
-                ON main.WorkoperationID = color.WorkoperationID
+                    ON main.WorkoperationID = color.WorkoperationID
 
                 WHERE AnstNr = @employeenumber AND main.IsOrderDone = 'False'
                 AND mp.Date > @thisyear
-
                 UNION
-
                     SELECT DISTINCT TOP(5) OrderNr, Operation, slipning.OrderID,  Back_Red, Back_Green, Back_Blue, Fore_Red, Fore_Green, Fore_Blue
                     FROM Korprotokoll_Slipning_Produktion as slipning
-
                 JOIN[Order].MainData as main
 
                 ON slipning.OrderID = main.OrderID
@@ -122,7 +116,7 @@ namespace DigitalProductionProgram.MainWindow
                     ForeColor = Color.FromArgb(int.Parse(reader["Fore_Red"].ToString() ?? string.Empty), int.Parse(reader["Fore_Green"].ToString() ?? string.Empty), int.Parse(reader["Fore_Blue"].ToString() ?? string.Empty)),
                     BackColor = Color.FromArgb(int.Parse(reader["Back_Red"].ToString() ?? string.Empty), int.Parse(reader["Back_Green"].ToString() ?? string.Empty), int.Parse(reader["Back_Blue"].ToString() ?? string.Empty)),
                     Text = $@"{reader["OrderNr"]} - {reader["Operation"]}",
-                    OrderID = reader["OrderID"].ToString(),
+                    OrderID = reader.GetInt32(reader.GetOrdinal("OrderID")),
                     TextAlign = ContentAlignment.MiddleLeft,
                     Padding = new Padding(5, 0, 0, 0),
                     Margin = new Padding(25, 0, 0, 1),
@@ -147,7 +141,7 @@ namespace DigitalProductionProgram.MainWindow
            // var ordernr = lbl.Text.Substring(0, lbl.Text.IndexOf('-') - 1);
            // var operation = lbl.Text.Substring(lbl.Text.IndexOf('-') + 2, lbl.Text.Length - ordernr.Length - 3);
 
-            orderInformation.tb_OrderNr.Text = lbl?.OrderID;
+            orderInformation.tb_OrderNr.Text = lbl?.OrderID.ToString();
             orderInformation.StartOrder();
             return;
             //orderInformation.tb_OrderNr.Text = ordernr;

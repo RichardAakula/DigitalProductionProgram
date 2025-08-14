@@ -283,6 +283,7 @@ namespace DigitalProductionProgram.MainWindow
                     }
                 }
                 Fill_cb_Operation();
+                cb_Operation.SelectedValue = string.Empty;
                 // cb_Operation.SelectedIndexChanged += mainForm.Operation_SelectedIndexChanged!;
                 foreach (var t in cb_Operation.Items)
                 {
@@ -290,7 +291,6 @@ namespace DigitalProductionProgram.MainWindow
                     if (item.Operation == operation)
                     {
                         cb_Operation.SelectedValue = operation;   
-                        //mainForm.Operation_SelectedIndexChanged(cb_Operation, EventArgs.Empty);  --Denna rad skall inte behövas, raden ovanför gör samma sak, vet inte varför den kommit hit
                         return;
                     }
                 }

@@ -126,12 +126,14 @@ namespace DigitalProductionProgram.Processcards
                         return false;
                     }
                 }
-
-                switch(Order.WorkOperation)
+                if (string.IsNullOrEmpty(cb_MeasureProtocolTemplateName.Text))
                 {
-                    case Manage_WorkOperation.WorkOperations.Extrudering_PTFE:
-                        break;
+                    InfoText.Question(LanguageManager.GetString("processcard_MissingInfo_MeasurementTemplate"), CustomColors.InfoText_Color.Warning, "Warning!", this);
+                    if (InfoText.answer == InfoText.Answer.No)
+                        return false;
+
                 }
+               
                 tb_NewPartNr.BackColor = Color.White;
                 return true;
             }

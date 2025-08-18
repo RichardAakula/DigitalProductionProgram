@@ -1090,36 +1090,32 @@ namespace DigitalProductionProgram.Templates
             {
                 get
                 {
-                    using (var con = new SqlConnection(Database.cs_Protocol))
-                    {
-                        const string query =
-                            @"SELECT IsProdLineUsedInProcesscard FROM Protocol.MainTemplate WHERE ID = @maintemplateid";
-                        var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                        cmd.Parameters.AddWithValue("@maintemplateid", ID);
-                        con.Open();
-                        var result = cmd.ExecuteScalar();
-                        if (result != null && result != DBNull.Value)
-                            return Convert.ToBoolean(result);
+                    using var con = new SqlConnection(Database.cs_Protocol);
+                    const string query =
+                        @"SELECT IsProdLineUsedInProcesscard FROM Protocol.MainTemplate WHERE ID = @maintemplateid";
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                    cmd.Parameters.AddWithValue("@maintemplateid", ID);
+                    con.Open();
+                    var result = cmd.ExecuteScalar();
+                    if (result != null && result != DBNull.Value)
+                        return Convert.ToBoolean(result);
 
-                        return false;
-                    }
+                    return false;
                 }
             }
             public static bool IsTemplateConnectedToProcesscard(ref int total)
             {
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    const string query = @"
+                using var con = new SqlConnection(Database.cs_Protocol);
+                const string query = @"
                     SELECT COUNT(*) FROM Processcard.MainData WHERE ProtocolMainTemplateID = @maintemplateid";
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    con.Open();
-                    cmd.Parameters.AddWithValue("@maintemplateid", ID);
-                    var value = cmd.ExecuteScalar();
-                    if (value != null)
-                        int.TryParse(value.ToString(), out total);
-                    if (total > 0)
-                        return true;
-                }
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                con.Open();
+                cmd.Parameters.AddWithValue("@maintemplateid", ID);
+                var value = cmd.ExecuteScalar();
+                if (value != null)
+                    int.TryParse(value.ToString(), out total);
+                if (total > 0)
+                    return true;
 
                 return false;
             }

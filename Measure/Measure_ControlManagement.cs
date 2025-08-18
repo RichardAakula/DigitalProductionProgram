@@ -572,7 +572,7 @@ namespace DigitalProductionProgram.Measure
                 ctrl.ForeColor = Color.Black;
                 return;
             }
-            MeasurePoints.DataVerification.DataVerification_Value(value, ctrl);
+            MeasurementValidator.DataVerification_Value(value, ctrl);
         }
 
        

@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using DigitalProductionProgram.Help;
+using DigitalProductionProgram.PrintingServices;
 
 namespace DigitalProductionProgram.Measure
 {
@@ -15,6 +17,7 @@ namespace DigitalProductionProgram.Measure
         public BrowseMeasureProtocols()
         {
             InitializeComponent();
+            InfoText.Show("Blädda gamla Mätprotokoll fungerar inte för tillfället, kommer tillbaks så fort tid finnes.", CustomColors.InfoText_Color.Bad, "Warning");
         }
     }
 }

@@ -32,6 +32,7 @@ namespace DigitalProductionProgram.ControlsManagement
             }
             
         }
+        [DebuggerStepThrough]
         public void Set_ValueProgressBar(double value, string? info, double extraValue = 0)
         {
             if (value < 101)

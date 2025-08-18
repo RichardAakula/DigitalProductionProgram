@@ -453,7 +453,7 @@ namespace DigitalProductionProgram.Browse_Protocols
                     ///  kragning_TEF.Load_Data();
                     break;
                 case Manage_WorkOperation.WorkOperations.Skärmning:
-                    skärmning_TEF.Load_Data();
+                    skärmning_TEF?.Load_Data();
                     break;
                 case Manage_WorkOperation.WorkOperations.Slipning:
                     Load_Slipning_TEF();
@@ -462,7 +462,7 @@ namespace DigitalProductionProgram.Browse_Protocols
                     Load_Spolning_PTFE();
                     break;
                 case Manage_WorkOperation.WorkOperations.Svetsning:
-                    svetsning_TEF.Load_Data();
+                    svetsning_TEF?.Load_Data();
                     break;
                 default:
                     flp_Machines.Controls.Clear();
@@ -495,33 +495,38 @@ namespace DigitalProductionProgram.Browse_Protocols
 
         private void Load_Blandning_PTFE()
         {
-            blandning_PTFE.Load_Data();
+            blandning_PTFE?.Load_Data();
             Part.SetPartNrSpecial("Blandning Pigment");
             if (Part.IsPartNrSpecial == false)
-                blandning_PTFE.Width = 871;
-            else
-                blandning_PTFE.Width = 1092;
+            {
+                if (blandning_PTFE != null) blandning_PTFE.Width = 871;
+            }
+            else if (blandning_PTFE != null) blandning_PTFE.Width = 1092;
 
-            blandning_PTFE.Journal.dgv_Journal_Input.Rows.RemoveAt(0);
+            blandning_PTFE?.Journal.dgv_Journal_Input.Rows.RemoveAt(0);
         }
 
         private void Load_Slipning_TEF()
         {
-            slipning_TEF.Load_Data();
+            slipning_TEF?.Load_Data();
             Part.SetPartNrSpecial("Extra Parametrar Slipning_TEF");
             if (Part.IsPartNrSpecial == false)
-                slipning_TEF.Width = 950;
-            else
-                slipning_TEF.Width = 1038;
+            {
+                if (slipning_TEF != null) slipning_TEF.Width = 950;
+            }
+            else if (slipning_TEF != null) slipning_TEF.Width = 1038;
+
             Processcard_BasedOn.Load_Data();
             Comments.Load_Data();
         }
         private void Load_Spolning_PTFE()
         {
-            spolning_PTFE.Load_Data();
-            spolning_PTFE.Width = (from DataGridViewColumn column in spolning_PTFE.Journal.dgv_Journal_Input.Columns where column.Visible select column.Width + 1).Sum();
-
-            spolning_PTFE.Journal.dgv_Journal_Input.Rows.RemoveAt(0);
+            spolning_PTFE?.Load_Data();
+            if (spolning_PTFE != null)
+            {
+                spolning_PTFE.Width = (from DataGridViewColumn column in spolning_PTFE.Journal.dgv_Journal_Input.Columns where column.Visible select column.Width + 1).Sum();
+                spolning_PTFE.Journal.dgv_Journal_Input.Rows.RemoveAt(0);
+            }
         }
 
 
@@ -628,22 +633,23 @@ namespace DigitalProductionProgram.Browse_Protocols
                     listMaintemplateid.Add(maintemplateid);
             }
 
-            var listFormtemplateid = new List<int>();
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                const string query = @"SELECT FormTemplateID FROM Protocol.FormTemplate WHERE MainTemplateID = @maintemplateid";
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@maintemplateid", Templates_Protocol.MainTemplate.ID);
-                con.Open();
-                var reader = cmd.ExecuteReader();
-                while (reader.Read())
-                {
-                    int.TryParse(reader[0].ToString(), out var formtemplateid);
-                    listFormtemplateid.Add(formtemplateid);
-                }
-            }
+            //var listFormtemplateid = new List<int>();
+            //using (var con = new SqlConnection(Database.cs_Protocol))
+            //{
+            //    const string query = @"SELECT FormTemplateID FROM Protocol.FormTemplate WHERE MainTemplateID = @maintemplateid";
+            //    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            //    cmd.Parameters.AddWithValue("@maintemplateid", Templates_Protocol.MainTemplate.ID);
+            //    con.Open();
+            //    var reader = cmd.ExecuteReader();
+            //    while (reader.Read())
+            //    {
+            //        int.TryParse(reader[0].ToString(), out var formtemplateid);
+            //        listFormtemplateid.Add(formtemplateid);
+            //    }
+            //}
 
-            Get_Protocol_Data.TransferDataToExcel.TransferData(listOrderID, listFormtemplateid, listMaintemplateid, dgv_OrderList.Rows[0].Cells["orderlist_PartNr"].Value.ToString() ?? string.Empty);
+            //Get_Protocol_Data.TransferDataToExcel.TransferData(listOrderID, listFormtemplateid, listMaintemplateid, dgv_OrderList.Rows[0].Cells["orderlist_PartNr"].Value.ToString() ?? string.Empty);
+            Get_Protocol_Data.TransferDataToExcel.TransferData(listOrderID, dgv_OrderList.Rows[0].Cells["orderlist_PartNr"].Value.ToString() ?? string.Empty);
 
         }
         private void PrintOrder_Click(object sender, EventArgs e)

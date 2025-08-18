@@ -376,7 +376,7 @@ namespace DigitalProductionProgram.Measure
                 cell.Style.ForeColor = CustomColors.Ok_Front;
             }
             if (string.IsNullOrEmpty(monitorName) == false)
-                MeasurePoints.DataVerification.DataVerification_Value_dgv(dgv_Measurements, text, monitorName, row, cell.ColumnIndex);
+                MeasurementValidator.DataVerification_Value_dgv(dgv_Measurements, text, monitorName, row, cell.ColumnIndex);
             
            
         }
@@ -1032,15 +1032,15 @@ namespace DigitalProductionProgram.Measure
                 dgv.Rows[6].Cells[1].Value = (GetPropertyValue(measurementType, "y2") - GetPropertyValue(measurementType, "y1")) / 1000;
                 dgv.Rows[7].Cells[1].Value = (GetPropertyValue(measurementType, "y4") - GetPropertyValue(measurementType, "y3")) / 1000;
 
-                MeasurePoints.DataVerification.DataVerification_Walls_dgv(dgv.Rows[0].Cells[1], "Wall Layer 1");
-                MeasurePoints.DataVerification.DataVerification_Walls_dgv(dgv.Rows[1].Cells[1], "Wall Layer 1");
-                MeasurePoints.DataVerification.DataVerification_Walls_dgv(dgv.Rows[2].Cells[1], "Wall Layer 1");
-                MeasurePoints.DataVerification.DataVerification_Walls_dgv(dgv.Rows[3].Cells[1], "Wall Layer 1");
+                MeasurementValidator.DataVerification_Walls_dgv(dgv.Rows[0].Cells[1], "Wall Layer 1");
+                MeasurementValidator.DataVerification_Walls_dgv(dgv.Rows[1].Cells[1], "Wall Layer 1");
+                MeasurementValidator.DataVerification_Walls_dgv(dgv.Rows[2].Cells[1], "Wall Layer 1");
+                MeasurementValidator.DataVerification_Walls_dgv(dgv.Rows[3].Cells[1], "Wall Layer 1");
 
-                MeasurePoints.DataVerification.DataVerification_Walls_dgv(dgv.Rows[4].Cells[1], "Wall Layer 2");
-                MeasurePoints.DataVerification.DataVerification_Walls_dgv(dgv.Rows[5].Cells[1], "Wall Layer 2");
-                MeasurePoints.DataVerification.DataVerification_Walls_dgv(dgv.Rows[6].Cells[1], "Wall Layer 2");
-                MeasurePoints.DataVerification.DataVerification_Walls_dgv(dgv.Rows[7].Cells[1], "Wall Layer 2");
+                MeasurementValidator.DataVerification_Walls_dgv(dgv.Rows[4].Cells[1], "Wall Layer 2");
+                MeasurementValidator.DataVerification_Walls_dgv(dgv.Rows[5].Cells[1], "Wall Layer 2");
+                MeasurementValidator.DataVerification_Walls_dgv(dgv.Rows[6].Cells[1], "Wall Layer 2");
+                MeasurementValidator.DataVerification_Walls_dgv(dgv.Rows[7].Cells[1], "Wall Layer 2");
             }
             else
             {
@@ -1049,10 +1049,10 @@ namespace DigitalProductionProgram.Measure
                 dgv.Rows[2].Cells[1].Value = GetPropertyValue(measurementType, "y1") / 1000;
                 dgv.Rows[3].Cells[1].Value = (GetPropertyValue(measurementType, "y3") - GetPropertyValue(measurementType, "y2")) / 1000;
 
-                MeasurePoints.DataVerification.DataVerification_Walls_dgv(dgv.Rows[0].Cells[1], "Wall");
-                MeasurePoints.DataVerification.DataVerification_Walls_dgv(dgv.Rows[1].Cells[1], "Wall");
-                MeasurePoints.DataVerification.DataVerification_Walls_dgv(dgv.Rows[2].Cells[1], "Wall");
-                MeasurePoints.DataVerification.DataVerification_Walls_dgv(dgv.Rows[3].Cells[1], "Wall");
+                MeasurementValidator.DataVerification_Walls_dgv(dgv.Rows[0].Cells[1], "Wall");
+                MeasurementValidator.DataVerification_Walls_dgv(dgv.Rows[1].Cells[1], "Wall");
+                MeasurementValidator.DataVerification_Walls_dgv(dgv.Rows[2].Cells[1], "Wall");
+                MeasurementValidator.DataVerification_Walls_dgv(dgv.Rows[3].Cells[1], "Wall");
             }
         }
 

@@ -1,17 +1,17 @@
-﻿using System.Data;
-using Microsoft.Data.SqlClient;
-using System.Diagnostics;
-using System.Globalization;
-using System.Text;
-using DigitalProductionProgram.ControlsManagement;
+﻿using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Help;
 using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.Monitor;
 using DigitalProductionProgram.Monitor.GET;
-
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.PrintingServices;
+using DigitalProductionProgram.Templates;
+using Microsoft.Data.SqlClient;
+using System.Data;
+using System.Diagnostics;
+using System.Globalization;
+using System.Text;
 using ProgressBar = DigitalProductionProgram.ControlsManagement.CustomProgressBar;
 
 namespace DigitalProductionProgram.Övrigt
@@ -842,26 +842,24 @@ namespace DigitalProductionProgram.Övrigt
             }
 
             private static int MaxStartUp { get; set; }
+            [DebuggerStepThrough]
             private static void SetMaxStartUp(int orderid)
             {
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    var query = @"SELECT MAX(Uppstart) FROM [Order].Data WHERE OrderID = @orderid";
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    cmd.Parameters.AddWithValue("@orderid", orderid);
-                    con.Open();
-                    var value = cmd.ExecuteScalar();
-                    int.TryParse(value.ToString(), out var startup);
-                    MaxStartUp = startup;
-                }
+                using var con = new SqlConnection(Database.cs_Protocol);
+                var query = @"SELECT MAX(Uppstart) FROM [Order].Data WHERE OrderID = @orderid";
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                cmd.Parameters.AddWithValue("@orderid", orderid);
+                con.Open();
+                var value = cmd.ExecuteScalar();
+                int.TryParse(value.ToString(), out var startup);
+                MaxStartUp = startup;
             }
             private static DataTable DataTableExcel { get; set; }
             private static DataTable DataTable_Order(int orderid, int formTemplateID, int machine, int startup, bool IsUsingProcesscard, bool IsMultipleExtruders)
             {
                 var table = new DataTable();
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    var query = @"
+                using var con = new SqlConnection(Database.cs_Protocol);
+                var query = @"
                                 SELECT data.OrderID, OrderNr, Date_Start, Operation, PartNr, ProdLine, CodeText, template.ProtocolDescriptionID, Value, TextValue, DateValue, MachineIndex, Uppstart, Ugn, template.RowIndex,  template.Type
                                 FROM [Order].Data as data
                                     INNER JOIN [Order].MainData AS maindata
@@ -874,27 +872,26 @@ namespace DigitalProductionProgram.Övrigt
                                 WHERE data.OrderID = @orderid
     	                            AND template.FormTemplateID = @formtemplateid
 	                                AND template.ProtocolDescriptionID IN (SELECT ProtocolDescriptionID FROM Protocol.Template WHERE FormTemplateID = @formtemplateid)";
-                    if (formTemplateID != 19)
-                        query += @"AND (COALESCE(template.ColumnIndex, 0) = COALESCE(@columnindex, 0))
+                if (formTemplateID != 19)
+                    query += @"AND (COALESCE(template.ColumnIndex, 0) = COALESCE(@columnindex, 0))
                                    AND Uppstart = @startup ";
                     
-                    if (IsMultipleExtruders)
-                        query += "AND (COALESCE(MachineIndex, 0) = COALESCE(@machineindex, 0))";
-                    query += "ORDER BY OrderID, MachineIndex, Uppstart, template.RowIndex";
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    cmd.Parameters.AddWithValue("@orderid", orderid);
-                    cmd.Parameters.AddWithValue("@formtemplateid", formTemplateID);
-                    cmd.Parameters.AddWithValue("@machineindex", machine);
-                    cmd.Parameters.AddWithValue("@startup", startup);
-                    if (IsUsingProcesscard)
-                        cmd.Parameters.AddWithValue("@columnindex", 1);
-                    else
-                        cmd.Parameters.AddWithValue("@columnindex", DBNull.Value);
+                if (IsMultipleExtruders)
+                    query += "AND (COALESCE(MachineIndex, 0) = COALESCE(@machineindex, 0))";
+                query += "ORDER BY OrderID, MachineIndex, Uppstart, template.RowIndex";
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                cmd.Parameters.AddWithValue("@orderid", orderid);
+                cmd.Parameters.AddWithValue("@formtemplateid", formTemplateID);
+                cmd.Parameters.AddWithValue("@machineindex", machine);
+                cmd.Parameters.AddWithValue("@startup", startup);
+                if (IsUsingProcesscard)
+                    cmd.Parameters.AddWithValue("@columnindex", 1);
+                else
+                    cmd.Parameters.AddWithValue("@columnindex", DBNull.Value);
 
-                    con.Open();
-                    var reader = cmd.ExecuteReader();
-                    table.Load(reader);
-                }
+                con.Open();
+                var reader = cmd.ExecuteReader();
+                table.Load(reader);
                 return table;
             }
             private static List<int> ProtocolMainTemplateID { get; set; }
@@ -915,9 +912,8 @@ namespace DigitalProductionProgram.Övrigt
             {
                 foreach (var formtemplateid in listFormTemplateid)
                 {
-                    using (var con = new SqlConnection(Database.cs_Protocol))
-                    {
-                        var query = @"
+                    using var con = new SqlConnection(Database.cs_Protocol);
+                    var query = @"
                         SELECT DISTINCT CodeText, RowIndex
                         FROM Protocol.Description as descr
 	                        JOIN Protocol.Template as template
@@ -925,23 +921,56 @@ namespace DigitalProductionProgram.Övrigt
                         WHERE FormTemplateID = @formtemplateid
                             AND RowIndex IS NOT NULL
                         ORDER BY RowIndex";
-                        var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                        cmd.Parameters.AddWithValue("@formtemplateid", formtemplateid);
-                        con.Open();
-                        var reader = cmd.ExecuteReader();
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                    cmd.Parameters.AddWithValue("@formtemplateid", formtemplateid);
+                    con.Open();
+                    var reader = cmd.ExecuteReader();
                        
-                        while (reader.Read())
-                        {
-                            var codetext = reader["CodeText"].ToString();
-                            if (DataTableExcel.Columns.Contains(codetext) == false)
-                                DataTableExcel.Columns.Add(codetext);
-                        }
+                    while (reader.Read())
+                    {
+                        var codetext = reader["CodeText"].ToString();
+                        if (DataTableExcel.Columns.Contains(codetext) == false)
+                            DataTableExcel.Columns.Add(codetext);
                     }
                 }
             }
 
-           
-            public static void TransferData(List<int> listOrderID,  List<int> listFormtemplateid, List<int> listMainTemplateID, string PartNr, bool IsUsingProcesscard = true)
+            private static int Load_MainTemplateID(int orderid)
+            {
+                using var con = new SqlConnection(Database.cs_Protocol);
+                var query = @"
+                        SELECT ProtocolMainTemplateID
+                        FROM [Order].MainData
+                        WHERE OrderID = @orderid";
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                cmd.Parameters.AddWithValue("@orderid", orderid);
+                con.Open();
+                var value = cmd.ExecuteScalar();
+                if (value != null)
+                    if (int.TryParse(value.ToString(), out var maintemplateid))
+                        return maintemplateid;
+                return 0;
+            }
+
+            private static List<int> ListFormTemplateID(int maintemplateID)
+            {
+                var listFormtemplateid = new List<int>();
+                using var con = new SqlConnection(Database.cs_Protocol);
+                const string query = @"SELECT FormTemplateID FROM Protocol.FormTemplate WHERE MainTemplateID = @maintemplateid";
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                cmd.Parameters.AddWithValue("@maintemplateid", maintemplateID);
+                con.Open();
+                var reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    int.TryParse(reader[0].ToString(), out var formtemplateid);
+                    listFormtemplateid.Add(formtemplateid);
+                }
+
+                return listFormtemplateid;
+            }
+            //public static void TransferData(List<int> listOrderID,  List<int> listFormtemplateid, List<int> listMainTemplateID, string PartNr, bool IsUsingProcesscard = true)
+            public static void TransferData(List<int> listOrderID, string PartNr, bool IsUsingProcesscard = true)
             {
                 SetTotalMachines(listOrderID[0]);
                 double step = 100 / (float)listOrderID.Count;
@@ -957,16 +986,20 @@ namespace DigitalProductionProgram.Övrigt
                     var IsUsingMultipleExtruders = TotalMachines > 1;
                     AddMainColumns_DataTableExcel(row);
 
-                    foreach (var maintemplateID in listMainTemplateID)
+                    //foreach (var maintemplateID in listMainTemplateID)
                     {
-                        AddColumns_DataTableExcel(listFormtemplateid);
-                        DataTableExcel.Rows.Add();
-                        DataTableExcel.Rows[row]["OrderNr"] = $"MainTemplateID: {maintemplateID}";
-                        row++;
+                       // AddColumns_DataTableExcel(listFormtemplateid);
+                        //DataTableExcel.Rows.Add();
+                        //DataTableExcel.Rows[row]["OrderNr"] = $"MainTemplateID: {maintemplateID}";
+                        //row++;
                         foreach (var orderID in listOrderID)
                         {
+                            var maintemplateID = Load_MainTemplateID(orderID);
+                            var listFormtemplateid = ListFormTemplateID(maintemplateID);
+                            AddColumns_DataTableExcel(listFormtemplateid);
+                            
                             SetMaxStartUp(orderID);
-                            if (Templates.Templates_Protocol.MainTemplate.ID == maintemplateID)
+                            //if (Templates.Templates_Protocol.MainTemplate.ID == maintemplateID)
                             {
                                 for (var startUp = 1; startUp < MaxStartUp + 1; startUp++)
                                 {

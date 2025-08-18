@@ -383,7 +383,7 @@ namespace DigitalProductionProgram.MainWindow
             TipsAndTrix.Visible = false;
             tlp_MainWindow.BackgroundImage = null;
 
-            measurePoints.tlp_Main.BackColor = measureStats.BackColor = measurementChart.BackColor = tlp_ExtraInfo.BackColor = Color.Transparent;
+            measurePoints.tlp_Main.BackColor = measureStats.BackColor = tlp_ExtraInfo.BackColor = Color.Transparent;
 
             tlp_Left.BackColor = Color.FromArgb(100, 20, 44, 20);
             BackColor = Color.FromArgb(20, 44, 20);

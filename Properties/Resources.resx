@@ -1913,4 +1913,7 @@
   <data name="processcard_MissingInfo_MeasurementTemplate" xml:space="preserve">
     <value></value>
   </data>
+  <data name="errorConnectingDatabase" xml:space="preserve">
+    <value></value>
+  </data>
 </root>

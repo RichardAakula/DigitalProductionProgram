@@ -2351,4 +2351,7 @@ Kontakta Admin vid behov.</value>
     <value>Du har inte valt en mall för Mätprotokollet. 
 Skall denna operation vara utan Mätprotokoll?</value>
   </data>
+  <data name="errorConnectingDatabase" xml:space="preserve">
+    <value>test</value>
+  </data>
 </root>

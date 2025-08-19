@@ -828,20 +828,25 @@ namespace DigitalProductionProgram.Settings
 
             public static void Load_Settings()
             {
-                // try
+                try
                 {
                     using var con = new SqlConnection(Database.cs_Protocol);
                     const string query = @"
                         SELECT * FROM [Settings].General
                         WHERE general.HostName = @hostname";
 
-                    var cmd = new SqlCommand(query, con); 
+                    using var cmd = new SqlCommand(query, con)
+                    {
+                        CommandTimeout = 5
+                    };
+
                     ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@hostname", Environment.MachineName);
-                    con.Open();
-                    var reader = cmd.ExecuteReader();
 
-                    if (reader.HasRows == false)
+                    con.Open(); // ⏱️ max 5 sek väntan
+                    using var reader = cmd.ExecuteReader();
+
+                    if (!reader.HasRows)
                     {
                         SaveData.SaveNewProfile();
                         _ = Activity.Stop($"Sparar ny profil för dator - {Environment.MachineName}");
@@ -852,14 +857,15 @@ namespace DigitalProductionProgram.Settings
                         MeasuringComputerOnly = bool.Parse(reader["MeasureOnly"].ToString());
                         ProdLine_LoadingPLan = reader["ProdLine_LoadingPLan"].ToString();
                         Tema = reader["Theme"].ToString();
-                        //IsOkLoad_ZumbachControlLimits = bool.Parse(reader["Load_ZumbachControlLimits"].ToString());
                         LanguageManager.selectedCulture = new CultureInfo($"{reader["CultureInfo"]}");
                     }
                 }
-                // catch (Exception exception)
+                catch (Exception)
                 {
-                    //     InfoText.Show($"{LanguageManager.GetString("saveSetting_1")}\n\n{exception}", CustomColors.InfoText_Color.Bad, null);
-                    //     ErrorHandler.Allmänt_Fel(exception, "HämtaInställningar");
+                    InfoText.Show(LanguageManager.GetString("errorConnectingDatabase"),
+                        CustomColors.InfoText_Color.Bad, "Error!");
+
+                    Application.Exit(); // stäng programmet direkt
                 }
             }
         }

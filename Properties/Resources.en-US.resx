@@ -2355,4 +2355,7 @@ Contact Admin if necessary.</value>
     <value>You have not selected a template for the Measurement Protocol.
 Should this operation proceed without a Measurement Protocol?</value>
   </data>
+  <data name="errorConnectingDatabase" xml:space="preserve">
+    <value>test</value>
+  </data>
 </root>

@@ -110,11 +110,9 @@ namespace DigitalProductionProgram.MainWindow
 
         private const string? develop_OrderNr = "H67876";
         private const string? develop_Operation = "10";
-        public static Timer? timer_StatsDPP;
 
 
 
-        private int ctr_Info_Planerat_Stopp;
         // Denna rad måste finnas för utskrifterna
         private readonly Manage_PrintOuts? print;
         private readonly BlackBackground black;
@@ -201,6 +199,8 @@ namespace DigitalProductionProgram.MainWindow
                 else
                     black.Close();
             }
+           
+
             await Activity.Stop("Uppstart av program");
             Initialize_Timers();
             if (IsBetaMode)
@@ -1004,7 +1004,7 @@ namespace DigitalProductionProgram.MainWindow
         public static int timer_ReloginMonitor = 600000;
         private int timer_CheckForUpdate = 5; //5 minut
 
-        private Timer? timer_Master;
+        public Timer? timer_Master;
         private async void MasterTimer_Tick(object? sender, EventArgs e)
         {
             timer_Master.Stop();
@@ -1026,25 +1026,22 @@ namespace DigitalProductionProgram.MainWindow
                 CheckForMaintenanceWork();
             }
 
-            // 5 minuter: Kontrollera mätpunkter
-            if (counter_CheckMätpunkter >= 5 && Person.Role == "SuperAdmin")
-            {
-                counter_CheckMätpunkter = 0;
-                MainMeasureStatistics.ValidateMeasurements.AverageValues();
-            }
             // 5 minut: Kolla efter uppdatering
             if (counter_CheckForUpdate >= timer_CheckForUpdate)
             {
                 counter_CheckForUpdate = 0;
                 CheckForUpdate();
             }
-            //60 sek: Hantera inloggning mot Monitor API
-            // if (counter_ReLoginMonitor >= timer_ReloginMonitor)
-            //     ReLogin_Monitor();
 
-         
-            // 5 min: Kolla uppdatering och statistik
-            if (counter_UpdateChart >= 5)
+            // 5 minuter: Kontrollera mätpunkter
+            if (counter_CheckMätpunkter >= 5 && Person.Role == "SuperAdmin" && IsZumbachÖppet == false)
+            {
+                counter_CheckMätpunkter = 0;
+                MainMeasureStatistics.ValidateMeasurements.AverageValues();
+            }
+            
+            // 5 min: Kolla statistik
+            if (counter_UpdateChart >= 5 && IsZumbachÖppet == false)
             {
                 counter_UpdateChart = 0;
                 
@@ -1054,7 +1051,7 @@ namespace DigitalProductionProgram.MainWindow
             }
 
             // 10 min: Ändra GUI-grade
-            if (counter_ChangeGrade >= 10)
+            if (counter_ChangeGrade >= 10 && IsZumbachÖppet == false)
             {
                 counter_ChangeGrade = 0;
                 Change_GUI_Grade();
@@ -1130,8 +1127,6 @@ namespace DigitalProductionProgram.MainWindow
 
             if (!Maintenance.IsMaintenance_Coming)
                 return;
-
-            ctr_Info_Planerat_Stopp++;
 
             var clr = CustomColors.InfoText_Color.Ok;
             //Mellan 8 timmar och 2 dygn kvar till planerat stopp

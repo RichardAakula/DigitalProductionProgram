@@ -48,7 +48,7 @@ namespace DigitalProductionProgram.Zumbach
             chb_VisaPos2 = new CheckBox();
             chb_VisaPos3 = new CheckBox();
             panel_InfoZumbachChart = new Panel();
-            tlp_Menu = new TableLayoutPanel();
+            tlp_Top = new TableLayoutPanel();
             chb_Sortera_Bort_Kasserade = new CheckBox();
             lbl_OrderNr = new Label();
             btn_Up = new Button();
@@ -111,7 +111,7 @@ namespace DigitalProductionProgram.Zumbach
             btn_PrintZumbach = new Button();
             bgw_Random = new BackgroundWorker();
             panel_InfoZumbachChart.SuspendLayout();
-            tlp_Menu.SuspendLayout();
+            tlp_Top.SuspendLayout();
             panel_Position3.SuspendLayout();
             panel_Position2.SuspendLayout();
             panel_Position1.SuspendLayout();
@@ -191,69 +191,69 @@ namespace DigitalProductionProgram.Zumbach
             // 
             panel_InfoZumbachChart.BackColor = Color.DarkRed;
             panel_InfoZumbachChart.BorderStyle = BorderStyle.FixedSingle;
-            panel_InfoZumbachChart.Controls.Add(tlp_Menu);
+            panel_InfoZumbachChart.Controls.Add(tlp_Top);
             panel_InfoZumbachChart.Cursor = Cursors.SizeAll;
             panel_InfoZumbachChart.Dock = DockStyle.Top;
             panel_InfoZumbachChart.Location = new Point(0, 0);
             panel_InfoZumbachChart.Margin = new Padding(4, 3, 4, 3);
             panel_InfoZumbachChart.Name = "panel_InfoZumbachChart";
-            panel_InfoZumbachChart.Size = new Size(1981, 255);
+            panel_InfoZumbachChart.Size = new Size(1850, 255);
             panel_InfoZumbachChart.TabIndex = 853;
             // 
-            // tlp_Menu
+            // tlp_Top
             // 
-            tlp_Menu.ColumnCount = 14;
-            tlp_Menu.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 105F));
-            tlp_Menu.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 105F));
-            tlp_Menu.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 56F));
-            tlp_Menu.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 56F));
-            tlp_Menu.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 56F));
-            tlp_Menu.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 56F));
-            tlp_Menu.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 56F));
-            tlp_Menu.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 56F));
-            tlp_Menu.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 292F));
-            tlp_Menu.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 68F));
-            tlp_Menu.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 59F));
-            tlp_Menu.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 54F));
-            tlp_Menu.ColumnStyles.Add(new ColumnStyle());
-            tlp_Menu.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 960F));
-            tlp_Menu.Controls.Add(chb_Sortera_Bort_Kasserade, 8, 9);
-            tlp_Menu.Controls.Add(lbl_OrderNr, 13, 0);
-            tlp_Menu.Controls.Add(btn_Up, 0, 0);
-            tlp_Menu.Controls.Add(label_Measurement, 0, 2);
-            tlp_Menu.Controls.Add(btn_Up_Full, 1, 0);
-            tlp_Menu.Controls.Add(btn_Down, 0, 4);
-            tlp_Menu.Controls.Add(btn_Down_Full, 1, 4);
-            tlp_Menu.Controls.Add(panel_Position3, 6, 0);
-            tlp_Menu.Controls.Add(panel_Position2, 4, 0);
-            tlp_Menu.Controls.Add(panel_Position1, 2, 0);
-            tlp_Menu.Controls.Add(lbl_Measurement, 1, 2);
-            tlp_Menu.Controls.Add(chb_LogData, 8, 0);
-            tlp_Menu.Controls.Add(lbl_OD, 9, 0);
-            tlp_Menu.Controls.Add(chb_AutoMätByte, 8, 8);
-            tlp_Menu.Controls.Add(pb_Info_UCL_LCL_Styrgränser, 8, 4);
-            tlp_Menu.Controls.Add(tlp_MåttInfo, 2, 3);
-            tlp_Menu.Controls.Add(chb_AutoPosByte, 8, 7);
-            tlp_Menu.Controls.Add(lbl_Maskin, 13, 5);
-            tlp_Menu.Dock = DockStyle.Fill;
-            tlp_Menu.GrowStyle = TableLayoutPanelGrowStyle.AddColumns;
-            tlp_Menu.Location = new Point(0, 0);
-            tlp_Menu.Margin = new Padding(4, 3, 4, 3);
-            tlp_Menu.Name = "tlp_Menu";
-            tlp_Menu.RowCount = 11;
-            tlp_Menu.RowStyles.Add(new RowStyle(SizeType.Absolute, 29F));
-            tlp_Menu.RowStyles.Add(new RowStyle(SizeType.Absolute, 29F));
-            tlp_Menu.RowStyles.Add(new RowStyle(SizeType.Absolute, 23F));
-            tlp_Menu.RowStyles.Add(new RowStyle(SizeType.Absolute, 23F));
-            tlp_Menu.RowStyles.Add(new RowStyle(SizeType.Absolute, 14F));
-            tlp_Menu.RowStyles.Add(new RowStyle(SizeType.Absolute, 44F));
-            tlp_Menu.RowStyles.Add(new RowStyle(SizeType.Absolute, 14F));
-            tlp_Menu.RowStyles.Add(new RowStyle(SizeType.Absolute, 25F));
-            tlp_Menu.RowStyles.Add(new RowStyle(SizeType.Absolute, 24F));
-            tlp_Menu.RowStyles.Add(new RowStyle(SizeType.Absolute, 29F));
-            tlp_Menu.RowStyles.Add(new RowStyle(SizeType.Absolute, 23F));
-            tlp_Menu.Size = new Size(1979, 253);
-            tlp_Menu.TabIndex = 869;
+            tlp_Top.ColumnCount = 13;
+            tlp_Top.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 105F));
+            tlp_Top.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 105F));
+            tlp_Top.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 56F));
+            tlp_Top.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 56F));
+            tlp_Top.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 56F));
+            tlp_Top.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 56F));
+            tlp_Top.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 56F));
+            tlp_Top.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 56F));
+            tlp_Top.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 292F));
+            tlp_Top.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 68F));
+            tlp_Top.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 59F));
+            tlp_Top.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 54F));
+            tlp_Top.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 960F));
+            tlp_Top.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 20F));
+            tlp_Top.Controls.Add(chb_Sortera_Bort_Kasserade, 8, 9);
+            tlp_Top.Controls.Add(lbl_OrderNr, 12, 0);
+            tlp_Top.Controls.Add(btn_Up, 0, 0);
+            tlp_Top.Controls.Add(label_Measurement, 0, 2);
+            tlp_Top.Controls.Add(btn_Up_Full, 1, 0);
+            tlp_Top.Controls.Add(btn_Down, 0, 4);
+            tlp_Top.Controls.Add(btn_Down_Full, 1, 4);
+            tlp_Top.Controls.Add(panel_Position3, 6, 0);
+            tlp_Top.Controls.Add(panel_Position2, 4, 0);
+            tlp_Top.Controls.Add(panel_Position1, 2, 0);
+            tlp_Top.Controls.Add(lbl_Measurement, 1, 2);
+            tlp_Top.Controls.Add(chb_LogData, 8, 0);
+            tlp_Top.Controls.Add(lbl_OD, 9, 0);
+            tlp_Top.Controls.Add(chb_AutoMätByte, 8, 8);
+            tlp_Top.Controls.Add(pb_Info_UCL_LCL_Styrgränser, 8, 4);
+            tlp_Top.Controls.Add(tlp_MåttInfo, 2, 3);
+            tlp_Top.Controls.Add(chb_AutoPosByte, 8, 7);
+            tlp_Top.Controls.Add(lbl_Maskin, 12, 5);
+            tlp_Top.Dock = DockStyle.Fill;
+            tlp_Top.GrowStyle = TableLayoutPanelGrowStyle.AddColumns;
+            tlp_Top.Location = new Point(0, 0);
+            tlp_Top.Margin = new Padding(4, 3, 4, 3);
+            tlp_Top.Name = "tlp_Top";
+            tlp_Top.RowCount = 11;
+            tlp_Top.RowStyles.Add(new RowStyle(SizeType.Absolute, 29F));
+            tlp_Top.RowStyles.Add(new RowStyle(SizeType.Absolute, 29F));
+            tlp_Top.RowStyles.Add(new RowStyle(SizeType.Absolute, 23F));
+            tlp_Top.RowStyles.Add(new RowStyle(SizeType.Absolute, 23F));
+            tlp_Top.RowStyles.Add(new RowStyle(SizeType.Absolute, 14F));
+            tlp_Top.RowStyles.Add(new RowStyle(SizeType.Absolute, 44F));
+            tlp_Top.RowStyles.Add(new RowStyle(SizeType.Absolute, 14F));
+            tlp_Top.RowStyles.Add(new RowStyle(SizeType.Absolute, 25F));
+            tlp_Top.RowStyles.Add(new RowStyle(SizeType.Absolute, 24F));
+            tlp_Top.RowStyles.Add(new RowStyle(SizeType.Absolute, 29F));
+            tlp_Top.RowStyles.Add(new RowStyle(SizeType.Absolute, 23F));
+            tlp_Top.Size = new Size(1848, 253);
+            tlp_Top.TabIndex = 869;
             // 
             // chb_Sortera_Bort_Kasserade
             // 
@@ -279,14 +279,14 @@ namespace DigitalProductionProgram.Zumbach
             // 
             lbl_OrderNr.AutoSize = true;
             lbl_OrderNr.BackColor = Color.Transparent;
-            lbl_OrderNr.Dock = DockStyle.Fill;
+            lbl_OrderNr.Dock = DockStyle.Left;
             lbl_OrderNr.Font = new Font("Palatino Linotype", 56.75F);
             lbl_OrderNr.ForeColor = Color.Black;
             lbl_OrderNr.Location = new Point(1023, 0);
             lbl_OrderNr.Margin = new Padding(4, 0, 4, 0);
             lbl_OrderNr.Name = "lbl_OrderNr";
-            tlp_Menu.SetRowSpan(lbl_OrderNr, 5);
-            lbl_OrderNr.Size = new Size(952, 118);
+            tlp_Top.SetRowSpan(lbl_OrderNr, 5);
+            lbl_OrderNr.Size = new Size(338, 118);
             lbl_OrderNr.TabIndex = 855;
             lbl_OrderNr.Text = "OrderNr";
             lbl_OrderNr.TextAlign = ContentAlignment.MiddleRight;
@@ -303,7 +303,7 @@ namespace DigitalProductionProgram.Zumbach
             btn_Up.Location = new Point(0, 0);
             btn_Up.Margin = new Padding(0);
             btn_Up.Name = "btn_Up";
-            tlp_Menu.SetRowSpan(btn_Up, 2);
+            tlp_Top.SetRowSpan(btn_Up, 2);
             btn_Up.Size = new Size(105, 58);
             btn_Up.TabIndex = 860;
             btn_Up.UseVisualStyleBackColor = false;
@@ -319,7 +319,7 @@ namespace DigitalProductionProgram.Zumbach
             label_Measurement.Location = new Point(0, 58);
             label_Measurement.Margin = new Padding(0);
             label_Measurement.Name = "label_Measurement";
-            tlp_Menu.SetRowSpan(label_Measurement, 2);
+            tlp_Top.SetRowSpan(label_Measurement, 2);
             label_Measurement.Size = new Size(105, 46);
             label_Measurement.TabIndex = 847;
             label_Measurement.Text = "Mätning";
@@ -336,7 +336,7 @@ namespace DigitalProductionProgram.Zumbach
             btn_Up_Full.Location = new Point(105, 0);
             btn_Up_Full.Margin = new Padding(0, 0, 2, 0);
             btn_Up_Full.Name = "btn_Up_Full";
-            tlp_Menu.SetRowSpan(btn_Up_Full, 2);
+            tlp_Top.SetRowSpan(btn_Up_Full, 2);
             btn_Up_Full.Size = new Size(103, 58);
             btn_Up_Full.TabIndex = 862;
             btn_Up_Full.UseVisualStyleBackColor = false;
@@ -353,7 +353,7 @@ namespace DigitalProductionProgram.Zumbach
             btn_Down.Location = new Point(0, 104);
             btn_Down.Margin = new Padding(0);
             btn_Down.Name = "btn_Down";
-            tlp_Menu.SetRowSpan(btn_Down, 2);
+            tlp_Top.SetRowSpan(btn_Down, 2);
             btn_Down.Size = new Size(105, 58);
             btn_Down.TabIndex = 860;
             btn_Down.UseVisualStyleBackColor = false;
@@ -370,7 +370,7 @@ namespace DigitalProductionProgram.Zumbach
             btn_Down_Full.Location = new Point(105, 104);
             btn_Down_Full.Margin = new Padding(0, 0, 2, 0);
             btn_Down_Full.Name = "btn_Down_Full";
-            tlp_Menu.SetRowSpan(btn_Down_Full, 2);
+            tlp_Top.SetRowSpan(btn_Down_Full, 2);
             btn_Down_Full.Size = new Size(103, 58);
             btn_Down_Full.TabIndex = 863;
             btn_Down_Full.UseVisualStyleBackColor = false;
@@ -380,7 +380,7 @@ namespace DigitalProductionProgram.Zumbach
             // 
             panel_Position3.BackColor = Color.Transparent;
             panel_Position3.BorderStyle = BorderStyle.Fixed3D;
-            tlp_Menu.SetColumnSpan(panel_Position3, 2);
+            tlp_Top.SetColumnSpan(panel_Position3, 2);
             panel_Position3.Controls.Add(lbl_Pipe_3);
             panel_Position3.Controls.Add(label_Position3);
             panel_Position3.Controls.Add(rb_Position3);
@@ -389,7 +389,7 @@ namespace DigitalProductionProgram.Zumbach
             panel_Position3.Location = new Point(436, 1);
             panel_Position3.Margin = new Padding(2, 1, 1, 1);
             panel_Position3.Name = "panel_Position3";
-            tlp_Menu.SetRowSpan(panel_Position3, 3);
+            tlp_Top.SetRowSpan(panel_Position3, 3);
             panel_Position3.Size = new Size(109, 79);
             panel_Position3.TabIndex = 859;
             panel_Position3.Click += Position3_Click;
@@ -445,7 +445,7 @@ namespace DigitalProductionProgram.Zumbach
             // 
             panel_Position2.BackColor = Color.Transparent;
             panel_Position2.BorderStyle = BorderStyle.Fixed3D;
-            tlp_Menu.SetColumnSpan(panel_Position2, 2);
+            tlp_Top.SetColumnSpan(panel_Position2, 2);
             panel_Position2.Controls.Add(lbl_Pipe_2);
             panel_Position2.Controls.Add(label_Position2);
             panel_Position2.Controls.Add(rb_Position2);
@@ -454,7 +454,7 @@ namespace DigitalProductionProgram.Zumbach
             panel_Position2.Location = new Point(324, 1);
             panel_Position2.Margin = new Padding(2, 1, 2, 1);
             panel_Position2.Name = "panel_Position2";
-            tlp_Menu.SetRowSpan(panel_Position2, 3);
+            tlp_Top.SetRowSpan(panel_Position2, 3);
             panel_Position2.Size = new Size(108, 79);
             panel_Position2.TabIndex = 859;
             panel_Position2.Click += Position2_Click;
@@ -510,7 +510,7 @@ namespace DigitalProductionProgram.Zumbach
             // 
             panel_Position1.BackColor = Color.Transparent;
             panel_Position1.BorderStyle = BorderStyle.Fixed3D;
-            tlp_Menu.SetColumnSpan(panel_Position1, 2);
+            tlp_Top.SetColumnSpan(panel_Position1, 2);
             panel_Position1.Controls.Add(label_Position1);
             panel_Position1.Controls.Add(lbl_Pipe_1);
             panel_Position1.Controls.Add(rb_Position1);
@@ -519,7 +519,7 @@ namespace DigitalProductionProgram.Zumbach
             panel_Position1.Location = new Point(211, 1);
             panel_Position1.Margin = new Padding(1);
             panel_Position1.Name = "panel_Position1";
-            tlp_Menu.SetRowSpan(panel_Position1, 3);
+            tlp_Top.SetRowSpan(panel_Position1, 3);
             panel_Position1.Size = new Size(110, 79);
             panel_Position1.TabIndex = 858;
             panel_Position1.Click += Position1_Click;
@@ -583,7 +583,7 @@ namespace DigitalProductionProgram.Zumbach
             lbl_Measurement.Location = new Point(105, 58);
             lbl_Measurement.Margin = new Padding(0, 0, 2, 0);
             lbl_Measurement.Name = "lbl_Measurement";
-            tlp_Menu.SetRowSpan(lbl_Measurement, 2);
+            tlp_Top.SetRowSpan(lbl_Measurement, 2);
             lbl_Measurement.Size = new Size(103, 46);
             lbl_Measurement.TabIndex = 866;
             lbl_Measurement.Text = "1";
@@ -602,7 +602,7 @@ namespace DigitalProductionProgram.Zumbach
             chb_LogData.Margin = new Padding(4, 3, 4, 3);
             chb_LogData.MinimumSize = new Size(198, 0);
             chb_LogData.Name = "chb_LogData";
-            tlp_Menu.SetRowSpan(chb_LogData, 2);
+            tlp_Top.SetRowSpan(chb_LogData, 2);
             chb_LogData.Size = new Size(284, 52);
             chb_LogData.TabIndex = 848;
             chb_LogData.Text = "Starta Loggning";
@@ -613,14 +613,14 @@ namespace DigitalProductionProgram.Zumbach
             // 
             lbl_OD.AutoSize = true;
             lbl_OD.BackColor = Color.Transparent;
-            tlp_Menu.SetColumnSpan(lbl_OD, 3);
+            tlp_Top.SetColumnSpan(lbl_OD, 3);
             lbl_OD.Dock = DockStyle.Fill;
             lbl_OD.Font = new Font("Segoe UI", 22.75F, FontStyle.Bold);
             lbl_OD.ForeColor = Color.Teal;
             lbl_OD.Location = new Point(842, 0);
             lbl_OD.Margin = new Padding(4, 0, 4, 0);
             lbl_OD.Name = "lbl_OD";
-            tlp_Menu.SetRowSpan(lbl_OD, 2);
+            tlp_Top.SetRowSpan(lbl_OD, 2);
             lbl_OD.Size = new Size(173, 58);
             lbl_OD.TabIndex = 25;
             lbl_OD.Text = "0,000";
@@ -651,7 +651,7 @@ namespace DigitalProductionProgram.Zumbach
             pb_Info_UCL_LCL_Styrgränser.Location = new Point(550, 107);
             pb_Info_UCL_LCL_Styrgränser.Margin = new Padding(4, 3, 4, 3);
             pb_Info_UCL_LCL_Styrgränser.Name = "pb_Info_UCL_LCL_Styrgränser";
-            tlp_Menu.SetRowSpan(pb_Info_UCL_LCL_Styrgränser, 2);
+            tlp_Top.SetRowSpan(pb_Info_UCL_LCL_Styrgränser, 2);
             pb_Info_UCL_LCL_Styrgränser.Size = new Size(41, 39);
             pb_Info_UCL_LCL_Styrgränser.SizeMode = PictureBoxSizeMode.Zoom;
             pb_Info_UCL_LCL_Styrgränser.TabIndex = 869;
@@ -663,7 +663,7 @@ namespace DigitalProductionProgram.Zumbach
             // 
             tlp_MåttInfo.BackColor = Color.Black;
             tlp_MåttInfo.ColumnCount = 6;
-            tlp_Menu.SetColumnSpan(tlp_MåttInfo, 6);
+            tlp_Top.SetColumnSpan(tlp_MåttInfo, 6);
             tlp_MåttInfo.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 56F));
             tlp_MåttInfo.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 56F));
             tlp_MåttInfo.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 56F));
@@ -701,7 +701,7 @@ namespace DigitalProductionProgram.Zumbach
             tlp_MåttInfo.Margin = new Padding(0);
             tlp_MåttInfo.Name = "tlp_MåttInfo";
             tlp_MåttInfo.RowCount = 7;
-            tlp_Menu.SetRowSpan(tlp_MåttInfo, 7);
+            tlp_Top.SetRowSpan(tlp_MåttInfo, 7);
             tlp_MåttInfo.RowStyles.Add(new RowStyle(SizeType.Absolute, 23F));
             tlp_MåttInfo.RowStyles.Add(new RowStyle(SizeType.Absolute, 35F));
             tlp_MåttInfo.RowStyles.Add(new RowStyle(SizeType.Absolute, 21F));
@@ -1039,13 +1039,13 @@ namespace DigitalProductionProgram.Zumbach
             // 
             lbl_Maskin.AutoSize = true;
             lbl_Maskin.BackColor = Color.Transparent;
-            lbl_Maskin.Dock = DockStyle.Fill;
+            lbl_Maskin.Dock = DockStyle.Left;
             lbl_Maskin.Font = new Font("Palatino Linotype", 42.75F);
             lbl_Maskin.Location = new Point(1023, 118);
             lbl_Maskin.Margin = new Padding(4, 0, 4, 0);
             lbl_Maskin.Name = "lbl_Maskin";
-            tlp_Menu.SetRowSpan(lbl_Maskin, 4);
-            lbl_Maskin.Size = new Size(952, 107);
+            tlp_Top.SetRowSpan(lbl_Maskin, 4);
+            lbl_Maskin.Size = new Size(222, 107);
             lbl_Maskin.TabIndex = 901;
             lbl_Maskin.Text = "Maskin";
             lbl_Maskin.TextAlign = ContentAlignment.TopRight;
@@ -1184,7 +1184,7 @@ namespace DigitalProductionProgram.Zumbach
             chartZumbach.Series.Add(series1);
             chartZumbach.Series.Add(series2);
             chartZumbach.Series.Add(series3);
-            chartZumbach.Size = new Size(1641, 708);
+            chartZumbach.Size = new Size(1510, 708);
             chartZumbach.TabIndex = 854;
             chartZumbach.Text = "chart1";
             title1.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
@@ -1214,7 +1214,7 @@ namespace DigitalProductionProgram.Zumbach
             tlp_Panel_Left.RowCount = 2;
             tlp_Panel_Left.RowStyles.Add(new RowStyle(SizeType.Absolute, 46F));
             tlp_Panel_Left.RowStyles.Add(new RowStyle(SizeType.Absolute, 35F));
-            tlp_Panel_Left.Size = new Size(1981, 714);
+            tlp_Panel_Left.Size = new Size(1850, 714);
             tlp_Panel_Left.TabIndex = 868;
             // 
             // flp_Buttons
@@ -1311,7 +1311,7 @@ namespace DigitalProductionProgram.Zumbach
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.Black;
-            ClientSize = new Size(1981, 969);
+            ClientSize = new Size(1850, 969);
             Controls.Add(tlp_Panel_Left);
             Controls.Add(panel_InfoZumbachChart);
             DoubleBuffered = true;
@@ -1326,8 +1326,8 @@ namespace DigitalProductionProgram.Zumbach
             FormClosed += Zumbach_Krympslang_FormClosed;
             Load += MeasureWithZumbachLoad;
             panel_InfoZumbachChart.ResumeLayout(false);
-            tlp_Menu.ResumeLayout(false);
-            tlp_Menu.PerformLayout();
+            tlp_Top.ResumeLayout(false);
+            tlp_Top.PerformLayout();
             panel_Position3.ResumeLayout(false);
             panel_Position3.PerformLayout();
             panel_Position2.ResumeLayout(false);
@@ -1389,7 +1389,7 @@ namespace DigitalProductionProgram.Zumbach
         private Label lbl_Pipe_1;
         private Label lbl_Pipe_3;
         private Label lbl_Pipe_2;
-        private TableLayoutPanel tlp_Menu;
+        private TableLayoutPanel tlp_Top;
         private PictureBox pb_Info_UCL_LCL_Styrgränser;
         private TableLayoutPanel tlp_Panel_Left;
         private CheckBox chb_Sortera_Bort_Kasserade;

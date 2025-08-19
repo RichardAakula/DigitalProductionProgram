@@ -835,7 +835,8 @@ namespace DigitalProductionProgram.Settings
                         SELECT * FROM [Settings].General
                         WHERE general.HostName = @hostname";
 
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                    var cmd = new SqlCommand(query, con); 
+                    ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@hostname", Environment.MachineName);
                     con.Open();
                     var reader = cmd.ExecuteReader();

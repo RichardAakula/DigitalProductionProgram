@@ -105,36 +105,45 @@ namespace DigitalProductionProgram.MainWindow
                 Statistics.Visible = false;
                 Frequency_Marking.Visible = false;
 
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    const string query = @"
-                    SELECT Name, ControlText
-                    FROM Workoperation.ControlVisibiltySettings as visibility
+                Database.ExecuteSafe(con =>
+                    {
+                        const string query = @"
+                        SELECT Name, ControlText
+                        FROM Workoperation.ControlVisibiltySettings as visibility
                         JOIN Workoperation.ApplicationControls as controls
                             ON visibility.ControlID = controls.ID
-                    WHERE WorkOperationID = @workoperationid
+                        WHERE WorkOperationID = @workoperationid
                         AND ColumnIndex IS NOT NULL
-                    ORDER BY ColumnIndex";
-                    con.Open();
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    cmd.Parameters.AddWithValue("@workoperationid", Order.WorkoperationID);
-                    var reader = cmd.ExecuteReader();
-                    while (reader.Read())
-                    {
-                        var name = reader[0].ToString();
-                        var text = reader[1].ToString();
+                        ORDER BY ColumnIndex";
 
+                        using var cmd = new SqlCommand(query, con);
+                        ServerStatus.Add_Sql_Counter();
+                        cmd.Parameters.AddWithValue("@workoperationid", Order.WorkoperationID);
+
+                        using var reader = cmd.ExecuteReader();
+                        var results = new List<(string Name, string Text)>();
+
+                        while (reader.Read())
+                        {
+                            var name = reader["Name"].ToString();
+                            var text = reader["ControlText"].ToString();
+                            results.Add((name, text));
+                        }
+
+                        // Skicka tillbaka listan till Change_GUI_Buttons
+                        return results;
+                    })
+                    ?.ForEach(r =>
+                    {
                         foreach (var btn in flp_Buttons.Controls.OfType<Button>())
                         {
-                            if (btn.Name == name)
+                            if (btn.Name == r.Name)
                             {
-                                btn.Text = text;
+                                btn.Text = r.Text;
                                 btn.Visible = true;
                             }
                         }
-                    }
-                }
-
+                    });
                 Frequency_Marking.Visible = FrequencyMarking.IsLäcksökning;
                 Part.SetPartNrSpecial("Kompoundering");
                 if (Part.IsPartNrSpecial)

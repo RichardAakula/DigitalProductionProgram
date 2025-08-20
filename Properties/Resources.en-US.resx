@@ -2356,6 +2356,7 @@ Contact Admin if necessary.</value>
 Should this operation proceed without a Measurement Protocol?</value>
   </data>
   <data name="errorConnectingDatabase" xml:space="preserve">
-    <value>test</value>
+    <value>An error occurred while connecting to the database.
+Please contact IT support if the issue persists.</value>
   </data>
 </root>

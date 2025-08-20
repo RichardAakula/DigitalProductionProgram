@@ -44,13 +44,17 @@ namespace DigitalProductionProgram.OrderManagement
             {
                 if (WorkOperation == WorkOperations.Nothing)
                     return 0;
-                using var con = new SqlConnection(Database.cs_Protocol);
-                const string query = "SELECT ID FROM Workoperation.Names WHERE Name = @workoperation AND ID IS NOT NULL";
-                con.Open();
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@workoperation", WorkOperation.ToString());
-                var value = cmd.ExecuteScalar();
-                return int.Parse(value.ToString());
+
+                return Database.ExecuteSafe(con =>
+                {
+                    const string query = "SELECT ID FROM Workoperation.Names WHERE Name = @workoperation AND ID IS NOT NULL";
+                    using var cmd = new SqlCommand(query, con);
+                    ServerStatus.Add_Sql_Counter();
+                    cmd.Parameters.AddWithValue("@workoperation", WorkOperation.ToString());
+
+                    var value = cmd.ExecuteScalar();
+                    return value != null ? Convert.ToInt32(value) : 0;
+                });
             }
         }
         public static string? OrderNumber { get; set; }
@@ -60,25 +64,23 @@ namespace DigitalProductionProgram.OrderManagement
         {
             get
             {
-                using var con = new SqlConnection(Database.cs_Protocol);
-                var query = @"
+                Database.ExecuteSafe(con =>
+                {
+                    var query = @"
                     SELECT TOP(2) OrderID
                     FROM [Order].MainData
                     WHERE PartID = @partid
                     AND OrderID != @orderid
                     ORDER BY Date_Start DESC";
 
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@partid", PartID);
-                cmd.Parameters.AddWithValue("@orderid", OrderID);
-                con.Open();
-                var value = cmd.ExecuteScalar();
-                if (value != null)
-                {
-                    int.TryParse(value.ToString(), out var lastorderid);
-                    return lastorderid;
-                }
-
+                    using var cmd = new SqlCommand(query, con);
+                    ServerStatus.Add_Sql_Counter();
+                    cmd.Parameters.AddWithValue("@partid", PartID);
+                    cmd.Parameters.AddWithValue("@orderid", OrderID);
+                    var value = cmd.ExecuteScalar();
+                    return value != null && int.TryParse(value.ToString(), out var lastorderid)
+                        ? lastorderid : 0;
+                });
                 return 0;
             }
         }
@@ -86,15 +88,16 @@ namespace DigitalProductionProgram.OrderManagement
         {
             get
             {
-                using (var con = new SqlConnection(Database.cs_Protocol))
+                Database.ExecuteSafe(con =>
                 {
-                    var query = @"SELECT COUNT(*) FROM [Order].MainData";
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    con.Open();
+                    const string query = @"SELECT COUNT(*) FROM [Order].MainData";
+                    var cmd = new SqlCommand(query, con);
+                    ServerStatus.Add_Sql_Counter();
                     var total = cmd.ExecuteScalar();
                     if (total != null)
                         return int.Parse(total.ToString());
-                }
+                    return 0;
+                });
                 return 0;
             }
         }
@@ -103,17 +106,15 @@ namespace DigitalProductionProgram.OrderManagement
             get
             {
                 var list = new List<string?>();
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    var query = @"SELECT DISTINCT OrderNr FROM [Order].MainData WHERE WorkOperationID = (SELECT ID FROM Workoperation.Names WHERE Name = @workoperation AND ID IS NOT NULL) ORDER BY OrderNr";
+                using var con = new SqlConnection(Database.cs_Protocol);
+                var query = @"SELECT DISTINCT OrderNr FROM [Order].MainData WHERE WorkOperationID = (SELECT ID FROM Workoperation.Names WHERE Name = @workoperation AND ID IS NOT NULL) ORDER BY OrderNr";
 
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    SQL_Parameter.String(cmd.Parameters, "@workoperation", WorkOperation.ToString());
-                    con.Open();
-                    var reader = cmd.ExecuteReader();
-                    while (reader.Read())
-                        list.Add(reader[0].ToString());
-                }
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                SQL_Parameter.String(cmd.Parameters, "@workoperation", WorkOperation.ToString());
+                con.Open();
+                var reader = cmd.ExecuteReader();
+                while (reader.Read())
+                    list.Add(reader[0].ToString());
                 return list;
             }
         }
@@ -123,17 +124,15 @@ namespace DigitalProductionProgram.OrderManagement
             {
                 var list = new List<string>();
 
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    var query = @"SELECT DISTINCT LEFT ([Order].MainData.OrderNr, 1) FROM [Order].MainData";
+                using var con = new SqlConnection(Database.cs_Protocol);
+                var query = @"SELECT DISTINCT LEFT ([Order].MainData.OrderNr, 1) FROM [Order].MainData";
 
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    con.Open();
-                    var reader = cmd.ExecuteReader();
-                    while (reader.Read())
-                        list.Add(reader[0].ToString());
-                    return list;
-                }
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                con.Open();
+                var reader = cmd.ExecuteReader();
+                while (reader.Read())
+                    list.Add(reader[0].ToString());
+                return list;
             }
         }
         public static List<string?> List_ProdType
@@ -141,17 +140,17 @@ namespace DigitalProductionProgram.OrderManagement
             get
             {
                 var list = new List<string?>();
-                using (var con = new SqlConnection(Database.cs_Protocol))
+                Database.ExecuteSafe(con =>
                 {
-                    var query = @"SELECT DISTINCT ProdType FROM [Order].MainData WHERE WorkOperationID = (SELECT ID FROM Workoperation.Names WHERE Name = @workoperation AND ID IS NOT NULL) ORDER BY ProdType";
-
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                    const string query = @"SELECT DISTINCT ProdType FROM [Order].MainData WHERE WorkOperationID = (SELECT ID FROM Workoperation.Names WHERE Name = @workoperation AND ID IS NOT NULL) ORDER BY ProdType";
+                    var cmd = new SqlCommand(query, con);
+                    ServerStatus.Add_Sql_Counter();
                     SQL_Parameter.String(cmd.Parameters, "@workoperation", WorkOperation.ToString());
-                    con.Open();
                     var reader = cmd.ExecuteReader();
                     while (reader.Read())
                         list.Add(reader[0].ToString());
-                }
+                    return list;
+                });
                 return list;
             }
         }

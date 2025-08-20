@@ -2352,6 +2352,7 @@ Kontakta Admin vid behov.</value>
 Skall denna operation vara utan Mätprotokoll?</value>
   </data>
   <data name="errorConnectingDatabase" xml:space="preserve">
-    <value>test</value>
+    <value>Ett fel uppstod vid anslutning till databasen.
+Kontakta IT-support om felet kvarstår.</value>
   </data>
 </root>

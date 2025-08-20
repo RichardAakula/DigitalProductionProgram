@@ -1,8 +1,12 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using DigitalProductionProgram.Help;
+using DigitalProductionProgram.PrintingServices;
+using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using DigitalProductionProgram.ControlsManagement;
+using DigitalProductionProgram.Log;
 
 
 namespace DigitalProductionProgram.DatabaseManagement
@@ -15,7 +19,6 @@ namespace DigitalProductionProgram.DatabaseManagement
 
         
         private const string ServerOTH = @"THAI-SRV1-SQL01\SQLEXPRESS";
-        //private const string ServerOGO = "OPTISQL2017";
         private const string ServerOGO = "GOD-S1-SQL01";
         private const string ServerOVF = "OVF-S1-SQL";
 
@@ -23,8 +26,7 @@ namespace DigitalProductionProgram.DatabaseManagement
         private static string Password = "GOD-Stout4-Gladiator-Gazing-Retail-Pegboard";
         
 
-        private static readonly string csDPP_OGO = $"Data Source={ServerOGO};Initial Catalog=Korprotokoll;Persist Security Info=True;User ID={UserID};Password={Password};Connect Timeout=5;Encrypt=True;TrustServerCertificate=True;";
-        //private const string csProtocolGodby = "Data Source=GOD-S1-SQL01;Initial Catalog=Korprotokoll;Persist Security Info=True;User ID=korprotokoll;Password=GOD-Stout4-Gladiator-Gazing-Retail-Pegboard;Connect Timeout=5";
+        private static readonly string csDPP_OGO = $"Data Source={ServerOGO};Initial Catalog=Korprotokoll;Persist Security Info=True;User ID={UserID};Password={Password};Connect Timeout=10;Encrypt=True;TrustServerCertificate=True;";
         private static readonly string csDPP_OTH = $"Data Source={ServerOTH};Initial Catalog=Korprotokoll_Thai;Persist Security Info=True;User ID={UserID};Password={Password};Connect Timeout=5;Encrypt=True;TrustServerCertificate=True;";
         private static readonly string csDPP_OVF = $"Data Source={ServerOVF};Initial Catalog=DPP_OVF;Persist Security Info=True;User ID={UserID};Password={Password};Connect Timeout=5;Encrypt=True;TrustServerCertificate=True;";
         private static readonly string csDPP_Beta = $"Data Source={ServerOGO};Initial Catalog=GOD_DPP_DEV;Persist Security Info=True;User ID={UserID};Password={Password};Connect Timeout=5;Encrypt=True;TrustServerCertificate=True;";
@@ -102,11 +104,24 @@ namespace DigitalProductionProgram.DatabaseManagement
         {
             InitializeComponent();
             Load_Databases();
-            
-        {
         }
 
-
+        public static T ExecuteSafe<T>(Func<SqlConnection, T> action)
+        {
+            try
+            {
+                using var con = new SqlConnection(Database.cs_Protocol);
+                con.Open();
+                return action(con);
+            }
+            catch (Exception ex)
+            {
+                // Här kan du logga, visa fel, eller slå på en SQL-counter
+                InfoText.Show(LanguageManager.GetString("errorConnectingDatabase"),
+                    CustomColors.InfoText_Color.Bad, "Error!");
+                return default!;
+            }
+        }
         public static void Load_DatabaseSettings()
         {
             cs_Protocol = null;
@@ -303,7 +318,6 @@ namespace DigitalProductionProgram.DatabaseManagement
         private void SaveAndExit_Click(object sender, EventArgs e)
         {
             Save_XmlFile();
-            
             Close();
         }
 

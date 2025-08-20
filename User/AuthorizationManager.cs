@@ -298,7 +298,7 @@ namespace DigitalProductionProgram.User
                 using (var con = new SqlConnection(Database.cs_Protocol))
                 {
                     const string query = @"
-                    INSERT INTO Authorities.CustomNames (TemplateID, Name)
+                    INSERT INTO Authorities.CustomNames (TemplateID, UserName)
                     VALUES ((SELECT ID FROM Authorities.TemplateAuthorities WHERE CodeText = @codetext), @name)";
                     var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@codetext", dgv_Template.CurrentCell.Value.ToString());

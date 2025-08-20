@@ -867,6 +867,8 @@ namespace DigitalProductionProgram.Settings
 
                     Application.Exit(); // stäng programmet direkt
                 }
+
+                Activity.Stop(Database.cs_Protocol);
             }
         }
 

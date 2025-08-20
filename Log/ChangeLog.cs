@@ -22,7 +22,7 @@ namespace DigitalProductionProgram.Log
 
                 var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@activeVersion", CurrentVersion.ToString());
-                con.Open();
+                con?.Open();
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
                     news += $"{reader[0]} - {reader[1]} \n";
@@ -59,7 +59,7 @@ namespace DigitalProductionProgram.Log
                 const string query = "SELECT TOP(1) Version FROM Log.ChangeLog WHERE ReleaseDate IS NOT NULL ORDER BY ID DESC";
 
                 var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                con.Open();
+                con?.Open();
                 Version.TryParse((string)cmd.ExecuteScalar(), out var vers);
                 return vers;
             }
@@ -154,7 +154,7 @@ namespace DigitalProductionProgram.Log
                 Padding = new Padding(60, 20, 0, 0)
             };
             panel_Left.Controls.Add(labelVersion);
-            labelVersion.SendToBack();
+            labelVersion?.SendToBack();
         }
 
         private void Load_VersionInfo(Version? currentVersion)
@@ -169,7 +169,7 @@ namespace DigitalProductionProgram.Log
 
             var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@version", labelVersion.Text);
-            con.Open();
+            con?.Open();
 
             var reader = cmd.ExecuteReader();
 

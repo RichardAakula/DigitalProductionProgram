@@ -90,29 +90,26 @@ namespace DigitalProductionProgram.Protocols.Slipning_TEF
         }
         private void Load_Processkort()
         {
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query = @"
+            using var con = new SqlConnection(Database.cs_Protocol);
+            var query = @"
                     SELECT Matarhjul_Hastighet_nom, Matarhjul_Vinkel_min, Matarhjul_Vinkel_nom, Matarhjul_Vinkel_max, Helix_Vinkel_nom, Bladhöjd_min, Bladhöjd_nom, Bladhöjd_max, 
                         Arbetsblad_min, Arbetsblad_nom, Arbetsblad_max, Chimshöjd_nom, Dragprov_enhet
                     FROM Processkort_Slipning
                     WHERE PartID = @partID";
 
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@partID", Order.PartID);
-                con.Open();
-                var reader = cmd.ExecuteReader();
-                while (reader.Read())
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            cmd.Parameters.AddWithValue("@partID", Order.PartID);
+            con.Open();
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                for (var i = 0; i < Control_ProcessParametrar.Length; i++)
                 {
-                    for (var i = 0; i < Control_ProcessParametrar.Length; i++)
-                    {
-                        Control_ProcessParametrar[i].Text = reader[i].ToString();
-                        if (string.IsNullOrEmpty(Control_ProcessParametrar[i].Text))
-                            Control_ProcessParametrar[i].Text = "N/A";
-                    }
+                    Control_ProcessParametrar[i].Text = reader[i] == DBNull.Value ? "": reader[i].ToString();
+                    if (string.IsNullOrEmpty(Control_ProcessParametrar[i].Text))
+                        Control_ProcessParametrar[i].Text = "N/A";
                 }
             }
-            
         }
         private void Load_Körprotokoll()
         {
@@ -159,26 +156,24 @@ namespace DigitalProductionProgram.Protocols.Slipning_TEF
 
         private void Save_Data()
         {
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query = @"
+            using var con = new SqlConnection(Database.cs_Protocol);
+            var query = @"
                     INSERT INTO Korprotokoll_Slipning_Maskinparametrar
                     VALUES (@id, 'False', @0, @1, @2, @3, @4, @5, @6, @chimsHöjd, @datum, @tid, @employeenumber, @sign)";
 
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
 
-                cmd.Parameters.AddWithValue("@id", Order.OrderID);
-                cmd.Parameters.AddWithValue("@datum", DateTime.Now.ToString("yyyy-MM-dd"));
-                cmd.Parameters.AddWithValue("@tid", DateTime.Now.ToString("HH:mm"));
-                cmd.Parameters.AddWithValue("@employeenumber", Person.EmployeeNr);
-                cmd.Parameters.AddWithValue("@sign", Person.Sign);
-                cmd.Parameters.AddWithValue("@chimsHöjd", lbl_Chimshöjd_nom.Text);
-                for (var i = 0; i < Control_MaskinParametrar.Length; i++)
-                    cmd.Parameters.AddWithValue("@" + i, Control_MaskinParametrar[i].Text);
+            cmd.Parameters.AddWithValue("@id", Order.OrderID);
+            cmd.Parameters.AddWithValue("@datum", DateTime.Now.ToString("yyyy-MM-dd"));
+            cmd.Parameters.AddWithValue("@tid", DateTime.Now.ToString("HH:mm"));
+            cmd.Parameters.AddWithValue("@employeenumber", Person.EmployeeNr);
+            cmd.Parameters.AddWithValue("@sign", Person.Sign);
+            cmd.Parameters.AddWithValue("@chimsHöjd", lbl_Chimshöjd_nom.Text);
+            for (var i = 0; i < Control_MaskinParametrar.Length; i++)
+                cmd.Parameters.AddWithValue("@" + i, Control_MaskinParametrar[i].Text);
 
-                con.Open();
-                cmd.ExecuteScalar();
-            }
+            con.Open();
+            cmd.ExecuteScalar();
         }
         
         private void Save_Click(object sender, EventArgs e)

@@ -51,7 +51,11 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
             var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
             con.Open();
-            tb_Comments.Text = cmd.ExecuteScalar().ToString();
+            var result = cmd.ExecuteScalar();
+            tb_Comments.Text = result == DBNull.Value || result == null
+                ? string.Empty
+                : result.ToString();
+
         }
         private void CommentSaveTimer_Tick(object? sender, EventArgs e)
         {

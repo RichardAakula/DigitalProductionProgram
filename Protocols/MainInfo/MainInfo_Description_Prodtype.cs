@@ -29,14 +29,14 @@ namespace DigitalProductionProgram.Protocols.MainInfo
             cmd.Parameters.AddWithValue("@id", OrderID);
             var reader = cmd.ExecuteReader();
             {
-                while (reader.Read())
+                if (reader.Read())
                 {
-                    lbl_OrderNr.Text = reader["OrderNr"].ToString();
-                    lbl_ArtikelNr.Text = reader["PartNr"].ToString();
-                    lbl_Description.Text = reader["Description"].ToString();
-                    lbl_Customer.Text = reader["Customer"].ToString();
-                    lbl_Prodtype.Text = reader["ProdType"].ToString();
-                    lbl_Total.Text = reader["Amount"].ToString();
+                    lbl_OrderNr.Text = reader["OrderNr"] == DBNull.Value ? "" : reader["OrderNr"].ToString();
+                    lbl_ArtikelNr.Text = reader["PartNr"] == DBNull.Value ? "" : reader["PartNr"].ToString();
+                    lbl_Description.Text = reader["Description"] == DBNull.Value ? "" : reader["Description"].ToString();
+                    lbl_Customer.Text = reader["Customer"] == DBNull.Value ? "" : reader["Customer"].ToString();
+                    lbl_Prodtype.Text = reader["ProdType"] == DBNull.Value ? "" : reader["ProdType"].ToString();
+                    lbl_Total.Text = reader["Amount"] == DBNull.Value ? "" : reader["Amount"].ToString();
                 }
             }
         }

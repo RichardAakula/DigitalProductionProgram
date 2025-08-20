@@ -378,7 +378,7 @@ namespace DigitalProductionProgram.Help
                     {
                         infoText.pb_Tube.BackgroundImage = Image.FromStream(Pictures.Tubes.Neutral_1Layer);
                     }
-                    catch (Exception exception)
+                    catch (Exception)
                     {
                         // ignored
                     }
@@ -400,7 +400,7 @@ namespace DigitalProductionProgram.Help
                     {
                         infoText.pb_Tube.BackgroundImage = Image.FromStream(Pictures.Tubes.Neutral_3Layer);
                     }
-                    catch (Exception exception)
+                    catch (Exception)
                     {
                         // ignored
                     }
@@ -444,7 +444,7 @@ namespace DigitalProductionProgram.Help
                 if (IsQuestion)
                 {
                     answer = Answer.Yes;
-                    timer_Second_ctr.Stop();
+                    timer_Second_ctr?.Stop();
                     Close();
                 }
             }
@@ -453,7 +453,7 @@ namespace DigitalProductionProgram.Help
                 if (IsQuestion)
                 {
                     answer = Answer.No;
-                    timer_Second_ctr.Stop();
+                    timer_Second_ctr?.Stop();
                     Close();
                 }
             }
@@ -464,13 +464,13 @@ namespace DigitalProductionProgram.Help
         private void Yes_Click(object sender, EventArgs e)
         {
             answer = Answer.Yes;
-            timer_Second_ctr.Stop();
+            timer_Second_ctr?.Stop();
             Close();
         }
         private void No_Click(object sender, EventArgs e)
         {
             answer = Answer.No;
-            timer_Second_ctr.Stop();
+            timer_Second_ctr?.Stop();
             return_Text = string.Empty;
            
 
@@ -502,8 +502,8 @@ namespace DigitalProductionProgram.Help
             }
 
             Dispose();
-            timer_close.Dispose();
-            timer_Second_ctr.Dispose();
+            timer_close?.Dispose();
+            timer_Second_ctr?.Dispose();
         }
 
       

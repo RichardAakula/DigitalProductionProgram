@@ -103,6 +103,7 @@ namespace DigitalProductionProgram.DatabaseManagement
             InitializeComponent();
             Load_Databases();
             
+        {
         }
 
 

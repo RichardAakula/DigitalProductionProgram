@@ -319,55 +319,53 @@ namespace DigitalProductionProgram.Processcards
         }
         public static void DeleteProcesscard(int? partID)
         {
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                con.Open();
-                var IsNoArtikelID = false;
-                var query = @"
+            using var con = new SqlConnection(Database.cs_Protocol);
+            con.Open();
+            var IsNoArtikelID = false;
+            var query = @"
                     BEGIN TRANSACTION
                         DELETE FROM Processcard.MainData WHERE PartID = @partID ";
-                switch (Order.WorkOperation)
-                {
-                    //IsNoArtikelID används tillfälligt medan Processkortstabellen i databasen byggs om
-                    // Nedanstående arbetsoperationer har flyttat processkortsdatan till nya gemensamma tabellen
-                    case WorkOperations.Bump_PTFE:
-                    case WorkOperations.Extrudering_FEP:
-                    case WorkOperations.Extrudering_PTFE:
-                    case WorkOperations.Extrudering_Grov_PTFE:
-                    case WorkOperations.Extrudering_Termo:
-                    case WorkOperations.Extrudering_Tryck:
-                    case WorkOperations.Extrusion_HS:
-                    case WorkOperations.Hackning_PTFE:
-                    case WorkOperations.Kragning_PTFE:
-                    case WorkOperations.Kragning_K22_PTFE:
-                    case WorkOperations.Kragning_TEF:
-                    case WorkOperations.Krympslangsblåsning:
+            switch (Order.WorkOperation)
+            {
+                //IsNoArtikelID används tillfälligt medan Processkortstabellen i databasen byggs om
+                // Nedanstående arbetsoperationer har flyttat processkortsdatan till nya gemensamma tabellen
+                case WorkOperations.Bump_PTFE:
+                case WorkOperations.Extrudering_FEP:
+                case WorkOperations.Extrudering_PTFE:
+                case WorkOperations.Extrudering_Grov_PTFE:
+                case WorkOperations.Extrudering_Termo:
+                case WorkOperations.Extrudering_Tryck:
+                case WorkOperations.Extrusion_HS:
+                case WorkOperations.Hackning_PTFE:
+                case WorkOperations.Kragning_PTFE:
+                case WorkOperations.Kragning_K22_PTFE:
+                case WorkOperations.Kragning_TEF:
+                case WorkOperations.Krympslangsblåsning:
                     
-                    case WorkOperations.HeatShrink:
-                    case WorkOperations.Skärmning:
-                    case WorkOperations.Synergy_PTFE:
-                    case WorkOperations.Slitting_PTFE:
+                case WorkOperations.HeatShrink:
+                case WorkOperations.Skärmning:
+                case WorkOperations.Synergy_PTFE:
+                case WorkOperations.Slitting_PTFE:
                     
-                        IsNoArtikelID = true;
-                        break;
-                    case WorkOperations.Slipning:
-                        query += "DELETE FROM Processkort_Slipning";
-                        break;
-                    case WorkOperations.Svetsning:
-                        query += "DELETE FROM Processkort_Svetsning";
-                        break;
-                }
-
-                if (IsNoArtikelID == false)
-                    query += " WHERE PartID = @partID ";
-                query += "\n" +
-                         "DELETE FROM Processcard.Data WHERE PartID = @partID ";
-                query += "\n" +
-                         "COMMIT TRANSACTION";
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@partID", partID);
-                cmd.ExecuteNonQuery();
+                    IsNoArtikelID = true;
+                    break;
+                case WorkOperations.Slipning:
+                    query += "DELETE FROM Processkort_Slipning";
+                    break;
+                case WorkOperations.Svetsning:
+                    query += "DELETE FROM Processkort_Svetsning";
+                    break;
             }
+
+            if (IsNoArtikelID == false)
+                query += " WHERE PartID = @partID ";
+            query += "\n" +
+                     "DELETE FROM Processcard.Data WHERE PartID = @partID ";
+            query += "\n" +
+                     "COMMIT TRANSACTION";
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            cmd.Parameters.AddWithValue("@partID", partID);
+            cmd.ExecuteNonQuery();
         }
         
         private static void Add_Parameters(SqlCommand cmd, List<SqlParameter> parameters, int partID)
@@ -429,9 +427,10 @@ namespace DigitalProductionProgram.Processcards
                                     break;
 
                                 case 1: //TextValue
-                                    if (module.dgv_Module.Rows[row].Cells[col].Value != null)
+
+                                    if (module.dgv_Module.Rows[row].Cells[col].Value != null && !string.IsNullOrWhiteSpace(module.dgv_Module.Rows[row].Cells[col].Value.ToString()))
                                     {
-                                        var textValue = module.dgv_Module.Rows[row].Cells[col].Value.ToString();
+                                        var textValue = module.dgv_Module.Rows[row].Cells[col].Value.ToString()?.Replace("'", "''");
                                         query += $"(@partID, {pcID}, {machineIndex}, NULL, '{textValue}', {type}),";
                                     }
                                     else
@@ -525,18 +524,16 @@ namespace DigitalProductionProgram.Processcards
             }
             private static int ValueType(int? templ_ID)
             {
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    var query = @"
+                using var con = new SqlConnection(Database.cs_Protocol);
+                var query = @"
                     SELECT Type FROM Protocol.Template
                     WHERE ID = @templateid";
 
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    cmd.Parameters.AddWithValue("@templateid", templ_ID);
-                    con.Open();
-                    var value = cmd.ExecuteScalar();
-                    return int.Parse(value.ToString());
-                }
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                cmd.Parameters.AddWithValue("@templateid", templ_ID);
+                con.Open();
+                var value = cmd.ExecuteScalar();
+                return int.Parse(value.ToString());
             }
             
             public static void Save_MainData(ref bool IsOk, int PartID, List<SqlParameter> parameters = null)

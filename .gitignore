@@ -38,3 +38,6 @@ node_modules/
 *.dotCover
 
  
+/DPP_Installer/Package.appxmanifest
+/app.config
+/DigitalProductionProgram.csproj

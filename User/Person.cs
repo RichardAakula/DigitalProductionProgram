@@ -1,14 +1,15 @@
-﻿using System;
-using Microsoft.Data.SqlClient;
-using System.Net.Mail;
-using System.Reflection;
-using DigitalProductionProgram.ControlsManagement;
+﻿using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Help;
 using DigitalProductionProgram.Log;
 using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.Övrigt;
 using DigitalProductionProgram.PrintingServices;
+using Microsoft.Data.SqlClient;
+using System;
+using System.Data;
+using System.Net.Mail;
+using System.Reflection;
 
 namespace DigitalProductionProgram.User
 {
@@ -90,23 +91,61 @@ namespace DigitalProductionProgram.User
                 return list;
             }
         }
-
         public static Image ProfilePicture(string? name)
         {
             if (string.IsNullOrEmpty(name))
                 return Properties.Resources.anonym;
+
             using var con = new SqlConnection(Database.cs_Protocol);
-            const string query = "SELECT Picture FROM [User].Picture WHERE UserID = (SELECT UserID FROM [User].Person WHERE Name = @name)";
+            const string query = @"
+        SELECT Picture 
+        FROM [User].Picture 
+        WHERE UserID = (
+            SELECT UserID 
+            FROM [User].Person 
+            WHERE Name = @name
+        )";
+
             con.Open();
-            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            using var cmd = new SqlCommand(query, con);
+            ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@name", name);
+
             var value = cmd.ExecuteScalar();
-            if (value is null)
+
+            if (value == null || value == DBNull.Value)
                 return Properties.Resources.anonym;
-            var img = (byte[])value;
-            var ms = new MemoryStream(img);
-            return Image.FromStream(ms);
+
+            var imgData = (byte[])value;
+
+            using var ms = new MemoryStream(imgData);
+            try
+            {
+                return Image.FromStream(ms);
+            }
+            catch (Exception ex)
+            {
+                InfoText.Show("Kunde inte läsa in profilbilden. Bilddata kan vara korrupt.", CustomColors.InfoText_Color.Bad, "Error");
+            }
+            return Properties.Resources.anonym;
         }
+
+        //public static Image ProfilePicture(string? name)
+        //{
+        //    if (string.IsNullOrEmpty(name))
+        //        return Properties.Resources.anonym;
+        //    using var con = new SqlConnection(Database.cs_Protocol);
+        //    const string query = "SELECT Picture FROM [User].Picture WHERE UserID = (SELECT UserID FROM [User].Person WHERE Name = @name)";
+        //    con.Open();
+        //    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+        //    cmd.Parameters.AddWithValue("@name", name);
+        //    var value = cmd.ExecuteScalar();
+        //    if (value is null)
+        //        return Properties.Resources.anonym;
+        //    var img = (byte[])value;
+        //    var ms = new MemoryStream(img);
+        //    return Image.FromStream(ms);
+        //}
 
         public static int UserID { get; set; }
         public static string? Name { get; set; } = null!;
@@ -403,26 +442,59 @@ namespace DigitalProductionProgram.User
             }
         }
 
-
         public static void Save_ProfilePicture(byte[]? img, string name)
         {
             using var con = new SqlConnection(Database.cs_Protocol);
             const string query = @"
-                    IF NOT EXISTS (SELECT * FROM [User].Picture WHERE UserID = (SELECT UserID FROM [User].Person WHERE Name = @name)) 
-                        INSERT INTO [User].Picture (UserID, Picture)
-                        SELECT UserID, @picture 
-						FROM [User].Person 
-						WHERE Name = @name
-                    ELSE
-                        UPDATE [User].Picture
-                        SET Picture = @picture WHERE UserID = (SELECT UserID FROM [User].Person WHERE Name = @name)";
+        IF NOT EXISTS (
+            SELECT 1 FROM [User].Picture 
+            WHERE UserID = (SELECT UserID FROM [User].Person WHERE Name = @name)
+        )
+        BEGIN
+            INSERT INTO [User].Picture (UserID, Picture)
+            SELECT UserID, @picture 
+            FROM [User].Person 
+            WHERE Name = @name
+        END
+        ELSE
+        BEGIN
+            UPDATE [User].Picture
+            SET Picture = @picture 
+            WHERE UserID = (SELECT UserID FROM [User].Person WHERE Name = @name)
+        END";
+
+            using var cmd = new SqlCommand(query, con);
+            ServerStatus.Add_Sql_Counter();
+
+            // 🔹 Ange explicit datatyp
+            cmd.Parameters.Add("@picture", SqlDbType.VarBinary, -1).Value =
+                img ?? (object)DBNull.Value;
+
+            cmd.Parameters.Add("@name", SqlDbType.NVarChar, 100).Value = name;
+
             con.Open();
-            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-            cmd.Parameters.AddWithValue("@picture", img);
-            cmd.Parameters.AddWithValue("@name", name);
-            if (img != null)
-                cmd.ExecuteNonQuery();
+            cmd.ExecuteNonQuery();
         }
+
+        //  public static void Save_ProfilePicture(byte[]? img, string name)
+        //  {
+        //      using var con = new SqlConnection(Database.cs_Protocol);
+        //      const string query = @"
+        //              IF NOT EXISTS (SELECT * FROM [User].Picture WHERE UserID = (SELECT UserID FROM [User].Person WHERE Name = @name)) 
+        //                  INSERT INTO [User].Picture (UserID, Picture)
+        //                  SELECT UserID, @picture 
+        //FROM [User].Person 
+        //WHERE Name = @name
+        //              ELSE
+        //                  UPDATE [User].Picture
+        //                  SET Picture = @picture WHERE UserID = (SELECT UserID FROM [User].Person WHERE Name = @name)";
+        //      con.Open();
+        //      var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+        //      cmd.Parameters.AddWithValue("@picture", img);
+        //      cmd.Parameters.AddWithValue("@name", name);
+        //      if (img != null)
+        //          cmd.ExecuteNonQuery();
+        //  }
     }
     public class Grade
     {

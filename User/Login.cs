@@ -347,23 +347,63 @@ namespace DigitalProductionProgram.User
         }
         private void AddProfilePicture_Click(object sender, EventArgs e)
         {
-            var dlg = new OpenFileDialog
+            using var dlg = new OpenFileDialog
             {
-                Filter = "All Files(*.*)|*.*",
+                Filter = @"Image Files|*.jpg;*.jpeg;*.png;*.bmp;*.gif",
                 Title = LanguageManager.GetString("login_Info_6")
             };
-            if (dlg.ShowDialog() == DialogResult.OK)
+
+            if (dlg.ShowDialog() != DialogResult.OK)
+                return;
+
+            try
             {
-                var picLocation = dlg.FileName;
+                var fileInfo = new FileInfo(dlg.FileName);
 
-                var fs = new FileStream(picLocation, FileMode.Open, FileAccess.Read);
-                var br = new BinaryReader(fs);
-                ProfilePicture = br.ReadBytes((int)fs.Length);
+                // 1. Begränsa storleken (t.ex. max 5 MB)
+                if (fileInfo.Length > 10 * 1024 * 1024)
+                {
+                    InfoText.Show("Bildfilen är för stor (max 10 MB).", CustomColors.InfoText_Color.Bad, "Error!", this);
+                    return;
+                }
+
+                // 2. Läs in som Image först → säkerställer giltig bild
+                using var img = Image.FromFile(dlg.FileName);
+
+                // 3. Konvertera till byte-array i ett standardformat (t.ex. PNG)
+                using var ms = new MemoryStream();
+                img.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                ProfilePicture = ms.ToArray();
+
+                if (IsInEditMode)
+                    Person.Save_ProfilePicture(ProfilePicture, lbl_User.Text);
             }
-
-            if (IsInEditMode)
-                Person.Save_ProfilePicture(ProfilePicture, lbl_User.Text);
+            catch (Exception ex)
+            {
+                InfoText.Show($"Fel vid inläsning av bild:\n{ex.Message}", CustomColors.InfoText_Color.Bad, "Error", this);
+            }
         }
+
+
+        //private void AddProfilePicture_Click(object sender, EventArgs e)
+        //{
+        //    var dlg = new OpenFileDialog
+        //    {
+        //        Filter = "All Files(*.*)|*.*",
+        //        Title = LanguageManager.GetString("login_Info_6")
+        //    };
+        //    if (dlg.ShowDialog() == DialogResult.OK)
+        //    {
+        //        var picLocation = dlg.FileName;
+
+        //        var fs = new FileStream(picLocation, FileMode.Open, FileAccess.Read);
+        //        var br = new BinaryReader(fs);
+        //        ProfilePicture = br.ReadBytes((int)fs.Length);
+        //    }
+
+        //    if (IsInEditMode)
+        //        Person.Save_ProfilePicture(ProfilePicture, lbl_User.Text);
+        //}
 
         private void NyAnvändare_MouseDown(object sender, MouseEventArgs e)
         {

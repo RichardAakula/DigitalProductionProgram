@@ -149,30 +149,28 @@ namespace DigitalProductionProgram.Templates
 
         private void Load_Processcard_Data(int partID)
         {
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                con.Open();
-                var query = @"
+            using var con = new SqlConnection(Database.cs_Protocol);
+            con.Open();
+            var query = @"
                     SELECT PartGroupID, ProdType, ProdLine, Extra_Info, RevInfo, QA_Sign, Historiska_Data, Validerat, Framtagning_Processfönster, Validerade_Loter
                     FROM Processcard.MainData
                     WHERE PartID = @partid";
 
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@partid", partID);
-                var reader = cmd.ExecuteReader();
-                while (reader.Read())
-                {
-                    ExtraInfo = reader["Extra_Info"].ToString();
-                    QA_Sign = reader["QA_Sign"].ToString();
-                    if (int.TryParse(reader["PartGroupID"].ToString(), out var value))
-                        Order.PartGroupID = value;
-                    Order.ProdLine = reader["ProdLine"].ToString();
-                    Order.ProdType = reader["ProdType"].ToString();
-                    bool.TryParse(reader["Historiska_Data"].ToString(), out IsHistoricalData);
-                    bool.TryParse(reader["Validerat"].ToString(), out IsValidated);
-                    bool.TryParse(reader["Framtagning_Processfönster"].ToString(), out IsDevelopmentOfProcesscard);
-                    ValidatedLots = reader["Validerade_Loter"].ToString();
-                }
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            cmd.Parameters.AddWithValue("@partid", partID);
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                ExtraInfo = reader["Extra_Info"].ToString();
+                QA_Sign = reader["QA_Sign"].ToString();
+                if (int.TryParse(reader["PartGroupID"].ToString(), out var value))
+                    Order.PartGroupID = value;
+                Order.ProdLine = reader["ProdLine"].ToString();
+                Order.ProdType = reader["ProdType"].ToString();
+                bool.TryParse(reader["Historiska_Data"].ToString(), out IsHistoricalData);
+                bool.TryParse(reader["Validerat"].ToString(), out IsValidated);
+                bool.TryParse(reader["Framtagning_Processfönster"].ToString(), out IsDevelopmentOfProcesscard);
+                ValidatedLots = reader["Validerade_Loter"].ToString();
             }
         }
 

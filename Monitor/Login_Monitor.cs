@@ -34,6 +34,7 @@ namespace DigitalProductionProgram.Monitor
         {
            // try
            {
+               Log.Activity.Start();
                var sw = Stopwatch.StartNew();
                company ??= Database.MonitorCompany;
 
@@ -83,6 +84,8 @@ namespace DigitalProductionProgram.Monitor
                {
                    Monitor.Set_Monitorstatus(Monitor.Status.Bad, "Failed to authenticate with API.");
                }
+
+               Log.Activity.Stop("Login_Monitor");
            }
            // catch (Exception exc)
            {

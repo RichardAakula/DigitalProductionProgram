@@ -1,18 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.Data.SqlClient;
-using System.Drawing;
-using System.Linq;
-using System.Windows.Forms;
-using DigitalProductionProgram.DatabaseManagement;
+﻿using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Equipment;
 using DigitalProductionProgram.Help;
 using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.PrintingServices;
 using DigitalProductionProgram.User;
+using Microsoft.Data.SqlClient;
 
-namespace DigitalProductionProgram.Protocols
+namespace DigitalProductionProgram.Protocols.ExtraProtocols
 {
     public partial class FrequencyMarking : Form
     {
@@ -32,10 +27,9 @@ namespace DigitalProductionProgram.Protocols
             {
                 if (Order.PartID is null || Order.OrderID is null)
                     return false;
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    //ProtocolDescriptionID = 227 = Läcksökning
-                    var query = @"
+                using var con = new SqlConnection(Database.cs_Protocol);
+                //ProtocolDescriptionID = 227 = Läcksökning
+                var query = @"
                         SELECT TextValue
                         FROM [Order].Data
                         WHERE OrderID = @orderid AND ProtocolDescriptionID = 227
@@ -45,19 +39,17 @@ namespace DigitalProductionProgram.Protocols
                         WHERE PartID = @partid
                         AND TemplateID IN (SELECT ID FROM Protocol.Template WHERE ProtocolDescriptionID = 227)";
 
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    con.Open();
-                    cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
-                    cmd.Parameters.AddWithValue("@partid", Order.PartID);
-                    var reader = cmd.ExecuteReader();
-                    while (reader.Read())
-                    {
-                        if (reader[0].ToString() == "Ja")
-                            return true;
-                    }
-                    return false;
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                con.Open();
+                cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
+                cmd.Parameters.AddWithValue("@partid", Order.PartID);
+                var reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    if (reader[0].ToString() == "Ja")
+                        return true;
                 }
-
+                return false;
             }
         }
 
@@ -156,24 +148,22 @@ namespace DigitalProductionProgram.Protocols
 
         private void Save_Frekvensmarkering(int row)
         {
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query = @"INSERT INTO [Order].Läcksökning
+            using var con = new SqlConnection(Database.cs_Protocol);
+            var query = @"INSERT INTO [Order].Läcksökning
                     VALUES (@id, @is_Kasserad, @spole, @lotnr, @hål, @meter, @tid, @employeenumber, @sign)";
 
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@id", Order.OrderID);
-                cmd.Parameters.AddWithValue("@is_Kasserad", false);
-                cmd.Parameters.AddWithValue("@spole", dgv_Frekvensmarkering.Rows[row].Cells[0].Value.ToString());
-                cmd.Parameters.AddWithValue("@lotnr", dgv_Frekvensmarkering.Rows[row].Cells[1].Value.ToString());
-                cmd.Parameters.AddWithValue("@hål", dgv_Frekvensmarkering.Rows[row].Cells[2].Value.ToString());
-                cmd.Parameters.AddWithValue("@meter", dgv_Frekvensmarkering.Rows[row].Cells[3].Value.ToString());
-                cmd.Parameters.AddWithValue("@tid", DateTime.Now.ToString("yyyy-MM-dd HH:mm"));
-                cmd.Parameters.AddWithValue("@employeenumber", Person.EmployeeNr);
-                cmd.Parameters.AddWithValue("@sign", Person.Sign);
-                con.Open();
-                cmd.ExecuteNonQuery();
-            }
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            cmd.Parameters.AddWithValue("@id", Order.OrderID);
+            cmd.Parameters.AddWithValue("@is_Kasserad", false);
+            cmd.Parameters.AddWithValue("@spole", dgv_Frekvensmarkering.Rows[row].Cells[0].Value.ToString());
+            cmd.Parameters.AddWithValue("@lotnr", dgv_Frekvensmarkering.Rows[row].Cells[1].Value.ToString());
+            cmd.Parameters.AddWithValue("@hål", dgv_Frekvensmarkering.Rows[row].Cells[2].Value.ToString());
+            cmd.Parameters.AddWithValue("@meter", dgv_Frekvensmarkering.Rows[row].Cells[3].Value.ToString());
+            cmd.Parameters.AddWithValue("@tid", DateTime.Now.ToString("yyyy-MM-dd HH:mm"));
+            cmd.Parameters.AddWithValue("@employeenumber", Person.EmployeeNr);
+            cmd.Parameters.AddWithValue("@sign", Person.Sign);
+            con.Open();
+            cmd.ExecuteNonQuery();
         }
 
         private void Spara_Click(object sender, EventArgs e)

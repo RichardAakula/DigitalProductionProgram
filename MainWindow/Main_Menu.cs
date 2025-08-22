@@ -599,6 +599,9 @@ namespace DigitalProductionProgram.MainWindow
         //----------UVECKLING----------
         public void Menu_Utvecklare_GetOrderInfo(object sender, EventArgs e)
         {
+
+            string test = Monitor.Monitor.WorkCenter.Description;
+
             InfoText.Show(
                 $@"
 ------ORDERINFO------
@@ -609,8 +612,10 @@ PartNr = {Order.PartNumber}
 PartID = {Order.PartID}
 RevNr = {Order.RevNr}
 ProdLinje = {Order.ProdLine}
+WorkCenterDescritpion = {Monitor.Monitor.WorkCenter.Description}
 ProduktTyp = {Order.ProdType}
 ProdGrupp = {Order.ProdGroup} 
+WorkCenterProdGroup = {Monitor.Monitor.WorkCenter.Number}
 Kund = {Order.Customer}
 Benämning = {Order.Description}
 HS-Machine = {Equipment.Equipment.HS_Machine}

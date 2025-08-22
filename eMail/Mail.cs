@@ -129,6 +129,7 @@ namespace DigitalProductionProgram.eMail
                    $"ArtikelGroupID: {Order.PartGroupID}<br />" +
                    $"RevNr: {Order.RevNr}<br />" +
                    $"ProdLinje: {Order.ProdLine}<br />" +
+                   $"WorkCenterDescription: {Monitor.Monitor.WorkCenter?.Description}<br />" +
                    $"ProdGrupp: {Order.ProdGroup}<br />" +
                    $"ArbetsOperation: {Order.WorkOperation}<br /> <br />" +
                    $"ErrorMessage: {text}";
@@ -206,22 +207,23 @@ namespace DigitalProductionProgram.eMail
         }
         public static void NotifyOrderFinishedCount_3()
         {
-            Body = string.Format(LanguageManager.GetString("mail_Body_NotifyOrderFinishedCount_3"), Order.PartNumber, Order.ProdLine, Order.ProdGroup, Order.WorkOperation, Order.OrderNumber, Order.Operation);
+            
+            Body = string.Format(LanguageManager.GetString("mail_Body_NotifyOrderFinishedCount_3"), Order.PartNumber, Monitor.Monitor.WorkCenter.Description, Order.ProdGroup, Order.WorkOperation, Order.OrderNumber, Order.Operation);
             Send(string.Format(LanguageManager.GetString("mail_Subject_NotifyOrderFinishedCount"), Order.PartNumber), 2);
         }
         public static void NotifyOrderStartCount_4to5(int totalorders)
         {
-            Body = string.Format(LanguageManager.GetString("mail_Body_NotifyOrderStartCount_4to5"), Order.PartNumber, totalorders, Order.ProdLine, Order.ProdGroup, Order.WorkOperation);
+            Body = string.Format(LanguageManager.GetString("mail_Body_NotifyOrderStartCount_4to5"), Order.PartNumber, totalorders, Monitor.Monitor.WorkCenter.Description, Order.ProdGroup, Order.WorkOperation);
             Send(string.Format(LanguageManager.GetString("mail_Subject_NotifyOrderStartCount"), Order.PartNumber, totalorders), 3);
         }
         public static void NotifyOrderStartCount_6(int totalorders)
         {
-            Body = string.Format(LanguageManager.GetString("mail_Body_NotifyOrderStartCount_6"), Order.PartNumber, totalorders, Order.ProdLine, Order.ProdGroup, Order.WorkOperation);
+            Body = string.Format(LanguageManager.GetString("mail_Body_NotifyOrderStartCount_6"), Order.PartNumber, totalorders, Monitor.Monitor.WorkCenter?.Description, Order.ProdGroup, Order.WorkOperation);
             Send(string.Format(LanguageManager.GetString("mail_Subject_NotifyOrderStartCount"), Order.PartNumber, totalorders), 3);
         }
         public static void NotifyCustomerServiceOrderCount_6()
         {
-            Body = string.Format(LanguageManager.GetString("mail_Body_NotifyOrderStartCount_6"), Order.PartNumber, 6, Order.ProdLine, Order.ProdGroup, Order.WorkOperation);
+            Body = string.Format(LanguageManager.GetString("mail_Body_NotifyOrderStartCount_6"), Order.PartNumber, 6, Monitor.Monitor.WorkCenter?.Description, Order.ProdGroup, Order.WorkOperation);
             Send(string.Format(LanguageManager.GetString("mail_Subject_NotifyOrderStartCount"), Order.PartNumber, 6), 4);
         }
 
@@ -230,7 +232,7 @@ namespace DigitalProductionProgram.eMail
             if (Browse_Protocols.Browse_Protocols.Is_BrowsingProtocols)
                 return;
             InfoText.Show(string.Format(LanguageManager.GetString("mail_ApproveProcesscard_1"), Order.RevNr), CustomColors.InfoText_Color.Warning, "Warning!");
-            Mail.Body = string.Format(LanguageManager.GetString("mail_ApproveProcesscard_2"), Order.PartNumber, latestRevNr, Order.ProdLine, Order.ProdGroup, Order.WorkOperation, Order.OrderNumber, Order.Operation, startedRevNr);
+            Mail.Body = string.Format(LanguageManager.GetString("mail_ApproveProcesscard_2"), Order.PartNumber, latestRevNr, Monitor.Monitor.WorkCenter?.Description, Order.ProdGroup, Order.WorkOperation, Order.OrderNumber, Order.Operation, startedRevNr);
             Mail.Send(LanguageManager.GetString("mail_ApproveProcesscard"), 8);
         }
 

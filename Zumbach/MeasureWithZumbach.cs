@@ -103,7 +103,7 @@ namespace DigitalProductionProgram.Zumbach
 
 
 
-        public static void Load_ZumbachData()
+        public void Load_ZumbachData()
         {
             ZumbachData = new DataTable();
             var query = @"
@@ -122,7 +122,7 @@ namespace DigitalProductionProgram.Zumbach
             var dataAdapter = new SqlDataAdapter(cmd);
             dataAdapter.Fill(ZumbachData);
         }
-        public static DataTable? ZumbachData { get; set; }
+        public DataTable? ZumbachData { get; set; }
         
 
 
@@ -216,6 +216,7 @@ namespace DigitalProductionProgram.Zumbach
 
         public MeasureWithZumbach(Screen pos)
         {
+            _ = Log.Activity.Stop("Startar Zumbachfönster.");
             InitializeComponent();
             serialPort = new SerialPort();
             pbar = new CustomProgressBar { Location = pos.Bounds.Location };
@@ -238,8 +239,9 @@ namespace DigitalProductionProgram.Zumbach
 
             InitializeGUI_Befattning();
 
-
+            Log.Activity.Start();
             Load_Data();
+            _ = Log.Activity.Stop("Laddat Zumbachdata");
             Measurement = Zumbach.DataTable_Measurements.Rows.Count > 0 ? Zumbach.DataTable_Measurements.Rows.Count : 1;
             pbar.Close();
         }
@@ -278,8 +280,9 @@ namespace DigitalProductionProgram.Zumbach
         public void Load_Data()
         {
             Load_ZumbachData();
-           
-            Zumbach.Load_DataTable_Measurements(pbar);
+
+            if (ZumbachData != null) 
+                Zumbach.Load_DataTable_Measurements(pbar, ZumbachData);
         }
 
 

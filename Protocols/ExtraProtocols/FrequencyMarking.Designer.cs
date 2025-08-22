@@ -1,8 +1,7 @@
 ﻿using System.ComponentModel;
-using System.Windows.Forms;
 using DigitalProductionProgram.Protocols.MainInfo;
 
-namespace DigitalProductionProgram.Protocols
+namespace DigitalProductionProgram.Protocols.ExtraProtocols
 {
     partial class FrequencyMarking
     {

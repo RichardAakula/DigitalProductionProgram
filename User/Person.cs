@@ -148,11 +148,11 @@ namespace DigitalProductionProgram.User
         //}
 
         public static int UserID { get; set; }
-        public static string? Name { get; set; } = null!;
-        public static string? Sign { get; set; } = null!;
+        public static string? Name { get; set; }
+        public static string? Sign { get; set; }
         public static string? Password { get; set; } = null!;
-        public static string? Mail { get; set; } = null!;
-        public static string? EmployeeNr { get; set; } = null!;
+        public static string? Mail { get; set; }
+        public static string? EmployeeNr { get; set; }
         public static bool Online { get; set; }
         public static bool VisaBild { get; set; }
 

@@ -16,7 +16,7 @@ using System.Text.RegularExpressions;
 using DigitalProductionProgram.ControlsManagement;
 using static DigitalProductionProgram.PrintingServices.PrintVariables;
 using static DigitalProductionProgram.PrintingServices.Workoperation_Printouts.Print_Protocol.PrintOut;
-using FrequencyMarking = DigitalProductionProgram.Protocols.FrequencyMarking;
+using FrequencyMarking = DigitalProductionProgram.Protocols.ExtraProtocols.FrequencyMarking;
 using PreFab = DigitalProductionProgram.Protocols.ExtraProtocols.PreFab;
 
 namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts

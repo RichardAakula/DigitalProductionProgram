@@ -10,7 +10,7 @@ namespace DigitalProductionProgram.Zumbach
 {
     internal class Zumbach
     {
-       public static void Load_DataTable_Measurements(ControlsManagement.CustomProgressBar pbar)
+       public static void Load_DataTable_Measurements(CustomProgressBar pbar, DataTable zumbachData)
         {
             int ctr = 0;
             DataTable_Measurements = new DataTable();
@@ -39,7 +39,7 @@ namespace DigitalProductionProgram.Zumbach
             {
                 int.TryParse(DataTable_Measurements.Rows[i][0].ToString(), out var bagId);
 
-                var count = MeasureWithZumbach.ZumbachData.AsEnumerable()
+                var count = zumbachData.AsEnumerable()
                     .Count(x => (int)x["OrderID"] == Order.OrderID && int.Parse(x["Bag"].ToString()) == bagId);
 
                 DataTable_Measurements.Rows[i][1] = count;

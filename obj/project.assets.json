@@ -8267,11 +8267,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\RICHARDA\\Documents\\Visual Studio 2022\\Projects\\DigitalProductionProggram 4.3.11.0\\DigitalProductionProgram.csproj",
+      "projectUniqueName": "C:\\Users\\RICHARDA\\Documents\\Visual Studio 2022\\Projects\\DigitalProductionProgram 4.3.12.6\\DigitalProductionProgram.csproj",
       "projectName": "DigitalProductionProgram",
-      "projectPath": "C:\\Users\\RICHARDA\\Documents\\Visual Studio 2022\\Projects\\DigitalProductionProggram 4.3.11.0\\DigitalProductionProgram.csproj",
+      "projectPath": "C:\\Users\\RICHARDA\\Documents\\Visual Studio 2022\\Projects\\DigitalProductionProgram 4.3.12.6\\DigitalProductionProgram.csproj",
       "packagesPath": "C:\\Users\\RICHARDA\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\RICHARDA\\Documents\\Visual Studio 2022\\Projects\\DigitalProductionProggram 4.3.11.0\\obj\\",
+      "outputPath": "C:\\Users\\RICHARDA\\Documents\\Visual Studio 2022\\Projects\\DigitalProductionProgram 4.3.12.6\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

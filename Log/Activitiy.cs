@@ -32,14 +32,21 @@ namespace DigitalProductionProgram.Log
             double LoadingTime = tid == 0 ? laddTid.TotalMilliseconds / 1000 : tid;
             if (LoadingTime > 100)
                 LoadingTime = 0;
+            var proc = Process.GetCurrentProcess();
+            long Memory = proc.WorkingSet64 / (1024 * 1024);
+            using var cpuCounter = new PerformanceCounter("Process", "% Processor Time", Process.GetCurrentProcess().ProcessName, true);
+            _ = cpuCounter.NextValue();
+            Thread.Sleep(100); // Vänta en liten stund för att få ett korrekt värde
+            float cpu = cpuCounter.NextValue() / Environment.ProcessorCount; // justera för antal kärnor
+           
             try
             {
                 await using var con = new SqlConnection(Database.cs_Protocol);
                 await using var cmd = new SqlCommand(@"
             INSERT INTO Log.ActivityLog 
-            (HostID, UserID, OrderID, Program, Version, Date, LoadingTime, Info, Resolution, WindowsVersion)
+            (HostID, UserID, OrderID, Program, Version, Date, LoadingTime, Info, Memory, CPU, Resolution, WindowsVersion)
             VALUES 
-            ((SELECT HostID FROM [Settings].General WHERE HostName = @hostname), @userid, @orderid, @methodname, @version, @date, @loadingtime, @info, @resolution, @windowsversion)", con);
+            ((SELECT HostID FROM [Settings].General WHERE HostName = @hostname), @userid, @orderid, @methodname, @version, @date, @loadingtime, @info, @memory, @cpu, @resolution, @windowsversion)", con);
                 await con.OpenAsync();
                 
                 cmd.Parameters.AddWithValue("@hostname", HostName);
@@ -53,6 +60,8 @@ namespace DigitalProductionProgram.Log
                 cmd.Parameters.AddWithValue("@date", DateTime.Now);
                 cmd.Parameters.AddWithValue("@loadingtime", (decimal)Math.Min(LoadingTime, 99999.999));
                 cmd.Parameters.AddWithValue("@info", info);
+                cmd.Parameters.AddWithValue("@memory", Memory);
+                cmd.Parameters.AddWithValue("@cpu", cpu);
                 cmd.Parameters.AddWithValue("@resolution", $"{Program.ScreenWidth} x {Program.ScreenHeight}");
                 cmd.Parameters.AddWithValue("@windowsversion", Environment.Version.ToString());
 

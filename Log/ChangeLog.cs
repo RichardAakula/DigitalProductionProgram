@@ -88,7 +88,7 @@ namespace DigitalProductionProgram.Log
                     Invalidate();
                 }
             }
-            public override string Text
+            public override string? Text
             {
                 get => base.Text;
                 set
@@ -190,12 +190,12 @@ namespace DigitalProductionProgram.Log
             if (versions.Any() && currentVersion is null)
             {
                 selectedVersion = versions.Last().VersionNr;
-                labelVersion.Text = selectedVersion.ToString(); // Assign string to label
+                labelVersion.Text = selectedVersion?.ToString(); // Assign string to label
             }
             else
             {
                 selectedVersion = currentVersion; // Assign Version to Version
-                labelVersion.Text = selectedVersion.ToString(); // Then assign string to label
+                labelVersion.Text = selectedVersion?.ToString(); // Then assign string to label
             }
         }
         private void Show_VersionDetails()
@@ -224,7 +224,7 @@ namespace DigitalProductionProgram.Log
             flp_Descriptions.WrapContents = false;
 
             // Add versions to the left panel
-            for (int i = start; i <= end; i++)
+            for (var i = start; i <= end; i++)
             {
                 var version = distinctVersions[i];
                 Add_Versions(version.ToString()); 
@@ -244,8 +244,7 @@ namespace DigitalProductionProgram.Log
 
             foreach (var group in grouped)
             {
-
-                Add_DescritpionTag(group.Key);
+                if (group.Key != null) Add_DescritpionTag(group.Key);
                 foreach (var item in group)
                 {
                     if (string.IsNullOrEmpty(item.DescriptionHeader) == false)
@@ -254,7 +253,6 @@ namespace DigitalProductionProgram.Log
                     if (string.IsNullOrEmpty(item.HowTo) == false)
                         Add_HowTo(item.HowTo);
                 }
-                    
             }
             //HighestSelectedVersion is used when saving Users LastReadChangeLog
             if (HighestSelectedVersion is null || selectedVersion > HighestSelectedVersion)
@@ -340,7 +338,7 @@ namespace DigitalProductionProgram.Log
 
             flp_Descriptions.Controls.Add(lbl);
         }
-        private void Add_Description(string text)
+        private void Add_Description(string? text)
         {
 
             var lbl_Description = new Label

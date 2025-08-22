@@ -116,6 +116,7 @@ namespace DigitalProductionProgram.MainWindow
         // Denna rad måste finnas för utskrifterna
         private readonly Manage_PrintOuts? print;
         private readonly BlackBackground black;
+
         public Main_Form(BlackBackground back)
         {
             this.Visible = false;
@@ -177,7 +178,6 @@ namespace DigitalProductionProgram.MainWindow
             Mail.AutoTestJira();
             CheckForMaintenanceWork();
         }
-
         private async void MainForm_Load(object sender, EventArgs e)
         {
             if (IsAutoOpenOrder == false)
@@ -207,6 +207,7 @@ namespace DigitalProductionProgram.MainWindow
                 ChangeToBetaMode();
 
         }
+
         protected override void SetVisibleCore(bool value)
         {
             if (!this.IsHandleCreated)

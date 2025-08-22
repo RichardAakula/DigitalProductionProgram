@@ -87,6 +87,7 @@ namespace DigitalProductionProgram.Övrigt
         {
             if (Person.Role == "Utveckling")
                 return;
+            
             if (cell != null)
                 if (cell.ReadOnly)
                     return;
@@ -114,6 +115,8 @@ namespace DigitalProductionProgram.Övrigt
                         IsOnlyWarning = true;
                     IsOk = false;
                 }
+                if (string.IsNullOrEmpty(type) || ControlValidator.IsStringNA(type))
+                    IsOk = true;
             }
             ChangeColor_dgvCell(codetext, protocolDescriptionID, cell, IsErrorAndValidated, IsErrorAndHistoricalData, IsOnlyWarning, IsOk, startUp);
 
@@ -469,6 +472,8 @@ namespace DigitalProductionProgram.Övrigt
             {
                 cell.Style.ForeColor = Color.Red;
                 cell.Style.BackColor = Color.White;
+                if (IsOk)//Om det är tomt i Processkortet så är det ok att avbryta här
+                    return;
                 IsOk = false;
             }
             if (IsOnlyWarning)

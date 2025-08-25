@@ -96,39 +96,41 @@ namespace DigitalProductionProgram.User
             if (string.IsNullOrEmpty(name))
                 return Properties.Resources.anonym;
 
-            using var con = new SqlConnection(Database.cs_Protocol);
-            const string query = @"
-        SELECT Picture 
-        FROM [User].Picture 
-        WHERE UserID = (
-            SELECT UserID 
-            FROM [User].Person 
-            WHERE Name = @name
-        )";
-
-            con.Open();
-            using var cmd = new SqlCommand(query, con);
-            ServerStatus.Add_Sql_Counter();
-            cmd.Parameters.AddWithValue("@name", name);
-
-            var value = cmd.ExecuteScalar();
-
-            if (value == null || value == DBNull.Value)
-                return Properties.Resources.anonym;
-
-            var imgData = (byte[])value;
-
-            using var ms = new MemoryStream(imgData);
-            try
+            return Database.ExecuteSafe(con =>
             {
-                return Image.FromStream(ms);
-            }
-            catch (Exception ex)
-            {
-                InfoText.Show("Kunde inte läsa in profilbilden. Bilddata kan vara korrupt.", CustomColors.InfoText_Color.Bad, "Error");
-            }
-            return Properties.Resources.anonym;
+                const string query = @"
+                    SELECT Picture 
+                    FROM [User].Picture 
+                    WHERE UserID = (
+                        SELECT UserID 
+                        FROM [User].Person 
+                        WHERE Name = @name)";
+
+                using var cmd = new SqlCommand(query, con);
+                ServerStatus.Add_Sql_Counter();
+                cmd.Parameters.AddWithValue("@name", name);
+
+                var value = cmd.ExecuteScalar();
+
+                if (value == null || value == DBNull.Value)
+                    return Properties.Resources.anonym;
+
+                var imgData = (byte[])value;
+
+                try
+                {
+                    using var ms = new MemoryStream(imgData);
+                    return Image.FromStream(ms);
+                }
+                catch
+                {
+                    InfoText.Show(LanguageManager.GetString("error_ProfilePicture"),
+                        CustomColors.InfoText_Color.Bad, "Error");
+                    return Properties.Resources.anonym;
+                }
+            }) ?? Properties.Resources.anonym; // Om ExecuteSafe returnerar null
         }
+
 
         //public static Image ProfilePicture(string? name)
         //{

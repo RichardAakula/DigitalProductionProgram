@@ -2355,4 +2355,10 @@ Skall denna operation vara utan Mätprotokoll?</value>
     <value>Ett fel uppstod vid anslutning till databasen.
 Kontakta IT-support om felet kvarstår.</value>
   </data>
+  <data name="error_ProfilePicture" xml:space="preserve">
+    <value>Kunde inte ladda profilbilden. Bildfilen är skadad.</value>
+  </data>
+  <data name="error_OrderNotOpen" xml:space="preserve">
+    <value>Du måste öppna eller starta en order före du öppnar Körprotokollet, kontrollera att OrderNr är ifyllt samt att Operation är valt.</value>
+  </data>
 </root>

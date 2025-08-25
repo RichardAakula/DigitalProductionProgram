@@ -92,31 +92,29 @@ namespace DigitalProductionProgram.Protocols.LineClearance
         public void Load_Data(int? OrderID)
         {
             Translate_Form();
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                const string query = @"
+            using var con = new SqlConnection(Database.cs_Protocol);
+            const string query = @"
                     SELECT 
                         LC_Date, 
                         LC_Name
                     FROM [Order].MainData
                     WHERE OrderID = @orderid";
 
-                con.Open();
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@orderid", OrderID);
-                var reader = cmd.ExecuteReader();
-                while (reader.Read())
+            con.Open();
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            cmd.Parameters.AddWithValue("@orderid", OrderID);
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                if (DateTime.TryParse(reader["LC_Date"].ToString(), out var date))
                 {
-                    if (DateTime.TryParse(reader["LC_Date"].ToString(), out var date))
-                    {
-                        var dateTimeFormat = CultureInfo.CurrentCulture.DateTimeFormat;
-                        var formattedDate = date.ToString($"{dateTimeFormat.ShortDatePattern} {dateTimeFormat.ShortTimePattern}", CultureInfo.CurrentCulture);
-                        LC_Date.Text = formattedDate;
-                    }
-                        
-                    if (!string.IsNullOrEmpty(reader["LC_Name"].ToString()))
-                        lbl_LC_Name.Text = reader["LC_Name"].ToString();
+                    var dateTimeFormat = CultureInfo.CurrentCulture.DateTimeFormat;
+                    var formattedDate = date.ToString($"{dateTimeFormat.ShortDatePattern} {dateTimeFormat.ShortTimePattern}", CultureInfo.CurrentCulture);
+                    LC_Date.Text = formattedDate;
                 }
+                        
+                if (!string.IsNullOrEmpty(reader["LC_Name"].ToString()))
+                    lbl_LC_Name.Text = reader["LC_Name"].ToString();
             }
         }
 

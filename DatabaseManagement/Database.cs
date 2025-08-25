@@ -76,8 +76,8 @@ namespace DigitalProductionProgram.DatabaseManagement
          
         }
 
-        private string building_csProtocol;
-        private string building_csToolRegister;
+        private string? building_csProtocol;
+        private string? building_csToolRegister;
 
         public static string InstallationPath
         {

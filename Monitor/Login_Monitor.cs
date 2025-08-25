@@ -32,7 +32,7 @@ namespace DigitalProductionProgram.Monitor
 
         public static void Login_API(string? company = null)
         {
-           // try
+           try
            {
                Log.Activity.Start();
                var sw = Stopwatch.StartNew();
@@ -87,9 +87,10 @@ namespace DigitalProductionProgram.Monitor
 
                Log.Activity.Stop("Login_Monitor");
            }
-           // catch (Exception exc)
+           catch (Exception exc)
            {
-               //     Monitor.Set_Monitorstatus(Monitor.Status.Bad, exc.Message);
+                     Monitor.Set_Monitorstatus(Monitor.Status.Bad, exc.Message);
+                InfoText.Show(exc.Message, CustomColors.InfoText_Color.Bad, "Problem with Monitor.");
            }
         }
 

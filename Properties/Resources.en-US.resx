@@ -2359,4 +2359,10 @@ Should this operation proceed without a Measurement Protocol?</value>
     <value>An error occurred while connecting to the database.
 Please contact IT support if the issue persists.</value>
   </data>
+  <data name="error_ProfilePicture" xml:space="preserve">
+    <value>Unable to load the profile picture. The file might be damaged.</value>
+  </data>
+  <data name="error_OrderNotOpen" xml:space="preserve">
+    <value>You must open or start an order before opening the Protocol. Please make sure that the Order Number is entered and that an Operation is selected.</value>
+  </data>
 </root>

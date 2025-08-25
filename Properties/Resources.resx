@@ -1916,4 +1916,10 @@
   <data name="errorConnectingDatabase" xml:space="preserve">
     <value></value>
   </data>
+  <data name="error_ProfilePicture" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="error_OrderNotOpen" xml:space="preserve">
+    <value></value>
+  </data>
 </root>

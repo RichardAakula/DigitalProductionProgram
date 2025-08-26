@@ -128,6 +128,14 @@ namespace DigitalProductionProgram.Monitor
 
             return list;
         }
+        public static List<string> List_PartNumber_FilterType()
+        {
+            var list = new List<string>();
+            var parts = Utilities.GetFromMonitor<Inventory.Parts>($"filter=startswith(PartNumber, 'Filter')");
+            foreach (var part in parts)
+                list.Add($"{part.PartNumber}");
+            return list;
+        }
         public static List<string> List_Serialnumber_Extrusion_Filter(string? partnr)
         {
             if (string.IsNullOrEmpty(partnr))

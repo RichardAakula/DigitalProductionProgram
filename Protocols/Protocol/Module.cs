@@ -875,7 +875,10 @@ namespace DigitalProductionProgram.Protocols.Protocol
                             return;
 
                         case 314: //FILTERHUSTYP
-                            items = Monitor.Monitor.List_Serialnumber_Extrusion_Filter(NOM_Value(dgv_Row));
+                            if (isProcesscardUnderManagement)
+                                items = Monitor.Monitor.List_PartNumber_FilterType();
+                            else
+                                items = Monitor.Monitor.List_Serialnumber_Extrusion_Filter(NOM_Value(dgv_Row));
                             break;
                         case 315: //FILTER ARTIKELNR
                             items = Monitor.Monitor.List_CandleFilter_PartNr("Candle");

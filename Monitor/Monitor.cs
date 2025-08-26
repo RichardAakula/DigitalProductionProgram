@@ -140,7 +140,10 @@ namespace DigitalProductionProgram.Monitor
         {
             if (string.IsNullOrEmpty(partnr))
                 return new List<string> { "N/A" };
-            var partId = Utilities.GetOneFromMonitor<Inventory.Parts>( $"filter=PartNumber Eq'{partnr}'").Id;
+            var parts = Utilities.GetOneFromMonitor<Inventory.Parts>($"filter=PartNumber Eq'{partnr}'");
+            if (parts is null)
+                return new List<string> { "N/A" };
+            var partId = parts.Id;
             var partLocations = Utilities.GetFromMonitor<Inventory.ProductRecords>($"filter=PartId Eq'{partId}' AND LifeCycleState Eq 0");
             return (from part in partLocations where part.SerialNumber != null select part.SerialNumber).ToList();
         }

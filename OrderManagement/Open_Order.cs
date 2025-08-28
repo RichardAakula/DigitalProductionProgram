@@ -116,7 +116,7 @@ namespace DigitalProductionProgram.OrderManagement
                     list.Add(reader[0].ToString());
             }
 
-            var item = new Choose_Item(list, new Control[] { tb_CodeText }, false, false, true);
+            using var item = new Choose_Item(list, new Control[] { tb_CodeText }, false, false, true);
             item.ShowDialog();
         }
     }

@@ -17,28 +17,26 @@ namespace DigitalProductionProgram.Protocols
         {
             if (string.IsNullOrEmpty(Equipment.Equipment.HS_Machine))
                 return;
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query =
-                    "SELECT * FROM Settings.HS_Color WHERE MachineName = @machineName";
-                con.Open();
+            using var con = new SqlConnection(Database.cs_Protocol);
+            var query =
+                "SELECT * FROM Settings.HS_Color WHERE MachineName = @machineName";
+            con.Open();
 
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@machineName", Equipment.Equipment.HS_Machine);
-                var reader = cmd.ExecuteReader();
-                while (reader.Read())
-                {
-                    int.TryParse(reader["Red"].ToString(), out var red);
-                    int.TryParse(reader["Green"].ToString(), out var green);
-                    int.TryParse(reader["Blue"].ToString(), out var blue);
-                    bool.TryParse(reader["InvertForeColor"].ToString(), out var isForeColorInverted);
-                    Theme_ForeColor = isForeColorInverted ? Color.White : Color.Black;
-                    Theme_BackColor = Color.FromArgb(red, green, blue);
-                    return;
-                }
-                var colorForm = new MachineColor();
-                colorForm.ShowDialog();
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            cmd.Parameters.AddWithValue("@machineName", Equipment.Equipment.HS_Machine);
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                int.TryParse(reader["Red"].ToString(), out var red);
+                int.TryParse(reader["Green"].ToString(), out var green);
+                int.TryParse(reader["Blue"].ToString(), out var blue);
+                bool.TryParse(reader["InvertForeColor"].ToString(), out var isForeColorInverted);
+                Theme_ForeColor = isForeColorInverted ? Color.White : Color.Black;
+                Theme_BackColor = Color.FromArgb(red, green, blue);
+                return;
             }
+            using var colorForm = new MachineColor();
+            colorForm.ShowDialog();
         }
 
         public MachineColor()
@@ -84,6 +82,7 @@ namespace DigitalProductionProgram.Protocols
         private void NewColor_Click(object sender, EventArgs e)
         {
             colorDialog.ShowDialog();
+            colorDialog.Dispose();
             label_HS_Machine.BackColor = Theme_BackColor = colorDialog.Color;
             Theme_ForeColor = label_HS_Machine.ForeColor;
         }

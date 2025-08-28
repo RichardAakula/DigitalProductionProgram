@@ -21,16 +21,14 @@ namespace DigitalProductionProgram.Protocols.LineClearance
         {
             get
             {
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    var query = $@"SELECT LC_Name FROM [Order].MainData {Queries.WHERE_OrderID}";
+                using var con = new SqlConnection(Database.cs_Protocol);
+                var query = $@"SELECT LC_Name FROM [Order].MainData {Queries.WHERE_OrderID}";
 
-                    con.Open();
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    cmd.Parameters.AddWithValue("@id", Order.OrderID);
-                    var value = cmd.ExecuteScalar();
-                    return value != DBNull.Value;
-                }
+                con.Open();
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                cmd.Parameters.AddWithValue("@id", Order.OrderID);
+                var value = cmd.ExecuteScalar();
+                return value != DBNull.Value;
             }
         }
         public static bool IsLineClearanceApproved
@@ -71,8 +69,8 @@ namespace DigitalProductionProgram.Protocols.LineClearance
         {
             if ((Templates_LineClearance.MainTemplate.LineClearance_MainTemplateID ?? 0) != 0)
             {
-                var lc = new LineClearance_Extra();
-                var black = new BlackBackground("", 75);
+                using var lc = new LineClearance_Extra();
+                using var black = new BlackBackground("", 75);
                 black.Show();
                 lc.ShowDialog();
                 black.Close();

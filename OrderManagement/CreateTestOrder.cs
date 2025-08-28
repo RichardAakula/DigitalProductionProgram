@@ -106,7 +106,7 @@ namespace DigitalProductionProgram.OrderManagement
                 }
             }
 
-            var choose_Item = new Choose_Item(list, new Control[] {tb_ArtikelNr}, false);
+            using var choose_Item = new Choose_Item(list, new Control[] {tb_ArtikelNr}, false);
             choose_Item.ShowDialog();
         }
         private void ArtikelNr_Leave(object sender, EventArgs e)
@@ -181,7 +181,7 @@ namespace DigitalProductionProgram.OrderManagement
 
             if (Processcard.IsMultipleProcesscard(Order.WorkOperation))
             {
-                var chooseProcesscard_StartTestOrder = new ProcesscardTemplateSelector(false, false, false, false);
+                using var chooseProcesscard_StartTestOrder = new ProcesscardTemplateSelector(false, false, false, false);
                 chooseProcesscard_StartTestOrder.ShowDialog();
 
             }

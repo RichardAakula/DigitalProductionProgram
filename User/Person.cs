@@ -120,7 +120,8 @@ namespace DigitalProductionProgram.User
                 try
                 {
                     using var ms = new MemoryStream(imgData);
-                    return Image.FromStream(ms);
+                    using var tmp = Image.FromStream(ms);
+                    return (Image)tmp.Clone();
                 }
                 catch
                 {
@@ -160,8 +161,8 @@ namespace DigitalProductionProgram.User
 
         public static bool IsPasswordOk(string? header)
         {
-            var black = new BlackBackground(string.Empty, 60);
-            var password = new PasswordManager(header);
+            using var black = new BlackBackground(string.Empty, 60);
+            using var password = new PasswordManager(header);
             black.Show();
             password.ShowDialog();
             black.Close();

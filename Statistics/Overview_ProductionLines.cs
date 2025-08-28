@@ -378,8 +378,8 @@ namespace DigitalProductionProgram.Statistics
             var ctrl = (Control)sender;
             var nr = int.Parse(ctrl.Name);
             var prodlinje = productionLines[nr].ProdLine;
-            var black = new BlackBackground("", 80);
-            var stat_Prod = new Statistics_ProdLine(prodlinje);
+            using var black = new BlackBackground("", 80);
+            using var stat_Prod = new Statistics_ProdLine(prodlinje);
             black.Show();
             stat_Prod.ShowDialog();
             black.Close();

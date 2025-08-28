@@ -448,7 +448,7 @@ namespace DigitalProductionProgram.Processcards
             tp_Protocol.Location = new Point(4, 24);
             tp_Protocol.Name = "tp_Protocol";
             tp_Protocol.Padding = new Padding(3);
-            tp_Protocol.Size = new Size(192, 72);
+            tp_Protocol.Size = new Size(736, 1002);
             tp_Protocol.TabIndex = 20;
             tp_Protocol.Text = "Protocol";
             tp_Protocol.UseVisualStyleBackColor = true;
@@ -460,7 +460,7 @@ namespace DigitalProductionProgram.Processcards
             flp_Machines.Dock = DockStyle.Fill;
             flp_Machines.Location = new Point(3, 3);
             flp_Machines.Name = "flp_Machines";
-            flp_Machines.Size = new Size(186, 66);
+            flp_Machines.Size = new Size(730, 996);
             flp_Machines.TabIndex = 908;
             flp_Machines.WrapContents = false;
             // 

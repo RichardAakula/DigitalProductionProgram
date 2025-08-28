@@ -642,11 +642,13 @@ namespace DigitalProductionProgram.MainWindow
         }
         public void Öppna_Gallup()
         {
-            var gallup = new UserPoll();
+            
             var bg = new BlackBackground("", 80);
             bg.Show();
+            using var gallup = new UserPoll();
             gallup.ShowDialog();
             bg.Close();
+            bg.Dispose();
         }
 
 
@@ -766,19 +768,22 @@ namespace DigitalProductionProgram.MainWindow
         }
         private void FilterWorkoperations_Click(object sender, EventArgs e)
         {
-            var quickOpen = new Main_FilterQuickOpen(dgv_QuickOpen);
-            var black = new BlackBackground(null, 80);
+            using var quickOpen = new Main_FilterQuickOpen(dgv_QuickOpen);
+            using var blackBackground = new BlackBackground(null, 80);
 
             quickOpen.AddWorkoperationCheckBoxes();
 
             quickOpen.Left = MousePosition.X - 100;
             quickOpen.Top = MousePosition.Y - quickOpen.Height;
-            black.StartPosition = FormStartPosition.Manual;
-            black.Location = this.Location;
-            black.Show();
+            blackBackground.StartPosition = FormStartPosition.Manual;
+            blackBackground.Location = this.Location;
+
+            blackBackground.Show();
             quickOpen.ShowDialog();
-            black.Close();
+            blackBackground.Close();
+
         }
+
 
 
 
@@ -790,8 +795,8 @@ namespace DigitalProductionProgram.MainWindow
 
             SignOut();
 
-            var frmLogin = new Login();
-            var backGround = new BlackBackground(string.Empty, 50)
+            using var frmLogin = new Login();
+            using var backGround = new BlackBackground(string.Empty, 50)
             {
                 Size = new Size(Program.ScreenWidth, Height),
                 StartPosition = FormStartPosition.Manual
@@ -803,7 +808,9 @@ namespace DigitalProductionProgram.MainWindow
 
             backGround.Show();
             frmLogin.ShowDialog();
-            backGround.Close();
+
+            backGround.Dispose();
+            frmLogin.Dispose();
 
 
             lbl_EmpNr.Text = Person.EmployeeNr;
@@ -818,21 +825,6 @@ namespace DigitalProductionProgram.MainWindow
 
             pbOperatör.Image = Person.ProfilePicture(Person.Name);
 
-            #region Om Datorn används som Mätdator
-
-            if (frmLogin.SvarÖppnaOrder)
-            {
-                OrderInformation.tb_OrderNr.Text = Order.OrderNumber;
-                _ = StartOrLoadOrder(true);
-
-                var mp = new Measurement_Protocol
-                {
-                    Location = new Point(100, 10)
-                };
-                mp.Show();
-            }
-
-            #endregion
 
             if (!string.IsNullOrEmpty(lbl_Namn.Text))
             {
@@ -845,7 +837,7 @@ namespace DigitalProductionProgram.MainWindow
 
             if (CheckAuthority.IsOkReadMyAnalysis)
             {
-                var my_Analysis = new My_Analysis();
+                using var my_Analysis = new My_Analysis(); 
                 my_Analysis.ShowDialog();
             }
 
@@ -925,11 +917,12 @@ namespace DigitalProductionProgram.MainWindow
                     break;
 
                 case Manage_WorkOperation.WorkOperations.Nothing:
-                    var pk = new VäljProcesskort();
                     var bg = new BlackBackground(string.Empty, 70);
                     bg.Show();
-                    pk.ShowDialog();
+                    using (var pk = new VäljProcesskort())
+                        pk.ShowDialog();
                     bg.Close();
+                    bg.Dispose();
                     Order.WorkOperation = Manage_WorkOperation.WorkOperations.Nothing;
                     break;
 
@@ -961,7 +954,7 @@ namespace DigitalProductionProgram.MainWindow
         {
             if (EasterEgg_HighScore.IsOkStartGame("Easter Egg 1", this))
             {
-                var game = new EasterEgg_1();
+                using var game = new EasterEgg_1();
                 game.ShowDialog();
             }
 
@@ -970,7 +963,7 @@ namespace DigitalProductionProgram.MainWindow
         {
             if (EasterEgg_HighScore.IsOkStartGame("Easter Egg 2", this))
             {
-                var game = new EasterEgg_2();
+                using var game = new EasterEgg_2();
                 game.ShowDialog();
 
             }
@@ -1003,7 +996,7 @@ namespace DigitalProductionProgram.MainWindow
         private int counter_ReLoginMonitor = 0;
         private int timer_counterPlaneratStopp = 60;  // 1 timme
         public static int timer_ReloginMonitor = 600000;
-        private int timer_CheckForUpdate = 5; //5 minut
+        private int timer_CheckForUpdate = 10; //10 minut
 
         public Timer? timer_Master;
         private async void MasterTimer_Tick(object? sender, EventArgs e)
@@ -1027,7 +1020,7 @@ namespace DigitalProductionProgram.MainWindow
                 CheckForMaintenanceWork();
             }
 
-            // 5 minut: Kolla efter uppdatering
+            // 10 minut: Kolla efter uppdatering
             if (counter_CheckForUpdate >= timer_CheckForUpdate)
             {
                 counter_CheckForUpdate = 0;

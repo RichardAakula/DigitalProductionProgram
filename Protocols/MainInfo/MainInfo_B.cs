@@ -228,7 +228,7 @@ namespace DigitalProductionProgram.Protocols.MainInfo
         {
             if (Browse_Protocols.Browse_Protocols.Is_BrowsingProtocols)
                 return;
-            var choose = new Choose_Item(List_ProdType("[Order].MainData"), new Control[] { ProdType }, false, true);
+            using var choose = new Choose_Item(List_ProdType("[Order].MainData"), new Control[] { ProdType }, false, true);
             choose.ShowDialog();
         }
 

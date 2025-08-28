@@ -302,7 +302,7 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
             if (e.ColumnIndex == ExtruderColumn)//Extruder
             {
                 items = Machines.Extruders("EXTRUDER", Order.OrderID);
-                var choose_Item = new Choose_Item(items, new[] { dgv.Rows[e.RowIndex].Cells[e.ColumnIndex] });
+                using var choose_Item = new Choose_Item(items, new[] { dgv.Rows[e.RowIndex].Cells[e.ColumnIndex] });
                 choose_Item.ShowDialog();
                 dgv.ClearSelection();
             }
@@ -313,8 +313,8 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
 
                 if (!string.IsNullOrEmpty(dgv.Rows[e.RowIndex].Cells["BatchNr:"].Value.ToString()) && Is_CommentNeededToChangeBatchNr)
                 {
-                    var byt_BatchNr = new Change_ChargeNr_AddComment();
-                    var black = new BlackBackground("", 80);
+                    using var byt_BatchNr = new Change_ChargeNr_AddComment();
+                    using var black = new BlackBackground("", 80);
                     black.Show();
                     byt_BatchNr.ShowDialog();
                     if (string.IsNullOrEmpty(byt_BatchNr.Kommentar))
@@ -329,7 +329,7 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
                 }
                 if (items != null)
                 {
-                    var choose_Item = new Choose_Item(items, new[] { dgv.Rows[e.RowIndex].Cells[e.ColumnIndex] }, null, 0, 0, false);
+                    using var choose_Item = new Choose_Item(items, new[] { dgv.Rows[e.RowIndex].Cells[e.ColumnIndex] }, null, 0, 0, false);
                     choose_Item.ShowDialog();
                 }
 

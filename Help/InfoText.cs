@@ -81,13 +81,14 @@ namespace DigitalProductionProgram.Help
 
             // Vänta på att användaren stänger rutan
             infoText.ShowDialog();
+            infoText.Dispose();
         }
 
         public static void Question(string? Question, CustomColors.InfoText_Color color, string? header, Control? Form = null, bool IsSpecialText = false)
         {
             Change_GUI_BackColor(color);
            // form = Form;
-            infoText = new InfoText();
+            using var infoText = new InfoText();
             infoText.TopMost = true;
             if (IsSpecialText) 
                 SpecialText(infoText.lbl_Message, Question);
@@ -102,6 +103,7 @@ namespace DigitalProductionProgram.Help
             Change_GUI_QuestionText(null);
             Change_GUI_Size(Question);
             infoText.ShowDialog();
+            infoText.Dispose();
         }
 
 
@@ -143,6 +145,7 @@ namespace DigitalProductionProgram.Help
             Change_GUI_Return_Text();
             Change_GUI_Size(Question);
             infoText.ShowDialog();
+            infoText.Dispose();
         }
         public static void PromptForValue(string Question, CustomColors.InfoText_Color color, string? header, Control? Form, Image img)
         {
@@ -166,6 +169,7 @@ namespace DigitalProductionProgram.Help
             Change_GUI_Return_Value();
             Change_GUI_Size(Question);
             infoText.ShowDialog();
+            infoText.Dispose();
         }
 
 
@@ -362,7 +366,7 @@ namespace DigitalProductionProgram.Help
         private static void Items_Click(object sender, EventArgs e)
         {
             var ctrl = (Control)sender;
-            var choose_Item = new Choose_Item(InputTextList, new[] { ctrl }, false);
+            using var choose_Item = new Choose_Item(InputTextList, new[] { ctrl }, false);
             choose_Item.ShowDialog();
         }
 
@@ -413,8 +417,8 @@ namespace DigitalProductionProgram.Help
         {
             var lbl = (Label)sender;
             var int_img = int.Parse(lbl.Text.Substring(lbl.Text.Length - 1)) - 1;
-            var black = new BlackBackground("", 70);
-            var img = new InfoText_Image(image[int_img], null);
+            using var black = new BlackBackground("", 70);
+            using var img = new InfoText_Image(image[int_img], null);
             black.Show();
             img.ShowDialog();
             black.Close();
@@ -423,8 +427,8 @@ namespace DigitalProductionProgram.Help
         {
             var lbl = (Label)sender;
             // var url = lbl.Name;
-            var black = new BlackBackground("", 70);
-            var img = new InfoText_Image(null, url);
+            using var black = new BlackBackground("", 70);
+            using var img = new InfoText_Image(null, url);
             black.Show();
             img.ShowDialog();
             black.Close();

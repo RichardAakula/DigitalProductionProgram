@@ -220,7 +220,7 @@ namespace DigitalProductionProgram.Measure
             dgv_Mätdon.Rows.Add();
 
             DataGridViewCell cell = dgv_Mätdon.Rows[dgv_Mätdon.Rows.Count - 1].HeaderCell;
-            var choose_Item = new Choose_Item(List_Mätdon, new[] {cell});
+            using var choose_Item = new Choose_Item(List_Mätdon, new[] {cell});
             choose_Item.ShowDialog();
             if (cell.Value is null || string.IsNullOrEmpty(cell.Value.ToString()))
             {

@@ -45,7 +45,7 @@ namespace DigitalProductionProgram.QC
         }
         private void Text_Click(object sender, EventArgs e)
         {
-            var qc = new QC_Feedback(false, false, true);
+            using var qc = new QC_Feedback(false, false, true);
             qc.ShowDialog();
         }
     }

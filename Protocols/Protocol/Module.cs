@@ -537,7 +537,15 @@ namespace DigitalProductionProgram.Protocols.Protocol
         }
         private void AllowedChars_CellKeyPress(object? sender, KeyPressEventArgs e)
         {
-            if (IsOkToSave == false && Manage_Processcards.IsProcesscardUnderManagement == false)
+            var isOkWriteText = bool.Parse(dgv_Module.Rows[dgv_Module.CurrentCell.RowIndex].Cells["col_IsOkWriteText"].Value.ToString() ?? "false");
+            var isListProtocol = bool.Parse(dgv_Module.Rows[dgv_Module.CurrentCell.RowIndex].Cells["col_IsList_Protocol"].Value.ToString() ?? "false");
+            if (isOkWriteText == false && isListProtocol)
+            {
+                if (CheckAuthority.IsRoleAuthorized(CheckAuthority.TemplateAuthorities.ChooseFreelyFromListsProtocol, false) == false)
+                    e.Handled = true;
+                return;
+            }
+            if (IsOkToSave == false)// && Manage_Processcards.IsProcesscardUnderManagement == false)
             {
                 e.Handled = true;
                 return;
@@ -801,6 +809,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                             var InComingDate = dgv_Module.Rows[row].Cells[col].Value is null ? string.Empty : dgv_Module.Rows[row].Cells[col].Value.ToString();
                             var datePicker = new DatePicker(InComingDate);
                             datePicker.ShowDialog();
+                            datePicker.Dispose();
                             dgv_Module.Rows[row].Cells[col].Value = datePicker.OutGoingDate;
                             return;
                         case 277: //TORK-TID
@@ -872,6 +881,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                         case 312: //SILPAKET
                             var choose_Silduk = new Choose_Silduk(dgv_Module.Rows[row].Cells[e.ColumnIndex]);
                             choose_Silduk.ShowDialog();
+                            choose_Silduk.Dispose();
                             return;
 
                         case 314: //FILTERHUSTYP
@@ -940,7 +950,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                 items.Add(LanguageManager.GetString("checkLastOperations"));
                 if (CheckAuthority.IsRoleAuthorized(CheckAuthority.TemplateAuthorities.ChooseFreelyFromListsProtocol, false))
                     isOkWriteText = true;
-                var choose_Item = new Choose_Item(items, cells, dgv_Module.Rows[row].Cells[0].Value.ToString(), MachineIndex, startup, isOkWriteText, false, IsItemsMultipleColumns);
+                using var choose_Item = new Choose_Item(items, cells, dgv_Module.Rows[row].Cells[0].Value.ToString(), MachineIndex, startup, isOkWriteText, false, IsItemsMultipleColumns);
                 choose_Item.ShowDialog();
             }
             if (IsOkToSave || isProcesscardUnderManagement)

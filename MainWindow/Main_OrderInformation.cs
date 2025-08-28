@@ -231,8 +231,8 @@ namespace DigitalProductionProgram.MainWindow
         }
         private void ProdLine_Click(object sender, EventArgs e)
         {
-            var black = new BlackBackground(string.Empty, 80);
-            var prod = new Statistics_ProdLine(lbl_ProdLine.Text);
+            using var black = new BlackBackground(string.Empty, 80);
+            using var prod = new Statistics_ProdLine(lbl_ProdLine.Text);
             black.Show();
             prod.ShowDialog();
             black.Close();

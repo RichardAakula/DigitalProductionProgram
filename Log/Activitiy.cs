@@ -3,6 +3,8 @@ using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.User;
 using Microsoft.Data.SqlClient;
+using Microsoft.VisualBasic.Devices;
+using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
@@ -27,43 +29,56 @@ namespace DigitalProductionProgram.Log
             StartTime = DateTime.Now;
         }
 
+        private static readonly PerformanceCounter cpuCounterDpp = new("Process", "% Processor Time", Process.GetCurrentProcess().ProcessName, true);
+        private static readonly PerformanceCounter cpuCounterTotal = new("Processor", "% Processor Time", "_Total");
+
         public static async Task Stop(string info, double tid = 0, [CallerMemberName] string? methodname = null)
         {
             double LoadingTime = tid == 0 ? laddTid.TotalMilliseconds / 1000 : tid;
-            if (LoadingTime > 100)
-                LoadingTime = 0;
+            if (LoadingTime > 100) LoadingTime = 0;
+
             var proc = Process.GetCurrentProcess();
-            long Memory = proc.WorkingSet64 / (1024 * 1024);
-            using var cpuCounter = new PerformanceCounter("Process", "% Processor Time", Process.GetCurrentProcess().ProcessName, true);
-            _ = cpuCounter.NextValue();
-            Thread.Sleep(100); // Vänta en liten stund för att få ett korrekt värde
-            float cpu = cpuCounter.NextValue() / Environment.ProcessorCount; // justera för antal kärnor
-           
+            long dppMemoryMB = proc.WorkingSet64 / (1024 * 1024);
+
+            _ = cpuCounterDpp.NextValue();
+            _ = cpuCounterTotal.NextValue();
+            await Task.Delay(500); // istället för Thread.Sleep
+
+            float dppCpu = cpuCounterDpp.NextValue() / Environment.ProcessorCount;
+            float totalCpu = cpuCounterTotal.NextValue();
+
+            var ci = new ComputerInfo();
+            long totalMemoryMB = (long)(ci.TotalPhysicalMemory / (1024 * 1024));
+            long usedMemoryMB = totalMemoryMB - (long)(ci.AvailablePhysicalMemory / (1024 * 1024));
+
             try
             {
                 await using var con = new SqlConnection(Database.cs_Protocol);
                 await using var cmd = new SqlCommand(@"
             INSERT INTO Log.ActivityLog 
-            (HostID, UserID, OrderID, Program, Version, Date, LoadingTime, Info, Memory, CPU, Resolution, WindowsVersion)
+            (HostID, UserID, OrderID, Program, Version, Date, LoadingTime, Info, Memory, DPPMemory, CPU, DPPCPU, Resolution, WindowsVersion)
             VALUES 
-            ((SELECT HostID FROM [Settings].General WHERE HostName = @hostname), @userid, @orderid, @methodname, @version, @date, @loadingtime, @info, @memory, @cpu, @resolution, @windowsversion)", con);
+            ((SELECT HostID FROM [Settings].General WHERE HostName = @hostname), @userid, @orderid, @methodname, @version, @date, @loadingtime, @info, @memory, @dppmemory, @cpu, @dppcpu, @resolution, @windowsversion)", con);
                 await con.OpenAsync();
-                
+
                 cmd.Parameters.AddWithValue("@hostname", HostName);
                 if (Environment.MachineName == Main_Form.adminHostName && Person.Name != "Richard Aakula")
                     cmd.Parameters.AddWithValue("@userid", 0);
                 else
                     SQL_Parameter.Int(cmd.Parameters, "@userid", Person.UserID);
+
                 SQL_Parameter.Int(cmd.Parameters, "@orderid", Order.OrderID);
                 cmd.Parameters.AddWithValue("@methodname", methodname);
                 cmd.Parameters.AddWithValue("@version", ChangeLog.CurrentVersion.ToString());
                 cmd.Parameters.AddWithValue("@date", DateTime.Now);
                 cmd.Parameters.AddWithValue("@loadingtime", (decimal)Math.Min(LoadingTime, 99999.999));
                 cmd.Parameters.AddWithValue("@info", info);
-                cmd.Parameters.AddWithValue("@memory", Memory);
-                cmd.Parameters.AddWithValue("@cpu", cpu);
+                cmd.Parameters.AddWithValue("@memory", usedMemoryMB);
+                cmd.Parameters.AddWithValue("@dppmemory", dppMemoryMB);
+                cmd.Parameters.AddWithValue("@cpu", totalCpu);
+                cmd.Parameters.AddWithValue("@dppcpu", dppCpu);
                 cmd.Parameters.AddWithValue("@resolution", $"{Program.ScreenWidth} x {Program.ScreenHeight}");
-                cmd.Parameters.AddWithValue("@windowsversion", Environment.Version.ToString());
+                cmd.Parameters.AddWithValue("@windowsversion", Environment.OSVersion.ToString());
 
                 await cmd.ExecuteNonQueryAsync();
             }

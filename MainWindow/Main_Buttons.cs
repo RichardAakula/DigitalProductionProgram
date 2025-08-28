@@ -241,7 +241,7 @@ namespace DigitalProductionProgram.MainWindow
                 return;
             // Stoppa MainTimer eventuellt om det blir problem
             var screen = Screen.FromPoint(Cursor.Position);
-            var sök = new BrowseMeasureProtocols
+            using var sök = new BrowseMeasureProtocols
             {
                 StartPosition = FormStartPosition.Manual,
                 Location = screen.Bounds.Location
@@ -294,11 +294,13 @@ namespace DigitalProductionProgram.MainWindow
                     var cs = Screen.FromControl(this);
                     bp.Location = cs.WorkingArea.Location;
                     bp.ShowDialog();
+                    bp.Dispose();
                     break;
                 
                 case Manage_WorkOperation.WorkOperations.Nothing:
                     var välj = new Choose_WorkOperation_BrowseProtocols_ManageProcesscards( false, false, true,LanguageManager.GetString("browseProtocols"));
                     välj.ShowDialog();
+                    välj.Dispose();
                     break;
 
                 default:
@@ -314,7 +316,7 @@ namespace DigitalProductionProgram.MainWindow
         {
             if (Order.OrderID == 0 || Order.OrderID is null ||Compound.Visible == false)
                 return;
-            var compound = new Protocol_Compund();
+            using var compound = new Protocol_Compund();
             compound.ShowDialog();
         }
         public void F6_Zumbach_Click(object sender, EventArgs? e)
@@ -342,7 +344,7 @@ namespace DigitalProductionProgram.MainWindow
             Log.Activity.Start();
 
             Points.Add_Points(1, "Överblick Produktionslinjer");
-            var öp = new Overview_ProductionLines();
+            using var öp = new Overview_ProductionLines();
             öp.ShowDialog();
 
             await Log.Activity.Stop("Överblick ProdLinjer");
@@ -353,8 +355,8 @@ namespace DigitalProductionProgram.MainWindow
         {
             Points.Add_Points(3, "Statistik");
 
-            var stats = new Statistik_Övrigt();
-            var black = new BlackBackground("", 70);
+            using var stats = new Statistik_Övrigt();
+            using var black = new BlackBackground("", 70);
             black.Show();
             stats.ShowDialog();
             black.Close();
@@ -367,7 +369,7 @@ namespace DigitalProductionProgram.MainWindow
                 return;
             }
 
-            var frekvensmarkering = new FrequencyMarking();
+            using var frekvensmarkering = new FrequencyMarking();
             frekvensmarkering.Show();
         }
 
@@ -380,7 +382,7 @@ namespace DigitalProductionProgram.MainWindow
                 return;
             }
 
-            var dlg = new OpenFileDialog
+            using var dlg = new OpenFileDialog
             {
                 Filter = "JPG Files(*.jpg)|*.jpg|GIF Files(*.gif)|*.gif|All Files(*.*)|*.*",
                 Title = LanguageManager.GetString("uploadPicture_2")
@@ -419,8 +421,8 @@ namespace DigitalProductionProgram.MainWindow
         }
         private void TittaPåBilder_Click(object sender, EventArgs e)
         {
-            var frmPic = new Pictures();
-            var backGround = new BlackBackground(string.Empty, 70)
+            using var frmPic = new Pictures();
+            using var backGround = new BlackBackground(string.Empty, 70)
             {
                 Size = new Size(Program.ScreenWidth, Height)
             };

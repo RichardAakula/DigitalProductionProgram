@@ -99,7 +99,7 @@ namespace DigitalProductionProgram.OrderManagement
 
                 if (chb_Rapportera_Jira.Checked)
                 {
-                    var jira = new Jira();
+                    using var jira = new Jira();
                     var black = new BlackBackground("", 85);
                     black.Show();
                     jira.ShowDialog();

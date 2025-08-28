@@ -230,8 +230,8 @@ namespace DigitalProductionProgram.Equipment
             }
 
             if (TextValue == LanguageManager.GetString("checkLastOperations"))
-            {
-                var senaste = new Latest10Values(DataBaseColumnName, Maskin, Uppstart);
+            { 
+                using var senaste = new Latest10Values(DataBaseColumnName, Maskin, Uppstart);
                 senaste.ShowDialog();
                 Close();
                 return;
@@ -257,7 +257,7 @@ namespace DigitalProductionProgram.Equipment
             var TextValue = dgv_Items.Rows[e.RowIndex].Cells[0].Value.ToString();
             if (TextValue == "Kolla 10 senaste körningar...")
             {
-                var senaste = new Latest10Values(DataBaseColumnName, Maskin, Uppstart);
+                using var senaste = new Latest10Values(DataBaseColumnName, Maskin, Uppstart);
                 senaste.ShowDialog();
                 Close();
                 return;

@@ -2365,4 +2365,7 @@ Please contact IT support if the issue persists.</value>
   <data name="error_OrderNotOpen" xml:space="preserve">
     <value>You must open or start an order before opening the Protocol. Please make sure that the Order Number is entered and that an Operation is selected.</value>
   </data>
+  <data name="Menu_Arkiv_UpdateDPP" xml:space="preserve">
+    <value>Update DPP</value>
+  </data>
 </root>

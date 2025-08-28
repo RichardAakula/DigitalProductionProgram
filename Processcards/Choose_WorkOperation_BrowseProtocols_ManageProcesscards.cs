@@ -136,14 +136,14 @@ namespace DigitalProductionProgram.Processcards
             if (IsProcesscard)
             {
                 Manage_Processcards.IsProcesscardUnderManagement = true;
-                var skapa_Uppdatera_Processkort = new Manage_Processcards(tb_PartNr.Text)
+                using var skapa_Uppdatera_Processkort = new Manage_Processcards(tb_PartNr.Text)
                 { Location = Location };
                 if (skapa_Uppdatera_Processkort.IsDisposed == false)
                     skapa_Uppdatera_Processkort.ShowDialog();
             }
             else
             {
-                var bp = new Browse_Protocols.Browse_Protocols(Order.PartNumber)
+                using var bp = new Browse_Protocols.Browse_Protocols(Order.PartNumber)
                 { Location = Location };
                 bp.ShowDialog();
             }
@@ -196,7 +196,7 @@ namespace DigitalProductionProgram.Processcards
                 reader.Close();
             }
 
-            var choose_Item = new Choose_Item(list, new Control[] { tb_PartNr }, false);
+            using var choose_Item = new Choose_Item(list, new Control[] { tb_PartNr }, false);
             choose_Item.ShowDialog();
 
             Order.PartNumber = tb_PartNr.Text;

@@ -118,7 +118,7 @@ namespace DigitalProductionProgram.User
             flp_Users.BackColor = Color.FromArgb(100, Color.Black);
             using (var con = new SqlConnection(Database.cs_Protocol))
             {
-                const string query = @"
+               const string query = @"
                     SELECT person.Name, Date
                     FROM Log.ActivityLog as log
                         JOIN [User].Person as person
@@ -182,7 +182,7 @@ namespace DigitalProductionProgram.User
 
             lbl_User.Text = Person.Get_NameWithAnstNr(anstNr);
             tb_Password.Focus();
-            if (Environment.MachineName != "OH-ID61")
+           // if (Environment.MachineName != "OH-ID61")
                 _ = Log.Activity.Stop($"Snabblogin - {lbl_User.Text}");
         }
         private void HideObjects()
@@ -235,7 +235,7 @@ namespace DigitalProductionProgram.User
 
             if (lastReadVersion == null || lastReadVersion == new Version(0, 0, 0, 0))
             {
-                var changeLog = new ChangeLog(new Version(1, 0, 0, 0));
+                using var changeLog = new ChangeLog(new Version(1, 0, 0, 0));
                 changeLog.ShowDialog();
                 return;
             }
@@ -254,7 +254,7 @@ namespace DigitalProductionProgram.User
                     var watch = new Stopwatch();
                     watch.Start();
 
-                    var changeLog = new ChangeLog(lastReadVersion);
+                    using var changeLog = new ChangeLog(lastReadVersion);
                     changeLog.ShowDialog();
 
                     watch.Stop();
@@ -435,7 +435,7 @@ namespace DigitalProductionProgram.User
         private void Users_Click(object sender, EventArgs e)
         {
             var ctrl = (Control)sender;
-            var choose_Item = new Choose_Item(Person.List_Users(false), new[] { ctrl }, false);
+            using var choose_Item = new Choose_Item(Person.List_Users(false), new[] { ctrl }, false);
             choose_Item.ShowDialog();
         }
         private void AnstNr_KeyPress(object sender, KeyPressEventArgs e)
@@ -670,7 +670,7 @@ namespace DigitalProductionProgram.User
 
         private void btn_ResetPassword_Click(object sender, EventArgs e)
         {
-            ResetPassword resetPassword = new ResetPassword();
+            using var resetPassword = new ResetPassword();
             resetPassword.ShowDialog();
         }
     }

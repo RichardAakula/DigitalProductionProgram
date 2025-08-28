@@ -709,7 +709,7 @@ namespace DigitalProductionProgram.Protocols.Spolning_PTFE
 
             if (items is null)
                 return;
-            var choose_Item = new Choose_Item(items, new[] { dgv_Journal_Input.Rows[0].Cells[e.ColumnIndex] }, null, 0, 0, true);
+            using var choose_Item = new Choose_Item(items, new[] { dgv_Journal_Input.Rows[0].Cells[e.ColumnIndex] }, null, 0, 0, true);
             choose_Item.ShowDialog();
         }
         private void Journal_Input_CellValueChanged(object sender, DataGridViewCellEventArgs e)
@@ -757,6 +757,7 @@ namespace DigitalProductionProgram.Protocols.Spolning_PTFE
                 case 182:    //Sintring Datum
                     var date = new DatePicker(string.Empty, true);
                     date.ShowDialog();
+                    date.Dispose();
                     dgv_Journal_Input.Rows[0].Cells[col].Value = date.OutGoingDate;
                     break;
                 case 187:    //a) Bra slang

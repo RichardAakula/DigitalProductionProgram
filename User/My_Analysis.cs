@@ -774,7 +774,7 @@ namespace DigitalProductionProgram.User
         {
             var ctrl = (Control)sender;
 
-            var choose_Item = new Choose_Item(Person.List_Users(true), new[] { ctrl }, false);
+            using var choose_Item = new Choose_Item(Person.List_Users(true), new[] { ctrl }, false);
             choose_Item.ShowDialog();
           
         }

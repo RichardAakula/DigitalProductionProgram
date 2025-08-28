@@ -30,9 +30,8 @@ namespace DigitalProductionProgram.User
         }
         public void GetLatestOrderForOperaton(string anstNr)
         {
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query = @"
+            using var con = new SqlConnection(Database.cs_Protocol);
+            var query = @"
                     SELECT TOP(1) OrderID, OrderNr
                     FROM Measureprotocol.MainData AS mp 
                     INNER JOIN [Order].MainData AS kp
@@ -40,15 +39,14 @@ namespace DigitalProductionProgram.User
                     WHERE AnstNr = @employeenumber 
                     AND IsOrderDone = 'False'
                     ORDER BY Date DESC";
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@employeenumber", anstNr);
-                con.Open();
-                var reader = cmd.ExecuteReader();
-                while (reader.Read())
-                {
-                    lbl_LastOrder.Text = reader["OrderNr"].ToString();
-                    Order.OrderID = (int)reader["OrderID"];
-                }
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            cmd.Parameters.AddWithValue("@employeenumber", anstNr);
+            con.Open();
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                lbl_LastOrder.Text = reader["OrderNr"].ToString();
+                Order.OrderID = (int)reader["OrderID"];
             }
         }
     }

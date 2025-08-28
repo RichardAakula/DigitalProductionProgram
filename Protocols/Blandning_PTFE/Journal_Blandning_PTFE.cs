@@ -386,7 +386,7 @@ namespace DigitalProductionProgram.Protocols.Blandning_PTFE
                     return;
             }
 
-            var choose_Item = new Choose_Item(items, new[] { dgv_Journal_Input.Rows[0].Cells[col] });
+            using var choose_Item = new Choose_Item(items, new[] { dgv_Journal_Input.Rows[0].Cells[col] });
             choose_Item.ShowDialog();
         }
 

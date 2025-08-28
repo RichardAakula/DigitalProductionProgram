@@ -205,40 +205,36 @@ namespace DigitalProductionProgram.QC
 
         private void CheckIfFeedbackIsDone()
         {
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query = @"
+            using var con = new SqlConnection(Database.cs_Protocol);
+            var query = @"
                     SELECT SUM(RemainingViews) FROM Parts.FeedbackQC_RemainingViews
                     WHERE FeedbackQC_ID = (SELECT FeedbackQC_ID FROM Parts.FeedBackQC WHERE PartNumber = @partnumber AND IsDone = 'False')";
-                con.Open();
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@partNumber", tb_PartNr.Text);
-                var value = cmd.ExecuteScalar();
-                int.TryParse(value.ToString(), out var remainingViews);
-                if (remainingViews != 0) 
-                    return;
-                InfoText.Show("Denna feedback stängs nu och kommer ej att visas flera gånger.", CustomColors.InfoText_Color.Info, null,this);
-                query = @"UPDATE Parts.FeedbackQC SET IsDone = 'True' WHERE PartNumber = @partnumber";
-                cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@partNumber", tb_PartNr.Text);
-                cmd.ExecuteNonQuery();
-            }
+            con.Open();
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            cmd.Parameters.AddWithValue("@partNumber", tb_PartNr.Text);
+            var value = cmd.ExecuteScalar();
+            int.TryParse(value.ToString(), out var remainingViews);
+            if (remainingViews != 0) 
+                return;
+            InfoText.Show("Denna feedback stängs nu och kommer ej att visas flera gånger.", CustomColors.InfoText_Color.Info, null,this);
+            query = @"UPDATE Parts.FeedbackQC SET IsDone = 'True' WHERE PartNumber = @partnumber";
+            cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            cmd.Parameters.AddWithValue("@partNumber", tb_PartNr.Text);
+            cmd.ExecuteNonQuery();
         }
         private void Save_RemainingViews()
         {
             foreach (var operation in ListOperations)
             {
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    const string query = @"INSERT INTO Parts.FeedbackQC_RemainingViews
+                using var con = new SqlConnection(Database.cs_Protocol);
+                const string query = @"INSERT INTO Parts.FeedbackQC_RemainingViews
                                    VALUES ((SELECT TOP(1) FeedbackQC_ID FROM Parts.FeedbackQC WHERE PartNumber = @partNumber ORDER BY DateTime DESC), @operation, @remainingViews)";
-                    con.Open();
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    cmd.Parameters.AddWithValue("@partNumber", Order.PartNumber);
-                    cmd.Parameters.AddWithValue("@operation", operation);
-                    SQL_Parameter.Double(cmd.Parameters, "@remainingViews", num_RemainingViews.Text);
-                    cmd.ExecuteNonQuery();
-                }
+                con.Open();
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                cmd.Parameters.AddWithValue("@partNumber", Order.PartNumber);
+                cmd.Parameters.AddWithValue("@operation", operation);
+                SQL_Parameter.Double(cmd.Parameters, "@remainingViews", num_RemainingViews.Text);
+                cmd.ExecuteNonQuery();
             }
         }
 
@@ -336,8 +332,8 @@ namespace DigitalProductionProgram.QC
         {
             if (isUserSigningNotification)
             {
-                var background = new BlackBackground("", 70);
-                var password = new PasswordManager("Bekräfta att du läst denna notifiering.");
+                using var background = new BlackBackground("", 70);
+                using var password = new PasswordManager("Bekräfta att du läst denna notifiering.");
                 background.Show();
                 password.ShowDialog();
                 background.Close();
@@ -351,7 +347,7 @@ namespace DigitalProductionProgram.QC
 
         private void PartNr_LoadHistory_Click(object sender, EventArgs e)
         {
-            var chooseItem = new Choose_Item(HistoryPartNumbers, new Control[]{ tb_PartNr, tb_OrderNr }, true, false, false);
+            using var chooseItem = new Choose_Item(HistoryPartNumbers, new Control[]{ tb_PartNr, tb_OrderNr }, true, false, false);
             chooseItem.ShowDialog();
             var ordernr = tb_OrderNr.Text;
             int? orderid;

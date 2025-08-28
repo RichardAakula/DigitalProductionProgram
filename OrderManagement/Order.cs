@@ -774,7 +774,7 @@ namespace DigitalProductionProgram.OrderManagement
             {
                 if (WorkOperation == WorkOperations.Nothing)
                 {
-                    var A_OP = new Manage_WorkOperation();
+                    using var A_OP = new Manage_WorkOperation();
                     A_OP.ShowDialog();
                 }
                 if (WorkOperation == WorkOperations.Nothing)
@@ -860,7 +860,7 @@ namespace DigitalProductionProgram.OrderManagement
                 }
                 if (QC_Feedback.IsOperationHaveQCFeedback)
                 {
-                    var qc = new QC_Feedback(false, true, true);
+                    using var qc = new QC_Feedback(false, true, true);
                     qc.ShowDialog();
                 }
                 
@@ -904,8 +904,8 @@ namespace DigitalProductionProgram.OrderManagement
 
                     if (Processcard.IsMultipleProcesscard(WorkOperation))
                     {
-                        var chooseProcesscard_StartOrder = new ProcesscardTemplateSelector(true, false, false, false); 
-                        var black = new BlackBackground("", 70);
+                        using var chooseProcesscard_StartOrder = new ProcesscardTemplateSelector(true, false, false, false); 
+                        using var black = new BlackBackground("", 70);
                         black.Show();
                         chooseProcesscard_StartOrder.ShowDialog();
                         black.Close();
@@ -1436,8 +1436,8 @@ namespace DigitalProductionProgram.OrderManagement
                 
 
                 //Frågar om det är ok att fortsätta med utskrift m.m.
-                var ok = new FinishOrder();
-                var bb = new BlackBackground(string.Empty, 70);
+                using var ok = new FinishOrder();
+                using var bb = new BlackBackground(string.Empty, 70);
                 bb.Show();
                 ok.ShowDialog();
                 bb.Close();

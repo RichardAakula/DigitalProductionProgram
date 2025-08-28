@@ -27,7 +27,7 @@ namespace DigitalProductionProgram.MainWindow
 
         private void btn_AddProfilePicture_Click(object sender, EventArgs e)
         {
-            var dlg = new OpenFileDialog
+            using var dlg = new OpenFileDialog
             {
                 // Filter = "JPG Files(*.jpg)|*.jpg|GIF Files(*.gif)|*.gif|All Files(*.*)|*.*|PNG Files(*.png|*.png)",
                 Filter = "All Files(*.*)|*.*",

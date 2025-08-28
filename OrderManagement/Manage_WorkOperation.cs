@@ -274,7 +274,7 @@ namespace DigitalProductionProgram.OrderManagement
             if (names.Count > 1 && Order.OrderNumber != null && Order.WorkOperation == WorkOperations.Nothing)
             {
                 //Om en produktionslinje tillhör flera arbetsoperationer får operatören nedan välja vilken arbetsoperation ordern hör till
-                var chooseWorkoperation = new ProcesscardTemplateSelector(ProcesscardTemplateSelector.TemplateType.Workoperations);
+                using  var chooseWorkoperation = new ProcesscardTemplateSelector(ProcesscardTemplateSelector.TemplateType.Workoperations);
                 chooseWorkoperation.ShowDialog();
 
                 //var chooseWorkoperation = new ChooseWorkoperation(names, null, ChooseWorkoperation.SourceType.Type_WorkOperation);
@@ -302,7 +302,7 @@ namespace DigitalProductionProgram.OrderManagement
             if (IsUserChooseArbOperation == false)
                 return WorkOperations.Nothing;
             InfoText.Show($"{LanguageManager.GetString("workoperations_Info_1_1")} ({prodline}) {LanguageManager.GetString("workoperations_Info_1_2")}", CustomColors.InfoText_Color.Warning, "Warning!", null);
-            var WorkOperation = new Manage_WorkOperation();
+            using var WorkOperation = new Manage_WorkOperation();
             WorkOperation.ShowDialog();
             return Order.WorkOperation;
         }

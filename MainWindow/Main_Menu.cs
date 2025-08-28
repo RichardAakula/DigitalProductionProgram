@@ -145,7 +145,7 @@ namespace DigitalProductionProgram.MainWindow
             // Stoppa MainTimer eventuellt om det blir problem
             var screen = Screen.FromPoint(Cursor.Position);
 
-            var frmÖppna = new Open_Order
+            using var frmÖppna = new Open_Order
             {
                 StartPosition = FormStartPosition.Manual,
                 Location = screen.Bounds.Location
@@ -187,7 +187,7 @@ namespace DigitalProductionProgram.MainWindow
         {
             if (CheckAuthority.IsRoleAuthorized(CheckAuthority.TemplateAuthorities.ChangeDatabaseSettings) == false)
                 return;
-            var database = new Database();
+            using var database = new Database();
             database.ShowDialog();
             Application.Restart();
         }
@@ -250,8 +250,8 @@ namespace DigitalProductionProgram.MainWindow
                 return;
             }
 
-            var jira = new Jira();
-            var black = new BlackBackground("", 85);
+            using var jira = new Jira();
+            using var black = new BlackBackground("", 85);
             black.Show();
             jira.ShowDialog();
             black.Close();
@@ -259,7 +259,7 @@ namespace DigitalProductionProgram.MainWindow
         private void Menu_Order_SkapaTestOrder_Click(object sender, EventArgs e)
         {
             var org_OrderNr = Order.OrderNumber;
-            var c_to = new CreateTestOrder();
+            using var c_to = new CreateTestOrder();
             c_to.ShowDialog();
 
             if (Order.OrderNumber == org_OrderNr)
@@ -299,7 +299,7 @@ namespace DigitalProductionProgram.MainWindow
                 return;
             }
 
-            var chooseProcesscard_ChangeProcesscard = new ProcesscardTemplateSelector(true, true, false, false);
+            using var chooseProcesscard_ChangeProcesscard = new ProcesscardTemplateSelector(true, true, false, false);
             chooseProcesscard_ChangeProcesscard.ShowDialog();
 
             using (var con = new SqlConnection(Database.cs_Protocol))
@@ -335,7 +335,7 @@ namespace DigitalProductionProgram.MainWindow
                 InfoText.Show(LanguageManager.GetString("changeProtocol_Info_2"), CustomColors.InfoText_Color.Bad, "Warning", this);
                 return;
             }
-            var changeTemplate = new ProcesscardTemplateSelector(ProcesscardTemplateSelector.TemplateType.TemplateProtocol);
+            using var changeTemplate = new ProcesscardTemplateSelector(ProcesscardTemplateSelector.TemplateType.TemplateProtocol);
             changeTemplate.ShowDialog();
             using var con = new SqlConnection(Database.cs_Protocol);
             var query = @"
@@ -361,7 +361,7 @@ namespace DigitalProductionProgram.MainWindow
                 InfoText.Show(LanguageManager.GetString("changeMeasureProtocol_Info_2"), CustomColors.InfoText_Color.Bad, "Warning", this);
                 return;
             }
-            var changeTemplate = new ProcesscardTemplateSelector(ProcesscardTemplateSelector.TemplateType.TemplateMeasureProtocol);
+            using var changeTemplate = new ProcesscardTemplateSelector(ProcesscardTemplateSelector.TemplateType.TemplateMeasureProtocol);
             changeTemplate.ShowDialog();
             using var con = new SqlConnection(Database.cs_Protocol);
             var query = @"
@@ -386,7 +386,7 @@ namespace DigitalProductionProgram.MainWindow
             }
 
             // Stoppa MainTimer eventuellt om det blir problem
-            var WorkOperation = new Choose_WorkOperation_BrowseProtocols_ManageProcesscards(true, false, false, LanguageManager.GetString("label_ChoosePC_Header"));
+            using var WorkOperation = new Choose_WorkOperation_BrowseProtocols_ManageProcesscards(true, false, false, LanguageManager.GetString("label_ChoosePC_Header"));
             WorkOperation.ShowDialog();
         }
 
@@ -401,7 +401,7 @@ namespace DigitalProductionProgram.MainWindow
 
             //try
             //{
-            var newTemplate = new Templates_Protocol();
+            using var newTemplate = new Templates_Protocol();
             newTemplate.ShowDialog();
             //}
             //catch (Exception ex)
@@ -411,12 +411,12 @@ namespace DigitalProductionProgram.MainWindow
         }
         private void Menu_Protocol_ManageTemplates_LineClearance_Click(object sender, EventArgs e)
         {
-            var manage_LineClearanceTemplates = new Templates_LineClearance();
+            using var manage_LineClearanceTemplates = new Templates_LineClearance();
             manage_LineClearanceTemplates.ShowDialog();
         }
         private void Menu_Protocol_ManageTemplates_MeasureProtocol_Click(object sender, EventArgs e)
         {
-            var manage_MeasureProtocolTemplates = new Templates_MeasureProtocol();
+            using var manage_MeasureProtocolTemplates = new Templates_MeasureProtocol();
             manage_MeasureProtocolTemplates.ShowDialog();
         }
 
@@ -465,7 +465,7 @@ namespace DigitalProductionProgram.MainWindow
         private void Menu_User_Inloggad_Click(object sender, EventArgs e)
         {
             Points.Add_Points(1, "Kollar vem som är inloggad.");
-            var inloggad = new WhoIsLoggedIn();
+            using var inloggad = new WhoIsLoggedIn();
             inloggad.ShowDialog();
         }
         private void Menu_User_Logga_ut_användare_Click(object sender, EventArgs e)
@@ -474,28 +474,28 @@ namespace DigitalProductionProgram.MainWindow
         }
         private void Menu_User_CheckMyAnalysis_Click(object sender, EventArgs e)
         {
-            var my_Analysis = new My_Analysis();
+            using var my_Analysis = new My_Analysis();
             my_Analysis.ShowDialog();
         }
 
         private void Menu_User_Authorities_Roles_Click(object sender, EventArgs e)
         {
-            var authorities = new AuthorizationManager(AuthorizationManager.Scenario.Roles);
+            using var authorities = new AuthorizationManager(AuthorizationManager.Scenario.Roles);
             authorities.ShowDialog();
         }
         private void Menu_User_Authorities_CustomMailAddresses_Click(object sender, EventArgs e)
         {
-            var authorities = new AuthorizationManager(AuthorizationManager.Scenario.Email);
+            using var authorities = new AuthorizationManager(AuthorizationManager.Scenario.Email);
             authorities.ShowDialog();
         }
         private void Menu_User_Authorities_CustomWorkoperations_Click(object sender, EventArgs e)
         {
-            var authorities = new AuthorizationManager(AuthorizationManager.Scenario.Workoperation);
+            using var authorities = new AuthorizationManager(AuthorizationManager.Scenario.Workoperation);
             authorities.ShowDialog();
         }
         private void Menu_User_Authorities_CustomFactories_Click(object sender, EventArgs e)
         {
-            var authorities = new AuthorizationManager(AuthorizationManager.Scenario.Factory);
+            using var authorities = new AuthorizationManager(AuthorizationManager.Scenario.Factory);
             authorities.ShowDialog();
         }
         //----------VERKTYG----------
@@ -509,7 +509,7 @@ namespace DigitalProductionProgram.MainWindow
 
             Log.Activity.Start();
 
-            var inst = new Settings.Settings();
+            using var inst = new Settings.Settings();
             inst.ShowDialog();
             _ = Main_FilterQuickOpen.Load_ListAsync(mainForm.dgv_QuickOpen);
 
@@ -524,7 +524,7 @@ namespace DigitalProductionProgram.MainWindow
         {
             if (CheckAuthority.IsRoleAuthorized(CheckAuthority.TemplateAuthorities.ChangeColorHS_Machine))
             {
-                var machineColor = new MachineColor();
+                using var machineColor = new MachineColor();
                 machineColor.ShowDialog();
             }
 
@@ -559,7 +559,7 @@ namespace DigitalProductionProgram.MainWindow
         }
         private void Menu_Help_Versionshistorik_Click(object sender, EventArgs e)
         {
-            var changeLog = new ChangeLog(ChangeLog.LatestVersion);
+            using var changeLog = new ChangeLog(ChangeLog.LatestVersion);
             changeLog.ShowDialog();
         }
         private void Menu_Help_InstructionVideos_OpenVideo_Click(object sender, EventArgs e)
@@ -643,22 +643,22 @@ Protocol.MainTemplate.Revision = {Templates_Protocol.MainTemplate.Revision}"
         }
         public void Menu_Utvecklare_Add_Gallup_Click(object sender, EventArgs e)
         {
-            var addGallup = new Add_UserPoll();
+            using var addGallup = new Add_UserPoll();
             addGallup.ShowDialog();
         }
         public void Menu_Utvecklare_Kolla_Gallup_Click(object sender, EventArgs e)
         {
-            var gallup = new UserPoll();
+            using var gallup = new UserPoll();
             gallup.ShowDialog();
         }
         private void Menu_Developer_New_MeasureProtocol_Click(object sender, EventArgs e)
         {
-            var mp = new Measurement_Protocol();
+            using var mp = new Measurement_Protocol();
             mp.ShowDialog();
         }
         private void Menu_Developer_Timer_test_Click(object sender, EventArgs e)
         {
-            var pbar = new ProgressBar();
+            using var pbar = new ProgressBar();
             double percent = 0;
 
             pbar.Show();
@@ -678,7 +678,7 @@ Protocol.MainTemplate.Revision = {Templates_Protocol.MainTemplate.Revision}"
         private void Menu_Developer_INSERT_Rengjort_Click(object sender, EventArgs e)
         {
             //Lägger till Rengjort Extruder före till [Order].Data
-            var pbar = new ProgressBar();
+            using var pbar = new ProgressBar();
             double percent = 0;
 
             pbar.Show();
@@ -958,7 +958,7 @@ Protocol.MainTemplate.Revision = {Templates_Protocol.MainTemplate.Revision}"
         }
         private void Menu_Developer_WhosIsLoggedIn_Click(object sender, EventArgs e)
         {
-            LoggedInUsers calender = new LoggedInUsers();
+            using var calender = new LoggedInUsers();
             calender.ShowDialog();
         }
         private void Developer_CountSql_Queries_Click(object sender, EventArgs e)
@@ -1333,7 +1333,7 @@ ORDER BY OrderID DESC ";
 
         private void Menu_Developer_AddThemePicture_Click(object sender, EventArgs e)
         {
-            var addTheme = new AddTheme();
+            using var addTheme = new AddTheme();
             addTheme.ShowDialog();
         }
 
@@ -1349,7 +1349,7 @@ ORDER BY OrderID DESC ";
 
         private void Menu_Order_QC_Feedback_Click(object sender, EventArgs e)
         {
-            var qc = new QC_Feedback(true, false, false);
+            using var qc = new QC_Feedback(true, false, false);
             qc.ShowDialog();
         }
 
@@ -1399,14 +1399,29 @@ ORDER BY OrderID DESC ";
 
         private void påskäggToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            EasterEgg_Code easterEgg = new EasterEgg_Code();
+            using var easterEgg = new EasterEgg_Code();
             easterEgg.ShowDialog();
         }
 
         private void testaChartToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Test test = new Test("TestCode", "TestText");
+            using var test = new Test("TestCode", "TestText");
             test.ShowDialog();
+        }
+
+        private void Menu_Arkiv_UpdateDPP_Click(object sender, EventArgs e)
+        {
+            var updaterPath = @"\\optifil\dpp\Update\Update DPP.exe"; // Ändra till rätt filnamn
+            if (File.Exists(updaterPath))
+            {
+                Process.Start(updaterPath);
+            }
+            else
+            {
+                MessageBox.Show("Updatern kunde inte hittas.", "Fel", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            Application.Exit(); // Stänger DPP
+
         }
     }
 }

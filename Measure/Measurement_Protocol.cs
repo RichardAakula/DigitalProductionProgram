@@ -232,7 +232,11 @@ namespace DigitalProductionProgram.Measure
         }
         private void Load_MeasureData()
         {
+           // dgv_Measurements.DataSource = null;
             dgv_Measurements.Rows.Clear();
+            //GC.Collect();
+            //GC.WaitForPendingFinalizers();
+
             if (Templates_MeasureProtocol.MainTemplate.ID == 0)
                 return;
             using (var con = new SqlConnection(Database.cs_Protocol))
@@ -461,8 +465,8 @@ namespace DigitalProductionProgram.Measure
             Activity.Start();
             string loginfo;
             var bag = "0";
-            if (InputControl(flp_InputControls, new[] { "Bag"}) != null)
-                bag = InputControl(flp_InputControls, new[] { "Bag"}).Text;
+            if (InputControl(flp_InputControls, new[] { "Bag" }) != null)
+                bag = InputControl(flp_InputControls, new[] { "Bag" }).Text;
 
             if (IsOkSaveData == false)
                 return;
@@ -481,7 +485,7 @@ namespace DigitalProductionProgram.Measure
                 if (IsTransferOk)
                     INSERT_MeasureProtocol_Main();
                 else
-                    _ = Activity.Stop($"Measurement Failed - {bag}");   
+                    _ = Activity.Stop($"Measurement Failed - {bag}");
                 loginfo = "INSERT";
             }
 
@@ -491,17 +495,22 @@ namespace DigitalProductionProgram.Measure
             btn_EditAmount.Enabled = true;
             btn_TransferLengthMeasure.Enabled = false;
 
-            Points.Add_Points(5, "Överför Mätning - Mätprotokoll");
 
+
+            Points.Add_Points(5, "Överför Mätning - Mätprotokoll");
             Load_MeasureData();
-            
+            Refresh();
+            Thread.Sleep(1000);
+
+
+
             Set_NumericUpDown_Values(this);
-          
+
             controls.Clear_InputControls(this);
             controls.ClearYellowBoxes(this);
             foreach (Control ctrl in flp_InputControls.Controls)
                 ctrl.Enabled = true;
-            Order.Check_BioBurden_Samples(int.Parse(bag), MeasureInformation.Most_Frequent_TotalAmount, this);
+            Order.Check_BioBurden_Samples(int.Parse(bag), MeasureInformation.Most_Frequent_TotalAmount, this); //Denna är SAFE, drar inget minne.
             if (dgv_Measurements.Rows.Count == 1)
                 Settings.Settings.Notifications.Subscription.NotifyFirstRun();
 
@@ -520,8 +529,8 @@ namespace DigitalProductionProgram.Measure
             if (dgv_Measurements.CurrentRow != null)
             {
                 var row = dgv_Measurements.CurrentRow.Index;
-                var chooseErrorCode = new ChooseErrorCode();
-                var black = new BlackBackground("", 80);
+                using var chooseErrorCode = new ChooseErrorCode();
+                using var black = new BlackBackground("", 80);
                 black.Show();
                 chooseErrorCode.ShowDialog();
                 if (string.IsNullOrEmpty(chooseErrorCode.ErrorCode) || string.IsNullOrEmpty(chooseErrorCode.Comment))
@@ -684,23 +693,28 @@ namespace DigitalProductionProgram.Measure
                         break;
                 }
 
-
                 if (descriptionID == 10000)
                 {
                     IsTransferOk = false;
                     return;
                 }
-                
-                using (var con = new SqlConnection(Database.cs_Protocol))
+
+                // 🚀 Använd ExecuteSafe istället för att öppna connection direkt
+               Database.ExecuteSafe(_ =>
                 {
                     const string query = @"
-                        INSERT INTO MeasureProtocol.Data
-                        VALUES (@orderid, @descriptionid, @value, @textvalue, @boolvalue, @datevalue, COALESCE((SELECT MAX(rowindex) + 1 FROM MeasureProtocol.MainData WHERE OrderID = @orderid), 1))";
+                INSERT INTO MeasureProtocol.Data
+                VALUES (@orderid, @descriptionid, @value, @textvalue, @boolvalue, @datevalue, 
+                COALESCE((SELECT MAX(rowindex) + 1 
+                          FROM MeasureProtocol.MainData 
+                          WHERE OrderID = @orderid), 1))";
 
-                    con.Open();
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                    using var cmd = new SqlCommand(query, _);
+                    ServerStatus.Add_Sql_Counter();
+
                     cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                     cmd.Parameters.AddWithValue("@descriptionid", descriptionID);
+
                     switch (dataType)
                     {
                         case 0:
@@ -720,11 +734,14 @@ namespace DigitalProductionProgram.Measure
                             SQL_Parameter.Boolean(cmd.Parameters, "@boolvalue", chb.Checked);
                             break;
                     }
+
                     cmd.Parameters.AddWithValue("@datevalue", DBNull.Value);
                     cmd.ExecuteNonQuery();
-                }
+                    return true; // returnvärde krävs för ExecuteSafe<T>
+                });
             }
         }
+
         private void UPDATE_MeasureProtocol_Values()
         {
             foreach (Control ctrl in flp_InputControls.Controls)

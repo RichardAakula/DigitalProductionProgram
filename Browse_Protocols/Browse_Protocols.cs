@@ -386,7 +386,7 @@ namespace DigitalProductionProgram.Browse_Protocols
             if (CheckAuthority.IsRoleAuthorized(CheckAuthority.TemplateAuthorities.ManageOrderCounter) == false)
                 return;
 
-            var password = new PasswordManager("Bekräfta att du avaktiverar denna order med ditt lösenord.");
+            using var password = new PasswordManager("Bekräfta att du avaktiverar denna order med ditt lösenord.");
             password.ShowDialog();
             if (password.IsOk == false)
                 return;
@@ -533,28 +533,28 @@ namespace DigitalProductionProgram.Browse_Protocols
         private async void PartNr_Click(object? sender, EventArgs e)
         {
             var ctrl = (Control)sender;
-            var choose_Item = new Choose_Item(Part.List_PartNr, new[] { ctrl }, false);
+            using var choose_Item = new Choose_Item(Part.List_PartNr, new[] { ctrl }, false);
             choose_Item.ShowDialog();
             await Load_OrderList($" AND PartNr = '{ctrl.Text}'");
         }
         private async void Customer_Click(object? sender, EventArgs e)
         {
             var ctrl = (Control)sender;
-            var choose_Item = new Choose_Item(Customer.Customer.List_Customers, new[] { ctrl }, false);
+            using var choose_Item = new Choose_Item(Customer.Customer.List_Customers, new[] { ctrl }, false);
             choose_Item.ShowDialog();
             await Load_OrderList($" AND Customer = '{ctrl.Text}'");
         }
         private async void Order_Click(object? sender, EventArgs e)
         {
             var ctrl = (Control)sender;
-            var choose_Item = new Choose_Item(Order.List_Orders, new[] { ctrl }, false);
+            using var choose_Item = new Choose_Item(Order.List_Orders, new[] { ctrl }, false);
             choose_Item.ShowDialog();
             await Load_OrderList($" AND OrderNr = '{ctrl.Text}'");
         }
         private async void ProdType_Click(object sender, EventArgs e)
         {
             var ctrl = (Control)sender;
-            var choose_Item = new Choose_Item(Order.List_ProdType, new[] { ctrl }, false);
+            using var choose_Item = new Choose_Item(Order.List_ProdType, new[] { ctrl }, false);
             choose_Item.ShowDialog();
             await Load_OrderList($" AND ProdType = '{ctrl.Text}'");
         }
@@ -578,7 +578,7 @@ namespace DigitalProductionProgram.Browse_Protocols
                     return;
             }
 
-            var choose_Items = new Choose_Item(items, cells);
+            using var choose_Items = new Choose_Item(items, cells);
             choose_Items.ShowDialog();
             await Load_OrderList($" AND OrderID IN (SELECT OrderID FROM [Order].PreFab WHERE {codetext} = '{cells[0].Value}')");
         }
@@ -611,7 +611,7 @@ namespace DigitalProductionProgram.Browse_Protocols
                 InfoText.Show("Denna funktion fungerar endast om det finns data i Processkortet", CustomColors.InfoText_Color.Warning, "Warning", this);
                 return;
             }
-            var choose_Items = new Choose_Item(items, cells);
+            using var choose_Items = new Choose_Item(items, cells);
             choose_Items.ShowDialog();
             await Load_OrderList($" AND OrderID IN (SELECT DISTINCT OrderID FROM [Order].Data WHERE TextValue = '{cells[0].Value}')");
         }

@@ -231,8 +231,8 @@ namespace DigitalProductionProgram.Protocols.Kragning_TEF
             if (!Person.IsUserSignedIn(true))
                 return;
 
-            var black = new BlackBackground(string.Empty, 80);
-            var password = new PasswordManager(LanguageManager.GetString("confirmTransferPassword"));
+            using var black = new BlackBackground(string.Empty, 80);
+            using var password = new PasswordManager(LanguageManager.GetString("confirmTransferPassword"));
             black.Show();
             password.ShowDialog();
             black.Close();

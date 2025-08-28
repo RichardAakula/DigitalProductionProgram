@@ -223,7 +223,7 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
                 var items = List_BatchNr.ToList();
                 var cells = new[] { dgv_Frekvensmarkering.Rows[e.RowIndex].Cells[e.ColumnIndex] };
 
-                var choose_Item = new Choose_Item(items, cells, null, 0, 0, true, true);
+                using var choose_Item = new Choose_Item(items, cells, null, 0, 0, true, true);
                 choose_Item.ShowDialog();
 
             }

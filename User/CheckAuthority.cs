@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
+using System.Diagnostics;
 using DigitalProductionProgram.ControlsManagement;
 using Microsoft.Data.SqlClient;
 using DigitalProductionProgram.DatabaseManagement;
@@ -89,7 +90,7 @@ namespace DigitalProductionProgram.User
                 return dict;
             }
         }
-
+        //[DebuggerStepThrough]
         public static bool IsRoleAuthorized(Enum templateAuthority, bool IsOkWarnUser = true)
         {
             bool isAuthorized;

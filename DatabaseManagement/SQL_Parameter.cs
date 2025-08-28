@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
@@ -8,8 +9,10 @@ using Microsoft.Data.SqlClient;
 
 namespace DigitalProductionProgram.DatabaseManagement
 {
+    [DebuggerStepThrough]
     internal class SQL_Parameter
     {
+        
         public static SqlParameter Boolean(SqlParameterCollection collection, string param, object? text, bool isNullEqFalse = false)
         {
             var IsTrue = false;
@@ -51,6 +54,7 @@ namespace DigitalProductionProgram.DatabaseManagement
         {
             return value is null ? collection.AddWithValue(param, DBNull.Value) : collection.AddWithValue(param, value);
         }
+        [DebuggerStepThrough]
         public static SqlParameter String(SqlParameterCollection collection, string param, string? value, bool IsNA_Ok = false)
         {
             if (string.IsNullOrEmpty(value) || (ControlValidator.IsStringNA(value) && IsNA_Ok == false))

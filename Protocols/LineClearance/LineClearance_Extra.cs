@@ -360,7 +360,7 @@ namespace DigitalProductionProgram.Protocols.LineClearance
             var org_Name = Person.Name;
             var org_UserAnstNr = Person.EmployeeNr;
 
-            var choose_Item = new Choose_Item(List_AuthorizedUsers, new Control[] { LC_Approved_Name }, false);
+            using var choose_Item = new Choose_Item(List_AuthorizedUsers, new Control[] { LC_Approved_Name }, false);
             choose_Item.ShowDialog();
 
             Person.Name = LC_Approved_Name.Text;

@@ -251,26 +251,26 @@ namespace DigitalProductionProgram.Measure
             public double? LCL { get; set; }
         }
 
-        private static NumericUpDown NumBag(Measurement_Protocol mp)
-        {
-            return (from Control ctrl in mp.flp_InputControls.Controls where ctrl is NumericUpDown && ctrl.Name == "Bag" select (NumericUpDown)ctrl).FirstOrDefault();
-        }
+        //private static NumericUpDown NumBag(Measurement_Protocol mp)
+        //{
+        //    return (from Control ctrl in mp.flp_InputControls.Controls where ctrl is NumericUpDown && ctrl.Name == "Bag" select (NumericUpDown)ctrl).FirstOrDefault();
+        //}
        
-        private static int LastOkNumbag(Measurement_Protocol mp, ref int row)
-        {
-            bool IsDiscarded;
-            do
-            {
-                if (row < 0)
-                    return 0;
-                bool.TryParse(mp.dgv_Measurements.Rows[row].Cells["Discarded"].Value.ToString(), out IsDiscarded);
-                if (IsDiscarded)
-                    row--;
-            } while (IsDiscarded);
+        //private static int LastOkNumbag(Measurement_Protocol mp, ref int row)
+        //{
+        //    bool IsDiscarded;
+        //    do
+        //    {
+        //        if (row < 0)
+        //            return 0;
+        //        bool.TryParse(mp.dgv_Measurements.Rows[row].Cells["Discarded"].Value.ToString(), out IsDiscarded);
+        //        if (IsDiscarded)
+        //            row--;
+        //    } while (IsDiscarded);
 
-            int.TryParse(mp.dgv_Measurements.Rows[row].Cells["Bag"].Value.ToString(), out var bag);
-            return bag;
-        }
+        //    int.TryParse(mp.dgv_Measurements.Rows[row].Cells["Bag"].Value.ToString(), out var bag);
+        //    return bag;
+        //}
 
         public static Control? InputControl(FlowLayoutPanel flp, string[] CodeName)
         {
@@ -559,7 +559,7 @@ namespace DigitalProductionProgram.Measure
 
             if (items is null || items.Count <= 0)
                 return;
-            var chooseItem = new Choose_Item(items, new Control[] { tb }, false, true);
+            using var chooseItem = new Choose_Item(items, new Control[] { tb }, false, true);
             chooseItem.ShowDialog();
         }
         private static void Validate_Value_TextChanged(object? sender, EventArgs e)

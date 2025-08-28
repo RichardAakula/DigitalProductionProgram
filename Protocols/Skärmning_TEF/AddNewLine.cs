@@ -38,8 +38,8 @@ namespace DigitalProductionProgram.Protocols.Skärmning_TEF
         }
         public static void Ask()
         {
-            question = new AddNewLine();
-            question.ShowDialog();
+            using var addNewLine = new AddNewLine();
+            addNewLine.ShowDialog();
         }
         private void Side_MouseDown(object sender, MouseEventArgs e)
         {

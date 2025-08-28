@@ -170,8 +170,8 @@ namespace DigitalProductionProgram.Processcards
                 return;
             }
 
-            var black = new BlackBackground(string.Empty, 80);
-            var password = new PasswordManager(LanguageManager.GetString("signProcesscardPassword"));
+            using var black = new BlackBackground(string.Empty, 80);
+            using var password = new PasswordManager(LanguageManager.GetString("signProcesscardPassword"));
             black.Show();
             password.ShowDialog();
             black.Close();
@@ -196,7 +196,7 @@ namespace DigitalProductionProgram.Processcards
                 return;
             if (CheckAuthority.IsRoleAuthorized(CheckAuthority.TemplateAuthorities.ManageProcesscards) == false)
                 return;
-            var password = new PasswordManager(LanguageManager.GetString("signProcesscardPassword"));
+            using var password = new PasswordManager(LanguageManager.GetString("signProcesscardPassword"));
             password.ShowDialog();
             if (password.IsOk == false)
                 return;
@@ -216,8 +216,8 @@ namespace DigitalProductionProgram.Processcards
                 }
                 else
                 {
-                    var black = new BlackBackground(string.Empty, 60);
-                    var rev = new RevisionInfo();
+                    using var black = new BlackBackground(string.Empty, 60);
+                    using var rev = new RevisionInfo();
                     black.Show();
                     rev.ShowDialog();
                     black.Close();

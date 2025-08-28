@@ -411,8 +411,8 @@ namespace DigitalProductionProgram.Protocols.Svetsning_TEF
                 return;
             }
 
-            var black = new BlackBackground(string.Empty, 80);
-            var password = new PasswordManager(LanguageManager.GetString("confirmTransferPassword"));
+            using var black = new BlackBackground(string.Empty, 80);
+            using var password = new PasswordManager(LanguageManager.GetString("confirmTransferPassword"));
             black.Show();
             password.ShowDialog();
             black.Close();
@@ -447,8 +447,8 @@ namespace DigitalProductionProgram.Protocols.Svetsning_TEF
 
             if (IsUpdating_Parameter == false)
             {
-                var black = new BlackBackground(string.Empty, 80);
-                var password = new PasswordManager(LanguageManager.GetString("confirmTransferPassword"));
+                using var black = new BlackBackground(string.Empty, 80);
+                using var password = new PasswordManager(LanguageManager.GetString("confirmTransferPassword"));
                 black.Show();
                 password.ShowDialog();
                 black.Close();

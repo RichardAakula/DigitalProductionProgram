@@ -420,7 +420,7 @@ namespace DigitalProductionProgram.MainWindow
                 dt.Rows.Add(kvp.Key, kvp.Value);
             dt.Rows.Add(0, "Processkort Ej godkända av QA");
 
-            var choose_Item = new Choose_Item(dt, new Control[] { tb_ProdGrupp, tb_ProdBenämning }, false);
+            using var choose_Item = new Choose_Item(dt, new Control[] { tb_ProdGrupp, tb_ProdBenämning }, false);
             choose_Item.ShowDialog();
 
         }

@@ -72,7 +72,7 @@ namespace DigitalProductionProgram.Equipment
                 return cylinders;
             }
         }
-        public static List<string> HS_Upptagare
+        public static List<string?> HS_Upptagare
         {
             get
             {
@@ -89,7 +89,7 @@ namespace DigitalProductionProgram.Equipment
                 return list;
             }
         }
-        public static List<string> HS_Machines
+        public static List<string?> HS_Machines
         {
             get
             {

@@ -2361,4 +2361,7 @@ Kontakta IT-support om felet kvarstår.</value>
   <data name="error_OrderNotOpen" xml:space="preserve">
     <value>Du måste öppna eller starta en order före du öppnar Körprotokollet, kontrollera att OrderNr är ifyllt samt att Operation är valt.</value>
   </data>
+  <data name="Menu_Arkiv_UpdateDPP" xml:space="preserve">
+    <value>Uppdatera DPP</value>
+  </data>
 </root>

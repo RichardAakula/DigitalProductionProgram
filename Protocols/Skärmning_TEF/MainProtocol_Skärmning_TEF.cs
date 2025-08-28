@@ -264,6 +264,8 @@ namespace DigitalProductionProgram.Protocols.Skärmning_TEF
 
         private void Load_Data_FROM_Processcard()
         {
+            if (Order.PartID == 0 || Order.PartID is null)
+                return;
             Control[] ctrl_ProcessParametrar =
             {
                 lbl_Produktion_Temp_min, lbl_Produktion_Temp_nom, lbl_Produktion_Temp_max,
@@ -274,9 +276,8 @@ namespace DigitalProductionProgram.Protocols.Skärmning_TEF
                 
             };
 
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query = @"
+            using var con = new SqlConnection(Database.cs_Protocol);
+            var query = @"
                             SELECT ColumnIndex, RowIndex, Value, TextValue, template.Type, template.Decimals
                             FROM Protocol.Template AS template
 	                        JOIN Processcard.Data AS pc_data
@@ -288,33 +289,32 @@ namespace DigitalProductionProgram.Protocols.Skärmning_TEF
                                 AND ColumnIndex % 2 = 0
                             ORDER BY ColumnIndex";
 
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                con.Open();
-                cmd.Parameters.AddWithValue("@partID", Order.PartID);
-                cmd.Parameters.AddWithValue("@formtemplateid", 12);
-                var reader = cmd.ExecuteReader();
-                var ctr = 0;
-                while (reader.Read())
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            con.Open();
+            cmd.Parameters.AddWithValue("@partID", Order.PartID);
+            cmd.Parameters.AddWithValue("@formtemplateid", 12);
+            var reader = cmd.ExecuteReader();
+            var ctr = 0;
+            while (reader.Read())
+            {
+                int.TryParse(reader["type"].ToString(), out var type);
+                var value = string.Empty;
+                switch (type)
                 {
-                    int.TryParse(reader["type"].ToString(), out var type);
-                    var value = string.Empty;
-                    switch (type)
-                    {
-                        case 0://NumberValue
-                            int.TryParse(reader["Decimals"].ToString(), out var decimals);
+                    case 0://NumberValue
+                        int.TryParse(reader["Decimals"].ToString(), out var decimals);
 
-                            if (double.TryParse(reader["Value"].ToString(), out var NumberValue) == false)
-                                value = string.Empty;
-                            else
-                                value = Processcard.Format_Value(NumberValue, decimals);
-                            break;
-                        case 1://TextValue
-                            value = reader["TextValue"].ToString();
-                            break;
-                    }
-                    ctrl_ProcessParametrar[ctr].Text = value;
-                    ctr++;
+                        if (double.TryParse(reader["Value"].ToString(), out var NumberValue) == false)
+                            value = string.Empty;
+                        else
+                            value = Processcard.Format_Value(NumberValue, decimals);
+                        break;
+                    case 1://TextValue
+                        value = reader["TextValue"].ToString();
+                        break;
                 }
+                ctrl_ProcessParametrar[ctr].Text = value;
+                ctr++;
             }
         }
         public void Load_Protocol_Production()
@@ -324,10 +324,9 @@ namespace DigitalProductionProgram.Protocols.Skärmning_TEF
 
             Remove_All_Cards();
 
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                const string query =
-                    @"SELECT DISTINCT CodeText, Value, TextValue, DateValue, BoolValue, MachineIndex, Uppstart, ColumnIndex, template.Decimals, template.Type
+            using var con = new SqlConnection(Database.cs_Protocol);
+            const string query =
+                @"SELECT DISTINCT CodeText, Value, TextValue, DateValue, BoolValue, MachineIndex, Uppstart, ColumnIndex, template.Decimals, template.Type
                         FROM [Order].Data AS protocol
 	                        JOIN Protocol.Template as template
 		                        ON protocol.ProtocolDescriptionID = template.ProtocolDescriptionID
@@ -337,90 +336,89 @@ namespace DigitalProductionProgram.Protocols.Skärmning_TEF
                             AND FormTemplateID = @formtemplateid
                             AND protocol.ProtocolDescriptionID != 351
                        ORDER BY MachineIndex, Uppstart, ColumnIndex";
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
-                cmd.Parameters.AddWithValue("@formtemplateid", 12);
-                con.Open();
-                var reader = cmd.ExecuteReader();
-                var lastMachine = 0;
-                while (reader.Read())
-                {
-                    int.TryParse(reader["MachineIndex"].ToString(), out var machineIndex);
-                    int.TryParse(reader["Type"].ToString(), out var type);
-                    var codetext = reader["CodeText"].ToString();
-                    var IsOkAddRow = int.TryParse(reader["ColumnIndex"].ToString(), out var col) == false;
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
+            cmd.Parameters.AddWithValue("@formtemplateid", 12);
+            con.Open();
+            var reader = cmd.ExecuteReader();
+            var lastMachine = 0;
+            while (reader.Read())
+            {
+                int.TryParse(reader["MachineIndex"].ToString(), out var machineIndex);
+                int.TryParse(reader["Type"].ToString(), out var type);
+                var codetext = reader["CodeText"].ToString();
+                var IsOkAddRow = int.TryParse(reader["ColumnIndex"].ToString(), out var col) == false;
 
-                    if (lastMachine != machineIndex)
-                    {
-                        var workCard = MachineName(machineIndex);
-                        Add_New_Card(workCard);
-                        lastMachine = machineIndex;
-                    }
+                if (lastMachine != machineIndex)
+                {
+                    var workCard = MachineName(machineIndex);
+                    Add_New_Card(workCard);
+                    lastMachine = machineIndex;
+                }
                        
 
-                    var value = string.Empty;
-                    var boolValue = false;
-                    switch (type)
-                    {
-                        case 0: //NumberValue
-                            int.TryParse(reader["Decimals"].ToString(), out var decimals);
-                            if (double.TryParse(reader["Value"].ToString(), out var NumberValue) == false)
-                                value = string.Empty;
-                            else
-                                value = Processcard.Format_Value(NumberValue, decimals);
-                            break;
-                        case 1: //TextValue
-                            value = reader["TextValue"].ToString();
-                            break;
-                        case 2: //BoolValue
-                            bool.TryParse(reader["BoolValue"].ToString(), out boolValue);
-                            break;
-                        case 3: //DateValue
-                            if (DateTime.TryParse(reader["DateValue"].ToString(), out var date))
-                                value = date.ToString("yyyy-MM-dd HH:mm");
-                            break;
-                    }
-
-                    if (string.IsNullOrEmpty(value))
-                        value = "N/A";
-                    if (IsOkAddRow == false)
-                    {
-                        if (list_dgv[machineIndex - 1].Rows.Count <= 1)
-                        {
-                            if (type == 2) //bool value
-                            {
-                                var checkbox = new DataGridViewCheckBoxColumn
-                                {
-                                    Name = codetext
-                                };
-                                list_dgv[machineIndex - 1].Columns.Add(checkbox);
-                            }
-                            else
-                                list_dgv[machineIndex - 1].Columns.Add(codetext, string.Empty);
-                        }
-                    }
-
-                    if (IsOkAddRow)
-                        list_dgv[machineIndex - 1].Rows.Add();
-                    var row = list_dgv[machineIndex - 1].Rows.Count - 1;
-                    if (type == 2)
-                        list_dgv[machineIndex - 1].Rows[row].Cells[col].Value = boolValue;
-                    else
-                        list_dgv[machineIndex - 1].Rows[row].Cells[col].Value = value;
-                }
-
-                for (var i = 0; i < list_dgv.Count; i++)
+                var value = string.Empty;
+                var boolValue = false;
+                switch (type)
                 {
-                    tab_ctrl_Arbetskort.SelectedIndex = i;
-                    Set_ColumnWidth_dgv(list_dgv[i]);
+                    case 0: //NumberValue
+                        int.TryParse(reader["Decimals"].ToString(), out var decimals);
+                        if (double.TryParse(reader["Value"].ToString(), out var NumberValue) == false)
+                            value = string.Empty;
+                        else
+                            value = Processcard.Format_Value(NumberValue, decimals);
+                        break;
+                    case 1: //TextValue
+                        value = reader["TextValue"].ToString();
+                        break;
+                    case 2: //BoolValue
+                        bool.TryParse(reader["BoolValue"].ToString(), out boolValue);
+                        break;
+                    case 3: //DateValue
+                        if (DateTime.TryParse(reader["DateValue"].ToString(), out var date))
+                            value = date.ToString("yyyy-MM-dd HH:mm");
+                        break;
                 }
 
-                Set_Colors_dgv();
-                tab_ctrl_Arbetskort.SelectedIndex = 0;
-                DrawingControl.ResumeDrawing(tab_ctrl_Arbetskort);
+                if (string.IsNullOrEmpty(value))
+                    value = "N/A";
+                if (IsOkAddRow == false)
+                {
+                    if (list_dgv[machineIndex - 1].Rows.Count <= 1)
+                    {
+                        if (type == 2) //bool value
+                        {
+                            var checkbox = new DataGridViewCheckBoxColumn
+                            {
+                                Name = codetext
+                            };
+                            list_dgv[machineIndex - 1].Columns.Add(checkbox);
+                        }
+                        else
+                            list_dgv[machineIndex - 1].Columns.Add(codetext, string.Empty);
+                    }
+                }
 
-                Module.IsOkToSave = true;
+                if (IsOkAddRow)
+                    list_dgv[machineIndex - 1].Rows.Add();
+                var row = list_dgv[machineIndex - 1].Rows.Count - 1;
+                if (type == 2)
+                    list_dgv[machineIndex - 1].Rows[row].Cells[col].Value = boolValue;
+                else
+                    list_dgv[machineIndex - 1].Rows[row].Cells[col].Value = value;
             }
+
+            for (var i = 0; i < list_dgv.Count; i++)
+            {
+                tab_ctrl_Arbetskort.SelectedIndex = i;
+                Set_ColumnWidth_dgv(list_dgv[i]);
+            }
+
+            Set_Colors_dgv();
+            tab_ctrl_Arbetskort.SelectedIndex = 0;
+            DrawingControl.ResumeDrawing(tab_ctrl_Arbetskort);
+
+            Module.IsOkToSave = true;
         }
        
 
@@ -492,7 +490,7 @@ namespace DigitalProductionProgram.Protocols.Skärmning_TEF
             if (e.Button == MouseButtons.Left)
             {
                 var nuDatum = Date_Start.Text;
-                var datePicker = new DatePicker(nuDatum);
+                using var datePicker = new DatePicker(nuDatum);
                 datePicker.ShowDialog();
 
                 Date_Start.Text = datePicker.OutGoingDate;
@@ -645,8 +643,8 @@ namespace DigitalProductionProgram.Protocols.Skärmning_TEF
             var ctrl_tb = new Control[] { tb_Produktion_Mätare, tb_Produktion_Temp_L1, tb_Produktion_Temp_L2, tb_Produktion_ID_L1, tb_Produktion_ID_L2, tb_Produktion_OD1_L1, tb_Produktion_OD1_L2, tb_Produktion_ODs_L1, tb_Produktion_ODs_L2, tb_Verktygs_ID, tb_Produktion_Kommentar };
             ControlManager.Set_Control_NA(ctrl_tb);
 
-            var black = new BlackBackground(string.Empty, 80);
-            var password = new PasswordManager(LanguageManager.GetString("confirmTransferPassword"));
+            using var black = new BlackBackground(string.Empty, 80);
+            using var password = new PasswordManager(LanguageManager.GetString("confirmTransferPassword"));
             black.Show();
             password.ShowDialog();
             black.Close();
@@ -665,50 +663,47 @@ namespace DigitalProductionProgram.Protocols.Skärmning_TEF
 
             for (var i = 0; i < values.Length; i++)
             {
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    const string query = @"
+                using var con = new SqlConnection(Database.cs_Protocol);
+                const string query = @"
                         INSERT INTO [Order].Data
                                 (OrderID, ProtocolDescriptionID, MachineIndex, Uppstart, Value, TextValue, BoolValue, DateValue)
                         VALUES  (@orderid, @protocoldescriptionid, @machineindex, @uppstart, @value, @textvalue, @boolvalue, @datevalue)";
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    var value = values[i];
-                    cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
-                    cmd.Parameters.AddWithValue("@protocoldescriptionid", List_ProtocolDescriptionID[i]);
-                    cmd.Parameters.AddWithValue("@machineindex", tab_ctrl_Arbetskort.SelectedTab.TabIndex + 1);
-                    cmd.Parameters.AddWithValue("@uppstart", RowIndex_Active_dgv);
-                    switch (List_Type[i])
-                    {
-                        case 0:
-                            SQL_Parameter.Double(cmd.Parameters, "@value", value);
-                            cmd.Parameters.AddWithValue("@textvalue", DBNull.Value);
-                            cmd.Parameters.AddWithValue("@boolvalue", DBNull.Value);
-                            cmd.Parameters.AddWithValue("@datevalue", DBNull.Value);
-                            break;
-                        case 1:
-                            SQL_Parameter.String(cmd.Parameters, "@textvalue", value);
-                            cmd.Parameters.AddWithValue("@value", DBNull.Value);
-                            cmd.Parameters.AddWithValue("@boolvalue", DBNull.Value);
-                            cmd.Parameters.AddWithValue("@datevalue", DBNull.Value);
-                            break;
-                        case 2:
-                            SQL_Parameter.Boolean(cmd.Parameters, "@boolvalue", value);
-                            cmd.Parameters.AddWithValue("@value", DBNull.Value);
-                            cmd.Parameters.AddWithValue("@textvalue", DBNull.Value);
-                            cmd.Parameters.AddWithValue("@datevalue", DBNull.Value);
-                            break;
-                        case 3:
-                            SQL_Parameter.Date_Time(cmd.Parameters, "@datevalue", value);
-                            cmd.Parameters.AddWithValue("@value", DBNull.Value);
-                            cmd.Parameters.AddWithValue("@boolvalue", DBNull.Value);
-                            cmd.Parameters.AddWithValue("@textvalue", DBNull.Value);
-                            break;
-                    }
-                  
-                    con.Open();
-                    cmd.ExecuteNonQuery();
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                var value = values[i];
+                cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
+                cmd.Parameters.AddWithValue("@protocoldescriptionid", List_ProtocolDescriptionID[i]);
+                cmd.Parameters.AddWithValue("@machineindex", tab_ctrl_Arbetskort.SelectedTab.TabIndex + 1);
+                cmd.Parameters.AddWithValue("@uppstart", RowIndex_Active_dgv);
+                switch (List_Type[i])
+                {
+                    case 0:
+                        SQL_Parameter.Double(cmd.Parameters, "@value", value);
+                        cmd.Parameters.AddWithValue("@textvalue", DBNull.Value);
+                        cmd.Parameters.AddWithValue("@boolvalue", DBNull.Value);
+                        cmd.Parameters.AddWithValue("@datevalue", DBNull.Value);
+                        break;
+                    case 1:
+                        SQL_Parameter.String(cmd.Parameters, "@textvalue", value);
+                        cmd.Parameters.AddWithValue("@value", DBNull.Value);
+                        cmd.Parameters.AddWithValue("@boolvalue", DBNull.Value);
+                        cmd.Parameters.AddWithValue("@datevalue", DBNull.Value);
+                        break;
+                    case 2:
+                        SQL_Parameter.Boolean(cmd.Parameters, "@boolvalue", value);
+                        cmd.Parameters.AddWithValue("@value", DBNull.Value);
+                        cmd.Parameters.AddWithValue("@textvalue", DBNull.Value);
+                        cmd.Parameters.AddWithValue("@datevalue", DBNull.Value);
+                        break;
+                    case 3:
+                        SQL_Parameter.Date_Time(cmd.Parameters, "@datevalue", value);
+                        cmd.Parameters.AddWithValue("@value", DBNull.Value);
+                        cmd.Parameters.AddWithValue("@boolvalue", DBNull.Value);
+                        cmd.Parameters.AddWithValue("@textvalue", DBNull.Value);
+                        break;
                 }
-            
+                  
+                con.Open();
+                cmd.ExecuteNonQuery();
             }
             ControlManager.Clear_TextBoxes(ctrl_tb);
             Load_Protocol_Production();

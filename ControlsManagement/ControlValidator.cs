@@ -8,6 +8,7 @@ namespace DigitalProductionProgram.ControlsManagement
 {
     internal class ControlValidator
     {
+        [DebuggerStepThrough]
         public static bool IsStringNA(string? text)
         {
             switch (text)

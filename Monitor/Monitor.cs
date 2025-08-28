@@ -102,7 +102,7 @@ namespace DigitalProductionProgram.Monitor
             }
             return list;
         }
-        public static List<string> List_RazorTypes
+        public static List<string?> List_RazorTypes
         {
             get
             {
@@ -119,7 +119,7 @@ namespace DigitalProductionProgram.Monitor
             return parts;
            // return parts.Select(part => part.Description).ToList();
         }
-        public static List<string> List_CandleFilter_PartNr(string description)
+        public static List<string?> List_CandleFilter_PartNr(string description)
         {
             var list = new List<string>();
             var parts = Utilities.GetFromMonitor<Inventory.Parts>($"filter=startswith(Description, '{description}')");
@@ -128,7 +128,7 @@ namespace DigitalProductionProgram.Monitor
 
             return list;
         }
-        public static List<string> List_PartNumber_FilterType()
+        public static List<string?> List_PartNumber_FilterType()
         {
             var list = new List<string>();
             var parts = Utilities.GetFromMonitor<Inventory.Parts>($"filter=startswith(PartNumber, 'Filter')");
@@ -136,7 +136,7 @@ namespace DigitalProductionProgram.Monitor
                 list.Add($"{part.PartNumber}");
             return list;
         }
-        public static List<string> List_Serialnumber_Extrusion_Filter(string? partnr)
+        public static List<string?> List_Serialnumber_Extrusion_Filter(string? partnr)
         {
             if (string.IsNullOrEmpty(partnr))
                 return new List<string> { "N/A" };

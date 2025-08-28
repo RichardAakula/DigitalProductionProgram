@@ -45,7 +45,7 @@ namespace DigitalProductionProgram.Equipment
                 var value = cmd.ExecuteScalar();
                 return value?.ToString();
             }
-            public static List<string> List_HS_PipeID(bool IsNomID)
+            public static List<string?> List_HS_PipeID(bool IsNomID)
             {
                 var list = new List<string>();
                 using var con = new SqlConnection(Database.cs_ToolRegister);
@@ -58,7 +58,7 @@ namespace DigitalProductionProgram.Equipment
                     list.Add(reader[0].ToString());
                 return list;
             }
-            public static List<string> List_HS_Hackhylsa
+            public static List<string?> List_HS_Hackhylsa
             {
                 get
                 {

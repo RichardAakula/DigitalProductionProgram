@@ -136,8 +136,8 @@ namespace DigitalProductionProgram.Protocols.Slipning_TEF
 
             if (IsUpdating_Parameter == false)
             {//Om en ny rad skall läggas till
-                var black = new BlackBackground(string.Empty, 80);
-                var password = new PasswordManager(LanguageManager.GetString("confirmTransferPassword"));
+                using var black = new BlackBackground(string.Empty, 80);
+                using var password = new PasswordManager(LanguageManager.GetString("confirmTransferPassword"));
                 black.Show();
                 password.ShowDialog();
                 black.Close();
@@ -413,7 +413,7 @@ namespace DigitalProductionProgram.Protocols.Slipning_TEF
                 if (list.Contains(dgv_Produktion.Rows[i].Cells[0].Value.ToString()) == false)
                     list.Add(dgv_Produktion.Rows[i].Cells[0].Value.ToString());
             }
-            var choose_Item = new Choose_Item(list, new[] {ctrl}, false);
+            using var choose_Item = new Choose_Item(list, new[] {ctrl}, false);
             choose_Item.ShowDialog();
 
             _ = Activity.Stop(Monitor.Monitor.Part_Material is null == false ? 

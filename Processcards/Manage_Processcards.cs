@@ -70,6 +70,44 @@ namespace DigitalProductionProgram.Processcards
         }
 
 
+        private bool IsFieldsFromRegisterOk
+        {
+            //Denna kanske blir lättare att genomföra när vi flyttat all utrustning till Monitor.
+            //Denna skall kolla att alla fält som skall hämtas från register faktiskt finns i regsitret.
+            get
+            {
+                Database.ExecuteSafe(con =>
+                {
+                    const string query = @"
+                    SELECT CodeText 
+                    FROM Protocol.Description
+                    WHERE ID IN
+                        (
+                            SELECT ProtocolDescriptionID 
+                            FROM Protocol.Template 
+                            WHERE IsList_Processcard = 'True'
+                            AND FormTemplateID IN
+                                (
+                                    SELECT FormTemplateID 
+                                    FROM Protocol.FormTemplate 
+                                    WHERE MainTemplateID = @maintemplateid AND MainTemplateID IS NOT NULL
+                                )
+                        )";
+                    using var cmd = new SqlCommand(query, con);
+                    ServerStatus.Add_Sql_Counter();
+                    cmd.Parameters.AddWithValue("@maintemplateid", Templates_Protocol.MainTemplate.ID);
+                    using var reader = cmd.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        MessageBox.Show(reader["CodeText"].ToString());
+                    }
+
+                    return false;
+                });
+
+                return true;
+            }
+        }
         private bool Is_ProdlineChecked()
         {
             switch (Order.WorkOperation)
@@ -514,8 +552,8 @@ namespace DigitalProductionProgram.Processcards
 
             if (Processcard.IsMultipleProcesscard(Order.WorkOperation, Order.PartNumber))
             {
-                var black = new BlackBackground("", 70);
-                var chooseProcesscard = new ProcesscardTemplateSelector(false, true, true, false);
+                using var black = new BlackBackground("", 70);
+                using var chooseProcesscard = new ProcesscardTemplateSelector(false, true, true, false);
                 black.Show();
                 chooseProcesscard.ShowDialog();
                 black.Close();
@@ -832,6 +870,9 @@ namespace DigitalProductionProgram.Processcards
         {
             get
             {
+                if (IsFieldsFromRegisterOk == false)
+                    return false;
+
                 if (Is_ProdlineChecked() == false)
                 {
                     InfoText.Show(LanguageManager.GetString("saveProcesscard_Info_1"), CustomColors.InfoText_Color.Warning, "ProdLine", this);
@@ -1012,17 +1053,15 @@ namespace DigitalProductionProgram.Processcards
                 num_NumberOfLayers.Value = 0;
                 return;
             }
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query = @"UPDATE Processcard.MainData SET NumberOfLayers = @layers WHERE PartID = @partid";
 
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@partid", Order.PartID);
-                SQL_Parameter.Int(cmd.Parameters, "@layers", num_NumberOfLayers.Value.ToString(CultureInfo.InvariantCulture));
-                con.Open();
-                cmd.ExecuteNonQuery();
+            using var con = new SqlConnection(Database.cs_Protocol);
+            var query = @"UPDATE Processcard.MainData SET NumberOfLayers = @layers WHERE PartID = @partid";
 
-            }
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            cmd.Parameters.AddWithValue("@partid", Order.PartID);
+            SQL_Parameter.Int(cmd.Parameters, "@layers", num_NumberOfLayers.Value.ToString(CultureInfo.InvariantCulture));
+            con.Open();
+            cmd.ExecuteNonQuery();
         }
         public static void Execute_cmd(IDbCommand cmd, ref bool IsOk)
         {
@@ -1083,7 +1122,7 @@ namespace DigitalProductionProgram.Processcards
                 reader.Close();
             }
 
-            var choose_Item = new Choose_Item(list, new Control[] {tb_PartNr}, false);
+            using var choose_Item = new Choose_Item(list, new Control[] {tb_PartNr}, false);
             choose_Item.ShowDialog();
         }
         private void PartNr_TextChanged(object sender, EventArgs e)
@@ -1102,8 +1141,8 @@ namespace DigitalProductionProgram.Processcards
         }
         private void ProdType_Click(object sender, EventArgs e)
         {
-            var ctrl = (Control) sender;
-            var choose_Item = new Choose_Item(MainInfo_B.List_ProdType("Processcard.MainData"), new[] { ctrl }, false, true);
+            using var ctrl = (Control) sender;
+            using var choose_Item = new Choose_Item(MainInfo_B.List_ProdType("Processcard.MainData"), new[] { ctrl }, false, true);
             choose_Item.ShowDialog();
         }
         private void ProdType_TextChanged(object sender, EventArgs e)
@@ -1120,8 +1159,8 @@ namespace DigitalProductionProgram.Processcards
         }
         private void ProdLine_Click(object sender, EventArgs e)
         {
-            var ctrl = (Control)sender;
-            var choose_Item = new Choose_Item(Equipment.Equipment.List_ProdLines, new[] { ctrl }, false);
+            using var ctrl = (Control)sender;
+            using var choose_Item = new Choose_Item(Equipment.Equipment.List_ProdLines, new[] { ctrl }, false);
             choose_Item.ShowDialog();
         }
         private void ProdLinje_TextChanged(object sender, EventArgs e)
@@ -1142,8 +1181,8 @@ namespace DigitalProductionProgram.Processcards
             //Used if List_PartNr is filled. Right now it takes to long to fill this, so it must be filled somehow async
             if (Monitor.Monitor.List_PartNr is null)
                 return;
-            var ctrl = (Control)sender;
-            var choose_Item = new Choose_Item(Monitor.Monitor.List_PartNr, new[] { ctrl }, false, true);
+            using var ctrl = (Control)sender;
+            using var choose_Item = new Choose_Item(Monitor.Monitor.List_PartNr, new[] { ctrl }, false, true);
             choose_Item.ShowDialog();
         }
 

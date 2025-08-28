@@ -635,7 +635,7 @@ namespace DigitalProductionProgram.Zumbach
             {
                 InfoText.Show(LanguageManager.GetString("missingMeasurePoints"), CustomColors.InfoText_Color.Warning, "Warning!", this);
 
-                var addMeasurePoints = new AddMeasurePointsManually();
+                using var addMeasurePoints = new AddMeasurePointsManually();
                 addMeasurePoints.ShowDialog();
             }
         }

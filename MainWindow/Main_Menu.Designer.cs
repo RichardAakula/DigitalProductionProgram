@@ -38,6 +38,7 @@ namespace DigitalProductionProgram.MainWindow
             Menu_Arkiv_Preview = new ToolStripMenuItem();
             Menu_Arkiv_Print = new ToolStripMenuItem();
             Menu_Arkiv_ManageDatabase = new ToolStripMenuItem();
+            Menu_Arkiv_UpdateDPP = new ToolStripMenuItem();
             Menu_Arkiv_Exit = new ToolStripMenuItem();
             Menu_Order = new ToolStripMenuItem();
             Menu_Order_OrderDone = new ToolStripMenuItem();
@@ -136,17 +137,17 @@ namespace DigitalProductionProgram.MainWindow
             påskäggToolStripMenuItem = new ToolStripMenuItem();
             Developer_CountSql_Queries = new ToolStripMenuItem();
             Developer_Clear_Sql_Queries = new ToolStripMenuItem();
+            testaChartToolStripMenuItem = new ToolStripMenuItem();
             menuStrip = new MenuStrip();
             Menu_Equipment = new ToolStripMenuItem();
             Menu_Equipment_UseFilter = new ToolStripMenuItem();
             Menu_Equipment_UseSilpaket = new ToolStripMenuItem();
-            testaChartToolStripMenuItem = new ToolStripMenuItem();
             menuStrip.SuspendLayout();
             SuspendLayout();
             // 
             // Menu_Arkiv
             // 
-            Menu_Arkiv.DropDownItems.AddRange(new ToolStripItem[] { Menu_Arkiv_NewOrder, Menu_Arkiv_Open, Menu_Arkiv_Preview, Menu_Arkiv_Print, Menu_Arkiv_ManageDatabase, Menu_Arkiv_Exit });
+            Menu_Arkiv.DropDownItems.AddRange(new ToolStripItem[] { Menu_Arkiv_NewOrder, Menu_Arkiv_Open, Menu_Arkiv_Preview, Menu_Arkiv_Print, Menu_Arkiv_ManageDatabase, Menu_Arkiv_UpdateDPP, Menu_Arkiv_Exit });
             Menu_Arkiv.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
             Menu_Arkiv.ForeColor = Color.DeepSkyBlue;
             Menu_Arkiv.Name = "Menu_Arkiv";
@@ -190,6 +191,13 @@ namespace DigitalProductionProgram.MainWindow
             Menu_Arkiv_ManageDatabase.Size = new Size(281, 22);
             Menu_Arkiv_ManageDatabase.Text = "Hantera Anslutningsinställningar";
             Menu_Arkiv_ManageDatabase.Click += Menu_Arkiv_ManageDatabase_Click;
+            // 
+            // Menu_Arkiv_UpdateDPP
+            // 
+            Menu_Arkiv_UpdateDPP.Name = "Menu_Arkiv_UpdateDPP";
+            Menu_Arkiv_UpdateDPP.Size = new Size(281, 22);
+            Menu_Arkiv_UpdateDPP.Text = "Uppdatera DPP";
+            Menu_Arkiv_UpdateDPP.Click += Menu_Arkiv_UpdateDPP_Click;
             // 
             // Menu_Arkiv_Exit
             // 
@@ -912,6 +920,13 @@ namespace DigitalProductionProgram.MainWindow
             Developer_Clear_Sql_Queries.Text = "Töm SQL Queries";
             Developer_Clear_Sql_Queries.Click += Developer_Clear_Sql_Queries_Click;
             // 
+            // testaChartToolStripMenuItem
+            // 
+            testaChartToolStripMenuItem.Name = "testaChartToolStripMenuItem";
+            testaChartToolStripMenuItem.Size = new Size(401, 22);
+            testaChartToolStripMenuItem.Text = "Testa Chart";
+            testaChartToolStripMenuItem.Click += testaChartToolStripMenuItem_Click;
+            // 
             // menuStrip
             // 
             menuStrip.BackColor = Color.Transparent;
@@ -961,13 +976,6 @@ namespace DigitalProductionProgram.MainWindow
             Menu_Equipment_UseSilpaket.Size = new Size(181, 22);
             Menu_Equipment_UseSilpaket.Text = "Använd Silpaket";
             Menu_Equipment_UseSilpaket.Click += Menu_Protocol_UseSilpaket_Click;
-            // 
-            // testaChartToolStripMenuItem
-            // 
-            testaChartToolStripMenuItem.Name = "testaChartToolStripMenuItem";
-            testaChartToolStripMenuItem.Size = new Size(401, 22);
-            testaChartToolStripMenuItem.Text = "Testa Chart";
-            testaChartToolStripMenuItem.Click += testaChartToolStripMenuItem_Click;
             // 
             // Main_Menu
             // 
@@ -1097,5 +1105,6 @@ namespace DigitalProductionProgram.MainWindow
         private ToolStripMenuItem Developer_CountSql_Queries;
         private ToolStripMenuItem Developer_Clear_Sql_Queries;
         private ToolStripMenuItem testaChartToolStripMenuItem;
+        private ToolStripMenuItem Menu_Arkiv_UpdateDPP;
     }
 }

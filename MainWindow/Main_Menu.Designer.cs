@@ -924,7 +924,7 @@ namespace DigitalProductionProgram.MainWindow
             // 
             testaChartToolStripMenuItem.Name = "testaChartToolStripMenuItem";
             testaChartToolStripMenuItem.Size = new Size(401, 22);
-            testaChartToolStripMenuItem.Text = "Testa Chart";
+            testaChartToolStripMenuItem.Text = "Kolla medelvärden!";
             testaChartToolStripMenuItem.Click += testaChartToolStripMenuItem_Click;
             // 
             // menuStrip

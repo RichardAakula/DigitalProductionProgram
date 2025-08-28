@@ -13,7 +13,6 @@ namespace DigitalProductionProgram.Measure
    
     internal class MeasureInformation
     {
-
         public static int TotalMeasurmentsByOperators
         {
             get

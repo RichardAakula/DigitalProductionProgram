@@ -599,8 +599,15 @@ namespace DigitalProductionProgram.MainWindow
         //----------UVECKLING----------
         public void Menu_Utvecklare_GetOrderInfo(object sender, EventArgs e)
         {
+            var workcenterDescription = "N/A";
+            var workcenterProdGroup = "N/A";
+            if (Monitor.Monitor.WorkCenter != null)
+            {
+                workcenterDescription = Monitor.Monitor.WorkCenter.Description;
+                workcenterProdGroup = Monitor.Monitor.WorkCenter.Number;
+            }
+                
 
-            string test = Monitor.Monitor.WorkCenter.Description;
 
             InfoText.Show(
                 $@"
@@ -612,10 +619,10 @@ PartNr = {Order.PartNumber}
 PartID = {Order.PartID}
 RevNr = {Order.RevNr}
 ProdLinje = {Order.ProdLine}
-WorkCenterDescritpion = {Monitor.Monitor.WorkCenter.Description}
+WorkCenterDescritpion = {workcenterDescription}
 ProduktTyp = {Order.ProdType}
 ProdGrupp = {Order.ProdGroup} 
-WorkCenterProdGroup = {Monitor.Monitor.WorkCenter.Number}
+WorkCenterProdGroup = {workcenterProdGroup}
 Kund = {Order.Customer}
 Benämning = {Order.Description}
 HS-Machine = {Equipment.Equipment.HS_Machine}
@@ -1405,8 +1412,7 @@ ORDER BY OrderID DESC ";
 
         private void testaChartToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            using var test = new Test("TestCode", "TestText");
-            test.ShowDialog();
+            MainMeasureStatistics.ValidateMeasurements.AverageValues();
         }
 
         private void Menu_Arkiv_UpdateDPP_Click(object sender, EventArgs e)

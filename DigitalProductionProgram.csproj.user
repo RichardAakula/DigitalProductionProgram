@@ -97,9 +97,6 @@
     <Compile Update="MainWindow\ServerStatus.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Update="MainWindow\Test.cs">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Update="Statistics\Statistics_DPP.cs">
       <SubType>UserControl</SubType>
     </Compile>

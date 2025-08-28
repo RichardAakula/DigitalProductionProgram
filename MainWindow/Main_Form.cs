@@ -809,8 +809,8 @@ namespace DigitalProductionProgram.MainWindow
             backGround.Show();
             frmLogin.ShowDialog();
 
-            backGround.Dispose();
-            frmLogin.Dispose();
+           // backGround.Dispose();
+           // frmLogin.Dispose();
 
 
             lbl_EmpNr.Text = Person.EmployeeNr;

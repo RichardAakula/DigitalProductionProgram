@@ -76,8 +76,8 @@ namespace DigitalProductionProgram.Measure
             {
                 if (IsSomeValueBad)
                 {
-                    InfoText.Show(LanguageManager.GetString("measureprotocol_Warning_1"), CustomColors.InfoText_Color.Bad, "Warning", this);
-                    return false;
+                    InfoText.Question(LanguageManager.GetString("measureprotocol_Warning_1"), CustomColors.InfoText_Color.Bad, "Warning", this);
+                    return InfoText.answer != InfoText.Answer.No;
                 }
                 if (IsTransferInEditMode)
                     return true;

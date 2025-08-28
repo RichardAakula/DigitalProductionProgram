@@ -870,8 +870,8 @@ namespace DigitalProductionProgram.Processcards
         {
             get
             {
-                if (IsFieldsFromRegisterOk == false)
-                    return false;
+                //if (IsFieldsFromRegisterOk == false && Environment.MachineName == Main_Form.adminHostName)
+                //    return false;
 
                 if (Is_ProdlineChecked() == false)
                 {

@@ -1539,7 +1539,9 @@ Detta innebär att man eliminerar risken att blanda ihop material, verktyg, prod
 Det kan vara förödande för en kund om det finns risk för att olika produkter kan blandas ihop.</value>
   </data>
   <data name="measureprotocol_Warning_1" xml:space="preserve">
-    <value>En av dina mätningar är onormalt högt eller lågt under det nominella värdet, vänligen kontrollera alla mätningar och försök igen.</value>
+    <value>En av dina mätningar är onormalt högt eller lågt under det nominella värdet. 
+Du bör omgående kontakta den som är ansvarig för Mätpunkterna om det är fel värden insatta där.
+Är du säker på att du vill överföra denna mätning?</value>
   </data>
   <data name="label_RoomTempMoist" xml:space="preserve">
     <value>Rums Temp/Fukt</value>

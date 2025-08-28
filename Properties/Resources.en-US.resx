@@ -1545,7 +1545,9 @@ By doing such you eliminate the risk for mixing material, tooling, product, docu
 This to avoid severe consequenses for customer end.</value>
   </data>
   <data name="measureprotocol_Warning_1" xml:space="preserve">
-    <value>One of your measurements is abnormally high or low below the nominal value, please check all measurements and try again.</value>
+    <value>One of your measurements is abnormally high or low compared to the nominal value.
+You should immediately contact the person responsible for the measuring points if incorrect values have been entered there.
+Are you sure you want to transfer this measurement?</value>
   </data>
   <data name="label_RoomTempMoist" xml:space="preserve">
     <value>Room Temp/Moist</value>

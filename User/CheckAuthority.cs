@@ -90,7 +90,7 @@ namespace DigitalProductionProgram.User
                 return dict;
             }
         }
-        //[DebuggerStepThrough]
+        [DebuggerStepThrough]
         public static bool IsRoleAuthorized(Enum templateAuthority, bool IsOkWarnUser = true)
         {
             bool isAuthorized;

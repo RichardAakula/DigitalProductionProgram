@@ -22,6 +22,9 @@ namespace DigitalProductionProgram.Monitor
 {
     internal class Monitor
     {
+        public static Monitor Current { get; } = new Monitor();
+
+
         public static Factory factory;
         public enum Factory
         {
@@ -45,7 +48,8 @@ namespace DigitalProductionProgram.Monitor
         public static List<string>? List_PartNr;
 
 
-        public static Inventory.Parts? Part;
+        //public string? PartNumber { get; set; }
+        public Inventory.Parts? Part { get; private set; }
         public static Inventory.Parts? Part_Material;
         public static Manufacturing.ManufacturingOrders? Order;
         public static Manufacturing.ManufacturingOrderOperations? Operations;
@@ -136,7 +140,7 @@ namespace DigitalProductionProgram.Monitor
                 list.Add($"{part.PartNumber}");
             return list;
         }
-        public static List<string?> List_Serialnumber_Extrusion_Filter(string? partnr)
+        public static List<string> List_Serialnumber_Extrusion_Filter(string? partnr)
         {
             if (string.IsNullOrEmpty(partnr))
                 return new List<string> { "N/A" };
@@ -345,7 +349,7 @@ namespace DigitalProductionProgram.Monitor
             _ = Log.Activity.Stop($"ResponseTime to Monitor: {text}");
         }
 
-        public static void Load_OrderInformation()
+        public void Load_OrderInformation()
         {
             Load_Order(OrderManagement.Order.OrderNumber);
             Load_Operations(int.Parse(OrderManagement.Order.Operation));
@@ -391,7 +395,8 @@ namespace DigitalProductionProgram.Monitor
                 return;
             Department = Utilities.GetOneFromMonitor<Common.Departments>($"filter=Id Eq'{WorkCenter.DepartmentId}'");
         }
-        public static void Load_Part()
+
+        public void Load_Part()
         {
             if (Order is null)
                 return;
@@ -426,7 +431,7 @@ namespace DigitalProductionProgram.Monitor
             foreach (var workcenter in listWorkcenter)
                 WorkCenters.Add(workcenter.Number, workcenter.Description);
         }
-        public static void Load_Unit()
+        public void Load_Unit()
         {
             if (Order is null)
                 return;

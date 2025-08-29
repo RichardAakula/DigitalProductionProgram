@@ -538,7 +538,7 @@ namespace DigitalProductionProgram.MainWindow
             }
 
             Order.Load_OrderInformation();
-            Monitor.Monitor.Load_OrderInformation();
+            Monitor.Monitor.Current.Load_OrderInformation();
 
             var IsOkStartOrder = true;
 

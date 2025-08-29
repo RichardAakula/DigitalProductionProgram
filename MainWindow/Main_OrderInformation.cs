@@ -176,7 +176,7 @@ namespace DigitalProductionProgram.MainWindow
         public void LoadMainForm_NewOrder()
         {
             //Startar ny Order
-            lbl_ArtikelNr.Text = Order.PartNumber = Monitor.Monitor.Part.PartNumber;
+            lbl_ArtikelNr.Text = Order.PartNumber = Monitor.Monitor.Current.Part.PartNumber;
             Part.Load_PartID(Order.PartNumber, true, false, false, Order.WorkOperation.ToString());
             lbl_Antal.Text = $"{Monitor.Monitor.Operations.PlannedQuantity:0}";
             Order.Amount = Parse(lbl_Antal.Text);
@@ -187,7 +187,7 @@ namespace DigitalProductionProgram.MainWindow
             lbl_Customer.ForeColor = Color.DodgerBlue;
             lbl_Customer.Click += Customer_Click;
             lbl_Customer.Cursor = Cursors.Hand;
-            lbl_Benämning.Text = Order.Description = Monitor.Monitor.Part.Description;
+            lbl_Benämning.Text = Order.Description = Monitor.Monitor.Current.Part.Description;
             lbl_Enhet.Text = Order.Enhet = Monitor.Monitor.Unit.Code;
             lbl_Start.Text = Order.StartTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm");
             lbl_OrderStartedBy.Text = Person.Name;

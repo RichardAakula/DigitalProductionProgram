@@ -323,6 +323,8 @@ namespace DigitalProductionProgram.Measure
                     double value = GetMeasurementValue("AVG", CodeName);
                     if (CodeName.Contains("Stripes"))
                         continue;
+                    if (CodeName.Contains("Concentricity"))
+                        value /= 100;
                     if (value < lcl)
                         if (CodeName != null && lcl > 0 && value > 0)
                             InfoText.Show($"Enligt mätningarna så ligger Medelvärdet för {CodeName} under den lägre styrgränsen, kontrollera att mätningarna är ok.", CustomColors.InfoText_Color.Warning, $"Varning - {CodeName}");

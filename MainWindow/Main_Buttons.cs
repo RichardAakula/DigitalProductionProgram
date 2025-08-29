@@ -370,7 +370,7 @@ namespace DigitalProductionProgram.MainWindow
             }
 
             using var frekvensmarkering = new FrequencyMarking();
-            frekvensmarkering.Show();
+            frekvensmarkering.ShowDialog();
         }
 
 

@@ -545,7 +545,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                     e.Handled = true;
                 return;
             }
-            if (IsOkToSave == false)// && Manage_Processcards.IsProcesscardUnderManagement == false)
+            if (IsOkToSave == false && Manage_Processcards.IsProcesscardUnderManagement == false)
             {
                 e.Handled = true;
                 return;

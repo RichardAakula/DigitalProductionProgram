@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Microsoft.Data.SqlClient;
 using System.Drawing;
 using System.Globalization;
@@ -12,7 +13,6 @@ using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Equipment;
 using DigitalProductionProgram.Help;
-using DigitalProductionProgram.Log;
 using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.Övrigt;
@@ -20,6 +20,7 @@ using DigitalProductionProgram.PrintingServices;
 using DigitalProductionProgram.Processcards;
 using DigitalProductionProgram.Templates;
 using DigitalProductionProgram.User;
+using Activity = DigitalProductionProgram.Log.Activity;
 
 namespace DigitalProductionProgram.Protocols.Protocol
 {
@@ -110,6 +111,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
         {
             return dgv_Row.Cells["col_MIN"].Value?.ToString();
         }
+        [DebuggerStepThrough]
         private static string? NOM_Value(DataGridViewRow dgv_Row)
         {
             return dgv_Row.Cells["col_NOM"].Value?.ToString();
@@ -643,7 +645,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                 switch (protocolDescriptionID)
                 {
                     case 1:     //HACK
-                        Validate_Data.IsMachine_Ok(cell.Value.ToString(), "HACK", protocolDescriptionID, dgv_Module.CurrentCell, startUp, NOM_Value(dgv_Row), IsValueCritical, false);
+                        Validate_Data.IsMachine_Ok(cell.Value.ToString(), "HACK", protocolDescriptionID, dgv_Module.CurrentCell, startUp, NOM_Value(dgv_Row), IsValueCritical, true);
                         IsValidated = true;
                         break;
                     case 10:    //KRAGMASKIN
@@ -658,7 +660,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                         IsValidated = true;
                         break;
                     case 80:    //EXTRUDER
-                        Validate_Data.IsMachine_Ok(cell.Value.ToString(), "EXTRUDER", protocolDescriptionID, dgv_Module.CurrentCell, startUp, NOM_Value(dgv_Row), IsValueCritical, false);
+                        Validate_Data.IsMachine_Ok(cell.Value.ToString(), "EXTRUDER", protocolDescriptionID, dgv_Module.CurrentCell, startUp, NOM_Value(dgv_Row), IsValueCritical, true);
                         IsValidated = true;
                         break;
                     case 83:    //MUNSTYCKE

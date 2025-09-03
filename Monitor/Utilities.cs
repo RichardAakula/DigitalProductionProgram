@@ -14,14 +14,14 @@ namespace DigitalProductionProgram.Monitor
     public static class Utilities
     {
         #region GET
-       // public static string MonitorStatus;
+        // public static string MonitorStatus;
 
         private static HttpResponseMessage Http_response(string query)
         {
             var ctr_ErrorLogin = 0;
-            Start:
+        Start:
             var response = Login_Monitor.httpClient.GetAsync(query).Result;
-            
+
             if (response.StatusCode != HttpStatusCode.OK)
             {
                 if (ctr_ErrorLogin > 10)
@@ -38,6 +38,7 @@ namespace DigitalProductionProgram.Monitor
             }
             return response;
         }
+
 
         public static List<T> GetFromMonitor<T>(params string[] queryOptions) where T : DTO, new()
         {
@@ -75,7 +76,7 @@ namespace DigitalProductionProgram.Monitor
                 query += query.Contains("?$") ? "&$top=1" : "?$top=1";
 
             var response = Http_response(query);
-            if (response is null) 
+            if (response is null)
                 return null;
             var asString = response.Content.ReadAsStringAsync().Result;
 
@@ -84,7 +85,7 @@ namespace DigitalProductionProgram.Monitor
             {
                 return isIdSelect ? JsonConvert.DeserializeObject<T>(asString) : (JsonConvert.DeserializeObject<List<T>>(asString) ?? throw new InvalidOperationException()).FirstOrDefault();
             }
-            catch 
+            catch
             {
                 return null;
             }

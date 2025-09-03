@@ -120,7 +120,7 @@ namespace DigitalProductionProgram.MainWindow
         public Main_Form(BlackBackground back)
         {
             this.Visible = false;
-            black = back;
+            black = back; 
             Settings.Settings.LoadData.Load_Settings();
             Activity.Start();
             InitializeComponent();
@@ -446,7 +446,7 @@ namespace DigitalProductionProgram.MainWindow
             if (string.IsNullOrEmpty(Person.EmployeeNr))
             {
                 panel_Grade_Percent.Visible = false;
-                pb_GradBeteckning.Visible = false;
+                pb_Grade.Visible = false;
                 lbl_Percent.Visible = false;
                 return;
             }
@@ -454,14 +454,18 @@ namespace DigitalProductionProgram.MainWindow
             Points.TotalPoints = Person.User_Points;
             if (Points.TotalPoints < 0)
                 return;
-            pb_GradBeteckning.BackgroundImage = Image.FromStream(Grade.Img_Grade);
-            pb_GradBeteckning.Visible = true;
+            if (Grade.Img_Grade != null)
+            {
+                var _ = pb_Grade.BackgroundImage = Image.FromStream(Grade.Img_Grade);
+            }
+
+            pb_Grade.Visible = true;
             panel_Grade_Percent.BackColor = Color.FromArgb(60, Color.LightGreen);
             panel_Grade_Percent.Visible = true;
             lbl_Percent.Visible = true;
 
-            panel_Grade_Percent.Height = (int)(pb_GradBeteckning.Height * Grade.percent_Grade(Grade.grade));
-            panel_Grade_Percent.Top = pb_GradBeteckning.Bottom - panel_Grade_Percent.Height;
+            panel_Grade_Percent.Height = (int)(pb_Grade.Height * Grade.percent_Grade(Grade.grade));
+            panel_Grade_Percent.Top = pb_Grade.Bottom - panel_Grade_Percent.Height;
 
             lbl_Percent.Text = $"{Convert.ToInt32(Grade.percent_Grade(Grade.grade) * 100)} %";
         }
@@ -875,7 +879,7 @@ namespace DigitalProductionProgram.MainWindow
             lbl_Role.Text = string.Empty;
             pbOperatör.Image = null;
             pbOperatör.BackgroundImage = null;
-            pb_GradBeteckning.Image = null;
+            pb_Grade.Image = null;
             lbl_Percent.Text = string.Empty;
 
             panel_Profile.Visible = false;

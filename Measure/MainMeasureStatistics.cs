@@ -27,58 +27,45 @@ namespace DigitalProductionProgram.Measure
     {
        
         private static MeasurementChart? measurementChart;
-        //private static double AvgValue_Measurement_Part(string? codename)
-        //{
-        //    using var con = new SqlConnection(Database.cs_Protocol);
-        //    var query = @"
-        //            SELECT AVG(Value) 
-        //            FROM Measureprotocol.Data AS data 
-        //            INNER JOIN MeasureProtocol.MainData AS maindata
-        //                ON data.OrderID = maindata.OrderID
-        //                AND data.RowIndex = maindata.RowIndex
-        //            WHERE EXISTS (SELECT * FROM [Order].MainData WHERE data.OrderID = [Order].MainData.OrderID AND PartID = @partid)
-        //                AND (Discarded = 'False' OR Discarded IS NULL)
-        //                AND DescriptionId = (SELECT Id FROM MeasureProtocol.Description WHERE CodeName = @codename)";
-        //    con.Open();
-        //    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-        //    SQL_Parameter.NullableINT(cmd.Parameters, "@partid", Order.PartID);
-        //    cmd.Parameters.AddWithValue("@codename", codename);
-        //    var value = cmd.ExecuteScalar();
-        //    if (value != null && value.GetType() != typeof(DBNull))
-        //        if (double.TryParse(value.ToString(), out var result))
-        //            return result;
-        //    return 0;
-        //}
-
+       
         public static double GetMeasurementValue(string statisticType, string? parameterCode)
         {
             if (Order.OrderID is null)
                 return 0;
-            using var con = new SqlConnection(Database.cs_Protocol);
-            var query = $@"
-                    SELECT {statisticType}(Value) FROM MeasureProtocol.Data AS data
+
+            return Database.ExecuteSafe(con =>
+            {
+                var query = $@"
+                    SELECT {statisticType}(Value) 
+                    FROM MeasureProtocol.Data AS data
                     INNER JOIN MeasureProtocol.MainData AS maindata
-	                    ON data.OrderID = maindata.OrderID
-		                    AND data.RowIndex = maindata.RowIndex
+                        ON data.OrderID = maindata.OrderID
+                        AND data.RowIndex = maindata.RowIndex
                     WHERE data.OrderID = @orderid
-                    AND (Discarded = 'False' OR Discarded IS NULL)
-                        AND DescriptionId = (SELECT Id FROM MeasureProtocol.Description WHERE CodeName = @codename)";
+                        AND (Discarded = 'False' OR Discarded IS NULL)
+                        AND DescriptionId = 
+                        (
+                            SELECT Id 
+                            FROM MeasureProtocol.Description 
+                            WHERE CodeName = @codename
+                        )";
 
-            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-            con.Open();
-            cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
-            cmd.Parameters.AddWithValue("@codename", parameterCode);
-            var value = cmd.ExecuteScalar();
-            if (value == null) 
-                return 0;
-            if (double.TryParse(value.ToString(), out var result))
-                return result;
+                using var cmd = new SqlCommand(query, con);
+                ServerStatus.Add_Sql_Counter();
 
-            return 0;
+                cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
+                cmd.Parameters.AddWithValue("@codename", parameterCode ?? (object)DBNull.Value);
+
+                var value = cmd.ExecuteScalar();
+                if (value == null)
+                    return 0d;
+
+                return double.TryParse(value.ToString(), out var result) ? result : 0d;
+            });
         }
 
-       
-        
+
+
         //public static int Max_Bag => (int)GetMeasurementValue("MAX", "Bag");
         public static string? active_MeasureCode;
         public static int MeasureStatsHeight;

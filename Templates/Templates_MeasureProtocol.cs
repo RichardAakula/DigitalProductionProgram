@@ -566,7 +566,7 @@ namespace DigitalProductionProgram.Templates
                             cellControlType.ReadOnly = cellDataType.ReadOnly = true;
                             cellControlType.Style.BackColor = cellDataType.Style.BackColor = Color.LightGray;
 
-                            var itemsBuilder = new ItemsBuilder(cellParameter?.Value.ToString() ?? string.Empty, descriptionID);
+                            var itemsBuilder = new ItemsBuilder(cellParameter?.Value.ToString() ?? string.Empty, descriptionID, ItemsBuilder.ListType.MeasureProtocol );
                             itemsBuilder.ShowDialog();
                         }
                         else

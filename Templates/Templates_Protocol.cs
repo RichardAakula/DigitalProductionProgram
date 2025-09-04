@@ -30,19 +30,16 @@ namespace DigitalProductionProgram.Templates
         {
             get
             {
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    const string query = @"
+                using var con = new SqlConnection(Database.cs_Protocol);
+                const string query = @"
                     SELECT COUNT(*) FROM Processcard.MainData WHERE ProtocolMainTemplateID = @maintemplateid";
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    con.Open();
-                    cmd.Parameters.AddWithValue("@maintemplateid", MainTemplate.ID);
-                    var value = cmd.ExecuteScalar();
-                    var result = value == null ? 0 : int.Parse(value.ToString());
-                    totalConnectedProcesscardsToTemplate = result;
-                    return result;
-                }
-
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                con.Open();
+                cmd.Parameters.AddWithValue("@maintemplateid", MainTemplate.ID);
+                var value = cmd.ExecuteScalar();
+                var result = value == null ? 0 : int.Parse(value.ToString());
+                totalConnectedProcesscardsToTemplate = result;
+                return result;
             }
         }
         private static int totalConnectedOrdersToTemplate;
@@ -50,19 +47,16 @@ namespace DigitalProductionProgram.Templates
         {
             get
             {
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    const string query = @"
+                using var con = new SqlConnection(Database.cs_Protocol);
+                const string query = @"
                     SELECT COUNT(*) FROM [Order].MainData WHERE ProtocolMainTemplateID = @maintemplateid";
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    con.Open();
-                    cmd.Parameters.AddWithValue("@maintemplateid", MainTemplate.ID);
-                    var value = cmd.ExecuteScalar();
-                    var result = value == null ? 0 : int.Parse(value.ToString());
-                    totalConnectedOrdersToTemplate = result;
-                    return result;
-                }
-
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                con.Open();
+                cmd.Parameters.AddWithValue("@maintemplateid", MainTemplate.ID);
+                var value = cmd.ExecuteScalar();
+                var result = value == null ? 0 : int.Parse(value.ToString());
+                totalConnectedOrdersToTemplate = result;
+                return result;
             }
         }
 
@@ -543,9 +537,9 @@ namespace DigitalProductionProgram.Templates
             if (TemplateControls.IsCodeTextExistInModule(dgv_ProtocolsActive_Main, codetext))
                 return;
             dgv_ProtocolsActive_Main.Rows.Add();
-            dgv_ProtocolsActive_Main.Rows[dgv_ProtocolsActive_Main.Rows.Count - 1].Cells["col_CodeText"].Value = codetext;
-            dgv_ProtocolsActive_Main.Rows[dgv_ProtocolsActive_Main.Rows.Count - 1].Cells["col_ProtocolDescriptionID"].Value = int.Parse(dgv_CodeText.Rows[e.RowIndex].Cells[0].Value.ToString());
-            dgv_ProtocolsActive_Main.Rows[dgv_ProtocolsActive_Main.Rows.Count - 1].Cells["col_Unit"].Value = dgv_CodeText.Rows[e.RowIndex].Cells[2].Value.ToString();
+            dgv_ProtocolsActive_Main.Rows[^1].Cells["col_CodeText"].Value = codetext;
+            dgv_ProtocolsActive_Main.Rows[^1].Cells["col_ProtocolDescriptionID"].Value = int.Parse(dgv_CodeText.Rows[e.RowIndex].Cells[0].Value.ToString());
+            dgv_ProtocolsActive_Main.Rows[^1].Cells["col_Unit"].Value = dgv_CodeText.Rows[e.RowIndex].Cells[2].Value.ToString();
 
             TemplateButtons.IsOkUpdateTemplate = false;
             TemplateButtons.IsOkSaveTemplate = true;
@@ -963,6 +957,7 @@ namespace DigitalProductionProgram.Templates
             {
                 if (e.ColumnIndex > dgv_ProtocolsActive_Main.Columns.Count - 4)
                     TemplateButtons.IsOkUpdateTemplate = false;
+
             }
 
             private static void RowsAdded_dgv(object? sender, DataGridViewRowsAddedEventArgs e)
@@ -1026,6 +1021,13 @@ namespace DigitalProductionProgram.Templates
             private static void Dgv_CellValueChanged(object? sender, DataGridViewCellEventArgs e)
             {
                 var dgv = (DataGridView)sender;
+                if (dgv is null)
+                    return;
+                var cellParameter =  dgv.Rows[e.RowIndex].Cells["col_CodeText"];
+                int.TryParse(dgv.Rows[e.RowIndex].Cells["col_ProtocolDescriptionID"].Value.ToString(), out var descriptionID);
+                int? templateID = null;
+                if (int.TryParse(dgv.Rows[e.RowIndex].Cells["col_ID"].Value?.ToString(), out var parsedId))
+                    templateID = parsedId;
                 if (e.RowIndex < 0 || e.ColumnIndex < 0)
                     return;
 
@@ -1040,7 +1042,14 @@ namespace DigitalProductionProgram.Templates
                     case "col_MAX":
                         HandleCheckboxColumn();
                         break;
-
+                    case "col_ProcesscardList":
+                        var itemsBuilder = new ItemsBuilder(cellParameter?.Value.ToString() ?? string.Empty, descriptionID, ItemsBuilder.ListType.Processcard, templateID);
+                        itemsBuilder.ShowDialog();
+                        break;
+                    case "col_ProtocolList":
+                        itemsBuilder = new ItemsBuilder(cellParameter?.Value.ToString() ?? string.Empty, descriptionID, ItemsBuilder.ListType.Protocol, templateID);
+                        itemsBuilder.ShowDialog();
+                        break;
                     default:
                         // Handle other cases if needed
                         break;

@@ -1,4 +1,4 @@
-﻿namespace DigitalProductionProgram.Protocols.Template_Management
+﻿namespace DigitalProductionProgram.Templates
 {
     partial class ItemsBuilder
     {
@@ -131,7 +131,6 @@
             this.dgv_ListItems.RowHeadersVisible = false;
             this.dgv_ListItems.Size = new System.Drawing.Size(194, 674);
             this.dgv_ListItems.TabIndex = 3;
-            this.dgv_ListItems.CellMouseDown += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.ListItems_CellMouseDown);
             // 
             // gbx_Items
             // 

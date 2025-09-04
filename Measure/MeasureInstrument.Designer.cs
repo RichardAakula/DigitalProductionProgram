@@ -147,7 +147,7 @@ namespace DigitalProductionProgram.Measure
             this.btn_Add_Startup.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             this.btn_Add_Startup.UseCompatibleTextRendering = true;
             this.btn_Add_Startup.UseVisualStyleBackColor = false;
-            this.btn_Add_Startup.Click += new System.EventHandler(this.Add_Startup_Click);
+            this.btn_Add_Startup.Click += new System.EventHandler(this.Add_NewMeasureInstrument_Click);
             // 
             // btn_Discard_Startup
             // 

@@ -1,96 +1,108 @@
-﻿using DigitalProductionProgram.DatabaseManagement;
+﻿using System.Diagnostics;
+using System.Runtime.CompilerServices;
+using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.User;
 using Microsoft.Data.SqlClient;
 using Microsoft.VisualBasic.Devices;
-using System;
-using System.Diagnostics;
-using System.Runtime.CompilerServices;
 
-namespace DigitalProductionProgram.Log
+namespace DigitalProductionProgram.Log;
+
+internal class Activity
 {
-    internal class Activity
+    private static readonly string HostName = Environment.MachineName;
+    private static DateTime StartTime;
+    private static TimeSpan ElapsedTime => DateTime.Now.Subtract(StartTime);
+    public static long CurrentMemory;
+    public static long PeakMemory;
+
+    private static readonly PerformanceCounter cpuCounterDpp = new("Process", "% Processor Time", Process.GetCurrentProcess().ProcessName, true);
+    private static readonly PerformanceCounter cpuCounterTotal = new("Processor", "% Processor Time", "_Total");
+    
+
+    public static void LoadMemory()
     {
-        private static readonly string HostName = Environment.MachineName;
-        private static TimeSpan laddTid => DateTime.Now.Subtract(StartTime);
-        private static DateTime StartTime;
-        public static long CurrentMemory;
-        public static long PeakMemory;
+        var proc = Process.GetCurrentProcess();
+        CurrentMemory = proc.WorkingSet64;
+        PeakMemory = proc.PeakWorkingSet64;
+    }
 
-        public static void LoadMemory()
+    public static void Start()
+    {
+        StartTime = DateTime.Now;
+    }
+
+
+    public static async Task Stop(string info, double tid = 0, [CallerMemberName] string? methodname = null)
+    {
+        try
         {
+            var LoadingTime = tid == 0 ? ElapsedTime.TotalMilliseconds / 1000 : tid;
+            if (LoadingTime > 100)
+                LoadingTime = 0;
             var proc = Process.GetCurrentProcess();
-            CurrentMemory = proc.WorkingSet64;
-            PeakMemory = proc.PeakWorkingSet64;
-        }
-        public static void Start()
-        {
-            StartTime = DateTime.Now;
-        }
-
-        private static readonly PerformanceCounter cpuCounterDpp = new("Process", "% Processor Time", Process.GetCurrentProcess().ProcessName, true);
-        private static readonly PerformanceCounter cpuCounterTotal = new("Processor", "% Processor Time", "_Total");
-
-        public static async Task Stop(string info, double tid = 0, [CallerMemberName] string? methodname = null)
-        {
-            double LoadingTime = tid == 0 ? laddTid.TotalMilliseconds / 1000 : tid;
-            if (LoadingTime > 100) LoadingTime = 0;
-
-            var proc = Process.GetCurrentProcess();
-            long dppMemoryMB = proc.WorkingSet64 / (1024 * 1024);
-
+            var dppMemoryMB = proc.WorkingSet64 / (1024 * 1024);
             _ = cpuCounterDpp.NextValue();
             _ = cpuCounterTotal.NextValue();
             await Task.Delay(500); // istället för Thread.Sleep
-
-            float dppCpu = cpuCounterDpp.NextValue() / Environment.ProcessorCount;
-            float totalCpu = cpuCounterTotal.NextValue();
-
+            var dppCpu = cpuCounterDpp.NextValue() / Environment.ProcessorCount;
+            var totalCpu = cpuCounterTotal.NextValue();
             var ci = new ComputerInfo();
-            long totalMemoryMB = (long)(ci.TotalPhysicalMemory / (1024 * 1024));
-            long usedMemoryMB = totalMemoryMB - (long)(ci.AvailablePhysicalMemory / (1024 * 1024));
+            var totalMemoryMB = (long)(ci.TotalPhysicalMemory / (1024 * 1024));
+            var usedMemoryMB = totalMemoryMB - (long)(ci.AvailablePhysicalMemory / (1024 * 1024));
 
-            try
-            {
-                await using var con = new SqlConnection(Database.cs_Protocol);
-                await using var cmd = new SqlCommand(@"
+            ServerStatus.Add_Sql_Counter();
+            await using var con = new SqlConnection(Database.cs_Protocol);
+            using var cmd = new SqlCommand(@"
             INSERT INTO Log.ActivityLog 
             (HostID, UserID, OrderID, Program, Version, Date, LoadingTime, Info, Memory, DPPMemory, CPU, DPPCPU, Resolution, WindowsVersion)
             VALUES 
             ((SELECT HostID FROM [Settings].General WHERE HostName = @hostname), @userid, @orderid, @methodname, @version, @date, @loadingtime, @info, @memory, @dppmemory, @cpu, @dppcpu, @resolution, @windowsversion)", con);
+            try
+            {
                 await con.OpenAsync();
-
-                cmd.Parameters.AddWithValue("@hostname", HostName);
-                if (Environment.MachineName == Main_Form.adminHostName && Person.Name != "Richard Aakula")
-                    cmd.Parameters.AddWithValue("@userid", 0);
-                else
-                    SQL_Parameter.Int(cmd.Parameters, "@userid", Person.UserID);
-
-                SQL_Parameter.Int(cmd.Parameters, "@orderid", Order.OrderID);
-                cmd.Parameters.AddWithValue("@methodname", methodname);
-                cmd.Parameters.AddWithValue("@version", ChangeLog.CurrentVersion.ToString());
-                cmd.Parameters.AddWithValue("@date", DateTime.Now);
-                cmd.Parameters.AddWithValue("@loadingtime", (decimal)Math.Min(LoadingTime, 99999.999));
-                cmd.Parameters.AddWithValue("@info", info);
-                cmd.Parameters.AddWithValue("@memory", usedMemoryMB);
-                cmd.Parameters.AddWithValue("@dppmemory", dppMemoryMB);
-                cmd.Parameters.AddWithValue("@cpu", totalCpu);
-                cmd.Parameters.AddWithValue("@dppcpu", dppCpu);
-                cmd.Parameters.AddWithValue("@resolution", $"{Program.ScreenWidth} x {Program.ScreenHeight}");
-                cmd.Parameters.AddWithValue("@windowsversion", Environment.OSVersion.ToString());
-
-                await cmd.ExecuteNonQueryAsync();
             }
             catch (Exception e)
             {
-                MessageBox.Show($@"Error when logging data: {e.Message}");
+                MessageBox.Show($@"Could not connect to database when logging data: {e.Message}");
+                throw;
             }
+
+
+            cmd.Parameters.AddWithValue("@hostname", HostName);
+            if (Environment.MachineName == Main_Form.adminHostName && Person.Name != "Richard Aakula")
+                cmd.Parameters.AddWithValue("@userid", 0);
+            else
+                SQL_Parameter.Int(cmd.Parameters, "@userid", Person.UserID);
+
+            SQL_Parameter.Int(cmd.Parameters, "@orderid", Order.OrderID);
+            cmd.Parameters.AddWithValue("@methodname", methodname);
+            cmd.Parameters.AddWithValue("@version", ChangeLog.CurrentVersion.ToString());
+            cmd.Parameters.AddWithValue("@date", DateTime.Now);
+            cmd.Parameters.AddWithValue("@loadingtime", (decimal)Math.Min(LoadingTime, 99999.999));
+            cmd.Parameters.AddWithValue("@info", info);
+
+            cmd.Parameters.AddWithValue("@memory", usedMemoryMB);
+            cmd.Parameters.AddWithValue("@dppmemory", dppMemoryMB);
+            cmd.Parameters.AddWithValue("@cpu", totalCpu);
+            cmd.Parameters.AddWithValue("@dppcpu", dppCpu);
+
+            cmd.Parameters.AddWithValue("@resolution", $"{Program.ScreenWidth} x {Program.ScreenHeight}");
+            cmd.Parameters.AddWithValue("@windowsversion", Environment.OSVersion.ToString());
+
+            await cmd.ExecuteNonQueryAsync();
         }
-        public static async Task AddTimeUserRead(string version, TimeSpan duration)
+        catch (Exception e)
         {
-            await using var con = new SqlConnection(Database.cs_Protocol);
-            const string query = @"
+            MessageBox.Show($@"Error when logging data: {e.Message}");
+        }
+    }
+
+    public static async Task AddTimeUserRead(string version, TimeSpan duration)
+    {
+        await using var con = new SqlConnection(Database.cs_Protocol);
+        const string query = @"
                 IF NOT EXISTS 
                 (
                     SELECT 1
@@ -102,33 +114,32 @@ namespace DigitalProductionProgram.Log
                     INSERT INTO [User].TimeReadChangeLog (UserID, Version, Time)
                     VALUES (@userid, @version, @time);
                 END";
-            await con.OpenAsync();
-            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-            cmd.Parameters.AddWithValue("@userid", Person.UserID);
-            cmd.Parameters.AddWithValue("@version", version);
-            cmd.Parameters.AddWithValue("@time", duration.TotalSeconds);
-            await cmd.ExecuteNonQueryAsync();
+        await con.OpenAsync();
+        var cmd = new SqlCommand(query, con);
+        ServerStatus.Add_Sql_Counter();
+        cmd.Parameters.AddWithValue("@userid", Person.UserID);
+        cmd.Parameters.AddWithValue("@version", version);
+        cmd.Parameters.AddWithValue("@time", duration.TotalSeconds);
+        await cmd.ExecuteNonQueryAsync();
 
-            if (duration.TotalSeconds > 10)
-            {
-                Points.Add_Points(10, $"Läser Information om versionshistorik - Tid = ({duration.TotalSeconds:0})");
-                return;
-            }
-
-            if (duration.TotalSeconds > 5)
-            {
-                Points.Add_Points(4, $"Läser Information om versionshistorik - Tid = ({duration.TotalSeconds:0})");
-                return;
-            }
-
-            if (duration.TotalSeconds > 2)
-            {
-                Points.Add_Points(1, $"Läser Information om versionshistorik - Tid = ({duration.TotalSeconds:0})");
-                return;
-            }
-
-            Points.Add_Points(-3, $"Läser INTE Information om versionshistorik - Tid = ({duration.TotalSeconds:0})");
+        if (duration.TotalSeconds > 10)
+        {
+            Points.Add_Points(10, $"Läser Information om versionshistorik - Tid = ({duration.TotalSeconds:0})");
+            return;
         }
+
+        if (duration.TotalSeconds > 5)
+        {
+            Points.Add_Points(4, $"Läser Information om versionshistorik - Tid = ({duration.TotalSeconds:0})");
+            return;
+        }
+
+        if (duration.TotalSeconds > 2)
+        {
+            Points.Add_Points(1, $"Läser Information om versionshistorik - Tid = ({duration.TotalSeconds:0})");
+            return;
+        }
+
+        Points.Add_Points(-3, $"Läser INTE Information om versionshistorik - Tid = ({duration.TotalSeconds:0})");
     }
-}   
-    
+}

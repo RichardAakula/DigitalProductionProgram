@@ -129,6 +129,7 @@ namespace DigitalProductionProgram.User
                 
             return isAuthorized;
         }
+        [DebuggerStepThrough]
         public static bool IsWorkoperationAuthorized(Enum templateWorkoperation)
         {
             var val = Convert.ChangeType(templateWorkoperation, templateWorkoperation.GetTypeCode());

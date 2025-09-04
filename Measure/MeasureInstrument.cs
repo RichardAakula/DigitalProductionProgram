@@ -108,16 +108,16 @@ namespace DigitalProductionProgram.Measure
                 }
 
                 if (reader.HasRows == false)
-                    Add_MätdonFromTemplate();
+                    Add_MeasureInstrumentsFromTemplate();
             }
 
             dgv_Mätdon.ClearSelection();
         }
-        private void Add_MätdonFromTemplate()
+        private void Add_MeasureInstrumentsFromTemplate()
         {
             using var con = new SqlConnection(Database.cs_Protocol);
             con.Open();
-            var query = @"
+            const string query = @"
                     SELECT MätdonsNr
                     FROM MeasureInstruments.WorkOperationTemplate as template
                         INNER JOIN MeasureInstruments.Templates as mätdon
@@ -174,12 +174,12 @@ namespace DigitalProductionProgram.Measure
         private static void Save_Mätdon(string Mätdon, string? Nr, int Row)
         {
             using var con = new SqlConnection(Database.cs_Protocol);
-            var query = @"
+            const string query = @"
                     IF NOT EXISTS(SELECT * FROM MeasureInstruments.Mätdon WHERE OrderID = @id AND Mätdon = @mätdon AND Row = @row)
                         INSERT INTO MeasureInstruments.Mätdon (OrderID, Mätdon, Nr, Row)
                             VALUES (@id, @mätdon, @nr, @row)
                     ELSE
-                        UPDATE MeasureInstruments.Mätdon SET Nr = @nr WHERE OrderID = @id AND Row = @row";
+                        UPDATE MeasureInstruments.Mätdon SET Nr = @nr WHERE OrderID = @id AND Row = @row AND Mätdon = @mätdon";
             con.Open();
             var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@id", Order.OrderID);
@@ -213,13 +213,13 @@ namespace DigitalProductionProgram.Measure
                 InfoText.Show($"{LanguageManager.GetString("measureinstrument_Delete_3")} ({MeasureInstrument}) {LanguageManager.GetString("measureinstrument_Delete_4")}", CustomColors.InfoText_Color.Bad, "Warning", this);
         }
 
-        private void Add_Startup_Click(object sender, EventArgs e)
+        private void Add_NewMeasureInstrument_Click(object sender, EventArgs e)
         {
             MeasureInformation.IsOpening = true;
 
             dgv_Mätdon.Rows.Add();
 
-            DataGridViewCell cell = dgv_Mätdon.Rows[dgv_Mätdon.Rows.Count - 1].HeaderCell;
+            DataGridViewCell cell = dgv_Mätdon.Rows[^1].HeaderCell;
             using var choose_Item = new Choose_Item(List_Mätdon, new[] {cell});
             choose_Item.ShowDialog();
             if (cell.Value is null || string.IsNullOrEmpty(cell.Value.ToString()))
@@ -228,8 +228,12 @@ namespace DigitalProductionProgram.Measure
                 return;
             }
 
-            var Row = int.Parse(dgv_Mätdon.Rows[dgv_Mätdon.Rows.Count - 2].Cells[1].Value.ToString()) + 1;
-            dgv_Mätdon.Rows[dgv_Mätdon.Rows.Count - 1].Cells[1].Value = Row;
+            var Row = dgv_Mätdon.Rows
+                .Cast<DataGridViewRow>()
+                .Where(r => r.Cells["col_Row"].Value != null)
+                .Max(r => Convert.ToInt32(r.Cells["col_Row"].Value)) + 1;
+
+            dgv_Mätdon.Rows[^1].Cells[1].Value = Row;
             Save_Mätdon(cell.Value.ToString(), null, Row);
 
             MeasureInformation.IsOpening = false;

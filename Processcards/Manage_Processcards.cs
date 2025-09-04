@@ -1141,7 +1141,7 @@ namespace DigitalProductionProgram.Processcards
         }
         private void ProdType_Click(object sender, EventArgs e)
         {
-            using var ctrl = (Control) sender;
+            var ctrl = (Control) sender;
             using var choose_Item = new Choose_Item(MainInfo_B.List_ProdType("Processcard.MainData"), new[] { ctrl }, false, true);
             choose_Item.ShowDialog();
         }
@@ -1159,7 +1159,7 @@ namespace DigitalProductionProgram.Processcards
         }
         private void ProdLine_Click(object sender, EventArgs e)
         {
-            using var ctrl = (Control)sender;
+            var ctrl = (Control)sender;
             using var choose_Item = new Choose_Item(Equipment.Equipment.List_ProdLines, new[] { ctrl }, false);
             choose_Item.ShowDialog();
         }

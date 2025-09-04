@@ -67,7 +67,7 @@ namespace DigitalProductionProgram.MainWindow
             lbl_Sign = new Label();
             lbl_Role = new Label();
             pbOperatör = new PictureBox();
-            pb_GradBeteckning = new PictureBox();
+            pb_Grade = new PictureBox();
             lbl_Percent = new Label();
             panel_Grade_Percent = new Panel();
             tlp_QuickOpen = new TableLayoutPanel();
@@ -98,7 +98,7 @@ namespace DigitalProductionProgram.MainWindow
             panel_Profile.SuspendLayout();
             tlp_UserInfo.SuspendLayout();
             ((ISupportInitialize)pbOperatör).BeginInit();
-            ((ISupportInitialize)pb_GradBeteckning).BeginInit();
+            ((ISupportInitialize)pb_Grade).BeginInit();
             tlp_QuickOpen.SuspendLayout();
             ((ISupportInitialize)pb_Info_Snabböppna).BeginInit();
             ((ISupportInitialize)dgv_QuickOpen).BeginInit();
@@ -358,7 +358,7 @@ namespace DigitalProductionProgram.MainWindow
             panel_Profile.BackColor = Color.Transparent;
             panel_Profile.Controls.Add(tlp_UserInfo);
             panel_Profile.Controls.Add(pbOperatör);
-            panel_Profile.Controls.Add(pb_GradBeteckning);
+            panel_Profile.Controls.Add(pb_Grade);
             panel_Profile.Controls.Add(lbl_Percent);
             panel_Profile.Controls.Add(panel_Grade_Percent);
             panel_Profile.Dock = DockStyle.Fill;
@@ -510,20 +510,20 @@ namespace DigitalProductionProgram.MainWindow
             pbOperatör.TabStop = false;
             pbOperatör.Click += SignIn_Click;
             // 
-            // pb_GradBeteckning
+            // pb_Grade
             // 
-            pb_GradBeteckning.BackColor = Color.Transparent;
-            pb_GradBeteckning.BackgroundImageLayout = ImageLayout.Zoom;
-            pb_GradBeteckning.BorderStyle = BorderStyle.Fixed3D;
-            pb_GradBeteckning.Cursor = Cursors.IBeam;
-            pb_GradBeteckning.Location = new Point(176, 6);
-            pb_GradBeteckning.Margin = new Padding(4, 3, 4, 3);
-            pb_GradBeteckning.Name = "pb_GradBeteckning";
-            pb_GradBeteckning.Size = new Size(58, 80);
-            pb_GradBeteckning.TabIndex = 857;
-            pb_GradBeteckning.TabStop = false;
-            pb_GradBeteckning.Visible = false;
-            pb_GradBeteckning.Click += EasterEgg_1_Click;
+            pb_Grade.BackColor = Color.Transparent;
+            pb_Grade.BackgroundImageLayout = ImageLayout.Zoom;
+            pb_Grade.BorderStyle = BorderStyle.Fixed3D;
+            pb_Grade.Cursor = Cursors.IBeam;
+            pb_Grade.Location = new Point(176, 6);
+            pb_Grade.Margin = new Padding(4, 3, 4, 3);
+            pb_Grade.Name = "pb_Grade";
+            pb_Grade.Size = new Size(58, 80);
+            pb_Grade.TabIndex = 857;
+            pb_Grade.TabStop = false;
+            pb_Grade.Visible = false;
+            pb_Grade.Click += EasterEgg_1_Click;
             // 
             // lbl_Percent
             // 
@@ -877,7 +877,7 @@ namespace DigitalProductionProgram.MainWindow
             tlp_UserInfo.ResumeLayout(false);
             tlp_UserInfo.PerformLayout();
             ((ISupportInitialize)pbOperatör).EndInit();
-            ((ISupportInitialize)pb_GradBeteckning).EndInit();
+            ((ISupportInitialize)pb_Grade).EndInit();
             tlp_QuickOpen.ResumeLayout(false);
             ((ISupportInitialize)pb_Info_Snabböppna).EndInit();
             ((ISupportInitialize)dgv_QuickOpen).EndInit();
@@ -920,7 +920,7 @@ namespace DigitalProductionProgram.MainWindow
         private TableLayoutPanel tlp_Left;
         public Panel panel_Profile;
         private PictureBox pbOperatör;
-        private PictureBox pb_GradBeteckning;
+        private PictureBox pb_Grade;
         private Label lbl_Namn;
         public Label lbl_Percent;
         private Panel panel_Grade_Percent;

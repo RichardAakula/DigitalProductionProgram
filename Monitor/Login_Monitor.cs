@@ -29,7 +29,7 @@ namespace DigitalProductionProgram.Monitor
             if (Database.MonitorHost == "stage-optig5.optinova.fi")
                 InfoText.Show(LanguageManager.GetString("warning_MonitorTestserver"), CustomColors.InfoText_Color.Bad, null);
         }
-
+        [DebuggerStepThrough]
         public static void Login_API(string? company = null)
         {
            try

@@ -23,7 +23,7 @@ namespace DigitalProductionProgram.Equipment
                 if (string.IsNullOrEmpty(Order.PartID.ToString()))
                     return false;
                 using var con = new SqlConnection(Database.cs_Protocol);
-                var query = @"
+                const string query = @"
                         SELECT BoolValue                          
                         FROM [Order].Data
                         WHERE OrderID = @orderid
@@ -44,30 +44,28 @@ namespace DigitalProductionProgram.Equipment
             {
                 if (string.IsNullOrEmpty(Order.PartID.ToString()))
                     return false;
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    var query = @"
+                using var con = new SqlConnection(Database.cs_Protocol);
+                const string query = @"
                         SELECT TextValue                          
                         FROM Processcard.Data
                         WHERE PartID = @partID
                         AND TemplateID = (SELECT ID FROM Protocol.Template WHERE ProtocolDescriptionID = 313 AND FormTemplateID = 31)";
-                    con.Open();
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    cmd.Parameters.AddWithValue("@partID", Order.PartID);
-                    var value = cmd.ExecuteScalar();
-                    if (value != null)
-                        if (value.ToString() == "Ja")
-                            return true;
-                }
+                con.Open();
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                cmd.Parameters.AddWithValue("@partID", Order.PartID);
+                var value = cmd.ExecuteScalar();
+                if (value != null)
+                    if (value.ToString() == "Ja")
+                        return true;
 
                 return false;
             }
         }
-        public static List<string> Blacklist_Utrustning
+        public static List<string?> Blacklist_Utrustning
         {//Filtrerar bort felaktigheter som operatörerna skrivit in
             get
             {
-                var list = new List<string>
+                var list = new List<string?>
                 {
                     "Helios T25",
                     "Helios T14",
@@ -235,22 +233,20 @@ namespace DigitalProductionProgram.Equipment
         }
         public static List<string?> List_Equipment_Protocol(string codetext)
         {
-            var list = new List<string>();
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query = @"
+            var list = new List<string?>();
+            using var con = new SqlConnection(Database.cs_Protocol);
+            var query = @"
                         SELECT DISTINCT TextValue 
                         FROM [Order].Data WHERE ProtocolDescriptionID = (SELECT ID FROM Protocol.Description WHERE CodeText COLLATE Latin1_General_BIN = @codetext COLLATE Latin1_General_BIN) 
                         ORDER BY TextValue";
 
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@codetext", codetext);
-                con.Open();
-                var reader = cmd.ExecuteReader();
-                while (reader.Read())
-                    if (!Blacklist_Utrustning.Contains(reader[0].ToString()))
-                        list.Add(reader[0].ToString());
-            }
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            cmd.Parameters.AddWithValue("@codetext", codetext);
+            con.Open();
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+                if (!Blacklist_Utrustning.Contains(reader[0].ToString()))
+                    list.Add(reader[0].ToString());
             return list;
         }
         public static List<string> List_Equipment_Extruder
@@ -258,41 +254,39 @@ namespace DigitalProductionProgram.Equipment
             get
             {
                 var list = new List<string>();
-                using (var con = new SqlConnection(Database.cs_ToolRegister))
-                {
-                    const string query = "SELECT DISTINCT Extruder FROM Extruder_Skruvar ORDER BY Extruder";
+                using var con = new SqlConnection(Database.cs_ToolRegister);
+                const string query = "SELECT DISTINCT Extruder FROM Extruder_Skruvar ORDER BY Extruder";
 
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    con.Open();
-                    var reader = cmd.ExecuteReader();
-                    while (reader.Read())
-                        list.Add(reader[0].ToString());
-                }
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                con.Open();
+                var reader = cmd.ExecuteReader();
+                while (reader.Read())
+                    list.Add(reader[0].ToString());
 
                 return list;
             }
         }
         public static List<string?> List_Register(bool isType, string? type, string db_Table)
         {
-            var list = new List<string>();
-            using (var con = new SqlConnection(Database.cs_ToolRegister))
-            {
-                string query;
-                if (isType)
-                    query = $"SELECT DISTINCT Typ FROM {db_Table}";
-                else
-                if (string.IsNullOrEmpty(type) || ControlValidator.IsStringNA(type))
-                    query = $"SELECT DISTINCT ID_Nummer, Typ FROM {db_Table}";
-                else
-                    query = $"SELECT DISTINCT ID_Nummer, Typ FROM {db_Table} WHERE Typ = @type";
+            var list = new List<string?>();
+            using var con = new SqlConnection(Database.cs_ToolRegister);
+            string query;
+            if (isType)
+                query = $"SELECT DISTINCT Typ FROM {db_Table}";
+            else
+            if (string.IsNullOrEmpty(type) || ControlValidator.IsStringNA(type))
+                query = $"SELECT DISTINCT ID_Nummer, Typ FROM {db_Table}";
+            else
+                query = $"SELECT DISTINCT ID_Nummer, Typ FROM {db_Table} WHERE Typ = @type";
 
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                con.Open();
-                SQL_Parameter.String(cmd.Parameters, "@type", type);
-                var reader = cmd.ExecuteReader();
-                while (reader.Read())
-                    list.Add(isType ? reader[0].ToString() : $"{reader[0]}:({reader[1]})");
-            }
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            con.Open();
+            SQL_Parameter.String(cmd.Parameters, "@type", type);
+            var reader = cmd.ExecuteReader();
+           
+            while (reader.Read())
+                list.Add(isType ? reader[0].ToString() : $"{reader[0]}:({reader[1]})");
+
             return list;
         }
         public static List<string?> List_CleanedCylinder(int startup)
@@ -325,40 +319,35 @@ namespace DigitalProductionProgram.Equipment
 
             foreach (var extruder in extrudrar)
             {
-                using (var con = new SqlConnection(Database.cs_ToolRegister))
-                {
-                    var query = "SELECT Skruv FROM Extruder_Skruvar WHERE Extruder = @extruder";
-                    con.Open();
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    cmd.Parameters.AddWithValue("@extruder", extruder);
-                    var reader = cmd.ExecuteReader();
-                    while (reader.Read())
-                        if (!list_Skruvar.Contains(reader[0].ToString()))
-                            list_Skruvar.Add(reader[0].ToString());
-                }
+                using var con = new SqlConnection(Database.cs_ToolRegister);
+                var query = "SELECT Skruv FROM Extruder_Skruvar WHERE Extruder = @extruder";
+                con.Open();
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                cmd.Parameters.AddWithValue("@extruder", extruder);
+                var reader = cmd.ExecuteReader();
+                while (reader.Read())
+                    if (!list_Skruvar.Contains(reader[0].ToString()))
+                        list_Skruvar.Add(reader[0].ToString());
             }
 
             foreach (var id_Nummer in list_Skruvar)
             {
-                using (var con = new SqlConnection(Database.cs_ToolRegister))
-                {
-                    var query = "SELECT Typ, ID_Nummer FROM Register_Skruvar " +
-                                "WHERE ID_Nummer = @idNummer AND Typ > '' AND Typ IS NOT NULL AND Reserv = 'False' AND Inaktiv = 'False' AND (Kasserad IS NULL OR Kasserad = '')";
-                    con.Open();
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    cmd.Parameters.AddWithValue("@idNummer", id_Nummer);
-                    var reader = cmd.ExecuteReader();
-                    while (reader.Read())
-                        dt.Rows.Add($"{reader[0]}", $"{reader[1]}");
-                }
+                using var con = new SqlConnection(Database.cs_ToolRegister);
+                var query = "SELECT Typ, ID_Nummer FROM Register_Skruvar " +
+                            "WHERE ID_Nummer = @idNummer AND Typ > '' AND Typ IS NOT NULL AND Reserv = 'False' AND Inaktiv = 'False' AND (Kasserad IS NULL OR Kasserad = '')";
+                con.Open();
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                cmd.Parameters.AddWithValue("@idNummer", id_Nummer);
+                var reader = cmd.ExecuteReader();
+                while (reader.Read())
+                    dt.Rows.Add($"{reader[0]}", $"{reader[1]}");
             }
             return dt;
         }
         public static void Set_Filterhus_Used_In_Protocol(bool value)
         {
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query = @"
+            using var con = new SqlConnection(Database.cs_Protocol);
+            var query = @"
                         IF NOT EXISTS (SELECT * FROM [Order].Data WHERE OrderID = @orderid AND ProtocolDescriptionID = 201)
                             INSERT INTO [Order].Data (OrderID, ProtocolDescriptionID, Uppstart, Ugn, Value, TextValue, BoolValue)
                             VALUES (@orderid, 201, NULL, NULL, NULL, NULL, @boolvalue)
@@ -366,12 +355,11 @@ namespace DigitalProductionProgram.Equipment
                             UPDATE [Order].Data 
                                 SET boolvalue = @boolvalue
                             WHERE OrderID = @orderid AND ProtocolDescriptionID = 201";
-                con.Open();
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
-                cmd.Parameters.AddWithValue("@boolvalue", value);
-                cmd.ExecuteNonQuery();
-            }
+            con.Open();
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
+            cmd.Parameters.AddWithValue("@boolvalue", value);
+            cmd.ExecuteNonQuery();
         }
     }
 }

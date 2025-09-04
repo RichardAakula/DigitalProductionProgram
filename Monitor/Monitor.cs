@@ -151,6 +151,7 @@ namespace DigitalProductionProgram.Monitor
             var partLocations = Utilities.GetFromMonitor<Inventory.ProductRecords>($"filter=PartId Eq'{partId}' AND LifeCycleState Eq 0");
             return (from part in partLocations where part.SerialNumber != null select part.SerialNumber).ToList();
         }
+
         public static DataTable DataTable_MeasuringTemplates
         {
             get

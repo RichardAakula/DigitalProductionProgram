@@ -11,10 +11,10 @@ namespace DigitalProductionProgram.Monitor.GET
             public override string URL => "Inventory/PartLocations";
 
             public long Id { get; set; }
-            public string SerialNumber { get; set; } //Serienummer
-            public string BatchNumber { get; set; } //LotNr
+            public string? SerialNumber { get; set; } //Serienummer
+            public string? BatchNumber { get; set; } //LotNr
             public decimal Balance { get; set; } //Saldo
-            public string Name { get; set; }
+            public string? Name { get; set; }
         }
 
         internal class Parts : DTO
@@ -25,9 +25,11 @@ namespace DigitalProductionProgram.Monitor.GET
             public long Id { get; set; }
             public string? PartNumber { get; set; }
             public string? Description { get; set; }
-            public string ExtraDescription { get; set; }
+            public string? ExtraDescription { get; set; }
             public decimal StandardPrice { get; set; }
             public long StandardUnitId { get; set; }
+
+            public List<ProductRecords> ProductRecords { get; set; }
         }
 
         internal class ProductRecords : DTO
@@ -36,7 +38,7 @@ namespace DigitalProductionProgram.Monitor.GET
 
             public long Id { get; set; }
             public string? SerialNumber { get; set; }    //LotNr
-            public string BestBeforeDate { get; set; }
+            public string? BestBeforeDate { get; set; }
         }
 
         internal class PartLocationProductRecords : DTO

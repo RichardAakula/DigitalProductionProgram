@@ -282,7 +282,12 @@ ORDER BY v.Major DESC, v.Minor DESC, v.Patch DESC, v.Build DESC;";
             chart_Stats.MouseDown += chart_Statistics_MouseDown;
 
             // this.BackColor = Color.Transparent;
-            this.Controls.Add(chart_Stats);
+
+            this.Invoke(new Action(() =>
+            {
+                this.Controls.Clear();
+                this.Controls.Add(chart_Stats);
+            }));
         }
 
 

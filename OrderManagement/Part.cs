@@ -532,28 +532,26 @@ GROUP BY md.PartID";
             if (Order.PartID is null || Order.PartID == 0)
                 return false;
 
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                const string query = @"
+            using var con = new SqlConnection(Database.cs_Protocol);
+            const string query = @"
                             SELECT * FROM Processcard.MainData 
                             WHERE PartNr = @partNr 
                                 AND WorkOperationID = (SELECT ID FROM Workoperation.Names WHERE Name = @workoperation AND ID IS NOT NULL) 
                                 AND (ProdLine = @prodline OR COALESCE(@prodline, '') = '') 
                                 AND (ProdType = @prodtype OR COALESCE(@prodtype, '') = '')";
 
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                var test = Order.PartNumber;
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            var test = Order.PartNumber;
                     
-                cmd.Parameters.AddWithValue("@partNr", PartNr);
-                cmd.Parameters.AddWithValue("@workoperation", WorkOperation);
-                cmd.Parameters.AddWithValue("@prodline", ProdLine);
-                cmd.Parameters.AddWithValue("@prodtype", ProdType);
+            cmd.Parameters.AddWithValue("@partNr", PartNr);
+            cmd.Parameters.AddWithValue("@workoperation", WorkOperation);
+            cmd.Parameters.AddWithValue("@prodline", ProdLine);
+            cmd.Parameters.AddWithValue("@prodtype", ProdType);
 
-                con.Open();
-                var reader = cmd.ExecuteReader();
-                if (reader.HasRows)
-                    return true;
-            }
+            con.Open();
+            var reader = cmd.ExecuteReader();
+            if (reader.HasRows)
+                return true;
             return false;
         }
         public static bool IsPartID_Exist(int? partID = null)

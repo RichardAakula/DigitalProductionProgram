@@ -1,5 +1,6 @@
 ﻿using DigitalProductionProgram.DatabaseManagement;
 using System;
+using System.Diagnostics;
 using System.Windows.Forms;
 
 namespace DigitalProductionProgram.Övrigt
@@ -7,7 +8,7 @@ namespace DigitalProductionProgram.Övrigt
     public partial class BlackBackground : Form
     {
         private readonly string Info;
-
+        [DebuggerStepThrough]
         public BlackBackground(string info, int opacity, bool IsIconVisible = false)
         {
             InitializeComponent();

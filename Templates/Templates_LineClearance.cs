@@ -814,24 +814,22 @@ namespace DigitalProductionProgram.Templates
 
             public static void Set_MainTemplateID()
             {
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    const string query = @"
+                using var con = new SqlConnection(Database.cs_Protocol);
+                const string query = @"
                         SELECT TOP (1) MainTemplateID 
                         FROM LineClearance.MainTemplate 
                         WHERE ProtocolMainTemplateID = @prototocolmaintemplateid
                         ORDER BY LineClearance_Revision DESC";
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    cmd.Parameters.AddWithValue("@prototocolmaintemplateid", Templates_Protocol.MainTemplate.ID);
-                    con.Open();
-                    var value = cmd.ExecuteScalar();
-                    if (value != DBNull.Value && value != null)
-                    {
-                        LineClearance_MainTemplateID = int.Parse(value.ToString());
-                        return;
-                    }
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                cmd.Parameters.AddWithValue("@prototocolmaintemplateid", Templates_Protocol.MainTemplate.ID);
+                con.Open();
+                var value = cmd.ExecuteScalar();
+                if (value != DBNull.Value && value != null)
+                {
+                    LineClearance_MainTemplateID = int.Parse(value.ToString());
+                    return;
                 }
-                
+
                 return;
                 //Koden nedan behövs troligen inte, LineClearance bör alltid bli rätt laddad
                 var chooseTemplate = new ProcesscardTemplateSelector(ProcesscardTemplateSelector.TemplateType.TemplateMeasureProtocol);
@@ -925,9 +923,8 @@ namespace DigitalProductionProgram.Templates
             {
                 foreach (DataGridViewRow row in dgv.Rows)
                 {
-                    using (var con = new SqlConnection(Database.cs_Protocol))
-                    {
-                        const string query = @"
+                    using var con = new SqlConnection(Database.cs_Protocol);
+                    const string query = @"
                                 INSERT INTO LineClearance.Template (FormTemplateID, DescriptionID, RowIndex)
                                 VALUES ( 
                                             (SELECT FormTemplateID 
@@ -937,17 +934,15 @@ namespace DigitalProductionProgram.Templates
                                             @protocoldescriptionid,
                                             @rowindex
                                         )";
-                        var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                        cmd.Parameters.AddWithValue("@templateorder", templateOrder);
-                        //cmd.Parameters.AddWithValue("@maintemplateid", LineClearanceMainTemplateID);
-                        cmd.Parameters.AddWithValue("@protocolmaintemplateid", Templates_Protocol.MainTemplate.ID);
-                        cmd.Parameters.AddWithValue("@lcrevision", lineClearanceRevision);
-                        SQL_Parameter.Int(cmd.Parameters, "@protocoldescriptionid", row.Cells["col_ProtocolDescriptionID"].Value);
-                        cmd.Parameters.AddWithValue("@rowindex", row.Index);
-                        con.Open();
-                        cmd.ExecuteNonQuery();
-                    }
-
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                    cmd.Parameters.AddWithValue("@templateorder", templateOrder);
+                    //cmd.Parameters.AddWithValue("@maintemplateid", LineClearanceMainTemplateID);
+                    cmd.Parameters.AddWithValue("@protocolmaintemplateid", Templates_Protocol.MainTemplate.ID);
+                    cmd.Parameters.AddWithValue("@lcrevision", lineClearanceRevision);
+                    SQL_Parameter.Int(cmd.Parameters, "@protocoldescriptionid", row.Cells["col_ProtocolDescriptionID"].Value);
+                    cmd.Parameters.AddWithValue("@rowindex", row.Index);
+                    con.Open();
+                    cmd.ExecuteNonQuery();
                 }
             }
             public static void Load_Data(int? formTemplateID)

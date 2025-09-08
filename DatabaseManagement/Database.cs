@@ -41,6 +41,7 @@ namespace DigitalProductionProgram.DatabaseManagement
         public static string cs_Protocol = csDPP_OGO;
         public static string cs_ToolRegister = csToolRegisterGodby;
         public static string MonitorHost = "optig5";
+
         public static string MonitorCompany = "001.1";
         
 
@@ -216,8 +217,8 @@ namespace DigitalProductionProgram.DatabaseManagement
         {
             IsOkSave();
 
-            string ServerDPP = null;
-            string DatabaseDPP = null;
+            string? ServerDPP = null;
+            string? DatabaseDPP = null;
            
             var timeout = 0;
             switch (cb_DPP.Text)
@@ -227,32 +228,32 @@ namespace DigitalProductionProgram.DatabaseManagement
                     DatabaseDPP = "Korprotokoll";
                     timeout = 5;
                     Password = "GOD-Stout4-Gladiator-Gazing-Retail-Pegboard";
-                    cb_Toolregister.Text = "Godby";
-                    cb_MonitorCompany.Text = "001.1";
+                    cb_Toolregister.Text = @"Godby";
+                    cb_MonitorCompany.Text = @"001.1";
                     break;
                 case "Godby Test":
                     ServerDPP = ServerOGO;
                     DatabaseDPP = "GOD_DPP_DEV";
                     timeout = 5;
                     Password = "GOD-Stout4-Gladiator-Gazing-Retail-Pegboard";
-                    cb_Toolregister.Text = "Godby";
-                    cb_MonitorCompany.Text = "001.1";
+                    cb_Toolregister.Text = @"Godby";
+                    cb_MonitorCompany.Text = @"001.1";
                     break;
                 case "Thailand":
                     ServerDPP = ServerOTH;
                     DatabaseDPP = "Korprotokoll_Thai";
                     timeout = 10;
                     Password = "korprotokoll";
-                    cb_Toolregister.Text = "Thailand";
-                    cb_MonitorCompany.Text = "010.1";
+                    cb_Toolregister.Text = @"Thailand";
+                    cb_MonitorCompany.Text = @"010.1";
                     break;
                 case "Valley Forge":
                     ServerDPP = ServerOVF;
                     DatabaseDPP = "DPP_OVF";
                     timeout = 10;
                     Password = "korprotokoll";
-                    cb_Toolregister.Text = "Valley Forge";
-                    cb_MonitorCompany.Text = "012.1";
+                    cb_Toolregister.Text = @"Valley Forge";
+                    cb_MonitorCompany.Text = @"012.1";
                     break;
             }
             building_csProtocol = $"Data Source={ServerDPP};Initial Catalog={DatabaseDPP};Persist Security Info=True;User ID={UserID};Password={Password};Connect Timeout={timeout};Encrypt=True;TrustServerCertificate=True;";
@@ -300,10 +301,11 @@ namespace DigitalProductionProgram.DatabaseManagement
         }
         private void MonitorCompany_Enter(object sender, EventArgs e)
         {
-            label_Info.Text = "001.1 - Optinova Godby Ab\n" +
-                              "003.1 - Optinova Holding Ab\n" +
-                              "010.1 - Optinova Thailand Co\n" +
-                              "012.1 - Optinova Valley Forge\n";
+            label_Info.Text = @"001.1 - Optinova Godby Ab
+                                003.1 - Optinova Holding Ab
+                                010.1 - Optinova Thailand Co
+                                012.1 - Optinova Valley Forge";
+
         }
         private void MonitorHost_SelectedIndexChanged(object sender, EventArgs e)
         {

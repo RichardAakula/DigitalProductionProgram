@@ -1,5 +1,5 @@
-﻿using DigitalProductionProgram.DatabaseManagement;
-using DigitalProductionProgram.Log;
+﻿using System.Diagnostics;
+using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.Processcards;
@@ -16,6 +16,7 @@ using System.Text.RegularExpressions;
 using DigitalProductionProgram.ControlsManagement;
 using static DigitalProductionProgram.PrintingServices.PrintVariables;
 using static DigitalProductionProgram.PrintingServices.Workoperation_Printouts.Print_Protocol.PrintOut;
+using Activity = DigitalProductionProgram.Log.Activity;
 using FrequencyMarking = DigitalProductionProgram.Protocols.ExtraProtocols.FrequencyMarking;
 using PreFab = DigitalProductionProgram.Protocols.ExtraProtocols.PreFab;
 
@@ -60,7 +61,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
             Preview_ExtraComments.Document = Print_ExtraComments;
             Preview_FrequencyMarking.Document = Print_FrequencyMarking;
         }
-
+        [DebuggerStepThrough]
         public static void Set_DefaultPaperSize(PrintDocument document, bool IsLandscapeMode)
         {
             var paperName = document.DefaultPageSettings.PaperSize.PaperName;
@@ -1039,7 +1040,8 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                     PrintVariables.Y += (int)textSize.Height + 4;
                     if (PrintVariables.Y > maxY)
                     {
-                        e.Graphics.DrawRectangle(Pens.Black, PrintVariables.LeftMargin, startY, PrintVariables.MaxPaperWidth - PrintVariables.LeftMargin, PrintVariables.Y - startY);
+                        Manage_PrintOuts.IsOkPrintExtraRaderComments = true;
+                       // e.Graphics.DrawRectangle(Pens.Black, PrintVariables.LeftMargin, startY, PrintVariables.MaxPaperWidth - PrintVariables.LeftMargin, PrintVariables.Y - startY);
                         return;
                     }
                         

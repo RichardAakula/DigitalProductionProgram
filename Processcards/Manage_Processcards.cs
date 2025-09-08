@@ -1448,10 +1448,9 @@ HS-Machine = {Equipment.Equipment.HS_Machine}", CustomColors.InfoText_Color.Info
             Order.PartID = Part.Get_NewPartID;
             Part.Create_NewPartGroup_ID();
 
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                con.Open();
-                var query = @"
+            using var con = new SqlConnection(Database.cs_Protocol);
+            con.Open();
+            var query = @"
                     IF NOT EXISTS (SELECT * FROM Processcard.MainData WHERE PartNr = @partnr AND RevNr = 'A' AND ProdLine = @prodline AND ProdType = @prodtype)
                     BEGIN
                     INSERT INTO Processcard.MainData 
@@ -1463,21 +1462,19 @@ HS-Machine = {Equipment.Equipment.HS_Machine}", CustomColors.InfoText_Color.Info
                     SELECT 0
                     END";
 
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@partid", Order.PartID);
-                cmd.Parameters.AddWithValue("@templaterevision", Processcard.Latest_Processcard_Revision(FormTemplateID));
-                cmd.Parameters.AddWithValue("@partgroupid", Order.PartGroupID);
-                cmd.Parameters.AddWithValue("@partnr", partnr);
-                cmd.Parameters.AddWithValue("@prodline", prodline);
-                cmd.Parameters.AddWithValue("@prodtype", prodtype);
-                cmd.Parameters.AddWithValue("@workoperationid", Order.WorkoperationID);
-                cmd.Parameters.AddWithValue("@numberoflayers", num_NumberOfLayers.Value);
-                cmd.Parameters.AddWithValue("@revdatum", DateTime.Now.ToString("yyyy-MM-dd"));
-                cmd.Parameters.AddWithValue("@upprättatsig", $"{Person.Sign}/{Person.EmployeeNr}");
-                cmd.Parameters.AddWithValue("@revinfo", tb_RevInfo.Text);
-                result = Convert.ToInt32(cmd.ExecuteScalar());
-
-            }
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            cmd.Parameters.AddWithValue("@partid", Order.PartID);
+            cmd.Parameters.AddWithValue("@templaterevision", Processcard.Latest_Processcard_Revision(FormTemplateID));
+            cmd.Parameters.AddWithValue("@partgroupid", Order.PartGroupID);
+            cmd.Parameters.AddWithValue("@partnr", partnr);
+            cmd.Parameters.AddWithValue("@prodline", prodline);
+            cmd.Parameters.AddWithValue("@prodtype", prodtype);
+            cmd.Parameters.AddWithValue("@workoperationid", Order.WorkoperationID);
+            cmd.Parameters.AddWithValue("@numberoflayers", num_NumberOfLayers.Value);
+            cmd.Parameters.AddWithValue("@revdatum", DateTime.Now.ToString("yyyy-MM-dd"));
+            cmd.Parameters.AddWithValue("@upprättatsig", $"{Person.Sign}/{Person.EmployeeNr}");
+            cmd.Parameters.AddWithValue("@revinfo", tb_RevInfo.Text);
+            result = Convert.ToInt32(cmd.ExecuteScalar());
         }
         private static void SaveCopiedPartNr_Data(int templateid, int machineindex, double value, string textvalue, int type)
         {

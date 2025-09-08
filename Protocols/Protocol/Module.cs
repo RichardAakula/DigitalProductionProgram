@@ -540,13 +540,28 @@ namespace DigitalProductionProgram.Protocols.Protocol
         private void AllowedChars_CellKeyPress(object? sender, KeyPressEventArgs e)
         {
             var isOkWriteText = bool.Parse(dgv_Module.Rows[dgv_Module.CurrentCell.RowIndex].Cells["col_IsOkWriteText"].Value.ToString() ?? "false");
+            var isListProcesscard = bool.Parse(dgv_Module.Rows[dgv_Module.CurrentCell.RowIndex].Cells["col_IsList_Processcard"].Value.ToString() ?? "false");
             var isListProtocol = bool.Parse(dgv_Module.Rows[dgv_Module.CurrentCell.RowIndex].Cells["col_IsList_Protocol"].Value.ToString() ?? "false");
-            if (isOkWriteText == false && isListProtocol)
+
+            if (Manage_Processcards.IsProcesscardUnderManagement)
             {
-                if (CheckAuthority.IsRoleAuthorized(CheckAuthority.TemplateAuthorities.ChooseFreelyFromListsProtocol, false) == false)
-                    e.Handled = true;
-                return;
+                if (isOkWriteText == false && isListProcesscard)
+                {
+                    if (CheckAuthority.IsRoleAuthorized(CheckAuthority.TemplateAuthorities.ChooseFreelyFromListsProtocol, false) == false)
+                        e.Handled = true;
+                    return;
+                }
             }
+            else
+            {
+                if (isOkWriteText == false && isListProtocol)
+                {
+                    if (CheckAuthority.IsRoleAuthorized(CheckAuthority.TemplateAuthorities.ChooseFreelyFromListsProtocol, false) == false)
+                        e.Handled = true;
+                    return;
+                }
+            }
+
             if (IsOkToSave == false && Manage_Processcards.IsProcesscardUnderManagement == false)
             {
                 e.Handled = true;
@@ -940,6 +955,10 @@ namespace DigitalProductionProgram.Protocols.Protocol
                             items.Add("Platt");
                             items.Add("Försänkt");
                             items.Add("Strypring");
+                            break;
+                        case 362:
+                            items.Add("Kont.");
+                            items.Add("Inter.");
                             break;
                     }
                 }

@@ -306,16 +306,14 @@ namespace DigitalProductionProgram.Processcards
             }
             if (InfoText.answer == InfoText.Answer.No)
                 return;
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query = @"UPDATE Processcard.MainData SET Aktiv = @flag WHERE PartGroupID = @partgroupid";
+            using var con = new SqlConnection(Database.cs_Protocol);
+            var query = @"UPDATE Processcard.MainData SET Aktiv = @flag WHERE PartGroupID = @partgroupid";
 
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@flag", flag);
-                SQL_Parameter.NullableINT(cmd.Parameters, "@partgroupid", Order.PartGroupID);
-                con.Open();
-                cmd.ExecuteNonQuery();
-            }
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            cmd.Parameters.AddWithValue("@flag", flag);
+            SQL_Parameter.NullableINT(cmd.Parameters, "@partgroupid", Order.PartGroupID);
+            con.Open();
+            cmd.ExecuteNonQuery();
         }
         public static void DeleteProcesscard(int? partID)
         {

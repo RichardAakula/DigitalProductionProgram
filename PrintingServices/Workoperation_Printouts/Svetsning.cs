@@ -119,10 +119,14 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
             }
         }
 
-        public static PrintDocument Print_Protocol = new PrintDocument();
-        public static PrintDocument Print_Protocol_ExtraPage = new PrintDocument();
-        public static PrintPreviewDialog Preview_Protocol = new PrintPreviewDialog();
-        public static PrintPreviewDialog Preview_Protocol_ExtraPage = new PrintPreviewDialog();
+        public static PrintDocument Print_Protocol = new();
+        public static PrintDocument Print_Protocol_ExtraPage = new ();
+        public static PrintDocument Print_Comments = new ();
+
+        public static PrintPreviewDialog Preview_Protocol = new ();
+        public static PrintPreviewDialog Preview_Protocol_ExtraPage = new ();
+        public static PrintPreviewDialog Preview_Comments = new ();
+
         private static PrintVariables.TotalPrintOuts totalPrintOuts;
         
 
@@ -133,12 +137,15 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
         {
             ((Form)Preview_Protocol_ExtraPage).WindowState = FormWindowState.Maximized;
             ((Form)Preview_Protocol).WindowState = FormWindowState.Maximized;
+            ((Form)Preview_Comments).WindowState = FormWindowState.Maximized;
 
             Print_Protocol.PrintPage += Protocol_PrintPage;
             Print_Protocol_ExtraPage.PrintPage += Protocol_ExtraPage_PrintPage;
+            Print_Comments.PrintPage += Print_ExtraComments_PrintPage;
 
             Preview_Protocol.Document = Print_Protocol;
             Preview_Protocol_ExtraPage.Document = Print_Protocol_ExtraPage;
+            Preview_Comments.Document = Print_Comments;
         }
 
 
@@ -156,7 +163,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
             var TotalExtraPrintOuts = (int)Math.Ceiling(((double)TotalRowsProduction - 10) / TotalRowsExtraPrintOut);
             totalPrintOuts = new PrintVariables.TotalPrintOuts
             {
-                PagesSvetsning = 1
+                PagesSvetsning = 2
             };
             totalPrintOuts.PagesSvetsning += TotalExtraPrintOuts;
             if (IsPrinting)
@@ -175,13 +182,15 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                     Preview_Protocol_ExtraPage.ShowDialog();
             }
             Workoperation_Printouts.Print_Protocol.Set_DefaultPaperSize(Print_Protocol_ExtraPage, false);
-            if (Manage_PrintOuts.IsOkPrintExtraRaderComments)
-            {
-                if (IsPrinting)
-                    Manage_PrintOuts.Print_ExtraComments.Print();
-                else
-                    Manage_PrintOuts.Preview_ExtraComments.ShowDialog();
-            }
+            //if (Manage_PrintOuts.IsOkPrintExtraRaderComments)
+            PrintVariables.Active_PrintOut++;
+
+
+            if (IsPrinting)
+                Print_Comments.Print();
+            else
+                Preview_Comments.ShowDialog();
+
 
             totalPrintOuts.PagesSvetsning = 0;
         }
@@ -213,7 +222,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
             PrintOut.PrintPreFab(e);
 
             PrintVariables.Y += 10;
-            Comments(PrintVariables.LeftMargin, (int)PrintVariables.PageHeight - 130, Print.utskrift_Korprotokoll["Comments"], e);
+           // Comments(PrintVariables.LeftMargin, (int)PrintVariables.PageHeight - 130, Print.utskrift_Korprotokoll["Comments"], e);
             PageFooter(e);
             Print.Copy(e);
         }
@@ -226,6 +235,15 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
             PrintVariables.Y += 110;
             PrintOut.Print_MeasureProtocol_Values(e);
         }
+        private void Print_ExtraComments_PrintPage(object sender, PrintPageEventArgs e)
+        {
+            PageHeader(e, "Protokoll för sammanfogning av slang, Svetsning", totalPrintOuts.TotalPages);
+            Order_INFO(e);
+            PrintVariables.Y = 135;
+            Comments(PrintVariables.LeftMargin, (int)PrintVariables.PageHeight - 130, Print.utskrift_Korprotokoll["Comments"], e);
+            
+        }
+
 
         public class PrintOut
         {

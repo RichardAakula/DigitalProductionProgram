@@ -74,17 +74,15 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
             {
                 get
                 {
-                    using (var con = new SqlConnection(Database.cs_Protocol))
-                    {
-                        const string query = @"SELECT TextValue FROM [Order].Data WHERE OrderID = @orderid AND ProtocolDescriptionID = 172";
+                    using var con = new SqlConnection(Database.cs_Protocol);
+                    const string query = @"SELECT TextValue FROM [Order].Data WHERE OrderID = @orderid AND ProtocolDescriptionID = 172";
 
-                        var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                        cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
-                        con.Open();
-                        var value = cmd.ExecuteScalar();
-                        if (value != null)
-                            return (string)value;
-                    }
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                    cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
+                    con.Open();
+                    var value = cmd.ExecuteScalar();
+                    if (value != null)
+                        return (string)value;
                     return null;
                 }
             }
@@ -92,17 +90,15 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
             {
                 get
                 {
-                    using (var con = new SqlConnection(Database.cs_Protocol))
-                    {
-                        var query = @"SELECT textvalue FROM [Order].Data WHERE OrderID = @orderid AND ProtocolDescriptionID = 173";
+                    using var con = new SqlConnection(Database.cs_Protocol);
+                    var query = @"SELECT textvalue FROM [Order].Data WHERE OrderID = @orderid AND ProtocolDescriptionID = 173";
 
-                        var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                        cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
-                        con.Open();
-                        var value = cmd.ExecuteScalar();
-                        if (value != null)
-                            return (string)value;
-                    }
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                    cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
+                    con.Open();
+                    var value = cmd.ExecuteScalar();
+                    if (value != null)
+                        return (string)value;
                     return null;
                 }
             }

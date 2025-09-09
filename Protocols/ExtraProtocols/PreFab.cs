@@ -235,17 +235,6 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
                 cmd.ExecuteNonQuery();
             }
         }
-        public static void UPDATE_BatchNr_Skärmning(string batchNr)
-        {
-            using var con = new SqlConnection(Database.cs_Protocol);
-            var query = $"UPDATE [Order].PreFab SET Halvfabrikat_OrderNr = @H_O WHERE OrderID = @orderid";
-
-            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-            cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
-            cmd.Parameters.AddWithValue("@H_O", batchNr);
-            con.Open();
-            cmd.ExecuteNonQuery();
-        }
         
         
 
@@ -501,23 +490,6 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
                         cmd.ExecuteNonQuery();
                     }
                 }
-            }
-            public static void INSERT_Skärmning()
-            {
-                var tråd_Benämning = Monitor.Monitor.Part_Material.Description;
-                var tråd_artikelNr = Monitor.Monitor.Part_Material.PartNumber;
-
-                using var con = new SqlConnection(Database.cs_Protocol);
-                var query = $@"
-                    IF NOT EXISTS (SELECT * FROM [Order].PreFab {Queries.WHERE_OrderID} AND Halvfabrikat_ArtikelNr = @h_a) 
-                        INSERT INTO [Order].PreFab (OrderID, Halvfabrikat_ArtikelNr, Halvfabrikat_Benämning)
-                            VALUES (@id, @h_a, @h_b)";
-                con.Open();
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@id", Order.OrderID);
-                cmd.Parameters.AddWithValue("@h_a", tråd_artikelNr);
-                cmd.Parameters.AddWithValue("@h_b", tråd_Benämning);
-                cmd.ExecuteNonQuery();
             }
 
             public static void INSERT_ExtraRow(int row)

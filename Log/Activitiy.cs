@@ -17,9 +17,25 @@ internal class Activity
     public static long CurrentMemory;
     public static long PeakMemory;
 
-    private static readonly PerformanceCounter cpuCounterDpp = new("Process", "% Processor Time", Process.GetCurrentProcess().ProcessName, true);
-    private static readonly PerformanceCounter cpuCounterTotal = new("Processor", "% Processor Time", "_Total");
-    
+    private static PerformanceCounter? cpuCounterDpp;
+    private static PerformanceCounter? cpuCounterTotal;
+    private static bool performanceCountersInitialized = false;
+
+    private static void EnsurePerformanceCounters()
+    {
+        if (performanceCountersInitialized) return;
+        try
+        {
+            cpuCounterDpp = new PerformanceCounter("Process", "% Processor Time", Process.GetCurrentProcess().ProcessName, true);
+            cpuCounterTotal = new PerformanceCounter("Processor", "% Processor Time", "_Total");
+        }
+        catch
+        {
+            cpuCounterDpp = null;
+            cpuCounterTotal = null;
+        }
+        performanceCountersInitialized = true;
+    }
 
     public static void LoadMemory()
     {
@@ -27,7 +43,7 @@ internal class Activity
         CurrentMemory = proc.WorkingSet64;
         PeakMemory = proc.PeakWorkingSet64;
     }
-
+        
     public static void Start()
     {
         StartTime = DateTime.Now;
@@ -43,11 +59,26 @@ internal class Activity
                 LoadingTime = 0;
             var proc = Process.GetCurrentProcess();
             var dppMemoryMB = proc.WorkingSet64 / (1024 * 1024);
-            _ = cpuCounterDpp.NextValue();
-            _ = cpuCounterTotal.NextValue();
-            await Task.Delay(500); // istället för Thread.Sleep
-            var dppCpu = cpuCounterDpp.NextValue() / Environment.ProcessorCount;
-            var totalCpu = cpuCounterTotal.NextValue();
+
+            EnsurePerformanceCounters();
+            float dppCpu = 0, totalCpu = 0;
+            if (cpuCounterDpp != null && cpuCounterTotal != null)
+            {
+                try
+                {
+                    _ = cpuCounterDpp.NextValue();
+                    _ = cpuCounterTotal.NextValue();
+                    await Task.Delay(500);
+                    dppCpu = cpuCounterDpp.NextValue() / Environment.ProcessorCount;
+                    totalCpu = cpuCounterTotal.NextValue();
+                }
+                catch
+                {
+                    dppCpu = 0;
+                    totalCpu = 0;
+                }
+            }
+
             var ci = new ComputerInfo();
             var totalMemoryMB = (long)(ci.TotalPhysicalMemory / (1024 * 1024));
             var usedMemoryMB = totalMemoryMB - (long)(ci.AvailablePhysicalMemory / (1024 * 1024));
@@ -99,7 +130,7 @@ internal class Activity
         }
     }
 
-    public static async Task AddTimeUserRead(string version, TimeSpan duration)
+    public static async Task AddTimeUserReadChangeLog(string version, TimeSpan duration)
     {
         await using var con = new SqlConnection(Database.cs_Protocol);
         const string query = @"

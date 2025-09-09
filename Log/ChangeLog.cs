@@ -299,7 +299,7 @@ namespace DigitalProductionProgram.Log
                 if (versionReadStartTime.HasValue)// && currentVersionBeingRead != null)
                 {
                     var duration = DateTime.Now - versionReadStartTime.Value;
-                    await Activity.AddTimeUserRead(currentVersionBeingRead.ToString(), duration);
+                    await Activity.AddTimeUserReadChangeLog(currentVersionBeingRead.ToString(), duration);
                 }
 
                 currentVersionBeingRead = clickedVersion;
@@ -434,7 +434,7 @@ namespace DigitalProductionProgram.Log
             if (versionReadStartTime.HasValue)// && currentVersionBeingRead != null)
             {
                 var duration = DateTime.Now - versionReadStartTime.Value;
-                await Activity.AddTimeUserRead(currentVersionBeingRead.ToString(), duration);
+                await Activity.AddTimeUserReadChangeLog(currentVersionBeingRead.ToString(), duration);
             }
             await User.Person.UpdateLastReadChangelogVersion(User.Person.Name);
         }

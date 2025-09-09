@@ -931,7 +931,7 @@ namespace DigitalProductionProgram.OrderManagement
                         Korprotokoll.Save_Date_StartUp1();
                         Korprotokoll.Save_Data("", 213, 0, 1, 1);//Zon 1
                         //SaveData.UPDATE_Korprotokoll_Main_From_Processkort_Main();
-                        PreFab.SaveData.INSERT_Halvfabrikat();
+                        PreFab.SaveData.SavePrefabFromMonitor();
                         MainInfo_B.INSERT_Measurepoints_Korprotokoll();
                         break;
 
@@ -939,14 +939,14 @@ namespace DigitalProductionProgram.OrderManagement
                     case WorkOperations.Extrudering_Tryck:
                         Korprotokoll.Save_Date_StartUp1();
                        // SaveData.UPDATE_Korprotokoll_Main_From_Processkort_Main();
-                        PreFab.SaveData.INSERT_Halvfabrikat();
+                        PreFab.SaveData.SavePrefabFromMonitor();
                         MainInfo_B.INSERT_Measurepoints_Korprotokoll();
                         break;
 
                     case WorkOperations.Extrusion_HS:
                         Korprotokoll.Save_Date_StartUp1();
                        // SaveData.UPDATE_Korprotokoll_Main_From_Processkort_Main();
-                        PreFab.SaveData.INSERT_Halvfabrikat();
+                        PreFab.SaveData.SavePrefabFromMonitor();
                         MainInfo_B.INSERT_Measurepoints_Korprotokoll();
                         break;
 
@@ -959,12 +959,12 @@ namespace DigitalProductionProgram.OrderManagement
                     case WorkOperations.Krympslangsblåsning:
                     case WorkOperations.HeatShrink:
                         //SaveData.UPDATE_Korprotokoll_Main_From_Processkort_Main();
-                        PreFab.SaveData.INSERT_Halvfabrikat();
+                        PreFab.SaveData.SavePrefabFromMonitor();
                         break;
 
                     case WorkOperations.Extrudering_PTFE:
                     case WorkOperations.Extrudering_Grov_PTFE:
-                        PreFab.SaveData.INSERT_Halvfabrikat();
+                        PreFab.SaveData.SavePrefabFromMonitor();
                         break;
 
                     case WorkOperations.Kragning_PTFE:
@@ -975,7 +975,8 @@ namespace DigitalProductionProgram.OrderManagement
 
                     case WorkOperations.Skärmning:
                         //SaveData.UPDATE_Korprotokoll_Main_From_Processkort_Main();
-                        PreFab.SaveData.INSERT_Skärmning();
+                        PreFab.SaveData.SavePrefabFromMonitor();
+                        //PreFab.SaveData.INSERT_Skärmning();
                         break;
 
                     //case WorkOperations.Kragning_TEF:
@@ -987,7 +988,7 @@ namespace DigitalProductionProgram.OrderManagement
                     case WorkOperations.Synergy_PTFE:
                         MainInfo_B.INSERT_Measurepoints_Korprotokoll();
                        // SaveData.UPDATE_Korprotokoll_Main_From_Processkort_Main();
-                        PreFab.SaveData.INSERT_Halvfabrikat();
+                        PreFab.SaveData.SavePrefabFromMonitor();
                         break;
                 }
                 Module.IsOkToSave = false;

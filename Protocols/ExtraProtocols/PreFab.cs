@@ -396,7 +396,7 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
         private void Add_PreFab_Click(object sender, EventArgs e)
         {
             if (dgv.Rows.Count == 0)
-                SaveData.INSERT_Halvfabrikat();
+                SaveData.SavePrefabFromMonitor();
             else
             {
                 if (dgv.CurrentCell.RowIndex < 0)
@@ -434,7 +434,7 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
 
         public class SaveData
         {
-            public static void INSERT_Halvfabrikat(long ManufacturingOrderId = 0)
+            public static void SavePrefabFromMonitor(long ManufacturingOrderId = 0)
             {
                 if (ManufacturingOrderId == 0)
                 {

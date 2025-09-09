@@ -177,7 +177,7 @@ namespace DigitalProductionProgram.OrderManagement
             InfoText.Question("Vill du försöka hämta halvfabrikat till denna order från en tidigare order med samma ArtikelNr?\n\n" +
                           "OBS! Det är inte säkert att rätt halvfabrikat hämtas.", CustomColors.InfoText_Color.Info, "Hämta Halvfabrikat?", this);
             if (InfoText.answer == InfoText.Answer.Yes)
-                PreFab.SaveData.INSERT_Halvfabrikat(Monitor.Monitor.OrderId(tb_ArtikelNr.Text));
+                PreFab.SaveData.SavePrefabFromMonitor(Monitor.Monitor.OrderId(tb_ArtikelNr.Text));
 
             if (Processcard.IsMultipleProcesscard(Order.WorkOperation))
             {

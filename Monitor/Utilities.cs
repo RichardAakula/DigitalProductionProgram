@@ -13,8 +13,6 @@ namespace DigitalProductionProgram.Monitor
 {
     public static class Utilities
     {
-        #region GET
-        // public static string MonitorStatus;
 
         private static HttpResponseMessage Http_response(string query)
         {
@@ -114,6 +112,6 @@ namespace DigitalProductionProgram.Monitor
         }
 
 
-        #endregion
+      
     }
 }

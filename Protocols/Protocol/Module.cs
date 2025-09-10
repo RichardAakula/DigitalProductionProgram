@@ -860,7 +860,9 @@ namespace DigitalProductionProgram.Protocols.Protocol
                                 DieType = "Munstycken FEP";
                             else
                                 DieType = Value(col, 310);
-                            items = DigitalProductionProgram.Equipment.Equipment.List_Tool(DieType, MIN_Value(dgv_Row), MAX_Value(dgv_Row));
+                            items = Monitor.Monitor.List_Tools(DieType)?.Where(x=> x != null).Select(x => x.IdNumber).ToList() ?? new List<string>();
+
+                            //items = DigitalProductionProgram.Equipment.Equipment.List_Tool(DieType, MIN_Value(dgv_Row), MAX_Value(dgv_Row));
                             IsItemsMultipleColumns = true;
                             break;
                         case 311: //KÄRNA TYP

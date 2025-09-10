@@ -204,6 +204,27 @@ namespace DigitalProductionProgram.Monitor
                 return WorkCenters.Select(kvp => kvp.Value).ToList();
             }
         }
+
+        public static List<Equipment.Equipment.Tool> List_Tools(string Description)
+        {
+            var list = new List<Equipment.Equipment.Tool>();
+
+            var parts = Utilities.GetFromMonitor<Inventory.Parts>($"filter=startswith(Description, '{Description}')");
+            foreach (var part in parts)
+            {
+                var productRecords = Utilities.GetFromMonitor<Inventory.ProductRecords>($"filter=PartId Eq'{part.Id}' &$orderby=SerialNumber");
+                foreach (var productRecord in productRecords)
+                {
+                    list.Add(new Equipment.Equipment.Tool
+                    {
+                        IdNumber = productRecord.ChargeNumber,
+                    });
+                }
+            }
+            
+            return list;
+        }
+
         public static List<TimeRecording.AttendanceChart> List_Users
         {
             get

@@ -361,5 +361,19 @@ namespace DigitalProductionProgram.Equipment
             cmd.Parameters.AddWithValue("@boolvalue", value);
             cmd.ExecuteNonQuery();
         }
+
+        public class Tool
+        {
+            public string? IdNumber { get; set; }
+            public string? Typ { get; set; }
+            public double? Dimension_min { get; set; }
+            public double? Dimension_nom { get; set; }
+            public double? Dimension_max { get; set; }
+            public double? Landlängd_nom { get; set; }
+            public string? Sort { get; set; }
+            public string? Info { get; set; }
+
+
+        }
     }
 }

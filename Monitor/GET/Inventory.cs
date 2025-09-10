@@ -13,6 +13,7 @@ namespace DigitalProductionProgram.Monitor.GET
             public long Id { get; set; }
             public string? SerialNumber { get; set; } //Serienummer
             public string? BatchNumber { get; set; } //LotNr
+            
             public decimal Balance { get; set; } //Saldo
             public string? Name { get; set; }
         }
@@ -38,6 +39,7 @@ namespace DigitalProductionProgram.Monitor.GET
 
             public long Id { get; set; }
             public string? SerialNumber { get; set; }    //LotNr
+            public string? ChargeNumber { get; set; } //BatchNr
             public string? BestBeforeDate { get; set; }
         }
 

@@ -1,17 +1,17 @@
-﻿using System;
-using System.Configuration;
-using System.Data;
-using Microsoft.Data.SqlClient;
-using System.Drawing;
-using System.Text.RegularExpressions;
-using System.Windows.Forms;
-using DigitalProductionProgram.DatabaseManagement;
+﻿using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Help;
-
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.Övrigt;
 using DigitalProductionProgram.PrintingServices;
 using DigitalProductionProgram.User;
+using Microsoft.Data.SqlClient;
+using System;
+using System.Configuration;
+using System.Data;
+using System.Drawing;
+using System.Text.RegularExpressions;
+using System.Windows.Forms;
+using static SkiaSharp.HarfBuzz.SKShaper;
 
 namespace DigitalProductionProgram.MainWindow
 {
@@ -93,98 +93,93 @@ namespace DigitalProductionProgram.MainWindow
             {
                 if (string.IsNullOrEmpty(Order.OrderNumber) || string.IsNullOrEmpty(Order.PartNumber) || Order.OrderID is null)
                     return 0;
-                var antal_per_Påse_Spole = 0;
+
+                int antal_per_Påse_Spole = 0;
+
                 switch (Order.WorkOperation)
                 {
                     case Manage_WorkOperation.WorkOperations.Extrudering_Termo:
                     case Manage_WorkOperation.WorkOperations.Extrudering_Tryck:
+                        antal_per_Påse_Spole = Database.ExecuteSafe(con =>
                         {
-                            using (var con = new SqlConnection(Database.cs_Protocol))
+                            var query = "SELECT Value FROM [Order].Data WHERE OrderID = @orderid AND ProtocolDescriptionID = 238";
+                            using var cmd = new SqlCommand(query, con);
+                            ServerStatus.Add_Sql_Counter();
+                            cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
+                            var value = cmd.ExecuteScalar();
+                            if (value != null)
                             {
-                                var query = "SELECT Value FROM [Order].Data WHERE OrderID = @orderid AND ProtocolDescriptionID = 238";
-                                con.Open();
-                                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                                cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
-                                var value = cmd.ExecuteScalar();
-                                if (value != null)
-                                {
-                                    value = Regex.Match(value.ToString(), @"\d+").Value;
-                                    int.TryParse(value.ToString(), out antal_per_Påse_Spole);
-                                }
+                                var match = Regex.Match(value.ToString() ?? "", @"\d+").Value;
+                                return int.TryParse(match, out var result) ? result : 0;
                             }
-                            if (antal_per_Påse_Spole == 0)
-                            {
-                                using (var con = new SqlConnection(Database.cs_Protocol))
-                                {
-                                    var query = @"
-                                        SELECT Value
-                                        FROM Processcard.Data 
-                                        WHERE PartID = @partid
-                                            AND TemplateID = (SELECT Id FROM Protocol.Template WHERE FormTemplateID = 34 AND revision = (SELECT ProtocolTemplateRevision FROM [Order].MainData WHERE OrderID = @orderid) AND ProtocolDescriptionID = 238)";
-                                    con.Open();
-                                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                                    SQL_Parameter.NullableINT(cmd.Parameters, "@partid", Order.PartID);
-                                    cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
+                            return 0;
+                        });
 
-                                    var value = cmd.ExecuteScalar();
-                                    if (value != null)
-                                        int.TryParse(value.ToString(), out antal_per_Påse_Spole);
-                                }
-                            }
-                        }
-                        break;
-                    case Manage_WorkOperation.WorkOperations.Krympslangsblåsning:
+                        if (antal_per_Påse_Spole == 0)
                         {
-                            using (var con = new SqlConnection(Database.cs_Protocol))
-                            {
-                                var query = "SELECT Value FROM [Order].Data WHERE OrderID = @orderid AND ProtocolDescriptionID = 72";
-                                con.Open();
-                                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                                cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
-                                var value = cmd.ExecuteScalar();
-                                if (value != null)
-                                    int.TryParse(value.ToString(), out antal_per_Påse_Spole);
-                            }
-                            if (antal_per_Påse_Spole == 0)
-                            {
-                                using (var con = new SqlConnection(Database.cs_Protocol))
-                                {
-                                    var query = @"
-                                        SELECT Value FROM Processcard.Data 
-                                        WHERE PartID = @partid 
-                                            AND TemplateID = (SELECT Id FROM Protocol.Template WHERE FormTemplateID = @formtemplateid AND revision = (SELECT ProtocolTemplateRevision FROM [Order].MainData WHERE OrderID = @orderid) AND ProtocolDescriptionID = 72)";
-                                    con.Open();
-                                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                                    SQL_Parameter.NullableINT(cmd.Parameters, "@partid", Order.PartID);
-                                    cmd.Parameters.AddWithValue("@workoperation", Order.WorkOperation.ToString());
-                                    cmd.Parameters.AddWithValue("@formtemplateid", 35);
-                                    cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
-                                    var value = cmd.ExecuteScalar();
-                                    if (value != null)
-                                        int.TryParse(value.ToString(), out antal_per_Påse_Spole);
-                                }
-                            }
-                        }
-                        break;
-                    case Manage_WorkOperation.WorkOperations.Hackning_TEF:
-                        {
-                            using (var con = new SqlConnection(Database.cs_Protocol))
+                            antal_per_Påse_Spole = Database.ExecuteSafe(con =>
                             {
                                 var query = @"
-                                    SELECT value FROM [Order].Data 
-                                    WHERE OrderID = @orderid
-                                    AND ProtocolDescriptionID = (SELECT id FROM Protocol.Description WHERE CodeText = 'ANTAL/PÅSE')";
-                                con.Open();
-                                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                            SELECT Value
+                            FROM Processcard.Data 
+                            WHERE PartID = @partid
+                                AND TemplateID = (SELECT Id FROM Protocol.Template WHERE FormTemplateID = 34 AND revision = (SELECT ProtocolTemplateRevision FROM [Order].MainData WHERE OrderID = @orderid) AND ProtocolDescriptionID = 238)";
+                                using var cmd = new SqlCommand(query, con);
+                                ServerStatus.Add_Sql_Counter();
+                                SQL_Parameter.NullableINT(cmd.Parameters, "@partid", Order.PartID);
                                 cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                                 var value = cmd.ExecuteScalar();
-                                if (value != null)
-                                    int.TryParse(value.ToString(), out antal_per_Påse_Spole);
-                            }
-
+                                return value != null && int.TryParse(value.ToString(), out var result) ? result : 0;
+                            });
                         }
                         break;
+
+                    case Manage_WorkOperation.WorkOperations.Krympslangsblåsning:
+                        antal_per_Påse_Spole = Database.ExecuteSafe(con =>
+                        {
+                            var query = "SELECT Value FROM [Order].Data WHERE OrderID = @orderid AND ProtocolDescriptionID = 72";
+                            using var cmd = new SqlCommand(query, con);
+                            ServerStatus.Add_Sql_Counter();
+                            cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
+                            var value = cmd.ExecuteScalar();
+                            return value != null && int.TryParse(value.ToString(), out var result) ? result : 0;
+                        });
+
+                        if (antal_per_Påse_Spole == 0)
+                        {
+                            antal_per_Påse_Spole = Database.ExecuteSafe(con =>
+                            {
+                                var query = @"
+                            SELECT Value FROM Processcard.Data 
+                            WHERE PartID = @partid 
+                                AND TemplateID = (SELECT Id FROM Protocol.Template WHERE FormTemplateID = @formtemplateid AND revision = (SELECT ProtocolTemplateRevision FROM [Order].MainData WHERE OrderID = @orderid) AND ProtocolDescriptionID = 72)";
+                                using var cmd = new SqlCommand(query, con);
+                                ServerStatus.Add_Sql_Counter();
+                                SQL_Parameter.NullableINT(cmd.Parameters, "@partid", Order.PartID);
+                                cmd.Parameters.AddWithValue("@formtemplateid", 35);
+                                cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
+                                var value = cmd.ExecuteScalar();
+                                return value != null && int.TryParse(value.ToString(), out var result) ? result : 0;
+                            });
+                        }
+                        break;
+
+                    case Manage_WorkOperation.WorkOperations.Hackning_TEF:
+                        antal_per_Påse_Spole = Database.ExecuteSafe(con =>
+                        {
+                            var query = @"
+                        SELECT value FROM [Order].Data 
+                        WHERE OrderID = @orderid
+                        AND ProtocolDescriptionID = (SELECT id FROM Protocol.Description WHERE CodeText = 'ANTAL/PÅSE')";
+                            using var cmd = new SqlCommand(query, con);
+                            ServerStatus.Add_Sql_Counter();
+                            cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
+                            var value = cmd.ExecuteScalar();
+                            return value != null && int.TryParse(value.ToString(), out var result) ? result : 0;
+                        });
+                        break;
                 }
+
                 return antal_per_Påse_Spole;
             }
         }

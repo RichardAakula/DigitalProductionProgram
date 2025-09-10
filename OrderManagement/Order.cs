@@ -1091,7 +1091,8 @@ namespace DigitalProductionProgram.OrderManagement
                     FULL OUTER JOIN Processcard.Data as pc_data
                         ON template.id = pc_data.TemplateID
                         AND PartID = @partid
-                        AND NOT (pc_data.Value IS NULL AND pc_data.TextValue IS NULL)
+                        AND NOT (pc_data.Value IS NULL 
+                        AND (pc_data.TextValue IS NULL OR pc_data.TextValue = ''))
                     LEFT JOIN Protocol.Description as descr
                         ON descr.id = template.ProtocolDescriptionID
                     WHERE template.FormTemplateID = @formtemplateid 

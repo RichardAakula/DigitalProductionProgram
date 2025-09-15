@@ -364,6 +364,7 @@ namespace DigitalProductionProgram.Equipment
 
         public class Tool
         {
+            public long PartId { get; set; }
             public string? IdNumber { get; set; }
             public string? Typ { get; set; }
             public double? Dimension_min { get; set; }
@@ -374,6 +375,15 @@ namespace DigitalProductionProgram.Equipment
             public string? Info { get; set; }
 
 
+        }
+
+        public class ExtraFieldTemplates
+        {
+            public long? Id { get; set; }
+            public string? Name { get; set; }
+            public string? ParentId { get; set; }
+            public int? RowNumber { get; set; }
+            public string? Identifier { get; set; }
         }
     }
 }

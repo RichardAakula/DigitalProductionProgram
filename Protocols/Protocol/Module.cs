@@ -14,12 +14,14 @@ using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Equipment;
 using DigitalProductionProgram.Help;
 using DigitalProductionProgram.MainWindow;
+using DigitalProductionProgram.Monitor.GET;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.Övrigt;
 using DigitalProductionProgram.PrintingServices;
 using DigitalProductionProgram.Processcards;
 using DigitalProductionProgram.Templates;
 using DigitalProductionProgram.User;
+using WMPLib;
 using Activity = DigitalProductionProgram.Log.Activity;
 
 namespace DigitalProductionProgram.Protocols.Protocol
@@ -792,8 +794,11 @@ namespace DigitalProductionProgram.Protocols.Protocol
                             items.Add(LanguageManager.GetString("no") ?? string.Empty);
                             break;
                         case 80:    //EXTRUDER
-                            items = CheckAuthority.IsWorkoperationAuthorized(CheckAuthority.TemplateWorkoperation.ExtruderRegister) ? DigitalProductionProgram.Equipment.Equipment.List_From_Register("Extruder", "Extruder_Skruvar") : Machines.Extruders("EXTRUDER");
+                            items = CheckAuthority.IsWorkoperationAuthorized(CheckAuthority.TemplateWorkoperation.ExtruderRegister) ? 
+                                Monitor.Services.ToolService.List_Equipment<Manufacturing.WorkCenters>("Description", "filter=Type Eq'0'") : Machines.Extruders("EXTRUDER");
+                            //DigitalProductionProgram.Equipment.Equipment.List_From_Register("Extruder", "Extruder_Skruvar") : Machines.Extruders("EXTRUDER");
                             break;
+
                         case 81:    //CYLINDER
                             items = Machines.Cylinders;
                             break;
@@ -839,8 +844,9 @@ namespace DigitalProductionProgram.Protocols.Protocol
                             IsItemsMultipleColumns = true;
                             break;
                         case 307: //HUVUD
-                            items = DigitalProductionProgram.Equipment.Equipment.List_Register(isProcesscardUnderManagement, NOM_Value(dgv_Row), "Register_Huvud");
-                            IsItemsMultipleColumns = true;
+                            items = Monitor.Services.ToolService.List_Tools(NOM_Value(dgv_Row), null);
+                            //items = DigitalProductionProgram.Equipment.Equipment.List_Register(isProcesscardUnderManagement, NOM_Value(dgv_Row), "Register_Huvud");
+                           // IsItemsMultipleColumns = true;
                             break;
                         case 308: //TORPED
                             items = DigitalProductionProgram.Equipment.Equipment.List_Register(isProcesscardUnderManagement, NOM_Value(dgv_Row), "Register_Torpeder");
@@ -851,7 +857,9 @@ namespace DigitalProductionProgram.Protocols.Protocol
                             IsItemsMultipleColumns = true;
                             break;
                         case 310: //MUNSTYCKE TYP
-                            items = DigitalProductionProgram.Equipment.Equipment.List_Tool_Type("Munstycke");
+                            items = Monitor.Services.ToolService.List_Tools<Inventory.PartTemplates, Inventory.Parts>("TOOLS (Titus)");
+
+                            // items = DigitalProductionProgram.Equipment.Equipment.List_Tool_Type("Munstycke");
 
                             break;
                         case 83: //MUNSTYCKE
@@ -860,13 +868,14 @@ namespace DigitalProductionProgram.Protocols.Protocol
                                 DieType = "Munstycken FEP";
                             else
                                 DieType = Value(col, 310);
-                            items = Monitor.Monitor.List_Tools(DieType)?.Where(x=> x != null).Select(x => x.IdNumber).ToList() ?? new List<string>();
+                            items = Monitor.Services.ToolService.List_Tools(DieType, "Landlängd Nom");
 
                             //items = DigitalProductionProgram.Equipment.Equipment.List_Tool(DieType, MIN_Value(dgv_Row), MAX_Value(dgv_Row));
                             IsItemsMultipleColumns = true;
                             break;
                         case 311: //KÄRNA TYP
-                            items = DigitalProductionProgram.Equipment.Equipment.List_Tool_Type("Kanyl");
+                            items = Monitor.Services.ToolService.List_Tools<Inventory.PartTemplates, Inventory.Parts>("TOOLS (Titus)");
+                            // items = DigitalProductionProgram.Equipment.Equipment.List_Tool_Type("Kanyl");
                             break;
                         case 209: //KÄRNA
                             cells = new[] { dgv_Module.Rows[e.RowIndex].Cells[col], dgv_Module.Rows[e.RowIndex + 1].Cells[col] };
@@ -874,6 +883,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                                 TipType = "Kanyler FEP";
                             else
                                 TipType = Value(col, 311);
+                            items = Monitor.Services.ToolService.List_Tools(TipType, "Landlängd Nom");
                             items = DigitalProductionProgram.Equipment.Equipment.List_Tool(TipType, MIN_Value(dgv_Row), MAX_Value(dgv_Row));
                             IsItemsMultipleColumns = true;
                             break;

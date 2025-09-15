@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DigitalProductionProgram.Monitor.Services;
+using System;
 
 namespace DigitalProductionProgram.Monitor.GET
 {
@@ -59,7 +60,7 @@ namespace DigitalProductionProgram.Monitor.GET
 
         }
 
-        internal class WorkCenters : DTO
+        internal class WorkCenters : DTO, ToolService.IHasId
         {
             public override string URL => "Manufacturing/WorkCenters";
             public long Id { get; set; }

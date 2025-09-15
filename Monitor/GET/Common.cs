@@ -23,7 +23,37 @@ namespace DigitalProductionProgram.Monitor.GET
 
             public string Description { get; set; }     //Avdelning
         }
+        internal class ExtraFields : DTO
+        {
+            public override string URL => "Common/ExtraFields";
 
+            public long Id { get; set; }
+            public string ParentClass { get; set; }
+            public long? ParentId { get; set; }
+            public string StringValue { get; set; }
+            public int? IntegerValue { get; set; }
+            public double? DecimalValue { get; set; }
+            public string? Identifier { get; set; }
+        }
+        internal class ExtraFieldGroups : DTO
+        {
+            public override string URL => "Common/ExtraFieldGroups";
+
+            public long Id { get; set; }
+            public string Name { get; set; }
+            public string EntityId { get; set; }
+            public int RowNumber { get; set; }
+        }
+        internal class ExtraFieldTemplates : DTO
+        {
+            public override string URL => "Common/ExtraFieldTemplates";
+
+            public long Id { get; set; }
+            public string Name { get; set; }
+            public long ParentId { get; set; }
+            public int RowNumber { get; set; }
+            public string Identifier { get; set; }
+        }
         internal class FormTemplateSelectionRows : DTO
         {
             public override string URL => "Common/FormTemplateSelectionRows";

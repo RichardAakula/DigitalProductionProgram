@@ -1027,7 +1027,7 @@ namespace DigitalProductionProgram.Templates
                 int.TryParse(dgv.Rows[e.RowIndex].Cells["col_ProtocolDescriptionID"].Value.ToString(), out var descriptionID);
                 int? templateID = null;
                 if (int.TryParse(dgv.Rows[e.RowIndex].Cells["col_ID"].Value?.ToString(), out var parsedId))
-                    templateID = parsedId;
+                   templateID = parsedId;
                 if (e.RowIndex < 0 || e.ColumnIndex < 0)
                     return;
 

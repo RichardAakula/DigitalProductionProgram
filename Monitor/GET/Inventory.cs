@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
+using DigitalProductionProgram.Monitor.Services;
 
 namespace DigitalProductionProgram.Monitor.GET
 {
@@ -18,7 +19,7 @@ namespace DigitalProductionProgram.Monitor.GET
             public string? Name { get; set; }
         }
 
-        internal class Parts : DTO
+        internal class Parts : DTO, ToolService.IHasId
         {
             public override string URL => "Inventory/Parts";
 
@@ -30,7 +31,17 @@ namespace DigitalProductionProgram.Monitor.GET
             public decimal StandardPrice { get; set; }
             public long StandardUnitId { get; set; }
 
-            public List<ProductRecords> ProductRecords { get; set; }
+           // public List<ProductRecords> ProductRecords { get; set; }
+        }
+        internal class PartTemplates : DTO, ToolService.IHasId
+        {
+            public override string URL => "Inventory/PartTemplates";
+
+
+            public long Id { get; set; }
+            public string? Description { get; set; }
+
+            // public List<ProductRecords> ProductRecords { get; set; }
         }
 
         internal class ProductRecords : DTO

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Data;
 using Microsoft.Data.SqlClient;
 using System.Diagnostics;
@@ -57,7 +58,7 @@ namespace DigitalProductionProgram.Monitor
         public static Common.Units? Unit;
         public static Common.Departments? Department;
         public static Manufacturing.WorkCenters? WorkCenter;
-
+        public static List<Common.ExtraFieldTemplates>? ExtraFieldTemplate;
 
         public static DataTable? DataTable_Measurepoints { get; set; }
 
@@ -205,25 +206,8 @@ namespace DigitalProductionProgram.Monitor
             }
         }
 
-        public static List<Equipment.Equipment.Tool> List_Tools(string Description)
-        {
-            var list = new List<Equipment.Equipment.Tool>();
-
-            var parts = Utilities.GetFromMonitor<Inventory.Parts>($"filter=startswith(Description, '{Description}')");
-            foreach (var part in parts)
-            {
-                var productRecords = Utilities.GetFromMonitor<Inventory.ProductRecords>($"filter=PartId Eq'{part.Id}' &$orderby=SerialNumber");
-                foreach (var productRecord in productRecords)
-                {
-                    list.Add(new Equipment.Equipment.Tool
-                    {
-                        IdNumber = productRecord.ChargeNumber,
-                    });
-                }
-            }
-            
-            return list;
-        }
+       
+       
 
         public static List<TimeRecording.AttendanceChart> List_Users
         {

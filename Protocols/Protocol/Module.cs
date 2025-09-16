@@ -911,56 +911,64 @@ namespace DigitalProductionProgram.Protocols.Protocol
                             items = Monitor.Monitor.List_CandleFilter_PartNr("Candle");
                             break;
                         case 316: //KALIBRERINGSTYP
-
+                            
                             items = DigitalProductionProgram.Equipment.Equipment.List_Register(true, NOM_Value(dgv_Row), "Register_Kalibreringar");
                             //  IsItemsMultipleColumns = false;
                             break;
+                        case 399:   //KALIBRERING 
+                            if (isProcesscardUnderManagement)
+                                items = DigitalProductionProgram.Equipment.Equipment.List_From_Register("Dimension_Bak", "Register_Kalibreringar", true, Value(col, 316));
+                            else
+                                items = DigitalProductionProgram.Equipment.Equipment.List_From_Register("ID_Nummer", "Register_Kalibreringar", true, Value(col, 316));
+                            
+                            break;
+
                         case 159:   //HS MASKIN
-                            items = Machines.HS_Machines;
-                            break;
-                        case 75:    //RÖR ID# POS 1
-                        case 160:   //RÖR ID# POS 2
-                        case 161:   //RÖR ID# POS 3
-                            items = Tools.RegisterList.List_HS_PipeID(isProcesscardUnderManagement);
-                            break;
-                        case 71:    //HACKHYLSA
-                            items = Tools.RegisterList.List_HS_Hackhylsa;
-                            break;
-                        case 73:    //UPPTAGARE/HACK
-                            items = Machines.HS_Upptagare;
-                            break;
-                        case 131:   //RAKBLADSTYP
-                            items = Monitor.Monitor.List_RazorTypes;
-                            break;
-                        case 132:   //HACKRÖRSTYP
-                            items.Add("Vanlig");
-                            items.Add("PTFE");
-                            items.Add("Vinkel");
-                            break;
-                        case 138:   //HJUL
-                            items.Add("Stort");
-                            items.Add("Litet");
-                            break;
-                        case 139:   //PÅSTYP
-                            items.Add("Transparent PE");
-                            items.Add("Svart PE");
-                            items.Add("Spolpåse");
-                            items.Add("Inserterrörspåse");
-                            break;
-                        case 333:   //SVÄNGT / BYTT RAKBLAD
-                            items.Add("Svängt Rakblad");
-                            items.Add("Nytt Rakblad");
-                            break;
-                        case 357:   //BRYTPLATTA
-                            items.Add("Platt");
-                            items.Add("Försänkt");
-                            items.Add("Strypring");
-                            break;
-                        case 362:
-                            items.Add("Kont.");
-                            items.Add("Inter.");
-                            break;
-                    }
+                                    items = Machines.HS_Machines;
+                                    break;
+                                case 75:    //RÖR ID# POS 1
+                                case 160:   //RÖR ID# POS 2
+                                case 161:   //RÖR ID# POS 3
+                                    items = Tools.RegisterList.List_HS_PipeID(isProcesscardUnderManagement);
+                                    break;
+                                case 71:    //HACKHYLSA
+                                    items = Tools.RegisterList.List_HS_Hackhylsa;
+                                    break;
+                                case 73:    //UPPTAGARE/HACK
+                                    items = Machines.HS_Upptagare;
+                                    break;
+                                case 131:   //RAKBLADSTYP
+                                    items = Monitor.Monitor.List_RazorTypes;
+                                    break;
+                                case 132:   //HACKRÖRSTYP
+                                    items.Add("Vanlig");
+                                    items.Add("PTFE");
+                                    items.Add("Vinkel");
+                                    break;
+                                case 138:   //HJUL
+                                    items.Add("Stort");
+                                    items.Add("Litet");
+                                    break;
+                                case 139:   //PÅSTYP
+                                    items.Add("Transparent PE");
+                                    items.Add("Svart PE");
+                                    items.Add("Spolpåse");
+                                    items.Add("Inserterrörspåse");
+                                    break;
+                                case 333:   //SVÄNGT / BYTT RAKBLAD
+                                    items.Add("Svängt Rakblad");
+                                    items.Add("Nytt Rakblad");
+                                    break;
+                                case 357:   //BRYTPLATTA
+                                    items.Add("Platt");
+                                    items.Add("Försänkt");
+                                    items.Add("Strypring");
+                                    break;
+                                case 362:
+                                    items.Add("Kont.");
+                                    items.Add("Inter.");
+                                    break;
+                                }
                 }
 
 
@@ -1018,6 +1026,10 @@ namespace DigitalProductionProgram.Protocols.Protocol
                 case 311:
                     TipType = dgv_Module.Rows[row].Cells[col].Value.ToString();
                     break;
+                case 399:   //KALIBRERING 
+                    if (isProcesscardUnderManagement)
+                        cell.Value = Regex.Replace(cell.Value.ToString(), "[^0-9,]", "");
+                    break;
                 case 325:   //RENGJORT CYLINDER
                     break;
                 case 326:   //RENGJORT UTRUSTNING
@@ -1031,20 +1043,18 @@ namespace DigitalProductionProgram.Protocols.Protocol
         {
             public static void Delete_StartUp(int startup)
             {
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    var query = @"
+                using var con = new SqlConnection(Database.cs_Protocol);
+                var query = @"
                     IF EXISTS (SELECT * FROM [Order].Data WHERE OrderID = @orderid AND Uppstart = @uppstart)
                         DELETE FROM [Order].Data 
                         WHERE OrderID = @orderid 
                             AND Uppstart = @uppstart";
 
-                    con.Open();
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
-                    cmd.Parameters.AddWithValue("@uppstart", startup);
-                    cmd.ExecuteNonQuery();
-                }
+                con.Open();
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
+                cmd.Parameters.AddWithValue("@uppstart", startup);
+                cmd.ExecuteNonQuery();
             }
             public static void Delete_Oven(int startup, int oven)
             {

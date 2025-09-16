@@ -100,22 +100,20 @@ namespace DigitalProductionProgram.Protocols.Template_Management
 
             public static void SaveItem(string item)
             {
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    const string query = @"
+                using var con = new SqlConnection(Database.cs_Protocol);
+                const string query = @"
                     IF NOT EXISTS (SELECT * FROM MeasureProtocol.ItemsList WHERE MeasureProtocolMainTemplateID = @maintemplateid AND Item = @items)
                     BEGIN
                         INSERT INTO MeasureProtocol.ItemsList (MeasureProtocolMainTemplateID, DescriptionID, Item)
                         VALUES (@maintemplateid, @descriptionid, @items)
                     END";
-                    using (var cmd = new SqlCommand(query, con))
-                    {
-                        cmd.Parameters.Add("@items", SqlDbType.NVarChar).Value = item;
-                        cmd.Parameters.AddWithValue("@maintemplateid", Templates_MeasureProtocol.MainTemplate.ID);
-                        cmd.Parameters.AddWithValue("@descriptionid", DescriptionID);
-                        con.Open();
-                        cmd.ExecuteScalar();
-                    }
+                using (var cmd = new SqlCommand(query, con))
+                {
+                    cmd.Parameters.Add("@items", SqlDbType.NVarChar).Value = item;
+                    cmd.Parameters.AddWithValue("@maintemplateid", Templates_MeasureProtocol.MainTemplate.ID);
+                    cmd.Parameters.AddWithValue("@descriptionid", DescriptionID);
+                    con.Open();
+                    cmd.ExecuteScalar();
                 }
             }
          

@@ -224,7 +224,8 @@ namespace DigitalProductionProgram.Protocols.Protocol
             using (var con = new SqlConnection(Database.cs_Protocol))
             {
                 var query = $@"
-                SELECT 
+                SELECT
+                    template.ID AS TemplateID,
                     template.ProtocolDescriptionID, 
                     description.CodeText, 
                     unit.UnitName AS Unit,
@@ -268,6 +269,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                     IsModuleUsingStartUpDates = isStartUpDates;
 
                     int.TryParse(reader["ProtocolDescriptionID"].ToString(), out var protocoldescriptionID);
+                    int.TryParse(reader["TemplateID"].ToString(), out var templateID);
                     int.TryParse(reader["Type"].ToString(), out var type);
 
                     var codetext = reader["CodeText"].ToString();
@@ -300,6 +302,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                         dgv_Module.Rows[row].Cells["col_IsList_Protocol"].Value = isListProtocol;
                         dgv_Module.Rows[row].Cells["col_IsList_Processcard"].Value = isListProcesscard;
                         dgv_Module.Rows[row].Cells["col_IsOkWriteText"].Value = isOkWriteText;
+                        dgv_Module.Rows[row].Cells["col_TemplateID"].Value = templateID;
                         dgv_Module.Rows[row].Cells["col_ProtocolDescriptionID"].Value = protocoldescriptionID;
                         dgv_Module.Rows[row].Cells["col_DataType"].Value = type;
                     }
@@ -444,7 +447,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
             if (IsAuthenticationNeeded)
                 for (int col = ColIndex_StartUp1; col < dgv_Module.Columns.Count; col++)
                 {
-                    if (dgv_Module.Rows[dgv_Module.Rows.Count - 1].Cells[col].Value != null)
+                    if (dgv_Module.Rows[^1].Cells[col].Value != null)
                         equipment.Lock_Equipment(col);
                 }
             dgv_Module.ClearSelection();
@@ -755,16 +758,19 @@ namespace DigitalProductionProgram.Protocols.Protocol
 
             DataGridViewCell[] cells = { dgv_Module.Rows[row].Cells[e.ColumnIndex] };
             var dgv_Row = dgv_Module.Rows[row];
-            var items = new List<string?>();
+            List<string?>? items = new List<string?>();
             dgv_Module.Rows[e.RowIndex].Cells[e.ColumnIndex].Selected = true;
             var IsItemsMultipleColumns = false;
             int.TryParse(dgv_Module.Rows[row].Cells["col_ProtocolDescriptionID"].Value.ToString(), out var protocolDescriptionID);
+            int.TryParse(dgv_Module.Rows[row].Cells["col_TemplateID"].Value.ToString(), out var templateID);
 
             if (e.Button == MouseButtons.Right)
             {
                 bool.TryParse(dgv_Module.Rows[row].Cells["col_IsOkWriteText"].Value.ToString(), out var isOkWriteText);
                 bool.TryParse(dgv_Module.Rows[e.RowIndex].Cells["col_IsList_Protocol"].Value.ToString(), out var IsListProtocol);
                 int.TryParse(dgv_Module.Columns[e.ColumnIndex].HeaderText, out var startup);
+                items = ItemsBuilder.GetListItems(templateID, isProcesscardUnderManagement ? "Processcard" : "Protocol");
+
                 if (IsListProtocol)
                 {
                     switch (protocolDescriptionID)
@@ -776,11 +782,6 @@ namespace DigitalProductionProgram.Protocols.Protocol
                             items.Add("Enkel");
                             items.Add("Dubbel");
                             break;
-                        case 22:    //DUBBELTAPERING
-                        case 29:    //BYTE/RENGÖRING GRIPPERS
-                        case 31:    //BYTE HACKBETT
-                        case 68:    //BROMSAD PRODUKT
-                        case 69:    //VINKELREGLERING
                         case 86:    //MELLANPRESSNING
                         case 125:   //HASTIGHETSREGLERARE
                         case 227:   //LÄCKSÖKNING
@@ -789,12 +790,12 @@ namespace DigitalProductionProgram.Protocols.Protocol
                         case 291:   //TRYCKREGLERING
                         case 292:   //OD REGLERING
                         case 326:   //RENGJORT UTRUSTNING
-                        case 313:
+                        case 313:   //FILTERHUS
                             items.Add(LanguageManager.GetString("yes") ?? string.Empty);
                             items.Add(LanguageManager.GetString("no") ?? string.Empty);
                             break;
                         case 80:    //EXTRUDER
-                            items = CheckAuthority.IsWorkoperationAuthorized(CheckAuthority.TemplateWorkoperation.ExtruderRegister) ? 
+                            items = CheckAuthority.IsWorkoperationAuthorized(CheckAuthority.TemplateWorkoperation.ExtruderRegister) ?
                                 Monitor.Services.ToolService.List_Equipment<Manufacturing.WorkCenters>("Description", "filter=Type Eq'0'") : Machines.Extruders("EXTRUDER");
                             //DigitalProductionProgram.Equipment.Equipment.List_From_Register("Extruder", "Extruder_Skruvar") : Machines.Extruders("EXTRUDER");
                             break;
@@ -844,9 +845,11 @@ namespace DigitalProductionProgram.Protocols.Protocol
                             IsItemsMultipleColumns = true;
                             break;
                         case 307: //HUVUD
+#pragma warning disable CS8619 // Nullability of reference types in value doesn't match target type.
                             items = Monitor.Services.ToolService.List_Tools(NOM_Value(dgv_Row), null);
+#pragma warning restore CS8619 // Nullability of reference types in value doesn't match target type.
                             //items = DigitalProductionProgram.Equipment.Equipment.List_Register(isProcesscardUnderManagement, NOM_Value(dgv_Row), "Register_Huvud");
-                           // IsItemsMultipleColumns = true;
+                            // IsItemsMultipleColumns = true;
                             break;
                         case 308: //TORPED
                             items = DigitalProductionProgram.Equipment.Equipment.List_Register(isProcesscardUnderManagement, NOM_Value(dgv_Row), "Register_Torpeder");
@@ -868,7 +871,9 @@ namespace DigitalProductionProgram.Protocols.Protocol
                                 DieType = "Munstycken FEP";
                             else
                                 DieType = Value(col, 310);
+#pragma warning disable CS8619 // Nullability of reference types in value doesn't match target type.
                             items = Monitor.Services.ToolService.List_Tools(DieType, "Landlängd Nom");
+#pragma warning restore CS8619 // Nullability of reference types in value doesn't match target type.
 
                             //items = DigitalProductionProgram.Equipment.Equipment.List_Tool(DieType, MIN_Value(dgv_Row), MAX_Value(dgv_Row));
                             IsItemsMultipleColumns = true;
@@ -883,7 +888,9 @@ namespace DigitalProductionProgram.Protocols.Protocol
                                 TipType = "Kanyler FEP";
                             else
                                 TipType = Value(col, 311);
+#pragma warning disable CS8619 // Nullability of reference types in value doesn't match target type.
                             items = Monitor.Services.ToolService.List_Tools(TipType, "Landlängd Nom");
+#pragma warning restore CS8619 // Nullability of reference types in value doesn't match target type.
                             items = DigitalProductionProgram.Equipment.Equipment.List_Tool(TipType, MIN_Value(dgv_Row), MAX_Value(dgv_Row));
                             IsItemsMultipleColumns = true;
                             break;
@@ -902,7 +909,9 @@ namespace DigitalProductionProgram.Protocols.Protocol
                             if (isProcesscardUnderManagement)
                                 items = Monitor.Monitor.List_PartNumber_FilterType();
                             else
+#pragma warning disable CS8619 // Nullability of reference types in value doesn't match target type.
                                 items = Monitor.Monitor.List_Serialnumber_Extrusion_Filter(NOM_Value(dgv_Row));
+#pragma warning restore CS8619 // Nullability of reference types in value doesn't match target type.
                             break;
                         case 315: //FILTER ARTIKELNR
                             items = Monitor.Monitor.List_CandleFilter_PartNr("Candle");

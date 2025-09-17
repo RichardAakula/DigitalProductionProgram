@@ -28,160 +28,178 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            this.tlp_Main = new System.Windows.Forms.TableLayoutPanel();
-            this.btn_SaveItems = new System.Windows.Forms.Button();
-            this.dgv_Items = new System.Windows.Forms.DataGridView();
-            this.col_Items = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dgv_ListItems = new System.Windows.Forms.DataGridView();
-            this.gbx_Items = new System.Windows.Forms.GroupBox();
-            this.btn_AddItem = new System.Windows.Forms.Button();
-            this.tb_AddNewItem = new System.Windows.Forms.TextBox();
-            this.tlp_Main.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgv_Items)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dgv_ListItems)).BeginInit();
-            this.gbx_Items.SuspendLayout();
-            this.SuspendLayout();
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            tlp_Main = new TableLayoutPanel();
+            btn_SaveItems = new Button();
+            dgv_Items = new DataGridView();
+            col_Items = new DataGridViewTextBoxColumn();
+            dgv_ListItems = new DataGridView();
+            col_ListItems = new DataGridViewTextBoxColumn();
+            gbx_Items = new GroupBox();
+            btn_AddItem = new Button();
+            tb_AddNewItem = new TextBox();
+            tlp_Main.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)dgv_Items).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)dgv_ListItems).BeginInit();
+            gbx_Items.SuspendLayout();
+            SuspendLayout();
             // 
             // tlp_Main
             // 
-            this.tlp_Main.ColumnCount = 3;
-            this.tlp_Main.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 200F));
-            this.tlp_Main.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 203F));
-            this.tlp_Main.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 979F));
-            this.tlp_Main.Controls.Add(this.btn_SaveItems, 0, 0);
-            this.tlp_Main.Controls.Add(this.dgv_Items, 1, 2);
-            this.tlp_Main.Controls.Add(this.dgv_ListItems, 0, 2);
-            this.tlp_Main.Controls.Add(this.gbx_Items, 0, 1);
-            this.tlp_Main.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tlp_Main.Location = new System.Drawing.Point(0, 0);
-            this.tlp_Main.Name = "tlp_Main";
-            this.tlp_Main.RowCount = 3;
-            this.tlp_Main.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 48F));
-            this.tlp_Main.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 88F));
-            this.tlp_Main.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlp_Main.Size = new System.Drawing.Size(1382, 816);
-            this.tlp_Main.TabIndex = 0;
+            tlp_Main.ColumnCount = 3;
+            tlp_Main.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 233F));
+            tlp_Main.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 237F));
+            tlp_Main.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 1142F));
+            tlp_Main.Controls.Add(btn_SaveItems, 0, 0);
+            tlp_Main.Controls.Add(dgv_Items, 1, 2);
+            tlp_Main.Controls.Add(dgv_ListItems, 0, 2);
+            tlp_Main.Controls.Add(gbx_Items, 0, 1);
+            tlp_Main.Dock = DockStyle.Fill;
+            tlp_Main.Location = new Point(0, 0);
+            tlp_Main.Margin = new Padding(4, 3, 4, 3);
+            tlp_Main.Name = "tlp_Main";
+            tlp_Main.RowCount = 3;
+            tlp_Main.RowStyles.Add(new RowStyle(SizeType.Absolute, 55F));
+            tlp_Main.RowStyles.Add(new RowStyle(SizeType.Absolute, 102F));
+            tlp_Main.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            tlp_Main.Size = new Size(1612, 942);
+            tlp_Main.TabIndex = 0;
             // 
             // btn_SaveItems
             // 
-            this.btn_SaveItems.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(185)))), ((int)(((byte)(188)))), ((int)(((byte)(189)))));
-            this.btn_SaveItems.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btn_SaveItems.Dock = System.Windows.Forms.DockStyle.Top;
-            this.btn_SaveItems.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btn_SaveItems.Font = new System.Drawing.Font("Lucida Sans", 10.25F);
-            this.btn_SaveItems.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(63)))), ((int)(((byte)(116)))), ((int)(((byte)(140)))));
-            this.btn_SaveItems.Location = new System.Drawing.Point(3, 3);
-            this.btn_SaveItems.Margin = new System.Windows.Forms.Padding(3, 3, 3, 0);
-            this.btn_SaveItems.Name = "btn_SaveItems";
-            this.btn_SaveItems.Size = new System.Drawing.Size(194, 30);
-            this.btn_SaveItems.TabIndex = 26;
-            this.btn_SaveItems.Text = "Spara och Avsluta";
-            this.btn_SaveItems.UseVisualStyleBackColor = false;
-            this.btn_SaveItems.Click += new System.EventHandler(this.SaveItems_Click);
+            btn_SaveItems.BackColor = Color.FromArgb(185, 188, 189);
+            btn_SaveItems.Cursor = Cursors.Hand;
+            btn_SaveItems.Dock = DockStyle.Top;
+            btn_SaveItems.FlatStyle = FlatStyle.Flat;
+            btn_SaveItems.Font = new Font("Lucida Sans", 10.25F);
+            btn_SaveItems.ForeColor = Color.FromArgb(63, 116, 140);
+            btn_SaveItems.Location = new Point(4, 3);
+            btn_SaveItems.Margin = new Padding(4, 3, 4, 0);
+            btn_SaveItems.Name = "btn_SaveItems";
+            btn_SaveItems.Size = new Size(225, 35);
+            btn_SaveItems.TabIndex = 26;
+            btn_SaveItems.Text = "Spara och Avsluta";
+            btn_SaveItems.UseVisualStyleBackColor = false;
+            btn_SaveItems.Click += SaveItems_Click;
             // 
             // dgv_Items
             // 
-            this.dgv_Items.AllowUserToAddRows = false;
-            this.dgv_Items.AllowUserToResizeColumns = false;
-            this.dgv_Items.AllowUserToResizeRows = false;
-            this.dgv_Items.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(6)))), ((int)(((byte)(81)))), ((int)(((byte)(87)))));
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Lucida Sans", 11F, System.Drawing.FontStyle.Bold);
-            dataGridViewCellStyle1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(235)))), ((int)(((byte)(156)))));
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgv_Items.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
-            this.dgv_Items.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgv_Items.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.col_Items});
-            this.dgv_Items.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgv_Items.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter;
-            this.dgv_Items.EnableHeadersVisualStyles = false;
-            this.dgv_Items.Location = new System.Drawing.Point(203, 139);
-            this.dgv_Items.Name = "dgv_Items";
-            this.dgv_Items.RowHeadersVisible = false;
-            this.dgv_Items.Size = new System.Drawing.Size(197, 674);
-            this.dgv_Items.TabIndex = 25;
+            dgv_Items.AllowUserToAddRows = false;
+            dgv_Items.AllowUserToResizeColumns = false;
+            dgv_Items.AllowUserToResizeRows = false;
+            dgv_Items.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
+            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = Color.FromArgb(6, 81, 87);
+            dataGridViewCellStyle1.Font = new Font("Lucida Sans", 11F, FontStyle.Bold);
+            dataGridViewCellStyle1.ForeColor = Color.FromArgb(255, 235, 156);
+            dataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
+            dgv_Items.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dgv_Items.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgv_Items.Columns.AddRange(new DataGridViewColumn[] { col_Items });
+            dgv_Items.Dock = DockStyle.Fill;
+            dgv_Items.EditMode = DataGridViewEditMode.EditOnEnter;
+            dgv_Items.EnableHeadersVisualStyles = false;
+            dgv_Items.Location = new Point(237, 160);
+            dgv_Items.Margin = new Padding(4, 3, 4, 3);
+            dgv_Items.Name = "dgv_Items";
+            dgv_Items.RowHeadersVisible = false;
+            dgv_Items.Size = new Size(229, 779);
+            dgv_Items.TabIndex = 25;
             // 
             // col_Items
             // 
-            this.col_Items.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.col_Items.HeaderText = "Items";
-            this.col_Items.Name = "col_Items";
+            col_Items.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            col_Items.HeaderText = "Items";
+            col_Items.Name = "col_Items";
             // 
             // dgv_ListItems
             // 
-            this.dgv_ListItems.AllowUserToAddRows = false;
-            this.dgv_ListItems.AllowUserToDeleteRows = false;
-            this.dgv_ListItems.AllowUserToResizeColumns = false;
-            this.dgv_ListItems.AllowUserToResizeRows = false;
-            this.dgv_ListItems.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
-            this.dgv_ListItems.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
-            this.dgv_ListItems.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(81)))), ((int)(((byte)(85)))), ((int)(((byte)(92)))));
-            this.dgv_ListItems.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgv_ListItems.ColumnHeadersVisible = false;
-            this.dgv_ListItems.Location = new System.Drawing.Point(3, 139);
-            this.dgv_ListItems.MultiSelect = false;
-            this.dgv_ListItems.Name = "dgv_ListItems";
-            this.dgv_ListItems.ReadOnly = true;
-            this.dgv_ListItems.RowHeadersVisible = false;
-            this.dgv_ListItems.Size = new System.Drawing.Size(194, 674);
-            this.dgv_ListItems.TabIndex = 3;
+            dgv_ListItems.AllowUserToAddRows = false;
+            dgv_ListItems.AllowUserToDeleteRows = false;
+            dgv_ListItems.AllowUserToResizeColumns = false;
+            dgv_ListItems.AllowUserToResizeRows = false;
+            dgv_ListItems.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
+            dgv_ListItems.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
+            dgv_ListItems.BackgroundColor = Color.FromArgb(81, 85, 92);
+            dgv_ListItems.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgv_ListItems.ColumnHeadersVisible = false;
+            dgv_ListItems.Columns.AddRange(new DataGridViewColumn[] { col_ListItems });
+            dgv_ListItems.Location = new Point(4, 160);
+            dgv_ListItems.Margin = new Padding(4, 3, 4, 3);
+            dgv_ListItems.MultiSelect = false;
+            dgv_ListItems.Name = "dgv_ListItems";
+            dgv_ListItems.ReadOnly = true;
+            dgv_ListItems.RowHeadersVisible = false;
+            dgv_ListItems.Size = new Size(225, 779);
+            dgv_ListItems.TabIndex = 3;
+            dgv_ListItems.CellMouseDown += ItemList_CellMouseDown;
+            // 
+            // col_ListItems
+            // 
+            col_ListItems.HeaderText = "Items";
+            col_ListItems.Name = "col_ListItems";
+            col_ListItems.ReadOnly = true;
+            col_ListItems.Width = 5;
             // 
             // gbx_Items
             // 
-            this.gbx_Items.Controls.Add(this.btn_AddItem);
-            this.gbx_Items.Controls.Add(this.tb_AddNewItem);
-            this.gbx_Items.Font = new System.Drawing.Font("Lucida Sans", 10.25F);
-            this.gbx_Items.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(239)))), ((int)(((byte)(228)))), ((int)(((byte)(177)))));
-            this.gbx_Items.Location = new System.Drawing.Point(3, 51);
-            this.gbx_Items.Name = "gbx_Items";
-            this.gbx_Items.Size = new System.Drawing.Size(194, 82);
-            this.gbx_Items.TabIndex = 22;
-            this.gbx_Items.TabStop = false;
-            this.gbx_Items.Text = "Svarsalternativ";
+            gbx_Items.Controls.Add(btn_AddItem);
+            gbx_Items.Controls.Add(tb_AddNewItem);
+            gbx_Items.Font = new Font("Lucida Sans", 10.25F);
+            gbx_Items.ForeColor = Color.FromArgb(239, 228, 177);
+            gbx_Items.Location = new Point(4, 58);
+            gbx_Items.Margin = new Padding(4, 3, 4, 3);
+            gbx_Items.Name = "gbx_Items";
+            gbx_Items.Padding = new Padding(4, 3, 4, 3);
+            gbx_Items.Size = new Size(225, 95);
+            gbx_Items.TabIndex = 22;
+            gbx_Items.TabStop = false;
+            gbx_Items.Text = "Svarsalternativ";
             // 
             // btn_AddItem
             // 
-            this.btn_AddItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(185)))), ((int)(((byte)(188)))), ((int)(((byte)(189)))));
-            this.btn_AddItem.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btn_AddItem.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btn_AddItem.Font = new System.Drawing.Font("Lucida Sans", 10.25F);
-            this.btn_AddItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(63)))), ((int)(((byte)(116)))), ((int)(((byte)(140)))));
-            this.btn_AddItem.Location = new System.Drawing.Point(6, 23);
-            this.btn_AddItem.Name = "btn_AddItem";
-            this.btn_AddItem.Size = new System.Drawing.Size(150, 28);
-            this.btn_AddItem.TabIndex = 11;
-            this.btn_AddItem.Text = "Lägg till text";
-            this.btn_AddItem.UseVisualStyleBackColor = false;
+            btn_AddItem.BackColor = Color.FromArgb(185, 188, 189);
+            btn_AddItem.Cursor = Cursors.Hand;
+            btn_AddItem.FlatStyle = FlatStyle.Flat;
+            btn_AddItem.Font = new Font("Lucida Sans", 10.25F);
+            btn_AddItem.ForeColor = Color.FromArgb(63, 116, 140);
+            btn_AddItem.Location = new Point(7, 27);
+            btn_AddItem.Margin = new Padding(4, 3, 4, 3);
+            btn_AddItem.Name = "btn_AddItem";
+            btn_AddItem.Size = new Size(175, 32);
+            btn_AddItem.TabIndex = 11;
+            btn_AddItem.Text = "Lägg till text";
+            btn_AddItem.UseVisualStyleBackColor = false;
+            btn_AddItem.Click += NewItem_Click;
             // 
             // tb_AddNewItem
             // 
-            this.tb_AddNewItem.Font = new System.Drawing.Font("Lucida Sans", 8.25F);
-            this.tb_AddNewItem.Location = new System.Drawing.Point(6, 57);
-            this.tb_AddNewItem.Name = "tb_AddNewItem";
-            this.tb_AddNewItem.Size = new System.Drawing.Size(150, 20);
-            this.tb_AddNewItem.TabIndex = 3;
+            tb_AddNewItem.Font = new Font("Lucida Sans", 8.25F);
+            tb_AddNewItem.Location = new Point(7, 66);
+            tb_AddNewItem.Margin = new Padding(4, 3, 4, 3);
+            tb_AddNewItem.Name = "tb_AddNewItem";
+            tb_AddNewItem.Size = new Size(174, 20);
+            tb_AddNewItem.TabIndex = 3;
             // 
             // ItemsBuilder
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(6)))), ((int)(((byte)(81)))), ((int)(((byte)(87)))));
-            this.ClientSize = new System.Drawing.Size(1382, 816);
-            this.Controls.Add(this.tlp_Main);
-            this.Name = "ItemsBuilder";
-            this.Text = "ItemsBuilder";
-            this.tlp_Main.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.dgv_Items)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dgv_ListItems)).EndInit();
-            this.gbx_Items.ResumeLayout(false);
-            this.gbx_Items.PerformLayout();
-            this.ResumeLayout(false);
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            BackColor = Color.FromArgb(6, 81, 87);
+            ClientSize = new Size(1612, 942);
+            Controls.Add(tlp_Main);
+            Margin = new Padding(4, 3, 4, 3);
+            Name = "ItemsBuilder";
+            Text = "ItemsBuilder";
+            FormClosed += ItemsBuilder_FormClosed;
+            tlp_Main.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)dgv_Items).EndInit();
+            ((System.ComponentModel.ISupportInitialize)dgv_ListItems).EndInit();
+            gbx_Items.ResumeLayout(false);
+            gbx_Items.PerformLayout();
+            ResumeLayout(false);
 
         }
 
@@ -195,5 +213,6 @@
         private System.Windows.Forms.DataGridView dgv_Items;
         private System.Windows.Forms.Button btn_SaveItems;
         private System.Windows.Forms.DataGridViewTextBoxColumn col_Items;
+        private DataGridViewTextBoxColumn col_ListItems;
     }
 }

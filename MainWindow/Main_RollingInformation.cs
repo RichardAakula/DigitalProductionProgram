@@ -235,6 +235,7 @@ namespace DigitalProductionProgram.MainWindow
             tips.AddTip("I processkortet för Krympslang kan du få info om röret du använder genom att klicka på positionsnumret till höger om röret du valt.");
             tips.AddTip($"Antal mätningar mätta med Zumbach just nu: {Zumbach.Zumbach.TotalMeasurements}");
             tips.AddTip($"Antal mätpunkter mätta med Zumbach just nu: {Zumbach.Zumbach.TotalMeasurePoints}");
+            tips.AddTip($"Om fel mall har blivit laddad eller om du behöver ändra från 1 Maskin till 2 Maskiner så kan du byta mall i Menyn Order-Länka Order-Till ny Mall för Protokollet");
 
             Tips.AddTips_OrderStartDays(tips);
             Tips.AddTips_TotalOrdersPerYear(tips);
@@ -278,7 +279,8 @@ namespace DigitalProductionProgram.MainWindow
             else
                 Load_list_Tips();
 
-            timer_MoveLabel.Start();
+            timer_ChangeInfo.Enabled = true;
+            timer_ChangeInfo.Start();
         }
 
         private void timer_MoveLabel_Tick(object sender, EventArgs e)

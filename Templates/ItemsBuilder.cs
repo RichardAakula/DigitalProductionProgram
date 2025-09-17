@@ -4,6 +4,7 @@ using Microsoft.Data.SqlClient;
 using System.Collections.Generic;
 using System.Data;
 using System.Transactions;
+using static DigitalProductionProgram.Templates.Templates_Protocol;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Header;
 
 namespace DigitalProductionProgram.Templates
@@ -13,13 +14,44 @@ namespace DigitalProductionProgram.Templates
         public enum ListType { MeasureProtocol, Protocol, Processcard }
         private ListType TypeOfList;
         private readonly IItemsProvider itemsProvider;
-
+        public bool IsListActivated;
         public interface IItemsProvider
         {
-            void Initialize(DataGridView dgvItems, DataGridView dgvListItems, TextBox tbText, int descriptionID, int? templateID = null);
+            void Initialize(DataGridView dgvItems, DataGridView dgvListItems, TextBox tbText, int descriptionID, int templateID);
             void Load();
             void SaveItem(string item);
-            void LoadData();
+        }
+        public ItemsBuilder(string parameter, int descriptionID, ListType listType, int templateID)
+        {
+            InitializeComponent();
+            TypeOfList = listType;
+            switch (listType)
+            {
+                case ListType.MeasureProtocol:
+                    this.Text = @"List for Measureprotocol";
+                    itemsProvider = new MeasureProtocolItems();
+                    break;
+                case ListType.Processcard:
+                    this.Text = @"List for Processcards";
+                    itemsProvider = new ProcesscardItems();
+                    break;
+                case ListType.Protocol:
+                    this.Text = @"List for Protocols";
+                    itemsProvider = new ProtocolItems();
+                    break;
+            }
+
+            // Välj rätt provider
+            //if (listType == ListType.MeasureProtocol)
+            //    itemsProvider = new MeasureProtocolItems();
+            //if (listType == ListType.Processcard)
+            //    itemsProvider = new ProcesscardItems();
+            //if (listType == ListType.Protocol)
+            //    itemsProvider = new ProtocolItems();
+
+            dgv_Items.Columns[0].HeaderText = parameter;
+            itemsProvider.Initialize(dgv_Items, dgv_ListItems, tb_AddNewItem, descriptionID, templateID);
+            itemsProvider.Load();
         }
 
 
@@ -32,7 +64,7 @@ namespace DigitalProductionProgram.Templates
             private TextBox? tb_Text;
             private int DescriptionID;
 
-            public void Initialize(DataGridView dgvItems, DataGridView dgvListItems, TextBox tbText, int descriptionID, int? templateID = null)
+            public void Initialize(DataGridView dgvItems, DataGridView dgvListItems, TextBox tbText, int descriptionID, int templateID)
             {
                 dgv_Items = dgvItems;
                 dgv_ListItems = dgvListItems;
@@ -111,22 +143,14 @@ namespace DigitalProductionProgram.Templates
         }
         public class ProtocolItems : IItemsProvider
         {
-           
-            public void Initialize(DataGridView dgvItems, DataGridView dgvListItems, TextBox tbText, int descriptionID, int? templateID) { /* ... */ }
-            public void Load() { /* ... */ }
-            public void SaveItem(string item) { /* ... */ }
-            public void LoadData() { /* ... */ }
-        }
-        public class ProcesscardItems : IItemsProvider
-        {
-            private DataTable? dt_Items;
             private DataGridView? dgv_Items;
             private DataGridView? dgv_ListItems;
             private TextBox? tb_Text;
             private int DescriptionID;
-            private int? TemplateID;
+            private int TemplateID;
 
-            public void Initialize(DataGridView dgvItems, DataGridView dgvListItems, TextBox tbText, int descriptionID, int? templateID)
+
+            public void Initialize(DataGridView dgvItems, DataGridView dgvListItems, TextBox tbText, int descriptionID, int templateID)
             {
                 dgv_Items = dgvItems;
                 dgv_ListItems = dgvListItems;
@@ -137,109 +161,145 @@ namespace DigitalProductionProgram.Templates
 
             public void Load()
             {
-                dgv_Items.Rows.Clear();
-                using var con = new SqlConnection(Database.cs_Protocol);
-                const string query = @"
-            SELECT 
-                ItemText
-            FROM List.ListItem
-            WHERE ListID = @listid";
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@listid", 1);
-                con.Open();
-                using var reader = cmd.ExecuteReader();
-                while (reader.Read())
-                {
-                    var item = reader["Item"].ToString();
-                    dgv_Items.Rows.Add(item);
-                }
+                Load_ListItems(dgv_Items, dgv_ListItems, "Protocol", TemplateID);
+            }
+            public void SaveItem(string item)
+            {
+                Save_ListItem(TemplateID, item, dgv_Items.Rows.Count, "Protocol");
+            }
+        }
+        public class ProcesscardItems : IItemsProvider
+        {
+            private DataTable? dt_Items;
+            private DataGridView? dgv_Items;
+            private DataGridView? dgv_ListItems;
+            private TextBox? tb_Text;
+            private int DescriptionID;
+            private int TemplateID;
+
+            public void Initialize(DataGridView dgvItems, DataGridView dgvListItems, TextBox tbText, int descriptionID, int templateID)
+            {
+                dgv_Items = dgvItems;
+                dgv_ListItems = dgvListItems;
+                tb_Text = tbText;
+                DescriptionID = descriptionID;
+                TemplateID = templateID;
+            }
+
+            public void Load()
+            {
+                Load_ListItems(dgv_Items, dgv_ListItems, "Processcard", TemplateID);
             }
 
             public void SaveItem(string item)
             {
-                using var con = new SqlConnection(Database.cs_Protocol);
-                con.Open();
-
-                int listId;
-
-                // 1. Spara header och få tillbaka ListID
-                const string insertHeader = @"
-                    INSERT INTO List.ListHeader (TemplateID, ListName, Description, ListType, CreatedBy)
-                    OUTPUT INSERTED.ListID
-                    VALUES (@templateid, @listname, @description, @listtype, @createdby)";
-                using (var cmd = new SqlCommand(insertHeader, con))
-                {
-                    cmd.Parameters.AddWithValue("@templateid", TemplateID);
-                    cmd.Parameters.AddWithValue("@listname", tb_Text.Text);
-                    cmd.Parameters.AddWithValue("@description", "");
-                    cmd.Parameters.AddWithValue("@listtype", "Processcard");
-                    cmd.Parameters.AddWithValue("@createdby", User.Person.Name);
-
-                    listId = (int)cmd.ExecuteScalar();
-                }
-
-                // 2. Spara item som hör till listan
-                const string insertItem = @"
-                    INSERT INTO List.ListItem (ListID, ItemOrder, ItemText)
-                    VALUES (@listid, @itemorder, @itemtext)";
-                using (var cmd = new SqlCommand(insertItem, con))
-                {
-                    cmd.Parameters.AddWithValue("@listid", listId);
-                    cmd.Parameters.AddWithValue("@itemorder", dgv_Items.CurrentCell.RowIndex);   // eller generera dynamiskt om du vill
-                    cmd.Parameters.AddWithValue("@itemtext", item);
-
-                    cmd.ExecuteNonQuery();
-                }
+                Save_ListItem(TemplateID, item, dgv_Items.Rows.Count, "Processcard");
             }
-            public void LoadData() { /* ... */ }
         }
 
 
-        public ItemsBuilder(string parameter, int descriptionID, ListType listType, int? templateID = null)
+
+
+        public static List<string?>? GetListItems(int TemplateID, string ListType)
         {
-            InitializeComponent();
-            TypeOfList = listType;
-            switch (listType)
+            var items = new List<string>();
+            using var con = new SqlConnection(Database.cs_Protocol);
+            const string query = @"
+                SELECT ItemText 
+                FROM List.ListItems 
+                WHERE TemplateID = @templateID AND ListType = @listType
+                ORDER BY ItemOrder";
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            cmd.Parameters.AddWithValue("@templateID", TemplateID);
+            cmd.Parameters.AddWithValue("@listType", ListType);
+            con.Open();
+            using var reader = cmd.ExecuteReader();
+            while (reader.Read())
             {
-                case ListType.MeasureProtocol:
-                    this.Text = @"List for Measureprotocol";
-                    break;
-                case ListType.Processcard:
-                    this.Text = @"List for Processcards";
-                    break;
-                case ListType.Protocol:
-                    this.Text = @"List for Protocols";
-                    break;
+                var item = reader["ItemText"].ToString();
+                if (item != null)
+                    items.Add(item);
             }
-
-            // Välj rätt provider
-            if (listType == ListType.MeasureProtocol)
-                itemsProvider = new MeasureProtocolItems();
-                
-            else
-                itemsProvider = new ProtocolItems();
-
-            dgv_Items.Columns[0].HeaderText = parameter;
-            itemsProvider.Initialize(dgv_Items, dgv_ListItems, tb_AddNewItem, descriptionID);
-            itemsProvider.Load();
-            btn_AddItem.Click += (s, e) => {
-                // Lägg till logik för att hämta text och spara
-                if (!string.IsNullOrEmpty(tb_AddNewItem.Text))
-                {
-                    itemsProvider.SaveItem(tb_AddNewItem.Text);
-                    itemsProvider.Load();
-                    tb_AddNewItem.Text = string.Empty;
-                }
-            };
+            items.Add("N/A");
+            return items;
         }
+        private static void Load_ListItems(DataGridView dgv_Items, DataGridView dgv_ListItems, string ListType, int TemplateID)
+        {
+            dgv_ListItems.Rows.Clear();
+            dgv_Items.Rows.Clear();
+            using var con = new SqlConnection(Database.cs_Protocol);
+            const string query = @"
+                SELECT DISTINCT ItemText, TemplateID, ItemOrder, ListType 
+                FROM List.ListItems 
+                ORDER BY TemplateID, ItemOrder";
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            cmd.Parameters.AddWithValue("@listType", ListType);
+            con.Open();
+            using var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                var item = reader["ItemText"].ToString();
+                int.TryParse(reader["TemplateID"].ToString(), out var templateID);
+                var listType = reader["ListType"].ToString();
+                var exists = dgv_ListItems.Rows
+                    .Cast<DataGridViewRow>()
+                    .Any(r => r.Cells[0].Value?.ToString() == item);
+                if (!exists && item != null)
+                    dgv_ListItems.Rows.Add(item);
+                if (TemplateID == templateID && listType == ListType)
+                    dgv_Items.Rows.Add(item);
+            }
+        }
+        private static void Save_ListItem(int TemplateID, string ItemText, int ItemOrder, string ListType)
+        {
+            using var con = new SqlConnection(Database.cs_Protocol);
+            con.Open();
 
-      
+            const string insertHeader = @"
+                    INSERT INTO List.ListItems (TemplateID, ItemText, ItemOrder, Description, ListType, CreatedBy)
+                    VALUES (@templateid, @itemtext, @itemorder, @description, @listtype, @createdby)";
+            using var cmd = new SqlCommand(insertHeader, con);
+            cmd.Parameters.AddWithValue("@templateid", TemplateID);
+            cmd.Parameters.AddWithValue("@itemtext", ItemText);
+            cmd.Parameters.AddWithValue("@itemorder", ItemOrder);
+            cmd.Parameters.AddWithValue("@description", "");
+            cmd.Parameters.AddWithValue("@listtype", ListType);
+            cmd.Parameters.AddWithValue("@createdby", User.Person.Name);
 
-       
-
+            cmd.ExecuteScalar();
+        }
         private void SaveItems_Click(object sender, EventArgs e)
         {
             this.Close();
         }
+
+
+        private void NewItem_Click(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrEmpty(tb_AddNewItem.Text))
+            {
+                dgv_Items.Rows.Add(tb_AddNewItem.Text);
+                itemsProvider.SaveItem(tb_AddNewItem.Text);
+                itemsProvider.Load();
+                tb_AddNewItem.Text = string.Empty;
+            }
+        }
+        private void ItemList_CellMouseDown(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            if (e.RowIndex < 0)
+                return;
+            var item = dgv_ListItems.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString();
+
+            //dgv_Items.Rows.Add(item);
+            if (item != null) 
+                itemsProvider.SaveItem(item);
+            itemsProvider.Load();
+        }
+        private void ItemsBuilder_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            IsListActivated = dgv_Items.Rows.Count > 0;
+        }
+
+       
     }
 }

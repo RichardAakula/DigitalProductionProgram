@@ -189,7 +189,8 @@ namespace DigitalProductionProgram.MainWindow
                     Change_GUI_Mätdator();
 
                 await Main_FilterQuickOpen.Load_ListAsync(dgv_QuickOpen);
-                await Task.Run(() => RollingInformation.Change_Tips());
+                if (IsBetaMode == false)
+                    await Task.Run(() => RollingInformation.Change_Tips());
             }
 
             if (black != null)
@@ -475,6 +476,11 @@ namespace DigitalProductionProgram.MainWindow
             if (Environment.MachineName != "OH-ID61")
                 InfoText.Show(LanguageManager.GetString("warning_Testdatabase"), CustomColors.InfoText_Color.Bad, "Warning");
             tlp_Left.BackColor = OrderInformation.BackColor = panel_Right.BackColor = Color.Pink;
+            RollingInformation.lbl_Tips.BackColor =Color.Yellow;
+            RollingInformation.lbl_Tips.ForeColor = Color.Black;
+            RollingInformation.lbl_Tips.Text = @"WARNING! BETA VERSION!";
+            RollingInformation.lbl_Tips.Visible = true;
+
             if (Environment.MachineName == "THAI-DPP-TEST01" || Environment.MachineName == "OH-ID61")
                 return;
             var betaOverlay = new BetaOverlayForm(this);

@@ -699,7 +699,7 @@ namespace DigitalProductionProgram.Processcards
                                 value = reader["TextValue"].ToString();
                                 break;
                         }
-                        module.dgv_Module.Rows[row].Cells[col + 8].Value = value;
+                        module.dgv_Module.Rows[row].Cells[col + 9].Value = value;
                     }
                 }
                 module.dgv_Module.CellValueChanged += module.Module_ValidateData_SaveData_CellValueChanged;

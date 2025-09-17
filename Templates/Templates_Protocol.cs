@@ -669,9 +669,9 @@ namespace DigitalProductionProgram.Templates
 
             preview?.Dispose();
             Fill_Template_RevisionNr();
-
+            TemplateControls.IsLoading = true;
             LoadData(true);
-
+            TemplateControls.IsLoading = false;
             cb_TemplateRevision.SelectedIndexChanged += Template_RevisionNr_SelectedIndexChanged;
         }
         private void Template_RevisionNr_SelectedIndexChanged(object sender, EventArgs e)
@@ -858,6 +858,7 @@ namespace DigitalProductionProgram.Templates
 
         public class TemplateControls
         {
+            public static bool IsLoading = true;
             private static FlowLayoutPanel? flp;
             private static PreviewTemplate? previewTemplate;
             public static bool IsCodeTextExistInModule(DataGridView dgv, string codeText)
@@ -899,8 +900,6 @@ namespace DigitalProductionProgram.Templates
                     Name = name,
                     RowHeadersVisible = false,
                     ScrollBars = ScrollBars.None,
-
-
 
                 };
 
@@ -1018,42 +1017,60 @@ namespace DigitalProductionProgram.Templates
                 if (dgv.CurrentCell is DataGridViewCheckBoxCell)
                     dgv.CommitEdit(DataGridViewDataErrorContexts.Commit);
             }
+            private static bool _suppressCellValueChanged = false;
             private static void Dgv_CellValueChanged(object? sender, DataGridViewCellEventArgs e)
             {
+                if (_suppressCellValueChanged)
+                    return;
                 var dgv = (DataGridView)sender;
                 if (dgv is null)
                     return;
                 var cellParameter =  dgv.Rows[e.RowIndex].Cells["col_CodeText"];
                 int.TryParse(dgv.Rows[e.RowIndex].Cells["col_ProtocolDescriptionID"].Value.ToString(), out var descriptionID);
-                int? templateID = null;
-                if (int.TryParse(dgv.Rows[e.RowIndex].Cells["col_ID"].Value?.ToString(), out var parsedId))
-                   templateID = parsedId;
+                int.TryParse(dgv.Rows[e.RowIndex].Cells["col_TemplateID"].Value?.ToString(), out var templateID);
+
                 if (e.RowIndex < 0 || e.ColumnIndex < 0)
                     return;
 
-                switch (dgv.Columns[e.ColumnIndex].Name)
+                try
                 {
-                    case "col_DataType":
-                        HandleDataTypeColumn(dgv, e.RowIndex);
-                        break;
+                    switch (dgv.Columns[e.ColumnIndex].Name)
+                    {
+                        case "col_DataType":
+                            HandleDataTypeColumn(dgv, e.RowIndex);
+                            break;
 
-                    case "col_MIN":
-                    case "col_NOM":
-                    case "col_MAX":
-                        HandleCheckboxColumn();
-                        break;
-                    case "col_ProcesscardList":
-                        var itemsBuilder = new ItemsBuilder(cellParameter?.Value.ToString() ?? string.Empty, descriptionID, ItemsBuilder.ListType.Processcard, templateID);
-                        itemsBuilder.ShowDialog();
-                        break;
-                    case "col_ProtocolList":
-                        itemsBuilder = new ItemsBuilder(cellParameter?.Value.ToString() ?? string.Empty, descriptionID, ItemsBuilder.ListType.Protocol, templateID);
-                        itemsBuilder.ShowDialog();
-                        break;
-                    default:
-                        // Handle other cases if needed
-                        break;
+                        case "col_MIN":
+                        case "col_NOM":
+                        case "col_MAX":
+                            HandleCheckboxColumn();
+                            break;
+                        case "col_ProcesscardList":
+                            if (IsLoading)
+                                return;
+                            var itemsBuilder = new ItemsBuilder(cellParameter?.Value.ToString() ?? string.Empty, descriptionID, ItemsBuilder.ListType.Processcard, templateID);
+                            itemsBuilder.ShowDialog();
+                            _suppressCellValueChanged = true;
+                            dgv.Rows[e.RowIndex].Cells["col_ProcesscardList"].Value = itemsBuilder.IsListActivated;
+                            break;
+                        case "col_ProtocolList":
+                            if (IsLoading)
+                                return;
+                            itemsBuilder = new ItemsBuilder(cellParameter?.Value.ToString() ?? string.Empty, descriptionID, ItemsBuilder.ListType.Protocol, templateID);
+                            itemsBuilder.ShowDialog();
+                            _suppressCellValueChanged = true;
+                            dgv.Rows[e.RowIndex].Cells["col_ProtocolList"].Value = itemsBuilder.IsListActivated;
+                            break;
+                        default:
+                            // Handle other cases if needed
+                            break;
+                    }
                 }
+                finally
+                {
+                    _suppressCellValueChanged = false;
+                }
+                
             }
             private static void HandleDataTypeColumn(DataGridView dgv, int rowIndex)
             {
@@ -1582,6 +1599,7 @@ namespace DigitalProductionProgram.Templates
 
             public static void AddColumns_dgv_Template(DataGridView dgv)
             {
+                TemplateControls.AddColumn(dgv, new DataGridViewTextBoxColumn(), "TemplateID", "col_TemplateID", 1, false);
                 TemplateControls.AddColumn(dgv, new DataGridViewTextBoxColumn(), "ProtocolDescriptionID", "col_ProtocolDescriptionID", 1, false);
                 TemplateControls.AddColumn(dgv, new DataGridViewTextBoxColumn(), "CodeText", "col_Codetext", 180);
                 TemplateControls.AddColumn(dgv, new DataGridViewTextBoxColumn(), "Enhet", "col_Unit", 46);
@@ -1608,6 +1626,7 @@ namespace DigitalProductionProgram.Templates
                 using var con = new SqlConnection(Database.cs_Protocol);
                 const string query = @"
                 SELECT 
+                    template.ID,
                     template.ProtocolDescriptionID, 
                     description.CodeText, 
                     unit.UnitName AS Unit, 
@@ -1639,6 +1658,7 @@ namespace DigitalProductionProgram.Templates
                 while (reader.Read())
                 {
                     int.TryParse(reader["ProtocolDescriptionID"].ToString(), out var protocoldescriptionID);
+                    int.TryParse(reader["ID"].ToString(), out var templateID);
                     var codetext = reader["CodeText"].ToString();
 
                     int.TryParse(reader["Type"].ToString(), out var type);
@@ -1661,8 +1681,8 @@ namespace DigitalProductionProgram.Templates
                     if (TemplateControls.IsCodeTextExistInModule(dgv_ProtocolsActive_Main, codetext) == false)
                     {
                         dgv_ProtocolsActive_Main.Rows.Add();
-                        dgv_ProtocolsActive_Main.Rows[^1].Cells["col_ProtocolDescriptionID"]
-                            .Value = protocoldescriptionID;
+                        dgv_ProtocolsActive_Main.Rows[^1].Cells["col_ProtocolDescriptionID"].Value = protocoldescriptionID;
+                        dgv_ProtocolsActive_Main.Rows[^1].Cells["col_TemplateID"].Value = templateID;
                         dgv_ProtocolsActive_Main.Rows[^1].Cells["col_Unit"].Value = reader["Unit"].ToString();
                         dgv_ProtocolsActive_Main.Rows[^1].Cells["col_CodeText"].Value = reader["CodeText"].ToString();
                         dgv_ProtocolsActive_Main.Rows[^1].Cells["col_IsOkWriteOwnText"].Value = isOkWriteText;

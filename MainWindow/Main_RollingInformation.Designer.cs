@@ -35,7 +35,7 @@ namespace DigitalProductionProgram.MainWindow
             components = new Container();
             panel_Information = new Panel();
             lbl_Tips = new Label();
-            timer_MoveLabel = new System.Windows.Forms.Timer(components);
+            timer_ChangeInfo = new System.Windows.Forms.Timer(components);
             panel_Information.SuspendLayout();
             SuspendLayout();
             // 
@@ -68,11 +68,10 @@ namespace DigitalProductionProgram.MainWindow
             lbl_Tips.TextAlign = ContentAlignment.TopCenter;
             lbl_Tips.UseCompatibleTextRendering = true;
             // 
-            // timer_MoveLabel
+            // timer_ChangeInfo
             // 
-            timer_MoveLabel.Enabled = true;
-            timer_MoveLabel.Interval = 15000;
-            timer_MoveLabel.Tick += timer_MoveLabel_Tick;
+            timer_ChangeInfo.Interval = 15000;
+            timer_ChangeInfo.Tick += timer_MoveLabel_Tick;
             // 
             // Main_RollingInformation
             // 
@@ -94,6 +93,6 @@ namespace DigitalProductionProgram.MainWindow
 
         private Panel panel_Information;
         public Label lbl_Tips;
-        private System.Windows.Forms.Timer timer_MoveLabel;
+        private System.Windows.Forms.Timer timer_ChangeInfo;
     }
 }

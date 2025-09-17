@@ -32,23 +32,23 @@ namespace DigitalProductionProgram.DatabaseManagement
         private static readonly string csDPP_Beta = $"Data Source={ServerOGO};Initial Catalog=GOD_DPP_DEV;Persist Security Info=True;User ID={UserID};Password={Password};Connect Timeout=5;Encrypt=True;TrustServerCertificate=True;";
         
 
-        private static readonly string csToolRegisterGodby = $"Data Source={ServerOGO};Initial Catalog=Verktygsprogram;Persist Security Info=True;User ID={UserID};Password={Password};Connect Timeout=5;Encrypt=True;TrustServerCertificate=True;";
+        private static readonly string? csToolRegisterGodby = $"Data Source={ServerOGO};Initial Catalog=Verktygsprogram;Persist Security Info=True;User ID={UserID};Password={Password};Connect Timeout=5;Encrypt=True;TrustServerCertificate=True;";
         private const string csToolRegisterThai = "Data Source=THAI-SRV1-SQL01\\SQLEXPRESS;Initial Catalog=Toolregister_Thai;Persist Security Info=True;User ID=korprotokoll;Password=korprotokoll;Connect Timeout=5;Encrypt=True;TrustServerCertificate=True;";
         private const string csToolRegisterOVF = "Data Source=OVF-S1-SQL;Initial Catalog=Toolregister_OVF;Persist Security Info=True;User ID=korprotokoll;Password=korprotokoll;Connect Timeout=5;Encrypt=True;TrustServerCertificate=True;";
         /// </summary>
 
 
-        public static string cs_Protocol = csDPP_OGO;
-        public static string cs_ToolRegister = csToolRegisterGodby;
-        public static string MonitorHost = "optig5";
-        public static string MonitorCompany = "001.1";
+        public static string? cs_Protocol = csDPP_OGO;
+        public static string? cs_ToolRegister = csToolRegisterGodby;
+        public static string? MonitorHost = "optig5";
+        public static string? MonitorCompany = "001.1";
         
 
         private bool mouseDown;
         private Point lastLocation;
         
         
-        public static Type DataType(string kolumn, string register)
+        public static Type? DataType(string kolumn, string register)
         {
             using var con = new SqlConnection(Database.cs_Protocol);
             var cmd = new SqlCommand($"SELECT TOP(1) {kolumn} FROM {register}", con);
@@ -114,7 +114,7 @@ namespace DigitalProductionProgram.DatabaseManagement
                 con.Open();
                 return action(con);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // Här kan du logga, visa fel, eller slå på en SQL-counter
                 InfoText.Show(LanguageManager.GetString("errorConnectingDatabase"),
@@ -145,10 +145,10 @@ namespace DigitalProductionProgram.DatabaseManagement
             var jObject = JObject.Parse(json);
 
             //"Data Source=GOD-S1-SQL01;Initial Catalog=Korprotokoll;Persist Security Info=True;User ID=korprotokoll;Password=GOD-Stout4-Gladiator-Gazing-Retail-Pegboard;Connect Timeout=5;Encrypt=True;TrustServerCertificate=True;";
-            cs_Protocol = jObject["ConnectionStrings"]["csProtocol"]?.ToString();
-            cs_ToolRegister = jObject["ConnectionStrings"]["csToolregister"]?.ToString();
-            MonitorHost = jObject["ConnectionStrings"]["MonitorHost"]?.ToString();
-            MonitorCompany = jObject["ConnectionStrings"]["MonitorCompany"]?.ToString();
+            cs_Protocol = jObject["ConnectionStrings"]?["csProtocol"]?.ToString();
+            cs_ToolRegister = jObject["ConnectionStrings"]?["csToolregister"]?.ToString();
+            MonitorHost = jObject["ConnectionStrings"]?["MonitorHost"]?.ToString();
+            MonitorCompany = jObject["ConnectionStrings"]?["MonitorCompany"]?.ToString();
 
             switch (MonitorCompany)
             {
@@ -216,8 +216,8 @@ namespace DigitalProductionProgram.DatabaseManagement
         {
             IsOkSave();
 
-            string ServerDPP = null;
-            string DatabaseDPP = null;
+            string? ServerDPP = null;
+            string? DatabaseDPP = null;
            
             var timeout = 0;
             switch (cb_DPP.Text)
@@ -227,15 +227,15 @@ namespace DigitalProductionProgram.DatabaseManagement
                     DatabaseDPP = "Korprotokoll";
                     timeout = 5;
                     Password = "GOD-Stout4-Gladiator-Gazing-Retail-Pegboard";
-                    cb_Toolregister.Text = "Godby";
-                    cb_MonitorCompany.Text = "001.1";
+                    cb_Toolregister.Text = @"Godby";
+                    cb_MonitorCompany.Text = @"001.1";
                     break;
                 case "Godby Test":
                     ServerDPP = ServerOGO;
                     DatabaseDPP = "GOD_DPP_DEV";
                     timeout = 5;
                     Password = "GOD-Stout4-Gladiator-Gazing-Retail-Pegboard";
-                    cb_Toolregister.Text = "Godby";
+                    cb_Toolregister.Text = @"Godby";
                     cb_MonitorCompany.Text = @"001_3.1";
                     break;
                 case "Thailand":
@@ -243,16 +243,16 @@ namespace DigitalProductionProgram.DatabaseManagement
                     DatabaseDPP = "Korprotokoll_Thai";
                     timeout = 10;
                     Password = "korprotokoll";
-                    cb_Toolregister.Text = "Thailand";
-                    cb_MonitorCompany.Text = "010.1";
+                    cb_Toolregister.Text = @"Thailand";
+                    cb_MonitorCompany.Text = @"010.1";
                     break;
                 case "Valley Forge":
                     ServerDPP = ServerOVF;
                     DatabaseDPP = "DPP_OVF";
                     timeout = 10;
                     Password = "korprotokoll";
-                    cb_Toolregister.Text = "Valley Forge";
-                    cb_MonitorCompany.Text = "012.1";
+                    cb_Toolregister.Text = @"Valley Forge";
+                    cb_MonitorCompany.Text = @"012.1";
                     break;
             }
             building_csProtocol = $"Data Source={ServerDPP};Initial Catalog={DatabaseDPP};Persist Security Info=True;User ID={UserID};Password={Password};Connect Timeout={timeout};Encrypt=True;TrustServerCertificate=True;";
@@ -266,8 +266,8 @@ namespace DigitalProductionProgram.DatabaseManagement
         {
             IsOkSave();
 
-            string ServerToolregister = null;
-            string DatabaseToolregister = null;
+            string? ServerToolregister = null;
+            string? DatabaseToolregister = null;
             var timeout = 0;
 
             switch (cb_Toolregister.Text)
@@ -347,7 +347,7 @@ namespace DigitalProductionProgram.DatabaseManagement
                 Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                 "DigitalProductionProgram",
                 "DatabaseSettings.json");
-            Directory.CreateDirectory(Path.GetDirectoryName(settingsPath)); // Säkerställ att mappen finns
+            Directory.CreateDirectory(Path.GetDirectoryName(settingsPath) ?? string.Empty); // Säkerställ att mappen finns
 
             if (!File.Exists(settingsPath))
             {

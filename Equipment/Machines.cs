@@ -11,7 +11,7 @@ namespace DigitalProductionProgram.Equipment
 {
     internal class Machines
     {
-        public static List<string> Kragmaskiner(int FormTemplateID)
+        public static List<string?> Kragmaskiner(int FormTemplateID)
         {
                 var list = new List<string>();
                 using var con = new SqlConnection(Database.cs_Protocol);
@@ -50,7 +50,7 @@ namespace DigitalProductionProgram.Equipment
                 list.Add(reader[0].ToString());
             return list;
         }
-        public static List<string> Cylinders
+        public static List<string?> Cylinders
         {
             get
             {

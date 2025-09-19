@@ -320,19 +320,26 @@ namespace DigitalProductionProgram.Templates
                 return;
             }
 
+            var oldMainTemplateID = MainTemplate.ID;
+
             MainTemplate.Save_NewTemplate(cb_TemplateName.Text, cb_TemplateRevision.Text, chb_IsUsingPreFab.Checked, chb_IsProductionLineNeeded.Checked, cb_LineClearance_Revision.Text, cb_MainInfo_Template.Text, tb_Workoperation.Text, flp_Main);
+            MainTemplate.Load_MainTemplateID(cb_TemplateName.Text, cb_TemplateRevision.Text);
+            
+            ItemsBuilder.Copy_ListItemsToNewTemplate(oldMainTemplateID, MainTemplate.ID);
 
             InfoText.Question("" +
                           $"Den nya mallen {cb_TemplateName.Text} är nu sparad och är nu klar att börja skapa nya processkort för.\n" +
                           "Vill du koppla gamla artikelnummer till den nya mallen?\n" +
                           "Om du svarar 'Ja' så öppnas ett nytt formulär där du får välja vilka artiklar som skall kopplas om",
                 CustomColors.InfoText_Color.Info, null, this);
-            if (InfoText.answer == InfoText.Answer.No)
-                return;
-            MainTemplate.Load_MainTemplateID(cb_TemplateName.Text, cb_TemplateRevision.Text);
-            var partsManager = new Connect_Templates(cb_TemplateName.Text, cb_TemplateRevision.Text, false, Connect_Templates.SourceType.Type_Protocols);
-            partsManager.ShowDialog();
+            if (InfoText.answer == InfoText.Answer.Yes)
+            {
+                //MainTemplate.Load_MainTemplateID(cb_TemplateName.Text, cb_TemplateRevision.Text);
 
+                var partsManager = new Connect_Templates(cb_TemplateName.Text, cb_TemplateRevision.Text, false, Connect_Templates.SourceType.Type_Protocols);
+                partsManager.ShowDialog();
+            }
+            LoadRevisions();
             Fill_MainTemplate_Names();
         }
         private async void Update_Template_Click(object sender, EventArgs e)
@@ -417,8 +424,8 @@ namespace DigitalProductionProgram.Templates
             }
             MainTemplate.Delete_Template(cb_TemplateName.Text, cb_TemplateRevision.Text, true);
             Fill_MainTemplate_Names();
+            LoadRevisions();
             cb_TemplateName.SelectedIndex = -1;
-
         }
 
         private void ConnectTemplate_Click(object sender, EventArgs e)
@@ -669,9 +676,7 @@ namespace DigitalProductionProgram.Templates
 
             preview?.Dispose();
             Fill_Template_RevisionNr();
-            TemplateControls.IsLoading = true;
             LoadData(true);
-            TemplateControls.IsLoading = false;
             cb_TemplateRevision.SelectedIndexChanged += Template_RevisionNr_SelectedIndexChanged;
         }
         private void Template_RevisionNr_SelectedIndexChanged(object sender, EventArgs e)
@@ -705,6 +710,7 @@ namespace DigitalProductionProgram.Templates
         }
         private void LoadData(bool isOkLoadRevision)
         {
+            TemplateControls.IsLoading = true;
             ClearTemplates();
             var lineClearance_Revision = string.Empty;
             using (var con = new SqlConnection(Database.cs_Protocol))
@@ -756,6 +762,7 @@ namespace DigitalProductionProgram.Templates
             Fill_LineClearance_Templates();
             cb_LineClearance_Revision.SelectedValue = lineClearance_Revision;
             TemplateButtons.IsOkUpdateTemplate = true;
+            TemplateControls.IsLoading = false;
         }
         private void ClearTemplates()
         {
@@ -763,17 +770,16 @@ namespace DigitalProductionProgram.Templates
         }
         private void LoadRevisions()
         {
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                const string query =
-                    @"SELECT DISTINCT Revision FROM Protocol.Template WHERE FormTemplateID IN (SELECT FormTemplateID FROM Protocol.FormTemplate WHERE MainTemplateID = @maintemplate) ORDER BY Revision DESC";
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@maintemplate", MainTemplate.ID);
-                con.Open();
-                var value = cmd.ExecuteScalar();
-                if (value != null)
-                    cb_TemplateRevision.Text = value.ToString();
-            }
+            using var con = new SqlConnection(Database.cs_Protocol);
+            const string query = "SELECT DISTINCT Revision FROM Protocol.MainTemplate WHERE Name = @name ORDER BY Revision DESC";
+            //@"SELECT DISTINCT Revision FROM Protocol.Template WHERE FormTemplateID IN (SELECT FormTemplateID FROM Protocol.FormTemplate WHERE MainTemplateID = @maintemplate) ORDER BY Revision DESC";
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            //cmd.Parameters.AddWithValue("@maintemplate", MainTemplate.ID);
+            cmd.Parameters.AddWithValue("@name", cb_TemplateName.Text);
+            con.Open();
+            var value = cmd.ExecuteScalar();
+            if (value != null)
+                cb_TemplateRevision.Text = value.ToString();
         }
         private void Manage_Templates_FormClosed(object sender, FormClosedEventArgs e)
         {

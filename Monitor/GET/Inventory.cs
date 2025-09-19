@@ -33,15 +33,22 @@ namespace DigitalProductionProgram.Monitor.GET
 
            // public List<ProductRecords> ProductRecords { get; set; }
         }
+        internal class PartCodes : DTO, ToolService.IHasId
+        {
+            public override string URL => "Inventory/PartCodes";
+
+            public long Id { get; set; }
+            public string? Alias { get; set; }
+            public string? Code { get; set; }
+            public string? Description { get; set; }
+
+        }
         internal class PartTemplates : DTO, ToolService.IHasId
         {
             public override string URL => "Inventory/PartTemplates";
 
-
             public long Id { get; set; }
             public string? Description { get; set; }
-
-            // public List<ProductRecords> ProductRecords { get; set; }
         }
 
         internal class ProductRecords : DTO

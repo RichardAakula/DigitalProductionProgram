@@ -3,6 +3,7 @@ using DigitalProductionProgram.MainWindow;
 using Microsoft.Data.SqlClient;
 using System.Collections.Generic;
 using System.Data;
+using System.Net;
 using System.Transactions;
 using static DigitalProductionProgram.Templates.Templates_Protocol;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Header;
@@ -13,7 +14,9 @@ namespace DigitalProductionProgram.Templates
     {
         public enum ListType { MeasureProtocol, Protocol, Processcard }
         private ListType TypeOfList;
-        private readonly IItemsProvider itemsProvider;
+        private string listType;
+        private readonly int TemplateID;
+        private readonly IItemsProvider? itemsProvider;
         public bool IsListActivated;
         public interface IItemsProvider
         {
@@ -24,7 +27,10 @@ namespace DigitalProductionProgram.Templates
         public ItemsBuilder(string parameter, int descriptionID, ListType listType, int templateID)
         {
             InitializeComponent();
+            IsListActivated = false;
             TypeOfList = listType;
+            this.listType = listType.ToString();
+            TemplateID = templateID;
             switch (listType)
             {
                 case ListType.MeasureProtocol:
@@ -41,19 +47,17 @@ namespace DigitalProductionProgram.Templates
                     break;
             }
 
-            // Välj rätt provider
-            //if (listType == ListType.MeasureProtocol)
-            //    itemsProvider = new MeasureProtocolItems();
-            //if (listType == ListType.Processcard)
-            //    itemsProvider = new ProcesscardItems();
-            //if (listType == ListType.Protocol)
-            //    itemsProvider = new ProtocolItems();
 
-            dgv_Items.Columns[0].HeaderText = parameter;
-            itemsProvider.Initialize(dgv_Items, dgv_ListItems, tb_AddNewItem, descriptionID, templateID);
-            itemsProvider.Load();
+            label_CodeText.Text = parameter;
+            itemsProvider?.Initialize(dgv_Items, dgv_ListItems, tb_AddNewItem, descriptionID, templateID);
+            itemsProvider?.Load();
         }
 
+        public sealed override string Text
+        {
+            get => base.Text;
+            set => base.Text = value;
+        }
 
 
         public class MeasureProtocolItems : IItemsProvider
@@ -145,7 +149,6 @@ namespace DigitalProductionProgram.Templates
         {
             private DataGridView? dgv_Items;
             private DataGridView? dgv_ListItems;
-            private TextBox? tb_Text;
             private int DescriptionID;
             private int TemplateID;
 
@@ -154,7 +157,6 @@ namespace DigitalProductionProgram.Templates
             {
                 dgv_Items = dgvItems;
                 dgv_ListItems = dgvListItems;
-                tb_Text = tbText;
                 DescriptionID = descriptionID;
                 TemplateID = templateID;
             }
@@ -173,7 +175,6 @@ namespace DigitalProductionProgram.Templates
             private DataTable? dt_Items;
             private DataGridView? dgv_Items;
             private DataGridView? dgv_ListItems;
-            private TextBox? tb_Text;
             private int DescriptionID;
             private int TemplateID;
 
@@ -181,7 +182,6 @@ namespace DigitalProductionProgram.Templates
             {
                 dgv_Items = dgvItems;
                 dgv_ListItems = dgvListItems;
-                tb_Text = tbText;
                 DescriptionID = descriptionID;
                 TemplateID = templateID;
             }
@@ -205,7 +205,7 @@ namespace DigitalProductionProgram.Templates
             var items = new List<string>();
             using var con = new SqlConnection(Database.cs_Protocol);
             const string query = @"
-                SELECT ItemText 
+                SELECT ItemText, EndPoint, PropertyName, FilterExpression 
                 FROM List.ListItems 
                 WHERE TemplateID = @templateID AND ListType = @listType
                 ORDER BY ItemOrder";
@@ -214,13 +214,25 @@ namespace DigitalProductionProgram.Templates
             cmd.Parameters.AddWithValue("@listType", ListType);
             con.Open();
             using var reader = cmd.ExecuteReader();
+            string endPoint = null;
+            string columnName = null;
+            string filter = null;
             while (reader.Read())
             {
                 var item = reader["ItemText"].ToString();
                 if (item != null)
                     items.Add(item);
+
+                endPoint = reader["EndPoint"].ToString();
+                columnName = reader["PropertyName"].ToString();
+                filter = reader["FilterExpression"].ToString();
             }
             items.Add("N/A");
+            string typeName = $"DigitalProductionProgram.Monitor.GET.{endPoint}, DigitalProductionProgram";
+            Type tableType = Type.GetType(typeName);
+            if (tableType != null)
+                Monitor.Services.ToolService.Add_Equipment(items, tableType, "EXTRUDER", columnName, filter);
+
             return items;
         }
         private static void Load_ListItems(DataGridView dgv_Items, DataGridView dgv_ListItems, string ListType, int TemplateID)
@@ -229,7 +241,7 @@ namespace DigitalProductionProgram.Templates
             dgv_Items.Rows.Clear();
             using var con = new SqlConnection(Database.cs_Protocol);
             const string query = @"
-                SELECT DISTINCT ItemText, TemplateID, ItemOrder, ListType 
+                SELECT DISTINCT ListID, ItemText, TemplateID, ItemOrder, ListType 
                 FROM List.ListItems 
                 ORDER BY TemplateID, ItemOrder";
             var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
@@ -238,6 +250,7 @@ namespace DigitalProductionProgram.Templates
             using var reader = cmd.ExecuteReader();
             while (reader.Read())
             {
+                var id = reader["ListID"].ToString();
                 var item = reader["ItemText"].ToString();
                 int.TryParse(reader["TemplateID"].ToString(), out var templateID);
                 var listType = reader["ListType"].ToString();
@@ -247,7 +260,7 @@ namespace DigitalProductionProgram.Templates
                 if (!exists && item != null)
                     dgv_ListItems.Rows.Add(item);
                 if (TemplateID == templateID && listType == ListType)
-                    dgv_Items.Rows.Add(item);
+                    dgv_Items.Rows.Add(id, item);
             }
         }
         private static void Save_ListItem(int TemplateID, string ItemText, int ItemOrder, string ListType)
@@ -255,25 +268,131 @@ namespace DigitalProductionProgram.Templates
             using var con = new SqlConnection(Database.cs_Protocol);
             con.Open();
 
-            const string insertHeader = @"
-                    INSERT INTO List.ListItems (TemplateID, ItemText, ItemOrder, Description, ListType, CreatedBy)
-                    VALUES (@templateid, @itemtext, @itemorder, @description, @listtype, @createdby)";
-            using var cmd = new SqlCommand(insertHeader, con);
+            const string query = @"
+                    INSERT INTO List.ListItems (TemplateID, ItemText, ItemOrder, ListType, CreatedBy)
+                    SELECT @templateid, @itemtext, @itemorder, @listtype, @createdby
+                    WHERE NOT EXISTS 
+                    (
+                        SELECT 1 
+                        FROM List.ListItems 
+                        WHERE TemplateID = @templateid 
+                        AND ItemText = @itemtext
+                        AND ListType = @listtype
+                    );";
+            using var cmd = new SqlCommand(query, con);
             cmd.Parameters.AddWithValue("@templateid", TemplateID);
             cmd.Parameters.AddWithValue("@itemtext", ItemText);
             cmd.Parameters.AddWithValue("@itemorder", ItemOrder);
-            cmd.Parameters.AddWithValue("@description", "");
             cmd.Parameters.AddWithValue("@listtype", ListType);
             cmd.Parameters.AddWithValue("@createdby", User.Person.Name);
 
             cmd.ExecuteScalar();
         }
-        private void SaveItems_Click(object sender, EventArgs e)
+
+        private void Save_MonitorFilter()
         {
-            this.Close();
+            using var con = new SqlConnection(Database.cs_Protocol);
+            con.Open();
+
+            const string query = @"
+                    INSERT INTO List.ListItems (TemplateID, EndPoint, PropertyName, FilterExpression, ListType, CreatedBy)
+                    SELECT @templateid, @endpoint, @propertyname, @filterexpression, @listtype, @createdby
+                    WHERE NOT EXISTS 
+                    (
+                        SELECT 1 
+                        FROM List.ListItems 
+                        WHERE TemplateID = @templateid 
+                        AND EndPoint = @endpoint
+                        AND PropertyName = @propertyname
+                        AND FilterExpression = @filterexpression
+                    );";
+            using var cmd = new SqlCommand(query, con);
+            cmd.Parameters.AddWithValue("@templateid", TemplateID);
+            cmd.Parameters.AddWithValue("@endpoint", $"{cb_Module.Text}+{cb_Resource.Text}");
+            cmd.Parameters.AddWithValue("@propertyname", cb_Column.Text);
+            cmd.Parameters.AddWithValue("@filterexpression", queryBuilder);
+            cmd.Parameters.AddWithValue("@listtype", listType);
+            cmd.Parameters.AddWithValue("@createdby", User.Person.Name);
+
+            cmd.ExecuteScalar();
+        }
+
+        private string queryBuilder
+        {
+            get
+            {
+                string query = "filter=";
+                switch (cb_FilterFunctions.Text)
+                {
+                    case "startswith":
+                        query += $"startswith({cb_FilterColumn.Text}, '{tb_FilterText.Text}')";
+                        break;
+                }
+                return query;
+            }
+        }
+        public static void Copy_ListItemsToNewTemplate(int oldMainTemplateID, int newMainTemplateID)
+        {
+            using var con = new SqlConnection(Database.cs_Protocol);
+            const string query = @"SELECT ID, ProtocolDescriptionID FROM Protocol.Template WHERE FormTemplateID IN (SELECT FormTemplateID FROM Protocol.FormTemplate WHERE MainTemplateID = @oldmaintemplateid)";
+            var cmd = new SqlCommand(query, con);
+            cmd.Parameters.AddWithValue("@oldmaintemplateid", oldMainTemplateID);
+            con.Open();
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                int.TryParse(reader["ID"].ToString(), out var templateID);
+                int.TryParse(reader["ProtocolDescriptionID"].ToString(), out var protocolDescriptionID);
+
+                using var con2 = new SqlConnection(Database.cs_Protocol);
+                const string query2 = @"SELECT ItemText, ItemOrder, ListType FROM List.ListItems WHERE TemplateID = @templateID";
+                var cmd2 = new SqlCommand(query2, con2);
+                cmd2.Parameters.AddWithValue("@templateID", templateID);
+                con2.Open();
+                var reader2 = cmd2.ExecuteReader();
+                while (reader2.Read())
+                {
+                    var itemText = reader2["ItemText"].ToString();
+                    int.TryParse(reader2["ItemOrder"].ToString(), out var itemOrder);
+                    var listType = reader2["ListType"].ToString();
+                    using var con3 = new SqlConnection(Database.cs_Protocol);
+                    const string query3 = @"SELECT TOP(1) ID 
+                                FROM Protocol.Template 
+                                WHERE ProtocolDescriptionID = @protocolDescriptionID
+                                AND FormTemplateID IN (SELECT FormTemplateID FROM Protocol.FormTemplate WHERE MainTemplateID = @newMainTemplateID)
+                                ORDER BY ID";
+                    var cmd3 = new SqlCommand(query3, con3);
+                    cmd3.Parameters.AddWithValue("@protocolDescriptionID", protocolDescriptionID);
+                    cmd3.Parameters.AddWithValue("@newMainTemplateID", newMainTemplateID);
+                    con3.Open();
+                    var result = cmd3.ExecuteScalar(); // hämtar första kolumnen i första raden
+                    int.TryParse(result?.ToString(), out var newTemplateID);
+
+                    Save_ListItem(newTemplateID, itemText, itemOrder, listType);
+                }
+            }
+
         }
 
 
+        private void DeleteItem_Click(object sender, EventArgs e)
+        {
+            if (dgv_Items.SelectedRows.Count > 0)
+            {
+                var selectedRow = dgv_Items.SelectedRows[0];
+                using var con = new SqlConnection(Database.cs_Protocol);
+                con.Open();
+
+                const string query = @"
+                    DELETE FROM List.ListItems 
+                    WHERE ListID = @id";
+                using var cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@id", selectedRow.Cells["col_ID"].Value.ToString());
+
+                cmd.ExecuteScalar();
+            }
+            dgv_Items.Rows.RemoveAt(dgv_Items.SelectedRows[0].Index);
+        }
         private void NewItem_Click(object sender, EventArgs e)
         {
             if (!string.IsNullOrEmpty(tb_AddNewItem.Text))
@@ -290,16 +409,39 @@ namespace DigitalProductionProgram.Templates
                 return;
             var item = dgv_ListItems.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString();
 
-            //dgv_Items.Rows.Add(item);
-            if (item != null) 
+            if (item != null)
                 itemsProvider.SaveItem(item);
             itemsProvider.Load();
+        }
+        private void Close_Click(object sender, EventArgs e)
+        {
+            Save_MonitorFilter(); 
+
+            this.Close();
         }
         private void ItemsBuilder_FormClosed(object sender, FormClosedEventArgs e)
         {
             IsListActivated = dgv_Items.Rows.Count > 0;
         }
 
-       
+        private void cb_Module_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            switch (cb_Module.Text)
+            {
+                case "Inventory":
+                    cb_Resource.Items.Add("Parts");
+                    break;
+            }
+        }
+        private void cb_Resource_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            switch (cb_Resource.Text)
+            {
+                case "Inventory":
+                    cb_Column.Items.Add("PartNumber");
+                    cb_Column.Items.Add("Description");
+                    break;
+            }
+        }
     }
 }

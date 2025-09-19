@@ -475,11 +475,21 @@ namespace DigitalProductionProgram.MainWindow
         {
             if (Environment.MachineName != "OH-ID61")
                 InfoText.Show(LanguageManager.GetString("warning_Testdatabase"), CustomColors.InfoText_Color.Bad, "Warning");
-            tlp_Left.BackColor = OrderInformation.BackColor = panel_Right.BackColor = Color.Pink;
-            RollingInformation.lbl_Tips.BackColor =Color.Yellow;
-            RollingInformation.lbl_Tips.ForeColor = Color.Black;
-            RollingInformation.lbl_Tips.Text = @"WARNING! BETA VERSION!";
-            RollingInformation.lbl_Tips.Visible = true;
+
+            void UpdateUi()
+            {
+                tlp_Left.BackColor = OrderInformation.BackColor = panel_Right.BackColor = Color.Pink;
+                RollingInformation.lbl_Tips.BackColor = Color.Yellow;
+                RollingInformation.lbl_Tips.ForeColor = Color.Black;
+                RollingInformation.lbl_Tips.Text = @"WARNING! BETA VERSION!";
+                RollingInformation.lbl_Tips.Visible = true;
+            }
+
+            if (this.InvokeRequired)
+                this.Invoke((Action)UpdateUi);
+            else
+                UpdateUi();
+
 
             if (Environment.MachineName == "THAI-DPP-TEST01" || Environment.MachineName == "OH-ID61")
                 return;

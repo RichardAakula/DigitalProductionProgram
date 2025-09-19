@@ -27,7 +27,7 @@ internal class Activity
         CurrentMemory = proc.WorkingSet64;
         PeakMemory = proc.PeakWorkingSet64;
     }
-
+    [DebuggerStepThrough]
     public static void Start()
     {
         StartTime = DateTime.Now;

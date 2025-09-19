@@ -778,40 +778,50 @@ namespace DigitalProductionProgram.Protocols.Protocol
                         case 10:    //KRAGMASKIN
                             items = Machines.Kragmaskiner(FormTemplateID);
                             break;
-                        case 19:    //ENKEL/DUBBEL KRAGE
-                            items.Add("Enkel");
-                            items.Add("Dubbel");
-                            break;
-                        case 86:    //MELLANPRESSNING
-                        case 125:   //HASTIGHETSREGLERARE
-                        case 227:   //LÄCKSÖKNING
-                        case 228:   //ANTISTAT
-                        case 231:   //ANVÄNDS UGN
-                        case 291:   //TRYCKREGLERING
-                        case 292:   //OD REGLERING
-                        case 326:   //RENGJORT UTRUSTNING
-                        case 313:   //FILTERHUS
-                            items.Add(LanguageManager.GetString("yes") ?? string.Empty);
-                            items.Add(LanguageManager.GetString("no") ?? string.Empty);
-                            break;
+                        //case 19:    //ENKEL/DUBBEL KRAGE
+                        //    items.Add("Enkel");
+                        //    items.Add("Dubbel");
+                        // break;
+                        //case 22:    //DUBBELTAPERING
+                        //case 29:    //BYTE/RENGÖRING GRIPPERS
+                        //case 31:    //BYTE HACKBETT
+                        //case 68:    //BROMSAD PRODUKT
+                        //case 69:    //VINKELREGLERING
+                        //case 86:    //MELLANPRESSNING
+                        //case 125:   //HASTIGHETSREGLERARE
+                        //case 227:   //LÄCKSÖKNING             Ext FEP
+                        //case 228:   //ANTISTAT                Ext FEP 
+                        //case 231:   //ANVÄNDS UGN             Ext FEP
+                        //case 291:   //TRYCKREGLERING          Ext TERMO
+                        //case 292:   //OD REGLERING            Ext TERMO
+                        //case 326:   //RENGJORT UTRUSTNING     Ext TERMO
+                        // case 313:   //FILTERHUS               Ext TERMO
+                        //  items.Add(LanguageManager.GetString("yes") ?? string.Empty);
+                        //    items.Add(LanguageManager.GetString("no") ?? string.Empty);
+                        //     break;
                         case 80:    //EXTRUDER
-                            items = CheckAuthority.IsWorkoperationAuthorized(CheckAuthority.TemplateWorkoperation.ExtruderRegister) ?
-                                Monitor.Services.ToolService.List_Equipment<Manufacturing.WorkCenters>("Description", "filter=Type Eq'0'") : Machines.Extruders("EXTRUDER");
+                           // items = CheckAuthority.IsWorkoperationAuthorized(CheckAuthority.TemplateWorkoperation.ExtruderRegister) ?
+                           //     Monitor.Services.ToolService.List_Equipment<Manufacturing.WorkCenters>("Description", "startswith(PartNumber, 'EXT')") : Machines.Extruders("EXTRUDER");
                             //DigitalProductionProgram.Equipment.Equipment.List_From_Register("Extruder", "Extruder_Skruvar") : Machines.Extruders("EXTRUDER");
+                           
+
+                            //var method = typeof(Monitor.Services.ToolService).GetMethod("List_Equipment")?.MakeGenericMethod(tableType);
+                            //var result = method?.Invoke(null, new object[] { "Description", "filter=Type Eq'0'" });
+                            //items = result as List<string?>;
                             break;
 
                         case 81:    //CYLINDER
                             items = Machines.Cylinders;
                             break;
-                        case 85:    //KANYL TYP
-                            items.Add("S");
-                            items.Add("D");
-                            items.Add("S/D");
-                            break;
-                        case 108:   //AUTO/MAN
-                            items.Add("Auto");
-                            items.Add("Manuell");
-                            break;
+                       // case 85:    //KANYL TYP   //Ext PTFE-Ext PTFE GROV
+                       //     items.Add("S");
+                       //     items.Add("D");
+                       //     items.Add("S/D");
+                      //      break;
+                        //case 108:   //AUTO/MAN    //Ext PTFE GROV
+                        //    items.Add("Auto");
+                        //    items.Add("Manuell");
+                        //    break;
                         case 239:
                         case 240:
                             var InComingDate = dgv_Module.Rows[row].Cells[col].Value is null ? string.Empty : dgv_Module.Rows[row].Cells[col].Value.ToString();
@@ -845,9 +855,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                             IsItemsMultipleColumns = true;
                             break;
                         case 307: //HUVUD
-#pragma warning disable CS8619 // Nullability of reference types in value doesn't match target type.
                             items = Monitor.Services.ToolService.List_Tools(NOM_Value(dgv_Row), null);
-#pragma warning restore CS8619 // Nullability of reference types in value doesn't match target type.
                             //items = DigitalProductionProgram.Equipment.Equipment.List_Register(isProcesscardUnderManagement, NOM_Value(dgv_Row), "Register_Huvud");
                             // IsItemsMultipleColumns = true;
                             break;
@@ -871,9 +879,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                                 DieType = "Munstycken FEP";
                             else
                                 DieType = Value(col, 310);
-#pragma warning disable CS8619 // Nullability of reference types in value doesn't match target type.
                             items = Monitor.Services.ToolService.List_Tools(DieType, "Landlängd Nom");
-#pragma warning restore CS8619 // Nullability of reference types in value doesn't match target type.
 
                             //items = DigitalProductionProgram.Equipment.Equipment.List_Tool(DieType, MIN_Value(dgv_Row), MAX_Value(dgv_Row));
                             IsItemsMultipleColumns = true;
@@ -888,17 +894,15 @@ namespace DigitalProductionProgram.Protocols.Protocol
                                 TipType = "Kanyler FEP";
                             else
                                 TipType = Value(col, 311);
-#pragma warning disable CS8619 // Nullability of reference types in value doesn't match target type.
                             items = Monitor.Services.ToolService.List_Tools(TipType, "Landlängd Nom");
-#pragma warning restore CS8619 // Nullability of reference types in value doesn't match target type.
                             items = DigitalProductionProgram.Equipment.Equipment.List_Tool(TipType, MIN_Value(dgv_Row), MAX_Value(dgv_Row));
                             IsItemsMultipleColumns = true;
                             break;
-                        case 229:   //UPPTAGNING
-                            items.Add("Leveransspole");
-                            items.Add("Mellanspolning");
-                            items.Add("Direkt Hackning");
-                            break;
+                        //case 229:   //UPPTAGNING    Ext FEP
+                        //    items.Add("Leveransspole");
+                        //    items.Add("Mellanspolning");
+                        //    items.Add("Direkt Hackning");
+                        //    break;
                         case 312: //SILPAKET
                             var choose_Silduk = new Choose_Silduk(dgv_Module.Rows[row].Cells[e.ColumnIndex]);
                             choose_Silduk.ShowDialog();
@@ -909,15 +913,12 @@ namespace DigitalProductionProgram.Protocols.Protocol
                             if (isProcesscardUnderManagement)
                                 items = Monitor.Monitor.List_PartNumber_FilterType();
                             else
-#pragma warning disable CS8619 // Nullability of reference types in value doesn't match target type.
                                 items = Monitor.Monitor.List_Serialnumber_Extrusion_Filter(NOM_Value(dgv_Row));
-#pragma warning restore CS8619 // Nullability of reference types in value doesn't match target type.
                             break;
                         case 315: //FILTER ARTIKELNR
                             items = Monitor.Monitor.List_CandleFilter_PartNr("Candle");
                             break;
                         case 316: //KALIBRERINGSTYP
-
                             items = DigitalProductionProgram.Equipment.Equipment.List_Register(true, NOM_Value(dgv_Row), "Register_Kalibreringar");
                             //  IsItemsMultipleColumns = false;
                             break;
@@ -938,30 +939,30 @@ namespace DigitalProductionProgram.Protocols.Protocol
                         case 131:   //RAKBLADSTYP
                             items = Monitor.Monitor.List_RazorTypes;
                             break;
-                        case 132:   //HACKRÖRSTYP
-                            items.Add("Vanlig");
-                            items.Add("PTFE");
-                            items.Add("Vinkel");
-                            break;
-                        case 138:   //HJUL
-                            items.Add("Stort");
-                            items.Add("Litet");
-                            break;
-                        case 139:   //PÅSTYP
-                            items.Add("Transparent PE");
-                            items.Add("Svart PE");
-                            items.Add("Spolpåse");
-                            items.Add("Inserterrörspåse");
-                            break;
-                        case 333:   //SVÄNGT / BYTT RAKBLAD
-                            items.Add("Svängt Rakblad");
-                            items.Add("Nytt Rakblad");
-                            break;
-                        case 357:   //BRYTPLATTA
-                            items.Add("Platt");
-                            items.Add("Försänkt");
-                            items.Add("Strypring");
-                            break;
+                            //case 132:   //HACKRÖRSTYP         Hackning TEF
+                            //    items.Add("Vanlig");
+                            //    items.Add("PTFE");
+                            //    items.Add("Vinkel");
+                            //    break;
+                            //case 138:   //HJUL                Hackning TEF
+                            //    items.Add("Stort");
+                            //    items.Add("Litet");
+                            //    break;
+                            //case 139:   //PÅSTYP              Hackning TEF
+                            //    items.Add("Transparent PE");
+                            //    items.Add("Svart PE");
+                            //    items.Add("Spolpåse");
+                            //    items.Add("Inserterrörspåse");
+                            //    break;
+                            //case 333:   //SVÄNGT / BYTT RAKBLAD     Slitting PTFE
+                            //    items.Add("Svängt Rakblad");
+                            //    items.Add("Nytt Rakblad");
+                            //    break;
+                            //case 357:   //BRYTPLATTA              Extrudering TEF 1-Maskin med Brytplatta
+                            //    items.Add("Platt");
+                            //    items.Add("Försänkt");
+                            //    items.Add("Strypring");
+                            //    break;
                     }
                 }
 

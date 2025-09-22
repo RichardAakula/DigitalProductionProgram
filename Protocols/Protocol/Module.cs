@@ -842,12 +842,12 @@ namespace DigitalProductionProgram.Protocols.Protocol
                         case 325: //RENGJORT CYLINDER
                             items = DigitalProductionProgram.Equipment.Equipment.List_CleanedCylinder(startup);
                             break;
-                        case 304: //INTAG
-                            items = DigitalProductionProgram.Equipment.Equipment.List_Intag.ToList();
-                            break;
-                        case 305: //SKRUVTYP
+                        //case 304: //INTAG
+                        //    items = DigitalProductionProgram.Equipment.Equipment.List_Intag.ToList();
+                        //    break;
+                       // case 305: //SKRUVTYP
                             //Korprotokoll hämtar ID_Nummer
-                            items = DigitalProductionProgram.Equipment.Equipment.List_Register(isProcesscardUnderManagement, NOM_Value(dgv_Row), "Register_Skruvar");
+                           // items = DigitalProductionProgram.Equipment.Equipment.List_Register(isProcesscardUnderManagement, NOM_Value(dgv_Row), "Register_Skruvar");
                             IsItemsMultipleColumns = true;
                             break;
                         case 306: //TORK
@@ -867,12 +867,13 @@ namespace DigitalProductionProgram.Protocols.Protocol
                             items = DigitalProductionProgram.Equipment.Equipment.List_Register(isProcesscardUnderManagement, NOM_Value(dgv_Row), "Register_Torpedmuttrar");
                             IsItemsMultipleColumns = true;
                             break;
-                        case 310: //MUNSTYCKE TYP
-                            items = Monitor.Services.ToolService.List_Tools<Inventory.PartTemplates, Inventory.Parts>("TOOLS (Titus)");
+                        //case 310: //MUNSTYCKE TYP
+
+                           // items = Monitor.Services.ToolService.List_Tools<Inventory.PartTemplates, Inventory.Parts>("TOOLS (Titus)");
 
                             // items = DigitalProductionProgram.Equipment.Equipment.List_Tool_Type("Munstycke");
 
-                            break;
+                            //break;
                         case 83: //MUNSTYCKE
                             cells = new[] { dgv_Module.Rows[e.RowIndex].Cells[col], dgv_Module.Rows[e.RowIndex + 1].Cells[col] };
                             if (Order.WorkOperation == Manage_WorkOperation.WorkOperations.Extrudering_FEP)

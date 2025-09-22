@@ -40,7 +40,7 @@ namespace DigitalProductionProgram.Monitor
             return response;
         }
 
-
+        [DebuggerStepThrough]
         public static List<T> GetFromMonitor<T>(params string[] queryOptions) where T : DTO, new()
         {
             var query = BuildQuery<T>(queryOptions);

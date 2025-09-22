@@ -73,12 +73,12 @@ namespace DigitalProductionProgram.Monitor.Services
             return list;
         }
 
-        public static void Add_Equipment(List<string> items, Type tableType, string partCode, string columnName, string filter)
+        public static void Add_Equipment(List<string> items, Type tableType, string partCode, string? columnName, string? filter)
         {
-            var partID = Utilities.GetOneFromMonitor<Inventory.PartCodes>($"filter=Description Eq'{partCode}'")?.Id ?? 0;
+            var partCodeId = Utilities.GetOneFromMonitor<Inventory.PartCodes>($"filter=Code Eq'{partCode}'")?.Id ?? 0;
 
             var method = typeof(Utilities).GetMethod("GetFromMonitor").MakeGenericMethod(tableType);
-            var equipment = method.Invoke(null, new object[] { new[] { $"filter=PartCodeId eq'{partID}'" } }) as IEnumerable<object>;
+            var equipment = method.Invoke(null, new object[] { new[] { $"filter=PartCodeId eq'{partCodeId}'" } }) as IEnumerable<object>;
 
             if (equipment is null)
                 return;

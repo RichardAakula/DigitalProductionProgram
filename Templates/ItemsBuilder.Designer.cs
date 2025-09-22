@@ -196,14 +196,13 @@
             gbx_MonitorPartCode.Size = new Size(167, 844);
             gbx_MonitorPartCode.TabIndex = 31;
             gbx_MonitorPartCode.TabStop = false;
-            gbx_MonitorPartCode.Text = "Välj ArtikelKod";
+            gbx_MonitorPartCode.Text = "Välj Typ";
             // 
             // cb_PartCode
             // 
             cb_PartCode.Dock = DockStyle.Top;
             cb_PartCode.DropDownStyle = ComboBoxStyle.DropDownList;
             cb_PartCode.FormattingEnabled = true;
-            cb_PartCode.Items.AddRange(new object[] { "TOOLS" });
             cb_PartCode.Location = new Point(3, 20);
             cb_PartCode.Name = "cb_PartCode";
             cb_PartCode.Size = new Size(161, 24);

@@ -583,7 +583,14 @@ namespace DigitalProductionProgram.Monitor
 
             }
         }
+        public static void Fill_ComboBox_PartCodes(ComboBox cb)
+        {
+            var partCodes = Utilities.GetFromMonitor<Inventory.PartCodes>("select=Code,Description", $"filter=Alias Eq 'TOOLS'");
+            cb.DataSource = partCodes;
+            cb.DisplayMember = "Description"; // vad användaren ser
+            cb.ValueMember = "Code";
 
+        }
         
     }
 }

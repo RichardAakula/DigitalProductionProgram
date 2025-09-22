@@ -133,18 +133,22 @@ namespace DigitalProductionProgram.User
         public static bool IsWorkoperationAuthorized(Enum templateWorkoperation)
         {
             var val = Convert.ChangeType(templateWorkoperation, templateWorkoperation.GetTypeCode());
-            using var con = new SqlConnection(Database.cs_Protocol);
-            const string query = "SELECT * FROM Authorities.CustomWorkoperation WHERE TemplateID = @id AND Workoperation = @workoperation";
 
-            con.Open();
-            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-            cmd.Parameters.AddWithValue("@id", (int)val);
-            cmd.Parameters.AddWithValue("@workoperation", Order.WorkOperation.ToString());
-            var reader = cmd.ExecuteReader();
-            if (reader.HasRows)
-                return true;
+            return Database.ExecuteSafe(con =>
+            {
+                const string query = @"
+                SELECT 1 
+                FROM Authorities.CustomWorkoperation 
+                WHERE TemplateID = @id AND Workoperation = @workoperation";
 
-            return false;
+                using var cmd = new SqlCommand(query, con);
+                ServerStatus.Add_Sql_Counter();
+                cmd.Parameters.AddWithValue("@id", (int)val);
+                cmd.Parameters.AddWithValue("@workoperation", Order.WorkOperation.ToString());
+
+                using var reader = cmd.ExecuteReader();
+                return reader.HasRows; // true om det finns, annars false
+            });
         }
         public static bool IsFactoryAuthorized(Enum templateFactory)
         {

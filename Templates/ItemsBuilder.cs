@@ -14,7 +14,7 @@ namespace DigitalProductionProgram.Templates
     {
         public enum ListType { MeasureProtocol, Protocol, Processcard }
         private ListType TypeOfList;
-        private string listType;
+        private readonly string listType;
         private readonly int TemplateID;
         private readonly IItemsProvider? itemsProvider;
         public bool IsListActivated;
@@ -47,6 +47,8 @@ namespace DigitalProductionProgram.Templates
                     break;
             }
 
+            Monitor.Monitor.Fill_ComboBox_PartCodes(cb_PartCode);
+            cb_PartCode.SelectedIndex = -1;
 
             label_CodeText.Text = parameter;
             itemsProvider?.Initialize(dgv_Items, dgv_ListItems, tb_AddNewItem, descriptionID, templateID);
@@ -205,7 +207,7 @@ namespace DigitalProductionProgram.Templates
             var items = new List<string>();
             using var con = new SqlConnection(Database.cs_Protocol);
             const string query = @"
-                SELECT ItemText, EndPoint, PropertyName, FilterExpression 
+                SELECT ItemText, PartCode, EndPoint, PropertyName, FilterExpression 
                 FROM List.ListItems 
                 WHERE TemplateID = @templateID AND ListType = @listType
                 ORDER BY ItemOrder";
@@ -214,24 +216,26 @@ namespace DigitalProductionProgram.Templates
             cmd.Parameters.AddWithValue("@listType", ListType);
             con.Open();
             using var reader = cmd.ExecuteReader();
-            string endPoint = null;
-            string columnName = null;
-            string filter = null;
+            string? endPoint = null;
+            string? columnName = null;
+            string? filter = null;
+            string? partCode = null;
             while (reader.Read())
             {
-                var item = reader["ItemText"].ToString();
+                var item = reader["ItemText"]?.ToString();
                 if (item != null)
                     items.Add(item);
 
-                endPoint = reader["EndPoint"].ToString();
-                columnName = reader["PropertyName"].ToString();
-                filter = reader["FilterExpression"].ToString();
+                partCode = reader["PartCode"] as string ?? reader["PartCode"]?.ToString();
+                endPoint = reader["EndPoint"] as string ?? reader["EndPoint"]?.ToString();
+                columnName = reader["PropertyName"] as string ?? reader["PropertyName"]?.ToString();
+                filter = reader["FilterExpression"] as string ?? reader["FilterExpression"]?.ToString();
             }
             items.Add("N/A");
-            string typeName = $"DigitalProductionProgram.Monitor.GET.{endPoint}, DigitalProductionProgram";
-            Type tableType = Type.GetType(typeName);
-            if (tableType != null)
-                Monitor.Services.ToolService.Add_Equipment(items, tableType, "EXTRUDER", columnName, filter);
+            var typeName = endPoint != null ? $"DigitalProductionProgram.Monitor.GET.{endPoint}, DigitalProductionProgram" : null;
+            var tableType = typeName != null ? Type.GetType(typeName) : null;
+            if (tableType != null && partCode != null)
+                Monitor.Services.ToolService.Add_Equipment(items, tableType, partCode, columnName, filter);
 
             return items;
         }
@@ -291,26 +295,30 @@ namespace DigitalProductionProgram.Templates
 
         private void Save_MonitorFilter()
         {
+            if (dgv_Items.Rows.Count > 0)
+                return;
             using var con = new SqlConnection(Database.cs_Protocol);
             con.Open();
 
             const string query = @"
-                    INSERT INTO List.ListItems (TemplateID, EndPoint, PropertyName, FilterExpression, ListType, CreatedBy)
-                    SELECT @templateid, @endpoint, @propertyname, @filterexpression, @listtype, @createdby
+                    INSERT INTO List.ListItems (TemplateID, PartCode, EndPoint, PropertyName, FilterExpression, ListType, CreatedBy)
+                    SELECT @templateid, @partcode, @endpoint, @propertyname, @filterexpression, @listtype, @createdby
                     WHERE NOT EXISTS 
                     (
                         SELECT 1 
                         FROM List.ListItems 
-                        WHERE TemplateID = @templateid 
+                        WHERE TemplateID = @templateid
+                        AND PartCode = @partcode
                         AND EndPoint = @endpoint
                         AND PropertyName = @propertyname
                         AND FilterExpression = @filterexpression
                     );";
             using var cmd = new SqlCommand(query, con);
             cmd.Parameters.AddWithValue("@templateid", TemplateID);
+            cmd.Parameters.AddWithValue("@partcode", cb_PartCode.SelectedValue?.ToString());
             cmd.Parameters.AddWithValue("@endpoint", $"{cb_Module.Text}+{cb_Resource.Text}");
             cmd.Parameters.AddWithValue("@propertyname", cb_Column.Text);
-            cmd.Parameters.AddWithValue("@filterexpression", queryBuilder);
+            SQL_Parameter.String(cmd.Parameters, "@filterexpression", queryBuilder);
             cmd.Parameters.AddWithValue("@listtype", listType);
             cmd.Parameters.AddWithValue("@createdby", User.Person.Name);
 
@@ -321,6 +329,8 @@ namespace DigitalProductionProgram.Templates
         {
             get
             {
+                if (string.IsNullOrEmpty(cb_FilterFunctions.Text))
+                    return null;
                 string query = "filter=";
                 switch (cb_FilterFunctions.Text)
                 {

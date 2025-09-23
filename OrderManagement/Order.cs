@@ -814,16 +814,13 @@ namespace DigitalProductionProgram.OrderManagement
                 }
 
                 IsOkStartOrder = true;
-                Activity.Stop("Testar varför det är problem att starta ordrar för t.ex. Slipning TEF - 1");
                 OrderID = Create_NewOrderID;
-                Activity.Stop("Testar varför det är problem att starta ordrar för t.ex. Slipning TEF - 2");
                 if (IsWorkOperationOk(main) == false)
                 {
                     ResetOrder(main);
                     return;
                 }
                 main.OrderInformation.LoadMainForm_NewOrder();
-                Activity.Stop("Testar varför det är problem att starta ordrar för t.ex. Slipning TEF - 3");
                 main.OrderInformation.lbl_Version.Text = ChangeLog.CurrentVersion.ToString();
 
 
@@ -836,13 +833,9 @@ namespace DigitalProductionProgram.OrderManagement
                 if (IsOkStartOrder || Part.IsPartID_Exist() == false)
                 {
                     main.Load_MeasurePoints();
-                    Activity.Stop("Testar varför det är problem att starta ordrar för t.ex. Slipning TEF - 4");
                     Templates_Protocol.MainTemplate.Set_MainTemplateID(ref IsOkStartOrder);
-                    Activity.Stop("Testar varför det är problem att starta ordrar för t.ex. Slipning TEF - 5");
                     Templates_MeasureProtocol.MainTemplate.Set_MainTemplateID(ref IsOkStartOrder);
-                    Activity.Stop("Testar varför det är problem att starta ordrar för t.ex. Slipning TEF - 6");
                     Templates_LineClearance.MainTemplate.Set_MainTemplateID();
-                    Activity.Stop("Testar varför det är problem att starta ordrar för t.ex. Slipning TEF - 7");
                     if (IsOkStartOrder == false)
                     {
                         InfoText.Show(LanguageManager.GetString("selectTemplateError"), CustomColors.InfoText_Color.Bad, "Warning", main);

@@ -154,7 +154,6 @@ namespace DigitalProductionProgram.Templates
         }
         private void Manage_Templates_Load(object sender, EventArgs e)
         {
-            Load_PDF();
             TemplateButtons.IsOkSaveTemplate = false;
             TemplateButtons.IsOkUpdateTemplate = false;
         }
@@ -276,12 +275,7 @@ namespace DigitalProductionProgram.Templates
             cb_LineClearance_Revision.DataSource = dataTable;
         }
 
-        private void Load_PDF()
-        {
-            var filePath = Path.Combine(Path.GetTempPath(), "Guide - Templates.pdf");
-            File.WriteAllBytes(filePath, Properties.Resources.GuideTemplates);
-            web_PDF_Viewer.Navigate(filePath); // Load the PDF into the WebBrowser control
-        }
+
 
 
         private void NewModule_Click(object sender, EventArgs e)
@@ -324,8 +318,8 @@ namespace DigitalProductionProgram.Templates
 
             MainTemplate.Save_NewTemplate(cb_TemplateName.Text, cb_TemplateRevision.Text, chb_IsUsingPreFab.Checked, chb_IsProductionLineNeeded.Checked, cb_LineClearance_Revision.Text, cb_MainInfo_Template.Text, tb_Workoperation.Text, flp_Main);
             MainTemplate.Load_MainTemplateID(cb_TemplateName.Text, cb_TemplateRevision.Text);
-            
-            ItemsBuilder.Copy_ListItemsToNewTemplate(oldMainTemplateID, MainTemplate.ID);
+
+            ItemsBuilder.Copy_OwnListToNewTemplate(oldMainTemplateID, MainTemplate.ID);
 
             InfoText.Question("" +
                           $"Den nya mallen {cb_TemplateName.Text} är nu sparad och är nu klar att börja skapa nya processkort för.\n" +
@@ -789,7 +783,11 @@ namespace DigitalProductionProgram.Templates
         {
             tlp_ExtraInfo.Left = ClientSize.Width - tlp_ExtraInfo.Width;
         }
-
+        private void pb_Manual_Click(object sender, EventArgs e)
+        {
+            var help = new Help.Manual_TemplatesProtocol();
+            help.Show();
+        }
 
 
 
@@ -1031,7 +1029,7 @@ namespace DigitalProductionProgram.Templates
                 var dgv = (DataGridView)sender;
                 if (dgv is null)
                     return;
-                var cellParameter =  dgv.Rows[e.RowIndex].Cells["col_CodeText"];
+                var cellParameter = dgv.Rows[e.RowIndex].Cells["col_CodeText"];
                 int.TryParse(dgv.Rows[e.RowIndex].Cells["col_ProtocolDescriptionID"].Value.ToString(), out var descriptionID);
                 int.TryParse(dgv.Rows[e.RowIndex].Cells["col_TemplateID"].Value?.ToString(), out var templateID);
 
@@ -1054,7 +1052,7 @@ namespace DigitalProductionProgram.Templates
                         case "col_ProcesscardList":
                             if (IsLoading)
                                 return;
-                            var itemsBuilder = new ItemsBuilder(cellParameter?.Value.ToString() ?? string.Empty, descriptionID, ItemsBuilder.ListType.Processcard, templateID);
+                            var itemsBuilder = new ItemsBuilder(cellParameter?.Value.ToString() ?? string.Empty, ItemsBuilder.ListType.Processcard, templateID);
                             itemsBuilder.ShowDialog();
                             _suppressCellValueChanged = true;
                             dgv.Rows[e.RowIndex].Cells["col_ProcesscardList"].Value = itemsBuilder.IsListActivated;
@@ -1062,7 +1060,7 @@ namespace DigitalProductionProgram.Templates
                         case "col_ProtocolList":
                             if (IsLoading)
                                 return;
-                            itemsBuilder = new ItemsBuilder(cellParameter?.Value.ToString() ?? string.Empty, descriptionID, ItemsBuilder.ListType.Protocol, templateID);
+                            itemsBuilder = new ItemsBuilder(cellParameter?.Value.ToString() ?? string.Empty, ItemsBuilder.ListType.Protocol, templateID);
                             itemsBuilder.ShowDialog();
                             _suppressCellValueChanged = true;
                             dgv.Rows[e.RowIndex].Cells["col_ProtocolList"].Value = itemsBuilder.IsListActivated;
@@ -1076,7 +1074,7 @@ namespace DigitalProductionProgram.Templates
                 {
                     _suppressCellValueChanged = false;
                 }
-                
+
             }
             private static void HandleDataTypeColumn(DataGridView dgv, int rowIndex)
             {
@@ -1906,7 +1904,7 @@ namespace DigitalProductionProgram.Templates
             }
         }
 
-        
+       
     }
 }
 

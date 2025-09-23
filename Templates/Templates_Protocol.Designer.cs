@@ -76,10 +76,10 @@ namespace DigitalProductionProgram.Templates
             lbl_CreatedBy = new Label();
             chb_IsProductionLineNeeded = new CheckBox();
             tlp_Bottom = new TableLayoutPanel();
-            web_PDF_Viewer = new WebBrowser();
             flp_ObjectManagement = new FlowLayoutPanel();
             gbx_Module = new GroupBox();
             gbx_Protocol_Template = new GroupBox();
+            pb_Manual = new PictureBox();
             tb_Workoperation = new TextBox();
             gbx_CodeText = new GroupBox();
             tb_NewUnit = new TextBox();
@@ -99,6 +99,7 @@ namespace DigitalProductionProgram.Templates
             flp_ObjectManagement.SuspendLayout();
             gbx_Module.SuspendLayout();
             gbx_Protocol_Template.SuspendLayout();
+            ((ISupportInitialize)pb_Manual).BeginInit();
             gbx_CodeText.SuspendLayout();
             tlp_Top.SuspendLayout();
             SuspendLayout();
@@ -115,7 +116,7 @@ namespace DigitalProductionProgram.Templates
             flp_Main.MaximumSize = new Size(1540, 2308);
             flp_Main.Name = "flp_Main";
             tlp_Bottom.SetRowSpan(flp_Main, 2);
-            flp_Main.Size = new Size(1183, 819);
+            flp_Main.Size = new Size(1155, 802);
             flp_Main.TabIndex = 0;
             flp_Main.WrapContents = false;
             // 
@@ -135,7 +136,7 @@ namespace DigitalProductionProgram.Templates
             dgv_CodeText.Name = "dgv_CodeText";
             dgv_CodeText.ReadOnly = true;
             dgv_CodeText.RowHeadersVisible = false;
-            dgv_CodeText.Size = new Size(298, 755);
+            dgv_CodeText.Size = new Size(298, 738);
             dgv_CodeText.TabIndex = 2;
             dgv_CodeText.Visible = false;
             dgv_CodeText.CellMouseDown += CodeText_CellMouseDown;
@@ -627,7 +628,7 @@ namespace DigitalProductionProgram.Templates
             tlp_ExtraInfo.Controls.Add(label_CreatedBy, 0, 0);
             tlp_ExtraInfo.Controls.Add(label_TotalConnectedProcesscards, 0, 3);
             tlp_ExtraInfo.Dock = DockStyle.Right;
-            tlp_ExtraInfo.Location = new Point(2007, 6);
+            tlp_ExtraInfo.Location = new Point(1633, 6);
             tlp_ExtraInfo.Margin = new Padding(0);
             tlp_ExtraInfo.Name = "tlp_ExtraInfo";
             tlp_ExtraInfo.Padding = new Padding(0, 0, 6, 0);
@@ -707,11 +708,10 @@ namespace DigitalProductionProgram.Templates
             tlp_Bottom.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 344F));
             tlp_Bottom.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 82F));
             tlp_Bottom.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 122F));
-            tlp_Bottom.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 586F));
-            tlp_Bottom.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 966F));
+            tlp_Bottom.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 558F));
+            tlp_Bottom.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 994F));
             tlp_Bottom.Controls.Add(flp_Main, 2, 2);
             tlp_Bottom.Controls.Add(dgv_CodeText, 0, 3);
-            tlp_Bottom.Controls.Add(web_PDF_Viewer, 7, 2);
             tlp_Bottom.Controls.Add(flp_ObjectManagement, 1, 2);
             tlp_Bottom.Controls.Add(gbx_Module, 0, 0);
             tlp_Bottom.Controls.Add(gbx_Protocol_Template, 2, 0);
@@ -726,19 +726,8 @@ namespace DigitalProductionProgram.Templates
             tlp_Bottom.RowStyles.Add(new RowStyle(SizeType.Absolute, 119F));
             tlp_Bottom.RowStyles.Add(new RowStyle(SizeType.Absolute, 70F));
             tlp_Bottom.RowStyles.Add(new RowStyle(SizeType.Absolute, 25F));
-            tlp_Bottom.Size = new Size(2543, 1109);
+            tlp_Bottom.Size = new Size(2169, 1109);
             tlp_Bottom.TabIndex = 875;
-            // 
-            // web_PDF_Viewer
-            // 
-            web_PDF_Viewer.Dock = DockStyle.Fill;
-            web_PDF_Viewer.Location = new Point(1576, 287);
-            web_PDF_Viewer.Margin = new Padding(4, 3, 4, 3);
-            web_PDF_Viewer.MinimumSize = new Size(23, 23);
-            web_PDF_Viewer.Name = "web_PDF_Viewer";
-            tlp_Bottom.SetRowSpan(web_PDF_Viewer, 2);
-            web_PDF_Viewer.Size = new Size(958, 819);
-            web_PDF_Viewer.TabIndex = 16;
             // 
             // flp_ObjectManagement
             // 
@@ -757,7 +746,7 @@ namespace DigitalProductionProgram.Templates
             flp_ObjectManagement.Margin = new Padding(0);
             flp_ObjectManagement.Name = "flp_ObjectManagement";
             tlp_Bottom.SetRowSpan(flp_ObjectManagement, 2);
-            flp_ObjectManagement.Size = new Size(77, 825);
+            flp_ObjectManagement.Size = new Size(77, 808);
             flp_ObjectManagement.TabIndex = 17;
             // 
             // gbx_Module
@@ -780,6 +769,7 @@ namespace DigitalProductionProgram.Templates
             // gbx_Protocol_Template
             // 
             tlp_Bottom.SetColumnSpan(gbx_Protocol_Template, 5);
+            gbx_Protocol_Template.Controls.Add(pb_Manual);
             gbx_Protocol_Template.Controls.Add(tb_Workoperation);
             gbx_Protocol_Template.Controls.Add(label_Revision);
             gbx_Protocol_Template.Controls.Add(chb_IsUsingPreFab);
@@ -801,10 +791,27 @@ namespace DigitalProductionProgram.Templates
             gbx_Protocol_Template.Name = "gbx_Protocol_Template";
             gbx_Protocol_Template.Padding = new Padding(4, 3, 4, 3);
             tlp_Bottom.SetRowSpan(gbx_Protocol_Template, 2);
-            gbx_Protocol_Template.Size = new Size(1191, 261);
+            gbx_Protocol_Template.Size = new Size(1163, 261);
             gbx_Protocol_Template.TabIndex = 19;
             gbx_Protocol_Template.TabStop = false;
             gbx_Protocol_Template.Text = "Protokoll Mall";
+            // 
+            // pb_Manual
+            // 
+            pb_Manual.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            pb_Manual.BackColor = Color.Transparent;
+            pb_Manual.BackgroundImage = (Image)resources.GetObject("pb_Manual.BackgroundImage");
+            pb_Manual.BackgroundImageLayout = ImageLayout.Stretch;
+            pb_Manual.Cursor = Cursors.Hand;
+            pb_Manual.Location = new Point(1121, 9);
+            pb_Manual.Margin = new Padding(4, 12, 4, 3);
+            pb_Manual.Name = "pb_Manual";
+            pb_Manual.Size = new Size(41, 39);
+            pb_Manual.SizeMode = PictureBoxSizeMode.Zoom;
+            pb_Manual.TabIndex = 871;
+            pb_Manual.TabStop = false;
+            pb_Manual.Visible = false;
+            pb_Manual.Click += pb_Manual_Click;
             // 
             // tb_Workoperation
             // 
@@ -895,7 +902,7 @@ namespace DigitalProductionProgram.Templates
             tlp_Top.RowStyles.Add(new RowStyle(SizeType.Percent, 33.33333F));
             tlp_Top.RowStyles.Add(new RowStyle(SizeType.Percent, 33.33333F));
             tlp_Top.RowStyles.Add(new RowStyle(SizeType.Percent, 33.33333F));
-            tlp_Top.Size = new Size(2543, 115);
+            tlp_Top.Size = new Size(2169, 115);
             tlp_Top.TabIndex = 877;
             // 
             // Templates_Protocol
@@ -904,7 +911,7 @@ namespace DigitalProductionProgram.Templates
             AutoScaleMode = AutoScaleMode.Font;
             AutoScroll = true;
             BackColor = Color.FromArgb(6, 81, 87);
-            ClientSize = new Size(2543, 1224);
+            ClientSize = new Size(2169, 1224);
             Controls.Add(tlp_Bottom);
             Controls.Add(tlp_Top);
             Margin = new Padding(4, 3, 4, 3);
@@ -931,6 +938,7 @@ namespace DigitalProductionProgram.Templates
             gbx_Module.PerformLayout();
             gbx_Protocol_Template.ResumeLayout(false);
             gbx_Protocol_Template.PerformLayout();
+            ((ISupportInitialize)pb_Manual).EndInit();
             gbx_CodeText.ResumeLayout(false);
             gbx_CodeText.PerformLayout();
             tlp_Top.ResumeLayout(false);
@@ -984,7 +992,6 @@ namespace DigitalProductionProgram.Templates
         private CheckBox chb_IsProductionLineNeeded;
         private TableLayoutPanel tlp_Bottom;
         private TableLayoutPanel tlp_Top;
-        private WebBrowser web_PDF_Viewer;
         private FlowLayoutPanel flp_ObjectManagement;
         private GroupBox gbx_Module;
         private GroupBox gbx_Protocol_Template;
@@ -993,5 +1000,6 @@ namespace DigitalProductionProgram.Templates
         private TextBox tb_NewUnit;
         private TextBox tb_NewCodeText;
         private Button btn_AddCodeText;
+        private PictureBox pb_Manual;
     }
 }

@@ -444,8 +444,8 @@ namespace DigitalProductionProgram.Templates
             //if (TemplateControls.IsCodeTextExistInModule(dgv_ProtocolsActive_Main, codetext))
             //    return;
             dgv_Template.Rows.Add();
-            dgv_Template.Rows[dgv_Template.Rows.Count - 1].Cells["col_DescriptionID"].Value = descriptionid;
-            dgv_Template.Rows[dgv_Template.Rows.Count - 1].Cells["col_Parameter"].Value = parameter;
+            dgv_Template.Rows[^1].Cells["col_DescriptionID"].Value = descriptionid;
+            dgv_Template.Rows[^1].Cells["col_Parameter"].Value = parameter;
             tb_AddNewParameter.Text = string.Empty;
 
             TemplateState.IsOkUpdateTemplate = false;
@@ -565,7 +565,7 @@ namespace DigitalProductionProgram.Templates
                             cellDataType.Value = "Text";
                             cellControlType.ReadOnly = cellDataType.ReadOnly = true;
                             cellControlType.Style.BackColor = cellDataType.Style.BackColor = Color.LightGray;
-                            var itemsBuilder = new ItemsBuilder(cellParameter?.Value.ToString() ?? string.Empty, descriptionID, ItemsBuilder.ListType.MeasureProtocol, 0 );//Det kanske behöver skickas in ett annat TemplateID här? TemplateID används till itemsbuilder för Processkort och Körprotokoll
+                            var itemsBuilder = new ItemsBuilder(cellParameter?.Value.ToString() ?? string.Empty,  ItemsBuilder.ListType.MeasureProtocol, 0 );//Det kanske behöver skickas in ett annat TemplateID här? TemplateID används till itemsbuilder för Processkort och Körprotokoll
                             itemsBuilder.ShowDialog();
                         }
                         else

@@ -591,6 +591,24 @@ namespace DigitalProductionProgram.Monitor
             cb.ValueMember = "Code";
 
         }
+
+        public static void Fill_ComboBox_List_ExtraFields(ComboBox cb)
+        {
+            var fieldGroup = Utilities.GetOneFromMonitor<Common.ExtraFieldGroups>("filter=Name eq'Verktyg'");
+            var fields = Utilities.GetFromMonitor<Common.ExtraFieldTemplates>($"filter=ParentId Eq'{fieldGroup.Id}'", "orderby=RowNumber");
+
+            // Skapa en ny lista och lägg till en extra rad - Denna används om Användaren vill att man skall välja Typ(Description) istället för ID-nummer
+            var extendedFields = new List<Common.ExtraFieldTemplates>
+            {
+                new Common.ExtraFieldTemplates { Name = "Description", Identifier = "Description" }
+            };
+            extendedFields.AddRange(fields);
+
+            cb.DataSource = extendedFields;
+
+            cb.DisplayMember = "Name"; // vad användaren ser
+            cb.ValueMember = "Identifier";
+        }
         
     }
 }

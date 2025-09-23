@@ -117,292 +117,72 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="authority_10" xml:space="preserve">
-    <value>Finish incomplete order</value>
+  <data name="btn_DeletePartNr" xml:space="preserve">
+    <value>Remove Partnumber</value>
   </data>
-  <data name="print_Header_Protocol_Extrusion_Equipment" xml:space="preserve">
-    <value>Form: Process card/Protocol for Extrusion - Equipment</value>
+  <data name="transferDataExcel_1" xml:space="preserve">
+    <value>Would you like to open the file in Excel now?</value>
   </data>
-  <data name="authority_6" xml:space="preserve">
-    <value>Change this computer to measure only </value>
+  <data name="btn_Yes" xml:space="preserve">
+    <value>Yes</value>
   </data>
-  <data name="label_Length" xml:space="preserve">
-    <value>Length:</value>
+  <data name="btn_PreFab" xml:space="preserve">
+    <value>PreFab</value>
   </data>
-  <data name="Menu_Help_InstructionVideos_ManageAuthorities" xml:space="preserve">
-    <value>Manage Authorities</value>
+  <data name="label_Befattning" xml:space="preserve">
+    <value>Position:</value>
   </data>
-  <data name="label_ProtocolTemplateName" xml:space="preserve">
-    <value>Choose Template for the Protocol</value>
+  <data name="label_ChooseUser" xml:space="preserve">
+    <value>Choose User:</value>
   </data>
-  <data name="rollingTips_3" xml:space="preserve">
-    <value>You have logged in</value>
+  <data name="btn_AuthoritiesAddUser" xml:space="preserve">
+    <value>Add User...</value>
   </data>
-  <data name="checkLastOperations" xml:space="preserve">
-    <value>Check 10 last operations...</value>
+  <data name="dryingMaterial_3" xml:space="preserve">
+    <value>Set Time</value>
   </data>
-  <data name="processcardAlreadySigned" xml:space="preserve">
-    <value>The process card is already signed and approved.</value>
+  <data name="chooseProtocol_2" xml:space="preserve">
+    <value>Approved by QA</value>
   </data>
-  <data name="rb_FramtagningAvProcessfönster" xml:space="preserve">
-    <value>Development of Process window:</value>
-  </data>
-  <data name="validateData_Info_3_3" xml:space="preserve">
-    <value>Please, check through the order and see if you need to make changes in process card.</value>
-  </data>
-  <data name="label_DiscardZumbachMeasurement_Header" xml:space="preserve">
-    <value>Choose the positions you want to discard:</value>
-  </data>
-  <data name="missingPartNumber_1" xml:space="preserve">
-    <value>This partnumber</value>
-  </data>
-  <data name="zumbach_Info_7" xml:space="preserve">
-    <value>You have not measured all positions? Are you sure you want to switch measurement?</value>
-  </data>
-  <data name="measureprotocol_Info_7" xml:space="preserve">
-    <value>Please, fill in which position you are to measure before transfering the lengthmeasurement.</value>
-  </data>
-  <data name="authority_3" xml:space="preserve">
-    <value>Delete a Process card</value>
-  </data>
-  <data name="authority_Check_1" xml:space="preserve">
-    <value>You dont have the right authority to</value>
-  </data>
-  <data name="chooseTip_Warning" xml:space="preserve">
-    <value>You have to choose the type of Tip before you choose the dimension.</value>
-  </data>
-  <data name="saveProcesscard_Info_7_1" xml:space="preserve">
-    <value>Are you sure you want to delete this process card?</value>
-  </data>
-  <data name="zumbach_Info_6_3" xml:space="preserve">
-    <value>Are you sure you want to save this measurement?</value>
-  </data>
-  <data name="startOrder_NoWorkoperation" xml:space="preserve">
-    <value>You have not selected any work operation, and no order can be started or opened.</value>
-  </data>
-  <data name="preFab_Balance" xml:space="preserve">
-    <value>Balance:</value>
-  </data>
-  <data name="warning_MonitorTestserver" xml:space="preserve">
-    <value>Warning!
-Programme is loading data from Monitor testserver.
-Program is not to be used for otrhers than tests right now.
-Please, contact Admin if you see this message.</value>
-  </data>
-  <data name="login_Info_7" xml:space="preserve">
-    <value>If you want to make any changes, please sign in first.</value>
-  </data>
-  <data name="zumbach_Info_2" xml:space="preserve">
-    <value>Loading settings for COM-ports...</value>
-  </data>
-  <data name="validateData_Info_7_2" xml:space="preserve">
-    <value>you can continue run at your own risk.
-
-You must notify responsible personnel that the process card needs to be updated?</value>
-  </data>
-  <data name="btn_EditBag" xml:space="preserve">
-    <value>Edit BagNumber/SpoolNumber</value>
-  </data>
-  <data name="maintenanceWork_3" xml:space="preserve">
-    <value>The planned time for the maintenance work is approximately</value>
-  </data>
-  <data name="infotext_Info_1" xml:space="preserve">
-    <value>If you can't find a suitable option in the list, you can fill in text in the field below and press Enter-button</value>
-  </data>
-  <data name="saveProcesscard_Info_4" xml:space="preserve">
-    <value>Process card updated for PartNumber:</value>
-  </data>
-  <data name="authority_25" xml:space="preserve">
-    <value>Delete selected data in Zumbach</value>
-  </data>
-  <data name="validateData_Info_2_2" xml:space="preserve">
-    <value>and the process card is based on historical data so please take extra 
-samples out and send a message to Quality Control. 
-
-You need to inform your Supervisor or Process technician that the process card need an update?</value>
-  </data>
-  <data name="tuneZumbachData_Measurepoints" xml:space="preserve">
-    <value>Measurepoints</value>
-  </data>
-  <data name="label_Info" xml:space="preserve">
-    <value>Choose Partnumber and the program will choose your workoperation.</value>
-  </data>
-  <data name="measureprotocol_Info_1" xml:space="preserve">
-    <value>This order seems to miss revision of measurement protocol.
-Please, contact Admin for help.</value>
-  </data>
-  <data name="zumbachLoadData" xml:space="preserve">
-    <value>Loading measurement points for this order...</value>
-  </data>
-  <data name="authority_19" xml:space="preserve">
-    <value>Delete user</value>
-  </data>
-  <data name="validateData_Info_9_2" xml:space="preserve">
-    <value>Outside the Tolerances for a validated process card:</value>
-  </data>
-  <data name="delete" xml:space="preserve">
-    <value>Are you sure you want to delete</value>
-  </data>
-  <data name="lbl_ChangeChargeNr_Info_Exit" xml:space="preserve">
-    <value>Abort</value>
-  </data>
-  <data name="editOrder" xml:space="preserve">
-    <value>This order is not completed and cannot be edited.</value>
-  </data>
-  <data name="machine" xml:space="preserve">
-    <value>machine</value>
-  </data>
-  <data name="confirmTransferPassword" xml:space="preserve">
-    <value>Enter your password to confirm the transfer.</value>
-  </data>
-  <data name="statsProdLine_9" xml:space="preserve">
-    <value>Most common size of tubing</value>
-  </data>
-  <data name="btn_AddProfilePicture" xml:space="preserve">
-    <value>Upload profile picture</value>
-  </data>
-  <data name="settings_Page_General" xml:space="preserve">
-    <value>General</value>
-  </data>
-  <data name="orderNotDone_3" xml:space="preserve">
-    <value>months ago.</value>
-  </data>
-  <data name="tuneZumbachData_Measurement" xml:space="preserve">
-    <value>Measurement</value>
-  </data>
-  <data name="btn_DeleteProcesscard" xml:space="preserve">
-    <value>Delete Processcard</value>
-  </data>
-  <data name="authority_8" xml:space="preserve">
-    <value>Delete order</value>
-  </data>
-  <data name="validateData_Info_6" xml:space="preserve">
-    <value>This is a validated process run and you may not run out of tolerances.
-
-Process technician is informed that the process card needs to be updated.</value>
-  </data>
-  <data name="form" xml:space="preserve">
-    <value>Form:</value>
-  </data>
-  <data name="btn_GetDataOrder" xml:space="preserve">
-    <value>Load data for Order</value>
-  </data>
-  <data name="partNrMaterial" xml:space="preserve">
-    <value>PartNr mtrl:</value>
-  </data>
-  <data name="label_Info_ScreenPackage" xml:space="preserve">
-    <value>Choose Screenpackage...</value>
-  </data>
-  <data name="btn_ReloadPartNr" xml:space="preserve">
-    <value>Reload PartNumber</value>
-  </data>
-  <data name="btn_Workoperation_Abort" xml:space="preserve">
-    <value>Exit</value>
-  </data>
-  <data name="label_Company" xml:space="preserve">
-    <value>Company:</value>
-  </data>
-  <data name="btn_TransferMeasurement" xml:space="preserve">
-    <value>Transfer Measurement</value>
+  <data name="measureprotocol_Info_6" xml:space="preserve">
+    <value>Please, fill in all fields before transfering a measurement.
+In empty fields you can double click to make them N/A</value>
   </data>
   <data name="authority_17" xml:space="preserve">
     <value>Start 7th order without a predefined process card</value>
   </data>
-  <data name="label_Info_ProcesscardChange" xml:space="preserve">
-    <value>Provide information on why you have exceeded the boundaries of the process card. 
-Once the order is complete, this will be emailed to the person in charge of the process card.</value>
+  <data name="protocol_EquimentInfo_4" xml:space="preserve">
+    <value>No, light to dark color</value>
   </data>
-  <data name="zumbach_Info_6_1" xml:space="preserve">
-    <value>This measurement only contains </value>
+  <data name="Menu_Theme_Animals" xml:space="preserve">
+    <value>Animals</value>
   </data>
-  <data name="extrusionTEF_Info_6" xml:space="preserve">
-    <value>Are you sure that you want to delete Extruder #2?
-Everything under this extruder will be removed if you continue.</value>
+  <data name="authority_11" xml:space="preserve">
+    <value>Report problem to production support</value>
   </data>
-  <data name="chb_OnlyForZumbach" xml:space="preserve">
-    <value>Use this computer only fom Zumbach measurements</value>
+  <data name="Statistics" xml:space="preserve">
+    <value>F8-Statistics</value>
   </data>
   <data name="discardedMeasurement_Info_1" xml:space="preserve">
     <value>Discarded Measurement:</value>
   </data>
-  <data name="statsProdLine_7" xml:space="preserve">
-    <value>Measurements in the Productionline</value>
+  <data name="autoStart_Workoperation_4" xml:space="preserve">
+    <value>Save Workoperation</value>
   </data>
-  <data name="btn_DeletePartNr" xml:space="preserve">
-    <value>Remove Partnumber</value>
+  <data name="label_ResetPasswordInfo" xml:space="preserve">
+    <value>We’ve sent a code to your email. Enter it below.</value>
   </data>
-  <data name="label_Language" xml:space="preserve">
-    <value>Language</value>
+  <data name="Menu_Protocol_ManageTemplates" xml:space="preserve">
+    <value>Manage Templates...</value>
   </data>
-  <data name="btn_Confirm_Equipment" xml:space="preserve">
-    <value>Confirm Equipment</value>
+  <data name="changeProtocol_Info_2" xml:space="preserve">
+    <value>You cannot change the template for the protocol before you have started/opened an order.</value>
   </data>
-  <data name="authority_21" xml:space="preserve">
-    <value>Change color for HS-Machine</value>
+  <data name="autoStart_Workoperation_2" xml:space="preserve">
+    <value>automatically starts in the future?</value>
   </data>
-  <data name="label_ChooseItemInfo_1" xml:space="preserve">
-    <value>You can filter this list by writing text in the textfield below.</value>
-  </data>
-  <data name="Menu_Theme_Optinova" xml:space="preserve">
-    <value>Optinova</value>
-  </data>
-  <data name="chb_OpenLastOrder" xml:space="preserve">
-    <value>Open last Order:</value>
-  </data>
-  <data name="tuneZumbachData_5" xml:space="preserve">
-    <value>Do you want me to delete these measurement points?</value>
-  </data>
-  <data name="update_Info_1_2" xml:space="preserve">
-    <value>Do you want to update the application now?</value>
-  </data>
-  <data name="lbl_EditUser" xml:space="preserve">
-    <value>Edit User</value>
-  </data>
-  <data name="authoritiesHeader" xml:space="preserve">
-    <value>Authorities/Roles</value>
-  </data>
-  <data name="btn_PrintZumbach" xml:space="preserve">
-    <value>Print Zumbach measurements</value>
-  </data>
-  <data name="label_RevNr" xml:space="preserve">
-    <value>RevisionNr:</value>
-  </data>
-  <data name="lineClearance_Info_1" xml:space="preserve">
-    <value>Confirm Line Clearance with your password.</value>
-  </data>
-  <data name="statsProdLine_Header" xml:space="preserve">
-    <value>Header</value>
-  </data>
-  <data name="quickOpen_Info" xml:space="preserve">
-    <value>This is a list of the latest started orders.
-Click on a row to open an order rapidly.</value>
-  </data>
-  <data name="label_ProductionLines_Info" xml:space="preserve">
-    <value>Click on Productionline for more info</value>
-  </data>
-  <data name="zumbach_Info_11" xml:space="preserve">
-    <value>Loading measurepoints for active PartNumber...</value>
-  </data>
-  <data name="protocol_EquimentInfo_2" xml:space="preserve">
-    <value>No, same material as last startup</value>
-  </data>
-  <data name="btn_AuthoritiesAddWorkoperation" xml:space="preserve">
-    <value>Add Workoperation</value>
-  </data>
-  <data name="authority_14" xml:space="preserve">
-    <value>Manage measurement templates</value>
-  </data>
-  <data name="changeProcesscard_Info_1" xml:space="preserve">
-    <value>Please, open or start a new order before yoy try to change the Processcard.</value>
-  </data>
-  <data name="btn_HS_Machine_Exit" xml:space="preserve">
-    <value>Exit</value>
-  </data>
-  <data name="errorcode_Info_1" xml:space="preserve">
-    <value>Choose one of the errorocodes and fill in a comment.</value>
-  </data>
-  <data name="label_Settings_InfoZumbachCtr" xml:space="preserve">
-    <value>(Here you can change how many measurepoints that will be erased from the start and end of the Zumbachmeasurement. This is done because of the start and end of the measurement often is bad)</value>
+  <data name="equipment" xml:space="preserve">
+    <value>EQUIPMENT</value>
   </data>
   <data name="tips_Info_1" xml:space="preserve">
     <value>Here you are free to write comments like tips and trix for this partnumber.
@@ -410,20 +190,1095 @@ Coment will then be available when this partnumber is restarted.
 You can mark the text and right-click to change color and text.
 Click on text "Tips and Trix" to minimize textfield.</value>
   </data>
-  <data name="blowing" xml:space="preserve">
-    <value>BLOWING</value>
+  <data name="quickOpen_Info" xml:space="preserve">
+    <value>This is a list of the latest started orders.
+Click on a row to open an order rapidly.</value>
   </data>
-  <data name="label_ChooseCompany_Header" xml:space="preserve">
-    <value>Choose which Monitor-company to connect with </value>
+  <data name="btn_AddStartUp" xml:space="preserve">
+    <value>Add Startup</value>
+  </data>
+  <data name="Menu_Arkiv_NewOrder" xml:space="preserve">
+    <value>New Order</value>
+  </data>
+  <data name="equipment_Error_1" xml:space="preserve">
+    <value>You cannot edit equipment that you have not signed yourself.</value>
+  </data>
+  <data name="btn_FinishOrder" xml:space="preserve">
+    <value>Finish Order</value>
+  </data>
+  <data name="label_Description" xml:space="preserve">
+    <value>Description:</value>
+  </data>
+  <data name="lbl_Settings_Add_ProdLine_Silduksbyte" xml:space="preserve">
+    <value>Add Production Line</value>
+  </data>
+  <data name="label_ProdLine" xml:space="preserve">
+    <value>Production Line:</value>
+  </data>
+  <data name="login_AddUser" xml:space="preserve">
+    <value>Add User</value>
+  </data>
+  <data name="saveProcesscard_Info_2" xml:space="preserve">
+    <value>You can't save this revision because it's already signed by QA. 
+Change revision and try to save again. </value>
+  </data>
+  <data name="zumbach_Info_3" xml:space="preserve">
+    <value>Loading measurementpoints for active order...</value>
+  </data>
+  <data name="btn_Select" xml:space="preserve">
+    <value>Select</value>
+  </data>
+  <data name="saveProcesscard_Info_4" xml:space="preserve">
+    <value>Process card updated for PartNumber:</value>
+  </data>
+  <data name="Menu_Help_ChangeLog" xml:space="preserve">
+    <value>Changelog</value>
+  </data>
+  <data name="protocol_EquimentInfo_3" xml:space="preserve">
+    <value>No, soft to hard material</value>
+  </data>
+  <data name="startDate" xml:space="preserve">
+    <value>Start-Date:</value>
+  </data>
+  <data name="removeStartup_2_1" xml:space="preserve">
+    <value>Are you sure you want to delete startup</value>
+  </data>
+  <data name="measureinstrument_Delete_1" xml:space="preserve">
+    <value>Are you certain that you want to delete this measurement instrument?</value>
+  </data>
+  <data name="label_Settings_Info_Measureinstruments" xml:space="preserve">
+    <value>First, choose workoperation and then choose measurement instruments connected to the active workoperation
+</value>
+  </data>
+  <data name="login_Info_4" xml:space="preserve">
+    <value>Fill in everthing before you update your profile:</value>
+  </data>
+  <data name="zumbach_Info_9_2" xml:space="preserve">
+    <value>measurements from position</value>
+  </data>
+  <data name="maintenanceWork_3" xml:space="preserve">
+    <value>The planned time for the maintenance work is approximately</value>
+  </data>
+  <data name="mail_MissingMeasurePoints_2" xml:space="preserve">
+    <value>Missing measurepoints.</value>
+  </data>
+  <data name="btn_AuthoritiesRemoveWorkoperation" xml:space="preserve">
+    <value>Delete Workoperation</value>
+  </data>
+  <data name="orderNotDone_2" xml:space="preserve">
+    <value>about </value>
+  </data>
+  <data name="label_Language" xml:space="preserve">
+    <value>Language</value>
+  </data>
+  <data name="btn_RefreshPriorityPlan" xml:space="preserve">
+    <value>Refresh Priority Plan</value>
+  </data>
+  <data name="tuneZumbachData_8" xml:space="preserve">
+    <value>measurement points between the positions. Do you want me to continue smoothing out these curves?</value>
+  </data>
+  <data name="missingLayer_1" xml:space="preserve">
+    <value>This Partnumber lacks information on how many layers the hose has, please fill in below how many layers the hose has.
+Note! It must be between 1 to 3 layers.</value>
+  </data>
+  <data name="label_LineClearance" xml:space="preserve">
+    <value>Operator and cleared line (line clearence)</value>
+  </data>
+  <data name="Compound" xml:space="preserve">
+    <value>F5-Compoundform</value>
+  </data>
+  <data name="Menu_Theme_Sky" xml:space="preserve">
+    <value>Sky</value>
+  </data>
+  <data name="cell_Protocol_ToolTip_2" xml:space="preserve">
+    <value>This field is for reference only and it's okay to exceed the limits.</value>
+  </data>
+  <data name="lbl_Add_Startup" xml:space="preserve">
+    <value>+ Add Startup</value>
+  </data>
+  <data name="label_FirstName" xml:space="preserve">
+    <value>First Name:</value>
+  </data>
+  <data name="errorConnectingDatabase" xml:space="preserve">
+    <value>An error occurred while connecting to the database.
+Please contact IT support if the issue persists.</value>
+  </data>
+  <data name="print_LineClearance_1" xml:space="preserve">
+    <value>Date / Name:</value>
+  </data>
+  <data name="warning_MonitorTestserver" xml:space="preserve">
+    <value>Warning!
+Programme is loading data from Monitor testserver.
+Program is not to be used for otrhers than tests right now.
+Please, contact Admin if you see this message.</value>
+  </data>
+  <data name="authority_Check_2" xml:space="preserve">
+    <value>In the mainmenu "User-Authorities", you can see what authority you need for this.</value>
+  </data>
+  <data name="mail_ApproveProcesscard_2" xml:space="preserve">
+    <value>Approve Process card:&lt;br /&gt;
+PartNumber: {0}&lt;br /&gt;
+RevNr: {1}&lt;br /&gt;
+ProdLine: {2}&lt;br /&gt;
+ProdGroup: {3}&lt;br /&gt;
+Workoperation: {4}&lt;br /&gt;&lt;br /&gt;
+Please approve this process card immediately.&lt;br /&gt;&lt;br /&gt;
+Order {5} - {6} was just started with Revision {7}.
+</value>
+  </data>
+  <data name="finishOrder_ExtruderCleaned" xml:space="preserve">
+    <value>tick in Cleaned Extruder in the protocol</value>
+  </data>
+  <data name="slätt" xml:space="preserve">
+    <value>Plain</value>
+  </data>
+  <data name="label_ChooseItemInfo" xml:space="preserve">
+    <value>You can filter this list by writing text in the textbox.</value>
+  </data>
+  <data name="btn_HS_Machine_Close" xml:space="preserve">
+    <value>Save and Exit</value>
+  </data>
+  <data name="productInfo" xml:space="preserve">
+    <value>ProductInformation:</value>
+  </data>
+  <data name="print_IsValueCritical" xml:space="preserve">
+    <value>Parameters in bold = Critical value</value>
+  </data>
+  <data name="print_Header_Protocol_Extrusion_Equipment" xml:space="preserve">
+    <value>Form: Process card/Protocol for Extrusion - Equipment</value>
+  </data>
+  <data name="label_ApprovedBy" xml:space="preserve">
+    <value>Approved by: Sign./Emp.Nr:</value>
+  </data>
+  <data name="btn_AuthoritiesAddFactory" xml:space="preserve">
+    <value>Add Factory</value>
+  </data>
+  <data name="chb_OpenLastOrder" xml:space="preserve">
+    <value>Open last Order:</value>
+  </data>
+  <data name="BrowseOldMeasureprotocol" xml:space="preserve">
+    <value>F3-Browse Old Measurement Protocols</value>
+  </data>
+  <data name="label_ChoosePC_Info_1" xml:space="preserve">
+    <value>Below you can click on the workoperation you want to enter</value>
+  </data>
+  <data name="label_White" xml:space="preserve">
+    <value>Process card Missing</value>
+  </data>
+  <data name="label_Green" xml:space="preserve">
+    <value>Order Ok to start</value>
+  </data>
+  <data name="rollingTips_5" xml:space="preserve">
+    <value>orders were run</value>
+  </data>
+  <data name="saveSetting_1" xml:space="preserve">
+    <value>Error when loading settings.
+Pleaste contact Admin if necessary.</value>
+  </data>
+  <data name="zumbach_Info_13" xml:space="preserve">
+    <value>You must sign in before you start logging Zumbach-measurements.
+This window will now close.</value>
   </data>
   <data name="chb_SelectOrders" xml:space="preserve">
     <value>Do NOT load OrderData</value>
   </data>
-  <data name="btn_Workoperation_Choose" xml:space="preserve">
-    <value>Choose</value>
+  <data name="label_ChooseProcesscardHeader" xml:space="preserve">
+    <value>There are multiple process cards for this partnumber, click on the one you want to use.</value>
+  </data>
+  <data name="missingPartNumber_2" xml:space="preserve">
+    <value>does not exist in Monitor, please check the partnumber.</value>
+  </data>
+  <data name="chb_AutoPosByte" xml:space="preserve">
+    <value>Automatically Positionchange</value>
+  </data>
+  <data name="browseProtocols_3" xml:space="preserve">
+    <value>Deactivate selected order for the Order Counter.
+This order will then not be included in the statistics for how many times a part number has been started without a process card.</value>
+  </data>
+  <data name="Menu_User_LogIn" xml:space="preserve">
+    <value>Sign In</value>
+  </data>
+  <data name="label_ChooseDepartment_Username" xml:space="preserve">
+    <value>Choose from which department you want the programme to retrieve usernames from (if username is to be chosen)</value>
+  </data>
+  <data name="btn_Discard" xml:space="preserve">
+    <value>Discard</value>
+  </data>
+  <data name="label_ChooseItemInfo_1" xml:space="preserve">
+    <value>You can filter this list by writing text in the textfield below.</value>
+  </data>
+  <data name="dryingMaterial_1" xml:space="preserve">
+    <value>Drying material During Extrusion (DE)</value>
+    <comment>Torkar material Under Körningen (U.K)</comment>
+  </data>
+  <data name="label_Settings_InfoMeasureinstrument_Remove" xml:space="preserve">
+    <value>Click on a Measurement instrument to remove it from active Workoperation</value>
+  </data>
+  <data name="monitorInfo_2" xml:space="preserve">
+    <value>This Order is deleted from Monitor but you can still open the order.</value>
+  </data>
+  <data name="Menu_User_LogOut" xml:space="preserve">
+    <value>Sign Out</value>
+  </data>
+  <data name="changeProcesscard_Info_1" xml:space="preserve">
+    <value>Please, open or start a new order before yoy try to change the Processcard.</value>
+  </data>
+  <data name="chartSerieMeasurepoints1" xml:space="preserve">
+    <value>Avg: Last Order</value>
+  </data>
+  <data name="authority_21" xml:space="preserve">
+    <value>Change color for HS-Machine</value>
+  </data>
+  <data name="Menu_Arkiv_ChangeCompany_Thailand" xml:space="preserve">
+    <value>Optinova Thailand</value>
+  </data>
+  <data name="mail_Subject_NotifyOrderFinishedCount" xml:space="preserve">
+    <value>{0} was finished for the 3rd time without an established process card.</value>
+  </data>
+  <data name="Zumbach" xml:space="preserve">
+    <value>F6-Zumbach</value>
+  </data>
+  <data name="login_Info_1_2" xml:space="preserve">
+    <value>and the one that is active right now is:</value>
+  </data>
+  <data name="errorcode_Info_1" xml:space="preserve">
+    <value>Choose one of the errorocodes and fill in a comment.</value>
+  </data>
+  <data name="zumbach_Info_5" xml:space="preserve">
+    <value>Measurement data has already been registered at this position.</value>
+  </data>
+  <data name="authority_8" xml:space="preserve">
+    <value>Delete order</value>
+  </data>
+  <data name="Menu_Theme_Houses" xml:space="preserve">
+    <value>Houses</value>
+  </data>
+  <data name="label_PartNrNewName" xml:space="preserve">
+    <value>This partnr has changed name to -</value>
+  </data>
+  <data name="label_OrderNr" xml:space="preserve">
+    <value>OrderNr:</value>
+  </data>
+  <data name="label_Yellow" xml:space="preserve">
+    <value>Order Started</value>
+  </data>
+  <data name="zumbach_Info_1" xml:space="preserve">
+    <value>Fill in the pipes in protocol before Zumbach-measurements is started. If pipe is missing in one of the positions, then choose N/A. </value>
+  </data>
+  <data name="extrusionTEF_Info_3" xml:space="preserve">
+    <value>Confirm the euipment with your password</value>
+  </data>
+  <data name="btn_TransferToExcel" xml:space="preserve">
+    <value>Transfer measurements to Excel</value>
+  </data>
+  <data name="activatePartNr" xml:space="preserve">
+    <value>Activate Process card</value>
+  </data>
+  <data name="chooseWorkOp_Info_1" xml:space="preserve">
+    <value>Nothing</value>
+  </data>
+  <data name="label_Red" xml:space="preserve">
+    <value>Process card not approved by QA</value>
+  </data>
+  <data name="autoStart_Workoperation_1" xml:space="preserve">
+    <value>Would you like to save in your profile that</value>
+  </data>
+  <data name="Warning_OpenMeasureProtocol_2" xml:space="preserve">
+    <value>You cannot perform measurements until you have chosen HS-Machine in the Protocol.</value>
+  </data>
+  <data name="zumbach_Info_6_2" xml:space="preserve">
+    <value>measurementpoints.</value>
+  </data>
+  <data name="Menu_Protocol_ManageMeasureProtocol_Templates" xml:space="preserve">
+    <value>Manage Templates for Measureprotocols</value>
+  </data>
+  <data name="btn_Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="closeProtocols" xml:space="preserve">
+    <value>You need to close down all other protocols before Browsing old Protocols.</value>
+  </data>
+  <data name="validateData_Info_2_1" xml:space="preserve">
+    <value>You are not running with the same value as nominal value for</value>
+  </data>
+  <data name="lbl_Settings_Delete_ProdLine_Silduksbyte" xml:space="preserve">
+    <value>Delete Production line</value>
+  </data>
+  <data name="Menu_Equipment_UseSilpaket" xml:space="preserve">
+    <value>Use Screen package</value>
+  </data>
+  <data name="Menu_Help_InstructionVideos_AddUser" xml:space="preserve">
+    <value>Add User</value>
+  </data>
+  <data name="Menu_User_Authorities_CustomMailAddresses" xml:space="preserve">
+    <value>Custom MailAddresses</value>
+  </data>
+  <data name="validateData_Info_7_3" xml:space="preserve">
+    <value>Outside tolerances - Validated process card:</value>
+  </data>
+  <data name="chb_OnlyForZumbach" xml:space="preserve">
+    <value>Use this computer only fom Zumbach measurements</value>
+  </data>
+  <data name="chb_TempKalibCheck" xml:space="preserve">
+    <value>Temperature calibration performed according to Instruction I392</value>
+  </data>
+  <data name="login_Info_3" xml:space="preserve">
+    <value>Fill in everything before you add a user:</value>
+  </data>
+  <data name="Menu_Developer" xml:space="preserve">
+    <value>Developer</value>
+  </data>
+  <data name="Menu_Protocol_ManageTemplates_MeasureProtocol" xml:space="preserve">
+    <value>Measurement Protocols</value>
+  </data>
+  <data name="settings_Page_Department" xml:space="preserve">
+    <value>Department</value>
+  </data>
+  <data name="statsProdLine_8" xml:space="preserve">
+    <value>Average temp. Zones</value>
+  </data>
+  <data name="label_Settings_Info_ProdLine" xml:space="preserve">
+    <value>List on production lines that need to change screen cloth after 3 weeks. The program will start to warn the operators 3 days before it´s time to change.</value>
+  </data>
+  <data name="checkLastOperations" xml:space="preserve">
+    <value>Check 10 last operations...</value>
+  </data>
+  <data name="lbl_ChangeChargeNr_Info_Change" xml:space="preserve">
+    <value>Change ChargeNumber</value>
+  </data>
+  <data name="orderNotDone_5" xml:space="preserve">
+    <value>Do you want to open this order now?</value>
+  </data>
+  <data name="Menu_Settings_CalculateMaterial" xml:space="preserve">
+    <value>Calculate Material</value>
+  </data>
+  <data name="chooseTemplate" xml:space="preserve">
+    <value>Choose the appropriate template for this order.</value>
+  </data>
+  <data name="tuneZumbachData_1" xml:space="preserve">
+    <value>Contains only</value>
+  </data>
+  <data name="workoperations_Info_1_1" xml:space="preserve">
+    <value>This Production line</value>
+  </data>
+  <data name="preFab_BestBefore" xml:space="preserve">
+    <value>Best Before:</value>
+  </data>
+  <data name="Protocol" xml:space="preserve">
+    <value>F2-Protocol</value>
+  </data>
+  <data name="extrusionTEF_Info_5" xml:space="preserve">
+    <value>in the earlier startup.</value>
+  </data>
+  <data name="label_ErrorDiscard" xml:space="preserve">
+    <value>Discard</value>
+  </data>
+  <data name="label_Settings_Add_Parts_Info" xml:space="preserve">
+    <value>First you can choose in the right column what type of partnumber you want to add or remove. 
+Info of to which list the partumber belongs to will then be texted above in green.</value>
+  </data>
+  <data name="user_AlreadyInSystem" xml:space="preserve">
+    <value>already exists. If the user has forgotten their password, you should first delete this user.</value>
+  </data>
+  <data name="label_PasswordPassword" xml:space="preserve">
+    <value>Password:</value>
+  </data>
+  <data name="finishOrder_3_1" xml:space="preserve">
+    <value>before you finish the order.</value>
+  </data>
+  <data name="Halvfabrikat_Info_1" xml:space="preserve">
+    <value>If PreFab is missing you can click on "Add PreFab" and it will be loaded from Monitor.
+
+If you want to add a row with PreFab, please first mark the row you want to copy and then click on "Add PreFab".
+
+If you want to erase a PreFab, then click on the row you want to erase (Please click into the row right bellow the first column!), 
+then click on "Delete PreFab".</value>
+  </data>
+  <data name="managePCNotLoggedIn" xml:space="preserve">
+    <value>You must be signed in with right authorities to save or edit a processcard.</value>
+  </data>
+  <data name="validEmail" xml:space="preserve">
+    <value>WARNING: You have entered an invalid email address. 
+Please try again, or contact the admin if needed.</value>
+  </data>
+  <data name="browseProtocols_1" xml:space="preserve">
+    <value>Remove selected orders from the list. (NOTE! Nothing happens with the order, next time it will appear in the list again)</value>
+  </data>
+  <data name="btn_DeleteSelectedData" xml:space="preserve">
+    <value>Delete selected data</value>
+  </data>
+  <data name="tuneZumbachData_4" xml:space="preserve">
+    <value>There are identical measurement points over an extended period, which likely indicates that the tube has become stuck in the puller wheels or that the puller has stopped.</value>
+  </data>
+  <data name="label_Tips_Trix" xml:space="preserve">
+    <value>Tips&amp;Trix</value>
+    <comment>?</comment>
+  </data>
+  <data name="Menu_Order" xml:space="preserve">
+    <value>Order</value>
+  </data>
+  <data name="addStartUp" xml:space="preserve">
+    <value>You cannot add a new startup before you have filled in the data in the previous startup.</value>
+  </data>
+  <data name="multipleRevisionsMeasureTemnplate" xml:space="preserve">
+    <value>This partnumber contains different revisions of the measurement template, so you must actively choose which revision you want to load orders from.</value>
+  </data>
+  <data name="btn_DeleteMeasurement" xml:space="preserve">
+    <value>Delete Measurement</value>
+  </data>
+  <data name="zumbach_Info_10" xml:space="preserve">
+    <value>The programme will smoothen out the curves before printing.
+If many measurements it can take a while and also there can come up questions if the programme finds event to erase data or not.</value>
+  </data>
+  <data name="Menu_Theme_Water" xml:space="preserve">
+    <value>Water</value>
+  </data>
+  <data name="authority_25" xml:space="preserve">
+    <value>Delete selected data in Zumbach</value>
+  </data>
+  <data name="Measurement_Protocol" xml:space="preserve">
+    <value>Measurement Protocol</value>
+  </data>
+  <data name="lbl_SaveMessage" xml:space="preserve">
+    <value>Save Message</value>
+  </data>
+  <data name="delete" xml:space="preserve">
+    <value>Are you sure you want to delete</value>
+  </data>
+  <data name="authority_23" xml:space="preserve">
+    <value>Choose freely from lists in the protocol.</value>
+  </data>
+  <data name="statsProdLine_6" xml:space="preserve">
+    <value>Operator Line Clearance</value>
+  </data>
+  <data name="print_Header_Protocol_Extrusion" xml:space="preserve">
+    <value>Form: Process card/Protocol for Extrusion</value>
+  </data>
+  <data name="login_UpdateUser" xml:space="preserve">
+    <value>Update User</value>
+  </data>
+  <data name="btn_AddProfilePicture" xml:space="preserve">
+    <value>Upload profile picture</value>
+  </data>
+  <data name="Menu_Help_InstructionVideos_SaveProcessCard" xml:space="preserve">
+    <value>Save new Process card</value>
+  </data>
+  <data name="authority_6" xml:space="preserve">
+    <value>Change this computer to measure only </value>
+  </data>
+  <data name="label_Stop" xml:space="preserve">
+    <value>Stop:</value>
+  </data>
+  <data name="Menu_Theme_Music" xml:space="preserve">
+    <value>Music</value>
+  </data>
+  <data name="validateData_Info_4_2" xml:space="preserve">
+    <value>and the process card is based on historical data so please take extra 
+samples out and send a message to Quality Control. 
+
+You need to inform a Supervisor/Process Technician/Process Engineer that the process card need an update?</value>
+  </data>
+  <data name="label_DateTo" xml:space="preserve">
+    <value>To Date:</value>
+  </data>
+  <data name="dryer" xml:space="preserve">
+    <value>DRYER</value>
+  </data>
+  <data name="Menu_Theme_Beach" xml:space="preserve">
+    <value>Beach</value>
+  </data>
+  <data name="btn_ReloadPartNr" xml:space="preserve">
+    <value>Reload PartNumber</value>
+  </data>
+  <data name="authority_12" xml:space="preserve">
+    <value>Create a test order</value>
+  </data>
+  <data name="protocol_OpenAnotherUser_3" xml:space="preserve">
+    <value>You cannot save data in the protocol at the moment.
+In the 'Operator' menu in the main window, you can log out</value>
+  </data>
+  <data name="label_MeasureProtocolTemplateName" xml:space="preserve">
+    <value>Choose Template for MeasureProtocol</value>
+  </data>
+  <data name="label_Warning" xml:space="preserve">
+    <value>Warning, value outside control limit</value>
+  </data>
+  <data name="btn_EditAmount" xml:space="preserve">
+    <value>Edit Amount</value>
+  </data>
+  <data name="autoStart_Workoperation_3" xml:space="preserve">
+    <value>This setting can be adjusted in Settings afterwards if needed.</value>
+  </data>
+  <data name="protocol_Info_2" xml:space="preserve">
+    <value>Startup</value>
+  </data>
+  <data name="label_ProdType" xml:space="preserve">
+    <value>Product Type:</value>
+  </data>
+  <data name="Menu_Arkiv_Exit" xml:space="preserve">
+    <value>Exit</value>
+  </data>
+  <data name="loadingProductionlines_1" xml:space="preserve">
+    <value>Loading Production lines...</value>
+  </data>
+  <data name="finishOrder_4" xml:space="preserve">
+    <value>Sign in before you finish an order.</value>
+  </data>
+  <data name="finishOrder_RoomMoist" xml:space="preserve">
+    <value>Fill in moisture content of room in the Protocol</value>
+  </data>
+  <data name="name" xml:space="preserve">
+    <value>Name:</value>
+  </data>
+  <data name="extraComments" xml:space="preserve">
+    <value>Extra Comments:</value>
+  </data>
+  <data name="Menu_Theme_Winter" xml:space="preserve">
+    <value>Winter</value>
+  </data>
+  <data name="label_RoomTempMoist" xml:space="preserve">
+    <value>Room Temp/Moist</value>
+  </data>
+  <data name="measureinstrument_Info" xml:space="preserve">
+    <value>Click on "+" to add a new measurement instrument. 
+
+Note! Don't write multiple numbers in the same field.
+If this workoperation misses some Measurement Intrument type, you can 
+add it into template by entering Settings beneath Measuerement Instruments tab.</value>
+  </data>
+  <data name="saveProcesscard_Info_2_1" xml:space="preserve">
+    <value>You can not save or update this processcard</value>
+  </data>
+  <data name="remove_Startup_2_2" xml:space="preserve">
+    <value>The data contained in it will be deleted and cannot be recovered.</value>
+  </data>
+  <data name="label_Latest10Values_Info" xml:space="preserve">
+    <value>Click in the window to shut it down.</value>
+  </data>
+  <data name="validateData_Info_8" xml:space="preserve">
+    <value>Warning: Deviation on a Validated Process card!
+
+You are not allowed to exceed the tolerances on a validated process card.
+However, as a {0}, you are authorized to make exceptions – for example, if there is an obvious error in the process card.
+
+After closing this message, you will have the opportunity to notify the responsible Process Engineer that the process card needs to be reviewed and updated if necessary.</value>
+  </data>
+  <data name="label_EmpNr" xml:space="preserve">
+    <value>Emp.Nr:</value>
+  </data>
+  <data name="update_Info_1_2" xml:space="preserve">
+    <value>Do you want to update the application now?</value>
+  </data>
+  <data name="btn_HS_Machine_Exit" xml:space="preserve">
+    <value>Exit</value>
+  </data>
+  <data name="label_StartUps" xml:space="preserve">
+    <value>Startups</value>
+  </data>
+  <data name="validateData_Info_7_1" xml:space="preserve">
+    <value>You are outside the nominal value of the process card, but as </value>
+  </data>
+  <data name="authoritiesHeader" xml:space="preserve">
+    <value>Authorities/Roles</value>
+  </data>
+  <data name="mail_Body_NotifyOrderStartCount_4to5" xml:space="preserve">
+    <value>Create Process card:&lt;br /&gt;
+PartNumber {0} was just started for the {1}th time without an established process card&lt;br /&gt;
+ProdLine: {2}&lt;br /&gt;
+ProdGroup: {3}&lt;br /&gt;
+Workoperation: {4}&lt;br /&gt;</value>
+  </data>
+  <data name="Menu_Order_QC_Feedback" xml:space="preserve">
+    <value>Leave feedback for this run</value>
+  </data>
+  <data name="Menu_Help_InstructionVideos" xml:space="preserve">
+    <value>Instructionvideos</value>
+  </data>
+  <data name="expansionProcess" xml:space="preserve">
+    <value>EXPANSION PROCESS</value>
+  </data>
+  <data name="yes" xml:space="preserve">
+    <value>Yes</value>
+  </data>
+  <data name="orderNotDone_3" xml:space="preserve">
+    <value>months ago.</value>
+  </data>
+  <data name="chooseProcesscard_Info_1" xml:space="preserve">
+    <value>Run without Processcard</value>
+  </data>
+  <data name="btn_Edit_Equipment" xml:space="preserve">
+    <value>Edit Equipment</value>
+  </data>
+  <data name="btn_Save_Processcard" xml:space="preserve">
+    <value>Save Processcard</value>
+  </data>
+  <data name="password_Info_1" xml:space="preserve">
+    <value>Wrong Password, please try again.</value>
+  </data>
+  <data name="maintenanceWork_4" xml:space="preserve">
+    <value>In approximately</value>
+  </data>
+  <data name="browseProtocols" xml:space="preserve">
+    <value>Browse old Protocols</value>
+  </data>
+  <data name="legendAverageLastOrder" xml:space="preserve">
+    <value>Average Latest Order</value>
+  </data>
+  <data name="measureprotocol_Info_1" xml:space="preserve">
+    <value>This order seems to miss revision of measurement protocol.
+Please, contact Admin for help.</value>
+  </data>
+  <data name="settings_Page_Parts" xml:space="preserve">
+    <value>Special Parts</value>
+  </data>
+  <data name="error_OrderNotOpen" xml:space="preserve">
+    <value>You must open or start an order before opening the Protocol. Please make sure that the Order Number is entered and that an Operation is selected.</value>
+  </data>
+  <data name="btn_AuthoritiesRemoveUser" xml:space="preserve">
+    <value>Delete User</value>
+  </data>
+  <data name="tuneZumbachData_3" xml:space="preserve">
+    <value>Do you want to discard this measurement?</value>
+  </data>
+  <data name="authority_18" xml:space="preserve">
+    <value>Edit user</value>
+  </data>
+  <data name="uploadPicture_3" xml:space="preserve">
+    <value>Picture is saved and can now be seen everytime this partnumber is run.</value>
+  </data>
+  <data name="btn_DeActivate_PartNr" xml:space="preserve">
+    <value>Inactivate Process card</value>
+  </data>
+  <data name="zumbach_Info_7" xml:space="preserve">
+    <value>You have not measured all positions? Are you sure you want to switch measurement?</value>
+  </data>
+  <data name="protocol_EquimentInfo_1" xml:space="preserve">
+    <value>No, same material and equipment as last order</value>
+  </data>
+  <data name="label_Company" xml:space="preserve">
+    <value>Company:</value>
+  </data>
+  <data name="Menu_Themes" xml:space="preserve">
+    <value>Themes</value>
+  </data>
+  <data name="processcard_MissingInfo" xml:space="preserve">
+    <value>Necessary information is missing in the process card.</value>
+  </data>
+  <data name="zumbachCounter_1" xml:space="preserve">
+    <value>millions</value>
+  </data>
+  <data name="label_Info_Prodline" xml:space="preserve">
+    <value>Very importen to choose the correct Production line here, especially when multiple process cards are in use.
+Production lines are loaded from Monitor.
+
+If your production line is missing, please contact Admin.</value>
   </data>
   <data name="label_DateFrom" xml:space="preserve">
     <value>From Date:</value>
+  </data>
+  <data name="statsProdLine_1" xml:space="preserve">
+    <value>Most Common Customer</value>
+  </data>
+  <data name="mail_Body_NotifyOrderFinishedCount_3" xml:space="preserve">
+    <value>Create Process card:&lt;br /&gt;
+PartNumber {0} was just finished for the 3rd time without an established card&lt;br /&gt;
+ProdLine: {1}&lt;br /&gt;
+ProdGroup: {2}&lt;br /&gt;
+Workoperation: {3}&lt;br /&gt;
+OrderNr-Operation: {4}-{5} &lt;br /&gt;</value>
+  </data>
+  <data name="finishOrder_MeasureEq_2" xml:space="preserve">
+    <value>Fill in the measurement equipment number in the Measurement protocol</value>
+  </data>
+  <data name="orderDone_1" xml:space="preserve">
+    <value>Fill in</value>
+  </data>
+  <data name="Menu_Order_ReportProblemProductionSupport" xml:space="preserve">
+    <value>Report issues to production support</value>
+  </data>
+  <data name="rollingTips_2" xml:space="preserve">
+    <value>measurements.</value>
+  </data>
+  <data name="changeBatchNr_Info_3" xml:space="preserve">
+    <value>You need to write at least 5 letters in your comment.</value>
+  </data>
+  <data name="mainInfo_Missing" xml:space="preserve">
+    <value>Template for MainInfo is missing, please contact Admin.</value>
+  </data>
+  <data name="unit" xml:space="preserve">
+    <value>UNIT</value>
+  </data>
+  <data name="measureprotocol_Warning_1" xml:space="preserve">
+    <value>One of your measurements is abnormally high or low compared to the nominal value.
+You should immediately contact the person responsible for the measuring points if incorrect values have been entered there.
+Are you sure you want to transfer this measurement?</value>
+  </data>
+  <data name="resetPassword_WrongCode" xml:space="preserve">
+    <value>Incorrect code. Attempts left:</value>
+  </data>
+  <data name="authority_27" xml:space="preserve">
+    <value>Run outside the tolerances on a validated Process Card</value>
+  </data>
+  <data name="label_Info_ScreenPackage" xml:space="preserve">
+    <value>Choose Screenpackage...</value>
+  </data>
+  <data name="missingPartNumber_1" xml:space="preserve">
+    <value>This partnumber</value>
+  </data>
+  <data name="label_ProductionLines_Info" xml:space="preserve">
+    <value>Click on Productionline for more info</value>
+  </data>
+  <data name="lbl_Remove_Startup" xml:space="preserve">
+    <value>- Remove Startup</value>
+  </data>
+  <data name="authority_2" xml:space="preserve">
+    <value>Manage Process cards</value>
+  </data>
+  <data name="chooseExtruder" xml:space="preserve">
+    <value>You must choose extruder before you choose type of screw.</value>
+  </data>
+  <data name="print_OutOfTolerance" xml:space="preserve">
+    <value>* = Out of spec</value>
+  </data>
+  <data name="Menu_Arkiv_ChangeCompany_Godby" xml:space="preserve">
+    <value>Optinova Godby</value>
+  </data>
+  <data name="authority_4" xml:space="preserve">
+    <value>Approve a Process card</value>
+  </data>
+  <data name="btn_ResetChart" xml:space="preserve">
+    <value>Reset Chart</value>
+  </data>
+  <data name="measureprotocol_Info_9" xml:space="preserve">
+    <value>You can not transfer a length measurement if you have data filled in in one of the other text fields.</value>
+  </data>
+  <data name="Menu_Order_DeleteOrder" xml:space="preserve">
+    <value>Delete Order</value>
+  </data>
+  <data name="measureprotocol_Info_7" xml:space="preserve">
+    <value>Please, fill in which position you are to measure before transfering the lengthmeasurement.</value>
+  </data>
+  <data name="label_Comments" xml:space="preserve">
+    <value>Comments:</value>
+  </data>
+  <data name="Menu_Settings_ChangeColorHS_Machine" xml:space="preserve">
+    <value>Change color HS-Machine</value>
+  </data>
+  <data name="changeMeasureProtocol_Info_1" xml:space="preserve">
+    <value>You cannot change the template for the measureprotocol on an order that is completed.</value>
+  </data>
+  <data name="label_ErrorCodeHeader_2" xml:space="preserve">
+    <value>Fill in a comment why you discarded the measurement</value>
+  </data>
+  <data name="Warning_OpenMeasureProtocol_4" xml:space="preserve">
+    <value>You cannot perform measurements until Line Clearance is completed.</value>
+  </data>
+  <data name="Menu_Theme_Forest" xml:space="preserve">
+    <value>Forest</value>
+  </data>
+  <data name="startOrder_NeedLogin" xml:space="preserve">
+    <value>You must log in before you start a new Order.</value>
+  </data>
+  <data name="deactivatePartNr" xml:space="preserve">
+    <value>Deactivate Process card</value>
+  </data>
+  <data name="btn_DiscardMeasurement" xml:space="preserve">
+    <value>Discard Measurement</value>
+  </data>
+  <data name="resetPassword_CodeExpired" xml:space="preserve">
+    <value>The code has expired. Click 'Send new code'.</value>
+  </data>
+  <data name="label_MeasureInstrument_Header" xml:space="preserve">
+    <value>Measurement Instrument</value>
+  </data>
+  <data name="Menu_Help_InstructionVideos_ManageAuthorities" xml:space="preserve">
+    <value>Manage Authorities</value>
+  </data>
+  <data name="equipment_Info_2" xml:space="preserve">
+    <value>before you confirm the equipment.</value>
+  </data>
+  <data name="Menu_Arkiv_Print" xml:space="preserve">
+    <value>Print Order (Only Copy)</value>
+  </data>
+  <data name="label_Info" xml:space="preserve">
+    <value>Choose Partnumber and the program will choose your workoperation.</value>
+  </data>
+  <data name="Menu_Theme_Dark" xml:space="preserve">
+    <value>Dark</value>
+  </data>
+  <data name="saveProcesscard_Info_5" xml:space="preserve">
+    <value>Please save the process card before you update amount of layers for tubing.</value>
+  </data>
+  <data name="finishOrder_Halvfabrikat_2_1" xml:space="preserve">
+    <value>Fill in which extruder is used for the PreFab with the partnumber</value>
+  </data>
+  <data name="lineClearance_Info_1" xml:space="preserve">
+    <value>Confirm Line Clearance with your password.</value>
+  </data>
+  <data name="login_Info_5" xml:space="preserve">
+    <value>Your profile is now updated. Log in again to see your edits.</value>
+  </data>
+  <data name="changeProcesscard_Info_3" xml:space="preserve">
+    <value>Choose which process card you want to assign to your order.</value>
+  </data>
+  <data name="maintenanceWork_2" xml:space="preserve">
+    <value>, a maintenance work will be in progress. The program can´t be used during this time.</value>
+  </data>
+  <data name="label_PartNumber" xml:space="preserve">
+    <value>PartNr:</value>
+  </data>
+  <data name="label_Fail" xml:space="preserve">
+    <value>Value outside Spec.</value>
+  </data>
+  <data name="spool_2" xml:space="preserve">
+    <value>Bag</value>
+  </data>
+  <data name="btn_No" xml:space="preserve">
+    <value>No</value>
+  </data>
+  <data name="chb_OnlyForMeasurements" xml:space="preserve">
+    <value>Use this computer only for manual measurements</value>
+  </data>
+  <data name="tuneZumbachData_9" xml:space="preserve">
+    <value>I’m afraid I can’t make this measurement any better…</value>
+  </data>
+  <data name="maintenanceWork_minutes" xml:space="preserve">
+    <value>minutes</value>
+  </data>
+  <data name="measureprotocol_Info_3" xml:space="preserve">
+    <value>Choose a row (measurement) before you try to discard a measurement.</value>
+  </data>
+  <data name="role" xml:space="preserve">
+    <value>Role:</value>
+  </data>
+  <data name="Menu_Order_OrderDone" xml:space="preserve">
+    <value>Order Done</value>
+  </data>
+  <data name="chooseDie_Warning" xml:space="preserve">
+    <value>You have to choose the type of Die before you choose the dimension.</value>
+  </data>
+  <data name="error_ProfilePicture" xml:space="preserve">
+    <value>Unable to load the profile picture. The file might be damaged.</value>
+  </data>
+  <data name="chb_HS_Machine_InvertForeColor" xml:space="preserve">
+    <value>Invert the color of the text</value>
+  </data>
+  <data name="btn_Clear_HelpInput_1" xml:space="preserve">
+    <value>Clear</value>
+  </data>
+  <data name="Measureprotocol" xml:space="preserve">
+    <value>F1-Measurement Protocol</value>
+  </data>
+  <data name="Menu_Help" xml:space="preserve">
+    <value>Help</value>
+  </data>
+  <data name="authority_15" xml:space="preserve">
+    <value>Start an order that is NOT approved by QA</value>
+  </data>
+  <data name="btn_AddPreFab" xml:space="preserve">
+    <value>Add PreFab</value>
+  </data>
+  <data name="label_ProcessCard_ExtraInfo" xml:space="preserve">
+    <value>Extra Info for operators that is only visible in the application:</value>
+  </data>
+  <data name="label_ChangeChargeNr_Header" xml:space="preserve">
+    <value>Note! You are not allowed to run an order with two different batchnumbers</value>
+  </data>
+  <data name="label_OrderStartedBy" xml:space="preserve">
+    <value>Started By:</value>
+  </data>
+  <data name="Menu_Theme_Black" xml:space="preserve">
+    <value>Black</value>
+  </data>
+  <data name="btn_NewCode" xml:space="preserve">
+    <value>Send new code</value>
+  </data>
+  <data name="validateData_Info_6" xml:space="preserve">
+    <value>This is a validated process run and you may not run out of tolerances.
+
+Process technician is informed that the process card needs to be updated.</value>
+  </data>
+  <data name="mail_MissingMeasurePoints_1" xml:space="preserve">
+    <value>This order is missing measurement points, an email will be automatically sent to Customer Service so they can add the measurement points to the Monitor.</value>
+  </data>
+  <data name="extrusionTEF_Info_4" xml:space="preserve">
+    <value>You can´t add a new startup before you fill in everything for equipment for Machine</value>
+  </data>
+  <data name="validateData_Info_5_2" xml:space="preserve">
+    <value>is out of limits for a process card based on historical data.</value>
+  </data>
+  <data name="label_Brown" xml:space="preserve">
+    <value>Processcard under development and Processcard needs to be locked.</value>
+  </data>
+  <data name="Menu_User_Authorities_CustomFactories" xml:space="preserve">
+    <value>Custom Factories</value>
+  </data>
+  <data name="btn_TransferMeasurement" xml:space="preserve">
+    <value>Transfer Measurement</value>
+  </data>
+  <data name="resetPassword_TimeLeft" xml:space="preserve">
+    <value>The code is valid for:</value>
+  </data>
+  <data name="label_ProductionSchedule" xml:space="preserve">
+    <value>Priority Plan</value>
+  </data>
+  <data name="lbl_DiscardUser" xml:space="preserve">
+    <value>Delete User</value>
+  </data>
+  <data name="form" xml:space="preserve">
+    <value>Form:</value>
+  </data>
+  <data name="startOrder_NoWorkoperation" xml:space="preserve">
+    <value>You have not selected any work operation, and no order can be started or opened.</value>
+  </data>
+  <data name="label_Inactive" xml:space="preserve">
+    <value>Inactive</value>
+  </data>
+  <data name="zumbach_Info_12" xml:space="preserve">
+    <value>You cannot do measurements on an order that is already finished.</value>
+  </data>
+  <data name="lbl_NewUser" xml:space="preserve">
+    <value>New user</value>
+  </data>
+  <data name="protocol_OpenAnotherUser_2" xml:space="preserve">
+    <value>on the computer</value>
+  </data>
+  <data name="Protocol_HeatShrink" xml:space="preserve">
+    <value>Protocol/Processcard -Heatshrink Expansion </value>
+  </data>
+  <data name="Menu_Order_OpenRandomOrder" xml:space="preserve">
+    <value>Open a random Order</value>
+  </data>
+  <data name="login_Info_1_4" xml:space="preserve">
+    <value>Changelog</value>
+  </data>
+  <data name="mail_Body" xml:space="preserve">
+    <value>&lt;b&gt;This email cannot be replied to &lt;br /&gt;&lt;br /&gt;
+From: {0} - {1}&lt;br /&gt;&lt;br /&gt;{2}</value>
+  </data>
+  <data name="infotext_Info_1" xml:space="preserve">
+    <value>If you can't find a suitable option in the list, you can fill in text in the field below and press Enter-button</value>
+  </data>
+  <data name="openProcessardManagementWarning" xml:space="preserve">
+    <value>You cannot have an order open when you are handling process cards. Please restart the program or select New Order in the File menu and try again.</value>
+  </data>
+  <data name="equipment_Info_1" xml:space="preserve">
+    <value>Note! You have not confirmed the equipment.
+If you close down the protocol now, then the last startup will be deleted for the equipment.
+Du you want to close the protocol? </value>
+  </data>
+  <data name="print_Header_ExtraComments" xml:space="preserve">
+    <value>Form: Extra comments</value>
+  </data>
+  <data name="measureinstrument_Delete_2" xml:space="preserve">
+    <value>Data within will be deleted and will not be retrievable.</value>
+  </data>
+  <data name="validateData_Info_3_1" xml:space="preserve">
+    <value>Outside the nominal value. - Historical data:</value>
+  </data>
+  <data name="errorCode" xml:space="preserve">
+    <value>Errorcode:</value>
+  </data>
+  <data name="label_LastName" xml:space="preserve">
+    <value>Surname:</value>
+  </data>
+  <data name="statsProdLine_4" xml:space="preserve">
+    <value>Total Orders / Year</value>
+  </data>
+  <data name="authority_14" xml:space="preserve">
+    <value>Manage measurement templates</value>
+  </data>
+  <data name="saveProcesscard_Info_7_2" xml:space="preserve">
+    <value>A process card not longer used should NOT be deleted. It should be inactived.
+
+Only delete a processcard if it was created by mistake.</value>
+  </data>
+  <data name="dateStart" xml:space="preserve">
+    <value>Date Start:</value>
+  </data>
+  <data name="btn_AuthoritiesAddRole" xml:space="preserve">
+    <value>Add Role (personnel role)...</value>
+  </data>
+  <data name="zumbachLoadData" xml:space="preserve">
+    <value>Loading measurement points for this order...</value>
+  </data>
+  <data name="authority_22" xml:space="preserve">
+    <value>Provide feedback from QC on an order</value>
+  </data>
+  <data name="print_Header_Protocol" xml:space="preserve">
+    <value>Form: Digital Protocol for HeatShrink.</value>
+  </data>
+  <data name="statsProdLine_3" xml:space="preserve">
+    <value>Most Common PreFab</value>
+  </data>
+  <data name="label_ProductionLines_Green" xml:space="preserve">
+    <value>Green = Production line is active</value>
+  </data>
+  <data name="Menu_Theme_Light" xml:space="preserve">
+    <value>Light</value>
+  </data>
+  <data name="blowing" xml:space="preserve">
+    <value>BLOWING</value>
+  </data>
+  <data name="zumbach_ShowPosition" xml:space="preserve">
+    <value>Show Pos.</value>
+  </data>
+  <data name="finishOrder_3_3" xml:space="preserve">
+    <value>authority to finish the order anyway.</value>
+  </data>
+  <data name="validateData_Info_9_5" xml:space="preserve">
+    <value>is out of the limits for a validated process card.</value>
+  </data>
+  <data name="label_FinishOrder_Header" xml:space="preserve">
+    <value>Order is done</value>
+  </data>
+  <data name="editOrder" xml:space="preserve">
+    <value>This order is not completed and cannot be edited.</value>
+  </data>
+  <data name="update_Info_1" xml:space="preserve">
+    <value>There is an IMPORTANT update to download! Restart the program and update.
+If you do not restart, there is a risk that the program will not work properly.</value>
+  </data>
+  <data name="Menu_Order_ReLink_Protocol" xml:space="preserve">
+    <value>To a new Protocol</value>
+  </data>
+  <data name="saveProcesscard_Info_1" xml:space="preserve">
+    <value>Please, fill in the Production Line before you save the process card.
+The Production Line is used to separate the process cards if there are multiple process cards for the same PartNumber.</value>
+  </data>
+  <data name="mail_ApproveProcesscard" xml:space="preserve">
+    <value>Reminder: QA signing of process card</value>
+  </data>
+  <data name="delete_user" xml:space="preserve">
+    <value>from the system?</value>
+  </data>
+  <data name="validateData_Info_3_2" xml:space="preserve">
+    <value>is outside the nominal value for a process card based on historical data.</value>
+  </data>
+  <data name="Warning_OpenMeasureProtocol_1" xml:space="preserve">
+    <value>Close down, Browse old protocols, before opening new Protocol.</value>
+    <comment>?</comment>
+  </data>
+  <data name="zumbach_Info_6_3" xml:space="preserve">
+    <value>Are you sure you want to save this measurement?</value>
+  </data>
+  <data name="login_Info_7" xml:space="preserve">
+    <value>If you want to make any changes, please sign in first.</value>
+  </data>
+  <data name="Menu_Arkiv_UpdateDPP" xml:space="preserve">
+    <value>Update DPP</value>
+  </data>
+  <data name="measureinstrument_Delete_4" xml:space="preserve">
+    <value>belongs to template for this workoperation and can not be deleted.</value>
+  </data>
+  <data name="label_ProtocolTemplateName" xml:space="preserve">
+    <value>Choose Template for the Protocol</value>
+  </data>
+  <data name="comments" xml:space="preserve">
+    <value>Comments:</value>
+  </data>
+  <data name="template" xml:space="preserve">
+    <value>Template</value>
   </data>
   <data name="zumbach_Info_14" xml:space="preserve">
     <value>Discard Measurement:
@@ -442,183 +1297,50 @@ Zooms out the chart if you have marked a specific area.
 Print Zumbach-measurements:
 When the order is finished you need to print out the zumbach-measurements from here.</value>
   </data>
-  <data name="equipment" xml:space="preserve">
-    <value>EQUIPMENT</value>
+  <data name="label_AutomaticallyChooseWorkoperation" xml:space="preserve">
+    <value>Here you can choose which workoperation to automaticaly open when you start  "Processcard management".</value>
   </data>
-  <data name="lineClearance_Info_2" xml:space="preserve">
-    <value>You must perform LineClearance before filling in the Run Protocol.</value>
+  <data name="legendAverageValuePartNr" xml:space="preserve">
+    <value>Average per Part Number</value>
   </data>
-  <data name="mail_MissingMeasurePoints_2" xml:space="preserve">
-    <value>Missing measurepoints.</value>
+  <data name="chooseProtocol_1" xml:space="preserve">
+    <value>There are several templates for this part number. Please choose below which one you want to open.</value>
   </data>
-  <data name="monitorDeletedOrder" xml:space="preserve">
-    <value>This OrderNumber does not exist in Monitor, but you can still open the order.</value>
+  <data name="measureprotocol_Info_5" xml:space="preserve">
+    <value>Data missing</value>
   </data>
-  <data name="validateData_Info_4_1" xml:space="preserve">
-    <value>You are out of tolerance for</value>
-  </data>
-  <data name="lbl_SaveMessage" xml:space="preserve">
-    <value>Save Message</value>
-  </data>
-  <data name="signProcesscardPassword" xml:space="preserve">
-    <value>Enter your password to Sign the Process card.</value>
-  </data>
-  <data name="validateData_Info_8" xml:space="preserve">
-    <value>Warning: Deviation on a Validated Process card!
-
-You are not allowed to exceed the tolerances on a validated process card.
-However, as a {0}, you are authorized to make exceptions – for example, if there is an obvious error in the process card.
-
-After closing this message, you will have the opportunity to notify the responsible Process Engineer that the process card needs to be reviewed and updated if necessary.</value>
-  </data>
-  <data name="saveProcesscard_Info_8" xml:space="preserve">
-    <value>You must fill in the Production Type before you save the process card.
-The Production Type is used to separate the process cards if there are multiple process cards for the same PartNumber.</value>
-  </data>
-  <data name="Halvfabrikat_Info_1" xml:space="preserve">
-    <value>If PreFab is missing you can click on "Add PreFab" and it will be loaded from Monitor.
-
-If you want to add a row with PreFab, please first mark the row you want to copy and then click on "Add PreFab".
-
-If you want to erase a PreFab, then click on the row you want to erase (Please click into the row right bellow the first column!), 
-then click on "Delete PreFab".</value>
-  </data>
-  <data name="statsProdLine_3" xml:space="preserve">
-    <value>Most Common PreFab</value>
-  </data>
-  <data name="equipment_Info_2" xml:space="preserve">
-    <value>before you confirm the equipment.</value>
-  </data>
-  <data name="label_Inactive" xml:space="preserve">
-    <value>Inactive</value>
-  </data>
-  <data name="validateData_Info_3_1" xml:space="preserve">
-    <value>Outside the nominal value. - Historical data:</value>
-  </data>
-  <data name="validateData_Info_9_3" xml:space="preserve">
-    <value>is outside the nominal value for a validated process card.</value>
+  <data name="btn_DeleteProcesscard" xml:space="preserve">
+    <value>Delete Processcard</value>
   </data>
   <data name="chb_LogData" xml:space="preserve">
     <value>Start Logging</value>
   </data>
-  <data name="errorCode" xml:space="preserve">
-    <value>Errorcode:</value>
+  <data name="finishOrder_2_2" xml:space="preserve">
+    <value>measurements. QC demands that you do at least 13 measurements</value>
   </data>
-  <data name="print_Header_MeasurementProtocol" xml:space="preserve">
-    <value>Form: Measurement protocol for HeatShrink</value>
+  <data name="finishOrder_RoomTemp" xml:space="preserve">
+    <value>Fill in room temperature in Protocol</value>
   </data>
-  <data name="label_ProductionLines_Header" xml:space="preserve">
-    <value>Production lines</value>
+  <data name="measureprotocol_Info_11" xml:space="preserve">
+    <value>Please fill in a comment about why you are discarding a measurement.</value>
   </data>
-  <data name="password_Info_1" xml:space="preserve">
-    <value>Wrong Password, please try again.</value>
+  <data name="btn_Confirm_Equipment" xml:space="preserve">
+    <value>Confirm Equipment</value>
   </data>
-  <data name="label_ErrorExit" xml:space="preserve">
-    <value>Exit</value>
+  <data name="print_Header_Protocol_HS" xml:space="preserve">
+    <value>Form: Process card for HeatShrink</value>
   </data>
-  <data name="page" xml:space="preserve">
-    <value>page</value>
+  <data name="validateData_Info_7_4" xml:space="preserve">
+    <value>is out of the limits for a validated process card.</value>
   </data>
-  <data name="rb_Validated" xml:space="preserve">
-    <value>Validated on these lots:</value>
+  <data name="monitorDeletedOrder" xml:space="preserve">
+    <value>This OrderNumber does not exist in Monitor, but you can still open the order.</value>
   </data>
-  <data name="equipment_Info_1" xml:space="preserve">
-    <value>Note! You have not confirmed the equipment.
-If you close down the protocol now, then the last startup will be deleted for the equipment.
-Du you want to close the protocol? </value>
+  <data name="statsProdLine_9" xml:space="preserve">
+    <value>Most common size of tubing</value>
   </data>
-  <data name="authority_11" xml:space="preserve">
-    <value>Report problem to production support</value>
-  </data>
-  <data name="Menu_Help_InstructionVideos_AddUser" xml:space="preserve">
-    <value>Add User</value>
-  </data>
-  <data name="maintenanceWork_hours" xml:space="preserve">
-    <value>hours</value>
-  </data>
-  <data name="btn_DeActivate_PartNr" xml:space="preserve">
-    <value>Inactivate Process card</value>
-  </data>
-  <data name="btn_AuthoritiesAddRole" xml:space="preserve">
-    <value>Add Role (personnel role)...</value>
-  </data>
-  <data name="zumbach_ShowPosition" xml:space="preserve">
-    <value>Show Pos.</value>
-  </data>
-  <data name="zumbach_Info_3" xml:space="preserve">
-    <value>Loading measurementpoints for active order...</value>
-  </data>
-  <data name="login_Info_5" xml:space="preserve">
-    <value>Your profile is now updated. Log in again to see your edits.</value>
-  </data>
-  <data name="reportJira_Info_1" xml:space="preserve">
-    <value>You can not report a problem to Jira if you don´t have an open order.</value>
-  </data>
-  <data name="spool_1" xml:space="preserve">
-    <value>Spool</value>
-  </data>
-  <data name="label_Settings_Add_Parts_Info" xml:space="preserve">
-    <value>First you can choose in the right column what type of partnumber you want to add or remove. 
-Info of to which list the partumber belongs to will then be texted above in green.</value>
-  </data>
-  <data name="zumbach_Info_10" xml:space="preserve">
-    <value>The programme will smoothen out the curves before printing.
-If many measurements it can take a while and also there can come up questions if the programme finds event to erase data or not.</value>
-  </data>
-  <data name="btn_DeleteMeasurement" xml:space="preserve">
-    <value>Delete Measurement</value>
-  </data>
-  <data name="warning_Testdatabase" xml:space="preserve">
-    <value>Warning!
-You are using a BETA-version of programme and are connected to a test data base.
-If you are not a BETA-user, then immediately contact Admin.</value>
-  </data>
-  <data name="missingLayer_3" xml:space="preserve">
-    <value>Wrong value, please try again.</value>
-  </data>
-  <data name="measureprotocol_Info_3" xml:space="preserve">
-    <value>Choose a row (measurement) before you try to discard a measurement.</value>
-  </data>
-  <data name="monitorInfo_1" xml:space="preserve">
-    <value>This OrderNumber does not exist in Monitor or the Digital Production Program.
-
-Please contact Admin if necessary.</value>
-  </data>
-  <data name="lbl_Abort" xml:space="preserve">
-    <value>Abort</value>
-  </data>
-  <data name="zumbach_Info_4" xml:space="preserve">
-    <value>Loading data for active Order...</value>
-  </data>
-  <data name="quickOpen_Info_3" xml:space="preserve">
-    <value>This Order is deleted from Monitor but you can still open the order.</value>
-  </data>
-  <data name="workoperations_Info_2" xml:space="preserve">
-    <value>This process card are for several Workoperations, please choose, from bellow, which to open.</value>
-  </data>
-  <data name="Menu_Protocol_ManageTemplates" xml:space="preserve">
-    <value>Manage Templates...</value>
-  </data>
-  <data name="authority_12" xml:space="preserve">
-    <value>Create a test order</value>
-  </data>
-  <data name="btn_AuthoritiesAddFactory" xml:space="preserve">
-    <value>Add Factory</value>
-  </data>
-  <data name="customMail" xml:space="preserve">
-    <value>Custom Mailaddresses</value>
-  </data>
-  <data name="copy" xml:space="preserve">
-    <value>COPY</value>
-  </data>
-  <data name="endDate" xml:space="preserve">
-    <value>End-Date:</value>
-  </data>
-  <data name="validateData_Info_7_3" xml:space="preserve">
-    <value>Outside tolerances - Validated process card:</value>
-  </data>
-  <data name="chooseDie_Warning" xml:space="preserve">
-    <value>You have to choose the type of Die before you choose the dimension.</value>
+  <data name="user_AddedInSystem" xml:space="preserve">
+    <value>is now added.</value>
   </data>
   <data name="validateData_Info_9_1" xml:space="preserve">
     <value>Warning! Deviation on a validated Process card!
@@ -629,541 +1351,643 @@ Only authorized personnel may grant exceptions – for example, if there are err
 
 After closing this message, you will have the opportunity to notify the responsible Process Engineer that the process card needs to be reviewed and updated if necessary.</value>
   </data>
-  <data name="lbl_Settings_Add_ProdLine_Silduksbyte" xml:space="preserve">
-    <value>Add Production Line</value>
-  </data>
-  <data name="label_ErrorCodeHeader_2" xml:space="preserve">
-    <value>Fill in a comment why you discarded the measurement</value>
-  </data>
-  <data name="lbl_Add_Startup" xml:space="preserve">
-    <value>+ Add Startup</value>
-  </data>
-  <data name="btn_ResetChart" xml:space="preserve">
-    <value>Reset Chart</value>
-  </data>
-  <data name="validateData_Info_2_1" xml:space="preserve">
-    <value>You are not running with the same value as nominal value for</value>
-  </data>
-  <data name="measureinstrument_Info" xml:space="preserve">
-    <value>Click on "+" to add a new measurement instrument. 
-
-Note! Don't write multiple numbers in the same field.
-If this workoperation misses some Measurement Intrument type, you can 
-add it into template by entering Settings beneath Measuerement Instruments tab.</value>
-  </data>
-  <data name="mail_MissingMeasurePoints_1" xml:space="preserve">
-    <value>This order is missing measurement points, an email will be automatically sent to Customer Service so they can add the measurement points to the Monitor.</value>
-  </data>
-  <data name="authority_13" xml:space="preserve">
-    <value>Modify part-specific lists</value>
-  </data>
-  <data name="saveProcesscard_Info_2_1" xml:space="preserve">
-    <value>You can not save or update this processcard</value>
-  </data>
-  <data name="authority_15" xml:space="preserve">
-    <value>Start an order that is NOT approved by QA</value>
-  </data>
-  <data name="measureinstrument_Delete_4" xml:space="preserve">
-    <value>belongs to template for this workoperation and can not be deleted.</value>
-  </data>
-  <data name="maintenanceWork_4" xml:space="preserve">
-    <value>In approximately</value>
-  </data>
-  <data name="authority_18" xml:space="preserve">
-    <value>Edit user</value>
-  </data>
-  <data name="protocol_Info_2" xml:space="preserve">
-    <value>Startup</value>
-  </data>
-  <data name="btn_AuthoritiesRemoveUser" xml:space="preserve">
-    <value>Delete User</value>
-  </data>
-  <data name="Menu_Help_InstructionVideos_RecentlyOpenedOrders" xml:space="preserve">
-    <value>Most recently Initiated Orders</value>
-  </data>
-  <data name="authority_22" xml:space="preserve">
-    <value>Provide feedback from QC on an order</value>
-  </data>
-  <data name="browseProtocols_2" xml:space="preserve">
-    <value>If you select the option ‘Do NOT load orderdata,’ you can click on orders in the order list without loading the data.</value>
-  </data>
-  <data name="tuneZumbachData_6" xml:space="preserve">
-    <value>Smoothing out the curves in the chart. Measurement</value>
-  </data>
-  <data name="manageTemplates" xml:space="preserve">
-    <value>You must be logged in with right authorities to create/edit templates for the protocols.</value>
-  </data>
-  <data name="settings_Page_ProdLine" xml:space="preserve">
-    <value>Production Line</value>
-  </data>
-  <data name="tuneZumbachData_7" xml:space="preserve">
-    <value>It differs</value>
-  </data>
-  <data name="Menu_User_Authorities_CustomFactories" xml:space="preserve">
-    <value>Custom Factories</value>
-  </data>
-  <data name="label_DiscardUser" xml:space="preserve">
-    <value>Delete User</value>
-  </data>
-  <data name="label_ProcessCard_ExtraInfo" xml:space="preserve">
-    <value>Extra Info for operators that is only visible in the application:</value>
-  </data>
-  <data name="btn_PreFab" xml:space="preserve">
-    <value>PreFab</value>
-  </data>
-  <data name="empNr" xml:space="preserve">
-    <value>Emp.Number</value>
-  </data>
-  <data name="settings_Page_Parts" xml:space="preserve">
-    <value>Special Parts</value>
-  </data>
-  <data name="btn_EditAmount" xml:space="preserve">
-    <value>Edit Amount</value>
-  </data>
-  <data name="dateTime" xml:space="preserve">
-    <value>Date-Time</value>
-  </data>
-  <data name="label_ChangeChargeNr_Info_1" xml:space="preserve">
-    <value>Please write a comment about why you have changed batchnumber:</value>
-  </data>
-  <data name="authority_16" xml:space="preserve">
-    <value>Start 5th order without a predefined process card</value>
-  </data>
-  <data name="btn_DiscardMeasurement" xml:space="preserve">
-    <value>Discard Measurement</value>
-  </data>
-  <data name="extrusionTEF_Info_7" xml:space="preserve">
-    <value>Loading Protocol/Processcard...</value>
-  </data>
-  <data name="label_Latest10Values_Info" xml:space="preserve">
-    <value>Click in the window to shut it down.</value>
-  </data>
-  <data name="loadingProductionlines_1" xml:space="preserve">
-    <value>Loading Production lines...</value>
-  </data>
-  <data name="statsProdLine_4" xml:space="preserve">
-    <value>Total Orders / Year</value>
-  </data>
-  <data name="rollingTips_5" xml:space="preserve">
-    <value>orders were run</value>
-  </data>
-  <data name="delete_user" xml:space="preserve">
-    <value>from the system?</value>
-  </data>
-  <data name="label_Workoperation" xml:space="preserve">
-    <value>Workoperation:</value>
-  </data>
-  <data name="saveProcesscard_Info_1" xml:space="preserve">
-    <value>Please, fill in the Production Line before you save the process card.
-The Production Line is used to separate the process cards if there are multiple process cards for the same PartNumber.</value>
-  </data>
-  <data name="chooseExtruder" xml:space="preserve">
-    <value>You must choose extruder before you choose type of screw.</value>
-  </data>
-  <data name="btn_HS_Machine_NewColor" xml:space="preserve">
-    <value>Choose a new Color</value>
-  </data>
-  <data name="authority_9" xml:space="preserve">
-    <value>Edit a finished Order</value>
-  </data>
-  <data name="label_EstablishedBy" xml:space="preserve">
-    <value>Established by: Sign./Emp.Nr:</value>
-  </data>
-  <data name="extraComments_Info_2" xml:space="preserve">
-    <value>Fill in both spool number and comment in order to save row, or it will be deleted.</value>
-  </data>
-  <data name="label_InfoChooseDepartment" xml:space="preserve">
-    <value>I you can't find your name in list - you can choose department from which program will retrieve names from.</value>
-  </data>
-  <data name="processcard_MissingInfo" xml:space="preserve">
-    <value>Necessary information is missing in the process card.</value>
-  </data>
-  <data name="name" xml:space="preserve">
-    <value>Name:</value>
-  </data>
-  <data name="measureprotocol_Info_10" xml:space="preserve">
-    <value>Confirm your length measurement with your password.</value>
-  </data>
-  <data name="protocol_EquimentInfo_3" xml:space="preserve">
-    <value>No, soft to hard material</value>
-  </data>
-  <data name="login_Info_1_4" xml:space="preserve">
-    <value>Changelog</value>
-  </data>
-  <data name="statsProdLine_2" xml:space="preserve">
-    <value>Most Common PartNumber</value>
-  </data>
-  <data name="validateData_Info_1" xml:space="preserve">
-    <value>You can not write in this field, instead right-click in field and choose from list.</value>
-  </data>
-  <data name="rb_HistoricalData" xml:space="preserve">
-    <value>Historical data:</value>
-  </data>
-  <data name="label_ChoosePC_Header" xml:space="preserve">
-    <value>Processcard management</value>
-  </data>
-  <data name="missingLayer_1" xml:space="preserve">
-    <value>This Partnumber lacks information on how many layers the hose has, please fill in below how many layers the hose has.
-Note! It must be between 1 to 3 layers.</value>
-  </data>
-  <data name="role" xml:space="preserve">
-    <value>Role:</value>
-  </data>
-  <data name="startDate" xml:space="preserve">
-    <value>Start-Date:</value>
-  </data>
-  <data name="browseProtocols" xml:space="preserve">
-    <value>Browse old Protocols</value>
-  </data>
-  <data name="Protocol_Extrusion_TEF" xml:space="preserve">
-    <value>Protocol/Processcard -Extrusion Thermo</value>
-  </data>
-  <data name="measureprotocol_Info_9" xml:space="preserve">
-    <value>You can not transfer a length measurement if you have data filled in in one of the other text fields.</value>
-  </data>
-  <data name="maintenanceWork_2" xml:space="preserve">
-    <value>, a maintenance work will be in progress. The program can´t be used during this time.</value>
-  </data>
-  <data name="btn_ClearProcessCard" xml:space="preserve">
-    <value>Clear Process card</value>
-  </data>
-  <data name="finishedOrder" xml:space="preserve">
-    <value>Finished Order: Date / Sign</value>
-  </data>
-  <data name="label_ApprovedBy" xml:space="preserve">
-    <value>Approved by: Sign./Emp.Nr:</value>
-  </data>
-  <data name="orderNotDone_1" xml:space="preserve">
-    <value>You initiated Order </value>
-  </data>
-  <data name="btn_AddUpdateUser" xml:space="preserve">
-    <value>Add User</value>
-  </data>
-  <data name="openProcessardManagementWarning" xml:space="preserve">
-    <value>You cannot have an order open when you are handling process cards. Please restart the program or select New Order in the File menu and try again.</value>
-  </data>
-  <data name="rollingTips_2" xml:space="preserve">
-    <value>measurements.</value>
-  </data>
-  <data name="label_EmpNr" xml:space="preserve">
-    <value>Emp.Nr:</value>
-  </data>
-  <data name="expansionProcess" xml:space="preserve">
-    <value>EXPANSION PROCESS</value>
-  </data>
-  <data name="orderNotDone_5" xml:space="preserve">
-    <value>Do you want to open this order now?</value>
-  </data>
-  <data name="chooseProcesscard_Info_1" xml:space="preserve">
-    <value>Run without Processcard</value>
-  </data>
-  <data name="btn_HS_Machine_Close" xml:space="preserve">
-    <value>Save and Exit</value>
-  </data>
-  <data name="measureprotocol_Info_5" xml:space="preserve">
-    <value>Data missing</value>
-  </data>
-  <data name="btn_AuthoritiesRemoveRole" xml:space="preserve">
-    <value>Delete Role</value>
-  </data>
-  <data name="login_Info_1_1" xml:space="preserve">
-    <value>The latest version you have read information about is:</value>
-  </data>
-  <data name="label_ChooseItemInfo" xml:space="preserve">
-    <value>You can filter this list by writing text in the textbox.</value>
-  </data>
-  <data name="measureprotocol_Info_8" xml:space="preserve">
-    <value>Please, fill in length before you transfer a length measurement.</value>
-  </data>
-  <data name="btn_Remove_Extruder" xml:space="preserve">
-    <value>Remove Last Extruder</value>
-  </data>
-  <data name="authority_Check_2" xml:space="preserve">
-    <value>In the mainmenu "User-Authorities", you can see what authority you need for this.</value>
-  </data>
-  <data name="btn_Save_Processcard" xml:space="preserve">
-    <value>Save Processcard</value>
+  <data name="chb_ChoosePC_AutoChoose" xml:space="preserve">
+    <value>Let program choose my workoperation depending on my own department belonging. This can be changed later in Settings.</value>
   </data>
   <data name="orderNotDone_4" xml:space="preserve">
     <value>If this order is completed, please open it and finalize it to avoid having too many open orders in the system.</value>
   </data>
-  <data name="yes" xml:space="preserve">
-    <value>Yes</value>
+  <data name="extrusionTEF_Info_6" xml:space="preserve">
+    <value>Are you sure that you want to delete Extruder #2?
+Everything under this extruder will be removed if you continue.</value>
   </data>
-  <data name="label_ProdType" xml:space="preserve">
-    <value>Product Type:</value>
+  <data name="lbl_EditUser" xml:space="preserve">
+    <value>Edit User</value>
   </data>
-  <data name="maintenanceWork_minutes" xml:space="preserve">
-    <value>minutes</value>
+  <data name="copy" xml:space="preserve">
+    <value>COPY</value>
   </data>
-  <data name="label_PasswordUser" xml:space="preserve">
-    <value>User:</value>
+  <data name="label_Start" xml:space="preserve">
+    <value>Start:</value>
   </data>
-  <data name="lbl_Settings_Delete_ProdLine_Silduksbyte" xml:space="preserve">
-    <value>Delete Production line</value>
+  <data name="Menu_Theme_Sun" xml:space="preserve">
+    <value>Sun</value>
   </data>
-  <data name="print_Header_Protocol_HS" xml:space="preserve">
-    <value>Form: Process card for HeatShrink</value>
-  </data>
-  <data name="label_Warning" xml:space="preserve">
-    <value>Warning, value outside control limit</value>
-  </data>
-  <data name="changeBatchNr_Info_3" xml:space="preserve">
-    <value>You need to write at least 5 letters in your comment.</value>
-  </data>
-  <data name="authority_5" xml:space="preserve">
-    <value>Configure settings for Databases</value>
-  </data>
-  <data name="validateData_Info_7_1" xml:space="preserve">
-    <value>You are outside the nominal value of the process card, but as </value>
-  </data>
-  <data name="label_PasswordInfo" xml:space="preserve">
-    <value>Confirm your password with Enter/Retur</value>
-  </data>
-  <data name="label_MeasureInstrument_Header" xml:space="preserve">
-    <value>Measurement Instrument</value>
-  </data>
-  <data name="protocol_OpenAnotherUser_2" xml:space="preserve">
-    <value>on the computer</value>
-  </data>
-  <data name="label_Ok" xml:space="preserve">
-    <value>Value Ok</value>
-  </data>
-  <data name="spool_2" xml:space="preserve">
-    <value>Bag</value>
-  </data>
-  <data name="orderNotDone_2" xml:space="preserve">
-    <value>about </value>
-  </data>
-  <data name="label_Settings_InfoMeasureinstrument_Remove" xml:space="preserve">
-    <value>Click on a Measurement instrument to remove it from active Workoperation</value>
-  </data>
-  <data name="preparedBy" xml:space="preserve">
-    <value>Prepared by:</value>
-  </data>
-  <data name="label_Discarded" xml:space="preserve">
-    <value>Discarded</value>
-  </data>
-  <data name="label_Factory" xml:space="preserve">
-    <value>Factory:</value>
-  </data>
-  <data name="zumbach_Info_8" xml:space="preserve">
-    <value>Are you sure you want to delete all measurements from this measurement</value>
-  </data>
-  <data name="measureprotocol_Info_2" xml:space="preserve">
-    <value>Confirm this measurement with your password.</value>
-  </data>
-  <data name="protocol_EquimentInfo_4" xml:space="preserve">
-    <value>No, light to dark color</value>
-  </data>
-  <data name="managePCNotLoggedIn" xml:space="preserve">
-    <value>You must be signed in with right authorities to save or edit a processcard.</value>
-  </data>
-  <data name="lbl_LC_Name" xml:space="preserve">
-    <value>Click here for Line Clearance…</value>
-  </data>
-  <data name="zumbach_Info_5" xml:space="preserve">
-    <value>Measurement data has already been registered at this position.</value>
-  </data>
-  <data name="rillat" xml:space="preserve">
-    <value>Grooved</value>
-  </data>
-  <data name="loadingProductionlines_2" xml:space="preserve">
-    <value>Adding info for Production lines...</value>
-  </data>
-  <data name="zumbachCounter_2" xml:space="preserve">
-    <value>billions</value>
-  </data>
-  <data name="multipleRevisionsMeasureTemnplate" xml:space="preserve">
-    <value>This partnumber contains different revisions of the measurement template, so you must actively choose which revision you want to load orders from.</value>
-  </data>
-  <data name="removeStartup_1" xml:space="preserve">
-    <value>You can not delete startup #1</value>
-  </data>
-  <data name="Menu_User_Authorities_CustomMailAddresses" xml:space="preserve">
-    <value>Custom MailAddresses</value>
-  </data>
-  <data name="extraComments_Info_1" xml:space="preserve">
-    <value>You need to fill in both Spool number and Comment in order to update Extra Comment</value>
-  </data>
-  <data name="label_Measurement" xml:space="preserve">
-    <value>Measurement</value>
-  </data>
-  <data name="label_List_PartNr" xml:space="preserve">
-    <value>List of Partnumbers</value>
-  </data>
-  <data name="label_Workoperation_Header" xml:space="preserve">
-    <value>Choose Workoperation</value>
-  </data>
-  <data name="Menu_Help_InstructionVideos_SaveProcessCard" xml:space="preserve">
-    <value>Save new Process card</value>
-  </data>
-  <data name="btn_Add_Extruder" xml:space="preserve">
-    <value>Add Extruder</value>
-  </data>
-  <data name="label_ChangeChargeNr_Header" xml:space="preserve">
-    <value>Note! You are not allowed to run an order with two different batchnumbers</value>
-  </data>
-  <data name="settings_Page_Department" xml:space="preserve">
-    <value>Department</value>
-  </data>
-  <data name="Menu_Settings_CalculateMaterial" xml:space="preserve">
-    <value>Calculate Material</value>
-  </data>
-  <data name="btn_AuthoritiesRemoveWorkoperation" xml:space="preserve">
-    <value>Delete Workoperation</value>
-  </data>
-  <data name="chb_ChoosePC_AutoChoose" xml:space="preserve">
-    <value>Let program choose my workoperation depending on my own department belonging. This can be changed later in Settings.</value>
-  </data>
-  <data name="equipment_Info_8" xml:space="preserve">
-    <value>Fill in the equipment for machine</value>
-  </data>
-  <data name="label_HS_Color_Info" xml:space="preserve">
-    <value>The color of the HS-Machine is important for easily separate which line is being used when you have multiple programs open on the same computer/screen. First, select HS-Machine in the list below and then choose a color and if needed you can invert the color of the text if it becomes difficult to read.</value>
-  </data>
-  <data name="slätt" xml:space="preserve">
-    <value>Plain</value>
-  </data>
-  <data name="btn_TransferLengthMeasure" xml:space="preserve">
-    <value>Transfer Length measurement</value>
-  </data>
-  <data name="label_ChooseDepartment_Username" xml:space="preserve">
-    <value>Choose from which department you want the programme to retrieve usernames from (if username is to be chosen)</value>
-  </data>
-  <data name="update_Info_1" xml:space="preserve">
-    <value>There is an IMPORTANT update to download! Restart the program and update.
-If you do not restart, there is a risk that the program will not work properly.</value>
-  </data>
-  <data name="authority_Check_3" xml:space="preserve">
-    <value>To manage authorization you need one of this authorities:
-SuperAdmin
-Process Engineer
-Quality Director
-Quality Engineer
-	</value>
-  </data>
-  <data name="startOrder_NeedLogin" xml:space="preserve">
-    <value>You must log in before you start a new Order.</value>
-  </data>
-  <data name="forming" xml:space="preserve">
-    <value>FORMING</value>
-  </data>
-  <data name="browseProtocols_1" xml:space="preserve">
-    <value>Remove selected orders from the list. (NOTE! Nothing happens with the order, next time it will appear in the list again)</value>
-  </data>
-  <data name="Menu_Help_InstructionVideos_SignIn" xml:space="preserve">
-    <value>Sign in</value>
-  </data>
-  <data name="label_Info_Prodline" xml:space="preserve">
-    <value>Very importen to choose the correct Production line here, especially when multiple process cards are in use.
-Production lines are loaded from Monitor.
-
-If your production line is missing, please contact Admin.</value>
-  </data>
-  <data name="orderDone_2" xml:space="preserve">
-    <value>on Machine #</value>
-  </data>
-  <data name="label_Department" xml:space="preserve">
-    <value>Department:</value>
-  </data>
-  <data name="tuneZumbachData_8" xml:space="preserve">
-    <value>measurement points between the positions. Do you want me to continue smoothing out these curves?</value>
-  </data>
-  <data name="zumbach_Info_9_2" xml:space="preserve">
-    <value>measurements from position</value>
-  </data>
-  <data name="zumbach_Info_13" xml:space="preserve">
-    <value>You must sign in before you start logging Zumbach-measurements.
-This window will now close.</value>
-  </data>
-  <data name="print_Header_ExtraComments" xml:space="preserve">
-    <value>Form: Extra comments</value>
-  </data>
-  <data name="zumbach_Info_1" xml:space="preserve">
-    <value>Fill in the pipes in protocol before Zumbach-measurements is started. If pipe is missing in one of the positions, then choose N/A. </value>
-  </data>
-  <data name="btn_RemoveStartUp" xml:space="preserve">
-    <value>Remove Last Startup</value>
-  </data>
-  <data name="missingMeasurePoints" xml:space="preserve">
-    <value>Please note: 
-Currently, there are no measurement points for this order, or there may be a problem with the connection to Monitor. We ask you to enter the values yourself. Make sure you enter them correctly! 
-If you’re unsure or need help, contact the admin.</value>
-  </data>
-  <data name="changeProcesscard_Info_3" xml:space="preserve">
-    <value>Choose which process card you want to assign to your order.</value>
-  </data>
-  <data name="print_LineClearance_1" xml:space="preserve">
-    <value>Date / Name:</value>
-  </data>
-  <data name="label_PasswordPassword" xml:space="preserve">
-    <value>Password:</value>
-  </data>
-  <data name="btn_Clear_HelpInput_2" xml:space="preserve">
-    <value>Clear</value>
-  </data>
-  <data name="rollingTips_4" xml:space="preserve">
-    <value>times.</value>
-  </data>
-  <data name="saveProcesscard_Info_2" xml:space="preserve">
-    <value>You can't save this revision because it's already signed by QA. 
-Change revision and try to save again. </value>
-  </data>
-  <data name="label_ChoosePC_Info_1" xml:space="preserve">
-    <value>Below you can click on the workoperation you want to enter</value>
-  </data>
-  <data name="label_Settings_Info_Measureinstruments" xml:space="preserve">
-    <value>First, choose workoperation and then choose measurement instruments connected to the active workoperation
-</value>
-  </data>
-  <data name="login_AddUser" xml:space="preserve">
-    <value>Add User</value>
-  </data>
-  <data name="tuneZumbachData_2" xml:space="preserve">
-    <value>You should consider discarding this measurement since the data is not complete. (some positions are missing)</value>
-  </data>
-  <data name="label_AddUser" xml:space="preserve">
-    <value>Add User:</value>
-  </data>
-  <data name="orderProdtime" xml:space="preserve">
-    <value>Total Production time:</value>
-  </data>
-  <data name="label_Password" xml:space="preserve">
-    <value>Password:</value>
-  </data>
-  <data name="btn_ProcesscardBasedOn" xml:space="preserve">
-    <value>Processcard Based On:</value>
-  </data>
-  <data name="print_Header_Protocol" xml:space="preserve">
-    <value>Form: Digital Protocol for HeatShrink.</value>
-  </data>
-  <data name="saveProcesscard_Info_3_2" xml:space="preserve">
-    <value>If this process card needs to be signed by QA, you need to create a Jira case.</value>
-  </data>
-  <data name="btn_Exit" xml:space="preserve">
-    <value>Exit</value>
-  </data>
-  <data name="zumbach_Info_9_3" xml:space="preserve">
-    <value>measurement</value>
-  </data>
-  <data name="maintenanceWork_days" xml:space="preserve">
-    <value>days</value>
-  </data>
-  <data name="validateData_Info_4_2" xml:space="preserve">
-    <value>and the process card is based on historical data so please take extra 
-samples out and send a message to Quality Control. 
-
-You need to inform a Supervisor/Process Technician/Process Engineer that the process card need an update?</value>
-  </data>
-  <data name="zumbachCounter_1" xml:space="preserve">
-    <value>millions</value>
+  <data name="saveProcesscard_Info_9" xml:space="preserve">
+    <value>The template’s revision cannot be empty, select a revision and try again.</value>
   </data>
   <data name="customFactory" xml:space="preserve">
     <value>Custom Factories</value>
   </data>
+  <data name="label_Department" xml:space="preserve">
+    <value>Department:</value>
+  </data>
+  <data name="dateTime" xml:space="preserve">
+    <value>Date-Time</value>
+  </data>
+  <data name="label_ConfirmPassword" xml:space="preserve">
+    <value>Confirm Password:</value>
+  </data>
+  <data name="Menu_User_LogOutUser" xml:space="preserve">
+    <value>Log out user from the Protocol</value>
+  </data>
+  <data name="mail_Body_NotifyOrderStartCount_6" xml:space="preserve">
+    <value>Create Process card:&lt;br /&gt;
+PartNumber {0} was just started for the {1}th time without an established process card&lt;br /&gt;
+ProdLine: {2}&lt;br /&gt;
+ProdGroup: {3}&lt;br /&gt;
+Workoperation: {4}&lt;br /&gt;
+&lt;br /&gt;
+&lt;br /&gt;
+&lt;b&gt;IMPORTANT!!&lt;b&gt;&lt;br/&gt; 
+The process card must be finalized immediately. Next time, approval from the Quality Director or the Production Director will be required to start the order</value>
+  </data>
+  <data name="label_DiscardUser" xml:space="preserve">
+    <value>Delete User</value>
+  </data>
+  <data name="Menu_Arkiv_ManageDatabase" xml:space="preserve">
+    <value>Manage Database Settings</value>
+  </data>
+  <data name="orderDone_2" xml:space="preserve">
+    <value>on Machine #</value>
+  </data>
+  <data name="validateData_Info_2_2" xml:space="preserve">
+    <value>and the process card is based on historical data so please take extra 
+samples out and send a message to Quality Control. 
+
+You need to inform your Supervisor or Process technician that the process card need an update?</value>
+  </data>
+  <data name="Menu_Order_ReLink_MeasureProtocol" xml:space="preserve">
+    <value>To a new Measurement Protocol</value>
+  </data>
+  <data name="orderNotDone_1" xml:space="preserve">
+    <value>You initiated Order </value>
+  </data>
+  <data name="label_RevNr" xml:space="preserve">
+    <value>RevisionNr:</value>
+  </data>
+  <data name="finishOrder_Halvfabrikat_1" xml:space="preserve">
+    <value>Fill in the batch number for the PreFab in the Protocol</value>
+  </data>
+  <data name="tuneZumbachData_5" xml:space="preserve">
+    <value>Do you want me to delete these measurement points?</value>
+  </data>
+  <data name="machine" xml:space="preserve">
+    <value>machine</value>
+  </data>
+  <data name="removeStartup_1" xml:space="preserve">
+    <value>You can not delete startup #1</value>
+  </data>
+  <data name="label_Password" xml:space="preserve">
+    <value>Password:</value>
+  </data>
+  <data name="missingLayer_2" xml:space="preserve">
+    <value>Total layers for tube.</value>
+  </data>
+  <data name="lbl_LC_Name" xml:space="preserve">
+    <value>Click here for Line Clearance…</value>
+  </data>
+  <data name="Menu_Arkiv_ChangeCompany_Holding" xml:space="preserve">
+    <value>Optinova Holding</value>
+  </data>
+  <data name="preFab_Balance" xml:space="preserve">
+    <value>Balance:</value>
+  </data>
+  <data name="notifyUserOrderStartCount_7" xml:space="preserve">
+    <value>PartNumber {0} has been started for {1} times without an established process card.
+The process issues MUST be investigated and a process card must be established before a new order is started.
+The order can ONLY be initiated by someone with the following role:
+Quality Director,
+Production Director</value>
+  </data>
+  <data name="uploadPicture_1" xml:space="preserve">
+    <value>Start/Open an order before you try to upload a picture</value>
+  </data>
+  <data name="authority_26" xml:space="preserve">
+    <value>Configure Settings for Workoperations</value>
+  </data>
+  <data name="measureprotocol_Info_10" xml:space="preserve">
+    <value>Confirm your length measurement with your password.</value>
+  </data>
+  <data name="chartSerieMeasurepoints2" xml:space="preserve">
+    <value>Avg: Partnumber</value>
+  </data>
+  <data name="m" xml:space="preserve">
+    <value>You need to conduct Line Clearance</value>
+  </data>
+  <data name="statsProdLine_7" xml:space="preserve">
+    <value>Measurements in the Productionline</value>
+  </data>
+  <data name="settings_Page_Measureinstruments" xml:space="preserve">
+    <value>Measurement instruments</value>
+  </data>
+  <data name="Protocol_Extrusion_TEF" xml:space="preserve">
+    <value>Protocol/Processcard -Extrusion Thermo</value>
+  </data>
+  <data name="btn_Workoperation_Abort" xml:space="preserve">
+    <value>Exit</value>
+  </data>
+  <data name="validateData_Info_3_3" xml:space="preserve">
+    <value>Please, check through the order and see if you need to make changes in process card.</value>
+  </data>
+  <data name="label_ChooseDepartment" xml:space="preserve">
+    <value>Choose Department:</value>
+  </data>
+  <data name="authority_7" xml:space="preserve">
+    <value>Add user</value>
+  </data>
+  <data name="date" xml:space="preserve">
+    <value>Date:</value>
+  </data>
+  <data name="label_Factory" xml:space="preserve">
+    <value>Factory:</value>
+  </data>
+  <data name="changeBatchNr_Info_1" xml:space="preserve">
+    <value>No comment selected, you cannot change the Batch Number</value>
+  </data>
+  <data name="mail_Subject_NotifyOrderStartCount" xml:space="preserve">
+    <value>{0} was started for the {1}th time without an established process card.</value>
+  </data>
+  <data name="chb_HideInactive_PartNr" xml:space="preserve">
+    <value>Hide Inactive PartNumbers</value>
+  </data>
+  <data name="label_Header_ActiveOrders" xml:space="preserve">
+    <value>Your Active Orders</value>
+  </data>
+  <data name="label_Amount" xml:space="preserve">
+    <value>Amount:</value>
+  </data>
+  <data name="reportJira_Info_1" xml:space="preserve">
+    <value>You can not report a problem to Jira if you don´t have an open order.</value>
+  </data>
+  <data name="label_Welcome" xml:space="preserve">
+    <value>Welcome</value>
+  </data>
+  <data name="zumbach_Info_6_1" xml:space="preserve">
+    <value>This measurement only contains </value>
+  </data>
+  <data name="btn_RemoveStartUp" xml:space="preserve">
+    <value>Remove Last Startup</value>
+  </data>
+  <data name="isOkAddStartUp_2" xml:space="preserve">
+    <value>Module {0} is missing one or more parameters.</value>
+  </data>
+  <data name="mail_NotifyCustomerServiceMissingMeasurePoints" xml:space="preserve">
+    <value>This order is missing measurement points, please add them to the Monitor.&lt;br /&gt;&lt;br /&gt;
+Workoperation: {0} &lt;br /&gt;
+OrderNr: {1} &lt;br /&gt;
+Operation: {2} &lt;br /&gt;
+PartNumber: {3} &lt;br /&gt;&lt;br /&gt;
+Please Contact {4} when the measurement points are added to Monitor.</value>
+  </data>
+  <data name="label_ChooseCompany_Header" xml:space="preserve">
+    <value>Choose which Monitor-company to connect with </value>
+  </data>
+  <data name="label_Measurepoints" xml:space="preserve">
+    <value>Measurepoints</value>
+  </data>
+  <data name="label_ProductionLines_Red" xml:space="preserve">
+    <value>Red = Productionline is inactive</value>
+  </data>
+  <data name="chooseTip_Warning" xml:space="preserve">
+    <value>You have to choose the type of Tip before you choose the dimension.</value>
+  </data>
+  <data name="Menu_Order_EditOrder" xml:space="preserve">
+    <value>Edit Order</value>
+  </data>
+  <data name="Warning" xml:space="preserve">
+    <value>Warning!</value>
+  </data>
+  <data name="revisionInfo" xml:space="preserve">
+    <value>Revision Info:</value>
+  </data>
+  <data name="page" xml:space="preserve">
+    <value>page</value>
+  </data>
+  <data name="validateData_Info_1" xml:space="preserve">
+    <value>You can not write in this field, instead right-click in field and choose from list.</value>
+  </data>
+  <data name="btn_RemovePreFab" xml:space="preserve">
+    <value>Delete PreFab</value>
+  </data>
+  <data name="label_TotalOrders" xml:space="preserve">
+    <value>Total Orders:</value>
+  </data>
+  <data name="chooseProtocol_3" xml:space="preserve">
+    <value>There are several Process cards linked to this Partnumber. Please choose below which one you want to use.</value>
+  </data>
+  <data name="processcard_MissingInfo_MeasurementTemplate" xml:space="preserve">
+    <value>You have not selected a template for the Measurement Protocol.
+Should this operation proceed without a Measurement Protocol?</value>
+  </data>
+  <data name="endDate" xml:space="preserve">
+    <value>End-Date:</value>
+  </data>
+  <data name="monitorInfo_1" xml:space="preserve">
+    <value>This OrderNumber does not exist in Monitor or the Digital Production Program.
+
+Please contact Admin if necessary.</value>
+  </data>
+  <data name="label_Avdelning" xml:space="preserve">
+    <value>Department:</value>
+  </data>
+  <data name="Menu_Help_InstructionVideos_SignIn" xml:space="preserve">
+    <value>Sign in</value>
+  </data>
+  <data name="changeProcesscard_Info_2" xml:space="preserve">
+    <value>There is no process card attached to this PartNumber.</value>
+  </data>
+  <data name="cell_Protocol_ToolTip_1" xml:space="preserve">
+    <value>This field is critical!</value>
+  </data>
+  <data name="extraComments_Info_2" xml:space="preserve">
+    <value>Fill in both spool number and comment in order to save row, or it will be deleted.</value>
+  </data>
+  <data name="changeProcesscard_Info_4" xml:space="preserve">
+    <value>You cannot change the process card on an order that is completed.</value>
+  </data>
+  <data name="orderRuntime" xml:space="preserve">
+    <value>Order Runtime:</value>
+  </data>
+  <data name="spool_1" xml:space="preserve">
+    <value>Spool</value>
+  </data>
+  <data name="col_CodeText_Header" xml:space="preserve">
+    <value>Black text = Critical Value</value>
+  </data>
+  <data name="authority_10" xml:space="preserve">
+    <value>Finish incomplete order</value>
+  </data>
+  <data name="label_InfoPassword_1" xml:space="preserve">
+    <value>The password must be 4 characters or more.</value>
+  </data>
+  <data name="label_PasswordInfo" xml:space="preserve">
+    <value>Confirm your password with Enter/Retur</value>
+  </data>
+  <data name="Menu_Order_CreateTestOrder" xml:space="preserve">
+    <value>Create Testorder</value>
+  </data>
+  <data name="validateData_Info_9_3" xml:space="preserve">
+    <value>is outside the nominal value for a validated process card.</value>
+  </data>
+  <data name="login_Info_1_1" xml:space="preserve">
+    <value>The latest version you have read information about is:</value>
+  </data>
+  <data name="rollingTips_4" xml:space="preserve">
+    <value>times.</value>
+  </data>
+  <data name="approve_Processcard_Ok" xml:space="preserve">
+    <value>The process card is now approved.</value>
+  </data>
+  <data name="label_Settings_InfoMeasureinstrument_Add" xml:space="preserve">
+    <value>Click on a Measurement instrument to add it to active Workoperation</value>
+  </data>
+  <data name="print_Header_MeasurementProtocol" xml:space="preserve">
+    <value>Form: Measurement protocol for HeatShrink</value>
+  </data>
+  <data name="processcardAlreadySigned" xml:space="preserve">
+    <value>The process card is already signed and approved.</value>
+  </data>
+  <data name="Menu_Theme_Nature" xml:space="preserve">
+    <value>Nature</value>
+  </data>
+  <data name="approve_Processcard_Error" xml:space="preserve">
+    <value>The process card was not approved, contact Admin if needed.</value>
+  </data>
+  <data name="validateData_Info_4_1" xml:space="preserve">
+    <value>You are out of tolerance for</value>
+  </data>
+  <data name="zumbach_Info_2" xml:space="preserve">
+    <value>Loading settings for COM-ports...</value>
+  </data>
+  <data name="btn_ClearProcessCard" xml:space="preserve">
+    <value>Clear Process card</value>
+  </data>
+  <data name="delete_Processcard_1" xml:space="preserve">
+    <value>It is not possible to delete a process card that has associated orders. If the process card is no longer needed, you can deactivate it instead.</value>
+  </data>
+  <data name="btn_Exit" xml:space="preserve">
+    <value>Exit</value>
+  </data>
+  <data name="zumbach_Info_4" xml:space="preserve">
+    <value>Loading data for active Order...</value>
+  </data>
+  <data name="protocol_EquimentInfo_2" xml:space="preserve">
+    <value>No, same material as last startup</value>
+  </data>
+  <data name="Frequency_Marking" xml:space="preserve">
+    <value>F9-Frequency Marking</value>
+  </data>
+  <data name="label_ChoosePC_Header" xml:space="preserve">
+    <value>Processcard management</value>
+  </data>
+  <data name="zumbach_Info_9_3" xml:space="preserve">
+    <value>measurement</value>
+  </data>
+  <data name="browseProtocols_4" xml:space="preserve">
+    <value>Activate selected Order.</value>
+  </data>
+  <data name="label_Measurement" xml:space="preserve">
+    <value>Measurement</value>
+  </data>
+  <data name="label_Workoperation_Header" xml:space="preserve">
+    <value>Choose Workoperation</value>
+  </data>
+  <data name="btn_Abort" xml:space="preserve">
+    <value>Abort</value>
+  </data>
+  <data name="validateData_Info_5_1" xml:space="preserve">
+    <value>Out of tolerance - Historical data:</value>
+  </data>
+  <data name="tuneZumbachData_7" xml:space="preserve">
+    <value>It differs</value>
+  </data>
+  <data name="settings_Page_General" xml:space="preserve">
+    <value>General</value>
+  </data>
+  <data name="orderProdtime" xml:space="preserve">
+    <value>Total Production time:</value>
+  </data>
+  <data name="lineClearance_Info_3" xml:space="preserve">
+    <value>Line Clearance means setting up and "clean" line or workstation before starting up next order.
+By doing such you eliminate the risk for mixing material, tooling, product, documents,  labels and such between orders. 
+This to avoid severe consequenses for customer end.</value>
+  </data>
+  <data name="btn_AuthoritiesRemoveRole" xml:space="preserve">
+    <value>Delete Role</value>
+  </data>
+  <data name="lbl_ChangeChargeNr_Info_Exit" xml:space="preserve">
+    <value>Abort</value>
+  </data>
+  <data name="preparedBy" xml:space="preserve">
+    <value>Prepared by:</value>
+  </data>
+  <data name="btn_AuthoritiesRemoveMail" xml:space="preserve">
+    <value>Delete Email</value>
+  </data>
+  <data name="label_NewPassword" xml:space="preserve">
+    <value>Password:</value>
+  </data>
+  <data name="btn_ConfirmCode" xml:space="preserve">
+    <value>Confirm code</value>
+  </data>
+  <data name="btn_Add_Extruder" xml:space="preserve">
+    <value>Add Extruder</value>
+  </data>
+  <data name="label_List_PartNr" xml:space="preserve">
+    <value>List of Partnumbers</value>
+  </data>
+  <data name="statsProdLine_5" xml:space="preserve">
+    <value>Total Orders / Month</value>
+  </data>
+  <data name="Menu_Theme_Discography" xml:space="preserve">
+    <value>Discography</value>
+  </data>
+  <data name="Menu_Order_ReLink_Processcard" xml:space="preserve">
+    <value>To a new Process card</value>
+  </data>
+  <data name="equipment_Info_8" xml:space="preserve">
+    <value>Fill in the equipment for machine</value>
+  </data>
+  <data name="authority_3" xml:space="preserve">
+    <value>Delete a Process card</value>
+  </data>
+  <data name="label_Length" xml:space="preserve">
+    <value>Length:</value>
+  </data>
+  <data name="authority_5" xml:space="preserve">
+    <value>Configure settings for Databases</value>
+  </data>
+  <data name="measureprotocol_Info_8" xml:space="preserve">
+    <value>Please, fill in length before you transfer a length measurement.</value>
+  </data>
+  <data name="processcardNotNeedSigning" xml:space="preserve">
+    <value>Processcards during Development do not require approval.</value>
+  </data>
+  <data name="Menu_Arkiv_Preview" xml:space="preserve">
+    <value>Preview</value>
+  </data>
+  <data name="print_Header_Protocol_Comments" xml:space="preserve">
+    <value>Form: Comments</value>
+  </data>
   <data name="deleteOrder_Info_1" xml:space="preserve">
     <value>You need to open an order before you delete one.</value>
+  </data>
+  <data name="changeProtocol_Info_1" xml:space="preserve">
+    <value>You cannot change the template for the protocol on an order that is completed.</value>
+  </data>
+  <data name="resetPassword_MaxAttemptsReached" xml:space="preserve">
+    <value>Too many failed attempts.</value>
+  </data>
+  <data name="rb_FramtagningAvProcessfönster" xml:space="preserve">
+    <value>Development of Process window:</value>
+  </data>
+  <data name="Menu_User" xml:space="preserve">
+    <value>User</value>
+  </data>
+  <data name="measureinstrument_Delete_3" xml:space="preserve">
+    <value>This measurement instrument</value>
+  </data>
+  <data name="warning_Testdatabase" xml:space="preserve">
+    <value>Warning!
+You are using a BETA-version of programme and are connected to a test data base.
+If you are not a BETA-user, then immediately contact Admin.</value>
+  </data>
+  <data name="label_Operation" xml:space="preserve">
+    <value>Operation:</value>
+  </data>
+  <data name="btn_EditBag" xml:space="preserve">
+    <value>Edit BagNumber/SpoolNumber</value>
+  </data>
+  <data name="protocol_Info_1" xml:space="preserve">
+    <value>is missing an important FormTemplate. Please contact Admin to solve this problem.</value>
+  </data>
+  <data name="finishOrder_3_2" xml:space="preserve">
+    <value>You have as</value>
+  </data>
+  <data name="btn_AddUpdateUser" xml:space="preserve">
+    <value>Add User</value>
+  </data>
+  <data name="validateData_Info_9_4" xml:space="preserve">
+    <value>You may NOT go outside tolerances for a validated process card.
+
+You must inform responsible person that the process card needs to be updated?</value>
+  </data>
+  <data name="finishOrder_3_4" xml:space="preserve">
+    <value>Do you want to continue finishing the order?</value>
+  </data>
+  <data name="customMail" xml:space="preserve">
+    <value>Custom Mailaddresses</value>
+  </data>
+  <data name="authority_13" xml:space="preserve">
+    <value>Modify part-specific lists</value>
+  </data>
+  <data name="label_SignedInMonitor" xml:space="preserve">
+    <value>Signed In Monitor:</value>
+  </data>
+  <data name="btnZumbach" xml:space="preserve">
+    <value>F6-Zumbach-measurement</value>
+  </data>
+  <data name="Menu_Protocol_ManageTemplates_Protocols" xml:space="preserve">
+    <value>Protocols</value>
+  </data>
+  <data name="label_InfoPassword_2" xml:space="preserve">
+    <value>The passwords do not match.</value>
+  </data>
+  <data name="Menu_Settings_Settings" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="dryingMaterial_2" xml:space="preserve">
+    <value>DE</value>
+  </data>
+  <data name="Menu_Help_ReportBug" xml:space="preserve">
+    <value>Report a bug/improvement</value>
+  </data>
+  <data name="rillat" xml:space="preserve">
+    <value>Grooved</value>
+  </data>
+  <data name="label_Felskrivning" xml:space="preserve">
+    <value>Typo?</value>
+  </data>
+  <data name="authority_16" xml:space="preserve">
+    <value>Start 5th order without a predefined process card</value>
+  </data>
+  <data name="saveProcesscard_Info_3_2" xml:space="preserve">
+    <value>If this process card needs to be signed by QA, you need to create a Jira case.</value>
+  </data>
+  <data name="btn_AuthoritiesRemoveFactory" xml:space="preserve">
+    <value>Remove Factory</value>
+  </data>
+  <data name="authority_20" xml:space="preserve">
+    <value>Configure Custom Email Addresses</value>
+  </data>
+  <data name="Menu_Theme_Cars" xml:space="preserve">
+    <value>Cars</value>
+  </data>
+  <data name="login_Info_1_3" xml:space="preserve">
+    <value>Do you want to read the latest Changelog?</value>
+  </data>
+  <data name="rollingTips_6" xml:space="preserve">
+    <value>with DPP</value>
+  </data>
+  <data name="workoperations_Info_2" xml:space="preserve">
+    <value>This process card are for several Workoperations, please choose, from bellow, which to open.</value>
+  </data>
+  <data name="quickOpen_Info_3" xml:space="preserve">
+    <value>This Order is deleted from Monitor but you can still open the order.</value>
+  </data>
+  <data name="measureprotocol_Info_2" xml:space="preserve">
+    <value>Confirm this measurement with your password.</value>
+  </data>
+  <data name="btn_Workoperation_Choose" xml:space="preserve">
+    <value>Choose</value>
+  </data>
+  <data name="Menu_Theme_Pink" xml:space="preserve">
+    <value>Pink</value>
+  </data>
+  <data name="rb_HistoricalData" xml:space="preserve">
+    <value>Historical data:</value>
+  </data>
+  <data name="btn_AuthoritiesAddWorkoperation" xml:space="preserve">
+    <value>Add Workoperation</value>
+  </data>
+  <data name="label_Sign" xml:space="preserve">
+    <value>Sign:</value>
+  </data>
+  <data name="authority_Check_1" xml:space="preserve">
+    <value>You dont have the right authority to</value>
+  </data>
+  <data name="label_Settings_InfoZumbachCtr" xml:space="preserve">
+    <value>(Here you can change how many measurepoints that will be erased from the start and end of the Zumbachmeasurement. This is done because of the start and end of the measurement often is bad)</value>
+  </data>
+  <data name="btn_GetDataPartNr" xml:space="preserve">
+    <value>Load data for PartNumber</value>
+  </data>
+  <data name="finishOrder_1" xml:space="preserve">
+    <value>This order is finished, you can´t finish it again. 
+Contact Admin if necessary.</value>
+  </data>
+  <data name="spool" xml:space="preserve">
+    <value>Spool/Bag:</value>
+  </data>
+  <data name="Menu_Settings" xml:space="preserve">
+    <value>Tools</value>
+  </data>
+  <data name="Warning_OpenMeasureProtocol_3" xml:space="preserve">
+    <value>You cannot perform measurements until Line Clearance is completed and approved by authorized personnel.</value>
+  </data>
+  <data name="statsProdLine_Header" xml:space="preserve">
+    <value>Header</value>
+  </data>
+  <data name="BrowseOldOrders" xml:space="preserve">
+    <value>F4-Browse Old Orders</value>
+  </data>
+  <data name="label_InactiveProcesscard" xml:space="preserve">
+    <value>This Process card is inactive.</value>
+  </data>
+  <data name="lineClearance_Info_2" xml:space="preserve">
+    <value>You must perform LineClearance before filling in the Run Protocol.</value>
+  </data>
+  <data name="label_ProcesscardApprovedDate" xml:space="preserve">
+    <value>Process card Approved the:</value>
+  </data>
+  <data name="Menu_Help_InstructionVideos_RecentlyOpenedOrders" xml:space="preserve">
+    <value>Most recently Initiated Orders</value>
+  </data>
+  <data name="label_ErrorExit" xml:space="preserve">
+    <value>Exit</value>
+  </data>
+  <data name="finishOrder_MeasureEq_1" xml:space="preserve">
+    <value>Fill in all the measurement equipment numbers in the Measurement protocol</value>
+  </data>
+  <data name="Menu_Settings_ToolsCalculator" xml:space="preserve">
+    <value>Tool Calculator</value>
+  </data>
+  <data name="btn_OpenOrder" xml:space="preserve">
+    <value>Open Order</value>
+  </data>
+  <data name="forming" xml:space="preserve">
+    <value>FORMING</value>
+  </data>
+  <data name="btn_AuthoritiesAddEmail" xml:space="preserve">
+    <value>Add Email</value>
+  </data>
+  <data name="stringRestartComputer" xml:space="preserve">
+    <value>To activate new language, please restart programme.</value>
+  </data>
+  <data name="saveProcesscard_Info_2_2" xml:space="preserve">
+    <value>There is initiated orders with this Revision Number. 
+Please, change revision number and try again.</value>
+  </data>
+  <data name="settings_Page_ProdLine" xml:space="preserve">
+    <value>Production Line</value>
+  </data>
+  <data name="saveProcesscard_Info_8" xml:space="preserve">
+    <value>You must fill in the Production Type before you save the process card.
+The Production Type is used to separate the process cards if there are multiple process cards for the same PartNumber.</value>
+  </data>
+  <data name="label_ChangeChargeNr_Info_1" xml:space="preserve">
+    <value>Please write a comment about why you have changed batchnumber:</value>
+  </data>
+  <data name="validateData_Info_7_2" xml:space="preserve">
+    <value>you can continue run at your own risk.
+
+You must notify responsible personnel that the process card needs to be updated?</value>
+  </data>
+  <data name="lbl_Exit" xml:space="preserve">
+    <value>Exit</value>
+  </data>
+  <data name="label_PasswordUser" xml:space="preserve">
+    <value>User:</value>
+  </data>
+  <data name="Menu_User_Authorities" xml:space="preserve">
+    <value>Authorities</value>
+  </data>
+  <data name="label_DiscardZumbachMeasurement_Header" xml:space="preserve">
+    <value>Choose the positions you want to discard:</value>
+  </data>
+  <data name="zumbach_Info_11" xml:space="preserve">
+    <value>Loading measurepoints for active PartNumber...</value>
   </data>
   <data name="login_Info_2" xml:space="preserve">
     <value>Choose your name in the list, then write your password and press Enter.
@@ -1182,220 +2006,226 @@ Edit User: (Note! Eligibility requirements)
 Choose your name in the list and then write your password but DON'T push Enter - push "Add User" instead.
 Then edit your info and save by clicking on "Update user".</value>
   </data>
-  <data name="changeProcesscard_Info_2" xml:space="preserve">
-    <value>There is no process card attached to this PartNumber.</value>
+  <data name="Menu_User_EditUser" xml:space="preserve">
+    <value>Edit User</value>
   </data>
-  <data name="unit" xml:space="preserve">
-    <value>UNIT</value>
+  <data name="Menu_Developer_GetOrderInfo" xml:space="preserve">
+    <value>Get Order Info</value>
   </data>
-  <data name="Menu_User_Authorities_Roles" xml:space="preserve">
-    <value>Authorities Roles</value>
+  <data name="extraComments_Info_1" xml:space="preserve">
+    <value>You need to fill in both Spool number and Comment in order to update Extra Comment</value>
   </data>
-  <data name="label_FirstName" xml:space="preserve">
-    <value>First Name:</value>
+  <data name="authority_1" xml:space="preserve">
+    <value>Approve Line Clearance for PTFE</value>
   </data>
-  <data name="authority_20" xml:space="preserve">
-    <value>Configure Custom Email Addresses</value>
+  <data name="missingMeasurePoints" xml:space="preserve">
+    <value>Please note: 
+Currently, there are no measurement points for this order, or there may be a problem with the connection to Monitor. We ask you to enter the values yourself. Make sure you enter them correctly! 
+If you’re unsure or need help, contact the admin.</value>
   </data>
-  <data name="btn_AuthoritiesAddUser" xml:space="preserve">
-    <value>Add User...</value>
+  <data name="btn_TransferLengthMeasure" xml:space="preserve">
+    <value>Transfer Length measurement</value>
   </data>
-  <data name="chb_HideInactive_PartNr" xml:space="preserve">
-    <value>Hide Inactive PartNumbers</value>
+  <data name="mail_ApproveProcesscard_1" xml:space="preserve">
+    <value>There is a later revision of the Process Card that is not approved by QA and you are now running on revision {0}. 
+Note! It is perfectly okay to run on this Revision and QA has now been notified that the new revision needs to be approved.</value>
   </data>
-  <data name="statsProdLine_5" xml:space="preserve">
-    <value>Total Orders / Month</value>
+  <data name="btn_AddPartNr" xml:space="preserve">
+    <value>Add PartNumber</value>
   </data>
-  <data name="login_Info_1_3" xml:space="preserve">
-    <value>Do you want to read the latest Changelog?</value>
+  <data name="label_AnstNr" xml:space="preserve">
+    <value>Emp.Nr:</value>
   </data>
-  <data name="Menu_Settings_ChangeColorHS_Machine" xml:space="preserve">
-    <value>Change color HS-Machine</value>
+  <data name="saveProcesscard_Info_7_1" xml:space="preserve">
+    <value>Are you sure you want to delete this process card?</value>
   </data>
-  <data name="saveSetting_1" xml:space="preserve">
-    <value>Error when loading settings.
-Pleaste contact Admin if necessary.</value>
+  <data name="otherUserIsLoggedIn" xml:space="preserve">
+    <value>You cannot make changes to the protocol right now because another user is currently using it.</value>
   </data>
-  <data name="tuneZumbachData_1" xml:space="preserve">
-    <value>Contains only</value>
+  <data name="changeMeasureProtocol_Info_2" xml:space="preserve">
+    <value>You cannot change the template for the measureprotocol before you have started/opened an order.</value>
   </data>
-  <data name="label_StartUps" xml:space="preserve">
-    <value>Startups</value>
-  </data>
-  <data name="missingPartNumber_2" xml:space="preserve">
-    <value>does not exist in Monitor, please check the partnumber.</value>
-  </data>
-  <data name="chb_HS_Machine_InvertForeColor" xml:space="preserve">
-    <value>Invert the color of the text</value>
-  </data>
-  <data name="authority_4" xml:space="preserve">
-    <value>Approve a Process card</value>
-  </data>
-  <data name="label_AutomaticallyChooseWorkoperation" xml:space="preserve">
-    <value>Here you can choose which workoperation to automaticaly open when you start  "Processcard management".</value>
-  </data>
-  <data name="label_Welcome" xml:space="preserve">
-    <value>Welcome</value>
-  </data>
-  <data name="label_ChooseUser" xml:space="preserve">
-    <value>Choose User:</value>
-  </data>
-  <data name="quickOpen_Info_2" xml:space="preserve">
-    <value>Please, close the Zumbachwindow before you try to open a new Order.</value>
-  </data>
-  <data name="activatePartNr" xml:space="preserve">
-    <value>Activate Process card</value>
-  </data>
-  <data name="protocol_OpenAnotherUser_1" xml:space="preserve">
-    <value>The protocol is currently open by</value>
-  </data>
-  <data name="label_ProductionLines_Green" xml:space="preserve">
-    <value>Green = Production line is active</value>
-  </data>
-  <data name="label_LastName" xml:space="preserve">
-    <value>Surname:</value>
-  </data>
-  <data name="measureinstrument_Delete_3" xml:space="preserve">
-    <value>This measurement instrument</value>
-  </data>
-  <data name="saveProcesscard_Info_7_2" xml:space="preserve">
-    <value>A process card not longer used should NOT be deleted. It should be inactived.
-
-Only delete a processcard if it was created by mistake.</value>
-  </data>
-  <data name="extraComments" xml:space="preserve">
-    <value>Extra Comments:</value>
-  </data>
-  <data name="chb_OnlyForMeasurements" xml:space="preserve">
-    <value>Use this computer only for manual measurements</value>
-  </data>
-  <data name="validateData_Info_3_2" xml:space="preserve">
-    <value>is outside the nominal value for a process card based on historical data.</value>
-  </data>
-  <data name="label_Role" xml:space="preserve">
-    <value>Role:</value>
-  </data>
-  <data name="Menu_Order_QC_Feedback" xml:space="preserve">
-    <value>Leave feedback for this run</value>
-  </data>
-  <data name="measureprotocol_Info_4" xml:space="preserve">
-    <value>Please, choose an errorcode before you try to discard a measurement.</value>
-  </data>
-  <data name="monitorInfo_2" xml:space="preserve">
-    <value>This Order is deleted from Monitor but you can still open the order.</value>
-  </data>
-  <data name="btn_AddStartUp" xml:space="preserve">
-    <value>Add Startup</value>
-  </data>
-  <data name="authority_2" xml:space="preserve">
-    <value>Manage Process cards</value>
-  </data>
-  <data name="chooseWorkOp_Info_1" xml:space="preserve">
-    <value>Nothing</value>
-  </data>
-  <data name="label_Settings_Info_ProdLine" xml:space="preserve">
-    <value>List on production lines that need to change screen cloth after 3 weeks. The program will start to warn the operators 3 days before it´s time to change.</value>
-  </data>
-  <data name="zumbach_Info_6_2" xml:space="preserve">
-    <value>measurementpoints.</value>
-  </data>
-  <data name="dryer" xml:space="preserve">
-    <value>DRYER</value>
-  </data>
-  <data name="lbl_Remove_Startup" xml:space="preserve">
-    <value>- Remove Startup</value>
-  </data>
-  <data name="equipment_Error_1" xml:space="preserve">
-    <value>You cannot edit equipment that you have not signed yourself.</value>
-  </data>
-  <data name="login_Info_6" xml:space="preserve">
-    <value>Choose a profilepicture you want to use.</value>
-  </data>
-  <data name="transferDataExcel_1" xml:space="preserve">
-    <value>Would you like to open the file in Excel now?</value>
-  </data>
-  <data name="dryingMaterial_3" xml:space="preserve">
-    <value>Set Time</value>
-  </data>
-  <data name="label_ChooseDepartment" xml:space="preserve">
-    <value>Choose Department:</value>
-  </data>
-  <data name="date" xml:space="preserve">
-    <value>Date:</value>
-  </data>
-  <data name="label_ErrorDiscard" xml:space="preserve">
-    <value>Discard</value>
-  </data>
-  <data name="authority_24" xml:space="preserve">
-    <value>Change settings for Zumbach</value>
-  </data>
-  <data name="rollingTips_1" xml:space="preserve">
-    <value>You have measured a total of</value>
+  <data name="Menu_Arkiv_ChangeCompany" xml:space="preserve">
+    <value>Change company</value>
   </data>
   <data name="label_ErrorCodeHeader_1" xml:space="preserve">
     <value>Choose errorcode from the list and click Discard</value>
   </data>
-  <data name="label_ProductionLines_Red" xml:space="preserve">
-    <value>Red = Productionline is inactive</value>
+  <data name="zumbach_Info_8" xml:space="preserve">
+    <value>Are you sure you want to delete all measurements from this measurement</value>
   </data>
-  <data name="measureinstrument_Delete_2" xml:space="preserve">
-    <value>Data within will be deleted and will not be retrievable.</value>
+  <data name="processcardAlreadyEstablished" xml:space="preserve">
+    <value>The process card has already been established and signed.</value>
   </data>
-  <data name="lbl_ChangeChargeNr_Info_Change" xml:space="preserve">
-    <value>Change ChargeNumber</value>
+  <data name="label_MeasureInformation" xml:space="preserve">
+    <value>Measureinformation</value>
   </data>
-  <data name="Menu_User_Authorities_CustomWorkoperations" xml:space="preserve">
-    <value>Custom Workoperations</value>
+  <data name="btn_GetDataOrder" xml:space="preserve">
+    <value>Load data for Order</value>
   </data>
-  <data name="label_Comments" xml:space="preserve">
-    <value>Comments:</value>
+  <data name="label_Workoperation" xml:space="preserve">
+    <value>Workoperation:</value>
   </data>
-  <data name="protocol_Info_1" xml:space="preserve">
-    <value>is missing an important FormTemplate. Please contact Admin to solve this problem.</value>
+  <data name="no" xml:space="preserve">
+    <value>No</value>
   </data>
-  <data name="removeStartup_2_1" xml:space="preserve">
-    <value>Are you sure you want to delete startup</value>
+  <data name="label_ProdGroup" xml:space="preserve">
+    <value>Production Group:</value>
   </data>
-  <data name="btn_OpenOrder" xml:space="preserve">
+  <data name="Menu_Protocol_ManageLineClearance_Templates" xml:space="preserve">
+    <value>Manage Templates for Line-Clearance</value>
+  </data>
+  <data name="statsProdLine_2" xml:space="preserve">
+    <value>Most Common PartNumber</value>
+  </data>
+  <data name="rollingTips_1" xml:space="preserve">
+    <value>You have measured a total of</value>
+  </data>
+  <data name="print_Header_ZumbachProtocol" xml:space="preserve">
+    <value>Form: Charts for HeatShrink</value>
+  </data>
+  <data name="browseProtocols_2" xml:space="preserve">
+    <value>If you select the option ‘Do NOT load orderdata,’ you can click on orders in the order list without loading the data.</value>
+  </data>
+  <data name="Menu_User_Authorities_Roles" xml:space="preserve">
+    <value>Authorities Roles</value>
+  </data>
+  <data name="Menu_Equipment_UseFilter" xml:space="preserve">
+    <value>Use Candlefilter</value>
+  </data>
+  <data name="Menu_Equipment" xml:space="preserve">
+    <value>Equipment</value>
+  </data>
+  <data name="Menu_Protocol_Unlock_ValidatedProcesscard" xml:space="preserve">
+    <value>Unlock Validated Process card</value>
+  </data>
+  <data name="label_Role" xml:space="preserve">
+    <value>Role:</value>
+  </data>
+  <data name="label_AddUser" xml:space="preserve">
+    <value>Add User:</value>
+  </data>
+  <data name="label_InfoChooseDepartment" xml:space="preserve">
+    <value>I you can't find your name in list - you can choose department from which program will retrieve names from.</value>
+  </data>
+  <data name="finishOrder_Halvfabrikat_2_2" xml:space="preserve">
+    <value>in the protocol</value>
+  </data>
+  <data name="label_Settings_InfoBaudRate" xml:space="preserve">
+    <value>(If you change the Baudrate the pullerspeed also needs to change. 9600 is standard and used with 2m/minute)</value>
+  </data>
+  <data name="maintenanceWork_days" xml:space="preserve">
+    <value>days</value>
+  </data>
+  <data name="authority_24" xml:space="preserve">
+    <value>Change settings for Zumbach</value>
+  </data>
+  <data name="btn_PrintZumbach" xml:space="preserve">
+    <value>Print Zumbach measurements</value>
+  </data>
+  <data name="partNrMaterial" xml:space="preserve">
+    <value>PartNr mtrl:</value>
+  </data>
+  <data name="weeklyCalibration" xml:space="preserve">
+    <value>Ensure the temperature calibration is checked before completing the protocol.</value>
+  </data>
+  <data name="StartOrder" xml:space="preserve">
+    <value>Do you want to start the order:</value>
+  </data>
+  <data name="Menu_User_WhoIsLoggedIn" xml:space="preserve">
+    <value>Who is Signed In?</value>
+  </data>
+  <data name="label_Discarded" xml:space="preserve">
+    <value>Discarded</value>
+  </data>
+  <data name="label_QuickOpenOrder" xml:space="preserve">
+    <value>Open most recently initiated orders</value>
+    <comment>?</comment>
+  </data>
+  <data name="maintenanceWork_hours" xml:space="preserve">
+    <value>hours</value>
+  </data>
+  <data name="label_ProtocolTemplateRevision" xml:space="preserve">
+    <value>Choose Revision for Protocol-Template</value>
+  </data>
+  <data name="Warning_OpenMeasureProtocol_5" xml:space="preserve">
+    <value>You need to initiate an order before doing measurements.</value>
+  </data>
+  <data name="authority_9" xml:space="preserve">
+    <value>Edit a finished Order</value>
+  </data>
+  <data name="OverviewProdlines" xml:space="preserve">
+    <value>F7-Overview Production Lines</value>
+  </data>
+  <data name="measureprotocol_Info_4" xml:space="preserve">
+    <value>Please, choose an errorcode before you try to discard a measurement.</value>
+  </data>
+  <data name="Menu_Arkiv" xml:space="preserve">
+    <value>File</value>
+  </data>
+  <data name="label_Orange" xml:space="preserve">
+    <value>Processcard is missing and needs to be created.</value>
+  </data>
+  <data name="btn_ConfirmNewCode" xml:space="preserve">
+    <value>Confirm code</value>
+  </data>
+  <data name="finishOrder_2_1" xml:space="preserve">
+    <value>You have only made</value>
+  </data>
+  <data name="Menu_Order_LinkOrder" xml:space="preserve">
+    <value>Link Order</value>
+  </data>
+  <data name="authority_Check_3" xml:space="preserve">
+    <value>To manage authorization you need one of this authorities:
+SuperAdmin
+Process Engineer
+Quality Director
+Quality Engineer
+	</value>
+  </data>
+  <data name="measureprotocol_Info_12" xml:space="preserve">
+    <value>No measurement was discarded.</value>
+  </data>
+  <data name="label_EstablishedBy" xml:space="preserve">
+    <value>Established by: Sign./Emp.Nr:</value>
+  </data>
+  <data name="Menu_Protocol_ManageProcesscards" xml:space="preserve">
+    <value>Manage Process cards</value>
+  </data>
+  <data name="rb_Validated" xml:space="preserve">
+    <value>Validated on these lots:</value>
+  </data>
+  <data name="isOkAddStartUp" xml:space="preserve">
+    <value>You must fill in all values in the latest startup before trying to add a new startup.
+If no value is used, you can double-click the cell for N/A.</value>
+  </data>
+  <data name="validateData_Info_9_2" xml:space="preserve">
+    <value>Outside the Tolerances for a validated process card:</value>
+  </data>
+  <data name="loadingProductionlines_2" xml:space="preserve">
+    <value>Adding info for Production lines...</value>
+  </data>
+  <data name="label_Info_ProcesscardChange" xml:space="preserve">
+    <value>Provide information on why you have exceeded the boundaries of the process card. 
+Once the order is complete, this will be emailed to the person in charge of the process card.</value>
+  </data>
+  <data name="finishOrder_Comments" xml:space="preserve">
+    <value>Fill in Comments in the protocol</value>
+  </data>
+  <data name="Menu_Arkiv_Open" xml:space="preserve">
     <value>Open Order</value>
   </data>
-  <data name="label_NewPassword" xml:space="preserve">
-    <value>Password:</value>
+  <data name="label_ProductionLines_Header" xml:space="preserve">
+    <value>Production lines</value>
   </data>
-  <data name="statsProdLine_8" xml:space="preserve">
-    <value>Average temp. Zones</value>
+  <data name="lbl_Abort" xml:space="preserve">
+    <value>Abort</value>
   </data>
-  <data name="Menu_Help_InstructionVideos" xml:space="preserve">
-    <value>Instructionvideos</value>
+  <data name="extrusionTEF_Info_7" xml:space="preserve">
+    <value>Loading Protocol/Processcard...</value>
   </data>
-  <data name="remove_Startup_2_2" xml:space="preserve">
-    <value>The data contained in it will be deleted and cannot be recovered.</value>
-  </data>
-  <data name="btn_Select" xml:space="preserve">
-    <value>Select</value>
-  </data>
-  <data name="lbl_NewUser" xml:space="preserve">
-    <value>New user</value>
-  </data>
-  <data name="Warning" xml:space="preserve">
-    <value>Warning!</value>
-  </data>
-  <data name="validateData_Info_7_4" xml:space="preserve">
-    <value>is out of the limits for a validated process card.</value>
-  </data>
-  <data name="label_ProcesscardApprovedDate" xml:space="preserve">
-    <value>Process card Approved the:</value>
-  </data>
-  <data name="maintenanceWork_1" xml:space="preserve">
-    <value>Maintenance work in progress and the program CANNOT be used during this time. 
-The application will close after this.
-The work has been ongoing for </value>
-  </data>
-  <data name="btn_Discard" xml:space="preserve">
-    <value>Discard</value>
-  </data>
-  <data name="label_ChooseProcesscardHeader" xml:space="preserve">
-    <value>There are multiple process cards for this partnumber, click on the one you want to use.</value>
+  <data name="label_Ok" xml:space="preserve">
+    <value>Value Ok</value>
   </data>
   <data name="saveProcesscard_Info_6" xml:space="preserve">
     <value>Something went wrong! Please check your spelling.
@@ -1403,371 +2233,65 @@ Fault code is now e-mailed to Admin.
 
 Please, contact Admin if you can't solve the problem.</value>
   </data>
-  <data name="authority_1" xml:space="preserve">
-    <value>Approve Line Clearance for PTFE</value>
+  <data name="confirmTransferPassword" xml:space="preserve">
+    <value>Enter your password to confirm the transfer.</value>
   </data>
-  <data name="print_Header_Protocol_Comments" xml:space="preserve">
-    <value>Form: Comments</value>
+  <data name="label_HS_Color_Info" xml:space="preserve">
+    <value>The color of the HS-Machine is important for easily separate which line is being used when you have multiple programs open on the same computer/screen. First, select HS-Machine in the list below and then choose a color and if needed you can invert the color of the text if it becomes difficult to read.</value>
   </data>
-  <data name="saveProcesscard_Info_2_2" xml:space="preserve">
-    <value>There is initiated orders with this Revision Number. 
-Please, change revision number and try again.</value>
-  </data>
-  <data name="measureinstrument_Delete_1" xml:space="preserve">
-    <value>Are you certain that you want to delete this measurement instrument?</value>
-  </data>
-  <data name="label_Info_TotalLayer" xml:space="preserve">
-    <value>Amount of layers in tubing (if multilayer tubing). Processcard will update automatically when changeing amount of layers.</value>
-  </data>
-  <data name="extrusionTEF_Info_5" xml:space="preserve">
-    <value>in the earlier startup.</value>
-  </data>
-  <data name="spool" xml:space="preserve">
-    <value>Spool/Bag:</value>
-  </data>
-  <data name="statsProdLine_6" xml:space="preserve">
-    <value>Operator Line Clearance</value>
-  </data>
-  <data name="comments" xml:space="preserve">
-    <value>Comments:</value>
-  </data>
-  <data name="btn_AddPartNr" xml:space="preserve">
-    <value>Add PartNumber</value>
-  </data>
-  <data name="label_PartNrNewName" xml:space="preserve">
-    <value>This partnr has changed name to -</value>
-  </data>
-  <data name="tuneZumbachData_9" xml:space="preserve">
-    <value>I’m afraid I can’t make this measurement any better…</value>
-  </data>
-  <data name="settings_Page_Measureinstruments" xml:space="preserve">
-    <value>Measurement instruments</value>
-  </data>
-  <data name="no" xml:space="preserve">
-    <value>No</value>
-  </data>
-  <data name="rollingTips_6" xml:space="preserve">
-    <value>with DPP</value>
-  </data>
-  <data name="label_LineClearance" xml:space="preserve">
-    <value>Operator and cleared line (line clearence)</value>
+  <data name="finishedOrder" xml:space="preserve">
+    <value>Finished Order: Date / Sign</value>
   </data>
   <data name="update_Info_1_1" xml:space="preserve">
     <value>There is a new update to load. The update is non-critical so you can also update later on.</value>
   </data>
-  <data name="btn_Cancel" xml:space="preserve">
-    <value>Cancel</value>
+  <data name="label_Customer" xml:space="preserve">
+    <value>Customer:</value>
   </data>
-  <data name="tuneZumbachData_4" xml:space="preserve">
-    <value>There are identical measurement points over an extended period, which likely indicates that the tube has become stuck in the puller wheels or that the puller has stopped.</value>
+  <data name="login_Info_6" xml:space="preserve">
+    <value>Choose a profilepicture you want to use.</value>
   </data>
-  <data name="label_Settings_InfoMeasureinstrument_Add" xml:space="preserve">
-    <value>Click on a Measurement instrument to add it to active Workoperation</value>
+  <data name="selectTemplateError" xml:space="preserve">
+    <value>You have not selected a template for either the Protocol or the Measurement Protocol, and the order cannot be started. Please try again.
+
+Contact Admin if you encounter any issues.</value>
   </data>
-  <data name="validateData_Info_5_2" xml:space="preserve">
-    <value>is out of limits for a process card based on historical data.</value>
+  <data name="quickOpen_Info_2" xml:space="preserve">
+    <value>Please, close the Zumbachwindow before you try to open a new Order.</value>
   </data>
-  <data name="btn_RemovePreFab" xml:space="preserve">
-    <value>Delete PreFab</value>
+  <data name="maintenanceWork_1" xml:space="preserve">
+    <value>Maintenance work in progress and the program CANNOT be used during this time. 
+The application will close after this.
+The work has been ongoing for </value>
   </data>
-  <data name="productInfo" xml:space="preserve">
-    <value>ProductInformation:</value>
+  <data name="tuneZumbachData_Measurepoints" xml:space="preserve">
+    <value>Measurepoints</value>
   </data>
-  <data name="zumbach_Info_12" xml:space="preserve">
-    <value>You cannot do measurements on an order that is already finished.</value>
+  <data name="manageTemplates" xml:space="preserve">
+    <value>You must be logged in with right authorities to create/edit templates for the protocols.</value>
   </data>
-  <data name="btn_AuthoritiesRemoveMail" xml:space="preserve">
-    <value>Delete Email</value>
+  <data name="Menu_User_CheckMyAnalysis" xml:space="preserve">
+    <value>Check my Analysis</value>
   </data>
-  <data name="orderRuntime" xml:space="preserve">
-    <value>Order Runtime:</value>
+  <data name="tuneZumbachData_6" xml:space="preserve">
+    <value>Smoothing out the curves in the chart. Measurement</value>
   </data>
-  <data name="protocol_EquimentInfo_1" xml:space="preserve">
-    <value>No, same material and equipment as last order</value>
+  <data name="missingLayer_3" xml:space="preserve">
+    <value>Wrong value, please try again.</value>
   </data>
-  <data name="dryingMaterial_2" xml:space="preserve">
-    <value>DE</value>
+  <data name="btn_Remove_Extruder" xml:space="preserve">
+    <value>Remove Last Extruder</value>
   </data>
-  <data name="extrusionTEF_Info_4" xml:space="preserve">
-    <value>You can´t add a new startup before you fill in everything for equipment for Machine</value>
-  </data>
-  <data name="login_UpdateUser" xml:space="preserve">
-    <value>Update User</value>
-  </data>
-  <data name="lbl_Exit" xml:space="preserve">
-    <value>Exit</value>
-  </data>
-  <data name="validateData_Info_5_1" xml:space="preserve">
-    <value>Out of tolerance - Historical data:</value>
-  </data>
-  <data name="validEmail" xml:space="preserve">
-    <value>WARNING: You have entered an invalid email address. 
-Please try again, or contact the admin if needed.</value>
-  </data>
-  <data name="statsProdLine_1" xml:space="preserve">
-    <value>Most Common Customer</value>
-  </data>
-  <data name="authority_23" xml:space="preserve">
-    <value>Choose freely from lists in the protocol.</value>
-  </data>
-  <data name="Menu_Arkiv_ManageDatabase" xml:space="preserve">
-    <value>Manage Database Settings</value>
-  </data>
-  <data name="saveProcesscard_Info_5" xml:space="preserve">
-    <value>Please save the process card before you update amount of layers for tubing.</value>
-  </data>
-  <data name="btn_DeleteSelectedData" xml:space="preserve">
-    <value>Delete selected data</value>
-  </data>
-  <data name="chb_TempKalibCheck" xml:space="preserve">
-    <value>Temperature calibration performed according to Instruction I392</value>
+  <data name="tuneZumbachData_2" xml:space="preserve">
+    <value>You should consider discarding this measurement since the data is not complete. (some positions are missing)</value>
   </data>
   <data name="workoperations_Info_1_2" xml:space="preserve">
     <value>is not linked to any Workoperation .
 Please select which Workoperation this production line should belong to.
 The Workoperation refers to the correct templates for the protocols used.</value>
   </data>
-  <data name="extrusionTEF_Info_3" xml:space="preserve">
-    <value>Confirm the euipment with your password</value>
-  </data>
-  <data name="addStartUp" xml:space="preserve">
-    <value>You cannot add a new startup before you have filled in the data in the previous startup.</value>
-  </data>
-  <data name="tuneZumbachData_3" xml:space="preserve">
-    <value>Do you want to discard this measurement?</value>
-  </data>
-  <data name="deactivatePartNr" xml:space="preserve">
-    <value>Deactivate Process card</value>
-  </data>
-  <data name="lineClearance_Info_3" xml:space="preserve">
-    <value>Line Clearance means setting up and "clean" line or workstation before starting up next order.
-By doing such you eliminate the risk for mixing material, tooling, product, documents,  labels and such between orders. 
-This to avoid severe consequenses for customer end.</value>
-  </data>
-  <data name="measureprotocol_Warning_1" xml:space="preserve">
-    <value>One of your measurements is abnormally high or low compared to the nominal value.
-You should immediately contact the person responsible for the measuring points if incorrect values have been entered there.
-Are you sure you want to transfer this measurement?</value>
-  </data>
-  <data name="label_RoomTempMoist" xml:space="preserve">
-    <value>Room Temp/Moist</value>
-  </data>
-  <data name="saveProcesscard_Info_3_1" xml:space="preserve">
-    <value>New processcard created for PartNumber:</value>
-  </data>
-  <data name="authority_7" xml:space="preserve">
-    <value>Add user</value>
-  </data>
-  <data name="btn_Clear_HelpInput_1" xml:space="preserve">
-    <value>Clear</value>
-  </data>
-  <data name="validateData_Info_9_4" xml:space="preserve">
-    <value>You may NOT go outside tolerances for a validated process card.
-
-You must inform responsible person that the process card needs to be updated?</value>
-  </data>
-  <data name="rollingTips_FutureUpdate" xml:space="preserve">
-    <value>Future Update:</value>
-  </data>
-  <data name="label_Settings_InfoBaudRate" xml:space="preserve">
-    <value>(If you change the Baudrate the pullerspeed also needs to change. 9600 is standard and used with 2m/minute)</value>
-  </data>
-  <data name="btn_TransferToExcel" xml:space="preserve">
-    <value>Transfer measurements to Excel</value>
-  </data>
-  <data name="login_Info_3" xml:space="preserve">
-    <value>Fill in everything before you add a user:</value>
-  </data>
-  <data name="label_DateTo" xml:space="preserve">
-    <value>To Date:</value>
-  </data>
-  <data name="btn_AuthoritiesAddEmail" xml:space="preserve">
-    <value>Add Email</value>
-  </data>
-  <data name="chooseTemplate" xml:space="preserve">
-    <value>Choose the appropriate template for this order.</value>
-  </data>
-  <data name="missingLayer_2" xml:space="preserve">
-    <value>Total layers for tube.</value>
-  </data>
-  <data name="customWorkoperation" xml:space="preserve">
-    <value>Custom Workoperations</value>
-  </data>
-  <data name="dateStart" xml:space="preserve">
-    <value>Date Start:</value>
-  </data>
-  <data name="measureprotocol_Info_6" xml:space="preserve">
-    <value>Please, fill in all fields before transfering a measurement.
-In empty fields you can double click to make them N/A</value>
-  </data>
-  <data name="chb_AutoPosByte" xml:space="preserve">
-    <value>Automatically Positionchange</value>
-  </data>
-  <data name="login_Info_1_2" xml:space="preserve">
-    <value>and the one that is active right now is:</value>
-  </data>
-  <data name="Measurement_Protocol" xml:space="preserve">
-    <value>Measurement Protocol</value>
-  </data>
-  <data name="workoperations_Info_1_1" xml:space="preserve">
-    <value>This Production line</value>
-  </data>
-  <data name="print_Header_Protocol_Extrusion" xml:space="preserve">
-    <value>Form: Process card/Protocol for Extrusion</value>
-  </data>
-  <data name="validateData_Info_9_5" xml:space="preserve">
-    <value>is out of the limits for a validated process card.</value>
-  </data>
-  <data name="protocol_OpenAnotherUser_3" xml:space="preserve">
-    <value>You cannot save data in the protocol at the moment.
-In the 'Operator' menu in the main window, you can log out</value>
-  </data>
-  <data name="print_Header_ZumbachProtocol" xml:space="preserve">
-    <value>Form: Charts for HeatShrink</value>
-  </data>
-  <data name="btn_Edit_Equipment" xml:space="preserve">
-    <value>Edit Equipment</value>
-  </data>
-  <data name="btn_AuthoritiesRemoveFactory" xml:space="preserve">
-    <value>Remove Factory</value>
-  </data>
-  <data name="label_Fail" xml:space="preserve">
-    <value>Value outside Spec.</value>
-  </data>
-  <data name="btn_AddPreFab" xml:space="preserve">
-    <value>Add PreFab</value>
-  </data>
-  <data name="lbl_DiscardUser" xml:space="preserve">
-    <value>Delete User</value>
-  </data>
-  <data name="login_Info_4" xml:space="preserve">
-    <value>Fill in everthing before you update your profile:</value>
-  </data>
-  <data name="btn_GetDataPartNr" xml:space="preserve">
-    <value>Load data for PartNumber</value>
-  </data>
-  <data name="label_Felskrivning" xml:space="preserve">
-    <value>Typo?</value>
-  </data>
-  <data name="label_ConfirmPassword" xml:space="preserve">
-    <value>Confirm Password:</value>
-  </data>
-  <data name="dryingMaterial_1" xml:space="preserve">
-    <value>Drying material During Extrusion (DE)</value>
-    <comment>Torkar material Under Körningen (U.K)</comment>
-  </data>
-  <data name="template" xml:space="preserve">
-    <value>Template</value>
-  </data>
-  <data name="mainInfo_Missing" xml:space="preserve">
-    <value>Template for MainInfo is missing, please contact Admin.</value>
-  </data>
-  <data name="label_InfoPassword_1" xml:space="preserve">
-    <value>The password must be 4 characters or more.</value>
-  </data>
-  <data name="label_InfoPassword_2" xml:space="preserve">
-    <value>The passwords do not match.</value>
-  </data>
-  <data name="otherUserIsLoggedIn" xml:space="preserve">
-    <value>You cannot make changes to the protocol right now because another user is currently using it.</value>
-  </data>
-  <data name="user_AlreadyInSystem" xml:space="preserve">
-    <value>already exists. If the user has forgotten their password, you should first delete this user.</value>
-  </data>
-  <data name="user_AddedInSystem" xml:space="preserve">
-    <value>is now added.</value>
-  </data>
-  <data name="autoStart_Workoperation_1" xml:space="preserve">
-    <value>Would you like to save in your profile that</value>
-  </data>
-  <data name="autoStart_Workoperation_2" xml:space="preserve">
-    <value>automatically starts in the future?</value>
-  </data>
-  <data name="autoStart_Workoperation_3" xml:space="preserve">
-    <value>This setting can be adjusted in Settings afterwards if needed.</value>
-  </data>
-  <data name="autoStart_Workoperation_4" xml:space="preserve">
-    <value>Save Workoperation</value>
-  </data>
-  <data name="delete_Processcard_1" xml:space="preserve">
-    <value>It is not possible to delete a process card that has associated orders. If the process card is no longer needed, you can deactivate it instead.</value>
-  </data>
-  <data name="weeklyCalibration" xml:space="preserve">
-    <value>Ensure the temperature calibration is checked before completing the protocol.</value>
-  </data>
-  <data name="Menu_Protocol_ManageLineClearance_Templates" xml:space="preserve">
-    <value>Manage Templates for Line-Clearance</value>
-  </data>
-  <data name="measureprotocol_Info_11" xml:space="preserve">
-    <value>Please fill in a comment about why you are discarding a measurement.</value>
-  </data>
-  <data name="measureprotocol_Info_12" xml:space="preserve">
-    <value>No measurement was discarded.</value>
-  </data>
-  <data name="chooseProtocol_1" xml:space="preserve">
-    <value>There are several templates for this part number. Please choose below which one you want to open.</value>
-  </data>
-  <data name="chooseProtocol_2" xml:space="preserve">
-    <value>Approved by QA</value>
-  </data>
-  <data name="chooseProtocol_3" xml:space="preserve">
-    <value>There are several Process cards linked to this Partnumber. Please choose below which one you want to use.</value>
-  </data>
-  <data name="authority_26" xml:space="preserve">
-    <value>Configure Settings for Workoperations</value>
-  </data>
-  <data name="authority_27" xml:space="preserve">
-    <value>Run outside the tolerances on a validated Process Card</value>
-  </data>
-  <data name="changeBatchNr_Info_1" xml:space="preserve">
-    <value>No comment selected, you cannot change the Batch Number</value>
-  </data>
-  <data name="changeBatchNr_Info_2" xml:space="preserve">
-    <value>Changed Batch Number for Prefab:</value>
-  </data>
-  <data name="mail_Body_NotifyOrderStartCount_4to5" xml:space="preserve">
-    <value>Create Process card:&lt;br /&gt;
-PartNumber {0} was just started for the {1}th time without an established process card&lt;br /&gt;
-ProdLine: {2}&lt;br /&gt;
-ProdGroup: {3}&lt;br /&gt;
-Workoperation: {4}&lt;br /&gt;</value>
-  </data>
-  <data name="mail_Body" xml:space="preserve">
-    <value>&lt;b&gt;This email cannot be replied to &lt;br /&gt;&lt;br /&gt;
-From: {0} - {1}&lt;br /&gt;&lt;br /&gt;{2}</value>
-  </data>
-  <data name="mail_Subject_NotifyOrderStartCount" xml:space="preserve">
-    <value>{0} was started for the {1}th time without an established process card.</value>
-  </data>
-  <data name="mail_Body_NotifyOrderStartCount_6" xml:space="preserve">
-    <value>Create Process card:&lt;br /&gt;
-PartNumber {0} was just started for the {1}th time without an established process card&lt;br /&gt;
-ProdLine: {2}&lt;br /&gt;
-ProdGroup: {3}&lt;br /&gt;
-Workoperation: {4}&lt;br /&gt;
-&lt;br /&gt;
-&lt;br /&gt;
-&lt;b&gt;IMPORTANT!!&lt;b&gt;&lt;br/&gt; 
-The process card must be finalized immediately. Next time, approval from the Quality Director or the Production Director will be required to start the order</value>
-  </data>
-  <data name="mail_Body_NotifyOrderFinishedCount_3" xml:space="preserve">
-    <value>Create Process card:&lt;br /&gt;
-PartNumber {0} was just finished for the 3rd time without an established card&lt;br /&gt;
-ProdLine: {1}&lt;br /&gt;
-ProdGroup: {2}&lt;br /&gt;
-Workoperation: {3}&lt;br /&gt;
-OrderNr-Operation: {4}-{5} &lt;br /&gt;</value>
-  </data>
-  <data name="mail_Subject_NotifyOrderFinishedCount" xml:space="preserve">
-    <value>{0} was finished for the 3rd time without an established process card.</value>
-  </data>
-  <data name="mail_NotifyCustomerServiceMissingMeasurePoints" xml:space="preserve">
-    <value>This order is missing measurement points, please add them to the Monitor.&lt;br /&gt;&lt;br /&gt;
-Workoperation: {0} &lt;br /&gt;
-OrderNr: {1} &lt;br /&gt;
-Operation: {2} &lt;br /&gt;
-PartNumber: {3} &lt;br /&gt;&lt;br /&gt;
-Please Contact {4} when the measurement points are added to Monitor.</value>
+  <data name="authority_19" xml:space="preserve">
+    <value>Delete user</value>
   </data>
   <data name="notifyUserOrderStartCount_6" xml:space="preserve">
     <value>PartNumber {0} has been started for {1} times without an established process card.
@@ -1775,599 +2299,79 @@ The order can ONLY be initiated by someone with the following role:
 SuperUser,
 Process Engineer</value>
   </data>
+  <data name="uploadPicture_2" xml:space="preserve">
+    <value>Select a picture you want to upload</value>
+  </data>
+  <data name="Menu_Theme_Optinova" xml:space="preserve">
+    <value>Optinova</value>
+  </data>
+  <data name="label_Filter" xml:space="preserve">
+    <value>Filter Workoperations</value>
+  </data>
+  <data name="btn_Clear_HelpInput_2" xml:space="preserve">
+    <value>Clear</value>
+  </data>
   <data name="notifyDirectorOrderStartCount_7" xml:space="preserve">
     <value>Warning! 
 Part number {0} has already been started 6 out of 6 allowed times without an established process card. 
 The process issues MUST be investigated and the process card must be established before a new order is started.</value>
   </data>
-  <data name="notifyUserOrderStartCount_7" xml:space="preserve">
-    <value>PartNumber {0} has been started for {1} times without an established process card.
-The process issues MUST be investigated and a process card must be established before a new order is started.
-The order can ONLY be initiated by someone with the following role:
-Quality Director,
-Production Director</value>
-  </data>
-  <data name="approve_Processcard_Ok" xml:space="preserve">
-    <value>The process card is now approved.</value>
-  </data>
-  <data name="approve_Processcard_Error" xml:space="preserve">
-    <value>The process card was not approved, contact Admin if needed.</value>
-  </data>
-  <data name="saveProcesscard_Info_9" xml:space="preserve">
-    <value>The template’s revision cannot be empty, select a revision and try again.</value>
-  </data>
-  <data name="browseProtocols_3" xml:space="preserve">
-    <value>Deactivate selected order for the Order Counter.
-This order will then not be included in the statistics for how many times a part number has been started without a process card.</value>
-  </data>
-  <data name="browseProtocols_4" xml:space="preserve">
-    <value>Activate selected Order.</value>
-  </data>
-  <data name="preFab_BestBefore" xml:space="preserve">
-    <value>Best Before:</value>
-  </data>
-  <data name="Menu_Protocol_ManageMeasureProtocol_Templates" xml:space="preserve">
-    <value>Manage Templates for Measureprotocols</value>
-  </data>
-  <data name="closeProtocols" xml:space="preserve">
-    <value>You need to close down all other protocols before Browsing old Protocols.</value>
-  </data>
-  <data name="label_ProtocolTemplateRevision" xml:space="preserve">
-    <value>Choose Revision for Protocol-Template</value>
-  </data>
-  <data name="label_MeasureProtocolTemplateName" xml:space="preserve">
-    <value>Choose Template for MeasureProtocol</value>
-  </data>
-  <data name="revisionInfo" xml:space="preserve">
-    <value>Revision Info:</value>
-  </data>
-  <data name="isOkAddStartUp" xml:space="preserve">
-    <value>You must fill in all values in the latest startup before trying to add a new startup.
-If no value is used, you can double-click the cell for N/A.</value>
-  </data>
-  <data name="Menu_Order_ReLink_Protocol" xml:space="preserve">
-    <value>To a new Protocol</value>
-  </data>
-  <data name="Menu_Order_ReLink_MeasureProtocol" xml:space="preserve">
-    <value>To a new Measurement Protocol</value>
-  </data>
-  <data name="Menu_Order_LinkOrder" xml:space="preserve">
-    <value>Link Order</value>
-  </data>
-  <data name="Menu_Protocol_ManageTemplates_Protocols" xml:space="preserve">
-    <value>Protocols</value>
-  </data>
-  <data name="Menu_Protocol_ManageTemplates_LineClearance" xml:space="preserve">
-    <value>Line Clearance</value>
-  </data>
-  <data name="Menu_Protocol_ManageTemplates_MeasureProtocol" xml:space="preserve">
-    <value>Measurement Protocols</value>
-  </data>
-  <data name="mail_ApproveProcesscard_2" xml:space="preserve">
-    <value>Approve Process card:&lt;br /&gt;
-PartNumber: {0}&lt;br /&gt;
-RevNr: {1}&lt;br /&gt;
-ProdLine: {2}&lt;br /&gt;
-ProdGroup: {3}&lt;br /&gt;
-Workoperation: {4}&lt;br /&gt;&lt;br /&gt;
-Please approve this process card immediately.&lt;br /&gt;&lt;br /&gt;
-Order {5} - {6} was just started with Revision {7}.
-</value>
-  </data>
-  <data name="mail_ApproveProcesscard_1" xml:space="preserve">
-    <value>There is a later revision of the Process Card that is not approved by QA and you are now running on revision {0}. 
-Note! It is perfectly okay to run on this Revision and QA has now been notified that the new revision needs to be approved.</value>
-  </data>
-  <data name="mail_ApproveProcesscard" xml:space="preserve">
-    <value>Reminder: QA signing of process card</value>
-  </data>
-  <data name="print_IsValueCritical" xml:space="preserve">
-    <value>Parameters in bold = Critical value</value>
-  </data>
-  <data name="Menu_Settings_ToolsCalculator" xml:space="preserve">
-    <value>Tool Calculator</value>
-  </data>
-  <data name="selectTemplateError" xml:space="preserve">
-    <value>You have not selected a template for either the Protocol or the Measurement Protocol, and the order cannot be started. Please try again.
-
-Contact Admin if you encounter any issues.</value>
-  </data>
-  <data name="isOkAddStartUp_2" xml:space="preserve">
-    <value>Module {0} is missing one or more parameters.</value>
-  </data>
-  <data name="btn_RefreshPriorityPlan" xml:space="preserve">
-    <value>Refresh Priority Plan</value>
-  </data>
-  <data name="cell_Protocol_ToolTip_1" xml:space="preserve">
-    <value>This field is critical!</value>
-  </data>
-  <data name="cell_Protocol_ToolTip_2" xml:space="preserve">
-    <value>This field is for reference only and it's okay to exceed the limits.</value>
-  </data>
-  <data name="print_OutOfTolerance" xml:space="preserve">
-    <value>* = Out of spec</value>
-  </data>
-  <data name="changeProcesscard_Info_4" xml:space="preserve">
-    <value>You cannot change the process card on an order that is completed.</value>
-  </data>
-  <data name="changeProtocol_Info_1" xml:space="preserve">
-    <value>You cannot change the template for the protocol on an order that is completed.</value>
-  </data>
-  <data name="changeProtocol_Info_2" xml:space="preserve">
-    <value>You cannot change the template for the protocol before you have started/opened an order.</value>
-  </data>
-  <data name="changeMeasureProtocol_Info_1" xml:space="preserve">
-    <value>You cannot change the template for the measureprotocol on an order that is completed.</value>
-  </data>
-  <data name="changeMeasureProtocol_Info_2" xml:space="preserve">
-    <value>You cannot change the template for the measureprotocol before you have started/opened an order.</value>
-  </data>
-  <data name="BrowseOldMeasureprotocol" xml:space="preserve">
-    <value>F3-Browse Old Measurement Protocols</value>
-  </data>
-  <data name="BrowseOldOrders" xml:space="preserve">
-    <value>F4-Browse Old Orders</value>
-  </data>
-  <data name="Compound" xml:space="preserve">
-    <value>F5-Compoundform</value>
-  </data>
-  <data name="Frequency_Marking" xml:space="preserve">
-    <value>F9-Frequency Marking</value>
-  </data>
-  <data name="Measureprotocol" xml:space="preserve">
-    <value>F1-Measurement Protocol</value>
-  </data>
-  <data name="Protocol" xml:space="preserve">
-    <value>F2-Protocol</value>
-  </data>
-  <data name="OverviewProdlines" xml:space="preserve">
-    <value>F7-Overview Production Lines</value>
-  </data>
-  <data name="Statistics" xml:space="preserve">
-    <value>F8-Statistics</value>
-  </data>
-  <data name="Zumbach" xml:space="preserve">
-    <value>F6-Zumbach</value>
-  </data>
-  <data name="stringRestartComputer" xml:space="preserve">
-    <value>To activate new language, please restart programme.</value>
-  </data>
-  <data name="Menu_Arkiv" xml:space="preserve">
-    <value>File</value>
-  </data>
-  <data name="Menu_Arkiv_ChangeCompany" xml:space="preserve">
-    <value>Change company</value>
-  </data>
-  <data name="Menu_Arkiv_ChangeCompany_Godby" xml:space="preserve">
-    <value>Optinova Godby</value>
-  </data>
-  <data name="Menu_Arkiv_ChangeCompany_Holding" xml:space="preserve">
-    <value>Optinova Holding</value>
-  </data>
-  <data name="Menu_Arkiv_Exit" xml:space="preserve">
-    <value>Exit</value>
-  </data>
-  <data name="Menu_Arkiv_NewOrder" xml:space="preserve">
-    <value>New Order</value>
-  </data>
-  <data name="Menu_Arkiv_Open" xml:space="preserve">
-    <value>Open Order</value>
-  </data>
-  <data name="Menu_Arkiv_Preview" xml:space="preserve">
-    <value>Preview</value>
-  </data>
-  <data name="Menu_Arkiv_Print" xml:space="preserve">
-    <value>Print Order (Only Copy)</value>
-  </data>
-  <data name="Menu_Order" xml:space="preserve">
-    <value>Order</value>
-  </data>
-  <data name="Menu_Order_CreateTestOrder" xml:space="preserve">
-    <value>Create Testorder</value>
-  </data>
-  <data name="Menu_Order_DeleteOrder" xml:space="preserve">
-    <value>Delete Order</value>
-  </data>
-  <data name="Menu_Order_EditOrder" xml:space="preserve">
-    <value>Edit Order</value>
-  </data>
-  <data name="Menu_Order_OpenRandomOrder" xml:space="preserve">
-    <value>Open a random Order</value>
-  </data>
-  <data name="Menu_Order_OrderDone" xml:space="preserve">
-    <value>Order Done</value>
-  </data>
-  <data name="Menu_Order_ReportProblemProductionSupport" xml:space="preserve">
-    <value>Report issues to production support</value>
+  <data name="customWorkoperation" xml:space="preserve">
+    <value>Custom Workoperations</value>
   </data>
   <data name="Menu_Protocol" xml:space="preserve">
     <value>Protocol</value>
   </data>
-  <data name="Menu_Order_ReLink_Processcard" xml:space="preserve">
-    <value>To a new Process card</value>
-  </data>
-  <data name="Menu_Protocol_ManageProcesscards" xml:space="preserve">
-    <value>Manage Process cards</value>
-  </data>
-  <data name="Menu_Protocol_Unlock_ValidatedProcesscard" xml:space="preserve">
-    <value>Unlock Validated Process card</value>
-  </data>
-  <data name="label_AnstNr" xml:space="preserve">
-    <value>Emp.Nr:</value>
-  </data>
-  <data name="label_Avdelning" xml:space="preserve">
-    <value>Department:</value>
-  </data>
-  <data name="label_Befattning" xml:space="preserve">
-    <value>Position:</value>
-  </data>
   <data name="label_Blue" xml:space="preserve">
     <value>Multiple Processcards exists</value>
   </data>
-  <data name="label_Brown" xml:space="preserve">
-    <value>Processcard under development and Processcard needs to be locked.</value>
+  <data name="zumbachCounter_2" xml:space="preserve">
+    <value>billions</value>
   </data>
-  <data name="label_Filter" xml:space="preserve">
-    <value>Filter Workoperations</value>
+  <data name="btn_ProcesscardBasedOn" xml:space="preserve">
+    <value>Processcard Based On:</value>
   </data>
-  <data name="label_Green" xml:space="preserve">
-    <value>Order Ok to start</value>
+  <data name="btn_HS_Machine_NewColor" xml:space="preserve">
+    <value>Choose a new Color</value>
   </data>
-  <data name="label_Orange" xml:space="preserve">
-    <value>Processcard is missing and needs to be created.</value>
+  <data name="Menu_Protocol_ManageTemplates_LineClearance" xml:space="preserve">
+    <value>Line Clearance</value>
   </data>
-  <data name="label_ProdGroup" xml:space="preserve">
-    <value>Production Group:</value>
-  </data>
-  <data name="label_ProductionSchedule" xml:space="preserve">
-    <value>Priority Plan</value>
-  </data>
-  <data name="label_QuickOpenOrder" xml:space="preserve">
-    <value>Open most recently initiated orders</value>
-    <comment>?</comment>
-  </data>
-  <data name="label_Red" xml:space="preserve">
-    <value>Process card not approved by QA</value>
-  </data>
-  <data name="label_Sign" xml:space="preserve">
-    <value>Sign:</value>
-  </data>
-  <data name="label_Tips_Trix" xml:space="preserve">
-    <value>Tips&amp;Trix</value>
-    <comment>?</comment>
-  </data>
-  <data name="label_White" xml:space="preserve">
-    <value>Process card Missing</value>
-  </data>
-  <data name="label_Yellow" xml:space="preserve">
-    <value>Order Started</value>
-  </data>
-  <data name="Menu_Arkiv_ChangeCompany_Thailand" xml:space="preserve">
-    <value>Optinova Thailand</value>
-  </data>
-  <data name="Menu_Help" xml:space="preserve">
-    <value>Help</value>
-  </data>
-  <data name="Menu_Help_ChangeLog" xml:space="preserve">
-    <value>Changelog</value>
-  </data>
-  <data name="Menu_Help_ReportBug" xml:space="preserve">
-    <value>Report a bug/improvement</value>
-  </data>
-  <data name="Menu_Settings" xml:space="preserve">
-    <value>Tools</value>
-  </data>
-  <data name="Menu_Settings_Settings" xml:space="preserve">
-    <value>Settings</value>
-  </data>
-  <data name="Menu_Themes" xml:space="preserve">
-    <value>Themes</value>
-  </data>
-  <data name="Menu_User" xml:space="preserve">
-    <value>User</value>
-  </data>
-  <data name="Menu_User_Authorities" xml:space="preserve">
-    <value>Authorities</value>
-  </data>
-  <data name="Menu_User_CheckMyAnalysis" xml:space="preserve">
-    <value>Check my Analysis</value>
-  </data>
-  <data name="Menu_User_EditUser" xml:space="preserve">
-    <value>Edit User</value>
-  </data>
-  <data name="Menu_User_LogIn" xml:space="preserve">
-    <value>Sign In</value>
-  </data>
-  <data name="Menu_User_LogOut" xml:space="preserve">
-    <value>Sign Out</value>
-  </data>
-  <data name="Menu_User_LogOutUser" xml:space="preserve">
-    <value>Log out user from the Protocol</value>
-  </data>
-  <data name="Menu_User_WhoIsLoggedIn" xml:space="preserve">
-    <value>Who is Signed In?</value>
-  </data>
-  <data name="label_Amount" xml:space="preserve">
-    <value>Amount:</value>
-  </data>
-  <data name="label_Customer" xml:space="preserve">
-    <value>Customer:</value>
-  </data>
-  <data name="label_Description" xml:space="preserve">
-    <value>Description:</value>
-  </data>
-  <data name="label_Operation" xml:space="preserve">
-    <value>Operation:</value>
-  </data>
-  <data name="label_OrderNr" xml:space="preserve">
-    <value>OrderNr:</value>
-  </data>
-  <data name="label_OrderStartedBy" xml:space="preserve">
-    <value>Started By:</value>
-  </data>
-  <data name="label_PartNumber" xml:space="preserve">
-    <value>PartNr:</value>
-  </data>
-  <data name="label_ProdLine" xml:space="preserve">
-    <value>Production Line:</value>
-  </data>
-  <data name="label_SignedInMonitor" xml:space="preserve">
-    <value>Signed In Monitor:</value>
-  </data>
-  <data name="label_Start" xml:space="preserve">
-    <value>Start:</value>
-  </data>
-  <data name="label_Stop" xml:space="preserve">
-    <value>Stop:</value>
-  </data>
-  <data name="label_TotalOrders" xml:space="preserve">
-    <value>Total Orders:</value>
-  </data>
-  <data name="btn_No" xml:space="preserve">
-    <value>No</value>
-  </data>
-  <data name="btn_Yes" xml:space="preserve">
-    <value>Yes</value>
-  </data>
-  <data name="StartOrder" xml:space="preserve">
-    <value>Do you want to start the order:</value>
-  </data>
-  <data name="chartSerieMeasurepoints1" xml:space="preserve">
-    <value>Avg: Last Order</value>
-  </data>
-  <data name="chartSerieMeasurepoints2" xml:space="preserve">
-    <value>Avg: Partnumber</value>
-  </data>
-  <data name="Warning_OpenMeasureProtocol_1" xml:space="preserve">
-    <value>Close down, Browse old protocols, before opening new Protocol.</value>
-    <comment>?</comment>
-  </data>
-  <data name="Warning_OpenMeasureProtocol_2" xml:space="preserve">
-    <value>You cannot perform measurements until you have chosen HS-Machine in the Protocol.</value>
-  </data>
-  <data name="Warning_OpenMeasureProtocol_3" xml:space="preserve">
-    <value>You cannot perform measurements until Line Clearance is completed and approved by authorized personnel.</value>
-  </data>
-  <data name="Warning_OpenMeasureProtocol_4" xml:space="preserve">
-    <value>You cannot perform measurements until Line Clearance is completed.</value>
-  </data>
-  <data name="Warning_OpenMeasureProtocol_5" xml:space="preserve">
-    <value>You need to initiate an order before doing measurements.</value>
-  </data>
-  <data name="label_Measurepoints" xml:space="preserve">
-    <value>Measurepoints</value>
-  </data>
-  <data name="label_MeasureInformation" xml:space="preserve">
-    <value>Measureinformation</value>
-  </data>
-  <data name="uploadPicture_1" xml:space="preserve">
-    <value>Start/Open an order before you try to upload a picture</value>
-  </data>
-  <data name="uploadPicture_2" xml:space="preserve">
-    <value>Select a picture you want to upload</value>
-  </data>
-  <data name="uploadPicture_3" xml:space="preserve">
-    <value>Picture is saved and can now be seen everytime this partnumber is run.</value>
-  </data>
-  <data name="label_Header_ActiveOrders" xml:space="preserve">
-    <value>Your Active Orders</value>
-  </data>
-  <data name="finishOrder_1" xml:space="preserve">
-    <value>This order is finished, you can´t finish it again. 
-Contact Admin if necessary.</value>
-  </data>
-  <data name="finishOrder_2_1" xml:space="preserve">
-    <value>You have only made</value>
-  </data>
-  <data name="finishOrder_2_2" xml:space="preserve">
-    <value>measurements. QC demands that you do at least 13 measurements</value>
-  </data>
-  <data name="finishOrder_3_1" xml:space="preserve">
-    <value>before you finish the order.</value>
-  </data>
-  <data name="finishOrder_3_2" xml:space="preserve">
-    <value>You have as</value>
-  </data>
-  <data name="finishOrder_3_3" xml:space="preserve">
-    <value>authority to finish the order anyway.</value>
-  </data>
-  <data name="finishOrder_3_4" xml:space="preserve">
-    <value>Do you want to continue finishing the order?</value>
-  </data>
-  <data name="orderDone_1" xml:space="preserve">
-    <value>Fill in</value>
-  </data>
-  <data name="finishOrder_4" xml:space="preserve">
-    <value>Sign in before you finish an order.</value>
-  </data>
-  <data name="finishOrder_MeasureEq_1" xml:space="preserve">
-    <value>Fill in all the measurement equipment numbers in the Measurement protocol</value>
-  </data>
-  <data name="finishOrder_MeasureEq_2" xml:space="preserve">
-    <value>Fill in the measurement equipment number in the Measurement protocol</value>
-  </data>
-  <data name="m" xml:space="preserve">
-    <value>You need to conduct Line Clearance</value>
-  </data>
-  <data name="Menu_Developer" xml:space="preserve">
-    <value>Developer</value>
-  </data>
-  <data name="Menu_Developer_GetOrderInfo" xml:space="preserve">
-    <value>Get Order Info</value>
-  </data>
-  <data name="Menu_Theme_Beach" xml:space="preserve">
-    <value>Beach</value>
-  </data>
-  <data name="Menu_Theme_Forest" xml:space="preserve">
-    <value>Forest</value>
-  </data>
-  <data name="Menu_Theme_Sky" xml:space="preserve">
-    <value>Sky</value>
-  </data>
-  <data name="Menu_Theme_Sun" xml:space="preserve">
-    <value>Sun</value>
-  </data>
-  <data name="Menu_Theme_Water" xml:space="preserve">
-    <value>Water</value>
-  </data>
-  <data name="Menu_Theme_Winter" xml:space="preserve">
-    <value>Winter</value>
-  </data>
-  <data name="Menu_Theme_Black" xml:space="preserve">
-    <value>Black</value>
-  </data>
-  <data name="Menu_Theme_Light" xml:space="preserve">
-    <value>Light</value>
-  </data>
-  <data name="Menu_Theme_Pink" xml:space="preserve">
-    <value>Pink</value>
-  </data>
-  <data name="Menu_Theme_Cars" xml:space="preserve">
-    <value>Cars</value>
-  </data>
-  <data name="Menu_Theme_Animals" xml:space="preserve">
-    <value>Animals</value>
-  </data>
-  <data name="Menu_Theme_Music" xml:space="preserve">
-    <value>Music</value>
-  </data>
-  <data name="Menu_Theme_Houses" xml:space="preserve">
-    <value>Houses</value>
-  </data>
-  <data name="Menu_Theme_Nature" xml:space="preserve">
-    <value>Nature</value>
-  </data>
-  <data name="Menu_Theme_Dark" xml:space="preserve">
-    <value>Dark</value>
-  </data>
-  <data name="Menu_Theme_Discography" xml:space="preserve">
-    <value>Discography</value>
-  </data>
-  <data name="Menu_Equipment" xml:space="preserve">
-    <value>Equipment</value>
-  </data>
-  <data name="Menu_Equipment_UseFilter" xml:space="preserve">
-    <value>Use Candlefilter</value>
-  </data>
-  <data name="Menu_Equipment_UseSilpaket" xml:space="preserve">
-    <value>Use Screen package</value>
-  </data>
-  <data name="finishOrder_Halvfabrikat_1" xml:space="preserve">
-    <value>Fill in the batch number for the PreFab in the Protocol</value>
-  </data>
-  <data name="finishOrder_Halvfabrikat_2_1" xml:space="preserve">
-    <value>Fill in which extruder is used for the PreFab with the partnumber</value>
-  </data>
-  <data name="finishOrder_Halvfabrikat_2_2" xml:space="preserve">
-    <value>in the protocol</value>
-  </data>
-  <data name="finishOrder_RoomTemp" xml:space="preserve">
-    <value>Fill in room temperature in Protocol</value>
-  </data>
-  <data name="finishOrder_RoomMoist" xml:space="preserve">
-    <value>Fill in moisture content of room in the Protocol</value>
-  </data>
-  <data name="finishOrder_Comments" xml:space="preserve">
-    <value>Fill in Comments in the protocol</value>
-  </data>
-  <data name="finishOrder_ExtruderCleaned" xml:space="preserve">
-    <value>tick in Cleaned Extruder in the protocol</value>
-  </data>
-  <data name="label_FinishOrder_Header" xml:space="preserve">
-    <value>Order is done</value>
+  <data name="signProcesscardPassword" xml:space="preserve">
+    <value>Enter your password to Sign the Process card.</value>
   </data>
   <data name="chb_FinishOrder_PrintOrder" xml:space="preserve">
     <value>Do you want to print the order?</value>
   </data>
-  <data name="btn_FinishOrder" xml:space="preserve">
-    <value>Finish Order</value>
+  <data name="saveProcesscard_Info_3_1" xml:space="preserve">
+    <value>New processcard created for PartNumber:</value>
   </data>
-  <data name="btn_Abort" xml:space="preserve">
-    <value>Abort</value>
+  <data name="rollingTips_3" xml:space="preserve">
+    <value>You have logged in</value>
   </data>
-  <data name="Protocol_HeatShrink" xml:space="preserve">
-    <value>Protocol/Processcard -Heatshrink Expansion </value>
+  <data name="changeBatchNr_Info_2" xml:space="preserve">
+    <value>Changed Batch Number for Prefab:</value>
   </data>
-  <data name="btnZumbach" xml:space="preserve">
-    <value>F6-Zumbach-measurement</value>
+  <data name="rollingTips_FutureUpdate" xml:space="preserve">
+    <value>Future Update:</value>
   </data>
-  <data name="label_InactiveProcesscard" xml:space="preserve">
-    <value>This Process card is inactive.</value>
+  <data name="protocol_OpenAnotherUser_1" xml:space="preserve">
+    <value>The protocol is currently open by</value>
   </data>
-  <data name="label_ResetPasswordInfo" xml:space="preserve">
-    <value>We’ve sent a code to your email. Enter it below.</value>
+  <data name="Menu_User_Authorities_CustomWorkoperations" xml:space="preserve">
+    <value>Custom Workoperations</value>
   </data>
-  <data name="btn_ConfirmCode" xml:space="preserve">
-    <value>Confirm code</value>
+  <data name="label_Info_TotalLayer" xml:space="preserve">
+    <value>Amount of layers in tubing (if multilayer tubing). Processcard will update automatically when changeing amount of layers.</value>
   </data>
-  <data name="btn_NewCode" xml:space="preserve">
-    <value>Send new code</value>
+  <data name="empNr" xml:space="preserve">
+    <value>Emp.Number</value>
   </data>
-  <data name="btn_ConfirmNewCode" xml:space="preserve">
-    <value>Confirm code</value>
+  <data name="tuneZumbachData_Measurement" xml:space="preserve">
+    <value>Measurement</value>
   </data>
-  <data name="resetPassword_CodeExpired" xml:space="preserve">
-    <value>The code has expired. Click 'Send new code'.</value>
-  </data>
-  <data name="resetPassword_TimeLeft" xml:space="preserve">
-    <value>The code is valid for:</value>
-  </data>
-  <data name="resetPassword_MaxAttemptsReached" xml:space="preserve">
-    <value>Too many failed attempts.</value>
-  </data>
-  <data name="resetPassword_WrongCode" xml:space="preserve">
-    <value>Incorrect code. Attempts left:</value>
-  </data>
-  <data name="processcardNotNeedSigning" xml:space="preserve">
-    <value>Processcards during Development do not require approval.</value>
-  </data>
-  <data name="processcardAlreadyEstablished" xml:space="preserve">
-    <value>The process card has already been established and signed.</value>
-  </data>
-  <data name="legendAverageValuePartNr" xml:space="preserve">
-    <value>Average per Part Number</value>
-  </data>
-  <data name="legendAverageLastOrder" xml:space="preserve">
-    <value>Average Latest Order</value>
-  </data>
-  <data name="col_CodeText_Header" xml:space="preserve">
-    <value>Black text = Critical Value</value>
-  </data>
-  <data name="processcard_MissingInfo_MeasurementTemplate" xml:space="preserve">
-    <value>You have not selected a template for the Measurement Protocol.
-Should this operation proceed without a Measurement Protocol?</value>
-  </data>
-  <data name="errorConnectingDatabase" xml:space="preserve">
-    <value>An error occurred while connecting to the database.
-Please contact IT support if the issue persists.</value>
-  </data>
-  <data name="error_ProfilePicture" xml:space="preserve">
-    <value>Unable to load the profile picture. The file might be damaged.</value>
-  </data>
-  <data name="error_OrderNotOpen" xml:space="preserve">
-    <value>You must open or start an order before opening the Protocol. Please make sure that the Order Number is entered and that an Operation is selected.</value>
-  </data>
-  <data name="Menu_Arkiv_UpdateDPP" xml:space="preserve">
-    <value>Update DPP</value>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="InfoIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\InfoIcon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

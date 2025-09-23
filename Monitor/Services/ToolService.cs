@@ -73,23 +73,30 @@ namespace DigitalProductionProgram.Monitor.Services
             return list;
         }
 
-        public static void Add_Equipment(List<string> items, Type tableType, string partCode, string? columnName, string? filter)
+        public static void Add_Equipment(List<string> items, Type tableType, string partCode, string? identifier, string? filter)
         {
             var partCodeId = Utilities.GetOneFromMonitor<Inventory.PartCodes>($"filter=Code Eq'{partCode}'")?.Id ?? 0;
-
-            var method = typeof(Utilities).GetMethod("GetFromMonitor").MakeGenericMethod(tableType);
-            var equipment = method.Invoke(null, new object[] { new[] { $"filter=PartCodeId eq'{partCodeId}'" } }) as IEnumerable<object>;
-
-            if (equipment is null)
-                return;
-           
-            foreach (var item in equipment)
+            var parts = Utilities.GetFromMonitor<Inventory.Parts>($"filter=PartCodeId eq'{partCodeId}'");
+            foreach (var part in parts)
             {
-                var prop = tableType.GetProperty(columnName);
-                var value = prop?.GetValue(item) as string;
-                if (!items.Contains(value))
-                    items.Add(value);
+                var idNr = Utilities.GetOneFromMonitor<Common.ExtraFields>($"filter=ParentId eq'{part.Id}' AND Identifier eq'{identifier}'");
+                items.Add(idNr.StringValue);
             }
+
+            return;
+            //var method = typeof(Utilities).GetMethod("GetFromMonitor").MakeGenericMethod(tableType);
+            //var equipment = method.Invoke(null, new object[] { new[] { $"filter=PartCodeId eq'{partCodeId}'" } }) as IEnumerable<object>;
+
+            //if (equipment is null)
+            //    return;
+           
+            //foreach (var item in equipment)
+            //{
+            //    var prop = tableType.GetProperty(columnName);
+            //    var value = prop?.GetValue(item) as string;
+            //    if (!items.Contains(value))
+            //        items.Add(value);
+            //}
         }
 
 

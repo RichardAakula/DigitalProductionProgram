@@ -49,6 +49,9 @@
     <Compile Update="Help\Jira.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Update="Help\Manual_TemplatesProtocol.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="Help\Warning.cs">
       <SubType>Form</SubType>
     </Compile>

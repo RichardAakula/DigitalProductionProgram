@@ -99,6 +99,10 @@
               "target": "Package",
               "version": "[13.0.3, )"
             },
+            "TradeWright.TabControlExtra": {
+              "target": "Package",
+              "version": "[2.0.1, )"
+            },
             "WinForms.DataVisualization": {
               "target": "Package",
               "version": "[1.10.0, )"

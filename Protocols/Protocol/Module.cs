@@ -799,7 +799,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                         //  items.Add(LanguageManager.GetString("yes") ?? string.Empty);
                         //    items.Add(LanguageManager.GetString("no") ?? string.Empty);
                         //     break;
-                        case 80:    //EXTRUDER
+                       // case 80:    //EXTRUDER
                            // items = CheckAuthority.IsWorkoperationAuthorized(CheckAuthority.TemplateWorkoperation.ExtruderRegister) ?
                            //     Monitor.Services.ToolService.List_Equipment<Manufacturing.WorkCenters>("Description", "startswith(PartNumber, 'EXT')") : Machines.Extruders("EXTRUDER");
                             //DigitalProductionProgram.Equipment.Equipment.List_From_Register("Extruder", "Extruder_Skruvar") : Machines.Extruders("EXTRUDER");
@@ -808,7 +808,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                             //var method = typeof(Monitor.Services.ToolService).GetMethod("List_Equipment")?.MakeGenericMethod(tableType);
                             //var result = method?.Invoke(null, new object[] { "Description", "filter=Type Eq'0'" });
                             //items = result as List<string?>;
-                            break;
+                        //    break;
 
                         case 81:    //CYLINDER
                             items = Machines.Cylinders;
@@ -839,9 +839,9 @@ namespace DigitalProductionProgram.Protocols.Protocol
                         case 303: //TRANSPORTBAND/UPPTAGARE
                             items = DigitalProductionProgram.Equipment.Equipment.List_Equipment_Protocol("TRANSPORTBAND/UPPTAGARE");
                             break;
-                        case 325: //RENGJORT CYLINDER
-                            items = DigitalProductionProgram.Equipment.Equipment.List_CleanedCylinder(startup);
-                            break;
+                       // case 325: //RENGJORT CYLINDER
+                          //  items = DigitalProductionProgram.Equipment.Equipment.List_CleanedCylinder(startup);
+                          //  break;
                         //case 304: //INTAG
                         //    items = DigitalProductionProgram.Equipment.Equipment.List_Intag.ToList();
                         //    break;
@@ -850,9 +850,9 @@ namespace DigitalProductionProgram.Protocols.Protocol
                            // items = DigitalProductionProgram.Equipment.Equipment.List_Register(isProcesscardUnderManagement, NOM_Value(dgv_Row), "Register_Skruvar");
                             IsItemsMultipleColumns = true;
                             break;
-                        case 306: //TORK
-                            items = DigitalProductionProgram.Equipment.Equipment.List_Register(isProcesscardUnderManagement, NOM_Value(dgv_Row), "Register_Torkar");
-                            IsItemsMultipleColumns = true;
+                        //case 306: //TORK
+                         //   items = DigitalProductionProgram.Equipment.Equipment.List_Register(isProcesscardUnderManagement, NOM_Value(dgv_Row), "Register_Torkar");
+                         //   IsItemsMultipleColumns = true;
                             break;
                         case 307: //HUVUD
                             items = Monitor.Services.ToolService.List_Tools(NOM_Value(dgv_Row), null);

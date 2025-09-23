@@ -126,6 +126,7 @@ namespace DigitalProductionProgram.MainWindow
             InitializeComponent();
 
             Translate_MainForm();
+            _ = Activity.Stop($"Startar upp DPP");
 
             MainMenu.mainForm = this;
             OrderInformation.mainForm = this;

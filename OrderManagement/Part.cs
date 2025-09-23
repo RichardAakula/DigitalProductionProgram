@@ -477,7 +477,8 @@ GROUP BY md.PartID";
             using var con = new SqlConnection(Database.cs_Protocol);
             var query = "SELECT PartGroupID FROM Processcard.MainData WHERE PartNr = @partnr AND WorkOperationID = (SELECT ID FROM Workoperation.Names WHERE Name = @workoperation AND ID IS NOT NULL) ";
             if (Processcard.IsMultipleProcesscard(workoperation, PartNr))
-                query += "AND (@prodline IS NULL OR ProdLine = @prodline) AND ProdType = @prodtyp";
+                query += @"AND (@prodline IS NULL OR ProdLine = @prodline)
+                         AND (@prodtype IS NULL OR ProdType = @prodtyp)";
             con.Open();
             var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@partnr", PartNr);

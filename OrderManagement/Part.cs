@@ -478,13 +478,13 @@ GROUP BY md.PartID";
             var query = "SELECT PartGroupID FROM Processcard.MainData WHERE PartNr = @partnr AND WorkOperationID = (SELECT ID FROM Workoperation.Names WHERE Name = @workoperation AND ID IS NOT NULL) ";
             if (Processcard.IsMultipleProcesscard(workoperation, PartNr))
                 query += @"AND (@prodline IS NULL OR ProdLine = @prodline)
-                         AND (@prodtype IS NULL OR ProdType = @prodtyp)";
+                         AND (@prodtype IS NULL OR ProdType = @prodtype)";
             con.Open();
             var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@partnr", PartNr);
             cmd.Parameters.AddWithValue("@workoperation", workoperation.ToString());
             SQL_Parameter.String(cmd.Parameters, "@prodline", Order.ProdLine);
-            SQL_Parameter.String(cmd.Parameters, "@prodtyp", Order.ProdType);
+            SQL_Parameter.String(cmd.Parameters, "@prodtype", Order.ProdType);
             var value = cmd.ExecuteScalar();
             Order.PartGroupID = (int?)value;
         }

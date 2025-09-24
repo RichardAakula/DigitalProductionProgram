@@ -1,6 +1,6 @@
-MainPackage=C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram 4.3.12.14\DPP_Installer\bin\x86\Release\Install DPP_4.3.12.17_x86.msix
-SymbolPackage=C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram 4.3.12.14\DPP_Installer\obj\x86\Release\Symbols\Install DPP_4.3.12.17_x86.appxsym
-ResourcePack=C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram 4.3.12.14\DPP_Installer\bin\x86\Release\Install DPP_4.3.12.17_scale-100.msix
-ResourcePack=C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram 4.3.12.14\DPP_Installer\bin\x86\Release\Install DPP_4.3.12.17_scale-125.msix
-ResourcePack=C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram 4.3.12.14\DPP_Installer\bin\x86\Release\Install DPP_4.3.12.17_scale-150.msix
-ResourcePack=C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram 4.3.12.14\DPP_Installer\bin\x86\Release\Install DPP_4.3.12.17_scale-400.msix
+MainPackage=C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram 4.3.12.14\DPP_Installer\bin\x86\Release\Install DPP_4.3.12.18_x86.msix
+SymbolPackage=C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram 4.3.12.14\DPP_Installer\obj\x86\Release\Symbols\Install DPP_4.3.12.18_x86.appxsym
+ResourcePack=C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram 4.3.12.14\DPP_Installer\bin\x86\Release\Install DPP_4.3.12.18_scale-100.msix
+ResourcePack=C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram 4.3.12.14\DPP_Installer\bin\x86\Release\Install DPP_4.3.12.18_scale-125.msix
+ResourcePack=C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram 4.3.12.14\DPP_Installer\bin\x86\Release\Install DPP_4.3.12.18_scale-150.msix
+ResourcePack=C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram 4.3.12.14\DPP_Installer\bin\x86\Release\Install DPP_4.3.12.18_scale-400.msix

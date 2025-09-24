@@ -311,7 +311,6 @@ namespace DigitalProductionProgram.Templates
         }
         private static void Load_ListItems(DataGridView dgv_Items, DataGridView dgv_ListItems, ComboBox cb_PartCode, ComboBox cb_ExtraField, string ListType, int TemplateID)
         {
-
             dgv_ListItems.Rows.Clear();
             dgv_Items.Rows.Clear();
             using var con = new SqlConnection(Database.cs_Protocol);
@@ -474,7 +473,7 @@ namespace DigitalProductionProgram.Templates
 
             using var con2 = new SqlConnection(Database.cs_Protocol);
             query = @"
-                SELECT Name, Revision 
+                SELECT Name, Revision, ID 
                 FROM Protocol.MainTemplate 
                 WHERE ID IN (
                     SELECT MainTemplateID FROM Protocol.FormTemplate WHERE FormTemplateID IN (
@@ -489,11 +488,14 @@ namespace DigitalProductionProgram.Templates
             {
                 var name = reader2["Name"].ToString();
                 var revision = reader2["Revision"].ToString();
+                int.TryParse(reader2["ID"].ToString(), out var mainTemplateID);
                 InfoText.Question($"Denna mall: {name} - Revision {revision} har fältet {label_CodeText.Text}.\n" +
                                  $"Vill du koppla denna lista även till denna mall?", CustomColors.InfoText_Color.Ok, "", this);
+
+
             }
         }
-
+        //private int New
         private string queryBuilder
         {
             get

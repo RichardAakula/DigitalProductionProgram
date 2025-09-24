@@ -464,7 +464,7 @@ namespace DigitalProductionProgram.Templates
         private void CheckForTemplatesToUpdate()
         {
             using var con = new SqlConnection(Database.cs_Protocol);
-            var query = @"SELECT ProtocolDescriptionID FROM Protocol.Template WHERE TemplateID = @templateid";
+            var query = @"SELECT ProtocolDescriptionID FROM Protocol.Template WHERE ID = @templateid";
             var cmd = new SqlCommand(query, con);
             cmd.Parameters.AddWithValue("@templateid", TemplateID);
             con.Open();
@@ -474,8 +474,13 @@ namespace DigitalProductionProgram.Templates
 
             using var con2 = new SqlConnection(Database.cs_Protocol);
             query = @"
-                SELECT Name, Revision FROM Protocol.MainTemplate WHERE ID IN (SELECT MainTemplateID FROM Protocol.FormTemplate WHERE FormTemplateID IN (SELECT FormTemplateID FROM Protocol.Template WHERE ID = @templateid))";
+                SELECT Name, Revision 
+                FROM Protocol.MainTemplate 
+                WHERE ID IN (
+                    SELECT MainTemplateID FROM Protocol.FormTemplate WHERE FormTemplateID IN (
+                        SELECT FormTemplateID FROM Protocol.Template WHERE ProtocolDescriptionID = @protocoldescriptionid AND ID != @templateid))";
             var cmd2 = new SqlCommand(query, con2);
+            cmd2.Parameters.AddWithValue("@protocoldescriptionid", protocolDescriptionId);
             cmd2.Parameters.AddWithValue("@templateid", TemplateID);
             con2.Open();
 
@@ -484,7 +489,7 @@ namespace DigitalProductionProgram.Templates
             {
                 var name = reader2["Name"].ToString();
                 var revision = reader2["Revision"].ToString();
-                InfoText.Question($"Denna mall: {name} - Revision {revision} har fältet {label_CodeText}.\n" +
+                InfoText.Question($"Denna mall: {name} - Revision {revision} har fältet {label_CodeText.Text}.\n" +
                                  $"Vill du koppla denna lista även till denna mall?", CustomColors.InfoText_Color.Ok, "", this);
             }
         }

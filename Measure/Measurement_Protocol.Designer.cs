@@ -1456,6 +1456,7 @@ namespace DigitalProductionProgram.Measure
             MinimumSize = new Size(983, 39);
             Name = "Measurement_Protocol";
             Text = "Mätprotokoll";
+            FormClosing += Measurement_Protocol_FormClosing;
             tlp_OrderInfo_TEF.ResumeLayout(false);
             tlp_OrderInfo_TEF.PerformLayout();
             flp_Buttons.ResumeLayout(false);

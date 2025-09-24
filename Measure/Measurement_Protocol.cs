@@ -60,7 +60,7 @@ namespace DigitalProductionProgram.Measure
         {
             get
             {
-                foreach(Control control in flp_InputControls.Controls)
+                foreach (Control control in flp_InputControls.Controls)
                     if (control.BackColor == CustomColors.Neutral_Back)
                         return true;
                 return false;
@@ -69,7 +69,7 @@ namespace DigitalProductionProgram.Measure
 
 
         private string SortingOrder;
-       
+
         private bool IsOkSaveData
         {
             get
@@ -85,7 +85,7 @@ namespace DigitalProductionProgram.Measure
                 Control? control = null;
                 foreach (Control? ctrl in flp_InputControls.Controls)
                 {
-                    if (Part.IsPartNrSpecial && (ctrl == InputControl(flp_InputControls, new[] { "ID"}) || ctrl == InputControl(flp_InputControls, new[] { "OD"}) || ctrl == InputControl(flp_InputControls, new[] { "Wall"})))
+                    if (Part.IsPartNrSpecial && (ctrl == InputControl(flp_InputControls, new[] { "ID" }) || ctrl == InputControl(flp_InputControls, new[] { "OD" }) || ctrl == InputControl(flp_InputControls, new[] { "Wall" })))
                         continue;
 
                     if (ctrl is IMandatoryControl isMandatoryControl)
@@ -98,12 +98,12 @@ namespace DigitalProductionProgram.Measure
                         continue;
 
                     control = ctrl;
-                    
+
                     IsOk = false;
                     break;
                 }
 
-                if (IsOk) 
+                if (IsOk)
                     return true;
                 InfoText.Show(LanguageManager.GetString("measureprotocol_Info_6").Replace("\\n", Environment.NewLine), CustomColors.InfoText_Color.Bad, "Error!");
                 ControlValidator.SoftBlink(control, CustomColors.Bad_Front, Color.White, 200, 200);
@@ -114,16 +114,16 @@ namespace DigitalProductionProgram.Measure
         {
             get
             {
-                if (InputControl(flp_InputControls, new[] { "Position"}).Text == "0")
+                if (InputControl(flp_InputControls, new[] { "Position" }).Text == "0")
                 {
                     InfoText.Show(LanguageManager.GetString("measureprotocol_Info_7"), CustomColors.InfoText_Color.Bad, "Warning", this);
-                    ControlValidator.SoftBlink(InputControl(flp_InputControls, new[] { "Position"}), CustomColors.Warning_Back, CustomColors.Warning_Front, 200);
+                    ControlValidator.SoftBlink(InputControl(flp_InputControls, new[] { "Position" }), CustomColors.Warning_Back, CustomColors.Warning_Front, 200);
                     return false;
                 }
-                if (string.IsNullOrEmpty(InputControl(flp_InputControls, new[] { "Length"}).Text) || InputControl(flp_InputControls, new[] { "Length"}).Text == "N/A")
+                if (string.IsNullOrEmpty(InputControl(flp_InputControls, new[] { "Length" }).Text) || InputControl(flp_InputControls, new[] { "Length" }).Text == "N/A")
                 {
                     InfoText.Show(LanguageManager.GetString("measureprotocol_Info_8"), CustomColors.InfoText_Color.Bad, "Warning", this);
-                    ControlValidator.SoftBlink(InputControl(flp_InputControls, new[] { "Length"}), CustomColors.Warning_Back, CustomColors.Warning_Front, 200);
+                    ControlValidator.SoftBlink(InputControl(flp_InputControls, new[] { "Length" }), CustomColors.Warning_Back, CustomColors.Warning_Front, 200);
                     return false;
                 }
 
@@ -144,9 +144,10 @@ namespace DigitalProductionProgram.Measure
 
         public Measurement_Protocol()
         {
+            Activity.Start();
             Calculate.Reset_Values();
             Part.SetPartNrSpecial("Spolning Special Mätprotokoll");
-            
+
             SortingOrder = "ASC";
             if (CheckAuthority.IsWorkoperationAuthorized(CheckAuthority.TemplateWorkoperation.SortMeasurementsDESC))
                 SortingOrder = "DESC";
@@ -169,7 +170,7 @@ namespace DigitalProductionProgram.Measure
             tb_Hack.KeyDown += Public_Events.Enter_To_TAB_KeyDown;
             controls.Change_GUI_Template(this);
             AddControls.Load_InputControls(this);
-            
+
             Load_FROM_Korprotokoll_Main();
             Load_MeasureData();
             Set_NumericUpDown_Values(this);
@@ -183,6 +184,8 @@ namespace DigitalProductionProgram.Measure
 
             if (Order.IsOrderDone)
                 Lock_Protocol();
+
+            _ = Activity.Stop("Öppnar Mätprotokoll");
         }
 
 
@@ -192,7 +195,7 @@ namespace DigitalProductionProgram.Measure
 
             LanguageManager.TranslationHelper.TranslateControls(new Control[]
             {
-                label_Customer, label_Description, label_OrderNr, label_PartNumber, label_Ok, label_Fail, label_Warning, label_Felskrivning, label_Discarded, btn_Clear_HelpInput_1, 
+                label_Customer, label_Description, label_OrderNr, label_PartNumber, label_Ok, label_Fail, label_Warning, label_Felskrivning, label_Discarded, btn_Clear_HelpInput_1,
                 btn_Clear_HelpInput_2, btn_TransferLengthMeasure, btn_TransferMeasurement, btn_EditBag, btn_EditAmount, btn_Discard, btn_TransferToExcel
             });
             measureInstrument.Translate_Form();
@@ -223,16 +226,16 @@ namespace DigitalProductionProgram.Measure
             lbl_Nom_Wall.Text = $"{MeasurePoints.Value(MeasurePoints.CodeTextMonitor.Wall, "NOM")}";
             lbl_Nom_Length.Text = $"{MeasurePoints.Value(MeasurePoints.CodeTextMonitor.Length, "NOM")}";
 
-            Korprotokoll.Load_Data(Order.OrderID,  247, 2,Single_Extrudering);
-            Korprotokoll.Load_Data(Order.OrderID,  251, 2, Co_Extrudering);
-            Korprotokoll.Load_Data(Order.OrderID,  248, 2, Clear);
-            Korprotokoll.Load_Data(Order.OrderID,  252, 2,Röntgen);
+            Korprotokoll.Load_Data(Order.OrderID, 247, 2, Single_Extrudering);
+            Korprotokoll.Load_Data(Order.OrderID, 251, 2, Co_Extrudering);
+            Korprotokoll.Load_Data(Order.OrderID, 248, 2, Clear);
+            Korprotokoll.Load_Data(Order.OrderID, 252, 2, Röntgen);
             Korprotokoll.Load_Data(Order.OrderID, 250, 0, Antal_Stripes);
             Korprotokoll.Load_Data(Order.OrderID, 246, 1, tb_Hack);
         }
         private void Load_MeasureData()
         {
-           // dgv_Measurements.DataSource = null;
+            // dgv_Measurements.DataSource = null;
             dgv_Measurements.Rows.Clear();
             //GC.Collect();
             //GC.WaitForPendingFinalizers();
@@ -278,7 +281,7 @@ namespace DigitalProductionProgram.Measure
 
                 var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 con.Open();
-                cmd.Parameters.AddWithValue("@orderid", Order.OrderID); 
+                cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                 cmd.Parameters.AddWithValue("@maintemplateid", Templates_MeasureProtocol.MainTemplate.ID);
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
@@ -334,9 +337,9 @@ namespace DigitalProductionProgram.Measure
 
                         // Remove seconds if they are included in the ShortTimePattern
                         formattedDate = formattedDate.Replace(":ss", "");
-                        Add_Text_DatagridCell(activeRow, dgv_Measurements.Rows[activeRow].Cells["Date"],  formattedDate, IsDiscarded);
-                        Add_Text_DatagridCell(activeRow, dgv_Measurements.Rows[activeRow].Cells["ErrorCode"],  reader["ErrorCode"].ToString(), IsDiscarded);
-                        Add_Text_DatagridCell(activeRow, dgv_Measurements.Rows[activeRow].Cells["AnstNr"],  reader["AnstNr"].ToString(), IsDiscarded);
+                        Add_Text_DatagridCell(activeRow, dgv_Measurements.Rows[activeRow].Cells["Date"], formattedDate, IsDiscarded);
+                        Add_Text_DatagridCell(activeRow, dgv_Measurements.Rows[activeRow].Cells["ErrorCode"], reader["ErrorCode"].ToString(), IsDiscarded);
+                        Add_Text_DatagridCell(activeRow, dgv_Measurements.Rows[activeRow].Cells["AnstNr"], reader["AnstNr"].ToString(), IsDiscarded);
                         Add_Text_DatagridCell(activeRow, dgv_Measurements.Rows[activeRow].Cells["Sign"], reader["Sign"].ToString(), IsDiscarded);
                         Add_Text_DatagridCell(activeRow, dgv_Measurements.Rows[activeRow].Cells["Discarded"], reader["Discarded"].ToString(), IsDiscarded);
                         Add_Text_DatagridCell(activeRow, dgv_Measurements.Rows[activeRow].Cells["TempID"], tempid.ToString(), IsDiscarded);
@@ -381,8 +384,8 @@ namespace DigitalProductionProgram.Measure
             }
             if (string.IsNullOrEmpty(monitorName) == false)
                 MeasurementValidator.DataVerification_Value_dgv(dgv_Measurements, text, monitorName, row, cell.ColumnIndex);
-            
-           
+
+
         }
         public static string SetDecimals_Value(double value, int decimals)
         {
@@ -554,7 +557,7 @@ namespace DigitalProductionProgram.Measure
                     con.Open();
                     cmd.ExecuteNonQuery();
                 }
-               
+
                 var comment = $"{LanguageManager.GetString("discardedMeasurement_Info_1")} {errorCode} - {chooseErrorCode.Comment}";
                 var bag = dgv_Measurements.Rows[row].Cells["Bag"].Value.ToString();
                 Extra_Comments.Add(bag, comment, Person.EmployeeNr, true, Extra_Comments.Next_Row_ExtraComments);
@@ -638,7 +641,7 @@ namespace DigitalProductionProgram.Measure
             for (var i = 0; i < dgv_Measurements.Columns.Count - 5; i++)
             {
                 var name = dgv_Measurements.Columns[i].Name;
-                var ctrl = InputControl(flp_InputControls, new[] { name});
+                var ctrl = InputControl(flp_InputControls, new[] { name });
                 if (ctrl is TextBox || ctrl is NumericUpDown)
                     ctrl.Text = dgv_Measurements.Rows[row].Cells[i].Value.ToString();
             }
@@ -648,11 +651,11 @@ namespace DigitalProductionProgram.Measure
             if (SortingOrder == "ASC")
                 SortingOrder = "DESC";
             else
-                SortingOrder = "ASC";   
+                SortingOrder = "ASC";
             Load_MeasureData();
         }
-        
-       
+
+
         private void INSERT_MeasureProtocol_Main()
         {
             using (var con = new SqlConnection(Database.cs_Protocol))
@@ -700,45 +703,45 @@ namespace DigitalProductionProgram.Measure
                 }
 
                 // 🚀 Använd ExecuteSafe istället för att öppna connection direkt
-               Database.ExecuteSafe(_ =>
-                {
-                    const string query = @"
+                Database.ExecuteSafe(_ =>
+                 {
+                     const string query = @"
                 INSERT INTO MeasureProtocol.Data
                 VALUES (@orderid, @descriptionid, @value, @textvalue, @boolvalue, @datevalue, 
                 COALESCE((SELECT MAX(rowindex) + 1 
                           FROM MeasureProtocol.MainData 
                           WHERE OrderID = @orderid), 1))";
 
-                    using var cmd = new SqlCommand(query, _);
-                    ServerStatus.Add_Sql_Counter();
+                     using var cmd = new SqlCommand(query, _);
+                     ServerStatus.Add_Sql_Counter();
 
-                    cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
-                    cmd.Parameters.AddWithValue("@descriptionid", descriptionID);
+                     cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
+                     cmd.Parameters.AddWithValue("@descriptionid", descriptionID);
 
-                    switch (dataType)
-                    {
-                        case 0:
-                            SQL_Parameter.Double(cmd.Parameters, "@value", ctrl.Text);
-                            cmd.Parameters.AddWithValue("@textvalue", DBNull.Value);
-                            cmd.Parameters.AddWithValue("@boolvalue", DBNull.Value);
-                            break;
-                        case 1:
-                            SQL_Parameter.String(cmd.Parameters, "@textvalue", ctrl.Text);
-                            cmd.Parameters.AddWithValue("@value", DBNull.Value);
-                            cmd.Parameters.AddWithValue("@boolvalue", DBNull.Value);
-                            break;
-                        case 2:
-                            cmd.Parameters.AddWithValue("@value", DBNull.Value);
-                            cmd.Parameters.AddWithValue("@textvalue", DBNull.Value);
-                            var chb = (CheckBox)ctrl;
-                            SQL_Parameter.Boolean(cmd.Parameters, "@boolvalue", chb.Checked);
-                            break;
-                    }
+                     switch (dataType)
+                     {
+                         case 0:
+                             SQL_Parameter.Double(cmd.Parameters, "@value", ctrl.Text);
+                             cmd.Parameters.AddWithValue("@textvalue", DBNull.Value);
+                             cmd.Parameters.AddWithValue("@boolvalue", DBNull.Value);
+                             break;
+                         case 1:
+                             SQL_Parameter.String(cmd.Parameters, "@textvalue", ctrl.Text);
+                             cmd.Parameters.AddWithValue("@value", DBNull.Value);
+                             cmd.Parameters.AddWithValue("@boolvalue", DBNull.Value);
+                             break;
+                         case 2:
+                             cmd.Parameters.AddWithValue("@value", DBNull.Value);
+                             cmd.Parameters.AddWithValue("@textvalue", DBNull.Value);
+                             var chb = (CheckBox)ctrl;
+                             SQL_Parameter.Boolean(cmd.Parameters, "@boolvalue", chb.Checked);
+                             break;
+                     }
 
-                    cmd.Parameters.AddWithValue("@datevalue", DBNull.Value);
-                    cmd.ExecuteNonQuery();
-                    return true; // returnvärde krävs för ExecuteSafe<T>
-                });
+                     cmd.Parameters.AddWithValue("@datevalue", DBNull.Value);
+                     cmd.ExecuteNonQuery();
+                     return true; // returnvärde krävs för ExecuteSafe<T>
+                 });
             }
         }
 
@@ -804,7 +807,7 @@ namespace DigitalProductionProgram.Measure
             var tb = (DataGridViewTextBoxEditingControl)e.Control;
             tb.KeyUp += HelpInput_1_CellValueKeyUp;
             tb.KeyDown += HelpInput_1_CellValueKeyDown;
-           
+
         }
         private void HelpInput_2_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
         {
@@ -843,9 +846,9 @@ namespace DigitalProductionProgram.Measure
             //CodeName "ID", "OD", m.m. måste matcha namnet som finns i Databastabellen MeasureProtocol.Description
             if (CheckAuthority.IsWorkoperationAuthorized(CheckAuthority.TemplateWorkoperation.ManufacturesHeatShrink))
             {
-                InputControl(flp_InputControls, new[] { "Exp ID"}).Text = $"{Calculate.Measurement_1.ID_1Layer:0.000}";
-                InputControl(flp_InputControls, new[] { "Exp OD"}).Text = $"{Calculate.Measurement_1.OD_1Layer:0.000}";
-                InputControl(flp_InputControls, new[] { "Exp Wall"}).Text = $"{Calculate.Measurement_1.Wall_1Layer:0.000}";
+                InputControl(flp_InputControls, new[] { "Exp ID" }).Text = $"{Calculate.Measurement_1.ID_1Layer:0.000}";
+                InputControl(flp_InputControls, new[] { "Exp OD" }).Text = $"{Calculate.Measurement_1.OD_1Layer:0.000}";
+                InputControl(flp_InputControls, new[] { "Exp Wall" }).Text = $"{Calculate.Measurement_1.Wall_1Layer:0.000}";
                 // InputControl(flp_InputControls, "Exp Concentricity").Text = $"{Calculate.Conc:0}";
             }
             else
@@ -855,23 +858,23 @@ namespace DigitalProductionProgram.Measure
                     case 0:
                     case 1:
 
-                        InputControl(flp_InputControls, new[]{"ID", "Main Body ID"}).Text = $"{Calculate.Measurement_1.ID_1Layer:0.000}";
-                        InputControl(flp_InputControls, new []{"OD", "Main Body OD"}).Text = $"{Calculate.Measurement_1.OD_1Layer:0.000}";
-                        InputControl(flp_InputControls, new[]{"Wall"}).Text = $"{Calculate.Measurement_1.Wall_1Layer:0.000}";
-                        InputControl(flp_InputControls, new[] { "Ovality"}).Text = $"{Calculate.Measurement_1.Oval_1Layer:0.000}";
-                        InputControl(flp_InputControls, new[] { "Runout"}).Text = $"{Calculate.Measurement_1.RunOut_1Layer:0.000}";
+                        InputControl(flp_InputControls, new[] { "ID", "Main Body ID" }).Text = $"{Calculate.Measurement_1.ID_1Layer:0.000}";
+                        InputControl(flp_InputControls, new[] { "OD", "Main Body OD" }).Text = $"{Calculate.Measurement_1.OD_1Layer:0.000}";
+                        InputControl(flp_InputControls, new[] { "Wall" }).Text = $"{Calculate.Measurement_1.Wall_1Layer:0.000}";
+                        InputControl(flp_InputControls, new[] { "Ovality" }).Text = $"{Calculate.Measurement_1.Oval_1Layer:0.000}";
+                        InputControl(flp_InputControls, new[] { "Runout" }).Text = $"{Calculate.Measurement_1.RunOut_1Layer:0.000}";
                         break;
                     case 2:
-                        InputControl(flp_InputControls, new[]{ "ID", "Main Body ID"}).Text = $"{Calculate.Measurement_1.ID_2Layer:0.000}";
+                        InputControl(flp_InputControls, new[] { "ID", "Main Body ID" }).Text = $"{Calculate.Measurement_1.ID_2Layer:0.000}";
                         InputControl(flp_InputControls, new[] { "OD", "Main Body OD" }).Text = $"{Calculate.Measurement_1.OD_2Layer:0.000}";
-                        InputControl(flp_InputControls, new []{"Layer1OD"}).Text = $"{Calculate.Measurement_1.OD_2Layer_Layer1:0.000}";
+                        InputControl(flp_InputControls, new[] { "Layer1OD" }).Text = $"{Calculate.Measurement_1.OD_2Layer_Layer1:0.000}";
                         InputControl(flp_InputControls, new[] { "Wall" }).Text = $"{Calculate.Measurement_1.Wall_2Layer_Layer1 + Calculate.Measurement_1.Wall_2Layer_Layer2:0.000}";
-                        InputControl(flp_InputControls, new[] { "WallLayer1"}).Text = $"{Calculate.Measurement_1.Wall_2Layer_Layer1:0.000}";
-                        InputControl(flp_InputControls, new[] { "WallLayer2"}).Text = $"{Calculate.Measurement_1.Wall_2Layer_Layer2:0.000}";
-                        InputControl(flp_InputControls, new[] { "Ovality"}).Text = $"{Calculate.Measurement_1.Oval_2Layer:0.000}";
-                        InputControl(flp_InputControls, new[] { "Runout"}).Text = $"{Calculate.Measurement_1.RunOut_2Layer:0.000}";
-                        InputControl(flp_InputControls, new[] { "RunoutLayer1"}).Text = $"{Calculate.Measurement_1.RunOut_2Layer_Layer1:0.000}";
-                        InputControl(flp_InputControls, new[] { "RunoutLayer2"}).Text = $"{Calculate.Measurement_1.RunOut_2Layer_Layer2:0.000}";
+                        InputControl(flp_InputControls, new[] { "WallLayer1" }).Text = $"{Calculate.Measurement_1.Wall_2Layer_Layer1:0.000}";
+                        InputControl(flp_InputControls, new[] { "WallLayer2" }).Text = $"{Calculate.Measurement_1.Wall_2Layer_Layer2:0.000}";
+                        InputControl(flp_InputControls, new[] { "Ovality" }).Text = $"{Calculate.Measurement_1.Oval_2Layer:0.000}";
+                        InputControl(flp_InputControls, new[] { "Runout" }).Text = $"{Calculate.Measurement_1.RunOut_2Layer:0.000}";
+                        InputControl(flp_InputControls, new[] { "RunoutLayer1" }).Text = $"{Calculate.Measurement_1.RunOut_2Layer_Layer1:0.000}";
+                        InputControl(flp_InputControls, new[] { "RunoutLayer2" }).Text = $"{Calculate.Measurement_1.RunOut_2Layer_Layer2:0.000}";
                         break;
                 }
             }
@@ -889,11 +892,11 @@ namespace DigitalProductionProgram.Measure
             var col = dgv.CurrentCell.ColumnIndex;
             Calculate_xyValues_Measurement_2(dgv, row);
             Calculate_Walls(dgv_RecWalls, typeof(Calculate.Measurement_2));
-          
-            InputControl(flp_InputControls, new[] { "Rec ID"}).Text = $"{Calculate.Measurement_2.ID:0.000}";
-            InputControl(flp_InputControls, new[] { "Rec OD"}).Text = $"{Calculate.Measurement_2.OD:0.000}";
-            InputControl(flp_InputControls, new[] { "Rec Wall"}).Text = $"{Calculate.Measurement_2.Wall:0.000}";
-            
+
+            InputControl(flp_InputControls, new[] { "Rec ID" }).Text = $"{Calculate.Measurement_2.ID:0.000}";
+            InputControl(flp_InputControls, new[] { "Rec OD" }).Text = $"{Calculate.Measurement_2.OD:0.000}";
+            InputControl(flp_InputControls, new[] { "Rec Wall" }).Text = $"{Calculate.Measurement_2.Wall:0.000}";
+
             if (IsOkDrawTube)
                 Task.Factory.StartNew(() => controls.Draw_CrossSectionTube(this));
         }
@@ -911,10 +914,10 @@ namespace DigitalProductionProgram.Measure
         }
         public void Exp_ID_MouseUp(object? sender, MouseEventArgs e)
         {
-            var ctrl = InputControl(flp_InputControls, new[] { "Exp ID"});
+            var ctrl = InputControl(flp_InputControls, new[] { "Exp ID" });
             if (e.Button == MouseButtons.Right)
             {
-                menu_Beräkna.Show(ctrl, e.X, e.Y );
+                menu_Beräkna.Show(ctrl, e.X, e.Y);
                 menu_ID_Blåst.Visible = true;
                 menu_OD_Blåst.Visible = false;
                 menu_W_Blåst.Visible = false;
@@ -997,39 +1000,39 @@ namespace DigitalProductionProgram.Measure
         {
             var item = e.ClickedItem;
             _ = Activity.Stop(item.Text);
-            double.TryParse(InputControl(flp_InputControls, new[] { "Exp ID"}).Text, out var ExpID);
-            double.TryParse(InputControl(flp_InputControls, new[] { "Exp OD"}).Text, out var ExpOD);
-            double.TryParse(InputControl(flp_InputControls, new[] { "Exp Wall"}).Text, out var ExpWall);
-            double.TryParse(InputControl(flp_InputControls, new[] { "Rec ID"}).Text, out var RecID);
-            double.TryParse(InputControl(flp_InputControls, new[] { "Rec OD"}).Text, out var RecOD);
-            double.TryParse(InputControl(flp_InputControls, new[] { "Rec Wall"}).Text, out var RecWall);
+            double.TryParse(InputControl(flp_InputControls, new[] { "Exp ID" }).Text, out var ExpID);
+            double.TryParse(InputControl(flp_InputControls, new[] { "Exp OD" }).Text, out var ExpOD);
+            double.TryParse(InputControl(flp_InputControls, new[] { "Exp Wall" }).Text, out var ExpWall);
+            double.TryParse(InputControl(flp_InputControls, new[] { "Rec ID" }).Text, out var RecID);
+            double.TryParse(InputControl(flp_InputControls, new[] { "Rec OD" }).Text, out var RecOD);
+            double.TryParse(InputControl(flp_InputControls, new[] { "Rec Wall" }).Text, out var RecWall);
 
 
             switch (item.Text)
             {
                 case "Calculate Exp. ID with Wall and OD":
                     if (ExpOD > 0 && ExpWall > 0)
-                        InputControl(flp_InputControls, new[] { "Exp ID"}).Text = $"{ExpOD - (ExpWall + ExpWall)}";
+                        InputControl(flp_InputControls, new[] { "Exp ID" }).Text = $"{ExpOD - (ExpWall + ExpWall)}";
                     return;
                 case "Calculate Exp. OD with Wall and ID":
                     if (ExpID > 0 && ExpWall > 0)
-                        InputControl(flp_InputControls, new[] { "Exp OD"}).Text = $"{ExpID + ExpWall + ExpWall}";
+                        InputControl(flp_InputControls, new[] { "Exp OD" }).Text = $"{ExpID + ExpWall + ExpWall}";
                     return;
                 case "Calculate Exp. Wall with ID and OD":
                     if (ExpOD > 0 && ExpID > 0)
-                        InputControl(flp_InputControls, new[] { "Exp Wall"}).Text = $"{(ExpOD - ExpID) / 2}";
+                        InputControl(flp_InputControls, new[] { "Exp Wall" }).Text = $"{(ExpOD - ExpID) / 2}";
                     return;
                 case "Calculate Rec. ID with Wall and OD":
                     if (RecOD > 0 && RecWall > 0)
-                        InputControl(flp_InputControls, new[] { "Rec ID"}).Text = $"{RecOD - (RecWall + RecWall)}";
+                        InputControl(flp_InputControls, new[] { "Rec ID" }).Text = $"{RecOD - (RecWall + RecWall)}";
                     return;
                 case "Calculate Rec. OD with Wall and ID":
                     if (RecID > 0 && RecWall > 0)
-                        InputControl(flp_InputControls, new[] { "Rec OD"}).Text = $"{RecID + RecWall + RecWall}";
+                        InputControl(flp_InputControls, new[] { "Rec OD" }).Text = $"{RecID + RecWall + RecWall}";
                     return;
                 case "Calculate Rec. Wall with ID and OD":
                     if (RecOD > 0 && RecID > 0)
-                        InputControl(flp_InputControls, new[] { "Rec Wall"}).Text = $"{(RecOD - RecID) / 2}";
+                        InputControl(flp_InputControls, new[] { "Rec Wall" }).Text = $"{(RecOD - RecID) / 2}";
                     return;
             }
 
@@ -1156,7 +1159,11 @@ namespace DigitalProductionProgram.Measure
             controls.ClearYellowBoxes(this);
             Calculate.Reset_Values();
         }
-        
+
+        private void Measurement_Protocol_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            _ = Activity.Stop("Stänger Mätprotokoll");
+        }
     }
 
 

@@ -422,7 +422,7 @@ namespace DigitalProductionProgram.Templates
             tran.Commit();
         }
 
-        private void Save_MonitorList()
+        private void Save_MonitorList(int templateID)
         {
             if (dgv_Items.Rows.Count > 0)
                 return;
@@ -434,7 +434,7 @@ namespace DigitalProductionProgram.Templates
                 IF EXISTS 
                 (
                     SELECT 1 FROM List.ItemFields
-                    WHERE ItemFieldsId = @id
+                    WHERE TemplateID = @templateid AND ListType = @listtype
                 )
                 BEGIN
                     UPDATE List.ItemFields
@@ -452,7 +452,7 @@ namespace DigitalProductionProgram.Templates
 
             using var cmd = new SqlCommand(query, con);
             cmd.Parameters.AddWithValue("@id", ItemsFieldId);
-            cmd.Parameters.AddWithValue("@templateid", TemplateID);
+            cmd.Parameters.AddWithValue("@templateid", templateID);
             cmd.Parameters.AddWithValue("@partcode", cb_PartCode.SelectedValue?.ToString());
             cmd.Parameters.AddWithValue("@extrafield", cb_ExtraField.SelectedValue?.ToString());
             cmd.Parameters.AddWithValue("@listtype", listType);
@@ -462,6 +462,7 @@ namespace DigitalProductionProgram.Templates
         }
         private void CheckForTemplatesToUpdate()
         {
+            ItemsFieldId = 0;
             using var con = new SqlConnection(Database.cs_Protocol);
             var query = @"SELECT ProtocolDescriptionID FROM Protocol.Template WHERE ID = @templateid";
             var cmd = new SqlCommand(query, con);
@@ -473,14 +474,29 @@ namespace DigitalProductionProgram.Templates
 
             using var con2 = new SqlConnection(Database.cs_Protocol);
             query = @"
-                SELECT Name, Revision, ID 
+                SELECT Name, Revision, ID
                 FROM Protocol.MainTemplate 
-                WHERE ID IN (
-                    SELECT MainTemplateID FROM Protocol.FormTemplate WHERE FormTemplateID IN (
-                        SELECT FormTemplateID FROM Protocol.Template WHERE ProtocolDescriptionID = @protocoldescriptionid AND ID != @templateid))";
+                WHERE ID IN 
+                (
+                    SELECT MainTemplateID 
+                    FROM Protocol.FormTemplate 
+                    WHERE FormTemplateID IN 
+                    (
+                        SELECT FormTemplateID 
+                        FROM Protocol.Template 
+                        WHERE ProtocolDescriptionID = @protocoldescriptionid 
+                            AND NOT EXISTS 
+                            (
+                                SELECT 1 
+                                FROM List.ItemFields 
+                                WHERE TemplateID = Protocol.Template.ID
+                                AND ListType = @listtype
+                            )
+                    )
+                )";
             var cmd2 = new SqlCommand(query, con2);
             cmd2.Parameters.AddWithValue("@protocoldescriptionid", protocolDescriptionId);
-            cmd2.Parameters.AddWithValue("@templateid", TemplateID);
+            cmd2.Parameters.AddWithValue("@listtype", listType);
             con2.Open();
 
             var reader2 = cmd2.ExecuteReader();
@@ -489,13 +505,41 @@ namespace DigitalProductionProgram.Templates
                 var name = reader2["Name"].ToString();
                 var revision = reader2["Revision"].ToString();
                 int.TryParse(reader2["ID"].ToString(), out var mainTemplateID);
-                InfoText.Question($"Denna mall: {name} - Revision {revision} har fältet {label_CodeText.Text}.\n" +
-                                 $"Vill du koppla denna lista även till denna mall?", CustomColors.InfoText_Color.Ok, "", this);
-
+                InfoText.Question($"{name} - Revision {revision} har också fältet {label_CodeText.Text} i mallen.\n" +
+                                 $"Vill du koppla listan till denna mall?", CustomColors.InfoText_Color.Ok, "", this);
+                if (InfoText.answer == InfoText.Answer.Yes)
+                {
+                    var newTemplateID = NewTemplateID(mainTemplateID, protocolDescriptionId);
+                    foreach (var newTemplateIDItem in newTemplateID)
+                        if (newTemplateIDItem != 0)
+                            Save_MonitorList(newTemplateIDItem);
+                        else
+                            InfoText.Question($"Det gick inte att hitta en mall att koppla mot, kontakta Admin!", CustomColors.InfoText_Color.Bad, "WARNING!", this);
+                }
 
             }
         }
-        //private int New
+        private List<int> NewTemplateID(int mainTemplateID, int protocolDescriptionID)
+        {
+            var list = new List<int>();
+            using var con = new SqlConnection(Database.cs_Protocol);
+            var query = @"
+                SELECT ID 
+                FROM Protocol.Template 
+                WHERE ProtocolDescriptionID = @protocolDescriptionID
+                    AND FormTemplateID IN (SELECT FormTemplateID FROM Protocol.FormTemplate WHERE MainTemplateID = @newMainTemplateID)";
+            var cmd = new SqlCommand(query, con);
+            cmd.Parameters.AddWithValue("@protocolDescriptionID", protocolDescriptionID);
+            cmd.Parameters.AddWithValue("@newMainTemplateID", mainTemplateID);
+            con.Open();
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                int.TryParse(reader["ID"].ToString(), out var templateID);
+                list.Add(templateID);
+            }
+            return list;
+        }
         private string queryBuilder
         {
             get
@@ -512,6 +556,8 @@ namespace DigitalProductionProgram.Templates
                 return query;
             }
         }
+
+        
         public static void Copy_OwnListToNewTemplate(int oldMainTemplateID, int newMainTemplateID)
         {
             using var con = new SqlConnection(Database.cs_Protocol);
@@ -596,7 +642,7 @@ namespace DigitalProductionProgram.Templates
         }
         private void Close_Click(object sender, EventArgs e)
         {
-            Save_MonitorList();
+            Save_MonitorList(TemplateID);
             CheckForTemplatesToUpdate();
 
             this.Close();

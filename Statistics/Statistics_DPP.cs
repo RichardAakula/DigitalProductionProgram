@@ -228,7 +228,7 @@ SELECT
     FORMAT(IntervalStart, 'dd MMMM') + ' - ' + FORMAT(IntervalEnd, 'dd MMMM') AS time_range
 FROM MeasureProtocol.MainData md
 JOIN TimeIntervals ti
-    ON md.MeasurementDate BETWEEN ti.IntervalStart AND ti.IntervalEnd
+    ON md.Date BETWEEN ti.IntervalStart AND ti.IntervalEnd
 GROUP BY IntervalStart, IntervalEnd
 ORDER BY IntervalStart;";
         private const string Query_MeasurementsLastDay = @"

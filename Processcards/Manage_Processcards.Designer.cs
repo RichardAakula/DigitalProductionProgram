@@ -713,7 +713,6 @@ namespace DigitalProductionProgram.Processcards
             pb_Info.SizeMode = PictureBoxSizeMode.Zoom;
             pb_Info.TabIndex = 870;
             pb_Info.TabStop = false;
-            pb_Info.Click += Info_Click;
             // 
             // panel_ProductionLine
             // 

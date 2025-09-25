@@ -624,7 +624,7 @@ namespace DigitalProductionProgram.Processcards
             switch (Order.WorkOperation)
             {
                 default:
-                    LoadTemplate();
+                    LoadTemplate(false);
                     break;
                 case Manage_WorkOperation.WorkOperations.Kragning_TEF:
                     Processkort_Kragning.Load_Info();
@@ -779,9 +779,9 @@ namespace DigitalProductionProgram.Processcards
         }
 
 
-        private void LoadTemplate()
+        private void LoadTemplate(bool IsOkCopyDataFromTemplate)
         {
-            if (Templates_Protocol.MainTemplate.ID == ActiveMainTemplateID && Templates_Protocol.MainTemplate.Revision == ActiveTemplateRevision)
+            if (Templates_Protocol.MainTemplate.ID == ActiveMainTemplateID && Templates_Protocol.MainTemplate.Revision == ActiveTemplateRevision && IsOkCopyDataFromTemplate == false)
             {
                 foreach (var machine in flp_Machines.Controls.OfType<Machine>())
                 {
@@ -805,12 +805,15 @@ namespace DigitalProductionProgram.Processcards
                 AddMachine(i, i + 1, ref width);
 
             tlp_Main.ColumnStyles[0].Width = width + 26;
-            if (dataTables_ProcessData.Count > 0)
+            if (IsOkCopyDataFromTemplate)
             {
                 //InfoText.Show("Laddar data från tidigare mall till den nya mallen", CustomColors.InfoText_Color.Info, string.Empty,this);
                 Load_ProcessDataFromOldTemplateRevision();
+                dataTables_ProcessData.Clear();
             }
+            
         }
+        
 
 
 
@@ -1235,28 +1238,14 @@ namespace DigitalProductionProgram.Processcards
         private void TemplateName_SelectedIndexChanged(object sender, EventArgs e)
         {
             Fill_cb_ProtocolTemplateRevision();
-            //Templates_Protocol.MainTemplate.Load_MainTemplateID(cb_ProtocolTemplateName.Text, cb_TemplateRevision.Text);
-            //Templates_Protocol.MainTemplate.Revision = cb_TemplateRevision.Text;
-
-            //LoadTemplate();
-            if (IsStartingForm == false)
-            {
-                Templates_Protocol.MainTemplate.Load_MainTemplateID(cb_ProtocolTemplateName.Text, cb_TemplateRevision.Text);
-                Templates_Protocol.MainTemplate.Revision = cb_TemplateRevision.Text;
-                CopyProcessDataToNewTemplateRevision();
-                LoadTemplate();
-            }
-
+           
         }
         private void TemplateName_SelectionChangeCommitted(object sender, EventArgs e)
         {
-            string test1 = cb_ProtocolTemplateName.Text;
-            string tst2 = cb_TemplateRevision.SelectedValue?.ToString() ?? string.Empty;
-            //Templates_Protocol.MainTemplate.Load_MainTemplateID(cb_ProtocolTemplateName.Text, cb_TemplateRevision.Text);
-            //Templates_Protocol.MainTemplate.Revision = cb_TemplateRevision.Text;
-
-            //CopyProcessDataToNewTemplateRevision();
-            //LoadTemplate();
+            Templates_Protocol.MainTemplate.Load_MainTemplateID(cb_ProtocolTemplateName.Text, cb_TemplateRevision.Text);
+            Templates_Protocol.MainTemplate.Revision = cb_TemplateRevision.Text;
+            CopyProcessDataToNewTemplateRevision();
+            LoadTemplate(true);
         }
         private bool suppressSelectionChanged;
         private void RevNrChanged(object sender, EventArgs e)
@@ -1272,7 +1261,7 @@ namespace DigitalProductionProgram.Processcards
                 CopyProcessDataToNewTemplateRevision();
                 Templates_Protocol.MainTemplate.Revision = cb_TemplateRevision.Text;
                 Templates_Protocol.MainTemplate.Set_MainTemplateID(cb_ProtocolTemplateName.Text, cb_TemplateRevision.Text);
-                LoadTemplate();
+                LoadTemplate(false);
                 suppressSelectionChanged = false; // Allow event firing again
             }
 

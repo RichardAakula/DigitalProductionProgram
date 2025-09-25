@@ -298,15 +298,15 @@ namespace DigitalProductionProgram.Protocols.Slipning_TEF
         }
         public void Load_Hållfasthet_Enhet()
         {
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query = "SELECT Dragprov_enhet FROM Processkort_Slipning WHERE PartID = @partID";
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                con.Open();
-                cmd.Parameters.AddWithValue("@partID", Order.PartID);
-                if (string.IsNullOrEmpty(cmd.ExecuteScalar().ToString()) == false)
-                    label_Hållfasthet_enhet.Text = cmd.ExecuteScalar().ToString();
-            }
+            if (Order.PartID == 0)
+                return;
+            using var con = new SqlConnection(Database.cs_Protocol);
+            var query = "SELECT Dragprov_enhet FROM Processkort_Slipning WHERE PartID = @partID";
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            con.Open();
+            cmd.Parameters.AddWithValue("@partID", Order.PartID);
+            if (string.IsNullOrEmpty(cmd.ExecuteScalar().ToString()) == false)
+                label_Hållfasthet_enhet.Text = cmd.ExecuteScalar().ToString();
         }
         private void Save_Data(string date)
         {

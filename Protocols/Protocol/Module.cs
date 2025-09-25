@@ -652,6 +652,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
             int.TryParse(dgv_Module.Rows[row].Cells["col_ProtocolDescriptionID"].Value.ToString(), out var protocolDescriptionID);
 
             bool.TryParse(dgv_Row.Cells["col_IsValueCritical"].Value.ToString(), out var IsValueCritical);
+            var codeText = dgv_Module.Rows[row].Cells["col_CodeText"].Value.ToString();
 
             var IsValidated = false;
             if (IsOk_CellValueChanged)
@@ -681,7 +682,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                     case 83:    //MUNSTYCKE
                     case 209:   //KÄRNA
                         text = dgv_Module.Rows[row].Cells[col].Value.ToString();
-                        Validate_Data.IsTool_Ok(text, dgv_Row.Cells["col_CodeText"].Value.ToString(), protocolDescriptionID, NOM_Value(dgv_Row), cell, startUp, MachineIndex, MIN_Value(dgv_Row), MAX_Value(dgv_Row), IsValueCritical);
+                        Validate_Data.IsTool_Ok(text, codeText, protocolDescriptionID, NOM_Value(dgv_Row), cell, startUp, MachineIndex, MIN_Value(dgv_Row), MAX_Value(dgv_Row), IsValueCritical);
                         IsValidated = true;
                         break;
                     case 159:   //HS MASKIN
@@ -698,26 +699,31 @@ namespace DigitalProductionProgram.Protocols.Protocol
                         IsValidated = true;
                         break;
                     case 305:   //SCREW
-                        Validate_Data.IsEquipmentOk(IsValueCritical, NOM_Value(dgv_Row), dgv_Module.Rows[row].Cells["col_CodeText"].Value.ToString(), protocolDescriptionID, startUp, cell, "Register_Skruvar");
+                        Validate_Data.IsEquipmentOk(IsValueCritical, NOM_Value(dgv_Row), codeText, protocolDescriptionID, startUp, cell, "Register_Skruvar");
                         IsValidated = true;
                         break;
                     case 306:   //DRYER
-                        Validate_Data.IsEquipmentOk(IsValueCritical, NOM_Value(dgv_Row), dgv_Module.Rows[row].Cells["col_CodeText"].Value.ToString(), protocolDescriptionID, startUp, cell, "Register_Torkar");
+                        Validate_Data.IsEquipmentOk(IsValueCritical, NOM_Value(dgv_Row), codeText, protocolDescriptionID, startUp, cell, "Register_Torkar");
                         IsValidated = true;
                         break;
                     case 307:   //HEAD
-                        Validate_Data.IsEquipmentOk(IsValueCritical, NOM_Value(dgv_Row), dgv_Module.Rows[row].Cells["col_CodeText"].Value.ToString(), protocolDescriptionID, startUp, cell, "Register_Huvud");
+                        Validate_Data.IsEquipmentOk(IsValueCritical, NOM_Value(dgv_Row), codeText, protocolDescriptionID, startUp, cell, "Register_Huvud");
                         IsValidated = true;
                         break;
                     case 308:   //TORPEDO
-                        Validate_Data.IsEquipmentOk(IsValueCritical, NOM_Value(dgv_Row), dgv_Module.Rows[row].Cells["col_CodeText"].Value.ToString(), protocolDescriptionID, startUp, cell, "Register_Torpeder");
+                        Validate_Data.IsEquipmentOk(IsValueCritical, NOM_Value(dgv_Row), codeText, protocolDescriptionID, startUp, cell, "Register_Torpeder");
                         IsValidated = true;
                         break;
                     case 309:   //TORPEDONUTS
-                        Validate_Data.IsEquipmentOk(IsValueCritical, NOM_Value(dgv_Row), dgv_Module.Rows[row].Cells["col_CodeText"].Value.ToString(), protocolDescriptionID, startUp, cell, "Register_Torpedmuttrar");
+                        Validate_Data.IsEquipmentOk(IsValueCritical, NOM_Value(dgv_Row), codeText, protocolDescriptionID, startUp, cell, "Register_Torpedmuttrar");
                         IsValidated = true;
                         break;
                     case 314:
+                        IsValidated = true;
+                        break;
+                    case 399: //FORMER / KALIBRERING
+                        text = dgv_Module.Rows[row].Cells[col].Value.ToString();
+                        Validate_Data.IsTool_Ok(text, codeText, protocolDescriptionID, NOM_Value(dgv_Row), cell, startUp, MachineIndex, null, null, IsValueCritical);
                         IsValidated = true;
                         break;
                     //case 316: //CALIBRATION
@@ -919,7 +925,11 @@ namespace DigitalProductionProgram.Protocols.Protocol
                             if (isProcesscardUnderManagement)
                                 items = DigitalProductionProgram.Equipment.Equipment.List_From_Register("Dimension_Bak", "Register_Kalibreringar", true, Value(col, 316));
                             else
+                            {
                                 items = DigitalProductionProgram.Equipment.Equipment.List_From_Register("ID_Nummer", "Register_Kalibreringar", true, Value(col, 316));
+                                IsItemsMultipleColumns = true;
+                            }
+                                
                             
                             break;
 

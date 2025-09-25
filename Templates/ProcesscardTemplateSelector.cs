@@ -399,7 +399,7 @@ namespace DigitalProductionProgram.Templates
             flp_Buttons.Controls.Add(btn);
             Height += btn.Height + 3;
 
-            if (isOkCheckPartNumber && IsOperatorStartingOrder)
+            if (isOkCheckPartNumber)// && IsOperatorStartingOrder)
                 SetForeColor_Label(btn, partid, isActive);
         }
         private void Add_Button_ProtocolTemplate(string? templatename, string? text, int id, string? workoperation = null, string? prodtype = null, string? prodline = null, int? partid = null, int? partGroupID = null, bool isProcesscardOkToStart = false, bool isOkCheckPartNumber = false)
@@ -434,9 +434,12 @@ namespace DigitalProductionProgram.Templates
             {
                 btn.ForeColor = CustomColors.Bad_Back;
                 btn.BackColor = CustomColors.Bad_Front;
-                btn.Cursor = Cursors.No;
-                btn.Click -= Button_Processcard_MouseClick;
-                //btn.Enabled = false;
+                if (IsOperatorStartingOrder)
+                {
+                    btn.Cursor = Cursors.No;
+                    btn.Click -= Button_Processcard_MouseClick;
+                }
+
                 return;
             }
 

@@ -104,7 +104,7 @@ namespace DigitalProductionProgram.OrderManagement
                             AND LEFT(OrderNr, 2) != 'SP'
                             AND LEFT(OrderNr, 2) != 'TR'
                             AND NOT EXISTS (SELECT 1 FROM [Order].InactiveOrders WHERE [Order].InactiveOrders.OrderID = [Order].MainData.OrderID)";
-                     
+
                 var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@partnr", Order.PartNumber);
                 SQL_Parameter.String(cmd.Parameters, "@operation", Order.Operation);
@@ -187,6 +187,7 @@ namespace DigitalProductionProgram.OrderManagement
                 FROM Processcard.MainData 
                 WHERE PartNr = @partnr 
                 AND WorkOperationID = (SELECT ID FROM Workoperation.Names WHERE Name = @workoperation AND ID IS NOT NULL) 
+                AND ProtocolMainTemplateID = @maintemplateid
                 AND Aktiv = 'True'");
 
             if (isMultipleProcesscard)
@@ -240,6 +241,7 @@ namespace DigitalProductionProgram.OrderManagement
             using var cmd = new SqlCommand(query.ToString(), con);
             cmd.Parameters.AddWithValue("@partnr", PartNr);
             cmd.Parameters.AddWithValue("@workoperation", WorkOperation);
+            cmd.Parameters.AddWithValue("@maintemplateid", Templates_Protocol.MainTemplate.ID);
             SQL_Parameter.String(cmd.Parameters, "@prodline", Order.ProdLine);
             SQL_Parameter.String(cmd.Parameters, "@prodtyp", Order.ProdType);
             var isLatestRevision = true;
@@ -475,7 +477,7 @@ GROUP BY md.PartID";
             if (string.IsNullOrEmpty(PartNr))
                 return;
             using var con = new SqlConnection(Database.cs_Protocol);
-            var query = "SELECT PartGroupID FROM Processcard.MainData WHERE PartNr = @partnr AND WorkOperationID = (SELECT ID FROM Workoperation.Names WHERE Name = @workoperation AND ID IS NOT NULL) ";
+            var query = "SELECT PartGroupID FROM Processcard.MainData WHERE PartNr = @partnr AND WorkOperationID = (SELECT ID FROM Workoperation.Names WHERE Name = @workoperation AND ID IS NOT NULL) AND ProtocolMainTemplateID = @maintemplateid";
             if (Processcard.IsMultipleProcesscard(workoperation, PartNr))
                 query += @"AND (@prodline IS NULL OR ProdLine = @prodline)
                          AND (@prodtype IS NULL OR ProdType = @prodtype)";
@@ -483,6 +485,7 @@ GROUP BY md.PartID";
             var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@partnr", PartNr);
             cmd.Parameters.AddWithValue("@workoperation", workoperation.ToString());
+            cmd.Parameters.AddWithValue("@maintemplateid", Templates_Protocol.MainTemplate.ID); //Kolla att MainTemplate.ID inte är NULL
             SQL_Parameter.String(cmd.Parameters, "@prodline", Order.ProdLine);
             SQL_Parameter.String(cmd.Parameters, "@prodtype", Order.ProdType);
             var value = cmd.ExecuteScalar();
@@ -507,7 +510,7 @@ GROUP BY md.PartID";
             con.Open();
             var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             var value = cmd.ExecuteScalar() ?? 0;
-            Order.PartGroupID = (int) value + 1;
+            Order.PartGroupID = (int)value + 1;
         }
 
         public static void Load_ProdLine()
@@ -543,7 +546,7 @@ GROUP BY md.PartID";
 
             var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             var test = Order.PartNumber;
-                    
+
             cmd.Parameters.AddWithValue("@partNr", PartNr);
             cmd.Parameters.AddWithValue("@workoperation", WorkOperation);
             cmd.Parameters.AddWithValue("@prodline", ProdLine);
@@ -616,10 +619,10 @@ GROUP BY md.PartID";
                 partID = Order.PartID;
             using var con = new SqlConnection(Database.cs_Protocol);
             var query = "SELECT Count(*) FROM Processcard.MainData WHERE PartID = @partid AND Framtagning_Processfönster = 'True'";
-                   
+
             var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             SQL_Parameter.NullableINT(cmd.Parameters, "@partid", partID);
-                    
+
             con.Open();
 
             if ((int)cmd.ExecuteScalar() > 0)
@@ -653,17 +656,15 @@ GROUP BY md.PartID";
             get
             {
                 var list = new List<string?>();
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    const string query = @"SELECT DISTINCT PartNr FROM [Order].MainData WHERE WorkOperationID = (SELECT ID FROM Workoperation.Names WHERE Name = @workoperation AND ID IS NOT NULL) ORDER BY PartNr";
+                using var con = new SqlConnection(Database.cs_Protocol);
+                const string query = @"SELECT DISTINCT PartNr FROM [Order].MainData WHERE WorkOperationID = (SELECT ID FROM Workoperation.Names WHERE Name = @workoperation AND ID IS NOT NULL) ORDER BY PartNr";
 
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    SQL_Parameter.String(cmd.Parameters, "@workoperation", Order.WorkOperation.ToString());
-                    con.Open();
-                    var reader = cmd.ExecuteReader();
-                    while (reader.Read())
-                        list.Add(reader[0].ToString());
-                }
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                SQL_Parameter.String(cmd.Parameters, "@workoperation", Order.WorkOperation.ToString());
+                con.Open();
+                var reader = cmd.ExecuteReader();
+                while (reader.Read())
+                    list.Add(reader[0].ToString());
                 return list;
             }
         }

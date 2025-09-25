@@ -117,7 +117,7 @@ namespace DigitalProductionProgram.Processcards
                 case Manage_WorkOperation.WorkOperations.Extrusion_HS:
                 case Manage_WorkOperation.WorkOperations.Extrudering_FEP:
                     return !string.IsNullOrEmpty(tb_ProdLine.Text);
-                    
+
                 default:
                     return true;
             }
@@ -154,13 +154,13 @@ namespace DigitalProductionProgram.Processcards
                     InfoText.Show($"{LanguageManager.GetString("missingPartNumber_1")} ({tb_NewPartNr.Text}) {LanguageManager.GetString("missingPartNumber_2")}", CustomColors.InfoText_Color.Bad, "Warning!", this);
                     return false;
                 }
-                Control?[] control = {tb_NewPartNr, ProcesscardBasedOn.lbl_RevNr, ProcesscardBasedOn.lbl_UpprättatAv_Sign_AnstNr, tb_RevInfo };
+                Control?[] control = { tb_NewPartNr, ProcesscardBasedOn.lbl_RevNr, ProcesscardBasedOn.lbl_UpprättatAv_Sign_AnstNr, tb_RevInfo };
                 foreach (var ctrl in control)
                 {
                     if (string.IsNullOrEmpty(ctrl.Text))
                     {
                         ControlValidator.SoftBlink(ctrl, Color.White, Color.Red, 400, 200);
-                        InfoText.Show($"{LanguageManager.GetString("processcard_MissingInfo")}",CustomColors.InfoText_Color.Bad, "Warning!", this);
+                        InfoText.Show($"{LanguageManager.GetString("processcard_MissingInfo")}", CustomColors.InfoText_Color.Bad, "Warning!", this);
                         return false;
                     }
                 }
@@ -171,7 +171,7 @@ namespace DigitalProductionProgram.Processcards
                         return false;
 
                 }
-               
+
                 tb_NewPartNr.BackColor = Color.White;
                 return true;
             }
@@ -224,23 +224,53 @@ namespace DigitalProductionProgram.Processcards
                 return false;
             }
         }
-       
+
         private int FormTemplateID { get; set; }
 
-        private void LoadFormTeplateID()
+        private void LoadFormTemplateID()
         {
             using var con = new SqlConnection(Database.cs_Protocol);
-            const string query = @"SELECT DISTINCT FormTemplateID, MainTemplateID FROM Protocol.FormTemplate WHERE MainTemplateID = (SELECT MainTemplateID FROM Workoperation.Names WHERE ID = @workoperationid)";
-            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-            cmd.Parameters.AddWithValue("@workoperationid", Order.WorkoperationID);
+
+            string query;
+            var cmd = new SqlCommand();
+            cmd.Connection = con;
+
+            if (Templates_Protocol.MainTemplate.ID > 0)
+            {
+                // Vi har redan MainTemplateID → använd det direkt
+                query = @"SELECT DISTINCT FormTemplateID, MainTemplateID 
+                  FROM Protocol.FormTemplate 
+                  WHERE MainTemplateID = @mainTemplateId";
+                cmd.Parameters.AddWithValue("@mainTemplateId", Templates_Protocol.MainTemplate.ID);
+            }
+            else
+            {
+                // Vi har inte MainTemplateID → hämta det via WorkoperationID
+                query = @"SELECT DISTINCT FormTemplateID, MainTemplateID 
+                  FROM Protocol.FormTemplate 
+                  WHERE MainTemplateID = (
+                        SELECT MainTemplateID 
+                        FROM Workoperation.Names 
+                        WHERE ID = @workoperationid)";
+                cmd.Parameters.AddWithValue("@workoperationid", Order.WorkoperationID);
+            }
+
+            cmd.CommandText = query;
+            ServerStatus.Add_Sql_Counter();
+
             con.Open();
-            var reader = cmd.ExecuteReader();
+            using var reader = cmd.ExecuteReader();
             while (reader.Read())
             {
-                if (int.TryParse(reader["FormTemplateID"].ToString(), out var formTemplateID))
+                if (int.TryParse(reader["FormTemplateID"]?.ToString(), out var formTemplateID))
                     FormTemplateID = formTemplateID;
-                if (int.TryParse(reader["MainTemplateID"].ToString(), out var mainTemplateID))
+
+                // Endast uppdatera MainTemplateID om vi inte hade det från början
+                if (Templates_Protocol.MainTemplate.ID <= 0 &&
+                    int.TryParse(reader["MainTemplateID"]?.ToString(), out var mainTemplateID))
+                {
                     Templates_Protocol.MainTemplate.ID = mainTemplateID;
+                }
             }
         }
 
@@ -248,19 +278,20 @@ namespace DigitalProductionProgram.Processcards
 
 
 
+
         //------------------------------------------------------------------------------------------------------------------------------------------------------
-        private string IncomingPartNr{ get; }
+        private string IncomingPartNr { get; }
         public Manage_Processcards(string partnr = null)
         {
             InitializeComponent();
             Translate_Form();
             tb_NewPartNr.TextChanged -= ArtikelNr_TextChanged;
-            LoadFormTeplateID();
+            LoadFormTemplateID();
             Initialize_GUI();
             IsLoadingData = false;
             tb_NewPartNr.Text = string.Empty;
-            
-            
+
+
             Fill_cb_ProtocolTemplateNames();
             Fill_cb_MeasureProtocolTemplateNames();
 
@@ -269,7 +300,7 @@ namespace DigitalProductionProgram.Processcards
             cb_TemplateRevision.SelectedIndex = cb_TemplateRevision.Items.Count - 1;
 
             Change_UI_WorkOperation();
-            
+
             ProcesscardBasedOn.rb_FramtagningAvProcessfönster.Enabled = true;
             ProcesscardBasedOn.rb_HistoricalData.Enabled = true;
             ProcesscardBasedOn.rb_Validated.Enabled = true;
@@ -302,18 +333,19 @@ namespace DigitalProductionProgram.Processcards
 
             if (Person.Role != "SuperAdmin")
                 btn_UpdateTemplate.Enabled = false;
-            
+
         }
         private void Manage_Processcards_Load(object sender, EventArgs e)
         {
-            if (!string.IsNullOrEmpty(IncomingPartNr)) 
-               tb_PartNr.Text = IncomingPartNr;
+            if (!string.IsNullOrEmpty(IncomingPartNr))
+                tb_PartNr.Text = IncomingPartNr;
             Set_Height_tlp_Protocol();
 
             ProcesscardBasedOn.lbl_RevNr.Click += RevNrChanged;
+            IsStartingForm = false;
         }
 
-       
+
 
 
 
@@ -327,8 +359,8 @@ namespace DigitalProductionProgram.Processcards
 
             LanguageManager.TranslationHelper.TranslateControls(new Control[]
             {
-               btn_ReloadPartNr, chb_HideInactive_PartNr,label_List_PartNr, label_Inactive,  label_ProdLine, label_Info_Prodline, label_Info_TotalLayer, btn_Save_Processcard, btn_DeActivate_PartNr, btn_ClearProcessCard, 
-               btn_DeleteProcesscard, label_ProcessCard_ExtraInfo, label_ProtocolTemplateName, label_ProtocolTemplateRevision, label_MeasureProtocolTemplateName
+                btn_ReloadPartNr, chb_HideInactive_PartNr,label_List_PartNr, label_Inactive,  label_ProdLine, label_Info_Prodline, label_Info_TotalLayer, btn_Save_Processcard, btn_DeActivate_PartNr, btn_ClearProcessCard,
+                btn_DeleteProcesscard, label_ProcessCard_ExtraInfo, label_ProtocolTemplateName, label_ProtocolTemplateRevision, label_MeasureProtocolTemplateName
             });
             ProcesscardBasedOn.Translate_Form();
 
@@ -412,7 +444,7 @@ namespace DigitalProductionProgram.Processcards
 
         private void Set_Height_tlp_Protocol()
         {
-            
+
         }
 
         private void Change_UI_WorkOperation()
@@ -522,7 +554,7 @@ namespace DigitalProductionProgram.Processcards
             Order.PartGroupID = null;
             switch (Order.WorkOperation)
             {
-               
+
                 case Manage_WorkOperation.WorkOperations.Skärmning:
                     Processcard_Skärmning.Clear_Data();
                     break;
@@ -542,7 +574,7 @@ namespace DigitalProductionProgram.Processcards
             tb_RevInfo.Text = string.Empty;
             tb_ExtraInfo.Text = string.Empty;
         }
-        
+
 
 
         //------------------------- LOAD -------------------------
@@ -557,17 +589,19 @@ namespace DigitalProductionProgram.Processcards
                 black.Show();
                 chooseProcesscard.ShowDialog();
                 black.Close();
+                var test = Templates_Protocol.MainTemplate.ID;
             }
             else
             {
+                var test = Templates_Protocol.MainTemplate.ID;
                 Order.PartID = null;
                 Part.Load_PartID(Order.PartNumber, false, true, false, Order.WorkOperation.ToString());
                 Part.Load_PartGroup_ID(Order.PartNumber, Order.WorkOperation);
             }
-            
+
             Load_Data_Processcard(true);
         }
-        private void Load_Data_Processcard(bool is_HämtaInfo_dgv_Rev, bool IsTemplateAlreadySet = false) 
+        private void Load_Data_Processcard(bool is_HämtaInfo_dgv_Rev, bool IsTemplateAlreadySet = false)
         {
             var org_artikelNr = Order.PartNumber;
             Order.PartNumber = tb_PartNr.Text;
@@ -585,7 +619,7 @@ namespace DigitalProductionProgram.Processcards
                 Load_ProcessCard_MainData();
                 ProcesscardBasedOn.Load_Data();
             }
-                
+
 
             switch (Order.WorkOperation)
             {
@@ -612,10 +646,10 @@ namespace DigitalProductionProgram.Processcards
                 case Manage_WorkOperation.WorkOperations.Hackning_PUR_IV:
                 case Manage_WorkOperation.WorkOperations.Spolning_PTFE:
                 case Manage_WorkOperation.WorkOperations.Plockning_PTFE:
-                {
-                    InfoText.Show("Denna arbetsoperation saknar Processkort. Kontakta Admin vid bekymmer.", CustomColors.InfoText_Color.Bad, "Warning", this);
-                    break;
-                }
+                    {
+                        InfoText.Show("Denna arbetsoperation saknar Processkort. Kontakta Admin vid bekymmer.", CustomColors.InfoText_Color.Bad, "Warning", this);
+                        break;
+                    }
             }
 
             Set_Height_tlp_Protocol();
@@ -624,8 +658,8 @@ namespace DigitalProductionProgram.Processcards
             cb_TemplateRevision.SelectedIndexChanged -= ProtocolTemplateRevision_SelectedIndexChanged;
             if (IsTemplateAlreadySet == false)
                 cb_TemplateRevision.Text = Templates_Protocol.MainTemplate.Revision;
-                
-           
+
+
             cb_TemplateRevision.SelectedIndexChanged += ProtocolTemplateRevision_SelectedIndexChanged;
             //if (is_HämtaInfo_dgv_Rev)
             //{
@@ -652,11 +686,11 @@ namespace DigitalProductionProgram.Processcards
                     LEFT JOIN MeasureProtocol.MainTemplate as measuretemplate
                         ON maindata.MeasureProtocolMainTemplateID = measuretemplate.MeasureProtocolMainTemplateID
                     WHERE PartID = @partid";
-                
+
                 con.Open();
                 var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 SQL_Parameter.NullableINT(cmd.Parameters, "@partid", Order.PartID);
-                
+
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
@@ -668,6 +702,7 @@ namespace DigitalProductionProgram.Processcards
                     cb_TemplateRevision.Text = reader["Revision"].ToString();
                     Templates_Protocol.MainTemplate.ID = maintemplateID;
                     num_NumberOfLayers.Value = int.TryParse(reader["NumberOfLayers"].ToString(), out var Layers) ? Layers : 0;
+                    var test = reader["ProtocolName"].ToString();
                     cb_ProtocolTemplateName.Text = reader["ProtocolName"].ToString();
                     cb_MeasureProtocolTemplateName.Text = reader["MeasureTemplateName"].ToString();
                     tb_RevInfo.Text = reader["RevInfo"].ToString();
@@ -751,11 +786,11 @@ namespace DigitalProductionProgram.Processcards
                 foreach (var machine in flp_Machines.Controls.OfType<Machine>())
                 {
                     foreach (TableLayoutPanel tlp in machine.Controls)
-                    foreach (var module in tlp.Controls.OfType<Module>())
-                    {
-                        module.Clear_ProcessData();
-                        module.load_processcard.Load_ProcessData(module.FormTemplateID);
-                    }
+                        foreach (var module in tlp.Controls.OfType<Module>())
+                        {
+                            module.Clear_ProcessData();
+                            module.load_processcard.Load_ProcessData(module.FormTemplateID);
+                        }
                 }
                 return;
             }
@@ -768,7 +803,7 @@ namespace DigitalProductionProgram.Processcards
 
             for (int i = 0; i < Machine.TotalMachines; i++)
                 AddMachine(i, i + 1, ref width);
-            
+
             tlp_Main.ColumnStyles[0].Width = width + 26;
             if (dataTables_ProcessData.Count > 0)
             {
@@ -778,15 +813,15 @@ namespace DigitalProductionProgram.Processcards
         }
 
 
-        
+
         private void AddMachine(int columnIndex, int machineIndex, ref int totalWidth)
         {
             var isAutheticationNeeded = false;
             var height = 0;//Denna används inte i Processkortshantering.
-            var machine = new Machine(machineIndex, ref isAutheticationNeeded,  ref height, true)
+            var machine = new Machine(machineIndex, ref isAutheticationNeeded, ref height, true)
             {
                 Name = machineIndex.ToString(),
-                Margin = new Padding(3,0,0,0),
+                Margin = new Padding(3, 0, 0, 0),
             };
             machine.Remove_StartUp();//Uppstarter används inte i Processkortshantering.
 
@@ -803,31 +838,31 @@ namespace DigitalProductionProgram.Processcards
             foreach (var machine in flp_Machines.Controls.OfType<Machine>())
             {
                 foreach (TableLayoutPanel tlp in machine.Controls)
-                foreach (var module in tlp.Controls.OfType<Module>())
-                {
-                    var dt = new DataTable();
-                    dt.Columns.Add("CodeText");
-                    dt.Columns.Add("Min");
-                    dt.Columns.Add("Nom");
-                    dt.Columns.Add("Max");
-                    dt.TableName = module.LeftHeader;
-                    foreach (DataGridViewRow row in module.dgv_Module.Rows)
+                    foreach (var module in tlp.Controls.OfType<Module>())
                     {
-                        var codetext = row.Cells["col_CodeText"].Value;
-                        if (string.IsNullOrEmpty(codetext?.ToString()))
-                            continue;
-                        
-                        var min = row.Cells["col_Min"].Value;
-                        var nom = row.Cells["col_Nom"].Value;
-                        var max = row.Cells["col_Max"].Value;
-                        var allAreNull = min == null && nom == null && max == null;
+                        var dt = new DataTable();
+                        dt.Columns.Add("CodeText");
+                        dt.Columns.Add("Min");
+                        dt.Columns.Add("Nom");
+                        dt.Columns.Add("Max");
+                        dt.TableName = module.LeftHeader;
+                        foreach (DataGridViewRow row in module.dgv_Module.Rows)
+                        {
+                            var codetext = row.Cells["col_CodeText"].Value;
+                            if (string.IsNullOrEmpty(codetext?.ToString()))
+                                continue;
 
-                        if (!allAreNull)
-                            dt.Rows.Add(codetext, min, nom, max);
+                            var min = row.Cells["col_Min"].Value;
+                            var nom = row.Cells["col_Nom"].Value;
+                            var max = row.Cells["col_Max"].Value;
+                            var allAreNull = min == null && nom == null && max == null;
+
+                            if (!allAreNull)
+                                dt.Rows.Add(codetext, min, nom, max);
+                        }
+                        if (dt.Rows.Count > 0)
+                            dataTables_ProcessData.Add(dt);
                     }
-                    if (dt.Rows.Count > 0)
-                        dataTables_ProcessData.Add(dt);
-                }
             }
         }
 
@@ -842,22 +877,22 @@ namespace DigitalProductionProgram.Processcards
                     {
                         foreach (var dt in dataTables_ProcessData)
                         {
-                           // if (dt.TableName == module.LeftHeader)
-                           {
-                               foreach (DataGridViewRow row in module.dgv_Module.Rows)
-                               {
-                                   foreach (DataRow dataRow in dt.Rows)
-                                   {
-                                       string codeText = dataRow["CodeText"].ToString();
-                                       if (row.Cells["col_CodeText"].Value.ToString() == dataRow["CodeText"].ToString())
-                                       {
-                                           row.Cells["col_Min"].Value = dataRow["Min"].ToString();
-                                           row.Cells["col_Nom"].Value = dataRow["Nom"].ToString();
-                                           row.Cells["col_Max"].Value = dataRow["Max"].ToString();
-                                       }
-                                   }
-                               }
-                           }
+                            // if (dt.TableName == module.LeftHeader)
+                            {
+                                foreach (DataGridViewRow row in module.dgv_Module.Rows)
+                                {
+                                    foreach (DataRow dataRow in dt.Rows)
+                                    {
+                                        string codeText = dataRow["CodeText"].ToString();
+                                        if (row.Cells["col_CodeText"].Value.ToString() == dataRow["CodeText"].ToString())
+                                        {
+                                            row.Cells["col_Min"].Value = dataRow["Min"].ToString();
+                                            row.Cells["col_Nom"].Value = dataRow["Nom"].ToString();
+                                            row.Cells["col_Max"].Value = dataRow["Max"].ToString();
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -964,7 +999,7 @@ namespace DigitalProductionProgram.Processcards
                     if (IsOk == false)
                         Processcard.DeleteProcesscard(Order.PartID);
                     break;
-               
+
                 case Manage_WorkOperation.WorkOperations.Kragning_TEF:
                     Processkort_Kragning.Save_Data(ref IsOk, Parameters_Main);
                     break;
@@ -988,7 +1023,7 @@ namespace DigitalProductionProgram.Processcards
 
             Load_Processcard_Info();
             Order.PartGroupID = null;
-            
+
         }
 
 
@@ -1005,18 +1040,18 @@ namespace DigitalProductionProgram.Processcards
                     foreach (var machine in flp_Machines.Controls.OfType<Machine>())
                     {
                         foreach (TableLayoutPanel tlp in machine.Controls)
-                        foreach (var module in tlp.Controls.OfType<Module>())
-                        {
-                            if (IsOk == false)
-                                continue;
-                            module.save_processcard.Update_Data(cb_TemplateRevision.Text, ref IsOk);
-                        }
+                            foreach (var module in tlp.Controls.OfType<Module>())
+                            {
+                                if (IsOk == false)
+                                    continue;
+                                module.save_processcard.Update_Data(cb_TemplateRevision.Text, ref IsOk);
+                            }
                     }
                     break;
                 case Manage_WorkOperation.WorkOperations.Kragning_TEF:
                     Processkort_Kragning.Update_Data(ref IsOk, Parameters_Main);
                     break;
-               
+
                 case Manage_WorkOperation.WorkOperations.Skärmning:
                     Processcard_Skärmning.Update_Data(ref IsOk, Parameters_Main);
                     break;
@@ -1026,7 +1061,7 @@ namespace DigitalProductionProgram.Processcards
                 case Manage_WorkOperation.WorkOperations.Svetsning:
                     Processkort_Svetsning.Update_Data(ref IsOk, Parameters_Main);
                     break;
-               
+
                 case Manage_WorkOperation.WorkOperations.Nothing:
                     break;
             }
@@ -1035,8 +1070,8 @@ namespace DigitalProductionProgram.Processcards
             if (!IsOk)
                 return;
 
-            
-            InfoText.Show($"{LanguageManager.GetString("saveProcesscard_Info_4")} {tb_NewPartNr.Text}, revision: {ProcesscardBasedOn.lbl_RevNr.Text}", CustomColors.InfoText_Color.Ok, null,this);
+
+            InfoText.Show($"{LanguageManager.GetString("saveProcesscard_Info_4")} {tb_NewPartNr.Text}, revision: {ProcesscardBasedOn.lbl_RevNr.Text}", CustomColors.InfoText_Color.Ok, null, this);
 
             dgv_Revision.CellEnter -= Revision_CellEnter;
             Load_Processcard_Info();
@@ -1078,7 +1113,7 @@ namespace DigitalProductionProgram.Processcards
 
                 if (Person.Role != "SuperAdmin")
                     Mail.Inform_SuperAdmin_Bug_Create_Processcard(e.Message);
-                
+
                 InfoText.Show(e.Message, CustomColors.InfoText_Color.Info, null);
             }
         }
@@ -1122,7 +1157,7 @@ namespace DigitalProductionProgram.Processcards
                 reader.Close();
             }
 
-            using var choose_Item = new Choose_Item(list, new Control[] {tb_PartNr}, false);
+            using var choose_Item = new Choose_Item(list, new Control[] { tb_PartNr }, false);
             choose_Item.ShowDialog();
         }
         private void PartNr_TextChanged(object sender, EventArgs e)
@@ -1141,7 +1176,7 @@ namespace DigitalProductionProgram.Processcards
         }
         private void ProdType_Click(object sender, EventArgs e)
         {
-            var ctrl = (Control) sender;
+            var ctrl = (Control)sender;
             using var choose_Item = new Choose_Item(MainInfo_B.List_ProdType("Processcard.MainData"), new[] { ctrl }, false, true);
             choose_Item.ShowDialog();
         }
@@ -1188,13 +1223,15 @@ namespace DigitalProductionProgram.Processcards
 
         private void ProtocolTemplateRevision_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (suppressSelectionChanged) 
+            if (suppressSelectionChanged)
                 return;
             Templates_Protocol.MainTemplate.Revision = cb_TemplateRevision.Text;
             Templates_Protocol.MainTemplate.Set_MainTemplateID(cb_ProtocolTemplateName.Text, cb_TemplateRevision.Text);
             CopyProcessDataToNewTemplateRevision();
             Load_Data_Processcard(false, true);
         }
+
+        private bool IsStartingForm = true;
         private void TemplateName_SelectedIndexChanged(object sender, EventArgs e)
         {
             Fill_cb_ProtocolTemplateRevision();
@@ -1202,12 +1239,14 @@ namespace DigitalProductionProgram.Processcards
             //Templates_Protocol.MainTemplate.Revision = cb_TemplateRevision.Text;
 
             //LoadTemplate();
+            if (IsStartingForm == false)
+            {
+                Templates_Protocol.MainTemplate.Load_MainTemplateID(cb_ProtocolTemplateName.Text, cb_TemplateRevision.Text);
+                Templates_Protocol.MainTemplate.Revision = cb_TemplateRevision.Text;
+                CopyProcessDataToNewTemplateRevision();
+                LoadTemplate();
+            }
 
-            Templates_Protocol.MainTemplate.Load_MainTemplateID(cb_ProtocolTemplateName.Text, cb_TemplateRevision.Text);
-            Templates_Protocol.MainTemplate.Revision = cb_TemplateRevision.Text;
-
-            CopyProcessDataToNewTemplateRevision();
-            LoadTemplate();
         }
         private void TemplateName_SelectionChangeCommitted(object sender, EventArgs e)
         {
@@ -1249,8 +1288,8 @@ namespace DigitalProductionProgram.Processcards
         }
         private void Info_Click(object sender, EventArgs e)
         {
-                InfoText.Show(
-                    $@"
+            InfoText.Show(
+                $@"
 OrderNr = {Order.OrderNumber} 
 OrderID = {Order.OrderID}
 Operation = {Order.Operation}
@@ -1284,7 +1323,7 @@ HS-Machine = {Equipment.Equipment.HS_Machine}", CustomColors.InfoText_Color.Info
         {
             Clear_Data();
         }
-        
+
 
         private void Aktivera_Inaktivera_ArtikelNr_Click(object sender, EventArgs e)
         {
@@ -1301,25 +1340,25 @@ HS-Machine = {Equipment.Equipment.HS_Machine}", CustomColors.InfoText_Color.Info
                     return;
                 }
                 InfoText.Question($"{LanguageManager.GetString("saveProcesscard_Info_7_1")}\n\n" +
-                    $"{LanguageManager.GetString("label_PartNumber")} {tb_NewPartNr.Text}\n" +
-                    $"{LanguageManager.GetString("label_RevNr")} {ProcesscardBasedOn.lbl_RevNr.Text}\n" +
-                    $"{LanguageManager.GetString("label_ProdLine")} {tb_ProdLine.Text}\n" +
-                    $"{LanguageManager.GetString("label_ProdType")} {tb_ProdType.Text}\n" +
-                    $"{Order.WorkOperation}\n\n" +
-                    $"{LanguageManager.GetString("saveProcesscard_Info_7_2")}", CustomColors.InfoText_Color.Warning, "WARNING!", this);
+                                  $"{LanguageManager.GetString("label_PartNumber")} {tb_NewPartNr.Text}\n" +
+                                  $"{LanguageManager.GetString("label_RevNr")} {ProcesscardBasedOn.lbl_RevNr.Text}\n" +
+                                  $"{LanguageManager.GetString("label_ProdLine")} {tb_ProdLine.Text}\n" +
+                                  $"{LanguageManager.GetString("label_ProdType")} {tb_ProdType.Text}\n" +
+                                  $"{Order.WorkOperation}\n\n" +
+                                  $"{LanguageManager.GetString("saveProcesscard_Info_7_2")}", CustomColors.InfoText_Color.Warning, "WARNING!", this);
                 if (InfoText.answer == InfoText.Answer.Yes)
                     Processcard.DeleteProcesscard(Order.PartID);
 
                 dgv_Revision.Rows.RemoveAt(0);
                 dgv_Revision.Rows[0].Selected = true;
             }
-            
+
 
         }
         private void UpdateTemplate_Click(object sender, EventArgs e)
         {
             //if (Order.PartID != null)
-                //Template.Update_ProcesscardWithNewTemplate((int)Order.PartID, Template.Old_MainTemplateID((int)Order.PartID), Order.MainTemplateID, cb_TemplateRevision.Text);
+            //Template.Update_ProcesscardWithNewTemplate((int)Order.PartID, Template.Old_MainTemplateID((int)Order.PartID), Order.MainTemplateID, cb_TemplateRevision.Text);
         }
         private void CopyPartNr_Click(object sender, EventArgs e)
         {
@@ -1510,14 +1549,14 @@ HS-Machine = {Equipment.Equipment.HS_Machine}", CustomColors.InfoText_Color.Info
         //------------------------- CLOSE -------------------------
         private void Lägg_till_nytt_Processkort_FormClosed(object sender, FormClosedEventArgs e)
         {
-           // Order.ProdLinje = org_ProdLinje;
-           // Main_Form.Timer_UpdateChart.Start();
+            // Order.ProdLinje = org_ProdLinje;
+            // Main_Form.Timer_UpdateChart.Start();
         }
         private void Skapa_Uppdatera_Processkort_Activated(object sender, EventArgs e)
         {
             IsProcesscardUnderManagement = true;
         }
 
-       
+
     }
 }

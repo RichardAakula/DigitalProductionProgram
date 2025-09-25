@@ -3,6 +3,7 @@
 //Projekt   : Digitala mät&kör Protokoll
 
 using System;
+using System.Diagnostics;
 using Microsoft.Data.SqlClient;
 using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.DatabaseManagement;
@@ -21,6 +22,7 @@ using DigitalProductionProgram.PrintingServices.Workoperation_Printouts;
 using DigitalProductionProgram.Protocols;
 using DigitalProductionProgram.QC;
 using DigitalProductionProgram.User;
+using Activity = DigitalProductionProgram.Log.Activity;
 using Pictures = DigitalProductionProgram.OrderHantering.Pictures;
 using CustomProgressBar = DigitalProductionProgram.ControlsManagement.CustomProgressBar;
 using Timer = System.Windows.Forms.Timer;
@@ -126,7 +128,6 @@ namespace DigitalProductionProgram.MainWindow
             InitializeComponent();
 
             Translate_MainForm();
-            _ = Activity.Stop($"Startar upp DPP");
 
             MainMenu.mainForm = this;
             OrderInformation.mainForm = this;
@@ -201,8 +202,8 @@ namespace DigitalProductionProgram.MainWindow
                     black.Close();
             }
            
-
-            await Activity.Stop("Uppstart av program");
+            var processes = Process.GetProcessesByName("DigitalProductionProgram");
+            await Activity.Stop($"Uppstart av program # {processes.Length}");
             Initialize_Timers();
             if (IsBetaMode)
                 ChangeToBetaMode();

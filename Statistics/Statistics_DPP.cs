@@ -16,8 +16,6 @@ namespace DigitalProductionProgram.Statistics
     public partial class Statistics_DPP : UserControl
     {
 
-       
-
         private const string Query_LastMonth = @"
                     WITH TimeIntervals AS 
                     (
@@ -191,6 +189,91 @@ FROM VersionComponents v
 JOIN Top8Versions t ON v.Version = t.Version
 GROUP BY v.Version, v.Major, v.Minor, v.Patch, v.Build
 ORDER BY v.Major DESC, v.Minor DESC, v.Patch DESC, v.Build DESC;";
+        private const string Query_MeasurementsLastMonth = @"
+                   WITH TimeIntervals AS 
+(
+    SELECT 
+        DATEADD(DAY, -30, GETDATE()) AS IntervalStart,
+        DATEADD(DAY, 5, DATEADD(DAY, -30, GETDATE())) AS IntervalEnd
+    UNION ALL
+    SELECT 
+        DATEADD(DAY, 5, IntervalStart), 
+        DATEADD(DAY, 5, IntervalEnd)
+    FROM TimeIntervals
+    WHERE IntervalStart < GETDATE() - 5
+)
+SELECT 
+    COUNT(*) AS total_count, 
+    FORMAT(IntervalStart, 'dd MMMM') + ' - ' + FORMAT(IntervalEnd, 'dd MMMM') AS time_range
+FROM MeasureProtocol.MainData md
+JOIN TimeIntervals ti
+    ON md.Date BETWEEN ti.IntervalStart AND ti.IntervalEnd
+GROUP BY IntervalStart, IntervalEnd
+ORDER BY IntervalStart;";
+        private const string Query_MeasurementsLastMonths = @"
+                   WITH TimeIntervals AS 
+(
+    SELECT 
+        DATEADD(MONTH, -6, CAST(GETDATE() AS date)) AS IntervalStart,
+        DATEADD(DAY, 5, DATEADD(MONTH, -6, CAST(GETDATE() AS date))) AS IntervalEnd
+    UNION ALL
+    SELECT 
+        DATEADD(DAY, 5, IntervalStart), 
+        DATEADD(DAY, 5, IntervalEnd)
+    FROM TimeIntervals
+    WHERE IntervalStart < GETDATE() - 5
+)
+SELECT 
+    COUNT(*) AS total_count, 
+    FORMAT(IntervalStart, 'dd MMMM') + ' - ' + FORMAT(IntervalEnd, 'dd MMMM') AS time_range
+FROM MeasureProtocol.MainData md
+JOIN TimeIntervals ti
+    ON md.MeasurementDate BETWEEN ti.IntervalStart AND ti.IntervalEnd
+GROUP BY IntervalStart, IntervalEnd
+ORDER BY IntervalStart;";
+        private const string Query_MeasurementsLastDay = @"
+                  WITH TimeIntervals AS 
+(
+    SELECT 
+        DATEADD(DAY, -1, GETDATE()) AS IntervalStart,
+        DATEADD(HOUR, 4, DATEADD(DAY, -1, GETDATE())) AS IntervalEnd
+    UNION ALL
+    SELECT 
+        DATEADD(MINUTE, 1, IntervalEnd),
+        DATEADD(MINUTE, 240, IntervalEnd)  -- 239 + 1 == 240
+    FROM TimeIntervals
+    WHERE IntervalEnd < GETDATE()
+)
+SELECT 
+    COUNT(*) AS total_count, 
+    FORMAT(ti.IntervalStart, 'HH:mm') + ' - ' + FORMAT(ti.IntervalEnd, 'HH:mm') AS time_range
+FROM MeasureProtocol.MainData m
+JOIN TimeIntervals ti
+    ON m.Date BETWEEN ti.IntervalStart AND ti.IntervalEnd
+GROUP BY ti.IntervalStart, ti.IntervalEnd
+ORDER BY ti.IntervalStart;";
+        private const string Query_MeasurementsLastWeek = @"
+                 WITH TimeIntervals AS 
+(
+    SELECT 
+        DATEADD(DAY, -6, CAST(GETDATE() AS DATE)) AS IntervalStart,
+        DATEADD(DAY, 1, DATEADD(DAY, -6, CAST(GETDATE() AS DATE))) AS IntervalEnd
+    UNION ALL
+    SELECT 
+        IntervalEnd,
+        DATEADD(DAY, 1, IntervalEnd)
+    FROM TimeIntervals
+    WHERE IntervalEnd < DATEADD(DAY, 1, CAST(GETDATE() AS DATE))
+)
+SELECT 
+    COUNT(*) AS total_count, 
+    FORMAT(ti.IntervalStart, 'ddd dd MMM') AS [day]
+FROM MeasureProtocol.MainData md
+JOIN TimeIntervals ti
+    ON md.Date >= ti.IntervalStart AND md.Date < ti.IntervalEnd
+GROUP BY ti.IntervalStart, ti.IntervalEnd
+ORDER BY ti.IntervalStart;
+";
 
         private readonly List<(string Title, string Query)> chartQueries = new()
         {
@@ -200,7 +283,12 @@ ORDER BY v.Major DESC, v.Minor DESC, v.Patch DESC, v.Build DESC;";
             ("Activity DPP - Last Month", Query_LastMonth),
             ("Activity DPP - Last 6 Months", Query_LastMonths),
             ("Activity DPP - Last 5 Years", Query_LastYears),
-            ("Deployment by Version", Query_DeploymentByVersion)
+            ("Deployment by Version", Query_DeploymentByVersion),
+            ("Measurements - Last Month", Query_MeasurementsLastMonth),
+            ("Measurements - Last 6 Months", Query_MeasurementsLastMonths),
+            ("Measurements - Last 24 Hour", Query_MeasurementsLastDay),
+            ("Measurements - Last Week", Query_MeasurementsLastWeek),
+
         };
         private async Task<List<(string Label, int Value)>> LoadChartDataAsync(string query)
         {
@@ -218,8 +306,6 @@ ORDER BY v.Major DESC, v.Minor DESC, v.Patch DESC, v.Build DESC;";
 
             return data;
         }
-
-
 
         public Statistics_DPP()
         {
@@ -243,7 +329,6 @@ ORDER BY v.Major DESC, v.Minor DESC, v.Patch DESC, v.Build DESC;";
 
             await CreateChartAsync(selected.Title, selected.Query);
         }
-
 
         public async Task CreateChartAsync(string legendText, string query)
         {
@@ -291,13 +376,6 @@ ORDER BY v.Major DESC, v.Minor DESC, v.Patch DESC, v.Build DESC;";
                 this.Controls.Add(chart_Stats);
             }
         }
-
-
-        private void panelStatistics_Click(object sender, MouseEventArgs e)
-        {
-            //EasterEgg_Code.HandleStatisticsClick(this, e.Location);
-        }
-
 
         private async void chart_Statistics_MouseDown(object sender, MouseEventArgs e)
         {

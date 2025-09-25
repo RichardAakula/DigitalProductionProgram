@@ -205,11 +205,7 @@ namespace DigitalProductionProgram.Measure
             else
             {
                 await measurementChart.RemoveChart();
-                if (ChartCodeText != null)
-                    _ = Activity.Stop($"Felsökning rött kryss över chart: \n" +
-                                      $"ChartCodeText={ChartCodeText}\n" +
-                                      $"ChartCodeName={ChartCodename}\n" +
-                                  $"OrderID = {Order.OrderID} Measureprotocol.MainTemplateID = {Templates_MeasureProtocol.MainTemplate.ID}");
+               
             }
 
             tlp_MainWindow.Invoke(new Action<TableLayoutPanel>(SetHeight), tlp_MainWindow);

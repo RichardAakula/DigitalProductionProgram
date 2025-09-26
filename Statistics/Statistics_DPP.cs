@@ -211,26 +211,27 @@ JOIN TimeIntervals ti
 GROUP BY IntervalStart, IntervalEnd
 ORDER BY IntervalStart;";
         private const string Query_MeasurementsLastMonths = @"
-                   WITH TimeIntervals AS 
+                  WITH TimeIntervals AS 
 (
     SELECT 
-        DATEADD(MONTH, -6, CAST(GETDATE() AS date)) AS IntervalStart,
-        DATEADD(DAY, 5, DATEADD(MONTH, -6, CAST(GETDATE() AS date))) AS IntervalEnd
+        DATEADD(MONTH, -5, DATEFROMPARTS(YEAR(GETDATE()), MONTH(GETDATE()), 1)) AS IntervalStart,
+        DATEADD(MONTH, -4, DATEFROMPARTS(YEAR(GETDATE()), MONTH(GETDATE()), 1)) AS IntervalEnd
     UNION ALL
     SELECT 
-        DATEADD(DAY, 5, IntervalStart), 
-        DATEADD(DAY, 5, IntervalEnd)
+        IntervalEnd,
+        DATEADD(MONTH, 1, IntervalEnd)
     FROM TimeIntervals
-    WHERE IntervalStart < GETDATE() - 5
+    WHERE IntervalEnd < DATEADD(MONTH, 1, DATEFROMPARTS(YEAR(GETDATE()), MONTH(GETDATE()), 1))
 )
 SELECT 
     COUNT(*) AS total_count, 
-    FORMAT(IntervalStart, 'dd MMMM') + ' - ' + FORMAT(IntervalEnd, 'dd MMMM') AS time_range
+    FORMAT(ti.IntervalStart, 'MMM yyyy') AS [MONTH]
 FROM MeasureProtocol.MainData md
 JOIN TimeIntervals ti
-    ON md.Date BETWEEN ti.IntervalStart AND ti.IntervalEnd
-GROUP BY IntervalStart, IntervalEnd
-ORDER BY IntervalStart;";
+    ON md.Date >= ti.IntervalStart AND md.Date < ti.IntervalEnd
+GROUP BY ti.IntervalStart
+ORDER BY ti.IntervalStart;
+";
         private const string Query_MeasurementsLastDay = @"
                   WITH TimeIntervals AS 
 (
@@ -274,20 +275,44 @@ JOIN TimeIntervals ti
 GROUP BY ti.IntervalStart, ti.IntervalEnd
 ORDER BY ti.IntervalStart;
 ";
+        private const string Query_MeasurementsLastYears = @"
+                WITH TimeIntervals AS 
+(
+    SELECT 
+        DATEADD(YEAR, -5, CAST(GETDATE() AS DATE)) AS IntervalStart,
+        DATEADD(YEAR, -4, CAST(GETDATE() AS DATE)) AS IntervalEnd
+    UNION ALL
+    SELECT 
+        DATEADD(YEAR, 1, IntervalStart), 
+        DATEADD(YEAR, 1, IntervalEnd)
+    FROM TimeIntervals
+    WHERE IntervalStart < DATEADD(YEAR, 1, CAST(GETDATE() AS DATE))
+)
+SELECT 
+    COUNT(*) AS total_count,
+    YEAR(md.Date) AS [Year]
+FROM MeasureProtocol.MainData md
+JOIN TimeIntervals ti
+    ON md.Date >= ti.IntervalStart 
+   AND md.Date < ti.IntervalEnd
+GROUP BY YEAR(md.Date)
+ORDER BY [Year];";
 
         private readonly List<(string Title, string Query)> chartQueries = new()
         {
-            ("Activity DPP - Last Week", Query_LastWeek),
-            ("Activity DPP - Last 24 Hour", Query_LastDay),
             ("Activity DPP - Last Hour", Query_LastHour),
+            ("Activity DPP - Last 24 Hour", Query_LastDay),
+            ("Activity DPP - Last Week", Query_LastWeek),
             ("Activity DPP - Last Month", Query_LastMonth),
             ("Activity DPP - Last 6 Months", Query_LastMonths),
             ("Activity DPP - Last 5 Years", Query_LastYears),
             ("Deployment by Version", Query_DeploymentByVersion),
-            ("Measurements - Last Month", Query_MeasurementsLastMonth),
-            ("Measurements - Last 6 Months", Query_MeasurementsLastMonths),
+
             ("Measurements - Last 24 Hour", Query_MeasurementsLastDay),
             ("Measurements - Last Week", Query_MeasurementsLastWeek),
+            ("Measurements - Last Month", Query_MeasurementsLastMonth),
+            ("Measurements - Last 6 Months", Query_MeasurementsLastMonths),
+            ("Measurements - Last 5 Years", Query_MeasurementsLastYears),
 
         };
         private async Task<List<(string Label, int Value)>> LoadChartDataAsync(string query)
@@ -322,10 +347,15 @@ ORDER BY ti.IntervalStart;
 
             await Load_StatisticsAsync();
         }
+
+        private int index;
         public async Task Load_StatisticsAsync()
         {
-            var random = new Random();
-            var selected = chartQueries[random.Next(chartQueries.Count)];
+            var selected = chartQueries[index];
+
+            index++;
+            if (index >= chartQueries.Count)
+                index = 0;
 
             await CreateChartAsync(selected.Title, selected.Query);
         }

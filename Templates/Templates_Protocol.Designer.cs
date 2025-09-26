@@ -810,7 +810,6 @@ namespace DigitalProductionProgram.Templates
             pb_Manual.SizeMode = PictureBoxSizeMode.Zoom;
             pb_Manual.TabIndex = 871;
             pb_Manual.TabStop = false;
-            pb_Manual.Visible = false;
             pb_Manual.Click += pb_Manual_Click;
             // 
             // tb_Workoperation

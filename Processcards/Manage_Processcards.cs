@@ -1238,7 +1238,6 @@ namespace DigitalProductionProgram.Processcards
         private void TemplateName_SelectedIndexChanged(object sender, EventArgs e)
         {
             Fill_cb_ProtocolTemplateRevision();
-           
         }
         private void TemplateName_SelectionChangeCommitted(object sender, EventArgs e)
         {

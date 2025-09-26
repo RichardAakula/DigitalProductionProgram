@@ -182,6 +182,8 @@ namespace DigitalProductionProgram.Protocols.Protocol
             dgv_Module.Columns["col_CodeText"].HeaderText = LanguageManager.GetString("col_CodeText_Header");
         }
 
+
+        [DebuggerStepThrough]
         private void Label_LEFT_Paint(object sender, PaintEventArgs e)
         {
             LeftHeader = LeftHeader?.Replace("\n", "");

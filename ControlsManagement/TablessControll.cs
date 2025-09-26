@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Windows.Forms;
 
 namespace DigitalProductionProgram.ControlsManagement
 {
     public class TablessControl : TabControl
     {
+        [DebuggerStepThrough]
         protected override void WndProc(ref Message m)
         {
             // Hide tabs by trapping the TCM_ADJUSTRECT message

@@ -188,9 +188,7 @@ namespace DigitalProductionProgram.OrderManagement
                 WHERE PartNr = @partnr 
                 AND WorkOperationID = (SELECT ID FROM Workoperation.Names WHERE Name = @workoperation AND ID IS NOT NULL) 
                 AND Aktiv = 'True'");
-
-            if (Order.WorkOperation != Manage_WorkOperation.WorkOperations.Slipning && Order.WorkOperation != Manage_WorkOperation.WorkOperations.Svetsning)        //Detta behöver nångång göras bättre, det blev en snabbfix nu. Dessa operationer använder inte Templates
-                query.Append(" AND ProtocolMainTemplateID = @maintemplateid");
+            
             if (isMultipleProcesscard)
             {
                 if (!string.IsNullOrEmpty(Order.ProdLine))
@@ -198,6 +196,9 @@ namespace DigitalProductionProgram.OrderManagement
 
                 if (!string.IsNullOrEmpty(Order.ProdType))
                     query.Append(" AND ProdType = @prodtyp ");
+
+                if (Order.WorkOperation != Manage_WorkOperation.WorkOperations.Slipning && Order.WorkOperation != Manage_WorkOperation.WorkOperations.Svetsning)        //Detta behöver nångång göras bättre, det blev en snabbfix nu. Dessa operationer använder inte Templates
+                    query.Append(" AND ProtocolMainTemplateID = @maintemplateid");
             }
 
             query.Append(")");

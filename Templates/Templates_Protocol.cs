@@ -1171,7 +1171,7 @@ namespace DigitalProductionProgram.Templates
                 return 0;
             }
 
-            public static void Load_MainTemplateID(string templateName, string revision)
+            public static void Load_MainTemplateID(string? templateName, string revision)
             {
                 using var con = new SqlConnection(Database.cs_Protocol);
                 const string query =

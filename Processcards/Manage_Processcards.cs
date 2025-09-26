@@ -473,8 +473,6 @@ namespace DigitalProductionProgram.Processcards
                     tab_Main.SelectedTab = tp_Protocol;
                     break;
             }
-
-            panel_ProductionLine.Visible = Templates_Protocol.MainTemplate.IsProcesscardUsingProdline;
             dgv_Revision.BackgroundColor = flp_Left.BackColor = tp_Protocol.BackColor = CustomColors.Load_BackColor_WorkOperation(Order.WorkOperation.ToString());// tlp_Machines.BackColor =
         }
 
@@ -781,6 +779,7 @@ namespace DigitalProductionProgram.Processcards
 
         private void LoadTemplate(bool IsOkCopyDataFromTemplate)
         {
+            panel_ProductionLine.Visible = Templates_Protocol.MainTemplate.IsProcesscardUsingProdline;
             if (Templates_Protocol.MainTemplate.ID == ActiveMainTemplateID && Templates_Protocol.MainTemplate.Revision == ActiveTemplateRevision && IsOkCopyDataFromTemplate == false)
             {
                 foreach (var machine in flp_Machines.Controls.OfType<Machine>())
@@ -878,6 +877,7 @@ namespace DigitalProductionProgram.Processcards
                 {
                     foreach (var module in tlp.Controls.OfType<Module>())
                     {
+                        module.dgv_Module.CellValueChanged -= module.Module_ValidateData_SaveData_CellValueChanged;
                         foreach (var dt in dataTables_ProcessData)
                         {
                             // if (dt.TableName == module.LeftHeader)
@@ -1228,9 +1228,9 @@ namespace DigitalProductionProgram.Processcards
         {
             if (suppressSelectionChanged)
                 return;
-            Templates_Protocol.MainTemplate.Revision = cb_TemplateRevision.Text;
-            Templates_Protocol.MainTemplate.Set_MainTemplateID(cb_ProtocolTemplateName.Text, cb_TemplateRevision.Text);
-            CopyProcessDataToNewTemplateRevision();
+            //Templates_Protocol.MainTemplate.Revision = cb_TemplateRevision.Text;
+            //Templates_Protocol.MainTemplate.Set_MainTemplateID(cb_ProtocolTemplateName.Text, cb_TemplateRevision.Text);
+            //CopyProcessDataToNewTemplateRevision();
             Load_Data_Processcard(false, true);
         }
 
@@ -1242,7 +1242,7 @@ namespace DigitalProductionProgram.Processcards
         }
         private void TemplateName_SelectionChangeCommitted(object sender, EventArgs e)
         {
-            Templates_Protocol.MainTemplate.Load_MainTemplateID(cb_ProtocolTemplateName.Text, cb_TemplateRevision.Text);
+            Templates_Protocol.MainTemplate.Load_MainTemplateID(cb_ProtocolTemplateName.SelectedItem?.ToString(), cb_TemplateRevision.Text);
             Templates_Protocol.MainTemplate.Revision = cb_TemplateRevision.Text;
             CopyProcessDataToNewTemplateRevision();
             LoadTemplate(true);

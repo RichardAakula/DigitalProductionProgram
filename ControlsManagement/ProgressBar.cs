@@ -7,7 +7,7 @@ namespace DigitalProductionProgram.ControlsManagement
 {
     public partial class CustomProgressBar : Form
     {
-       
+        [DebuggerStepThrough]
         public CustomProgressBar(int Total_Bars = 1)
         {
             InitializeComponent();

@@ -444,7 +444,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
             if (IsAuthenticationNeeded)
                 for (int col = ColIndex_StartUp1; col < dgv_Module.Columns.Count; col++)
                 {
-                    if (dgv_Module.Rows[dgv_Module.Rows.Count - 1].Cells[col].Value != null)
+                    if (dgv_Module.Rows[^1].Cells[col].Value != null)
                         equipment.Lock_Equipment(col);
                 }
             dgv_Module.ClearSelection();

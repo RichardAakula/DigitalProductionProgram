@@ -339,7 +339,6 @@ namespace DigitalProductionProgram.Processcards
         {
             if (!string.IsNullOrEmpty(IncomingPartNr))
                 tb_PartNr.Text = IncomingPartNr;
-            Set_Height_tlp_Protocol();
 
             ProcesscardBasedOn.lbl_RevNr.Click += RevNrChanged;
             IsStartingForm = false;
@@ -442,10 +441,7 @@ namespace DigitalProductionProgram.Processcards
         }
 
 
-        private void Set_Height_tlp_Protocol()
-        {
-
-        }
+       
 
         private void Change_UI_WorkOperation()
         {
@@ -622,7 +618,7 @@ namespace DigitalProductionProgram.Processcards
             switch (Order.WorkOperation)
             {
                 default:
-                    LoadTemplate(false);
+                    LoadTemplate();
                     break;
                 case Manage_WorkOperation.WorkOperations.Kragning_TEF:
                     Processkort_Kragning.Load_Info();
@@ -650,7 +646,6 @@ namespace DigitalProductionProgram.Processcards
                     }
             }
 
-            Set_Height_tlp_Protocol();
             tb_NewPartNr.SelectAll();
             tb_NewPartNr.BackColor = Color.Khaki;
             cb_TemplateRevision.SelectedIndexChanged -= ProtocolTemplateRevision_SelectedIndexChanged;
@@ -674,6 +669,8 @@ namespace DigitalProductionProgram.Processcards
         private void Load_ProcessCard_MainData()
         {
             tb_ProdLine.TextChanged -= ProdLinje_TextChanged;
+           // cb_TemplateRevision.SelectedIndexChanged -= ProtocolTemplateRevision_SelectedIndexChanged;
+            suppressTemplateRevisionSelectionChanged = true;
             using (var con = new SqlConnection(Database.cs_Protocol))
             {
                 const string query = @"
@@ -697,7 +694,7 @@ namespace DigitalProductionProgram.Processcards
                     tb_ProdLine.Text = Order.ProdLine = reader["ProdLine"].ToString();
                     tb_ProdType.Text = Order.ProdType = reader["ProdType"].ToString();
                     int.TryParse(reader["ProtocolMainTemplateID"].ToString(), out var maintemplateID);
-                    cb_TemplateRevision.Text = reader["Revision"].ToString();
+                    cb_TemplateRevision.Text = Templates_Protocol.MainTemplate.Revision = reader["Revision"].ToString();
                     Templates_Protocol.MainTemplate.ID = maintemplateID;
                     num_NumberOfLayers.Value = int.TryParse(reader["NumberOfLayers"].ToString(), out var Layers) ? Layers : 0;
                     var test = reader["ProtocolName"].ToString();
@@ -714,12 +711,15 @@ namespace DigitalProductionProgram.Processcards
                 Change_UI_Inactive_ArtikelNr();
 
             tb_ProdLine.TextChanged += ProdLinje_TextChanged;
+           // cb_TemplateRevision.SelectedIndexChanged += ProtocolTemplateRevision_SelectedIndexChanged;
+            suppressTemplateRevisionSelectionChanged = false;
         }
         private void Load_Processcard_Info()
         {
+            Part.Load_PartGroup_ID(Order.PartID);
             if (Order.PartGroupID is null)
                 return;
-
+            
             // 🔥 Reset DataGridView before adding new data
             dgv_Revision.EndEdit();
             dgv_Revision.ClearSelection();
@@ -776,10 +776,19 @@ namespace DigitalProductionProgram.Processcards
             //tlp_Machines.RowStyles.Add(new RowStyle(SizeType.AutoSize));
         }
 
-
-        private void LoadTemplate(bool IsOkCopyDataFromTemplate)
+        private bool IsOkAskQuestionCopyData = true;
+        private void LoadTemplate()
         {
             panel_ProductionLine.Visible = Templates_Protocol.MainTemplate.IsProcesscardUsingProdline;
+            bool IsOkCopyDataFromTemplate = false;
+            if (Templates_Protocol.MainTemplate.ID != ActiveMainTemplateID && ActiveMainTemplateID > 0 && IsOkAskQuestionCopyData)
+            {
+                InfoText.Question("Vill du kopiera datan från den gamla mallen till den nya aktiva mallen?", CustomColors.InfoText_Color.Info, "Kopiera Data?", this);
+                if (InfoText.answer == InfoText.Answer.Yes)
+                    IsOkCopyDataFromTemplate = true;
+            }
+
+
             if (Templates_Protocol.MainTemplate.ID == ActiveMainTemplateID && Templates_Protocol.MainTemplate.Revision == ActiveTemplateRevision && IsOkCopyDataFromTemplate == false)
             {
                 foreach (var machine in flp_Machines.Controls.OfType<Machine>())
@@ -1172,10 +1181,12 @@ namespace DigitalProductionProgram.Processcards
         }
         private void ReloadPartNr_Click(object sender, EventArgs e)
         {
+            IsOkAskQuestionCopyData = false;
             ProcesscardBasedOn.lbl_RevNr.Text = string.Empty;
             tb_NewPartNr.TextChanged -= ArtikelNr_TextChanged;
             Choose_And_Load_PartNr();
             tb_NewPartNr.TextChanged += ArtikelNr_TextChanged;
+            IsOkAskQuestionCopyData = true;
         }
         private void ProdType_Click(object sender, EventArgs e)
         {
@@ -1226,7 +1237,7 @@ namespace DigitalProductionProgram.Processcards
 
         private void ProtocolTemplateRevision_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (suppressSelectionChanged)
+            if (suppressTemplateRevisionSelectionChanged)
                 return;
             //Templates_Protocol.MainTemplate.Revision = cb_TemplateRevision.Text;
             //Templates_Protocol.MainTemplate.Set_MainTemplateID(cb_ProtocolTemplateName.Text, cb_TemplateRevision.Text);
@@ -1244,14 +1255,15 @@ namespace DigitalProductionProgram.Processcards
             Templates_Protocol.MainTemplate.Load_MainTemplateID(cb_ProtocolTemplateName.SelectedItem?.ToString(), cb_TemplateRevision.Text);
             Templates_Protocol.MainTemplate.Revision = cb_TemplateRevision.Text;
             CopyProcessDataToNewTemplateRevision();
-            LoadTemplate(true);
+            LoadTemplate();
         }
-        private bool suppressSelectionChanged;
+        private bool suppressTemplateRevisionSelectionChanged;
         private void RevNrChanged(object sender, EventArgs e)
         {
+           // IsOkAskQuestionCopyData = false;
             if (string.IsNullOrEmpty(ProcesscardBasedOn.lbl_UpprättatAv_Sign_AnstNr.Text) == false && cb_TemplateRevision.Items.Count > 1 && cb_TemplateRevision.SelectedIndex < cb_TemplateRevision.Items.Count - 1)
             {
-                suppressSelectionChanged = true; // Prevent event from firing
+                suppressTemplateRevisionSelectionChanged = true; // Prevent event from firing
 
                 cb_TemplateRevision.SelectedIndex = cb_TemplateRevision.Items.Count - 1;
 
@@ -1260,13 +1272,14 @@ namespace DigitalProductionProgram.Processcards
                 CopyProcessDataToNewTemplateRevision();
                 Templates_Protocol.MainTemplate.Revision = cb_TemplateRevision.Text;
                 Templates_Protocol.MainTemplate.Set_MainTemplateID(cb_ProtocolTemplateName.Text, cb_TemplateRevision.Text);
-                LoadTemplate(false);
-                suppressSelectionChanged = false; // Allow event firing again
+                LoadTemplate();
+                suppressTemplateRevisionSelectionChanged = false; // Allow event firing again
             }
 
             IsUpdateProcesscard = false;
             ProcesscardBasedOn.lbl_UpprättatAv_Sign_AnstNr.Text = string.Empty;
             cb_TemplateRevision.SelectedIndexChanged += ProtocolTemplateRevision_SelectedIndexChanged;
+           // IsOkAskQuestionCopyData = true;
         }
 
         private void NewTemplate_Click(object sender, EventArgs e)
@@ -1426,10 +1439,9 @@ HS-Machine = {Equipment.Equipment.HS_Machine}", CustomColors.InfoText_Color.Info
 
                 foreach (var partNr in Parts)
                 {
-                    using (var con = new SqlConnection(Database.cs_Protocol))
-                    {
-                        con.Open();
-                        var query = @"
+                    using var con = new SqlConnection(Database.cs_Protocol);
+                    con.Open();
+                    var query = @"
                         SELECT TOP(1) m.PartID, m.MainTemplateID, m.ProtocolTemplateRevision, m.PartGroupID, m.PartNr, m.RevNr, m.ProdType,
                             (SELECT TextValue FROM Processcard.Data WHERE PartID = m.PartID AND TemplateID = 1024) AS MunstyckeTyp,
                             (SELECT TextValue FROM Processcard.Data WHERE PartID = m.PartID AND TemplateID = 1025) AS Munstycke,
@@ -1442,27 +1454,26 @@ HS-Machine = {Equipment.Equipment.HS_Machine}", CustomColors.InfoText_Color.Info
                         WHERE m.PartNr = @partnr
                         ORDER BY m.RevNr DESC";
 
-                        var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                        cmd.Parameters.AddWithValue("@partnr", partNr);
-                        var reader = cmd.ExecuteReader();
-                        while (reader.Read())
-                        {
-                            var result = 0;
-                            var maintemplateid = reader["MainTemplateID"].ToString();
-                            SaveCopiedPartNr_MainData(reader["PartNr"].ToString(), reader["ProdType"].ToString(), prodline, maintemplateid, ref result);
-                            if (result == 0)
-                                continue;
-                            int.TryParse(reader["MachineIndex"].ToString(), out var machineindex);
-                            SaveCopiedPartNr_Data(1024, machineindex, 0, reader["MunstyckeTyp"].ToString(), 1);
-                            SaveCopiedPartNr_Data(1025, machineindex, 0, reader["Munstycke"].ToString(), 1);
-                            double.TryParse(reader["Munstycke_LL"].ToString(), out var munstycke_ll);
-                            SaveCopiedPartNr_Data(1026, machineindex, munstycke_ll, null, 0);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                    cmd.Parameters.AddWithValue("@partnr", partNr);
+                    var reader = cmd.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        var result = 0;
+                        var maintemplateid = reader["MainTemplateID"].ToString();
+                        SaveCopiedPartNr_MainData(reader["PartNr"].ToString(), reader["ProdType"].ToString(), prodline, maintemplateid, ref result);
+                        if (result == 0)
+                            continue;
+                        int.TryParse(reader["MachineIndex"].ToString(), out var machineindex);
+                        SaveCopiedPartNr_Data(1024, machineindex, 0, reader["MunstyckeTyp"].ToString(), 1);
+                        SaveCopiedPartNr_Data(1025, machineindex, 0, reader["Munstycke"].ToString(), 1);
+                        double.TryParse(reader["Munstycke_LL"].ToString(), out var munstycke_ll);
+                        SaveCopiedPartNr_Data(1026, machineindex, munstycke_ll, null, 0);
 
-                            SaveCopiedPartNr_Data(1027, machineindex, 0, reader["KärnaTyp"].ToString(), 1);
-                            SaveCopiedPartNr_Data(1028, machineindex, 0, reader["Kärna"].ToString(), 1);
-                            double.TryParse(reader["Kärna_LL"].ToString(), out var kärna_ll);
-                            SaveCopiedPartNr_Data(1029, machineindex, kärna_ll, null, 0);
-                        }
+                        SaveCopiedPartNr_Data(1027, machineindex, 0, reader["KärnaTyp"].ToString(), 1);
+                        SaveCopiedPartNr_Data(1028, machineindex, 0, reader["Kärna"].ToString(), 1);
+                        double.TryParse(reader["Kärna_LL"].ToString(), out var kärna_ll);
+                        SaveCopiedPartNr_Data(1029, machineindex, kärna_ll, null, 0);
                     }
                 }
             }

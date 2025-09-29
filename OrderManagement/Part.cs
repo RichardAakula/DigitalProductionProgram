@@ -6,7 +6,10 @@ using DigitalProductionProgram.Processcards;
 using Microsoft.Data.SqlClient;
 using System.Data;
 using System.Text;
+using DigitalProductionProgram.Help;
+using DigitalProductionProgram.PrintingServices;
 using DigitalProductionProgram.Templates;
+using DigitalProductionProgram.User;
 
 
 namespace DigitalProductionProgram.OrderManagement
@@ -196,8 +199,14 @@ namespace DigitalProductionProgram.OrderManagement
 
                 if (!string.IsNullOrEmpty(Order.ProdType))
                     query.Append(" AND ProdType = @prodtyp ");
-
-                if (Order.WorkOperation != Manage_WorkOperation.WorkOperations.Slipning && Order.WorkOperation != Manage_WorkOperation.WorkOperations.Svetsning)        //Detta behöver nångång göras bättre, det blev en snabbfix nu. Dessa operationer använder inte Templates
+                if (Order.WorkOperation == Manage_WorkOperation.WorkOperations.Slipning || Order.WorkOperation == Manage_WorkOperation.WorkOperations.Svetsning)
+                {
+                    if (Person.Role == "SuperAdmin")
+                        InfoText.Show("Om detta meddelande kommer så behövs nedanstående if-sats på Slipning och Svetsning, annars kan det tas bort. Slipning och Svetsning har troligen inte multipla processkort" +
+                                      "", CustomColors.InfoText_Color.Ok, "", null);
+                }
+               
+                if (Order.WorkOperation != Manage_WorkOperation.WorkOperations.Slipning && Order.WorkOperation != Manage_WorkOperation.WorkOperations.Svetsning) //Detta behöver nångång göras bättre, det blev en snabbfix nu. Dessa operationer använder inte Templates
                     query.Append(" AND ProtocolMainTemplateID = @maintemplateid");
             }
 
@@ -479,7 +488,11 @@ GROUP BY md.PartID";
             if (string.IsNullOrEmpty(PartNr))
                 return;
             using var con = new SqlConnection(Database.cs_Protocol);
-            var query = "SELECT PartGroupID FROM Processcard.MainData WHERE PartNr = @partnr AND WorkOperationID = (SELECT ID FROM Workoperation.Names WHERE Name = @workoperation AND ID IS NOT NULL) AND ProtocolMainTemplateID = @maintemplateid";
+            var query = @"
+                SELECT PartGroupID FROM Processcard.MainData 
+                WHERE PartNr = @partnr 
+                    AND WorkOperationID = (SELECT ID FROM Workoperation.Names WHERE Name = @workoperation AND ID IS NOT NULL) 
+                    AND ProtocolMainTemplateID IN (SELECT ID FROM Protocol.MainTemplate WHERE Name = @maintemplatename)";
             if (Processcard.IsMultipleProcesscard(workoperation, PartNr))
                 query += @"AND (@prodline IS NULL OR ProdLine = @prodline)
                          AND (@prodtype IS NULL OR ProdType = @prodtype)";
@@ -487,9 +500,21 @@ GROUP BY md.PartID";
             var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@partnr", PartNr);
             cmd.Parameters.AddWithValue("@workoperation", workoperation.ToString());
-            cmd.Parameters.AddWithValue("@maintemplateid", Templates_Protocol.MainTemplate.ID); //Kolla att MainTemplate.ID inte är NULL
+            //cmd.Parameters.AddWithValue("@maintemplateid", Templates_Protocol.MainTemplate.ID); //Kolla att MainTemplate.ID inte är NULL
+            cmd.Parameters.AddWithValue("@maintemplatename", Templates_Protocol.MainTemplate.Name); //Kolla att MainTemplateName inte är NULL
             SQL_Parameter.String(cmd.Parameters, "@prodline", Order.ProdLine);
             SQL_Parameter.String(cmd.Parameters, "@prodtype", Order.ProdType);
+            var value = cmd.ExecuteScalar();
+            Order.PartGroupID = (int?)value;
+        }
+        public static void Load_PartGroup_ID(int? PartID)
+        {
+            using var con = new SqlConnection(Database.cs_Protocol);
+            var query = "SELECT PartGroupID FROM Processcard.MainData WHERE PartID = @partid";
+           
+            con.Open();
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            cmd.Parameters.AddWithValue("@partid", PartID);
             var value = cmd.ExecuteScalar();
             Order.PartGroupID = (int?)value;
         }

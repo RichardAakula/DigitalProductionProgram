@@ -373,7 +373,10 @@ namespace DigitalProductionProgram.Processcards
             SQL_Parameter.NullableINT(cmd.Parameters, "@artID", partID);
             cmd.Parameters.AddWithValue("@partgroupid", Order.PartGroupID);
             SQL_Parameter.String(cmd.Parameters, "@prodline", Order.ProdLine);
-            SQL_Parameter.String(cmd.Parameters, "@prodtype", Order.ProdType);
+            if (ControlValidator.IsStringNA(Order.ProdType))
+                SQL_Parameter.String(cmd.Parameters, "@prodtype", DBNull.Value.ToString(), true);
+            else
+                SQL_Parameter.String(cmd.Parameters, "@prodtype", Order.ProdType);
         }
         public static int TextLength(string? text, Font font, Graphics g)
         {
@@ -674,8 +677,6 @@ namespace DigitalProductionProgram.Processcards
                     con.Open();
                     var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     SQL_Parameter.NullableINT(cmd.Parameters, "@partID", Order.PartID);
-                    //template.Revision bör ej behövas kvar eftersom MainTemplateID är unikt och revisionen baseras på det
-                    // cmd.Parameters.AddWithValue("@revision", Manage_Templates.MainTemplate.Revision);
                     cmd.Parameters.AddWithValue("@formtemplateid", formTemplateID);
                     cmd.Parameters.AddWithValue("@machineindex", module.MachineIndex);
 

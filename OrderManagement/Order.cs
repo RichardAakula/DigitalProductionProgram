@@ -162,17 +162,15 @@ namespace DigitalProductionProgram.OrderManagement
                 OrderID = null;
                 return;
             }
-                
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query = "SELECT OrderID FROM [Order].MainData WHERE OrderNr = @orderNr AND Operation = @operation";
-                con.Open();
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@orderNr", ordernr);
-                cmd.Parameters.AddWithValue("@operation", operation);
-                var value = cmd.ExecuteScalar();
-                OrderID = (int?)value;
-            }
+
+            using var con = new SqlConnection(Database.cs_Protocol);
+            var query = "SELECT OrderID FROM [Order].MainData WHERE OrderNr = @orderNr AND Operation = @operation";
+            con.Open();
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            cmd.Parameters.AddWithValue("@orderNr", ordernr);
+            cmd.Parameters.AddWithValue("@operation", operation);
+            var value = cmd.ExecuteScalar();
+            OrderID = (int?)value;
         }
 
         public static int? GetOrderID(string? ordernr, string operation)

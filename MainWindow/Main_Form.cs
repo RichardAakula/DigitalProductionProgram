@@ -110,6 +110,7 @@ namespace DigitalProductionProgram.MainWindow
         public static bool IsAutoLoginSuperAdmin = true;
         public static string adminHostName = "OH-ID61";
 
+        private DateTime startTime;
         private const string? develop_OrderNr = "H67876";
         private const string? develop_Operation = "10";
 
@@ -204,6 +205,7 @@ namespace DigitalProductionProgram.MainWindow
            
             var processes = Process.GetProcessesByName("DigitalProductionProgram");
             await Activity.Stop($"Uppstart av program # {processes.Length}");
+            startTime = DateTime.Now;
             Initialize_Timers();
             if (IsBetaMode)
                 ChangeToBetaMode();
@@ -1170,7 +1172,11 @@ namespace DigitalProductionProgram.MainWindow
                 .OrderByDescending(kv => kv.Value)
                 .FirstOrDefault();
 
-            _ = Activity.Stop($"Stänger DPP: Antal SQL_Frågor: {Database.SQL_Counter}. {topMethod.Key}-({topMethod.Value})");
+            var stopTime = DateTime.Now;
+            var time = stopTime - startTime;
+            var totalTime = time.ToString(@"hh\:mm\:ss");
+           
+            _ = Activity.Stop($"Stänger DPP: (Antal SQL_Frågor: {Database.SQL_Counter}) (Vanligaste Metod: {topMethod.Key} Antal frågor på vanligaste Metod: {topMethod.Value}) - Total Tid: {totalTime}");
         }
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
         {

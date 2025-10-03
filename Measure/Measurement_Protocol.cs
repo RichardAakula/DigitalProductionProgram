@@ -381,8 +381,6 @@ namespace DigitalProductionProgram.Measure
             }
             if (string.IsNullOrEmpty(monitorName) == false)
                 MeasurementValidator.DataVerification_Value_dgv(dgv_Measurements, text, monitorName, row, cell.ColumnIndex);
-            
-           
         }
         public static string SetDecimals_Value(double value, int decimals)
         {

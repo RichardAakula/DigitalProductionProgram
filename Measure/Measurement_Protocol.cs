@@ -359,32 +359,74 @@ namespace DigitalProductionProgram.Measure
             flp_InputControls.Controls.Clear();
         }
 
-        private void Add_Text_DatagridCell(int row, DataGridViewCell cell, string? text, bool IsDiscarded, string? monitorName = null)
-        {
-            cell.Value = text;
+        //private void Add_Text_DatagridCell(int row, DataGridViewCell cell, string? text, bool IsDiscarded, string? monitorName = null)
+        //{
+        //    cell.Value = text;
 
-            if (string.IsNullOrEmpty(text) || ControlValidator.IsStringNA(text))
+        //    if (string.IsNullOrEmpty(text) || ControlValidator.IsStringNA(text))
+        //    {
+        //        cell.Style.BackColor = Color.White;
+        //        cell.Style.ForeColor = Color.Red;
+        //        cell.Style.Font = new Font("Courier New", 8, FontStyle.Italic);
+        //        cell.Value = "N/A";
+        //    }
+        //    else if (IsDiscarded)
+        //    {
+        //        cell.Style.BackColor = CustomColors.Discarded_Back;
+        //        cell.Style.ForeColor = CustomColors.Discarded_Front;
+        //        cell.Style.Font = new Font(dgv_Measurements.DefaultCellStyle.Font, FontStyle.Strikeout);
+        //        return;
+        //    }
+        //    else
+        //    {
+        //        cell.Style.BackColor = CustomColors.Ok_Back;
+        //        cell.Style.ForeColor = CustomColors.Ok_Front;
+        //    }
+        //    if (string.IsNullOrEmpty(monitorName) == false)
+        //        MeasurementValidator.DataVerification_Value_dgv(dgv_Measurements, text, monitorName, row, cell.ColumnIndex);
+
+
+        //}
+
+        private static readonly Font StrikeoutFont = new Font("Segoe UI", 9, FontStyle.Strikeout);
+        private static readonly Font ItalicFont = new Font("Courier New", 8, FontStyle.Italic);
+
+        private void Add_Text_DatagridCell(int row, DataGridViewCell cell, string text, bool IsDiscarded, string CodeText = null)
+        {
+            
+
+            if (IsDiscarded)
             {
-                cell.Style.BackColor = Color.White;
-                cell.Style.ForeColor = Color.Red;
-                cell.Style.Font = new Font("Courier New", 8, FontStyle.Italic);
-                cell.Value = "N/A";
+                cell.Style = new DataGridViewCellStyle
+                {
+                    BackColor = CustomColors.Discarded_Back,
+                    ForeColor = CustomColors.Discarded_Front,
+                    Font = StrikeoutFont
+                };
             }
-            else if (IsDiscarded)
+            else if (string.IsNullOrEmpty(text) || ControlValidator.IsStringNA(text))
             {
-                cell.Style.BackColor = CustomColors.Discarded_Back;
-                cell.Style.ForeColor = CustomColors.Discarded_Front;
-                cell.Style.Font = new Font(dgv_Measurements.DefaultCellStyle.Font, FontStyle.Strikeout);
-                return;
+                cell.Style = new DataGridViewCellStyle
+                {
+                    BackColor = Color.White,
+                    ForeColor = Color.Red,
+                    Font = ItalicFont,
+                    
+                };
+                text = "N/A";
             }
             else
             {
-                cell.Style.BackColor = CustomColors.Ok_Back;
-                cell.Style.ForeColor = CustomColors.Ok_Front;
+                cell.Style = new DataGridViewCellStyle
+                {
+                    BackColor = CustomColors.Ok_Back,
+                    ForeColor = CustomColors.Ok_Front,
+                   // Font = dgv_Measurements.DefaultCellStyle.Font
+                };
+                if (string.IsNullOrEmpty(CodeText) == false)
+                    MeasurementValidator.DataVerification_Value_dgv(dgv_Measurements, text, CodeText, row, cell.ColumnIndex);
             }
-            if (string.IsNullOrEmpty(monitorName) == false)
-                MeasurementValidator.DataVerification_Value_dgv(dgv_Measurements, text, monitorName, row, cell.ColumnIndex);
-
+            cell.Value = text;
 
         }
         public static string SetDecimals_Value(double value, int decimals)

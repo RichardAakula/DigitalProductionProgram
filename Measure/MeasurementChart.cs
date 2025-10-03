@@ -401,16 +401,6 @@ namespace DigitalProductionProgram.Measure
 
                         measurementValues.Add(new ObservablePoint(index, result));
                         
-                        //if (dict_AverageValuesForLastOrder.TryGetValue(codename, out var avgLast))
-                        //    avgLastOrderValues.Add(new ObservablePoint(index, avgLast));
-                        //else
-                        //    avgLastOrderValues.Add(new ObservablePoint(index, double.NaN));
-
-                        //if (dict_AverageValuesForPart.TryGetValue(codename, out var avgPart))
-                        //    avgPartValues.Add(new ObservablePoint(index, avgPart));
-                        //else
-                        //    avgPartValues.Add(new ObservablePoint(index, avgPart));
-
                         index++;
                     }
 

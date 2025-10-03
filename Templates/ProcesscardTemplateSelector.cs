@@ -62,7 +62,7 @@ namespace DigitalProductionProgram.Templates
             {
                 AutoSize = true,
                 Cursor = Cursors.Hand,
-                Font = new System.Drawing.Font("Palatino Linotype", 10.25f, FontStyle.Bold),
+                Font = new Font("Palatino Linotype", 10.25f, FontStyle.Bold),
                 ForeColor = CustomColors.Teal_Font,
                 IsProcesscardOkToStart = isProcesscardOkToStart,
                 IsLatestRevNrSelected = isLatestRevNrSelected,

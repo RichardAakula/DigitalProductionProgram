@@ -969,8 +969,7 @@ namespace DigitalProductionProgram.Övrigt
 
                 return listFormtemplateid;
             }
-            //public static void TransferData(List<int> listOrderID,  List<int> listFormtemplateid, List<int> listMainTemplateID, string PartNr, bool IsUsingProcesscard = true)
-            public static void TransferData(List<int> listOrderID, string PartNr, bool IsUsingProcesscard = true)
+            public static void ProtocolData(List<int> listOrderID, string PartNr, bool IsUsingProcesscard = true)
             {
                 SetTotalMachines(listOrderID[0]);
                 double step = 100 / (float)listOrderID.Count;
@@ -986,12 +985,6 @@ namespace DigitalProductionProgram.Övrigt
                     var IsUsingMultipleExtruders = TotalMachines > 1;
                     AddMainColumns_DataTableExcel(row);
 
-                    //foreach (var maintemplateID in listMainTemplateID)
-                    {
-                       // AddColumns_DataTableExcel(listFormtemplateid);
-                        //DataTableExcel.Rows.Add();
-                        //DataTableExcel.Rows[row]["OrderNr"] = $"MainTemplateID: {maintemplateID}";
-                        //row++;
                         foreach (var orderID in listOrderID)
                         {
                             var maintemplateID = Load_MainTemplateID(orderID);
@@ -1048,12 +1041,18 @@ namespace DigitalProductionProgram.Övrigt
                             pbar.Set_ValueProgressBar(percent, "Exporting data to Excel...");
                             percent += step;
                         }
-                    }
                     pbar.Close();
                     pbar.Set_ValueProgressBar(percent, "Exporting data to Excel...");
                     ConvertDataTableTo_csv(DataTableExcel, sb);
                     Save_csvFile(sb, $"{PartNr} #{Machine}");
                 }
+            }
+
+            public static void MeasurementData(DataTable dt, string partNr)
+            {
+                var sb = new StringBuilder();
+                ConvertDataTableTo_csv(dt, sb);
+                Save_csvFile(sb, $"MeasurementData-{partNr}");
             }
            
         }

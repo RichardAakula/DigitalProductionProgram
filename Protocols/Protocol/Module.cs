@@ -649,6 +649,17 @@ namespace DigitalProductionProgram.Protocols.Protocol
                 string? text;
                 switch (protocolDescriptionID)
                 {
+                    ///
+                    /// Validering av data:
+                    /// IsMachine_Ok
+                    ///     Operatörens ifyllda värde, CodeText, protocolDescriptionID, aktiv Cell, Uppstart, Nominellt Värde, ÄrVärdeKritiskt, Är Maskinen i ett område
+                    /// IsHSPipe_Ok
+                    ///     Operatörens ifyllda värde, CodeText(Rör ID#), ProtocolDescriptionID,  Nominellt Värde, aktiv Cell, Uppstart, ÄrVärdeKritiskt
+                    /// IsTool_Ok
+                    ///     Operatörens ifyllda värde, CodeText(Munstycke/Kärna), protocolDescriptionID, Nominellt Värde, aktiv Cell, Uppstart, MaskinIndex, MinVärde, MaxVärde, ÄrVärdeKritiskt
+                    /// IsEquipmentOk
+                    /// ValidateData
+
                     case 1:     //HACK
                         Validate_Data.IsMachine_Ok(cell.Value.ToString(), "HACK", protocolDescriptionID, dgv_Module.CurrentCell, startUp, NOM_Value(dgv_Row), IsValueCritical, true);
                         IsValidated = true;

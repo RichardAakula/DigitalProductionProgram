@@ -31,100 +31,107 @@ namespace DigitalProductionProgram.ControlsManagement
         /// </summary>
         private void InitializeComponent()
         {
-            this.pBar_Main = new System.Windows.Forms.ProgressBar();
-            this.lbl_Info = new System.Windows.Forms.Label();
-            this.lbl_Percent_Main = new System.Windows.Forms.Label();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.lbl_Percent_Extra = new System.Windows.Forms.Label();
-            this.pBar_Extra = new System.Windows.Forms.ProgressBar();
-            this.panel1.SuspendLayout();
-            this.SuspendLayout();
+            pBar_Main = new ProgressBar();
+            lbl_Info = new Label();
+            lbl_Percent_Main = new Label();
+            panel_Main = new Panel();
+            lbl_Percent_Extra = new Label();
+            pBar_Extra = new ProgressBar();
+            panel_Main.SuspendLayout();
+            SuspendLayout();
             // 
             // pBar_Main
             // 
-            this.pBar_Main.Location = new System.Drawing.Point(52, 64);
-            this.pBar_Main.Name = "pBar_Main";
-            this.pBar_Main.Size = new System.Drawing.Size(600, 30);
-            this.pBar_Main.Step = 1;
-            this.pBar_Main.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
-            this.pBar_Main.TabIndex = 0;
+            pBar_Main.Location = new Point(61, 74);
+            pBar_Main.Margin = new Padding(4, 3, 4, 3);
+            pBar_Main.Name = "pBar_Main";
+            pBar_Main.Size = new Size(700, 35);
+            pBar_Main.Step = 1;
+            pBar_Main.Style = ProgressBarStyle.Continuous;
+            pBar_Main.TabIndex = 0;
             // 
             // lbl_Info
             // 
-            this.lbl_Info.AutoSize = true;
-            this.lbl_Info.BackColor = System.Drawing.Color.Transparent;
-            this.lbl_Info.Font = new System.Drawing.Font("Modern No. 20", 16F);
-            this.lbl_Info.ForeColor = System.Drawing.Color.Gold;
-            this.lbl_Info.Location = new System.Drawing.Point(57, 11);
-            this.lbl_Info.Name = "lbl_Info";
-            this.lbl_Info.Size = new System.Drawing.Size(100, 24);
-            this.lbl_Info.TabIndex = 1;
-            this.lbl_Info.Text = "Loading...";
+            lbl_Info.AutoSize = true;
+            lbl_Info.BackColor = Color.Transparent;
+            lbl_Info.Font = new Font("Modern No. 20", 16F);
+            lbl_Info.ForeColor = Color.FromArgb(255, 235, 156);
+            lbl_Info.Location = new Point(66, 13);
+            lbl_Info.Margin = new Padding(4, 0, 4, 0);
+            lbl_Info.Name = "lbl_Info";
+            lbl_Info.Size = new Size(100, 24);
+            lbl_Info.TabIndex = 1;
+            lbl_Info.Text = "Loading...";
             // 
             // lbl_Percent_Main
             // 
-            this.lbl_Percent_Main.AutoSize = true;
-            this.lbl_Percent_Main.BackColor = System.Drawing.Color.Transparent;
-            this.lbl_Percent_Main.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
-            this.lbl_Percent_Main.ForeColor = System.Drawing.Color.Gold;
-            this.lbl_Percent_Main.Location = new System.Drawing.Point(57, 102);
-            this.lbl_Percent_Main.Name = "lbl_Percent_Main";
-            this.lbl_Percent_Main.Size = new System.Drawing.Size(32, 20);
-            this.lbl_Percent_Main.TabIndex = 1;
-            this.lbl_Percent_Main.Text = "0%";
+            lbl_Percent_Main.AutoSize = true;
+            lbl_Percent_Main.BackColor = Color.Transparent;
+            lbl_Percent_Main.Font = new Font("Microsoft Sans Serif", 16F);
+            lbl_Percent_Main.ForeColor = Color.FromArgb(156, 0, 6);
+            lbl_Percent_Main.Location = new Point(66, 118);
+            lbl_Percent_Main.Margin = new Padding(4, 0, 4, 0);
+            lbl_Percent_Main.Name = "lbl_Percent_Main";
+            lbl_Percent_Main.Size = new Size(44, 26);
+            lbl_Percent_Main.TabIndex = 1;
+            lbl_Percent_Main.Text = "0%";
             // 
-            // panel1
+            // panel_Main
             // 
-            this.panel1.BackColor = System.Drawing.Color.Black;
-            this.panel1.Controls.Add(this.lbl_Info);
-            this.panel1.Controls.Add(this.lbl_Percent_Extra);
-            this.panel1.Controls.Add(this.lbl_Percent_Main);
-            this.panel1.Controls.Add(this.pBar_Extra);
-            this.panel1.Controls.Add(this.pBar_Main);
-            this.panel1.Location = new System.Drawing.Point(457, 341);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(700, 194);
-            this.panel1.TabIndex = 2;
+            panel_Main.BackColor = Color.FromArgb(6, 81, 87);
+            panel_Main.Controls.Add(lbl_Info);
+            panel_Main.Controls.Add(lbl_Percent_Extra);
+            panel_Main.Controls.Add(lbl_Percent_Main);
+            panel_Main.Controls.Add(pBar_Extra);
+            panel_Main.Controls.Add(pBar_Main);
+            panel_Main.Location = new Point(533, 393);
+            panel_Main.Margin = new Padding(4, 3, 4, 3);
+            panel_Main.Name = "panel_Main";
+            panel_Main.Size = new Size(817, 224);
+            panel_Main.TabIndex = 2;
             // 
             // lbl_Percent_Extra
             // 
-            this.lbl_Percent_Extra.AutoSize = true;
-            this.lbl_Percent_Extra.BackColor = System.Drawing.Color.Transparent;
-            this.lbl_Percent_Extra.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
-            this.lbl_Percent_Extra.ForeColor = System.Drawing.Color.Gold;
-            this.lbl_Percent_Extra.Location = new System.Drawing.Point(57, 165);
-            this.lbl_Percent_Extra.Name = "lbl_Percent_Extra";
-            this.lbl_Percent_Extra.Size = new System.Drawing.Size(32, 20);
-            this.lbl_Percent_Extra.TabIndex = 1;
-            this.lbl_Percent_Extra.Text = "0%";
+            lbl_Percent_Extra.AutoSize = true;
+            lbl_Percent_Extra.BackColor = Color.Transparent;
+            lbl_Percent_Extra.Font = new Font("Microsoft Sans Serif", 16F);
+            lbl_Percent_Extra.ForeColor = Color.FromArgb(255, 235, 156);
+            lbl_Percent_Extra.Location = new Point(66, 190);
+            lbl_Percent_Extra.Margin = new Padding(4, 0, 4, 0);
+            lbl_Percent_Extra.Name = "lbl_Percent_Extra";
+            lbl_Percent_Extra.Size = new Size(44, 26);
+            lbl_Percent_Extra.TabIndex = 1;
+            lbl_Percent_Extra.Text = "0%";
             // 
             // pBar_Extra
             // 
-            this.pBar_Extra.ForeColor = System.Drawing.Color.Red;
-            this.pBar_Extra.Location = new System.Drawing.Point(52, 139);
-            this.pBar_Extra.Name = "pBar_Extra";
-            this.pBar_Extra.Size = new System.Drawing.Size(600, 22);
-            this.pBar_Extra.Step = 1;
-            this.pBar_Extra.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
-            this.pBar_Extra.TabIndex = 0;
+            pBar_Extra.ForeColor = Color.Red;
+            pBar_Extra.Location = new Point(61, 160);
+            pBar_Extra.Margin = new Padding(4, 3, 4, 3);
+            pBar_Extra.Name = "pBar_Extra";
+            pBar_Extra.Size = new Size(700, 25);
+            pBar_Extra.Step = 1;
+            pBar_Extra.Style = ProgressBarStyle.Continuous;
+            pBar_Extra.TabIndex = 0;
             // 
-            // ProgressBar
+            // CustomProgressBar
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
-            this.ClientSize = new System.Drawing.Size(1663, 913);
-            this.Controls.Add(this.panel1);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-            this.Name = "ProgressBar";
-            this.Opacity = 0.9D;
-            this.ShowInTaskbar = false;
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "ProgressBar";
-            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
-            this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
-            this.ResumeLayout(false);
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            BackColor = Color.FromArgb(20, 20, 20);
+            ClientSize = new Size(1940, 1053);
+            Controls.Add(panel_Main);
+            FormBorderStyle = FormBorderStyle.None;
+            Margin = new Padding(4, 3, 4, 3);
+            Name = "CustomProgressBar";
+            Opacity = 0.9D;
+            ShowInTaskbar = false;
+            StartPosition = FormStartPosition.CenterParent;
+            Text = "ProgressBar";
+            WindowState = FormWindowState.Maximized;
+            panel_Main.ResumeLayout(false);
+            panel_Main.PerformLayout();
+            ResumeLayout(false);
 
         }
 
@@ -133,7 +140,7 @@ namespace DigitalProductionProgram.ControlsManagement
         private System.Windows.Forms.ProgressBar pBar_Main;
         private Label lbl_Info;
         private Label lbl_Percent_Main;
-        private Panel panel1;
+        private Panel panel_Main;
         private Label lbl_Percent_Extra;
         private System.Windows.Forms.ProgressBar pBar_Extra;
     }

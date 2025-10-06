@@ -7,6 +7,8 @@ namespace DigitalProductionProgram.ControlsManagement
 {
     public partial class CustomProgressBar : Form
     {
+        private double Value;
+        private double Maximum = 100;
         [DebuggerStepThrough]
         public CustomProgressBar(int Total_Bars = 1)
         {
@@ -27,7 +29,7 @@ namespace DigitalProductionProgram.ControlsManagement
                 case 1:
                     pBar_Extra.Visible = false;
                     lbl_Percent_Extra.Visible = false;
-                    Height = 130;
+                    Height = 60;
                     break;
             }
             
@@ -35,9 +37,42 @@ namespace DigitalProductionProgram.ControlsManagement
         [DebuggerStepThrough]
         public void Set_ValueProgressBar(double value, string? info, double extraValue = 0)
         {
-            if (value < 101)
-                pBar_Main.Value = (int)value;
-            lbl_Info.Text = info;
+            value = Math.Max(0, Math.Min(100, value));
+
+            // Start, mid, end
+            var red = Color.FromArgb(156, 0, 6);
+            var yellow = Color.FromArgb(255, 235, 156);
+            var green = Color.FromArgb(0, 97, 0);
+
+            if (value < 50)
+            {
+                // Röd -> Gul
+                double ratio = value / 50.0;
+                return LerpColor(red, yellow, ratio);
+            }
+            else
+            {
+                // Gul -> Grön
+                double ratio = (value - 50) / 50.0;
+                return LerpColor(yellow, green, ratio);
+            }
+        }
+
+        private Color LerpColor(Color from, Color to, double t)
+        {
+            t = Math.Max(0, Math.Min(1, t));
+            int r = (int)(from.R + (to.R - from.R) * t);
+            int g = (int)(from.G + (to.G - from.G) * t);
+            int b = (int)(from.B + (to.B - from.B) * t);
+            return Color.FromArgb(r, g, b);
+        }
+
+        public void Set_ValueProgressBar(double value, string? info, double extraValue = 0, bool isOkRefresh = false)
+        {
+            value = Math.Max(0, Math.Min(100, value));
+            extraValue = Math.Max(0, Math.Min(100, extraValue));
+            // Sätt main progress
+            pBar_Main.Value = (int)value;
             lbl_Percent_Main.Text = $"{value:0.00}%";
 
             if (extraValue > 0 && extraValue < 101)

@@ -123,6 +123,7 @@ namespace DigitalProductionProgram.DatabaseManagement
                 return default!;
             }
         }
+
         public static void Load_DatabaseSettings()
         {
             cs_Protocol = null;

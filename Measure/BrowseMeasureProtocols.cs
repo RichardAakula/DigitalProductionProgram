@@ -388,7 +388,7 @@ namespace DigitalProductionProgram.Measure
                 }
                 dt.Rows.Add(dr);
             }
-           // Get_Protocol_Data.TransferDataToExcel.MeasurementData(dt, tb_PartNr.Text);
+            Get_Protocol_Data.TransferDataToExcel.MeasurementData(dt, tb_PartNr.Text);
 
         }
 

@@ -1055,7 +1055,12 @@ namespace DigitalProductionProgram.Övrigt
                     Save_csvFile(sb, $"{PartNr} #{Machine}");
                 }
             }
-           
+            public static void MeasurementData(DataTable dt, string partNr)
+            {
+                var sb = new StringBuilder();
+                ConvertDataTableTo_csv(dt, sb);
+                Save_csvFile(sb, $"MeasurementData-{partNr}");
+            }
         }
     }
 }

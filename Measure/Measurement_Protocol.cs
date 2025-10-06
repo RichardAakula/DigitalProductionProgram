@@ -358,9 +358,7 @@ namespace DigitalProductionProgram.Measure
 
         private void Add_Text_DatagridCell(int row, DataGridViewCell cell, string? text, bool IsDiscarded, string? monitorName = null)
         {
-            cell.Value = text;
-
-            if (string.IsNullOrEmpty(text) || ControlValidator.IsStringNA(text))
+            if (IsDiscarded)
             {
                 cell.Style.BackColor = Color.White;
                 cell.Style.ForeColor = Color.Red;
@@ -379,8 +377,8 @@ namespace DigitalProductionProgram.Measure
                 cell.Style.BackColor = CustomColors.Ok_Back;
                 cell.Style.ForeColor = CustomColors.Ok_Front;
             }
-            if (string.IsNullOrEmpty(monitorName) == false)
-                MeasurementValidator.DataVerification_Value_dgv(dgv_Measurements, text, monitorName, row, cell.ColumnIndex);
+            cell.Value = text;
+
         }
         public static string SetDecimals_Value(double value, int decimals)
         {

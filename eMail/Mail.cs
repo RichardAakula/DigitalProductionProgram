@@ -140,7 +140,7 @@ namespace DigitalProductionProgram.eMail
             if (Order.OrderID != null)
             {
                 Body += "Update Process card:<br />" +
-                        $"ProdLine: {Order.ProdLine}<br />" +
+                        $"ProdLine: {Monitor.Monitor.WorkCenter?.Description}<br />" +
                         $"ProdGroup: {Order.ProdGroup}<br />" +
                         $"WorkOperation: {Order.WorkOperation}<br /><br />";
 

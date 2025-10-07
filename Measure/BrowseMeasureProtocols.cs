@@ -3,6 +3,7 @@ using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Equipment;
 using DigitalProductionProgram.Help;
 using DigitalProductionProgram.OrderManagement;
+using DigitalProductionProgram.Övrigt;
 using DigitalProductionProgram.PrintingServices;
 using DigitalProductionProgram.User;
 using LiveChartsCore;
@@ -14,7 +15,7 @@ using SkiaSharp;
 using System.Collections.ObjectModel;
 using System.Data;
 using System.Data.SqlClient;
-using DigitalProductionProgram.Övrigt;
+using System.Globalization;
 
 namespace DigitalProductionProgram.Measure
 {
@@ -26,6 +27,8 @@ namespace DigitalProductionProgram.Measure
         private double LCL;
         private double USL;
         private double UCL;
+        
+        private static readonly Font ItalicFont = new Font("Courier New", 8, FontStyle.Italic);
 
         private string Query_TopList
         {
@@ -54,14 +57,26 @@ namespace DigitalProductionProgram.Measure
 
                 foreach (DataGridViewRow row in dgv_MeasureProtocol.Rows)
                 {
-                    if (row.IsNewRow) continue;
+                    if (row.IsNewRow)
+                        continue;
+
                     var discardedCell = row.Cells["Discarded"];
                     var valueCell = row.Cells[Column_Name];
 
-                    if (discardedCell?.Value == null || valueCell?.Value == null)
+                    if (valueCell?.Value == null)
                         continue;
 
-                    if (discardedCell.Value != null && bool.TryParse(discardedCell.Value.ToString(), out var isDiscarded) && isDiscarded)
+                    bool isDiscarded = discardedCell.Value switch
+                    {
+                        bool b => b,
+                        int i => i != 0,
+                        string s when s.Equals("true", StringComparison.OrdinalIgnoreCase) => true,
+                        string s when s.Equals("false", StringComparison.OrdinalIgnoreCase) => false,
+                        string s when int.TryParse(s, out var num) => num != 0,
+                        _ => false
+                    };
+
+                    if (isDiscarded)
                         continue;
 
                     if (double.TryParse(valueCell.Value.ToString(), out var value))
@@ -71,10 +86,7 @@ namespace DigitalProductionProgram.Measure
                 if (values.Count == 0)
                     return 0;
 
-                // Snitt
                 var avg = values.Average();
-
-                // Rimlighetsfilter, t.ex. ta bort allt som är mer än 10x snittet
                 var filtered = values.Where(v => v < avg * 10).ToList();
 
                 return Math.Max(USL, filtered.Count > 0 ? filtered.Max() : 0);
@@ -88,16 +100,28 @@ namespace DigitalProductionProgram.Measure
 
                 foreach (DataGridViewRow row in dgv_MeasureProtocol.Rows)
                 {
-                    if (row.IsNewRow) continue;
+                    if (row.IsNewRow)
+                        continue;
 
                     var cell = row.Cells[Column_Name];
                     var discardedCell = row.Cells["Discarded"];
 
-                    if (cell?.Value == null || discardedCell?.Value == null)
+                    if (cell?.Value == null)
                         continue;
 
-                    if (discardedCell.Value != null && bool.TryParse(discardedCell.Value.ToString(), out var isDiscarded) && isDiscarded)
-                        continue; // hoppa över om den verkligen är markerad som skrotad
+                    // Säkrare tolkning av Discarded
+                    bool isDiscarded = discardedCell.Value switch
+                    {
+                        bool b => b,
+                        int i => i != 0,
+                        string s when s.Equals("true", StringComparison.OrdinalIgnoreCase) => true,
+                        string s when s.Equals("false", StringComparison.OrdinalIgnoreCase) => false,
+                        string s when int.TryParse(s, out var num) => num != 0,
+                        _ => false
+                    };
+
+                    if (isDiscarded)
+                        continue;
 
                     if (double.TryParse(cell.Value.ToString(), out var value))
                         values.Add(value);
@@ -120,6 +144,58 @@ namespace DigitalProductionProgram.Measure
                 // Annars returnera bara det minsta datavärdet
                 return minVal;
             }
+        }
+
+        private (string CountQuery, string SelectQuery, List<SqlParameter> Params) BuildMeasureQueries(List<string> orders)
+        {
+            string baseCondition = @"
+        orders.PartNr = @partnr
+        AND orders.MeasureProtocolMainTemplateID = (
+            SELECT MeasureProtocolMainTemplateID
+            FROM MeasureProtocol.MainTemplate
+            WHERE Name = @name AND Revision = @revision
+        )";
+
+            var parameters = new List<SqlParameter>
+    {
+        new("@partnr", tb_PartNr.Text),
+        new("@name", cb_MeasureprotocolTemplateName.Text),
+        new("@revision", cb_MeasureTemplateRevision.Text)
+    };
+
+            string orderFilter = "";
+            if (orders.Count > 0)
+            {
+                var inParams = string.Join(",", orders.Select((_, i) => $"@order{i}"));
+                orderFilter = $" AND orders.OrderNr IN ({inParams})";
+                for (int i = 0; i < orders.Count; i++)
+                    parameters.Add(new SqlParameter($"@order{i}", orders[i]));
+            }
+
+            string countQuery = $@"
+        SELECT COUNT(*) 
+        FROM MeasureProtocol.Data AS data
+        JOIN [Order].MainData AS orders ON data.OrderID = orders.OrderID
+        WHERE {baseCondition}{orderFilter};";
+
+            string selectQuery = $@"
+        SELECT 
+            Parameter_UserText, orders.OrderNr, orders.Operation, Value, TextValue,
+            BoolValue, Date, Discarded, ErrorCode, AnstNr, Sign, Decimals, DataType,
+            main.RowIndex, template.ColumnIndex, maintemplate.Revision
+        FROM MeasureProtocol.Data AS data
+        JOIN [Order].MainData AS orders ON data.OrderID = orders.OrderID
+        JOIN MeasureProtocol.Template AS template
+            ON template.MeasureProtocolMainTemplateID = orders.MeasureProtocolMainTemplateID
+            AND template.DescriptionID = data.DescriptionId
+        JOIN MeasureProtocol.MainTemplate AS maintemplate
+            ON template.MeasureProtocolMainTemplateID = maintemplate.MeasureProtocolMainTemplateID
+        JOIN MeasureProtocol.MainData AS main
+            ON data.RowIndex = main.RowIndex AND data.OrderID = main.OrderID
+        WHERE {baseCondition}{orderFilter}
+        ORDER BY data.OrderID, main.RowIndex, ColumnIndex;";
+
+            return (countQuery, selectQuery, parameters);
         }
 
 
@@ -201,13 +277,10 @@ namespace DigitalProductionProgram.Measure
 
             Log.Activity.Start();
             InitializeComponent();
-            // cb_Workoperations.SelectedIndexChanged -= WorkOperation_SelectedIndexChanged;
 
             Fill_WorkOperation();
 
-            //  cb_Workoperations.SelectedIndexChanged += WorkOperation_SelectedIndexChanged;
             IsOkAddPoints = false;
-            //  timer_AddPoints.Start();
 
             if (Order.WorkOperation != Manage_WorkOperation.WorkOperations.Nothing)
                 cb_Workoperations.Text = Order.WorkOperation.ToString();
@@ -259,31 +332,6 @@ namespace DigitalProductionProgram.Measure
         {
             Manage_WorkOperation.Fill_cb_Workoperation(cb_Workoperations);
         }
-        private void FillComboBox(ComboBox cb, string text)
-        {
-            cb?.Items.Clear();
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query = $@"
-                    SELECT DISTINCT {text} 
-                    FROM Measureprotocol.MainData as mp
-                        JOIN [Order].MainData as korprotokoll
-                            ON mp.OrderID = korprotokoll.OrderID
-                    WHERE EXISTS (SELECT * FROM [Order].MainData 
-                        WHERE korprotokoll.OrderID = mp.OrderID)
-                    AND WorkOperationID = (SELECT ID FROM Workoperation.Names WHERE Name = @workoperation AND ID IS NOT NULL)";
-
-                var cmd = new SqlCommand(query, con);
-                cmd.Parameters.AddWithValue("@workoperation", cb_Workoperations.Text);
-
-                con.Open();
-                var reader = cmd.ExecuteReader();
-                while (reader.Read())
-                    cb?.Items.Add(reader[0].ToString());
-            }
-            if (cb != null)
-                cb.SelectedIndex = -1;
-        }
         private void MeasureTemplateName_SelectedIndexChanged(object sender, EventArgs e)
         {
             cb_MeasureTemplateRevision.Items.Clear();
@@ -302,10 +350,6 @@ namespace DigitalProductionProgram.Measure
                 cb_MeasureTemplateRevision.Items.Add(reader["Revision"].ToString());
             }
             cb_MeasureTemplateRevision.SelectedIndex = cb_MeasureTemplateRevision.Items.Count - 1;
-        }
-        private void MeasureTemplateRevision_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            // Load_Data();
         }
         private void Workoperation_SelectionChangeCommitted(object sender, EventArgs e)
         {
@@ -335,9 +379,32 @@ namespace DigitalProductionProgram.Measure
             Load_Data();
         }
 
-        private void chb_SelectAllOrders_CheckedChanged(object sender, EventArgs e)
+        private void chkList_ListOrders_ItemCheck(object sender, ItemCheckEventArgs e)
         {
-            Load_Data();
+            if (e.Index == 0)
+            {
+                // Förhindra rekursion
+                chkList_ListOrders.ItemCheck -= chkList_ListOrders_ItemCheck;
+
+                bool checkAll = e.NewValue == CheckState.Checked;
+
+                for (int i = 1; i < chkList_ListOrders.Items.Count; i++)
+                {
+                    chkList_ListOrders.SetItemChecked(i, checkAll);
+                }
+
+                chkList_ListOrders.ItemCheck += chkList_ListOrders_ItemCheck;
+            }
+        }
+        private void chkList_ListOrders_MouseDown(object sender, MouseEventArgs e)
+        {
+            var index = chkList_ListOrders.IndexFromPoint(e.Location);
+
+            if (index != ListBox.NoMatches)
+            {
+                bool current = chkList_ListOrders.GetItemChecked(index);
+                chkList_ListOrders.SetItemChecked(index, !current);
+            }
         }
         private void PartNr_TextChanged(object sender, EventArgs e)
         {
@@ -398,10 +465,6 @@ namespace DigitalProductionProgram.Measure
         {
             if (string.IsNullOrEmpty(cb_Workoperations.Text))
                 return;
-            // if (string.IsNullOrEmpty(cb_MeasureprotocolTemplateName.Text))
-            //     return;
-            // if (string.IsNullOrEmpty(cb_MeasureTemplateRevision.Text))
-            //     return;
             if (string.IsNullOrEmpty(tb_PartNr.Text))
                 return;
             Load_MeasureData();
@@ -409,225 +472,173 @@ namespace DigitalProductionProgram.Measure
         }
         private async void Load_MeasureData()
         {
-            if (IsLoading)
-                return;
-
-            var list_OrderNr = new List<string>();
+            if (IsLoading) return;
             var pbar = new CustomProgressBar(1);
             pbar.Show(this);
 
-
             try
             {
-                Load_InputControls();
-                if (string.IsNullOrEmpty(tb_PartNr.Text))
-                    return;
-
                 dgv_MeasureProtocol.Rows.Clear();
+                if (string.IsNullOrEmpty(tb_PartNr.Text)) return;
 
                 await using var con = new SqlConnection(Database.cs_Protocol);
                 await con.OpenAsync();
 
-                // --- Bygg COUNT-query ---
-                string countQuery = @"
-            SELECT COUNT(*) 
-            FROM MeasureProtocol.Data AS data
-                JOIN [Order].MainData AS orders 
-                    ON data.OrderID = orders.OrderID
-            WHERE orders.PartNr = @partnr
-                AND orders.MeasureProtocolMainTemplateID = 
-                (
-                    SELECT MeasureProtocolMainTemplateID 
-                    FROM MeasureProtocol.MainTemplate 
-                    WHERE Name = @name AND Revision = @revision
-                )";
+                var checkedOrders = chkList_ListOrders.CheckedItems.Cast<string>().ToList();
+                var (countQuery, selectQuery, parameters) = BuildMeasureQueries(checkedOrders);
 
-                if (!chb_SelectAllOrders.Checked)
-                {
-                    countQuery += @"
-                AND orders.OrderNr IN 
-                (
-                    SELECT TOP (@top) OrderNr 
-                    FROM [Order].MainData 
-                    WHERE PartNr = @partnr 
-                    ORDER BY OrderID DESC
-                )";
-                }
-
-                // --- Bygg SELECT-query ---
-                string query;
-                if (chb_SelectAllOrders.Checked)
-                {
-                    query = @"
-                SELECT 
-                    Parameter_UserText, orders.OrderNr, orders.Operation, Value, TextValue, BoolValue, Date, 
-                    Discarded, ErrorCode, AnstNr, Sign, Decimals, DataType, main.RowIndex, template.ColumnIndex
-                FROM MeasureProtocol.Data AS data
-                    JOIN [Order].MainData AS orders 
-                        ON data.OrderID = orders.OrderID
-                    JOIN MeasureProtocol.Template AS template 
-                        ON template.MeasureProtocolMainTemplateID = orders.MeasureProtocolMainTemplateID
-                        AND template.DescriptionID = data.DescriptionId
-                    JOIN MeasureProtocol.MainData AS main 
-                        ON data.RowIndex = main.RowIndex 
-                        AND data.OrderID = main.OrderID
-                WHERE orders.PartNr = @partnr
-                    AND orders.MeasureProtocolMainTemplateID = 
-                    (
-                        SELECT MeasureProtocolMainTemplateID 
-                        FROM MeasureProtocol.MainTemplate 
-                        WHERE Name = @name AND Revision = @revision
-                    )
-                ORDER BY data.OrderID, main.RowIndex, ColumnIndex;";
-                }
-                else
-                {
-                    query = @"
-                SELECT 
-                    Parameter_UserText, orders.OrderNr, orders.Operation, Value, TextValue, BoolValue, Date, 
-                    Discarded, ErrorCode, AnstNr, Sign, Decimals, DataType, main.RowIndex, template.ColumnIndex
-                FROM MeasureProtocol.Data AS data
-                    JOIN [Order].MainData AS orders 
-                        ON data.OrderID = orders.OrderID
-                    JOIN MeasureProtocol.Template AS template 
-                        ON template.MeasureProtocolMainTemplateID = orders.MeasureProtocolMainTemplateID
-                        AND template.DescriptionID = data.DescriptionId
-                    JOIN MeasureProtocol.MainData AS main 
-                        ON data.RowIndex = main.RowIndex 
-                        AND data.OrderID = main.OrderID
-                WHERE orders.PartNr = @partnr
-                    AND orders.MeasureProtocolMainTemplateID = 
-                    (
-                        SELECT MeasureProtocolMainTemplateID 
-                        FROM MeasureProtocol.MainTemplate 
-                        WHERE Name = @name AND Revision = @revision
-                    )
-                    AND orders.OrderNr IN 
-                    (
-                        SELECT TOP (@top) OrderNr
-                        FROM [Order].MainData
-                        WHERE PartNr = @partnr
-                        ORDER BY OrderID DESC 
-                    )
-                ORDER BY data.OrderID, main.RowIndex, ColumnIndex;";
-                }
-
-                // --- Hämta total antal rader ---
+                // COUNT
                 int totalRows;
                 await using (var countCmd = new SqlCommand(countQuery, con))
                 {
-                    countCmd.Parameters.AddWithValue("@partnr", tb_PartNr.Text);
-                    countCmd.Parameters.AddWithValue("@name", cb_MeasureprotocolTemplateName.Text);
-                    countCmd.Parameters.AddWithValue("@revision", cb_MeasureTemplateRevision.Text);
-                    if (!chb_SelectAllOrders.Checked)
-                        countCmd.Parameters.AddWithValue("@top", (int)num_SelectTotalOrders.Value);
-
+                    countCmd.Parameters.AddRange(parameters.ToArray());
                     totalRows = (int)await countCmd.ExecuteScalarAsync();
                 }
+                // DATA
+                var rows = await LoadMeasureRowsAsync(con, selectQuery, parameters);
 
-                // --- Hämta själva datan ---
-                await using var cmd = new SqlCommand(query, con);
-                cmd.Parameters.AddWithValue("@partnr", tb_PartNr.Text);
-                cmd.Parameters.AddWithValue("@name", cb_MeasureprotocolTemplateName.Text);
-                cmd.Parameters.AddWithValue("@revision", cb_MeasureTemplateRevision.Text);
-                if (!chb_SelectAllOrders.Checked)
-                    cmd.Parameters.AddWithValue("@top", (int)num_SelectTotalOrders.Value);
+                // Fyll UI
+                chkList_ListOrders.Items.Clear();
+                chkList_ListOrders.Items.Add("Markera alla");
+                Load_InputControls();
 
-                await using var reader = await cmd.ExecuteReaderAsync();
-
-                var lastrow = 0;
-                var row = 0;
+                int row = -1, lastRow = -1;
                 int processed = 0;
 
-                while (reader.Read())
+                foreach (var item in rows)
                 {
+                    if (!chkList_ListOrders.Items.Contains(item.OrderNr))
+                        chkList_ListOrders.Items.Add(item.OrderNr, true);
+
                     processed++;
-                    double percent = (processed * 100.0) / totalRows;
+                    double percent = processed * 100.0 / totalRows;
+                    bool refresh = processed % 50 == 0;
+                    pbar.Set_ValueProgressBar(percent, $"Laddar data: OrderNr {item.OrderNr}", 1, refresh);
 
-                    var orderNr = reader["OrderNr"].ToString();
-                    var mainrow = int.Parse(reader["RowIndex"].ToString());
-                    var codeText = reader["Parameter_UserText"].ToString();
-                    var colIndex = int.Parse(reader["ColumnIndex"].ToString());
-                    int.TryParse(reader["Decimals"].ToString(), out var decimals);
-
-                    if (!list_OrderNr.Contains(orderNr))
-                        list_OrderNr.Add(orderNr);
-
-                    mainrow--;
-                    if (lastrow != mainrow)
+                    if (item.RowIndex != lastRow)
                     {
-                        lastrow = mainrow;
+                        lastRow = item.RowIndex;
+                        dgv_MeasureProtocol.Rows.Add();
                         row++;
+                        Add_Text_DatagridCell(row, dgv_MeasureProtocol.Rows[row].Cells["OrderNr"], item.OrderNr, item.Discarded);
+                        Add_Text_DatagridCell(row, dgv_MeasureProtocol.Rows[row].Cells["Operation"], item.Operation, item.Discarded);
+                        Add_Text_DatagridCell(row, dgv_MeasureProtocol.Rows[row].Cells["Date"], item.Date, item.Discarded);
+                        Add_Text_DatagridCell(row, dgv_MeasureProtocol.Rows[row].Cells["ErrorCode"], item.ErrorCode, item.Discarded);
+                        Add_Text_DatagridCell(row, dgv_MeasureProtocol.Rows[row].Cells["AnstNr"], item.AnstNr, item.Discarded);
+                        Add_Text_DatagridCell(row, dgv_MeasureProtocol.Rows[row].Cells["Sign"], item.Sign, item.Discarded);
                     }
 
-                    bool.TryParse(reader["Discarded"].ToString(), out var IsDiscarded);
-
-                    string text = reader["DataType"].ToString()
-                        switch
+                    string text = item.DataType switch
                     {
-                        "0" => double.TryParse(reader["Value"].ToString(), out var value) ? Measurement_Protocol.SetDecimals_Value(value, decimals) : "N/A",
-                        "1" => reader["TextValue"].ToString(),
-                        "2" => bool.TryParse(reader["BoolValue"].ToString(), out var boolValue) && boolValue ? "\u2714" : "N/A",
+                        "0" => item.Value.HasValue ? Measurement_Protocol.SetDecimals_Value(item.Value.Value, item.Decimals) : "N/A",
+                        "1" => item.TextValue ?? "N/A",
+                        "2" => item.BoolValue == true ? "\u2714" : "N/A",
                         _ => "N/A"
                     };
 
-                    // Uppdatera progressbar
-                    var IsOkRefresh = mainrow % 50 == 0;
-                    pbar.Set_ValueProgressBar(percent > 100 ? 100 : percent, $"Laddar data: OrderNr {orderNr}", 1, IsOkRefresh);
-
-                    if (row + 1 > dgv_MeasureProtocol.Rows.Count)
-                    {
-                        dgv_MeasureProtocol.Rows.Add();
-                        var date = DateTime.Parse(reader["Date"].ToString());
-                        Add_Text_DatagridCell(row, dgv_MeasureProtocol.Rows[row].Cells["OrderNr"], orderNr, IsDiscarded);
-                        Add_Text_DatagridCell(row, dgv_MeasureProtocol.Rows[row].Cells["Operation"], reader["Operation"].ToString(), IsDiscarded);
-                        Add_Text_DatagridCell(row, dgv_MeasureProtocol.Rows[row].Cells["Date"], date.ToString("yyyy-MM-dd HH:mm"), IsDiscarded);
-                        Add_Text_DatagridCell(row, dgv_MeasureProtocol.Rows[row].Cells["ErrorCode"], reader["ErrorCode"].ToString(), IsDiscarded);
-                        Add_Text_DatagridCell(row, dgv_MeasureProtocol.Rows[row].Cells["AnstNr"], reader["AnstNr"].ToString(), IsDiscarded);
-                        Add_Text_DatagridCell(row, dgv_MeasureProtocol.Rows[row].Cells["Sign"], reader["Sign"].ToString(), IsDiscarded);
-                        Add_Text_DatagridCell(row, dgv_MeasureProtocol.Rows[row].Cells["Discarded"], reader["Discarded"].ToString(), IsDiscarded);
-                    }
-
-                    Add_Text_DatagridCell(row, dgv_MeasureProtocol.Rows[row].Cells[colIndex + 2], text, IsDiscarded, codeText);
+                    Add_Text_DatagridCell(row, dgv_MeasureProtocol.Rows[row].Cells[item.ColumnIndex + 2], text, item.Discarded, item.ParameterText);
                 }
 
-                dgv_MeasureProtocol.ResumeLayout();
-
-                if (dgv_MeasureProtocol.Rows.Count > 0 && dgv_MeasureProtocol.Rows[0].Cells["OrderNr"].Value != null)
-                {
-                    var ordernr = dgv_MeasureProtocol.Rows[0].Cells["OrderNr"].Value.ToString();
-                    var operation = dgv_MeasureProtocol.Rows[0].Cells["Operation"].Value?.ToString() ?? string.Empty;
-                    Monitor.Monitor.Load_DataTable_Measurpoints(ordernr, operation, false);
-                    measurePoints.AddMeasurePointsMainForm();
-                }
-
-                lbl_TotalOrders.Text = list_OrderNr.Count.ToString();
+                lbl_TotalOrders.Text = $"Totalt {chkList_ListOrders.Items.Count} ordrar:";
             }
             finally
             {
                 pbar.Close();
             }
         }
+
+        private async Task<List<MeasureRow>> LoadMeasureRowsAsync(SqlConnection con, string query, IEnumerable<SqlParameter> parameters)
+        {
+            var list = new List<MeasureRow>();
+            await using var cmd = new SqlCommand(query, con);
+
+            // Lägg till NYA instanser av varje parameter
+            foreach (var p in parameters)
+                cmd.Parameters.AddWithValue(p.ParameterName, p.Value);
+
+            await using var reader = await cmd.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
+            {
+                var row = new MeasureRow
+                {
+                    OrderNr = reader["OrderNr"]?.ToString(),
+                    Revision = reader["Revision"]?.ToString(),
+                    RowIndex = reader.IsDBNull(reader.GetOrdinal("RowIndex")) ? 0 : Convert.ToInt32(reader.GetValue(reader.GetOrdinal("RowIndex"))),
+                    ColumnIndex = reader.IsDBNull(reader.GetOrdinal("ColumnIndex")) ? 0 : Convert.ToInt32(reader.GetValue(reader.GetOrdinal("ColumnIndex"))),
+                    ParameterText = reader["Parameter_UserText"]?.ToString(),
+                    Operation = reader["Operation"]?.ToString(),
+                    DataType = reader["DataType"]?.ToString(),
+                    ErrorCode = reader["ErrorCode"]?.ToString(),
+                    AnstNr = reader["AnstNr"]?.ToString(),
+                    Sign = reader["Sign"]?.ToString(),
+                    Discarded = !reader.IsDBNull(reader.GetOrdinal("Discarded")) && reader.GetBoolean(reader.GetOrdinal("Discarded")),
+                    Value = reader.IsDBNull(reader.GetOrdinal("Value")) ? null : reader.GetDouble(reader.GetOrdinal("Value")),
+                    TextValue = reader["TextValue"]?.ToString(),
+                    BoolValue = reader.IsDBNull(reader.GetOrdinal("BoolValue")) ? null : reader.GetBoolean(reader.GetOrdinal("BoolValue")),
+                    Decimals = reader.IsDBNull(reader.GetOrdinal("Decimals")) ? 0 : Convert.ToInt32(reader.GetValue(reader.GetOrdinal("Decimals"))),
+                    Date = reader["Date"]?.ToString()
+                };
+                list.Add(row);
+            }
+
+            return list;
+        }
+
+
+        private void Load_MeasurePoints()
+        {
+            int rowIndex = dgv_MeasureProtocol.CurrentCell.RowIndex;
+            string activeOrderNr = null;
+            do
+            {
+                if (rowIndex == dgv_MeasureProtocol.Rows.Count)
+                    break;
+                var ordernr = dgv_MeasureProtocol.Rows[rowIndex].Cells["OrderNr"].Value.ToString();
+                var operation = dgv_MeasureProtocol.Rows[rowIndex].Cells["Operation"].Value?.ToString() ?? string.Empty;
+                if (ordernr == activeOrderNr && rowIndex != 0)
+                {
+                    rowIndex++;
+                    continue;
+                }
+
+                Monitor.Monitor.Load_DataTable_Measurpoints(ordernr, operation, false);
+                //Set_MeasurePoints();
+                //if (IsMeasurePointSet)
+                //    measurePoints.AddMeasurePointsMainForm();
+                rowIndex++;
+                activeOrderNr = ordernr;
+            } while (IsMeasurePointSet == false);
+
+        }
+
+        private bool IsMeasurePointSet;
         private void Set_MeasurePoints()
         {
-            foreach (DataRow row in Monitor.Monitor.DataTable_Measurepoints.Rows)
-            {
-                var codename = row[0].ToString();
-                if (codename == Column_Name)
+            LSL = 0;
+            LCL = 0;
+            UCL = 0;
+            USL = 0;
+            IsMeasurePointSet = false;
+            if (Monitor.Monitor.DataTable_Measurepoints != null)
+                foreach (DataRow row in Monitor.Monitor.DataTable_Measurepoints.Rows)
                 {
-                    double.TryParse(row[5].ToString(), out LSL);
-                    double.TryParse(row[4].ToString(), out LCL);
-                    double.TryParse(row[2].ToString(), out UCL);
-                    double.TryParse(row[1].ToString(), out USL);
-                    if (codename.Contains("Concentricity"))
+                    var codename = row[0].ToString();
+                    if (codename == Column_Name)
                     {
-                        LSL *= 100;
-                        LCL *= 100;
-                        USL *= 100;
-                        UCL *= 100;
+                        double.TryParse(row[5].ToString(), out LSL);
+                        double.TryParse(row[4].ToString(), out LCL);
+                        double.TryParse(row[2].ToString(), out UCL);
+                        double.TryParse(row[1].ToString(), out USL);
+                        if (codename.Contains("Concentricity"))
+                        {
+                            LSL *= 100;
+                            LCL *= 100;
+                            USL *= 100;
+                            UCL *= 100;
+                        }
+                        IsMeasurePointSet = true;
                     }
                 }
-            }
         }
         public void Load_InputControls()
         {
@@ -675,8 +686,6 @@ namespace DigitalProductionProgram.Measure
             if (width == 0)
                 dgv.Columns[name].Visible = false;
         }
-        private static readonly Font StrikeoutFont = new Font("Segoe UI", 9, FontStyle.Strikeout);
-        private static readonly Font ItalicFont = new Font("Courier New", 8, FontStyle.Italic);
 
         private void Add_Text_DatagridCell(int row, DataGridViewCell cell, string text, bool IsDiscarded, string CodeText = null)
         {
@@ -686,7 +695,7 @@ namespace DigitalProductionProgram.Measure
                 {
                     BackColor = CustomColors.Discarded_Back,
                     ForeColor = CustomColors.Discarded_Front,
-                    Font = StrikeoutFont
+                    Font = CustomFonts.DiscardedFont
                 };
             }
             else if (string.IsNullOrEmpty(text) || ControlValidator.IsStringNA(text))
@@ -695,7 +704,7 @@ namespace DigitalProductionProgram.Measure
                 {
                     BackColor = Color.White,
                     ForeColor = Color.Red,
-                    Font = ItalicFont
+                    //Font = ItalicFont
                 };
                 text = "N/A";
             }
@@ -712,23 +721,6 @@ namespace DigitalProductionProgram.Measure
 
 
 
-        private void Clear_label_Click(object sender, EventArgs e)
-        {
-            var lbl = (Label)sender;
-            switch (lbl.Text)
-            {
-                case "Välj Artikelnummer...":
-                    tb_PartNr.Text = string.Empty;
-                    break;
-                    //case "Välj OrderNummer...":
-                    //    cb_OrderNr.Text = string.Empty;
-                    //    break;
-                    //case "Välj Sign...":
-                    //    cb_Sign.Text = string.Empty;
-                    //    break;
-
-            }
-        }
 
 
 
@@ -819,6 +811,7 @@ namespace DigitalProductionProgram.Measure
         }
 
         readonly List<string> listOrderNr = new();
+        private string activeOrderNr;
         private void MätProtokoll_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             if (tb_PartNr.Text == string.Empty)
@@ -835,7 +828,14 @@ namespace DigitalProductionProgram.Measure
             var codeName = dgv_MeasureProtocol.Columns[col].Name;
             var codeText = dgv_MeasureProtocol.Columns[col].HeaderText;
 
+            if (activeOrderNr != dgv_MeasureProtocol.Rows[e.RowIndex].Cells["OrderNr"].Value?.ToString() || string.IsNullOrEmpty(activeOrderNr))
+            {
+                activeOrderNr = dgv_MeasureProtocol.Rows[e.RowIndex].Cells["OrderNr"].Value?.ToString() ?? string.Empty;
+                Load_MeasurePoints();
+            }
             Set_MeasurePoints();
+            if (IsMeasurePointSet)
+                measurePoints.AddMeasurePointsMainForm();
             Initialize_Chart_MainForm(codeName, codeText);
 
             var ctr = dgv_MeasureProtocol.Rows.Count - 1;
@@ -901,14 +901,13 @@ namespace DigitalProductionProgram.Measure
                 }
             }
 
-            Set_MeasurePoints();
+            // Set_MeasurePoints();
             cartesianChart = chart(codetext);
 
             cartesianChart.Sections = sections;
 
 
             cartesianChart.Series = new ISeries[] { };
-            // cartesianChart.Series = new ISeries[] { serie_USL(codename), serie_UCL(codename), serie_LCL(codename), serie_LSL(codename) };
 
             this.Invoke(() => tlp_Bottom.Controls.Add(cartesianChart, 1, 0));
         }
@@ -927,5 +926,25 @@ namespace DigitalProductionProgram.Measure
         }
 
 
+
+        public class MeasureRow
+        {
+            public string OrderNr { get; set; } = "";
+            public string Revision { get; set; } = "";
+            public int RowIndex { get; set; }
+            public int ColumnIndex { get; set; }
+            public string ParameterText { get; set; } = "";
+            public string Operation { get; set; } = "";
+            public string DataType { get; set; } = "";
+            public string ErrorCode { get; set; } = "";
+            public string AnstNr { get; set; } = "";
+            public string Sign { get; set; } = "";
+            public bool Discarded { get; set; }
+            public double? Value { get; set; }
+            public string? TextValue { get; set; }
+            public bool? BoolValue { get; set; }
+            public int Decimals { get; set; }
+            public string Date { get; set; }
+        }
     }
 }

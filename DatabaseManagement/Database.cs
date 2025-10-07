@@ -123,7 +123,22 @@ namespace DigitalProductionProgram.DatabaseManagement
                 return default!;
             }
         }
-
+        public static async Task<T> ExecuteSafeAsync<T>(Func<SqlConnection, Task<T>> action)
+        {
+            try
+            {
+                await using var con = new SqlConnection(Database.cs_Protocol);
+                await con.OpenAsync();
+                return await action(con);
+            }
+            catch (Exception)
+            {
+                // Logga eller räkna
+                InfoText.Show(LanguageManager.GetString("errorConnectingDatabase"),
+                    CustomColors.InfoText_Color.Bad, "Error!");
+                return default!;
+            }
+        }
         public static void Load_DatabaseSettings()
         {
             cs_Protocol = null;

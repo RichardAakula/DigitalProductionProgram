@@ -74,7 +74,7 @@ namespace DigitalProductionProgram.PrintingServices
         public static Font C9 = new Font("Courier New", 9);
         public static Font C10 = new Font("Courier New", 10);
         public static Font C10_B = new Font("Courier New", 10, FontStyle.Bold);
-
+        public static Font DiscardedFont = new Font("Segoe UI", 9, FontStyle.Strikeout);
         public static Font M8 = new Font("Monaco", 8F);
         public static Font M8_B = new Font("Monaco", 8F, FontStyle.Bold);
         public static Font P12_B = new Font("Palatino LinoType", 12F, FontStyle.Bold);

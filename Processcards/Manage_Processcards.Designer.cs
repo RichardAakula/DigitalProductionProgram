@@ -616,7 +616,6 @@ namespace DigitalProductionProgram.Processcards
             cb_TemplateRevision.Name = "cb_TemplateRevision";
             cb_TemplateRevision.Size = new Size(121, 25);
             cb_TemplateRevision.TabIndex = 1013;
-            cb_TemplateRevision.SelectedIndexChanged += ProtocolTemplateRevision_SelectedIndexChanged;
             cb_TemplateRevision.SelectionChangeCommitted += TemplateName_SelectionChangeCommitted;
             // 
             // btn_ReloadPartNr

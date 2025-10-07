@@ -55,7 +55,7 @@ namespace DigitalProductionProgram.Monitor
         public static Manufacturing.WorkCenters? WorkCenter;
 
 
-        public static DataTable? DataTable_Measurepoints { get; set; }
+       
 
         public static DataTable DataTable_CandleFilter()
         {
@@ -434,6 +434,7 @@ namespace DigitalProductionProgram.Monitor
             var partUnit = Utilities.GetOneFromMonitor<Common.PartUnitUsages>($"filter=PartId Eq'{Part.Id}'");
             Unit = Utilities.GetOneFromMonitor<Common.Units>($"filter=Number Eq'{partUnit.UnitId}'");
         }
+        public static DataTable? DataTable_Measurepoints { get; set; }
         public static void Load_DataTable_Measurpoints(string? OrderNr, string? Operation, bool IsOkWarnNoMeasurpoints)
         {
             DataTable_Measurepoints = new DataTable();

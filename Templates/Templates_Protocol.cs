@@ -1394,8 +1394,10 @@ namespace DigitalProductionProgram.Templates
                 TemplateControls.AddColumn(dgv, new DataGridViewCheckBoxColumn(), "Behöver autentiseras", "col_IsAuthenticationNeeded", 120);
                 TemplateControls.AddColumn(dgv, new DataGridViewCheckBoxColumn(), "Multipla kolumner i Uppstart", "col_IsMultipleColumnsStartUp", 120);
                 TemplateControls.AddColumn(dgv, new DataGridViewCheckBoxColumn(), "Används datum för Uppstart?", "col_IsStartUpDates", 100);
-                TemplateControls.AddColumn(dgv, new DataGridViewTextBoxColumn(), "Kolumnbredd Processkort", "col_ProcesscardWidth", 100);
-                TemplateControls.AddColumn(dgv, new DataGridViewTextBoxColumn(), "Kolumnbredd Körprotokoll", "col_RunProtocolWidth", 100);
+                TemplateControls.AddColumn(dgv, new DataGridViewTextBoxColumn(), "Kolumnbredd Min Processkort", "col_MinProcesscardWidth", 100);
+                TemplateControls.AddColumn(dgv, new DataGridViewTextBoxColumn(), "Kolumnbredd Nom Processkort", "col_NomProcesscardWidth", 100);
+                TemplateControls.AddColumn(dgv, new DataGridViewTextBoxColumn(), "Kolumnbredd Max Processkort", "col_MaxProcesscardWidth", 100);
+                TemplateControls.AddColumn(dgv, new DataGridViewTextBoxColumn(), "Kolumnbredd Nom Körprotokoll", "col_NomRunProtocolWidth", 100);
 
                 dgv.Rows.Add(false, 1, false, false, false, 50, 50);
             }

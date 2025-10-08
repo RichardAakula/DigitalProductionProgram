@@ -100,6 +100,9 @@
     <Compile Update="MainWindow\ServerStatus.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Update="Protocols\Protocol\Machine.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Update="Statistics\Statistics_DPP.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -218,9 +221,6 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Update="Protocols\MainInfo\Room_TempMoisture.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Protocols\Protocol\Machine.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Update="Protocols\Protocol\MainProtocol.cs">

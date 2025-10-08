@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System.Diagnostics;
+using System.Globalization;
 using System.Resources;
 
 namespace DigitalProductionProgram.ControlsManagement
@@ -8,7 +9,7 @@ namespace DigitalProductionProgram.ControlsManagement
         private static readonly ResourceManager resource = new(typeof(Properties.Resources));
         public static CultureInfo selectedCulture { get; set; } = new("sv-SE");
 
-
+        [DebuggerStepThrough]
         public static string? GetString(string key)
         {
             var value = resource.GetString(key, selectedCulture);

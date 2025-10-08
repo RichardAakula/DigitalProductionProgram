@@ -106,7 +106,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                 return;
             using var con = new SqlConnection(Database.cs_Protocol);
             const string query = @"
-                    SELECT FormTemplateID, ModuleName, IsHeaderVisible, Processcard_ColWidth, RunProtocol_ColWidth, IsUsingPreFab, IsAuthenticationNeeded
+                    SELECT FormTemplateID, ModuleName, IsHeaderVisible, Processcard_MinWidth, Processcard_ColWidth, Processcard_MaxWidth, RunProtocol_ColWidth, IsUsingPreFab, IsAuthenticationNeeded
                     FROM Protocol.FormTemplate as formtemplate
                     JOIN Protocol.MainTemplate as template
                         ON formtemplate.MainTemplateID = template.ID
@@ -123,7 +123,9 @@ namespace DigitalProductionProgram.Protocols.Protocol
             while (reader.Read())
             {
                 int.TryParse(reader["FormTemplateID"].ToString(), out var formtemplateid);
+                int.TryParse(reader["Processcard_MinWidth"].ToString(), out var processcardMinWidth);
                 int.TryParse(reader["Processcard_ColWidth"].ToString(), out var processcardColWidth);
+                int.TryParse(reader["Processcard_MaxWidth"].ToString(), out var processcardMaxWidth);
                 int.TryParse(reader["RunProtocol_ColWidth"].ToString(), out var runprotocolColWidth);
                 bool.TryParse(reader["IsHeaderVisible"].ToString(), out var isHeaderVisible);
                 if (isAutheticationNeeded != true)
@@ -141,7 +143,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                     MachineIndex = machineIndex
                 };
 
-                module.LoadTemplate(isHeaderVisible, processcardColWidth, runprotocolColWidth, isOkChangeProcessdata);
+                module.LoadTemplate(isHeaderVisible, processcardMinWidth, processcardColWidth, processcardMaxWidth, runprotocolColWidth, isOkChangeProcessdata);
                 module.load_processcard.Load_ProcessData(formtemplateid);
                 height += module.TotalModuleHeight;// + 1; // +1 for the row height in the TableLayoutPanel
               

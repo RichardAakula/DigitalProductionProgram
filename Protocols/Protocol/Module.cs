@@ -212,13 +212,15 @@ namespace DigitalProductionProgram.Protocols.Protocol
             return false;
         }
 
-        public void LoadTemplate(bool IsHeaderVisible, int processcardColWidth, int runProtocolColWidth, bool isOkChangeProcessData)
+        public void LoadTemplate(bool IsHeaderVisible, int processcardMinWidth, int processcardNomWidth, int processcardMaxWidth, int runProtocolColWidth, bool isOkChangeProcessData)
         {
             StartUp_Width = runProtocolColWidth;
 
             var CheckIfOnlyNomValue_ColIndex = new List<int>();
             dgv_Module.ColumnHeadersVisible = IsHeaderVisible;
-            dgv_Module.Columns["col_MIN"].Width = dgv_Module.Columns["col_NOM"].Width = dgv_Module.Columns["col_MAX"].Width = processcardColWidth;
+            dgv_Module.Columns["col_MIN"].Width = processcardMinWidth;
+            dgv_Module.Columns["col_NOM"].Width = processcardNomWidth;
+            dgv_Module.Columns["col_MAX"].Width = processcardMaxWidth;
             dgv_Module.Columns["col_StartUp_1"].Width = runProtocolColWidth;
 
             using (var con = new SqlConnection(Database.cs_Protocol))

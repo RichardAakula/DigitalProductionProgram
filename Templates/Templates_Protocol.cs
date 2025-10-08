@@ -1427,9 +1427,7 @@ namespace DigitalProductionProgram.Templates
                 TemplateControls.AddColumn(dgv, new DataGridViewTextBoxColumn(), "Kolumnbredd Min Processkort", "col_MinProcesscardWidth", 100);
                 TemplateControls.AddColumn(dgv, new DataGridViewTextBoxColumn(), "Kolumnbredd Nom Processkort", "col_NomProcesscardWidth", 100);
                 TemplateControls.AddColumn(dgv, new DataGridViewTextBoxColumn(), "Kolumnbredd Max Processkort", "col_MaxProcesscardWidth", 100);
-                TemplateControls.AddColumn(dgv, new DataGridViewTextBoxColumn(), "Kolumnbredd Min Körprotokoll", "col_MinRunProtocolWidth", 100);
                 TemplateControls.AddColumn(dgv, new DataGridViewTextBoxColumn(), "Kolumnbredd Nom Körprotokoll", "col_NomRunProtocolWidth", 100);
-                TemplateControls.AddColumn(dgv, new DataGridViewTextBoxColumn(), "Kolumnbredd Max Körprotokoll", "col_MaxRunProtocolWidth", 100);
 
                 dgv.Rows.Add(false, 1, false, false, false, 50, 50);
             }
@@ -1437,7 +1435,7 @@ namespace DigitalProductionProgram.Templates
             {
                 using var con = new SqlConnection(Database.cs_Protocol);
                 const string query = @"
-                    SELECT IsHeaderVisible, MachineIndex, IsAuthenticationNeeded, IsMultipleColumnsStartUp, IsStartUpDates, Processcard_MinWidth, Processcard_ColWidth, Processcard_MaxWidth, RunProtocol_MinWidth, RunProtocol_ColWidth, RunProtocol_MaxWidth
+                    SELECT IsHeaderVisible, MachineIndex, IsAuthenticationNeeded, IsMultipleColumnsStartUp, IsStartUpDates, Processcard_MinWidth, Processcard_ColWidth, Processcard_MaxWidth,  RunProtocol_ColWidth
                     FROM Protocol.FormTemplate
                     WHERE FormTemplateID = @formtemplateid
                         AND MainTemplateID = (SELECT ID From Protocol.MainTemplate WHERE Name = @name AND Revision = @revision)
@@ -1453,33 +1451,33 @@ namespace DigitalProductionProgram.Templates
                 while (reader.Read())
                 {
                     bool.TryParse(reader["IsHeaderVisible"].ToString(), out var isHeaderVisible);
-                    dgv_Active_ModuleInfo.Rows[0].Cells["col_IsHeaderVisible"].Value =
-                        isHeaderVisible;
+                    dgv_Active_ModuleInfo.Rows[0].Cells["col_IsHeaderVisible"].Value = isHeaderVisible;
 
-                    dgv_Active_ModuleInfo.Rows[0].Cells["col_MachineIndex"].Value =
-                        machineIndex;
+                    dgv_Active_ModuleInfo.Rows[0].Cells["col_MachineIndex"].Value = machineIndex;
 
                     bool.TryParse(reader["IsAuthenticationNeeded"].ToString(), out var isAuthenticationNeeded);
-                    dgv_Active_ModuleInfo.Rows[0].Cells["col_IsAuthenticationNeeded"].Value =
-                        isAuthenticationNeeded;
+                    dgv_Active_ModuleInfo.Rows[0].Cells["col_IsAuthenticationNeeded"].Value = isAuthenticationNeeded;
 
                     bool.TryParse(reader["IsMultipleColumnsStartUp"].ToString(),
                         out var isMultipleColumnsStartUp);
-                    dgv_Active_ModuleInfo.Rows[0].Cells["col_IsMultipleColumnsStartUp"].Value =
-                        isMultipleColumnsStartUp;
+                    dgv_Active_ModuleInfo.Rows[0].Cells["col_IsMultipleColumnsStartUp"].Value = isMultipleColumnsStartUp;
 
                     bool.TryParse(reader["IsStartUpDates"].ToString(), out var isStartUpDates);
-                    dgv_Active_ModuleInfo.Rows[0].Cells["col_IsStartUpDates"].Value =
-                        isStartUpDates;
+                    dgv_Active_ModuleInfo.Rows[0].Cells["col_IsStartUpDates"].Value = isStartUpDates;
 
-                    int.TryParse(reader["Processcard_ColWidth"].ToString(), out var pcColWidth);
-                    dgv_Active_ModuleInfo.Rows[0].Cells["col_ProcesscardWidth"].Value =
-                        pcColWidth;
+
+                    int.TryParse(reader["Processcard_MinWidth"].ToString(), out var pcMinWidth);
+                    dgv_Active_ModuleInfo.Rows[0].Cells["col_MinProcesscardWidth"].Value = pcMinWidth;
+
+                    int.TryParse(reader["Processcard_ColWidth"].ToString(), out var pcNomColWidth);
+                    dgv_Active_ModuleInfo.Rows[0].Cells["col_nomProcesscardWidth"].Value = pcNomColWidth;
+
+                    int.TryParse(reader["Processcard_MaxWidth"].ToString(), out var pcMaxWidth);
+                    dgv_Active_ModuleInfo.Rows[0].Cells["col_MaxProcesscardWidth"].Value = pcMaxWidth;
+
 
                     int.TryParse(reader["RunProtocol_ColWidth"].ToString(), out var rpColWidth);
-                    dgv_Active_ModuleInfo.Rows[0].Cells["col_RunProtocolWidth"].Value =
-                        rpColWidth;
-
+                    dgv_Active_ModuleInfo.Rows[0].Cells["col_NomRunProtocolWidth"].Value = rpColWidth;
                 }
             }
             public static void Save_Data(string templateName, string revision, DataGridView dgv, string moduleName, int templateOrder)
@@ -1502,9 +1500,7 @@ namespace DigitalProductionProgram.Templates
                             target.Processcard_MinWidth = @processcardminwidth, 
                             target.Processcard_ColWidth = @processcardnomwidth, 
                             target.Processcard_MaxWidth = @processcardmaxwidth, 
-                            target.RunProtocol_MinWidth = @runprotocolminwidth,
-                            target.RunProtocol_ColWidth = @runprotocolnomwidth,
-                            target.RunProtocol_MaxWidth = @runprotocolmaxwidth,
+                            target.RunProtocol_ColWidth = @runprotocolnomwidth
                         WHEN NOT MATCHED THEN
                         INSERT 
                         (
@@ -1518,9 +1514,7 @@ namespace DigitalProductionProgram.Templates
                             Processcard_MinWidth,
                             Processcard_ColWidth,
                             Processcard_MaxWidth,
-                            RunProtocol_MinWidth, 
                             RunProtocol_ColWidth, 
-                            RunProtocol_MaxWidth, 
                             MainTemplateID
                         )
                         VALUES 
@@ -1535,9 +1529,7 @@ namespace DigitalProductionProgram.Templates
                             @processcardminwidth,   
                             @processcardnomwidth, 
                             @processcardmaxwidth,   
-                            @runprotocolminwidth,
                             @runprotocolnomwidth,
-                            @runprotocolmaxwidth,
                             source.MainTemplateID
                         );";
 
@@ -1555,9 +1547,7 @@ namespace DigitalProductionProgram.Templates
                 SQL_Parameter.Int(cmd.Parameters, "@processcardminwidth", dgv.Rows[0].Cells["col_MinProcesscardWidth"].Value);
                 SQL_Parameter.Int(cmd.Parameters, "@processcardnomwidth", dgv.Rows[0].Cells["col_NomProcesscardWidth"].Value);
                 SQL_Parameter.Int(cmd.Parameters, "@processcardmaxwidth", dgv.Rows[0].Cells["col_MaxProcesscardWidth"].Value);
-                SQL_Parameter.Int(cmd.Parameters, "@runprotocolminwidth", dgv.Rows[0].Cells["col_MinRunProtocolWidth"].Value);
                 SQL_Parameter.Int(cmd.Parameters, "@runprotocolnomwidth", dgv.Rows[0].Cells["col_NomRunProtocolWidth"].Value);
-                SQL_Parameter.Int(cmd.Parameters, "@runprotocolmaxwidth", dgv.Rows[0].Cells["col_MaxRunProtocolWidth"].Value);
                 con.Open();
                 cmd.ExecuteNonQuery();
             }

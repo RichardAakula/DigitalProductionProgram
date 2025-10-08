@@ -597,7 +597,7 @@ namespace DigitalProductionProgram.MainWindow
                 });
         }
         //----------UVECKLING----------
-        public void Menu_Utvecklare_GetOrderInfo(object sender, EventArgs e)
+        public void Menu_Utvecklare_GetInfo(object sender, EventArgs e)
         {
             var workcenterDescription = "N/A";
             var workcenterProdGroup = "N/A";

@@ -844,7 +844,6 @@ namespace DigitalProductionProgram.OrderManagement
                     }
                    
                     Save_MainInfo(); //Hämtar data från Processkorten och lägger till det till ordern
-                    Activity.Stop("Testar varför det är problem att starta ordrar för t.ex. Slipning TEF - 8");
                 }
                 else
                 {
@@ -859,7 +858,6 @@ namespace DigitalProductionProgram.OrderManagement
                 
                 IsOrderDone = false;
                 Load_ProdType();
-                Activity.Stop("Testar varför det är problem att starta ordrar för t.ex. Slipning TEF - 9");
                 Templates_Protocol.MainTemplate.Revision = Korprotokoll.ProtocolTemplateRevision.OrderNr(OrderID);
                 _ = Activity.Stop($"Startar Order: {Person.Name}");
                 _ = Main_FilterQuickOpen.Load_ListAsync(main.dgv_QuickOpen);

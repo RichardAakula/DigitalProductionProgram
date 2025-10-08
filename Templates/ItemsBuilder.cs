@@ -560,6 +560,8 @@ namespace DigitalProductionProgram.Templates
         
         public static void Copy_OwnListToNewTemplate(int oldMainTemplateID, int newMainTemplateID)
         {
+            //Osäker att detta funkar?
+            //Det funkade inte när jag skapade en ny revision av Extrudering Tryck
             using var con = new SqlConnection(Database.cs_Protocol);
             const string query = @"SELECT ID, ProtocolDescriptionID FROM Protocol.Template WHERE FormTemplateID IN (SELECT FormTemplateID FROM Protocol.FormTemplate WHERE MainTemplateID = @oldmaintemplateid)";
             var cmd = new SqlCommand(query, con);

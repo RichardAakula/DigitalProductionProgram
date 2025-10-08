@@ -595,6 +595,8 @@ namespace DigitalProductionProgram.Monitor
         public static void Fill_ComboBox_List_ExtraFields(ComboBox cb)
         {
             var fieldGroup = Utilities.GetOneFromMonitor<Common.ExtraFieldGroups>("filter=Name eq'Verktyg'");
+            if (fieldGroup is null)
+                return;
             var fields = Utilities.GetFromMonitor<Common.ExtraFieldTemplates>($"filter=ParentId Eq'{fieldGroup.Id}'", "orderby=RowNumber");
 
             // Skapa en ny lista och lägg till en extra rad - Denna används om Användaren vill att man skall välja Typ(Description) istället för ID-nummer

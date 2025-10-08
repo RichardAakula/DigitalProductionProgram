@@ -108,14 +108,14 @@ namespace DigitalProductionProgram.Protocols.Template_Management
                 tlp_Machines.SetCellPosition(module, new TableLayoutPanelCellPosition(0, tlp_Machines.RowCount - 1));
                 var pcWidth = 0;
                 var rpWidth = 0;
-                if (dgv_FormTemplate.Rows[0].Cells["col_ProcesscardWidth"].Value != null)
-                    int.TryParse(dgv_FormTemplate.Rows[0].Cells["col_ProcesscardWidth"].Value.ToString(), out pcWidth);
-                if (dgv_FormTemplate.Rows[0].Cells["col_RunProtocolWidth"].Value != null)
-                    int.TryParse(dgv_FormTemplate.Rows[0].Cells["col_RunProtocolWidth"].Value.ToString(), out rpWidth);
+                if (dgv_FormTemplate.Rows[0].Cells["col_NomProcesscardWidth"].Value != null)
+                    int.TryParse(dgv_FormTemplate.Rows[0].Cells["col_NomProcesscardWidth"].Value.ToString(), out pcWidth);
+                if (dgv_FormTemplate.Rows[0].Cells["col_NomRunProtocolWidth"].Value != null)
+                    int.TryParse(dgv_FormTemplate.Rows[0].Cells["col_NomRunProtocolWidth"].Value.ToString(), out rpWidth);
 
                 module.dgv_Module.Columns["col_MIN"].Width = module.dgv_Module.Columns["col_NOM"].Width =
                     module.dgv_Module.Columns["col_MAX"].Width = pcWidth;
-                module.dgv_Module.Columns[module.dgv_Module.Columns.Count - 1].Width = rpWidth;
+                module.dgv_Module.Columns[^1].Width = rpWidth;
                 module.dgv_Module.ColumnHeadersVisible =
                     (bool)dgv_FormTemplate.Rows[0].Cells["col_IsHeaderVisible"].Value;
 

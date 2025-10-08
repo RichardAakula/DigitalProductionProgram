@@ -123,9 +123,12 @@ namespace DigitalProductionProgram.Protocols.Protocol
             while (reader.Read())
             {
                 int.TryParse(reader["FormTemplateID"].ToString(), out var formtemplateid);
-                int.TryParse(reader["Processcard_MinWidth"].ToString(), out var processcardMinWidth);
-                int.TryParse(reader["Processcard_ColWidth"].ToString(), out var processcardColWidth);
-                int.TryParse(reader["Processcard_MaxWidth"].ToString(), out var processcardMaxWidth);
+                int.TryParse(reader["Processcard_ColWidth"].ToString(), out var processcardNomWidth);
+
+                if (int.TryParse(reader["Processcard_MinWidth"].ToString(), out var processcardMinWidth) == false)
+                    processcardMinWidth = processcardNomWidth;
+                if (int.TryParse(reader["Processcard_MaxWidth"].ToString(), out var processcardMaxWidth) == false)
+                    processcardMaxWidth = processcardNomWidth;
                 int.TryParse(reader["RunProtocol_ColWidth"].ToString(), out var runprotocolColWidth);
                 bool.TryParse(reader["IsHeaderVisible"].ToString(), out var isHeaderVisible);
                 if (isAutheticationNeeded != true)
@@ -143,7 +146,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                     MachineIndex = machineIndex
                 };
 
-                module.LoadTemplate(isHeaderVisible, processcardMinWidth, processcardColWidth, processcardMaxWidth, runprotocolColWidth, isOkChangeProcessdata);
+                module.LoadTemplate(isHeaderVisible, processcardMinWidth, processcardNomWidth, processcardMaxWidth, runprotocolColWidth, isOkChangeProcessdata);
                 module.load_processcard.Load_ProcessData(formtemplateid);
                 height += module.TotalModuleHeight;// + 1; // +1 for the row height in the TableLayoutPanel
               

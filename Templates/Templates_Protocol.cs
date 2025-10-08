@@ -328,8 +328,6 @@ namespace DigitalProductionProgram.Templates
                 CustomColors.InfoText_Color.Info, null, this);
             if (InfoText.answer == InfoText.Answer.Yes)
             {
-                //MainTemplate.Load_MainTemplateID(cb_TemplateName.Text, cb_TemplateRevision.Text);
-
                 var partsManager = new Connect_Templates(cb_TemplateName.Text, cb_TemplateRevision.Text, false, Connect_Templates.SourceType.Type_Protocols);
                 partsManager.ShowDialog();
             }

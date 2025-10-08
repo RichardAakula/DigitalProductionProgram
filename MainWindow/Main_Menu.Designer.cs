@@ -708,7 +708,7 @@ namespace DigitalProductionProgram.MainWindow
             Menu_Developer_GetOrderInfo.Name = "Menu_Developer_GetOrderInfo";
             Menu_Developer_GetOrderInfo.Size = new Size(401, 22);
             Menu_Developer_GetOrderInfo.Text = "Get Order Info";
-            Menu_Developer_GetOrderInfo.Click += Menu_Utvecklare_GetOrderInfo;
+            Menu_Developer_GetOrderInfo.Click += Menu_Utvecklare_GetInfo;
             // 
             // Menu_Developer_SendMailToAllUsers
             // 

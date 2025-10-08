@@ -176,6 +176,61 @@ namespace DigitalProductionProgram.PrintingServices
         {
             return text != null && text.Contains('-') && text.Contains(':') && text.Length > 15;
         }
+        private static string[] SplitSmart(string text, int parts)
+        {
+            if (string.IsNullOrWhiteSpace(text) || parts <= 0)
+                return Enumerable.Repeat(string.Empty, parts).ToArray();
+
+            text = text.Trim();
+            int len = text.Length;
+
+            if (parts == 1 || len < parts * 4) // för kort text, returnera som en rad
+                return new[] { text };
+
+            var splitPoints = new List<int>();
+
+            for (int i = 1; i < parts; i++)
+            {
+                int target = len * i / parts;
+                int split = FindNearestSpace(text, target, splitPoints.LastOrDefault());
+                if (split > 0)
+                    splitPoints.Add(split);
+            }
+
+            var result = new List<string>();
+            int lastIndex = 0;
+
+            foreach (var split in splitPoints)
+            {
+                int length = split - lastIndex;
+                result.Add(text.Substring(lastIndex, length).Trim());
+                lastIndex = split;
+            }
+
+            // sista delen
+            result.Add(text.Substring(lastIndex).Trim());
+
+            // säkerställ rätt antal element
+            while (result.Count < parts)
+                result.Add(string.Empty);
+
+            return result.ToArray();
+        }
+        private static int FindNearestSpace(string text, int targetIndex, int startIndex = 0)
+        {
+            if (targetIndex >= text.Length)
+                targetIndex = text.Length - 1;
+
+            int before = text.LastIndexOf(' ', targetIndex);
+            int after = text.IndexOf(' ', targetIndex);
+
+            if (before < startIndex) before = -1;
+            if (after == -1) return before;
+            if (before == -1) return after;
+
+            return (targetIndex - before) <= (after - targetIndex) ? before : after;
+        }
+
         public static void Static_InfoText(PrintPageEventArgs e, string? text, float x, int y, bool IsRightMargin = false, bool IsSmallFont = false)
         {
             var font = CustomFonts.Info;
@@ -195,7 +250,6 @@ namespace DigitalProductionProgram.PrintingServices
             e.Graphics?.DrawString(text, CustomFonts.A8, CustomFonts.black, x - TextRenderer.MeasureText(text, CustomFonts.A8).Width / 2f, y + 3);
             
         }
-
         public static void Protocol_InfoText(PrintPageEventArgs e, string? text, bool isValueCritical, float x, int y, int MaxWidth, bool IsCenter, bool IsWrap, bool IsRightMargin = false)
         {
             if (IsRightMargin)
@@ -240,7 +294,6 @@ namespace DigitalProductionProgram.PrintingServices
                 }
             }
         }
-
         public static void Text_Operatör(PrintPageEventArgs e, string? text, int x, int y, int maxWidth = 10000, bool IsCenter = false, bool IsWrap = false, bool is_Ok_NA = true)
         {
             if ((string.IsNullOrEmpty(text) || text == "N/A") && is_Ok_NA)
@@ -259,8 +312,10 @@ namespace DigitalProductionProgram.PrintingServices
                             if (StringWidth(text_2, CustomFonts.operatörFont_small, e.Graphics) > maxWidth)
                             {
                                 text = text_2;
-                                text_1 = text?.Substring(0, text.Length / 2);
-                                if (text_1 != null) text_2 = text?.Substring(text_1.Length, text.Length - text_1.Length);
+                                var parts = SplitSmart(text, 2);
+                                text_1 = parts[0];
+                                text_2 = parts[1];
+
                             }
                             if (IsTextDate(text))
                             {
@@ -310,7 +365,6 @@ namespace DigitalProductionProgram.PrintingServices
                 }
             }
         }
-        
         public static void Text_PageNumber(PrintPageEventArgs e, string? text, int x, int y)
         {
             var font = new Font("Arial", 9, FontStyle.Italic);
@@ -347,15 +401,34 @@ namespace DigitalProductionProgram.PrintingServices
         }
         private static void PrintTextProcesskrot_2_Rows(PrintPageEventArgs e, string? text, float x, int y, int MaxWidth, bool IsCenter)
         {
-            var text_1 = text.Substring(0, text.Length / 2);
-            var text_2 = text.Substring(text_1.Length, text.Length - text_1.Length);
-            text_1 = text_1.TrimStart(); text_1 = text_1.TrimEnd();
-            text_2 = text_2.TrimStart(); text_2 = text_2.TrimEnd();
+            if (string.IsNullOrWhiteSpace(text))
+                return;
+
+            // Använd den smarta splitten istället för att kapa på mitten
+            var parts = SplitSmart(text, 2);
+            var text_1 = parts[0];
+            var text_2 = parts[1];
+
+            text_1 = text_1.Trim();
+            text_2 = text_2.Trim();
 
             if (IsCenter)
             {
-                e.Graphics.DrawString(text_1, CustomFonts.parametrarFont_small, CustomFonts.parametrar_clr, x - StringWidth(text_1, CustomFonts.parametrarFont_small, e.Graphics) / 2, y - 3);
-                e.Graphics.DrawString(text_2, CustomFonts.parametrarFont_small, CustomFonts.parametrar_clr, x - StringWidth(text_2, CustomFonts.parametrarFont_small, e.Graphics) / 2, y + 7);
+                e.Graphics.DrawString(
+                    text_1,
+                    CustomFonts.parametrarFont_small,
+                    CustomFonts.parametrar_clr,
+                    x - StringWidth(text_1, CustomFonts.parametrarFont_small, e.Graphics) / 2,
+                    y - 3
+                );
+
+                e.Graphics.DrawString(
+                    text_2,
+                    CustomFonts.parametrarFont_small,
+                    CustomFonts.parametrar_clr,
+                    x - StringWidth(text_2, CustomFonts.parametrarFont_small, e.Graphics) / 2,
+                    y + 7
+                );
             }
             else
             {
@@ -365,11 +438,12 @@ namespace DigitalProductionProgram.PrintingServices
         }
         private static void PrintTextProcesskort_3_Rows(PrintPageEventArgs e, string? text, float x, int y, int MaxWidth, bool IsCenter)
         {
-            var StringLength = text.Length / 3;
-            var text_1 = text.Substring(0, StringLength);
-            var text_2 = text.Substring(text_1.Length, StringLength);
-            var text_3 = text.Substring(text_1.Length + text_2.Length, text.Length - (text_1.Length + text_2.Length));
-            
+           // var StringLength = text.Length / 3;
+            var parts = SplitSmart(text, 3);
+            var text_1 = parts[0];
+            var text_2 = parts[1];
+            var text_3 = parts[2];
+
             text_1 = text_1.TrimStart(); text_1 = text_1.TrimEnd();
             text_2 = text_2.TrimStart(); text_2 = text_2.TrimEnd();
             text_3 = text_3.TrimStart(); text_3 = text_3.TrimEnd();
@@ -980,7 +1054,7 @@ namespace DigitalProductionProgram.PrintingServices
 
                     else
                     {
-                        Data(e, y, x, colWidth, totalRows, machineindex, startup, formtemplateid);
+                        Data(e, y, x, colWidth, machineindex, startup, formtemplateid);
                         x += colWidth;
                     }
 
@@ -990,11 +1064,8 @@ namespace DigitalProductionProgram.PrintingServices
                 }
 
             }
-            private static void Data(PrintPageEventArgs e, int y, int x, int width, int totalRows, int machineindex, int uppstart, int formtemplateid)
+            private static void Data(PrintPageEventArgs e, int y, int x, int width, int machineindex, int uppstart, int formtemplateid)
             {
-                //for (var row = 0; row < totalRows; row++)
-                //    Print.Thin_Rectangle(e, x, y + PrintVariables.RowHeight * row, width, PrintVariables.RowHeight);
-
                 using var con = new SqlConnection(Database.cs_Protocol);
                 const string query = @"
                 SELECT 

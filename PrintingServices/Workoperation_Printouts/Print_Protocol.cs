@@ -195,9 +195,14 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
-                    int.TryParse(reader["Processcard_MinWidth"].ToString(), out processcard_MinWidth);
                     int.TryParse(reader["Processcard_ColWidth"].ToString(), out processcard_NomWidth);
+                    int.TryParse(reader["Processcard_MinWidth"].ToString(), out processcard_MinWidth);
                     int.TryParse(reader["Processcard_MaxWidth"].ToString(), out processcard_MaxWidth);
+                    //if (int.TryParse(reader["Processcard_MinWidth"].ToString(), out processcard_MinWidth) == false)
+                    //    processcard_MinWidth = processcard_NomWidth;
+                    //if (int.TryParse(reader["Processcard_MaxWidth"].ToString(), out processcard_MaxWidth) == false)
+                    //    processcard_MaxWidth = processcard_NomWidth;
+
                     int.TryParse(reader["RunProtocol_ColWidth"].ToString(), out runProtocol_ColWidth);
                 }
 
@@ -255,17 +260,23 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                     int columnCounter = 0;
                     while (reader.Read())
                     {
-                        int.TryParse(reader["Processcard_MinWidth"].ToString(), out processcard_MinWidth);
                         int.TryParse(reader["Processcard_ColWidth"].ToString(), out processcard_NomWidth);
+                        int.TryParse(reader["Processcard_MinWidth"].ToString(), out processcard_MinWidth);
                         int.TryParse(reader["Processcard_MaxWidth"].ToString(), out processcard_MaxWidth);
-                        int.TryParse(reader["RunProtocol_ColWidth"].ToString(), out runProtocol_ColWidth);
+
+                    //if (int.TryParse(reader["Processcard_MinWidth"].ToString(), out processcard_MinWidth) == false)
+                    //    processcard_MinWidth = processcard_NomWidth;
+
+                    //if (int.TryParse(reader["Processcard_MaxWidth"].ToString(), out processcard_MaxWidth) == false)
+                    //    processcard_MaxWidth = processcard_NomWidth;
+                    int.TryParse(reader["RunProtocol_ColWidth"].ToString(), out runProtocol_ColWidth);
                         columnCounter++;
                         isOkCalculate = true;
                     }
 
                     if (isOkCalculate)
                     {
-                        var startups = (int)Math.Floor(((double)max_Width - (processcard_MinWidth + processcard_NomWidth + processcard_MaxWidth) * columnCounter) / runProtocol_ColWidth);
+                        var startups = (int)Math.Floor(((double)max_Width - (processcard_MinWidth + processcard_NomWidth + processcard_MaxWidth)) / runProtocol_ColWidth);
                         if (startups < maxStartups)
                             maxStartups = startups;
                     }
@@ -400,6 +411,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                     var lastRowModule = 0;
                     var IsActiveFormTemplatesFull = false;
 
+                    //Kontrollerar hur många moduler som får plats på aktuell sida
                     do
                     {
                         if (list_ctr == list.Count)
@@ -569,9 +581,12 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                     bool.TryParse(reader["IsHeaderVisible"].ToString(), out isHeaderVisible);
                     bool.TryParse(reader["IsMultipleColumnsStartup"].ToString(), out var isModuleUsingOven);
                     var moduleName = reader["ModuleName"].ToString();
-                    int.TryParse(reader["Processcard_MinWidth"].ToString(), out var processcard_MinWidth);
                     int.TryParse(reader["Processcard_ColWidth"].ToString(), out var processcard_NomWidth);
-                    int.TryParse(reader["Processcard_MaxWidth"].ToString(), out var processcard_MaxWidth);
+
+                    if (int.TryParse(reader["Processcard_MinWidth"].ToString(), out var processcard_MinWidth) == false)
+                        processcard_MinWidth = processcard_NomWidth;
+                    if (int.TryParse(reader["Processcard_MaxWidth"].ToString(), out var processcard_MaxWidth) == false)
+                        processcard_MaxWidth = processcard_NomWidth;
                     int.TryParse(reader["RunProtocol_ColWidth"].ToString(), out var runProtocol_ColWidth);
                     PrintModule(e, formtemplateid, y, moduleName, processcard_MinWidth, processcard_NomWidth, processcard_MaxWidth, runProtocol_ColWidth, ref totalrows, isHeaderVisible, isModuleUsingOven);
                 }
@@ -697,16 +712,14 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
 
             private static bool IsModuleOnlyNomValues(int formtemplateid)
             {
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    const string query = @"SELECT * FROM Protocol.Template WHERE FormTemplateID = @formtemplateid AND (ColumnIndex = 0 OR ColumnIndex = 2)";
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    cmd.Parameters.AddWithValue("@formtemplateid", formtemplateid);
-                    con.Open();
-                    var reader = cmd.ExecuteReader();
-                    if (reader.HasRows)
-                        return false;
-                }
+                using var con = new SqlConnection(Database.cs_Protocol);
+                const string query = @"SELECT * FROM Protocol.Template WHERE FormTemplateID = @formtemplateid AND (ColumnIndex = 0 OR ColumnIndex = 2)";
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                cmd.Parameters.AddWithValue("@formtemplateid", formtemplateid);
+                con.Open();
+                var reader = cmd.ExecuteReader();
+                if (reader.HasRows)
+                    return false;
 
                 return true;
             }
@@ -1107,7 +1120,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                 if (isModuleOnlyNomValues)
                     x = 196 + 46 + processcard_NomWidth;
                 else
-                    x = 196 + 46 + (processcard_MinWidth + processcard_NomWidth + processcard_MaxWidth) * 3;
+                    x = 196 + 46 + (processcard_MinWidth + processcard_NomWidth + processcard_MaxWidth);
 
 
                 Print.RunProtocol.StartUps(e, x, y, totalrows, runProtocol_ColWidth, formtemplateid, StartUp_From, StartUp_To, MachineIndex, isHeaderVisible, isModuleUsingOven);
@@ -1280,10 +1293,11 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                     if (int.TryParse(reader["ColumnIndex"].ToString(), out var col))
                         column = col;
                     int.TryParse(reader["RowIndex"].ToString(), out var row);
-                    int.TryParse(reader["Processcard_MinWidth"].ToString(), out var minWidth);
                     int.TryParse(reader["Processcard_ColWidth"].ToString(), out var nomWidth);
-                    int.TryParse(reader["Processcard_MaxWidth"].ToString(), out var maxWidth);
-
+                    if (int.TryParse(reader["Processcard_MinWidth"].ToString(), out var minWidth) == false)
+                        minWidth = nomWidth;
+                    if (int.TryParse(reader["Processcard_MaxWidth"].ToString(), out var maxWidth) == false)
+                        maxWidth = nomWidth;
                     switch (type)
                     {
                         case 0:
@@ -1320,7 +1334,6 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                         }
 
                         Print.Protocol_InfoText(e, value, false, textPosition, y + PrintVariables.RowHeight * row + 2, colWidth, true, true);
-                        //Print.Protocol_InfoText(e, value, false, x + colWidth * (int)column + colWidth / 2, y + PrintVariables.RowHeight * row + 2, colWidth, true, true);
                     }
                 }
             }

@@ -201,7 +201,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                     int.TryParse(reader["RunProtocol_ColWidth"].ToString(), out runProtocol_ColWidth);
                 }
 
-                var space_Left = PrintVariables.MaxPaperWidth - PrintVariables.StartPointProcesscard - processcard_MinWidth - processcard_NomWidth - processcard_MaxWidth;
+                var space_Left = PrintVariables.MaxPaperWidth - PrintVariables.StartPointProcesscard - (processcard_MinWidth + processcard_NomWidth + processcard_MaxWidth);
                 if (space_Left < max_Width)
                     max_Width = space_Left;
                         

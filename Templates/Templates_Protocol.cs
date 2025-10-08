@@ -1524,38 +1524,7 @@ namespace DigitalProductionProgram.Templates
         }
        
 
-        //public static void Update_Data(string templateName, string moduleName, string revision, DataGridView dgv, int formtemplateid)
-        //{
-        //    using (var con = new SqlConnection(Database.cs_Protocol))
-        //    {
-        //        const string query = @"
-        //            UPDATE Protocol.FormTemplate 
-        //            SET ModuleName = @modulename, IsHeaderVisible = @isheadervisible, MachineIndex = @machineIndex, IsAuthenticationNeeded = @isauthenticationneeded, IsMultipleColumnsStartup = @ismultiplecolumnsstartup, IsStartUpDates = @isstartupdates, Processcard_ColWidth = @processcardColwidth, RunProtocol_ColWidth = @runprotocolColwidth
-        //            WHERE FormTemplateID = @formtemplateid
-        //                AND MainTemplateID = (SELECT ID FROM Protocol.MainTemplate WHERE Name = @templatename AND Revision = @revision)
-        //                AND MachineIndex = @machineindex";
-        //        var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-        //        cmd.Parameters.AddWithValue("@templatename", templateName);
-        //        cmd.Parameters.AddWithValue("@revision", revision);
-        //        cmd.Parameters.AddWithValue("@formtemplateid", formtemplateid);
-        //        cmd.Parameters.AddWithValue("@modulename", moduleName.Replace(" ", "").Replace("\n", "").Replace("\r", ""));
-        //        SQL_Parameter.Boolean(cmd.Parameters, "@isheadervisible", dgv.Rows[0].Cells["col_IsHeaderVisible"].Value, true);
-        //        SQL_Parameter.Int(cmd.Parameters, "@machineIndex", dgv.Rows[0].Cells["col_MachineIndex"].Value);
-        //        SQL_Parameter.Boolean(cmd.Parameters, "@isauthenticationneeded",
-        //            dgv.Rows[0].Cells["col_IsAuthenticationNeeded"].Value, true);
-        //        SQL_Parameter.Boolean(cmd.Parameters, "@ismultiplecolumnsstartup",
-        //            dgv.Rows[0].Cells["col_IsMultipleColumnsStartup"].Value, true);
-        //        SQL_Parameter.Boolean(cmd.Parameters, "@isstartupdates",
-        //            dgv.Rows[0].Cells["col_IsStartUpDates"].Value, true);
-        //        SQL_Parameter.Int(cmd.Parameters, "@processcardColwidth",
-        //            dgv.Rows[0].Cells["col_ProcesscardWidth"].Value);
-        //        SQL_Parameter.Int(cmd.Parameters, "@runprotocolColwidth",
-        //            dgv.Rows[0].Cells["col_RunProtocolWidth"].Value);
-        //        con.Open();
-        //        cmd.ExecuteNonQuery();
-        //    }
-        //}
-    }
+    
     public class Template
         {
             public static int? ID(int row, int col, string revision, int formTemplateid)

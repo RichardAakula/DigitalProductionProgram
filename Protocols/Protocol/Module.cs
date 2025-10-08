@@ -212,19 +212,22 @@ namespace DigitalProductionProgram.Protocols.Protocol
             return false;
         }
 
-        public void LoadTemplate(bool IsHeaderVisible, int processcardColWidth, int runProtocolColWidth, bool isOkChangeProcessData)
+        public void LoadTemplate(bool IsHeaderVisible, int processcardMinWidth, int processcardNomWidth, int processcardMaxWidth, int runProtocolColWidth, bool isOkChangeProcessData)
         {
             StartUp_Width = runProtocolColWidth;
 
             var CheckIfOnlyNomValue_ColIndex = new List<int>();
             dgv_Module.ColumnHeadersVisible = IsHeaderVisible;
-            dgv_Module.Columns["col_MIN"].Width = dgv_Module.Columns["col_NOM"].Width = dgv_Module.Columns["col_MAX"].Width = processcardColWidth;
+            dgv_Module.Columns["col_MIN"].Width = processcardMinWidth;
+            dgv_Module.Columns["col_NOM"].Width = processcardNomWidth;
+            dgv_Module.Columns["col_MAX"].Width = processcardMaxWidth;
             dgv_Module.Columns["col_StartUp_1"].Width = runProtocolColWidth;
 
             using (var con = new SqlConnection(Database.cs_Protocol))
             {
                 var query = $@"
-                SELECT 
+                SELECT
+                    template.ID AS TemplateID,
                     template.ProtocolDescriptionID, 
                     description.CodeText, 
                     unit.UnitName AS Unit,
@@ -268,6 +271,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                     IsModuleUsingStartUpDates = isStartUpDates;
 
                     int.TryParse(reader["ProtocolDescriptionID"].ToString(), out var protocoldescriptionID);
+                    int.TryParse(reader["TemplateID"].ToString(), out var templateID);
                     int.TryParse(reader["Type"].ToString(), out var type);
 
                     var codetext = reader["CodeText"].ToString();
@@ -300,6 +304,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                         dgv_Module.Rows[row].Cells["col_IsList_Protocol"].Value = isListProtocol;
                         dgv_Module.Rows[row].Cells["col_IsList_Processcard"].Value = isListProcesscard;
                         dgv_Module.Rows[row].Cells["col_IsOkWriteText"].Value = isOkWriteText;
+                        dgv_Module.Rows[row].Cells["col_TemplateID"].Value = templateID;
                         dgv_Module.Rows[row].Cells["col_ProtocolDescriptionID"].Value = protocoldescriptionID;
                         dgv_Module.Rows[row].Cells["col_DataType"].Value = type;
                     }

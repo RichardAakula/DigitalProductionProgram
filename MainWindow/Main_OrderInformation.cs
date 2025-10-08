@@ -83,7 +83,7 @@ namespace DigitalProductionProgram.MainWindow
                     Version, 
                     RevNr, 
                     PartID, 
-                    ProtocolTemplateRevision, 
+                    maintemplate.Revision as ProtocolTemplateRevision,
                     orders.LineClearanceMainTemplateID, 
                     orders.MeasureProtocolMainTemplateID,
                     CASE 

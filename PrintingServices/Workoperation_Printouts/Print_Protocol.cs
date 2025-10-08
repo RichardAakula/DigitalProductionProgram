@@ -198,11 +198,6 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                     int.TryParse(reader["Processcard_ColWidth"].ToString(), out processcard_NomWidth);
                     int.TryParse(reader["Processcard_MinWidth"].ToString(), out processcard_MinWidth);
                     int.TryParse(reader["Processcard_MaxWidth"].ToString(), out processcard_MaxWidth);
-                    //if (int.TryParse(reader["Processcard_MinWidth"].ToString(), out processcard_MinWidth) == false)
-                    //    processcard_MinWidth = processcard_NomWidth;
-                    //if (int.TryParse(reader["Processcard_MaxWidth"].ToString(), out processcard_MaxWidth) == false)
-                    //    processcard_MaxWidth = processcard_NomWidth;
-
                     int.TryParse(reader["RunProtocol_ColWidth"].ToString(), out runProtocol_ColWidth);
                 }
 

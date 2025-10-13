@@ -260,7 +260,7 @@ namespace DigitalProductionProgram.Templates
         private void PreviewTemplate_Click(object sender, EventArgs e)
         {
             preview.Show();
-            preview.Update_Template(flp_Main);
+            _ = preview.Update_TemplateAsync(flp_Main);
         }
         private void ConnectTemplate_Click(object sender, EventArgs e)
         {
@@ -386,7 +386,7 @@ namespace DigitalProductionProgram.Templates
         {
             dgv_LineClearance_Active_Main.Rows.RemoveAt(dgv_LineClearance_Active_Main.CurrentCell.RowIndex);
 
-            preview?.Update_Template(flp_Main);
+            _ = preview?.Update_TemplateAsync(flp_Main);
             IsOkUpdateTemplate = false;
         }
         private void MoveTaskUp_Click(object sender, EventArgs e)
@@ -671,7 +671,7 @@ namespace DigitalProductionProgram.Templates
                 ChangePanelHeight(dgv);
                 if (flp is null || previewTemplate.IsDisposed)
                     return;
-                previewTemplate.Update_Template(flp);
+                _ = previewTemplate.Update_TemplateAsync(flp);
             }
             private static void RowsRemoved_dgv(object sender, DataGridViewRowsRemovedEventArgs e)
             {
@@ -724,7 +724,7 @@ namespace DigitalProductionProgram.Templates
             {
                 if (flp is null || previewTemplate.IsDisposed)
                     return;
-                previewTemplate.Update_Template(flp);
+                _ = previewTemplate.Update_TemplateAsync(flp);
             }
             private static void CurrentCellDirtyStateChanged(object sender, EventArgs e)
             {

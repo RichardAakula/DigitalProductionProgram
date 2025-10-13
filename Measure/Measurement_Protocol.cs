@@ -811,35 +811,33 @@ namespace DigitalProductionProgram.Measure
                         dataType = textBox.DataType;
                         break;
                 }
-
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    var query = @"
+                
+                using var con = new SqlConnection(Database.cs_Protocol);
+                var query = @"
                         UPDATE MeasureProtocol.Data
                         SET Value = IsNull(@value, Value), TextValue = IsNull(@textvalue, TextValue)
                         WHERE OrderID = @orderid 
                             AND DescriptionId = @descriptionid 
                             AND RowIndex = @rowindex";
 
-                    con.Open();
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
-                    cmd.Parameters.AddWithValue("@descriptionid", descriptionID);
-                    SQL_Parameter.Int(cmd.Parameters, "@rowIndex", dgv_Measurements.CurrentCell.RowIndex + 1);
-                    switch (dataType)
-                    {
-                        case 0:
-                            SQL_Parameter.Double(cmd.Parameters, "@value", ctrl.Text);
-                            cmd.Parameters.AddWithValue("@textvalue", DBNull.Value);
-                            break;
-                        case 1:
-                            SQL_Parameter.String(cmd.Parameters, "@textvalue", ctrl.Text);
-                            cmd.Parameters.AddWithValue("@value", DBNull.Value);
-                            break;
-                    }
-
-                    cmd.ExecuteNonQuery();
+                con.Open();
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
+                cmd.Parameters.AddWithValue("@descriptionid", descriptionID);
+                SQL_Parameter.Int(cmd.Parameters, "@rowIndex", dgv_Measurements.CurrentCell.RowIndex + 1);
+                switch (dataType)
+                {
+                    case 0:
+                        SQL_Parameter.Double(cmd.Parameters, "@value", ctrl.Text);
+                        cmd.Parameters.AddWithValue("@textvalue", DBNull.Value);
+                        break;
+                    case 1:
+                        SQL_Parameter.String(cmd.Parameters, "@textvalue", ctrl.Text);
+                        cmd.Parameters.AddWithValue("@value", DBNull.Value);
+                        break;
                 }
+
+                cmd.ExecuteNonQuery();
             }
         }
 

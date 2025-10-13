@@ -659,6 +659,7 @@ namespace DigitalProductionProgram.Processcards
 
             public void Load_ProcessData(int formTemplateID)
             {
+                int colIndex = module.dgv_Module.Columns["col_MIN"].Index;
                 using (var con = new SqlConnection(Database.cs_Protocol))
                 {
                     var query = $@"
@@ -698,7 +699,7 @@ namespace DigitalProductionProgram.Processcards
                                 value = reader["TextValue"].ToString();
                                 break;
                         }
-                        module.dgv_Module.Rows[row].Cells[col + 8].Value = value;
+                        module.dgv_Module.Rows[row].Cells[colIndex + col].Value = value;
                     }
                 }
                 module.dgv_Module.CellValueChanged += module.Module_ValidateData_SaveData_CellValueChanged;

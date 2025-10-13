@@ -46,12 +46,17 @@ namespace DigitalProductionProgram.Log
     {
         get
         {
+            const string appInstallerPath = @"\\optifil\dpp\Install DPP.appinstaller";
 
-            var doc = XDocument.Load(@"\\optifil\dpp\Install DPP.appinstaller");
-            var versionStr = doc.Root?.Attribute("Version")?.Value;
-            Version.TryParse(versionStr, out var latestVersion);
-            if (latestVersion != null) 
-                return latestVersion;
+            // ✅ Kontrollera att filen finns innan vi försöker läsa
+            if (File.Exists(appInstallerPath))
+            {
+                var doc = XDocument.Load(appInstallerPath);
+                var versionStr = doc.Root?.Attribute("Version")?.Value;
+                Version.TryParse(versionStr, out var latestVersion);
+                if (latestVersion != null)
+                    return latestVersion;
+            }
 
             try
             {

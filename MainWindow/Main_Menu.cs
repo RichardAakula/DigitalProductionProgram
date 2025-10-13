@@ -133,7 +133,7 @@ namespace DigitalProductionProgram.MainWindow
             mainForm.Change_GUI_OrderEjKlar();
             _ = Log.Activity.Stop("Användare klickar på Ny Order");
         }
-        private void Menu_Arkiv_Öppna_Click(object sender, EventArgs e)
+        private async void Menu_Arkiv_Öppna_Click(object sender, EventArgs e)
         {
             if (Main_Form.IsZumbachÖppet)
             {
@@ -142,7 +142,6 @@ namespace DigitalProductionProgram.MainWindow
                 return;
             }
 
-            // Stoppa MainTimer eventuellt om det blir problem
             var screen = Screen.FromPoint(Cursor.Position);
 
             using var frmÖppna = new Open_Order
@@ -150,21 +149,10 @@ namespace DigitalProductionProgram.MainWindow
                 StartPosition = FormStartPosition.Manual,
                 Location = screen.Bounds.Location
             };
+
             frmÖppna.ShowDialog();
-            if (Order.OrderNumber != null & frmÖppna.svarÖppna)
-            {
-                mainForm.OrderInformation.cb_Operation.SelectedIndexChanged -= mainForm.Operation_SelectedIndexChanged;
-                mainForm.OrderInformation.tb_OrderNr.Text = Order.OrderNumber;
-                mainForm.OrderInformation.cb_Operation.Text = $"{Order.Operation} - {Order.Description}";
-                mainForm.OrderInformation.cb_Operation.SelectedIndex = -1; //Detta görs för att inte Order.Operation skall ändras vid metoden StartaOrder()
-                mainForm.OrderInformation.cb_Operation.SelectedIndexChanged += mainForm.Operation_SelectedIndexChanged;
-
-                Menu_Order_OrderDone.Enabled = true;
-                _ = mainForm.StartOrLoadOrder(true);
-            }
-
-            Cursor = Cursors.Arrow;
         }
+
         private void Menu_Arkiv_Förhandsgranska_Click(object sender, EventArgs e)
         {
             if (Print.IsPrinterInstalled)

@@ -144,7 +144,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
 
                 module.LoadTemplate(isHeaderVisible, processcardMinWidth, processcardNomWidth, processcardMaxWidth, runprotocolColWidth, isOkChangeProcessdata);
                 module.load_processcard.Load_ProcessData(formtemplateid);
-                height += module.TotalModuleHeight;// + 1; // +1 for the row height in the TableLayoutPanel
+                height += module.TotalModuleHeight;
 
                 if (Order.OrderID is null == false)
                     module.Load_Data(formtemplateid);

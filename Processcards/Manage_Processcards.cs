@@ -1152,10 +1152,15 @@ namespace DigitalProductionProgram.Processcards
             using (var con = new SqlConnection(Database.cs_Protocol))
             {
                 con.Open();
-                var query = "SELECT DISTINCT PartNr FROM Processcard.MainData WHERE WorkOperationID = (SELECT ID FROM Workoperation.Names WHERE Name = @workoperation AND ID IS NOT NULL) AND Aktiv = @aktiv ORDER BY PartNr DESC";
+                string query;
+                if (string.IsNullOrEmpty(cb_ProtocolTemplateName.Text))
+                    query = "SELECT DISTINCT PartNr FROM Processcard.MainData WHERE WorkOperationID = (SELECT ID FROM Workoperation.Names WHERE Name = @workoperation AND ID IS NOT NULL) AND Aktiv = @aktiv ORDER BY PartNr DESC";
+                else
+                    query = "SELECT DISTINCT PartNr FROM Processcard.MainData WHERE ProtocolMainTemplateID = (SELECT ID FROM Protocol.MainTemplate WHERE Name = @templatename) AND Aktiv = @aktiv ORDER BY PartNr DESC";
                 var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@aktiv", artikelNr_Aktiv);
                 SQL_Parameter.String(cmd.Parameters, "@workoperation", Order.WorkOperation.ToString());
+                SQL_Parameter.String(cmd.Parameters, "@templatename", cb_ProtocolTemplateName.SelectedItem?.ToString());
                 var reader = cmd.ExecuteReader();
 
                 while (reader.Read())

@@ -30,19 +30,18 @@ namespace DigitalProductionProgram.Templates
         {
             get
             {
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    const string query = @"
+                if (MainTemplate.ID == 0)
+                    return 0;
+                using var con = new SqlConnection(Database.cs_Protocol);
+                const string query = @"
                     SELECT COUNT(*) FROM Processcard.MainData WHERE ProtocolMainTemplateID = @maintemplateid";
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    con.Open();
-                    cmd.Parameters.AddWithValue("@maintemplateid", MainTemplate.ID);
-                    var value = cmd.ExecuteScalar();
-                    var result = value == null ? 0 : int.Parse(value.ToString());
-                    totalConnectedProcesscardsToTemplate = result;
-                    return result;
-                }
-
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                con.Open();
+                cmd.Parameters.AddWithValue("@maintemplateid", MainTemplate.ID);
+                var value = cmd.ExecuteScalar();
+                var result = value == null ? 0 : int.Parse(value.ToString());
+                totalConnectedProcesscardsToTemplate = result;
+                return result;
             }
         }
         private static int totalConnectedOrdersToTemplate;
@@ -50,19 +49,18 @@ namespace DigitalProductionProgram.Templates
         {
             get
             {
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    const string query = @"
+                if (MainTemplate.ID == 0)
+                    return 0;
+                using var con = new SqlConnection(Database.cs_Protocol);
+                const string query = @"
                     SELECT COUNT(*) FROM [Order].MainData WHERE ProtocolMainTemplateID = @maintemplateid";
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    con.Open();
-                    cmd.Parameters.AddWithValue("@maintemplateid", MainTemplate.ID);
-                    var value = cmd.ExecuteScalar();
-                    var result = value == null ? 0 : int.Parse(value.ToString());
-                    totalConnectedOrdersToTemplate = result;
-                    return result;
-                }
-
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                con.Open();
+                cmd.Parameters.AddWithValue("@maintemplateid", MainTemplate.ID);
+                var value = cmd.ExecuteScalar();
+                var result = value == null ? 0 : int.Parse(value.ToString());
+                totalConnectedOrdersToTemplate = result;
+                return result;
             }
         }
 
@@ -441,7 +439,7 @@ namespace DigitalProductionProgram.Templates
         {
             preview = new PreviewTemplate(cb_LineClearance_Revision.Text, cb_MainInfo_Template.Text);
             preview.Show();
-            preview.Update_Template(flp_Main);
+            _ = preview.Update_TemplateAsync(flp_Main);
         }
         private void LineClearance_Revision_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -613,7 +611,7 @@ namespace DigitalProductionProgram.Templates
         {
             dgv_ProtocolsActive_Main.Rows.RemoveAt(dgv_ProtocolsActive_Main.CurrentCell.RowIndex);
 
-            preview?.Update_Template(flp_Main);
+            _ = preview.Update_TemplateAsync(flp_Main);
             TemplateButtons.IsOkUpdateTemplate = false;
         }
         private void CodeTextUp_Click(object sender, EventArgs e)
@@ -716,17 +714,16 @@ namespace DigitalProductionProgram.Templates
             using (var con = new SqlConnection(Database.cs_Protocol))
             {
                 const string query = @"
-                    SELECT FormTemplateID, ModuleName, formtemplate.MainTemplateID, maintemplate.Name as TemplateName, LineClearance_Template, MachineIndex, workoperation.Name as Workoperation, maintemplate.CreatedBy, maintemplate.CreatedDate
-                    FROM Protocol.FormTemplate as formtemplate
-                        JOIN Protocol.MainTemplate as maintemplate
+                    SELECT FormTemplateID, ModuleName, maintemplate.ID, maintemplate.Name as TemplateName, LineClearance_Template, MachineIndex, workoperation.Name as Workoperation, maintemplate.CreatedBy, maintemplate.CreatedDate
+                    FROM Protocol.MainTemplate as maintemplate
+                        LEFT JOIN Protocol.FormTemplate as formtemplate
                             ON formtemplate.MainTemplateID = maintemplate.ID
-                        JOIN Workoperation.Names as workoperation
+                        LEFT JOIN Workoperation.Names as workoperation
                             ON maintemplate.WorkoperationID = workoperation.ID
                         LEFT JOIN LineClearance.MainTemplate as lc
                             ON lc.ProtocolMainTemplateID = maintemplate.ID
                                 AND lc.LineClearance_Revision = maintemplate.LineClearance_Template
-                    WHERE formtemplate.MainTemplateID = (SELECT ID From Protocol.MainTemplate WHERE Name = @templatename AND Revision = @revision) 
-                        AND TemplateOrder IS NOT NULL 
+                    WHERE maintemplate.Name = @templatename AND Revision = @revision
                     ORDER BY TemplateOrder, MachineIndex";
                 var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@templateName", cb_TemplateName.Text);
@@ -742,7 +739,7 @@ namespace DigitalProductionProgram.Templates
                     lineClearance_Revision = reader["LineClearance_Template"].ToString();
                     var codetext = reader["ModuleName"].ToString();
                     int.TryParse(reader["FormTemplateID"].ToString(), out var formTemplateID);
-                    MainTemplate.ID = int.Parse(reader["MainTemplateID"].ToString());
+                    MainTemplate.ID = int.Parse(reader["ID"].ToString());
                     MainTemplate.Name = reader["TemplateName"].ToString();
                     int.TryParse(reader["MachineIndex"].ToString(), out var machindeIndex);
 
@@ -906,8 +903,6 @@ namespace DigitalProductionProgram.Templates
                     RowHeadersVisible = false,
                     ScrollBars = ScrollBars.None,
 
-
-
                 };
 
 
@@ -971,7 +966,7 @@ namespace DigitalProductionProgram.Templates
                 ChangePanelHeight(dgv);
                 if (flp is null || previewTemplate.IsDisposed)
                     return;
-                previewTemplate.Update_Template(flp);
+                previewTemplate.Update_TemplateAsync(flp);
             }
             private static void RowsRemoved_dgv(object? sender, DataGridViewRowsRemovedEventArgs e)
             {
@@ -1013,7 +1008,7 @@ namespace DigitalProductionProgram.Templates
             {
                 if (flp is null || previewTemplate.IsDisposed)
                     return;
-                previewTemplate.Update_Template(flp);
+                using var _ = previewTemplate.Update_TemplateAsync(flp);
             }
             private static void CurrentCellDirtyStateChanged(object? sender, EventArgs e)
             {
@@ -1105,6 +1100,8 @@ namespace DigitalProductionProgram.Templates
             }
             public static bool IsTemplateConnectedToProcesscard(ref int total)
             {
+                if (ID == 0)
+                    return false;
                 using var con = new SqlConnection(Database.cs_Protocol);
                 const string query = @"
                     SELECT COUNT(*) FROM Processcard.MainData WHERE ProtocolMainTemplateID = @maintemplateid";
@@ -1369,17 +1366,15 @@ namespace DigitalProductionProgram.Templates
                         return;
                 }
 
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    const string query = @"
+                using var con = new SqlConnection(Database.cs_Protocol);
+                const string query = @"
                     DELETE FROM Protocol.Template WHERE FormTemplateID IN (SELECT FormTemplateID FROM Protocol.FormTemplate WHERE MainTemplateID = @oldmaintemplateid)
                     DELETE FROM Protocol.FormTemplate WHERE MainTemplateID = @oldmaintemplateid
                     DELETE FROM Protocol.MainTemplate WHERE ID = @oldmaintemplateid";
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    con.Open();
-                    cmd.Parameters.AddWithValue("@oldmaintemplateid", ID);
-                    cmd.ExecuteNonQuery();
-                }
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                con.Open();
+                cmd.Parameters.AddWithValue("@oldmaintemplateid", ID);
+                cmd.ExecuteNonQuery();
             }
         }
         public class FormTemplate

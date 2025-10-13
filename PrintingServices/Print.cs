@@ -185,7 +185,7 @@ namespace DigitalProductionProgram.PrintingServices
             text = text.Trim();
             int len = text.Length;
 
-            if (parts == 1 || len < parts * 4) // för kort text, returnera som en rad
+            if (parts == 1)
                 return new[] { text };
 
             var splitPoints = new List<int>();
@@ -193,9 +193,13 @@ namespace DigitalProductionProgram.PrintingServices
             for (int i = 1; i < parts; i++)
             {
                 int target = len * i / parts;
-                int split = FindNearestSpace(text, target, splitPoints.LastOrDefault());
-                if (split > 0)
-                    splitPoints.Add(split);
+                int split = FindNearestDelimiter(text, target, splitPoints.LastOrDefault());
+
+                // Om ingen delimiter hittas → använd exakt target
+                if (split <= 0)
+                    split = target;
+
+                splitPoints.Add(split);
             }
 
             var result = new List<string>();
@@ -208,7 +212,6 @@ namespace DigitalProductionProgram.PrintingServices
                 lastIndex = split;
             }
 
-            // sista delen
             result.Add(text.Substring(lastIndex).Trim());
 
             // säkerställ rätt antal element
@@ -217,6 +220,27 @@ namespace DigitalProductionProgram.PrintingServices
 
             return result.ToArray();
         }
+
+        private static int FindNearestDelimiter(string text, int target, int minIndex = 0)
+        {
+            char[] delimiters = { ' ', '-', '/', '_' };
+            int left = target;
+            int right = target;
+
+            while (left > minIndex || right < text.Length)
+            {
+                if (left > minIndex && delimiters.Contains(text[left]))
+                    return left;
+                if (right < text.Length && delimiters.Contains(text[right]))
+                    return right;
+
+                left--;
+                right++;
+            }
+
+            return -1; // ingen hittad
+        }
+
         private static int FindNearestSpace(string text, int targetIndex, int startIndex = 0)
         {
             if (targetIndex >= text.Length)

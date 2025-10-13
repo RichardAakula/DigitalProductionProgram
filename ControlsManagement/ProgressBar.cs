@@ -12,8 +12,11 @@ namespace DigitalProductionProgram.ControlsManagement
         {
             InitializeComponent();
 
-            panel_Main.Left = (int)Screen.PrimaryScreen.Bounds.Width / 2 - panel_Main.Width / 2;
-            panel_Main.Top = (int)Screen.PrimaryScreen.Bounds.Height / 2 - panel_Main.Height / 2;
+            if (Screen.PrimaryScreen != null)
+            {
+                panel_Main.Left = Screen.PrimaryScreen.Bounds.Width / 2 - panel_Main.Width / 2;
+                panel_Main.Top = Screen.PrimaryScreen.Bounds.Height / 2 - panel_Main.Height / 2;
+            }
 
             switch (Total_Bars)
             {

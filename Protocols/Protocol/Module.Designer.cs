@@ -38,6 +38,7 @@
             dgv_Module = new DataGridView();
             label_LEFT = new Label();
             col_IsValueCritical = new DataGridViewCheckBoxColumn();
+            col_TemplateID = new DataGridViewTextBoxColumn();
             col_IsList_Protocol = new DataGridViewCheckBoxColumn();
             col_IsList_Processcard = new DataGridViewCheckBoxColumn();
             col_IsOkWriteText = new DataGridViewTextBoxColumn();
@@ -71,7 +72,7 @@
             dgv_Module.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             dgv_Module.ColumnHeadersHeight = 20;
             dgv_Module.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-            dgv_Module.Columns.AddRange(new DataGridViewColumn[] { col_IsValueCritical, col_IsList_Protocol, col_IsList_Processcard, col_IsOkWriteText, col_ProtocolDescriptionID, col_DataType, col_CodeText, col_Unit, col_MIN, col_NOM, col_MAX, col_StartUp_1 });
+            dgv_Module.Columns.AddRange(new DataGridViewColumn[] { col_IsValueCritical, col_TemplateID, col_IsList_Protocol, col_IsList_Processcard, col_IsOkWriteText, col_ProtocolDescriptionID, col_DataType, col_CodeText, col_Unit, col_MIN, col_NOM, col_MAX, col_StartUp_1 });
             dataGridViewCellStyle7.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dataGridViewCellStyle7.BackColor = SystemColors.Window;
             dataGridViewCellStyle7.Font = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
@@ -119,6 +120,13 @@
             col_IsValueCritical.Name = "col_IsValueCritical";
             col_IsValueCritical.Visible = false;
             col_IsValueCritical.Width = 5;
+            // 
+            // col_TemplateID
+            // 
+            col_TemplateID.Frozen = true;
+            col_TemplateID.HeaderText = "TemplateID";
+            col_TemplateID.Name = "col_TemplateID";
+            col_TemplateID.Visible = false;
             // 
             // col_IsList_Protocol
             // 
@@ -252,6 +260,7 @@
         public System.Windows.Forms.DataGridView dgv_Module;
         public System.Windows.Forms.Label label_LEFT;
         private DataGridViewCheckBoxColumn col_IsValueCritical;
+        private DataGridViewTextBoxColumn col_TemplateID;
         private DataGridViewCheckBoxColumn col_IsList_Protocol;
         private DataGridViewCheckBoxColumn col_IsList_Processcard;
         private DataGridViewTextBoxColumn col_IsOkWriteText;

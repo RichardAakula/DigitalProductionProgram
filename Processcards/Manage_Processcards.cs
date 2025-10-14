@@ -591,7 +591,7 @@ namespace DigitalProductionProgram.Processcards
                 var test = Templates_Protocol.MainTemplate.ID;
                 Order.PartID = null;
                 Part.Load_PartID(Order.PartNumber, false, true, false, Order.WorkOperation.ToString());
-                Part.Load_PartGroup_ID(Order.PartNumber, Order.WorkOperation);
+                Part.Load_PartGroup_ID(Order.PartNumber, cb_ProtocolTemplateName.Text, Order.WorkOperation);
             }
 
             Load_Data_Processcard(true);
@@ -989,7 +989,7 @@ namespace DigitalProductionProgram.Processcards
             if (Part.IsPartNr_Exist(tb_NewPartNr.Text, Order.WorkOperation.ToString(), tb_ProdLine.Text, tb_ProdType.Text) == false)
                 Part.Create_NewPartGroup_ID();
             else
-                Part.Load_PartGroup_ID(Order.PartNumber, Order.WorkOperation);
+                Part.Load_PartGroup_ID(Order.PartNumber, cb_ProtocolTemplateName.Text, Order.WorkOperation);
 
 
             switch (Order.WorkOperation)

@@ -66,7 +66,7 @@ namespace DigitalProductionProgram.OrderManagement
         }
 
         public static Color backColor_ChartStats, backColor_Panels, backColor_LeftPanel, backColor_RightPanel, backColor_Main, backColor_Buttons, backColor_Menu, backColor_PriorityPlan, backColor_OrderInformation, backColor_MeasurePoints, backColor_MeasureStats, backColor_Chart, backColor_ExtraInfo,
-            foreColor_LeftPanel, foreColor_Buttons, foreColor_PriorityPlan, foreColor_OrderInformation, foreColor_MeasurePoints, foreColor_MeasureStats, foreColor_ExtraInfo,  foreColor_Menu;
+            foreColor_LeftPanel, foreColor_Buttons, foreColor_PriorityPlan, foreColor_OrderInformation, foreColor_MeasurePoints, foreColor_MeasureStats, foreColor_ExtraInfo,  foreColor_Menu, foreColor_Tips;
 
         public static Dictionary<string, Action> load_Themes
             {
@@ -141,6 +141,7 @@ namespace DigitalProductionProgram.OrderManagement
             backColor_PriorityPlan = Color.FromArgb(60, 60, 60);
             foreColor_PriorityPlan = Color.Olive;
 
+            foreColor_Tips = Color.PaleVioletRed;
         }
         public static void Forest()
         {
@@ -169,6 +170,8 @@ namespace DigitalProductionProgram.OrderManagement
 
             backColor_PriorityPlan = Color.FromArgb(60, 60, 60);
             foreColor_PriorityPlan = Color.Olive;
+
+            foreColor_Tips = Color.SeaGreen;
         }
         public static void Sky()
         {
@@ -197,6 +200,8 @@ namespace DigitalProductionProgram.OrderManagement
 
             backColor_PriorityPlan = Color.FromArgb(60, 60, 60);
             foreColor_PriorityPlan = Color.Maroon;
+
+            foreColor_Tips = Color.AliceBlue;
         }
         public static void Sun()
         {
@@ -225,6 +230,8 @@ namespace DigitalProductionProgram.OrderManagement
 
             backColor_PriorityPlan = Color.DarkGoldenrod;
             foreColor_PriorityPlan = Color.Black;
+
+            foreColor_Tips = Color.OrangeRed;
         }
         public static void Water()
         {
@@ -253,6 +260,8 @@ namespace DigitalProductionProgram.OrderManagement
 
             backColor_PriorityPlan = Color.LightSkyBlue;
             foreColor_PriorityPlan = Color.MidnightBlue;
+
+            foreColor_Tips = Color.DeepSkyBlue;
         }
         public static void Winter()
         {
@@ -281,6 +290,8 @@ namespace DigitalProductionProgram.OrderManagement
 
             backColor_PriorityPlan = Color.NavajoWhite;
             foreColor_PriorityPlan = Color.Black;
+
+            foreColor_Tips = Color.LightSeaGreen;
         }
         public static void Black()
         {
@@ -309,6 +320,8 @@ namespace DigitalProductionProgram.OrderManagement
 
             backColor_PriorityPlan = Color.FromArgb(20,20,20);
             foreColor_PriorityPlan = Color.Maroon;
+
+            foreColor_Tips = Color.Yellow;
         }
         public static void Light()
         {
@@ -337,6 +350,8 @@ namespace DigitalProductionProgram.OrderManagement
 
             backColor_PriorityPlan = Color.FromArgb(220,220,220);
             foreColor_PriorityPlan = Color.Maroon;
+
+            foreColor_Tips = Color.Brown;
         }
         public static void Pink()
         {
@@ -365,6 +380,8 @@ namespace DigitalProductionProgram.OrderManagement
 
             backColor_PriorityPlan = Color.DarkMagenta;
             foreColor_PriorityPlan = Color.LightCyan;
+
+            foreColor_Tips = Color.HotPink;
         }
         public static void Cars()
         {
@@ -393,6 +410,8 @@ namespace DigitalProductionProgram.OrderManagement
 
             backColor_PriorityPlan = Color.DarkSlateGray;
             foreColor_PriorityPlan = Color.NavajoWhite;
+
+            foreColor_Tips = Color.Orange;
         }
         public static void Animals()
         {
@@ -421,6 +440,8 @@ namespace DigitalProductionProgram.OrderManagement
 
             backColor_PriorityPlan = Color.DarkSlateGray;
             foreColor_PriorityPlan = Color.NavajoWhite;
+
+            foreColor_Tips = Color.Aqua;
         }
         public static void Music()
         {
@@ -449,6 +470,8 @@ namespace DigitalProductionProgram.OrderManagement
 
             backColor_PriorityPlan = Color.FromArgb(35, 35, 35);
             foreColor_PriorityPlan = Color.NavajoWhite;
+
+            foreColor_Tips = Color.LightGreen;
         }
         public static void Houses()
         {
@@ -476,6 +499,8 @@ namespace DigitalProductionProgram.OrderManagement
 
             backColor_PriorityPlan = Color.FromArgb(35, 35, 35);
             foreColor_PriorityPlan = Color.NavajoWhite;
+
+            foreColor_Tips = Color.Red;
         }
         public static void Dark()
         {
@@ -502,6 +527,8 @@ namespace DigitalProductionProgram.OrderManagement
 
             backColor_PriorityPlan = Color.FromArgb(20, 20, 20);
             foreColor_PriorityPlan = Color.DimGray;
+
+            foreColor_Tips = Color.AntiqueWhite;
         }
         public static void Nature()
         {
@@ -530,6 +557,8 @@ namespace DigitalProductionProgram.OrderManagement
 
             backColor_PriorityPlan = Color.FromArgb(35, 95, 35);
             foreColor_PriorityPlan = Color.DarkGoldenrod;
+
+            foreColor_Tips = Color.LawnGreen;
         }
         public static void Discography()
         {
@@ -558,6 +587,8 @@ namespace DigitalProductionProgram.OrderManagement
 
             backColor_PriorityPlan = Color.FromArgb(45, 45, 45);
             foreColor_PriorityPlan = Color.DarkGoldenrod;
+
+            foreColor_Tips = Color.Yellow;
         }
         public static void Beta()
         {
@@ -598,6 +629,8 @@ namespace DigitalProductionProgram.OrderManagement
 
             backColor_PriorityPlan = CustomColors.MediumGrey;
             foreColor_PriorityPlan = CustomColors.MediumGrey_Font;
+
+            foreColor_Tips = CustomColors.Parmesan_Font;
         }
 
         public static void IterateThroughControls(Control parentControl, Color color)

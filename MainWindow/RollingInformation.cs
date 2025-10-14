@@ -13,7 +13,7 @@ using DigitalProductionProgram.User;
 
 namespace DigitalProductionProgram.MainWindow
 {
-    public partial class Main_RollingInformation : UserControl
+    public partial class RollingInformation : UserControl
     {
         internal static int TotalOrdersPerYear(string årtal)
         {
@@ -172,7 +172,7 @@ namespace DigitalProductionProgram.MainWindow
 
 
 
-        public Main_RollingInformation()
+        public RollingInformation()
         {
             InitializeComponent();
         }
@@ -265,7 +265,7 @@ namespace DigitalProductionProgram.MainWindow
         public void Change_Theme()
         {
             this.BackColor = Teman.backColor_Menu;
-            lbl_Tips.ForeColor = Teman.foreColor_Menu;
+            lbl_Tips.ForeColor = Teman.foreColor_Tips;
         }
         public void Change_Tips()
         {

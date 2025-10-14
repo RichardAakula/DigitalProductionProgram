@@ -85,7 +85,7 @@
     <Compile Update="MainWindow\Main_PriorityPlanning.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Update="MainWindow\Main_RollingInformation.cs">
+    <Compile Update="MainWindow\RollingInformation.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Update="Measure\BrowseMeasureProtocols.cs">

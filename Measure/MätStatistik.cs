@@ -371,7 +371,7 @@ namespace DigitalProductionProgram.Measure
                     cb_Mått.Items.Add("Oval");
                     cb_Mått.Items.Add("RunOut");
                     break;
-                case Manage_WorkOperation.WorkOperations.Synergy_PTFE:
+                case Manage_WorkOperation.WorkOperations.Synergy_PTFE_K18:
                     cb_Mått.Items.Add("MainBody_ID");
                     cb_Mått.Items.Add("Tapered_ID");
                     cb_Mått.Items.Add("Tapered_Length");

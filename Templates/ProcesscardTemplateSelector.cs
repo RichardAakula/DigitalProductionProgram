@@ -498,8 +498,10 @@ namespace DigitalProductionProgram.Templates
 
             Order.PartID = lbl?.PartID;
             Order.PartGroupID = lbl?.PartGroupID;
+
             Order.ProdType = lbl?.ProdType;
-            Order.ProdLine = lbl?.ProdLine;
+            if (!string.IsNullOrEmpty(lbl?.ProdLine))
+                Order.ProdLine = lbl?.ProdLine;
             Order.RevNr = lbl?.RevNr;
 
             if (lbl?.IsLatestRevNrSelected == false && IsOperatorStartingOrder)

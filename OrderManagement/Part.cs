@@ -483,7 +483,7 @@ GROUP BY md.PartID";
 
 
 
-        public static void Load_PartGroup_ID(string? PartNr, Manage_WorkOperation.WorkOperations workoperation)
+        public static void Load_PartGroup_ID(string? PartNr, string MainProtocolTemplateName, Manage_WorkOperation.WorkOperations workoperation)
         {
             if (string.IsNullOrEmpty(PartNr))
                 return;
@@ -500,8 +500,7 @@ GROUP BY md.PartID";
             var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@partnr", PartNr);
             cmd.Parameters.AddWithValue("@workoperation", workoperation.ToString());
-            //cmd.Parameters.AddWithValue("@maintemplateid", Templates_Protocol.MainTemplate.ID); //Kolla att MainTemplate.ID inte är NULL
-            cmd.Parameters.AddWithValue("@maintemplatename", Templates_Protocol.MainTemplate.Name); //Kolla att MainTemplateName inte är NULL
+            cmd.Parameters.AddWithValue("@maintemplatename", MainProtocolTemplateName); //Kolla att MainTemplateName inte är NULL
             SQL_Parameter.String(cmd.Parameters, "@prodline", Order.ProdLine);
             SQL_Parameter.String(cmd.Parameters, "@prodtype", Order.ProdType);
             var value = cmd.ExecuteScalar();

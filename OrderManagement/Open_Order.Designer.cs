@@ -132,7 +132,6 @@ namespace DigitalProductionProgram.OrderManagement
             dgv_OrderList.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgv_OrderList.Size = new Size(1263, 704);
             dgv_OrderList.TabIndex = 14;
-            dgv_OrderList.VirtualMode = true;
             // 
             // tb_PartNumber
             // 
@@ -176,7 +175,7 @@ namespace DigitalProductionProgram.OrderManagement
             date_From.Name = "date_From";
             date_From.Size = new Size(233, 23);
             date_From.TabIndex = 17;
-            date_From.ValueChanged += Filter_TextChanged;
+            date_From.ValueChanged += date_From_ValueChanged;
             // 
             // label_DateTo
             // 

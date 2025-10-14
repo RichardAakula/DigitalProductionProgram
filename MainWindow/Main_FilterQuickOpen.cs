@@ -216,8 +216,8 @@ namespace DigitalProductionProgram.MainWindow
             var chb = (CheckBox)sender;
             WorkOperation = chb.Name;
 
-            Enum.TryParse(WorkOperation, out WorkOperations arbetsOperation);
-            Settings.Settings.SaveData.Quickstart_WorkOperation(arbetsOperation);
+            // Enum.TryParse(WorkOperation, out WorkOperations arbetsOperation);
+            Settings.Settings.SaveData.Quickstart_WorkOperation(WorkOperation);
             var task = Load_ListAsync(dgv_QuickOpen);
             //Load_List(dgv_QuickOpen, null);
         }

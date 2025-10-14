@@ -448,7 +448,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                         return "Digitalt Mätprotokoll för Krympslang";
                     case Manage_WorkOperation.WorkOperations.Spolning_PTFE:
                         return "Digitalt Mätprotokoll för Spolning";
-                    case Manage_WorkOperation.WorkOperations.Synergy_PTFE:
+                    case Manage_WorkOperation.WorkOperations.Synergy_PTFE_K18:
                         return "Digitalt Mätprotokoll för Synergy";
                     case Manage_WorkOperation.WorkOperations.HeatShrink:
                         return "Digital Measurement Protocol for HeatShrink";

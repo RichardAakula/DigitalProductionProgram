@@ -968,7 +968,7 @@ namespace DigitalProductionProgram.OrderManagement
                     //    SaveData.UPDATE_Korprotokoll_Main_From_Processkort_Main();
                     //    break;
 
-                    case WorkOperations.Synergy_PTFE:
+                    case WorkOperations.Synergy_PTFE_K18:
                         MainInfo_B.INSERT_Measurepoints_Korprotokoll();
                         PreFab.SaveData.SavePrefabFromMonitor();
                         break;

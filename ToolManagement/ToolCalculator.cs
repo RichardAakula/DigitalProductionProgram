@@ -13,7 +13,7 @@ using DigitalProductionProgram.Measure;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.PrintingServices;
 using DigitalProductionProgram.User;
-using static DigitalProductionProgram.MainWindow.Main_RollingInformation;
+using static DigitalProductionProgram.MainWindow.RollingInformation;
 using Control = System.Windows.Forms.Control;
 using Timer = System.Threading.Timer;
 

@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
+using System.Threading;
 using System.Windows.Forms;
 using CustomProgressBar = DigitalProductionProgram.ControlsManagement.CustomProgressBar;
 
@@ -17,14 +18,34 @@ namespace DigitalProductionProgram.OrderManagement
         public bool svarÖppna;
         private static DataTable? dt_Korprotokoll_MainData;
         private bool IsOkFilterData;
-        readonly CustomProgressBar pbar = new CustomProgressBar();
+
+        // Progressbar host on separate UI thread
+        private CustomProgressBar? pbar;
+        private Thread? pbarThread;
+        private readonly AutoResetEvent pbarReady = new(false);
 
         public Open_Order()
         {
             InitializeComponent();
+            date_From.Value = DateTime.Now.AddYears(-1);
             Translate_Form();
-
+            _ = Task.Run(Load_dt_Korprotokoll_MainDataAsync);
+            lastDateFromValue = date_From.Value;
             IsOkFilterData = true;
+        }
+        private async void Open_Order_Shown(object sender, EventArgs e)
+        {
+            // Start progress on its own UI thread so it keeps animating while main thread is busy.
+            ShowProgressOnNewThread("Laddar ordrar...");
+
+            // Small delay to ensure progress window paints before binding starts
+            await Task.Delay(150);
+
+            // Perform the slow UI-thread binding (DataGridView must be updated on UI thread)
+            Fill_dgv_OrderList();
+
+            // Close the progress window
+            CloseProgressbar();
         }
 
         private void Translate_Form()
@@ -33,7 +54,7 @@ namespace DigitalProductionProgram.OrderManagement
             LanguageManager.TranslationHelper.TranslateControls(controls);
         }
 
-        public static async Task Load_dt_Korprotokoll_MainDataAsync()
+        public async Task Load_dt_Korprotokoll_MainDataAsync()
         {
             try
             {
@@ -45,9 +66,11 @@ namespace DigitalProductionProgram.OrderManagement
                     FROM [Order].MainData as maindata
                         LEFT JOIN Protocol.MainTemplate AS template 
                             ON maindata.ProtocolMainTemplateID = template.ID
+                    WHERE Date_Start > @datefrom
                     ORDER BY Date_Start DESC";
 
                 await using var cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@datefrom", DateTime.Parse(date_From.Value.ToString()));
                 ServerStatus.Add_Sql_Counter();
 
                 await using var reader = await cmd.ExecuteReaderAsync();
@@ -69,8 +92,6 @@ namespace DigitalProductionProgram.OrderManagement
             dgv_OrderList.DataSource = dt_Korprotokoll_MainData;
             dgv_OrderList.Columns[0].Visible = false;
             dgv_OrderList.Columns[0].Width = 0;
-            //date_To.Value = DateTime.Parse(dgv_OrderList.Rows[0].Cells["Date_Start"].Value.ToString());
-            //if (dgv_OrderList.Rows.Count > 0)
             date_From.Value = DateTime.Parse(dt_Korprotokoll_MainData.Rows[^1]["Date_Start"].ToString());
             OrderList_ChangeWidth();
         }
@@ -103,6 +124,17 @@ namespace DigitalProductionProgram.OrderManagement
 
             dt_Korprotokoll_MainData.DefaultView.RowFilter = filterCondition;
             OrderList_ChangeWidth();
+        }
+
+        private DateTime lastDateFromValue;
+        private async void date_From_ValueChanged(object sender, EventArgs e)
+        {
+            if (date_From.Value < lastDateFromValue)
+            {
+                Load_dt_Korprotokoll_MainDataAsync();
+                lastDateFromValue = date_From.Value;
+                Filter_TextChanged(sender, e);
+            }
         }
         private void OrderList_ChangeWidth()
         {
@@ -155,21 +187,71 @@ namespace DigitalProductionProgram.OrderManagement
             item.ShowDialog();
         }
 
-        private async void Open_Order_Shown(object sender, EventArgs e)
+        // Show the progress dialog on a dedicated STA thread so it can continue animating.
+        private void ShowProgressOnNewThread(string text)
         {
-            pbar.Show();
-            pbar.pBar_Main.Style = ProgressBarStyle.Marquee;
-            pbar.pBar_Main.MarqueeAnimationSpeed = 30;
-            pbar.Set_ValueProgressBar(0, "Laddar ordrar...");
-            await Task.Delay(250);
-            Fill_dgv_OrderList();
+            // Ensure any previous instance is closed
+            if (pbar != null)
+                CloseProgressbar();
 
-            pbar.Close();
+            pbarReady.Reset();
+            pbarThread = new Thread(() =>
+            {
+                var local = new CustomProgressBar();
+                local.pBar_Main.Style = ProgressBarStyle.Marquee;
+                local.pBar_Main.MarqueeAnimationSpeed = 30;
+                local.lbl_Percent_Main.Visible = false;
+                local.Set_ValueProgressBar(0, text);
+                pbar = local;
+                // signal that the form is created and shown
+                pbarReady.Set();
+                Application.Run(local);
+            });
+
+            pbarThread.SetApartmentState(ApartmentState.STA);
+            pbarThread.IsBackground = true;
+            pbarThread.Start();
+
+            // Wait until form is created before continuing
+            pbarReady.WaitOne();
         }
+
+        private void CloseProgressbar()
+        {
+            try
+            {
+                if (pbar != null && !pbar.IsDisposed)
+                {
+                    // Close safely on the progress form's thread
+                    pbar.BeginInvoke((MethodInvoker)(() =>
+                    {
+                        try
+                        {
+                            if (!pbar.IsDisposed)
+                                pbar.Close();
+                        }
+                        catch { }
+                    }));
+
+                    // Allow some time for Application.Run to exit and thread to finish
+                    pbarThread?.Join(500);
+                }
+            }
+            catch { }
+            finally
+            {
+                pbar = null;
+                pbarThread = null;
+            }
+        }
+
+       
 
         private void label_DateFrom_Click(object sender, EventArgs e)
         {
             date_From.Value = DateTime.Now.AddDays(-7);
         }
+
+        
     }
 }

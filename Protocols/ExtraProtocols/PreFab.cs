@@ -255,7 +255,7 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
                     ExtruderColumn = 2;
                     BatchNrColumn = 3;
                     break;
-                case Manage_WorkOperation.WorkOperations.Synergy_PTFE:
+                case Manage_WorkOperation.WorkOperations.Synergy_PTFE_K18:
                     dgv.DataSource = DataTable_PreFab(orderID, IsOkLoadBalance);
                     dgv.Columns[LanguageManager.GetString("label_Description")].Visible = false;
                     dgv.Columns["Extruder:"].Visible = false;

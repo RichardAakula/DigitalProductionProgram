@@ -342,7 +342,7 @@ namespace DigitalProductionProgram.Processcards
 
                 case WorkOperations.HeatShrink:
                 case WorkOperations.Skärmning:
-                case WorkOperations.Synergy_PTFE:
+                case WorkOperations.Synergy_PTFE_K18:
                 case WorkOperations.Slitting_PTFE:
 
                     IsNoArtikelID = true;

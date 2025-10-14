@@ -151,6 +151,17 @@ namespace DigitalProductionProgram.MainWindow
             };
 
             frmÖppna.ShowDialog();
+            if (Order.OrderNumber != null & frmÖppna.svarÖppna)
+            {
+                mainForm.OrderInformation.cb_Operation.SelectedIndexChanged -= mainForm.Operation_SelectedIndexChanged;
+                mainForm.OrderInformation.tb_OrderNr.Text = Order.OrderNumber;
+                mainForm.OrderInformation.cb_Operation.Text = $"{Order.Operation} - {Order.Description}";
+                mainForm.OrderInformation.cb_Operation.SelectedIndex = -1; //Detta görs för att inte Order.Operation skall ändras vid metoden StartaOrder()
+                mainForm.OrderInformation.cb_Operation.SelectedIndexChanged += mainForm.Operation_SelectedIndexChanged;
+
+                Menu_Order_OrderDone.Enabled = true;
+                _ = mainForm.StartOrLoadOrder(true);
+            }
         }
 
         private void Menu_Arkiv_Förhandsgranska_Click(object sender, EventArgs e)

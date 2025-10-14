@@ -460,7 +460,7 @@ namespace DigitalProductionProgram.Statistics
                     case Manage_WorkOperation.WorkOperations.Hackning_PTFE:
                     case Manage_WorkOperation.WorkOperations.Spolning_PTFE:
                         return 11;
-                    case Manage_WorkOperation.WorkOperations.Synergy_PTFE:
+                    case Manage_WorkOperation.WorkOperations.Synergy_PTFE_K18:
                         return 10;
                     case Manage_WorkOperation.WorkOperations.Krympslangsblåsning:
                         return 14;

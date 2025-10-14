@@ -717,9 +717,9 @@ namespace DigitalProductionProgram.Settings
 
         public class SaveData
         {
-            public static void Quickstart_WorkOperation(Manage_WorkOperation.WorkOperations workoperation)
+            public static void Quickstart_WorkOperation(string workoperation)
             {
-                if (workoperation == Manage_WorkOperation.WorkOperations.Nothing)
+                if (string.IsNullOrEmpty(workoperation))
                     return;
                 using var con = new SqlConnection(Database.cs_Protocol);
                 var query = @"
@@ -739,7 +739,7 @@ namespace DigitalProductionProgram.Settings
                 con.Open();
                 var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@hostname", Environment.MachineName);
-                cmd.Parameters.AddWithValue("@workoperation", workoperation.ToString());
+                cmd.Parameters.AddWithValue("@workoperation", workoperation);
 
                 cmd.ExecuteScalar();
             }

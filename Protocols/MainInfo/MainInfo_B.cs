@@ -148,7 +148,7 @@ namespace DigitalProductionProgram.Protocols.MainInfo
 
                     case Manage_WorkOperation.WorkOperations.Kragning_PTFE:
                     case Manage_WorkOperation.WorkOperations.Kragning_K22_PTFE:
-                    case Manage_WorkOperation.WorkOperations.Synergy_PTFE:
+                    case Manage_WorkOperation.WorkOperations.Synergy_PTFE_K18:
                         SQL_Parameter.Double(cmd.Parameters, "@id", MeasurePoints.Value(MeasurePoints.CodeTextMonitor.MainBodyID, "NOM").ToString());
                         SQL_Parameter.Double(cmd.Parameters, "@od", MeasurePoints.Value(MeasurePoints.CodeTextMonitor.MainBodyOD, "NOM").ToString());
                         SQL_Parameter.Double(cmd.Parameters, "@wall", MeasurePoints.Value(MeasurePoints.CodeTextMonitor.Wall, "NOM").ToString());

@@ -125,7 +125,6 @@ namespace DigitalProductionProgram.MainWindow
             this.Visible = false;
             black = back; 
             Settings.Settings.LoadData.Load_Settings();
-            _ = Task.Run(Open_Order.Load_dt_Korprotokoll_MainDataAsync);
             Activity.Start();
             InitializeComponent();
 

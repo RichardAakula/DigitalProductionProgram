@@ -4,7 +4,7 @@ using DigitalProductionProgram.Equipment;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.Övrigt;
 using DigitalProductionProgram.PrintingServices;
-using static DigitalProductionProgram.MainWindow.Main_RollingInformation;
+using static DigitalProductionProgram.MainWindow.RollingInformation;
 using Timer = System.Timers.Timer;
 
 namespace DigitalProductionProgram.Help

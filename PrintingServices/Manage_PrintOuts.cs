@@ -49,7 +49,6 @@ namespace DigitalProductionProgram.PrintingServices
             var skärmning = new Skärmning();
             var slipning = new Slipning_TEF();
             var spolning = new Spolning_PTFE();
-            var svetsning = new Svetsning();
             var measureprotocol = new Measureprotocol();
         }
 
@@ -62,9 +61,6 @@ namespace DigitalProductionProgram.PrintingServices
                     break;
                 case Manage_WorkOperation.WorkOperations.Kragning_TEF:
                     Kragning_TEF.Print_Preview_Order(true);
-                    break;
-                case Manage_WorkOperation.WorkOperations.Svetsning:
-                    Svetsning.Print_Preview_Order(true);
                     break;
                 case Manage_WorkOperation.WorkOperations.Slipning:
                     Slipning_TEF.Print_PreviewOrder(true);

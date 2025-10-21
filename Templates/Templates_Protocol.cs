@@ -1394,7 +1394,7 @@ namespace DigitalProductionProgram.Templates
                 TemplateControls.AddColumn(dgv, new DataGridViewTextBoxColumn(), "Kolumnbredd Max Processkort", "col_MaxProcesscardWidth", 100);
                 TemplateControls.AddColumn(dgv, new DataGridViewTextBoxColumn(), "Kolumnbredd Nom Körprotokoll", "col_NomRunProtocolWidth", 100);
 
-                dgv.Rows.Add(false, 1, false, false, false, 50, 50);
+                dgv.Rows.Add(false, 1, false, false, false, 50, 50, 50, 50);
             }
             public static void Load_Data(int? formTemplateID, string templateName, string templateRevision, int machineIndex)
             {

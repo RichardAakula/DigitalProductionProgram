@@ -52,7 +52,7 @@ namespace DigitalProductionProgram.ToolManagement
             Load_RegularSettings();
             List_DieType = Equipment.Equipment.List_Tool_Type("Munstycke");
             List_PinType = Equipment.Equipment.List_Tool_Type("Kanyl");
-
+            IsOpening = false;
         }
         private void ToolCalculator_Load(object sender, EventArgs e)
         {
@@ -74,14 +74,13 @@ namespace DigitalProductionProgram.ToolManagement
 
             tb_DieType.Text = Tools.RegularUsedToolType("Munstycke");
             tb_PinType.Text = Tools.RegularUsedToolType("Kanyler");
-            IsOpening = false;
+           
            
         }
         private void Load_RegularSettings()
         {
-            using (var con = new SqlConnection(Database.cs_ToolRegister))
-            {
-                const string query = @"
+            using var con = new SqlConnection(Database.cs_ToolRegister);
+            const string query = @"
         WITH MostCommonValues AS (
             SELECT TOP 1 WITH TIES DDR_min AS value, 'Most_Common_DDR_min' AS column_name FROM RegularUsedCalculations WHERE UserID = @userid GROUP BY DDR_min ORDER BY COUNT(*) DESC
             UNION ALL
@@ -105,34 +104,33 @@ namespace DigitalProductionProgram.ToolManagement
         )
         SELECT column_name, value FROM MostCommonValues;";
 
-                using (var cmd = new SqlCommand(query, con))
+            using (var cmd = new SqlCommand(query, con))
+            {
+                cmd.Parameters.AddWithValue("@userid", Person.UserID);
+                con.Open();
+
+                using (var reader = cmd.ExecuteReader())
                 {
-                    cmd.Parameters.AddWithValue("@userid", Person.UserID);
-                    con.Open();
+                    var values = new Dictionary<string, decimal>();
 
-                    using (var reader = cmd.ExecuteReader())
+                    while (reader.Read())
                     {
-                        var values = new Dictionary<string, decimal>();
-
-                        while (reader.Read())
-                        {
-                            string columnName = reader.GetString(0);
-                            decimal value = reader.IsDBNull(1) ? 0 : reader.GetDecimal(1);
-                            values[columnName] = value;
-                        }
-
-                        num_DDR_min.Value = values.TryGetValue("Most_Common_DDR_min", out var value1) ? value1 : 0;
-                        num_DDR_max.Value = values.TryGetValue("Most_Common_DDR_max", out var value2) ? value2 : 0;
-                        num_Balance_min.Value = values.TryGetValue("Most_Common_Balance_min", out var value3) ? value3 : 0;
-                        num_Balance_max.Value = values.TryGetValue("Most_Common_Balance_max", out var value4) ? value4 : 0;
-                        num_Die_min.Value = values.TryGetValue("Most_Common_Die_min", out var value5) ? value5 : 0;
-                        num_Die_max.Value = values.TryGetValue("Most_Common_Die_max", out var value6) ? value6 : 0;
-                        num_Die_step.Value = values.TryGetValue("Most_Common_Die_step", out var value7) ? value7 : 0;
-                        num_Pin_min.Value = values.TryGetValue("Most_Common_Pin_min", out var value8) ? value8 : 0;
-                        num_Pin_max.Value = values.TryGetValue("Most_Common_Pin_max", out var value9) ? value9 : 0;
-                        num_Pin_step.Value = values.TryGetValue("Most_Common_Pin_step", out var value10) ? value10 : 0;
-
+                        string columnName = reader.GetString(0);
+                        decimal value = reader.IsDBNull(1) ? 0 : reader.GetDecimal(1);
+                        values[columnName] = value;
                     }
+
+                    num_DDR_min.Value = values.TryGetValue("Most_Common_DDR_min", out var value1) ? value1 : 1;
+                    num_DDR_max.Value = values.TryGetValue("Most_Common_DDR_max", out var value2) ? value2 : 10;
+                    num_Balance_min.Value = values.TryGetValue("Most_Common_Balance_min", out var value3) ? value3 : 0.950m;
+                    num_Balance_max.Value = values.TryGetValue("Most_Common_Balance_max", out var value4) ? value4 : 1.050m;
+                    num_Die_min.Value = values.TryGetValue("Most_Common_Die_min", out var value5) ? value5 : 1;
+                    num_Die_max.Value = values.TryGetValue("Most_Common_Die_max", out var value6) ? value6 : 25;
+                    num_Die_step.Value = values.TryGetValue("Most_Common_Die_step", out var value7) ? value7 : 0.03m;
+                    num_Pin_min.Value = values.TryGetValue("Most_Common_Pin_min", out var value8) ? value8 : 1;
+                    num_Pin_max.Value = values.TryGetValue("Most_Common_Pin_max", out var value9) ? value9 : 20;
+                    num_Pin_step.Value = values.TryGetValue("Most_Common_Pin_step", out var value10) ? value10 : 0.03m;
+
                 }
             }
         }

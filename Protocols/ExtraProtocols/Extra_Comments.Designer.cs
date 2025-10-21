@@ -1,4 +1,4 @@
-﻿namespace DigitalProductionProgram.Protocols
+﻿namespace DigitalProductionProgram.Protocols.ExtraProtocols
 {
     partial class Extra_Comments
     {

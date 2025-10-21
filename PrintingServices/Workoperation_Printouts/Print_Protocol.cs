@@ -1,4 +1,5 @@
-﻿using DigitalProductionProgram.DatabaseManagement;
+﻿using DigitalProductionProgram.ControlsManagement;
+using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Log;
 using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
@@ -10,10 +11,11 @@ using DigitalProductionProgram.Protocols.Protocol;
 using DigitalProductionProgram.Templates;
 using DigitalProductionProgram.User;
 using Microsoft.Data.SqlClient;
+using System.Data;
 using System.Drawing.Printing;
 using System.Globalization;
 using System.Text.RegularExpressions;
-using DigitalProductionProgram.ControlsManagement;
+using System.Xml.Linq;
 using static DigitalProductionProgram.PrintingServices.PrintVariables;
 using static DigitalProductionProgram.PrintingServices.Workoperation_Printouts.Print_Protocol.PrintOut;
 using FrequencyMarking = DigitalProductionProgram.Protocols.ExtraProtocols.FrequencyMarking;
@@ -26,6 +28,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
         public static PrintPreviewDialog Preview_MainProtocol = new();
         public static PrintPreviewDialog Preview_RunProtocol = new();
         public static PrintPreviewDialog Preview_Comments = new();
+        public static PrintPreviewDialog Preview_MeasureInstruments = new();
         public static PrintPreviewDialog Preview_ExtraComments = new();
         public static PrintPreviewDialog Preview_LineClearance = new();
         public static PrintPreviewDialog Preview_FrequencyMarking = new();
@@ -34,6 +37,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
         public static PrintDocument Print_MainProtocol = new();
         public static PrintDocument Print_RunProtocol = new();
         public static PrintDocument Print_Comments = new();
+        public static PrintDocument Print_MeasureInstruments = new();
         public static PrintDocument Print_ExtraComments = new();
         public static PrintDocument Print_LineClearance = new();
         public static PrintDocument Print_Compund_Protocol = new();
@@ -46,6 +50,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
             Print_RunProtocol.PrintPage += PrintPage_RunProtocol;
             Print_Comments.PrintPage += Print_Page_Comments;
             Print_ExtraComments.PrintPage += Print_Page_ExtraComments;
+            Print_MeasureInstruments.PrintPage += Print_Page_MeasureInstruments;
             Print_LineClearance.PrintPage += ExtraLineClearance_Print_Page;
             Print_Compund_Protocol.PrintPage += Print_Compound_Protocol_PrintPage;
             Print_FrequencyMarking.PrintPage += Frekvensmarkering_PrintPage;
@@ -56,6 +61,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
             Preview_MainProtocol.Document = Print_MainProtocol;
             Preview_Compound_Protocol.Document = Print_Compund_Protocol;
             Preview_Comments.Document = Print_Comments;
+            Preview_MeasureInstruments.Document = Print_MeasureInstruments;
             Preview_LineClearance.Document = Print_LineClearance;
             Preview_ExtraComments.Document = Print_ExtraComments;
             Preview_FrequencyMarking.Document = Print_FrequencyMarking;
@@ -168,7 +174,23 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                 return int.Parse(value.ToString() ?? string.Empty);
             return 0;
         }
-
+        public static void SetHeightMeasureInstruments()
+        {
+            using var con = new SqlConnection(Database.cs_Protocol);
+            const string query = @"
+                        SELECT COUNT(*) FROM MeasureInstruments.Mätdon WHERE OrderID = @orderid";
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
+            con.Open();
+            var value = cmd.ExecuteScalar();
+            if (value != null)
+            {
+                Height_MeasureInstruments = int.Parse(value.ToString() ?? string.Empty) * 24;
+                return;
+            }
+            Height_MeasureInstruments = 0;
+        }
+        public static int Height_MeasureInstruments { get; set; }
         public static int TotalPrintOutsForStartUps(List<int> List_FormTemplates)
         {
             //Kontrollerar maxbredden på kolumnerna på körprotokoll samt processkort för inkommande FormTemplates och kollar hur många utskrifter som krävs för dessa
@@ -279,6 +301,18 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
             return maxStartups;
         }
 
+        public static int Height_ProcesscardBasedOn(PrintPageEventArgs e)
+        {
+            int top = 115;
+            int revInfo = Print.ProcessCardBasedOn.Height_RevInfoText(e);
+            return (top + revInfo + 4);
+        }
+        public static int Height_PreFab(PrintPageEventArgs e)
+        {
+            var header = 44;
+            var fabRows = PreFab.TotalRows_PreFab * 18;
+            return (header + fabRows);
+        }
 
         public static async Task Print_Preview_Order(bool IsPrinting)
         {
@@ -288,7 +322,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
             MaximizeAllWindows();
             InitializeGlobalPrintValues();
             Set_DefaultPaperSize(Print_MainProtocol, false);
-
+            SetHeightMeasureInstruments();
             var MaxRowsRunProtocol = (MaxPaperHeight - 180 - LeftMargin) / RowHeight;
             var totalPrintOutsForModules = Math.Ceiling((double)TotalRows_Template / MaxRowsRunProtocol);
 
@@ -301,6 +335,8 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
             await PrintExtraCommentsAsync(IsPrinting);
             await PrintLineClearanceAsync(IsPrinting);
             await PrintRunProtocolsAsync(IsPrinting, totalPrintOutsForModules, MaxRowsRunProtocol);
+            if (IsMeasureInstrumentsPrintedOut == false && Height_MeasureInstruments > 0)
+                await PrintMeasureInstruments(IsPrinting);
             await PrintMeasureProtocolsAsync(IsPrinting);
             if (FrequencyMarking.IsLäcksökning)
                 await PrintFrequencyMarking(IsPrinting);
@@ -312,6 +348,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
             ((Form)Preview_MainProtocol).WindowState = FormWindowState.Maximized;
             ((Form)Preview_ExtraComments).WindowState = FormWindowState.Maximized;
             ((Form)Preview_Comments).WindowState = FormWindowState.Maximized;
+            ((Form)Preview_MeasureInstruments).WindowState = FormWindowState.Maximized;
             ((Form)Preview_RunProtocol).WindowState = FormWindowState.Maximized;
             ((Form)Preview_LineClearance).WindowState = FormWindowState.Maximized;
             ((Form)Measureprotocol.Preview_MeasureProtocol).WindowState = FormWindowState.Maximized;
@@ -372,6 +409,16 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                 ExtraCommentRow_From = ExtraCommentRow_To + 1;
             }
 
+            return Task.CompletedTask;
+        }
+        public static Task PrintMeasureInstruments(bool isPrinting)
+        {
+            Set_DefaultPaperSize(Print_MeasureInstruments, true);
+           
+            if (isPrinting)
+                Print_MeasureInstruments.Print();
+            else
+                Preview_MeasureInstruments.ShowDialog();
             return Task.CompletedTask;
         }
         private static Task PrintLineClearanceAsync(bool isPrinting)
@@ -507,13 +554,20 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                 Preview_Compound_Protocol.ShowDialog();
             return Task.CompletedTask;
         }
-
+       
 
         private static void PrintPage_MainProtocol(object sender, PrintPageEventArgs e)
         {
             PrintVariables.PageWidth = e.PageBounds.Width;
             PrintVariables.PageHeight = e.PageBounds.Height;
             PrintVariables.Active_PrintOut++;
+            
+            var height_ProcesscardBasedOn = Height_ProcesscardBasedOn(e);
+            var height_PreFab = Height_PreFab(e);
+            var height_Comments = Height_Comments(e);
+            var SpaceLeft = PrintVariables.PageHeight - PrintVariables.Y - 40 - height_ProcesscardBasedOn - height_PreFab - height_Comments;
+            if (SpaceLeft < Height_MeasureInstruments && Height_MeasureInstruments > 0)
+                totalPrintOuts.PagesExtraMeasureInstruments = 1;
 
             Order_INFO(e);
             Measurepoints(e);
@@ -535,12 +589,20 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                 Y += 30;
             }
 
-            var maxY = (int)PrintVariables.PageHeight - 60;
+            var maxY = (int)PrintVariables.PageHeight - 100;
             var comments = Print.utskrift_Korprotokoll["Comments"];
+            CommentIndex = 0;
             totalPrintOuts.SetPagesComments(e, comments, PrintVariables.LeftMargin, PrintVariables.Y, maxY);
             PageHeader(e, Templates_Protocol.MainTemplate.Name, totalPrintOuts.TotalPages);
             Comments(PrintVariables.LeftMargin, maxY, comments, e);
+            PrintVariables.Y += 10;
+            var spaceLeft = MaxPaperHeight - 40 - PrintVariables.Y; //40 är utrymmet för PagegFooter
 
+            if (spaceLeft > Height_MeasureInstruments && Height_MeasureInstruments > 0)
+            {
+                Measureprotocol.Print_MeasureInstruments(e, PrintVariables.Y);
+                IsMeasureInstrumentsPrintedOut  = true;
+            }
             Print.Copy(e);
             PageFooter(e);
         }
@@ -611,6 +673,15 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
 
             PrintVariables.Y = 150;
             Extra_Comments(e);
+        }
+        private static void Print_Page_MeasureInstruments(object sender, PrintPageEventArgs e)
+        {
+            Active_PrintOut++;
+            PageHeader(e, Templates_Protocol.MainTemplate.Name, totalPrintOuts.TotalPages);
+            Order_INFO(e);
+            PrintVariables.Y = 150;
+            Measureprotocol.Print_MeasureInstruments(e, PrintVariables.Y);
+            Print.Copy_Landscape(e);
         }
         private static void Print_Compound_Protocol_PrintPage(object sender, PrintPageEventArgs e)
         {
@@ -956,50 +1027,107 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                 var dt_Halvfabrikat = Protocols.ExtraProtocols.PreFab.DataTable_PreFab(Order.OrderID, true);
                 var antal_Halvfabrikat = dt_Halvfabrikat.Rows.Count;
 
-                var partNrMaterialKey = LanguageManager.GetString("partNrMaterial") ?? "partNrMaterial";
-                var partNumberKey = LanguageManager.GetString("label_PartNumber") ?? "label_PartNumber";
+                if (dt_Halvfabrikat == null || dt_Halvfabrikat.Columns.Count == 0)
+                    return;
 
-                var columns = new Dictionary<string, (int Width, string DataKey)>
+                // --- Dynamiskt skapa kolumnlista ---
+                // Ange standardbredd per kolumn (kan justeras per kolumnnamn om du vill)
+                int defaultWidth = 120;
+
+                var columns = new List<(string Header, string DataKey, int Width)>();
+
+                foreach (DataColumn col in dt_Halvfabrikat.Columns)
                 {
-                    { partNrMaterialKey, (87, partNumberKey) },
-                    { "Material", (321, LanguageManager.GetString("label_Description") ?? "label_Description") },
-                    { "Extruder", (160, "Extruder:") },
-                    { "Batch Nr", (110, "BatchNr:") },
-                    { LanguageManager.GetString("preFab_BestBefore") ?? "preFab_BestBefore", (100, LanguageManager.GetString("preFab_BestBefore") ?? "preFab_BestBefore") }
-                };
+                    int width = defaultWidth;
 
-
-                // Draw headers
-                var currentX = LeftMargin;
-                foreach (var entry in columns)
-                {
-                    e.Graphics?.DrawRectangle(CustomFonts.thinBlack, currentX, Y - 2, entry.Value.Width, 18);
-                    e.Graphics?.DrawString(entry.Key, CustomFonts.A9_I, CustomFonts.black, currentX + 2, Y);
-                    currentX += entry.Value.Width;
-                }
-
-                Y += 20; // Move down after headers
-
-                for (var i = 0; i < antal_Halvfabrikat; i++)
-                {
-                    currentX = LeftMargin; // Reset X for each row
-
-                    foreach (var entry in columns)
+                    // (Valfritt) Anpassa vissa kolumner
+                    switch (col.ColumnName)
                     {
-                        e.Graphics?.DrawRectangle(CustomFonts.thinBlack, currentX, Y, entry.Value.Width, 18);
-                        string? text;
-                        var value = dt_Halvfabrikat?.Rows[i][entry.Value.DataKey];
-                        if (value is DateTime dateValue)
-                            text = dateValue.ToShortDateString();
-                        else
-                            text = dt_Halvfabrikat?.Rows[i][entry.Value.DataKey].ToString();
-
-                        Print.Text_Operatör(e, text, currentX + 2, Y + 4, entry.Value.Width - 4);
-                        currentX += entry.Value.Width; // Move X to the next column
+                        case "PartNumber":
+                        case "Artikelnr:":
+                            width = 87;
+                            break;
+                        case "Benämning:":
+                        case "Description:":
+                            width = 160;
+                            break;
+                        case "Material":
+                            width = 321;
+                            break;
+                        case "Extruder":
+                            width = 160;
+                            break;
+                        case "BatchNr":
+                            width = 110;
+                            break;
+                        case "BestBefore":
+                        case "Bäst Före":
+                            width = 100;
+                            break;
+                        case "Slang:":
+                            width = 110;
+                            break;
+                        case "ID":
+                        case "OD": 
+                        case "W":
+                            width = 50;
+                            break;
+                        case "TempID":
+                        case "Saldo:":
+                            continue;
                     }
 
-                    Y += 18; // Move down for the next row
+                    // Lägg till kolumnen
+                    columns.Add((col.ColumnName, col.ColumnName, width));
                 }
+
+                // --- Rita kolumnrubriker ---
+                var currentX = LeftMargin;
+                foreach (var col in columns)
+                {
+                    e.Graphics?.DrawRectangle(CustomFonts.thinBlack, currentX, Y - 2, col.Width, 18);
+                    e.Graphics?.DrawString(col.Header, CustomFonts.A9_I, CustomFonts.black, currentX + 2, Y);
+                    currentX += col.Width;
+                }
+
+                Y += 20;
+
+                // --- Rita data ---
+                for (var i = 0; i < antal_Halvfabrikat; i++)
+                {
+                    currentX = LeftMargin;
+                    foreach (var col in columns)
+                    {
+                        e.Graphics?.DrawRectangle(CustomFonts.thinBlack, currentX, Y, col.Width, 18);
+                        var value = dt_Halvfabrikat.Rows[i][col.DataKey];
+                        string? text = value is DateTime dt ? dt.ToShortDateString() : value?.ToString();
+                        Print.Text_Operatör(e, text, currentX + 2, Y + 4, col.Width - 4);
+                        currentX += col.Width;
+                    }
+                    Y += 18;
+                }
+            }
+
+            public static int Height_Comments(PrintPageEventArgs e)
+            {
+                var header = 22;
+                var comments = Print.utskrift_Korprotokoll["Comments"];
+                var commentLines = Regex.Split(comments, @"\r\n|\r|\n");
+                var x = 26;
+                float pageWidth = e.PageBounds.Width - 2 * x;
+                const float padding = 10;
+                var height = 0;
+                while (CommentIndex < commentLines.Length)
+                {
+                    var text = commentLines[PrintVariables.CommentIndex].Replace("\t", "    "); // Replace tab with four spaces
+                    var textSize = e.Graphics.MeasureString(text, CustomFonts.operatörFont, (int)pageWidth - PrintVariables.LeftMargin);
+
+
+                    height += (int)textSize.Height + 4;
+
+                    CommentIndex++;
+                }
+                return header + height;
             }
             public static void Comments(int x, int maxY, string? comments, PrintPageEventArgs e)
             {

@@ -130,7 +130,7 @@ namespace DigitalProductionProgram.MainWindow
             //        values.Clear();
 
 
-            mainForm.Change_GUI_OrderEjKlar();
+            mainForm.Change_GUI_StandardColor();
             _ = Log.Activity.Stop("Användare klickar på Ny Order");
         }
         private async void Menu_Arkiv_Öppna_Click(object sender, EventArgs e)
@@ -605,7 +605,7 @@ namespace DigitalProductionProgram.MainWindow
                 workcenterDescription = Monitor.Monitor.WorkCenter.Description;
                 workcenterProdGroup = Monitor.Monitor.WorkCenter.Number;
             }
-                
+
 
 
             InfoText.Show(
@@ -1170,7 +1170,10 @@ ORDER BY OrderID DESC ";
                 var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", orderid);
                 cmd.Parameters.AddWithValue("@descrId", descrId);
-                cmd.Parameters.AddWithValue("@datevalue", date);
+                if (date < DateTime.Parse("1950-01-01"))
+                    cmd.Parameters.AddWithValue("@datevalue", DBNull.Value);
+                else
+                    cmd.Parameters.AddWithValue("@datevalue", date);
                 //if (uppstart == 0)
                 //    cmd.Parameters.AddWithValue("@uppstart", DBNull.Value);
                 //else
@@ -1184,6 +1187,84 @@ ORDER BY OrderID DESC ";
                 cmd.ExecuteNonQuery();
             }
         }
+        private void INSERT_MätMainData(int orderid, bool discarded, DateTime date, string anstnr, string sign, int rowindex)
+        {
+            using var con = new SqlConnection(Database.cs_Protocol);
+            var query = @"
+                        IF NOT EXISTS 
+                            (SELECT * FROM [MeasureProtocol].[MainData]
+                                WHERE OrderID = @orderid AND [Date] = @date)
+                        INSERT INTO [MeasureProtocol].[MainData] (OrderID, Discarded, [Date], AnstNr, Sign, RowIndex)     
+                            VALUES (@orderid, @discarded, @date, @anstnr, @sign, @row)";
+
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            cmd.Parameters.AddWithValue("@orderid", orderid);
+            cmd.Parameters.AddWithValue("@discarded", discarded);
+            cmd.Parameters.AddWithValue("@date", date);
+            cmd.Parameters.AddWithValue("@anstnr", anstnr);
+            cmd.Parameters.AddWithValue("@sign", sign);
+            cmd.Parameters.AddWithValue("@row", rowindex);
+            con.Open();
+            cmd.ExecuteNonQuery();
+        }
+        private void INSERT_MätDataTextValue(int orderid, int descrid, string? textvalue, int rowindex)
+        {
+            using var con = new SqlConnection(Database.cs_Protocol);
+            var query = @"
+                        IF NOT EXISTS 
+                            (SELECT * FROM [MeasureProtocol].Data
+                                WHERE OrderID = @orderid AND DescriptionID = @descrid AND RowIndex = @rowindex)
+                        
+                            INSERT INTO [MeasureProtocol].Data (OrderID, DescriptionID, TextValue, RowIndex)     
+                            VALUES (@orderid, @descrid, @textvalue, @rowindex)";
+
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            cmd.Parameters.AddWithValue("@orderid", orderid);
+            cmd.Parameters.AddWithValue("@descrId", descrid);
+            cmd.Parameters.AddWithValue("@textvalue", textvalue);
+            cmd.Parameters.AddWithValue("@rowindex", rowindex);
+            con.Open();
+            cmd.ExecuteNonQuery();
+        }
+        private void INSERT_MätDataValue(int orderid, int descrid,string? value, int rowindex)
+        {
+            using var con = new SqlConnection(Database.cs_Protocol);
+            var query = @"
+                        IF NOT EXISTS 
+                            (SELECT * FROM [MeasureProtocol].Data
+                                WHERE OrderID = @orderid AND DescriptionID = @descrid AND RowIndex = @rowindex)
+                        
+                            INSERT INTO [MeasureProtocol].Data (OrderID, DescriptionID, Value, RowIndex)     
+                            VALUES (@orderid, @descrid, @value, @rowindex)";
+
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            cmd.Parameters.AddWithValue("@orderid", orderid);
+            cmd.Parameters.AddWithValue("@descrId", descrid);
+            SQL_Parameter.Double(cmd.Parameters, "@value", value);
+            cmd.Parameters.AddWithValue("@rowindex", rowindex);
+            con.Open();
+            cmd.ExecuteNonQuery();
+        }
+        private void INSERT_MätDataBoolValue(int orderid, int descrid, bool boolvalue, int rowindex)
+        {
+            using var con = new SqlConnection(Database.cs_Protocol);
+            var query = @"
+                        IF NOT EXISTS 
+                            (SELECT * FROM [MeasureProtocol].Data
+                                WHERE OrderID = @orderid AND DescriptionID = @descrid AND RowIndex = @rowindex)
+                        
+                            INSERT INTO [MeasureProtocol].Data (OrderID, DescriptionID, BoolValue, RowIndex)     
+                            VALUES (@orderid, @descrid, @boolvalue, @rowindex)";
+
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            cmd.Parameters.AddWithValue("@orderid", orderid);
+            cmd.Parameters.AddWithValue("@descrId", descrid);
+            SQL_Parameter.Boolean(cmd.Parameters, "@boolvalue", boolvalue);
+            cmd.Parameters.AddWithValue("@rowindex", rowindex);
+            con.Open();
+            cmd.ExecuteNonQuery();
+        }
+
 
         private void INSERT_DATA_Processcard_Value(int PartID, int templateID, string? value, byte machineindex, int type)
         {
@@ -1428,5 +1509,182 @@ ORDER BY OrderID DESC ";
             Application.Exit(); // Stänger DPP
 
         }
+
+
+        private void flyttaDataFrånSvetsnigToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            List<int> listOrderId = new List<int>();
+            using (var con = new SqlConnection(Database.cs_Protocol))
+            {
+                var query = @"
+                   SELECT OrderID FROM [Order].MainData WHERE WorkoperationID = 14";
+
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                cmd.Parameters.AddWithValue("@uppstart", DBNull.Value);
+                cmd.Parameters.AddWithValue("@ugn", DBNull.Value);
+
+                con.Open();
+               var reader = cmd.ExecuteReader();
+               while (reader.Read())
+               {
+                   int.TryParse(reader[0].ToString(), out var orderid);
+                   listOrderId.Add(orderid);
+               }
+            }
+            
+            foreach (var orderid in listOrderId)
+            {
+                using (var con = new SqlConnection(Database.cs_Protocol))
+                {
+                    var query = @"
+                        SELECT 
+                            [OrderID]
+                            ,[Svets]
+                            ,[Tid_Förvärme]
+                            ,[Svetsförflyttning]
+                            ,[Tid_Bindvärme]
+                            ,[Tid_Kylluft]
+                            ,[Temperatur]
+                            ,[Pinne_OD_Stål]
+                            ,[Pinne_OD_PTFE]              
+                            ,[Värmebackar_Bredd]
+                            ,[Värmebackar_Hål],
+                            TRY_CAST(
+                                CONVERT(varchar(10), TRY_CAST([Datum] AS date), 120) + ' ' + 
+                                CONVERT(varchar(8), TRY_CAST([Tid] AS time), 108)
+                                AS datetime
+                            ) AS [DatumTid]
+                            ,[AnstNr]
+                            ,[Sign]
+                        FROM Korprotokoll_Svetsning_Maskinparametrar
+                        WHERE OrderID = @orderid
+                        ORDER BY  [DatumTid]";
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                    cmd.Parameters.AddWithValue("@orderid", orderid);
+                    con.Open();
+                    var reader = cmd.ExecuteReader();
+                    var uppstart = 1;
+                    while (reader.Read())
+                    {
+                        var svets = reader["Svets"].ToString();
+                        var tid_Förvärme = reader["Tid_Förvärme"].ToString();
+                        var svetsförflyttning = reader["Svetsförflyttning"].ToString();
+                        var tid_Bindvärme = reader["Tid_Bindvärme"].ToString();
+                        var tid_Kylluft = reader["Tid_Kylluft"].ToString();
+                        var temperatur = reader["Temperatur"].ToString();
+                        var pinne_OD_Stål = reader["Pinne_OD_Stål"].ToString();
+                        var pinne_OD_PTFE = reader["Pinne_OD_PTFE"].ToString();
+                        var värmebackar_Bredd = reader["Värmebackar_Bredd"].ToString();
+                        var värmebackar_Hål = reader["Värmebackar_Hål"].ToString();
+                        DateTime.TryParse(reader["DatumTid"].ToString(), out var datum);
+                        var anstNr = reader["AnstNr"].ToString();
+                        var sign = reader["Sign"].ToString();
+                        var name = Person.Get_NameWithAnstNr(anstNr);
+
+                        INSERT_DATA_Korprotokoll_TextValue(orderid, 404, svets, uppstart, 1);
+                        INSERT_DATA_Korprotokoll_Value(orderid, 405, tid_Förvärme, uppstart, 1);
+                        INSERT_DATA_Korprotokoll_Value(orderid, 406, svetsförflyttning, uppstart, 1);
+                        INSERT_DATA_Korprotokoll_Value(orderid, 407, tid_Bindvärme, uppstart, 1);
+                        INSERT_DATA_Korprotokoll_Value(orderid, 408, tid_Kylluft, uppstart, 1);
+                        INSERT_DATA_Korprotokoll_Value(orderid, 276, temperatur, uppstart, 1);
+
+                        INSERT_DATA_Korprotokoll_Value(orderid, 409, pinne_OD_Stål, uppstart, 1);
+                        INSERT_DATA_Korprotokoll_TextValue(orderid, 410, pinne_OD_PTFE, uppstart, 1);
+                        INSERT_DATA_Korprotokoll_Value(orderid, 411, värmebackar_Bredd, uppstart, 1);
+                        INSERT_DATA_Korprotokoll_Value(orderid, 412, värmebackar_Hål, uppstart, 1);
+                        INSERT_DATA_Korprotokoll_TextValue(orderid, 158, anstNr, uppstart, 1);
+                        INSERT_DATA_Korprotokoll_TextValue(orderid, 157, sign, uppstart, 1);
+                        INSERT_DATA_Korprotokoll_DateValue(orderid, 171, datum, uppstart, 1);
+                        INSERT_DATA_Korprotokoll_TextValue(orderid, 322, name, uppstart, 1);
+                        uppstart++;
+                    }
+                }
+            }
+            MessageBox.Show("Klart");
+
+        }
+        private void flyttaMätDataFrånSvetsnigToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            List<int> listOrderId = new List<int>();
+            using (var con = new SqlConnection(Database.cs_Protocol))
+            {
+                var query = @"
+                   SELECT OrderID FROM [Order].MainData WHERE WorkoperationID = 14";
+
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                cmd.Parameters.AddWithValue("@uppstart", DBNull.Value);
+                cmd.Parameters.AddWithValue("@ugn", DBNull.Value);
+
+                con.Open();
+                var reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    int.TryParse(reader[0].ToString(), out var orderid);
+                    listOrderId.Add(orderid);
+                }
+            }
+
+            foreach (var orderid in listOrderId)
+            {
+                using var con = new SqlConnection(Database.cs_Protocol);
+                var query = @"
+                        SELECT 
+                            [Kasserad]
+                            ,[Inledande_OrderNr]
+                            ,[Inledande_Påse]
+                            ,[Inledande_UppmättPinne]
+                            ,[Inledande_ID]
+                            ,[Inledande_OD]
+                            ,[Inledande_Längd]
+                            ,[Inspektion_Utsida]
+                            ,[Inspektion_Insida]
+                             ,TRY_CAST(
+                                CONVERT(varchar(10), TRY_CAST([Datum] AS date), 120) + ' ' + 
+                                CONVERT(varchar(8), TRY_CAST([Tid] AS time), 108)
+                                AS datetime
+                            ) AS [DatumTid]
+                            ,[AnstNr]
+                            ,[Sign]
+                            
+                        FROM [GOD_DPP_DEV].[dbo].[Korprotokoll_Svetsning_Parametrar]
+                        WHERE OrderID = @orderid
+                        ORDER BY  [DatumTid]";
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                cmd.Parameters.AddWithValue("@orderid", orderid);
+                con.Open();
+                var reader = cmd.ExecuteReader();
+                var row = 1;
+                while (reader.Read())
+                {
+                    var kasserad = bool.Parse(reader["Kasserad"].ToString());
+                    var inledandeOrderNr = reader["Inledande_OrderNr"].ToString();
+                    var inledandePåse = reader["Inledande_Påse"].ToString();
+                    var inledandePinne = reader["Inledande_UppmättPinne"].ToString();
+                    var inledandeID = reader["Inledande_ID"].ToString();
+                    var inledandeOD = reader["Inledande_OD"].ToString();
+                    var inledandeLängd = reader["Inledande_Längd"].ToString();
+                    var inspektion_Ut = bool.Parse(reader["Inspektion_Utsida"].ToString());
+                    var inspektion_In = bool.Parse(reader["Inspektion_Insida"].ToString());
+
+                    DateTime.TryParse(reader["DatumTid"].ToString(), out var datum);
+                    var anstNr = reader["AnstNr"].ToString();
+                    var sign = reader["Sign"].ToString();
+
+                    INSERT_MätMainData(orderid, kasserad, datum, anstNr, sign, row);
+                    INSERT_MätDataTextValue(orderid, 68, inledandeOrderNr, row);
+                    INSERT_MätDataValue(orderid, 37, inledandePåse, row);
+                    INSERT_MätDataValue(orderid, 69, inledandePinne, row);
+                    INSERT_MätDataValue(orderid, 1, inledandeID, row);
+                    INSERT_MätDataValue(orderid, 11, inledandeOD, row);
+                    INSERT_MätDataValue(orderid, 34, inledandeLängd, row);
+                    INSERT_MätDataBoolValue(orderid, 40, inspektion_Ut, row);
+                    INSERT_MätDataBoolValue(orderid, 70, inspektion_In, row);
+                    row++;
+                }
+            }
+            MessageBox.Show("Klart");
+
+        }
+
     }
 }

@@ -59,7 +59,7 @@ namespace DigitalProductionProgram.OrderManagement
                     if (string.IsNullOrEmpty(Order.ProdLine) == false)
                         query += "AND ProdLine = @prodline ";
                     if (string.IsNullOrEmpty(Order.ProdType) == false)
-                        query += "AND ProdType = @prodtype";
+                        query += "AND ProdType = @prodtype ";
                     query += "AND PartID IS NULL";
                 }
                 else

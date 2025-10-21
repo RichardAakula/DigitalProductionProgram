@@ -21,6 +21,8 @@ namespace DigitalProductionProgram.Protocols.LineClearance
         {
             get
             {
+                if (Order.OrderID == null)
+                    return false;
                 using var con = new SqlConnection(Database.cs_Protocol);
                 var query = $@"SELECT LC_Name FROM [Order].MainData {Queries.WHERE_OrderID}";
 
@@ -35,18 +37,18 @@ namespace DigitalProductionProgram.Protocols.LineClearance
         {
             get
             {
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    var query = $@"SELECT LC_Approved_Name FROM [Order].MainData WHERE OrderID = @orderid";
+                if (Order.OrderID == null)
+                    return false;
+                using var con = new SqlConnection(Database.cs_Protocol);
+                var query = $@"SELECT LC_Approved_Name FROM [Order].MainData WHERE OrderID = @orderid";
 
-                    con.Open();
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
-                    var value = cmd.ExecuteScalar();
-                    if (value == DBNull.Value)
-                        return false;
-                    return !string.IsNullOrEmpty(value.ToString());
-                }
+                con.Open();
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
+                var value = cmd.ExecuteScalar();
+                if (value == DBNull.Value)
+                    return false;
+                return !string.IsNullOrEmpty(value.ToString());
             }
         }
 

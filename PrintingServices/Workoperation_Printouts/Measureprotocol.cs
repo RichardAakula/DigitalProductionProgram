@@ -83,13 +83,10 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
             {
                 switch (Order.WorkOperation)
                 {
-                    //case Manage_WorkOperation.WorkOperations.Extrudering_FEP:
-                    //    return IsLandscape ? 20 : 34;
-
                     case Manage_WorkOperation.WorkOperations.Kragning_TEF:
                         return 8;
                     default:
-                        return IsLandscape ? 22 : 36;
+                        return IsLandscape ? 33 : 46;
                 }
             }
         }
@@ -104,9 +101,6 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
             Headers_And_Squares(e, TotalRowsMeasureprotocolPrintOut);
             MeasurePoints(e, TotalRowsMeasureprotocolPrintOut);
             Measureprotocol_MainData(e);
-            Print_MeasureInstruments(e);
-            if (Order.WorkOperation == Manage_WorkOperation.WorkOperations.Extrudering_FEP)
-                Hack_Upptagare_FEP(e);
 
             Print.Copy(e);
         }
@@ -117,12 +111,9 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
             Print_Protocol.PrintOut.PageHeader(e, Sidhuvud_Header, Print_Protocol.totalPrintOuts.TotalPages);
             Order_Info(e);
 
-
             Headers_And_Squares(e, TotalRowsMeasureprotocolPrintOut);
             MeasurePoints(e, TotalRowsMeasureprotocolPrintOut);
             Measureprotocol_MainData(e);
-
-            Print_MeasureInstruments_Landscape(e);
 
             Print.Copy_Landscape(e);
         }
@@ -154,8 +145,11 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
        
         
 
-        public static void Print_MeasureInstruments(PrintPageEventArgs e)
+        public static void Print_MeasureInstruments(PrintPageEventArgs e, int start_Y)
         {
+            var y = start_Y;
+            Print.Rubrik(e, LanguageManager.GetString("label_MeasureInstrument_Header"), PrintVariables.LeftMargin, y, PrintVariables.MaxPaperWidth - PrintVariables.LeftMargin);
+            y += 25;
             using (var con = new SqlConnection(Database.cs_Protocol))
             {
                 const string query = "SELECT * FROM MeasureInstruments.Mätdon WHERE OrderID = @id ORDER BY Row";
@@ -163,7 +157,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                 var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@id", Order.OrderID);
                 var reader = cmd.ExecuteReader();
-                var y = PrintVariables.MaxPaperHeight - 190;
+              
                 while (reader.Read())
                 {
                     e.Graphics.DrawString($"{reader["Mätdon"]}:", CustomFonts.A11, CustomFonts.black, 37, y);
@@ -173,68 +167,35 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                     y += 22;
                 }
             }
-            e.Graphics.DrawString(LanguageManager.GetString("startDate"), CustomFonts.A11, CustomFonts.black, 585 - Print.StringWidth(LanguageManager.GetString("startDate"), CustomFonts.A11, e.Graphics), PrintVariables.MaxPaperHeight - 40);
+
+            int x_Text1 = PrintVariables.MaxPaperWidth - 280;
+            int x_Text2 = PrintVariables.MaxPaperWidth - 130;
+
             DateTime.TryParse(Print.utskrift_Korprotokoll["Date_Start"], out var date);
             var dateTimeFormat = CultureInfo.CurrentCulture.DateTimeFormat;
             var formattedDate = date.ToString($"{dateTimeFormat.ShortDatePattern} {dateTimeFormat.ShortTimePattern}", CultureInfo.CurrentCulture);
-            Print.Text_Operatör(e, formattedDate, 585, PrintVariables.MaxPaperHeight - 39, 160);
-            e.Graphics.DrawLine(CustomFonts.thinBlack, new Point(580, PrintVariables.MaxPaperHeight - 25), new Point(740, PrintVariables.MaxPaperHeight - 25));
             
-            e.Graphics.DrawString(LanguageManager.GetString("endDate"), CustomFonts.A11, CustomFonts.black, 585 - Print.StringWidth(LanguageManager.GetString("endDate"), CustomFonts.A11, e.Graphics), PrintVariables.MaxPaperHeight - 20);
+            e.Graphics.DrawString(LanguageManager.GetString("startDate"), CustomFonts.A11, CustomFonts.black, x_Text1, y - 44);
+            Print.Text_Operatör(e, formattedDate, x_Text2, y - 42, 160);
+
             DateTime.TryParse(Print.utskrift_Korprotokoll["Date_Stop"], out date);
             dateTimeFormat = CultureInfo.CurrentCulture.DateTimeFormat;
             formattedDate = date.ToString($"{dateTimeFormat.ShortDatePattern} {dateTimeFormat.ShortTimePattern}", CultureInfo.CurrentCulture);
-            Print.Text_Operatör(e, formattedDate, 585, PrintVariables.MaxPaperHeight - 19, 160);
-            e.Graphics.DrawLine(CustomFonts.thinBlack, new Point(580, PrintVariables.MaxPaperHeight - 5), new Point(740, PrintVariables.MaxPaperHeight - 5));
-        }
-        public static void Print_MeasureInstruments_Landscape(PrintPageEventArgs e)
-        {
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query = "SELECT * FROM MeasureInstruments.Mätdon WHERE OrderID = @id ORDER BY Row";
-                con.Open();
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@id", Order.OrderID);
-                var reader = cmd.ExecuteReader();
-                var y = 680;
-                var x1 = 37;
-                var x2 = 200;
-                while (reader.Read())
-                {
-                    e.Graphics.DrawString($"{reader["Mätdon"]}:", CustomFonts.A11, CustomFonts.black, x1, y);
-                    e.Graphics.DrawLine(CustomFonts.thinBlack, new Point(x2, y + 15), new Point(x2+140, y + 15));
-                    Print.Text_Operatör(e, reader["Nr"].ToString(), x2+5, y, 180);
 
-                    y += 25;
-                    if (y > 800)
-                    {
-                        x1 += 350;
-                        x2 += 350;
-                        y = 680;
-                    }
-                }
+            e.Graphics.DrawString(LanguageManager.GetString("endDate"), CustomFonts.A11, CustomFonts.black, x_Text1, y - 22);
+            Print.Text_Operatör(e, formattedDate, x_Text2, y - 20, 160);
+
+
+
+
+            if (Order.WorkOperation == Manage_WorkOperation.WorkOperations.Extrudering_FEP)
+            {
+                e.Graphics?.DrawString("Hack/Upptagare nr:", CustomFonts.A11, CustomFonts.black, x_Text1, y - 66);
+                Print.Text_Operatör(e, Korprotokoll.Load_Data(Order.OrderID, 19, 246), x_Text2, y - 64, 100, false, true); //Hack
             }
 
-            e.Graphics?.DrawString(LanguageManager.GetString("startDate"), CustomFonts.A11, CustomFonts.black, PrintVariables.MaxPaperWidth - 256, PrintVariables.MaxPaperHeight - 50);
-            e.Graphics?.DrawLine(CustomFonts.thinBlack, new Point(PrintVariables.MaxPaperWidth - 160, PrintVariables.MaxPaperHeight - 30), new Point(PrintVariables.MaxPaperWidth, PrintVariables.MaxPaperHeight - 30));
 
-            e.Graphics?.DrawString(LanguageManager.GetString("endDate"), CustomFonts.A11, CustomFonts.black, PrintVariables.MaxPaperWidth - 251, PrintVariables.MaxPaperHeight - 30);
-            e.Graphics?.DrawLine(CustomFonts.thinBlack, new Point(PrintVariables.MaxPaperWidth - 160, PrintVariables.MaxPaperHeight - 10), new Point(PrintVariables.MaxPaperWidth, PrintVariables.MaxPaperHeight - 10));
-
-            if (Print.utskrift_Korprotokoll != null)
-            {
-                Print.Text_Operatör(e, Print.utskrift_Korprotokoll["Date_Start"], PrintVariables.MaxPaperWidth - 164, PrintVariables.MaxPaperHeight - 47, 160);
-                Print.Text_Operatör(e, Print.utskrift_Korprotokoll["Date_Stop"], PrintVariables.MaxPaperWidth - 164, PrintVariables.MaxPaperHeight - 27, 160);
-            }
-                
-
-            
-        }
-       
-        public static void Hack_Upptagare_FEP(PrintPageEventArgs e)
-        {
-            e.Graphics?.DrawString("Hack/Uppdatagare nr:", CustomFonts.A11, CustomFonts.black, PrintVariables.MaxPaperWidth + PrintVariables.LeftMargin - 280, PrintVariables.MaxPaperHeight - 190);
-            Print.Text_Operatör(e, Korprotokoll.Load_Data(Order.OrderID, 19, 246), PrintVariables.MaxPaperWidth + PrintVariables.LeftMargin - 100, PrintVariables.MaxPaperHeight - 189, 100,false, true); //Hack
+            Print.Thin_Rectangle(e, PrintVariables.LeftMargin, start_Y, PrintVariables.MaxPaperWidth - PrintVariables.LeftMargin, y - start_Y);
         }
 
         public static void Headers_And_Squares(PrintPageEventArgs e, int TotalRows)

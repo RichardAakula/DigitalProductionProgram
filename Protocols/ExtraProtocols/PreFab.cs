@@ -1,17 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Data;
-using Microsoft.Data.SqlClient;
-using System.Globalization;
-using System.Linq;
-using System.Windows.Forms;
-using DigitalProductionProgram.ControlsManagement;
+﻿using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Equipment;
 using DigitalProductionProgram.Help;
 using DigitalProductionProgram.Log;
 using DigitalProductionProgram.MainWindow;
+using DigitalProductionProgram.Measure;
 using DigitalProductionProgram.Monitor;
 using DigitalProductionProgram.Monitor.GET;
 using DigitalProductionProgram.OrderManagement;
@@ -19,11 +12,21 @@ using DigitalProductionProgram.Övrigt;
 using DigitalProductionProgram.PrintingServices;
 using DigitalProductionProgram.Protocols.Protocol;
 using DigitalProductionProgram.User;
+using Microsoft.Data.SqlClient;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Data;
+using System.Globalization;
+using System.Linq;
+using System.Windows.Forms;
 
 namespace DigitalProductionProgram.Protocols.ExtraProtocols
 {
     public partial class PreFab : UserControl
     {
+        public event EventHandler? HeaderClicked;
+
         public static bool IsUsingPreFab;
         public static int TotalRows_PreFab
         {
@@ -40,7 +43,20 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
             }
         }
 
-        public static DataTable DataTable_PreFab(int? orderID, bool IsOkLoadBalance)
+        public static DataTable DataTable_PreFab(int? orderID, bool isOkLoadBalance = false)
+        {
+            switch(Order.WorkOperation)
+            {
+                case Manage_WorkOperation.WorkOperations.HeatShrink:
+                case Manage_WorkOperation.WorkOperations.Krympslangsblåsning:
+                    return DataTable_PreFab_HeatShrink(orderID);
+                case Manage_WorkOperation.WorkOperations.Svetsning:
+                    return DataTable_PreFab_Svetsning(orderID);
+                default:
+                    return DataTable_PreFab_Standard(orderID, isOkLoadBalance);
+            }
+        }
+        private static DataTable DataTable_PreFab_Standard(int? orderID, bool IsOkLoadBalance)
         {
             if (orderID is null)
                 return null;
@@ -85,7 +101,7 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
             }
             return dt;
         }
-        public static DataTable DataTable_Halvfabrikat_Krympslang(int? orderID)
+        private static DataTable DataTable_PreFab_HeatShrink(int? orderID)
         {
             if (orderID is null)
                 return null;
@@ -93,7 +109,13 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
             using (var con = new SqlConnection(Database.cs_Protocol))
             {
                 var query = $@"
-                    SELECT Halvfabrikat_ArtikelNr AS '{LanguageManager.GetString("label_PartNumber")}', Halvfabrikat_OrderNr AS 'BatchNr:', Halvfabrikat_ID AS 'ID', Halvfabrikat_OD AS 'OD', Halvfabrikat_W AS 'W', TempID
+                    SELECT 
+                        Halvfabrikat_ArtikelNr AS '{LanguageManager.GetString("label_PartNumber")}', 
+                        Halvfabrikat_OrderNr AS 'BatchNr:', 
+                        Halvfabrikat_ID AS 'ID', 
+                        Halvfabrikat_OD AS 'OD', 
+                        Halvfabrikat_W AS 'W', 
+                        TempID
                     FROM [Order].PreFab WHERE OrderID = @orderid 
                     ORDER BY Halvfabrikat_ArtikelNr, TempID";
                 var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
@@ -114,13 +136,39 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
             }
             return dt;
         }
+        private static DataTable DataTable_PreFab_Svetsning(int? orderID)
+        {
+            if (orderID is null)
+                return null;
+            var dt = new DataTable();
+            using var con = new SqlConnection(Database.cs_Protocol);
+            var query = $@"
+                    SELECT 
+                        Typ as 'Slang:', 
+                        Halvfabrikat_ArtikelNr AS '{LanguageManager.GetString("label_PartNumber")}', 
+                        Halvfabrikat_OrderNr AS 'BatchNr:', 
+                        Halvfabrikat_ID AS 'ID', 
+                        Halvfabrikat_OD AS 'OD', 
+                        Halvfabrikat_W AS 'W', 
+                        TempID
+                    FROM [Order].PreFab WHERE OrderID = @orderid 
+                    ORDER BY Halvfabrikat_ArtikelNr, TempID";
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            cmd.Parameters.AddWithValue("@orderid", orderID);
+            con.Open();
+            dt.Load(cmd.ExecuteReader());
+
+
+            return dt;
+
+        }
+
         public static List<string?> List_BatchNr(string? partNr)
         {
             var list = Monitor.Monitor.PreFab_BatchNr(partNr);
             if (list != null)
             {
-                var list_Parts = Monitor.Monitor.PreFab_BatchNr(partNr).ToList();
-                return list_Parts;
+                return Monitor.Monitor.PreFab_BatchNr(partNr).ToList();
             }
 
             return null;
@@ -130,16 +178,14 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
             get
             {
                 var list = new List<string?>();
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    var query = @"SELECT DISTINCT Halvfabrikat_OrderNr FROM [Order].PreFab ORDER BY Halvfabrikat_OrderNr";
+                using var con = new SqlConnection(Database.cs_Protocol);
+                var query = @"SELECT DISTINCT Halvfabrikat_OrderNr FROM [Order].PreFab ORDER BY Halvfabrikat_OrderNr";
 
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    con.Open();
-                    var reader = cmd.ExecuteReader();
-                    while (reader.Read())
-                        list.Add(reader[0].ToString());
-                }
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                con.Open();
+                var reader = cmd.ExecuteReader();
+                while (reader.Read())
+                    list.Add(reader[0].ToString());
                 return list;
             }
         }
@@ -183,37 +229,49 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
         public PreFab()
         {
             InitializeComponent();
+            btn_PreFab.Click += (s, e) =>
+            {
+                try
+                {
+                    HeaderClicked?.Invoke(this, e);
+                }
+                catch
+                {
+                    // swallow exceptions from subscribers
+                }
+            };
         }
         public void Translate_Form()
         {
             LanguageManager.TranslationHelper.TranslateControls(new Control[] { btn_AddPreFab, btn_RemovePreFab, btn_PreFab });
         }
 
-        public static void UPDATE_PreFab(string artikelNr, string batchNr, int tempID, string dateBestBefore)
+        
+        public static void UPDATE_PreFab(string? batchNr, string? typ, double? id, double? od, double? wall, int tempID, string? dateBestBefore)
         {
             if (Module.IsOkToSave)
             {
-                using var con = new SqlConnection(Database.cs_Protocol);
+                using var con = new SqlConnection(Database.cs_Protocol); 
                 const string query = @"
-                        UPDATE [Order].PreFab 
-                        SET 
-                            Halvfabrikat_OrderNr = @batchnr,
-                            BestBeforeDate = @bestbeforedate
-                        WHERE TempID = @tempid";
+                    UPDATE [Order].PreFab
+                    SET 
+                        Typ = COALESCE(@typ, Typ),
+                        Halvfabrikat_OrderNr = COALESCE(@batchnr, Halvfabrikat_OrderNr),
+                        BestBeforeDate = COALESCE(@bestbefore, BestBeforeDate),
+                        Halvfabrikat_ID = COALESCE(@id, Halvfabrikat_ID),
+                        Halvfabrikat_OD = COALESCE(@od, Halvfabrikat_OD),
+                        Halvfabrikat_W = COALESCE(@wall, Halvfabrikat_W)
+                    WHERE TempID = @tempid";
+
                 con.Open();
                 var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@tempid", tempID);
-                cmd.Parameters.AddWithValue("@halv_ArtikelNr", artikelNr);
-                   
-                if (!DateTime.TryParse(dateBestBefore, out var dateTime))
-                    cmd.Parameters.AddWithValue("@bestbeforedate", DBNull.Value);
-                else
-                    cmd.Parameters.AddWithValue("@bestbeforedate", dateTime);
-                  
-                if (string.IsNullOrEmpty(batchNr))
-                    cmd.Parameters.AddWithValue(@"batchnr", DBNull.Value);
-                else
-                    cmd.Parameters.AddWithValue("@batchnr", batchNr);
+                cmd.Parameters.AddWithValue("@typ", string.IsNullOrEmpty(typ) ? DBNull.Value : typ);
+                cmd.Parameters.AddWithValue("@batchnr", string.IsNullOrEmpty(batchNr) ? DBNull.Value : batchNr);
+                cmd.Parameters.AddWithValue("@bestbefore", DateTime.TryParse(dateBestBefore, out var d) ? d : DBNull.Value);
+                cmd.Parameters.AddWithValue("@id", id ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("@od", od ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("@wall", wall ?? (object)DBNull.Value);
                 cmd.ExecuteNonQuery();
             }
         }
@@ -265,14 +323,17 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
                 case Manage_WorkOperation.WorkOperations.Extrudering_Grov_PTFE:
                 case Manage_WorkOperation.WorkOperations.Skärmning:
                 case Manage_WorkOperation.WorkOperations.Extrudering_FEP:
-                dgv.DataSource = DataTable_PreFab(orderID, IsOkLoadBalance);
+                    dgv.DataSource = DataTable_PreFab(orderID, IsOkLoadBalance);
                     dgv.Columns["Extruder:"].Visible = false;
                     BatchNrColumn = 3;
                     break;
                 case Manage_WorkOperation.WorkOperations.Krympslangsblåsning:
                 case Manage_WorkOperation.WorkOperations.HeatShrink:
-                    dgv.DataSource = DataTable_Halvfabrikat_Krympslang(orderID);
+                    dgv.DataSource = DataTable_PreFab(orderID);
                     BatchNrColumn = 1;
+                    break;
+                case Manage_WorkOperation.WorkOperations.Svetsning:
+                    dgv.DataSource = DataTable_PreFab(orderID);
                     break;
                 default:
                     return;
@@ -287,78 +348,122 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
             if (Browse_Protocols.Browse_Protocols.Is_BrowsingProtocols)
                 return;
             List<string?> items;
-
-            if (e.ColumnIndex == ExtruderColumn)//Extruder
+            var ColumnName = dgv.Columns[e.ColumnIndex].Name;
+            var partNr = dgv.Rows[e.RowIndex].Cells[LanguageManager.GetString("label_PartNumber")].Value.ToString();
+            switch (ColumnName)
             {
-                items = Machines.Extruders("EXTRUDER", Order.OrderID);
-                using var choose_Item = new Choose_Item(items, new[] { dgv.Rows[e.RowIndex].Cells[e.ColumnIndex] });
-                choose_Item.ShowDialog();
-                dgv.ClearSelection();
-            }
+                case "Extruder:":
+                    items = Machines.Extruders("EXTRUDER", Order.OrderID);
+                    var choose_Item = new Choose_Item(items, new[] { dgv.Rows[e.RowIndex].Cells[e.ColumnIndex] });
+                    choose_Item.ShowDialog();
+                    dgv.ClearSelection();
+                    break;
 
-            if (e.ColumnIndex == BatchNrColumn)//BatchNr
-            {
-                items = List_BatchNr(dgv.Rows[e.RowIndex].Cells[0].Value.ToString());
+                case "BatchNr:":
+                    items = List_BatchNr(partNr);
 
-                if (!string.IsNullOrEmpty(dgv.Rows[e.RowIndex].Cells["BatchNr:"].Value.ToString()) && Is_CommentNeededToChangeBatchNr)
-                {
-                    using var byt_BatchNr = new Change_ChargeNr_AddComment();
-                    using var black = new BlackBackground("", 80);
-                    black.Show();
-                    byt_BatchNr.ShowDialog();
-                    if (string.IsNullOrEmpty(byt_BatchNr.Kommentar))
+                    if (!string.IsNullOrEmpty(dgv.Rows[e.RowIndex].Cells["BatchNr:"].Value.ToString()) && Is_CommentNeededToChangeBatchNr)
                     {
-                        InfoText.Show(LanguageManager.GetString("changeBatchNr_Info_1"), CustomColors.InfoText_Color.Info, "Warning", this);
+                        using var byt_BatchNr = new Change_ChargeNr_AddComment();
+                        using var black = new BlackBackground("", 80);
+                        black.Show();
+                        byt_BatchNr.ShowDialog();
+                        if (string.IsNullOrEmpty(byt_BatchNr.Kommentar))
+                        {
+                            InfoText.Show(LanguageManager.GetString("changeBatchNr_Info_1"), CustomColors.InfoText_Color.Info, "Warning", this);
+
+                            black.Close();
+                            return;
+                        }
 
                         black.Close();
-                        return;
+                        DatabaseManagement.SaveData.INSERT_Kommentar_Byte_BatchNr($"{LanguageManager.GetString("changeBatchNr_Info_2")} {byt_BatchNr.Kommentar}");
                     }
-                    black.Close();
-                    DatabaseManagement.SaveData.INSERT_Kommentar_Byte_BatchNr($"{LanguageManager.GetString("changeBatchNr_Info_2")} {byt_BatchNr.Kommentar}");
-                }
-                if (items != null)
-                {
-                    using var choose_Item = new Choose_Item(items, new[] { dgv.Rows[e.RowIndex].Cells[e.ColumnIndex] }, null, 0, 0, false);
-                    choose_Item.ShowDialog();
-                }
 
-                dgv.ClearSelection();
+                    if (items != null)
+                    {
+                        choose_Item = new Choose_Item(items, new[] { dgv.Rows[e.RowIndex].Cells[e.ColumnIndex] }, null, 0, 0, false);
+                        choose_Item.ShowDialog();
+                    }
+
+                    dgv.ClearSelection();
+                    break;
+                case "Slang:":
+                    choose_Item = new Choose_Item(new List<string?> { "Skärmad", "Mjuk", "Formar" }, new[] { dgv.Rows[e.RowIndex].Cells[e.ColumnIndex] }, null, 0, 0, false);
+                    choose_Item.ShowDialog();
+
+                    break;
+                     
             }
+               
+
+            
         }
         private void Save_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
             if (Module.IsOkToSave == false)
                 return;
+            var ColumnName = dgv.Columns[e.ColumnIndex].Name;
+            var tempid = int.Parse(dgv.Rows[e.RowIndex].Cells["TempID"].Value.ToString() ?? string.Empty);
+            var row = dgv.CurrentCell.RowIndex;
 
-            var col = e.ColumnIndex;
-            if (col == BatchNrColumn)
+            switch (ColumnName)
             {
-                var row = dgv.CurrentCell.RowIndex;
-                var cell_Saldo = dgv.Rows[row].Cells[LanguageManager.GetString("preFab_Balance")];
-                var cell_BatchNr = dgv.Rows[row].Cells["BatchNr:"];
-                var cell_ArtikelNr = dgv.Rows[row].Cells[LanguageManager.GetString("label_PartNumber")];
-                string bestBeforeDate = null;
-                var columnName = LanguageManager.GetString("preFab_BestBefore");
-                string batchNr = cell_BatchNr.Value.ToString();
-                if (dgv.Columns.Contains(columnName))
-                {
-                    var cell_BestBefore = dgv.Rows[row].Cells[LanguageManager.GetString("preFab_BestBefore")];
-                    var bestBefore = Monitor.Monitor.BestBeforeDate(cell_ArtikelNr.Value.ToString(), cell_BatchNr.Value.ToString());
-                    cell_BestBefore.Value = DateTime.TryParse(bestBefore, out DateTime result) ? (object)result : DBNull.Value;
+                case "Slang:":
+                    var slang = dgv.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString();
+                    UPDATE_PreFab(null, slang, null, null, null, tempid, null);
+                    break;
 
-                    bestBeforeDate = cell_BestBefore.Value.ToString();
-                }
+                //var col = e.ColumnIndex;
+                //if (col == BatchNrColumn)
+                case "BatchNr:":
+                    string? bestBeforeDate = null;
+                    var cell_BatchNr = dgv.Rows[row].Cells["BatchNr:"];
+                    var batchNr = cell_BatchNr.Value.ToString();
+                    var colName = LanguageManager.GetString("preFab_Balance") ?? string.Empty;
+                    if (dgv.Columns.Contains(colName))
+                    {
+                        var cell_Saldo = dgv.Rows[row].Cells[LanguageManager.GetString("preFab_Balance") ?? string.Empty];
+                        var cell_ArtikelNr = dgv.Rows[row].Cells[LanguageManager.GetString("label_PartNumber") ?? string.Empty];
+                        var columnName = LanguageManager.GetString("preFab_BestBefore");
 
-                cell_Saldo.Value = $"{Monitor.Monitor.Balance(cell_ArtikelNr.Value.ToString(), cell_BatchNr.Value.ToString()):0.00} {Monitor.Monitor.Units(cell_ArtikelNr.Value.ToString())}";
 
-                
-                UPDATE_PreFab(cell_ArtikelNr.Value.ToString(), batchNr, int.Parse(dgv.Rows[row].Cells["TempID"].Value.ToString()), bestBeforeDate);
-            }
+                        //if (dgv.Columns.Contains(columnName))
 
-            if (col == ExtruderColumn)
-            {
-                var row = dgv.CurrentCell.RowIndex;
-                UPDATE_PreFab_Extruder(dgv.Rows[row].Cells[LanguageManager.GetString("label_PartNumber")].Value.ToString(), dgv.Rows[row].Cells["Extruder:"].Value.ToString());
+                        var cell_BestBefore = dgv.Rows[row].Cells[LanguageManager.GetString("preFab_BestBefore") ?? string.Empty];
+                        var bestBefore = Monitor.Monitor.BestBeforeDate(cell_ArtikelNr.Value.ToString(), cell_BatchNr.Value.ToString());
+                        cell_BestBefore.Value = DateTime.TryParse(bestBefore, out DateTime result) ? (object)result : DBNull.Value;
+
+                        bestBeforeDate = cell_BestBefore.Value.ToString();
+                        cell_Saldo.Value = $"{Monitor.Monitor.Balance(cell_ArtikelNr.Value.ToString(), cell_BatchNr.Value.ToString()):0.00} {Monitor.Monitor.Units(cell_ArtikelNr.Value.ToString())}";
+                    }
+
+                    UPDATE_PreFab(batchNr, null, null, null, null, tempid, bestBeforeDate);
+                    break;
+                    case "Extruder:":
+                    //if (col == ExtruderColumn)
+                        UPDATE_PreFab_Extruder(dgv.Rows[row].Cells[LanguageManager.GetString("label_PartNumber")].Value.ToString(), dgv.Rows[row].Cells["Extruder:"].Value.ToString());
+                    break;
+
+                case "ID":
+                    double? id = null;
+                    if (double.TryParse(dgv.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString(), out var parsedID))
+                        id = parsedID;
+                    UPDATE_PreFab(null, null, id, null, null, tempid, null);
+                    break;
+                case "OD":
+                    double? od = null;
+                    if (double.TryParse(dgv.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString(), out var parsedOD))
+                        od = parsedOD;
+                    UPDATE_PreFab(null, null, null, od, null, tempid, null);
+                    break;
+                case "Wall":
+                    double? wall = null;
+                    if (double.TryParse(dgv.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString(), out var parsedWall))
+                        wall = parsedWall;
+                    UPDATE_PreFab(null, null, null, null, wall, tempid, null);
+
+                    break;
             }
         }
         private void CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
@@ -497,7 +602,7 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
                 int tempId;
 
                 if (CheckAuthority.IsWorkoperationAuthorized(CheckAuthority.TemplateWorkoperation.SaveMeasurepointsWithPrefab))
-                    tempId = int.Parse(DataTable_Halvfabrikat_Krympslang(Order.OrderID).Rows[row]["TempID"].ToString());
+                    tempId = int.Parse(DataTable_PreFab_HeatShrink(Order.OrderID).Rows[row]["TempID"].ToString());
                 else
                     tempId = int.Parse(DataTable_PreFab(Order.OrderID, true).Rows[row]["TempID"].ToString());
                 using var con = new SqlConnection(Database.cs_Protocol);
@@ -534,19 +639,7 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
             dgv.ClearSelection();
         }
 
-        private void PreFab_Click(object sender, EventArgs e)
-        {
-            var parentControl = this.Parent;
-            while (!(parentControl is MainProtocol) && parentControl != null)
-                parentControl = parentControl.Parent;
-
-            if (!(parentControl is MainProtocol form)) 
-                return;
-            if (form.tlp_Main.ColumnStyles[1].Width > 450)
-                form.Hide_ExtraControls();
-            else
-                form.Show_PreFab();
-        }
+        
 
     }
 }

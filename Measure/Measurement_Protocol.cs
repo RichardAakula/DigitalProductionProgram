@@ -16,6 +16,7 @@ using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.Övrigt;
 using DigitalProductionProgram.PrintingServices;
 using DigitalProductionProgram.Protocols;
+using DigitalProductionProgram.Protocols.ExtraProtocols;
 using DigitalProductionProgram.Protocols.Protocol;
 using DigitalProductionProgram.Protocols.Template_Management;
 using DigitalProductionProgram.Templates;
@@ -518,6 +519,7 @@ namespace DigitalProductionProgram.Measure
             if (!Person.IsPasswordOk(LanguageManager.GetString("measureprotocol_Info_2")))
                 return;
 
+            
             if (IsTransferInEditMode)
             {
                 UPDATE_MeasureProtocol_Values();

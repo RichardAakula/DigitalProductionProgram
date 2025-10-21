@@ -138,10 +138,12 @@ namespace DigitalProductionProgram.MainWindow
             Developer_CountSql_Queries = new ToolStripMenuItem();
             Developer_Clear_Sql_Queries = new ToolStripMenuItem();
             testaChartToolStripMenuItem = new ToolStripMenuItem();
+            flyttaDataFrånSvetsnigToolStripMenuItem = new ToolStripMenuItem();
             menuStrip = new MenuStrip();
             Menu_Equipment = new ToolStripMenuItem();
             Menu_Equipment_UseFilter = new ToolStripMenuItem();
             Menu_Equipment_UseSilpaket = new ToolStripMenuItem();
+            flyttaMätdataFrånSvetsningToolStripMenuItem = new ToolStripMenuItem();
             menuStrip.SuspendLayout();
             SuspendLayout();
             // 
@@ -497,7 +499,7 @@ namespace DigitalProductionProgram.MainWindow
             // 
             Menu_Theme_Beach.BackColor = Color.Wheat;
             Menu_Theme_Beach.Name = "Menu_Theme_Beach";
-            Menu_Theme_Beach.Size = new Size(153, 22);
+            Menu_Theme_Beach.Size = new Size(180, 22);
             Menu_Theme_Beach.Text = "Beach";
             Menu_Theme_Beach.Click += Menu_Tema_Click;
             // 
@@ -505,7 +507,7 @@ namespace DigitalProductionProgram.MainWindow
             // 
             Menu_Theme_Forest.BackColor = Color.SeaGreen;
             Menu_Theme_Forest.Name = "Menu_Theme_Forest";
-            Menu_Theme_Forest.Size = new Size(153, 22);
+            Menu_Theme_Forest.Size = new Size(180, 22);
             Menu_Theme_Forest.Text = "Forest";
             Menu_Theme_Forest.Click += Menu_Tema_Click;
             // 
@@ -513,7 +515,7 @@ namespace DigitalProductionProgram.MainWindow
             // 
             Menu_Theme_Sky.BackColor = Color.LightSteelBlue;
             Menu_Theme_Sky.Name = "Menu_Theme_Sky";
-            Menu_Theme_Sky.Size = new Size(153, 22);
+            Menu_Theme_Sky.Size = new Size(180, 22);
             Menu_Theme_Sky.Text = "Sky";
             Menu_Theme_Sky.Click += Menu_Tema_Click;
             // 
@@ -521,7 +523,7 @@ namespace DigitalProductionProgram.MainWindow
             // 
             Menu_Theme_Sun.BackColor = Color.Yellow;
             Menu_Theme_Sun.Name = "Menu_Theme_Sun";
-            Menu_Theme_Sun.Size = new Size(153, 22);
+            Menu_Theme_Sun.Size = new Size(180, 22);
             Menu_Theme_Sun.Text = "Sun";
             Menu_Theme_Sun.Click += Menu_Tema_Click;
             // 
@@ -529,7 +531,7 @@ namespace DigitalProductionProgram.MainWindow
             // 
             Menu_Theme_Water.BackColor = Color.MediumTurquoise;
             Menu_Theme_Water.Name = "Menu_Theme_Water";
-            Menu_Theme_Water.Size = new Size(153, 22);
+            Menu_Theme_Water.Size = new Size(180, 22);
             Menu_Theme_Water.Text = "Water";
             Menu_Theme_Water.Click += Menu_Tema_Click;
             // 
@@ -538,7 +540,7 @@ namespace DigitalProductionProgram.MainWindow
             Menu_Theme_Black.BackColor = Color.Black;
             Menu_Theme_Black.ForeColor = SystemColors.ControlDarkDark;
             Menu_Theme_Black.Name = "Menu_Theme_Black";
-            Menu_Theme_Black.Size = new Size(153, 22);
+            Menu_Theme_Black.Size = new Size(180, 22);
             Menu_Theme_Black.Text = "Black";
             Menu_Theme_Black.Click += Menu_Tema_Click;
             // 
@@ -546,7 +548,7 @@ namespace DigitalProductionProgram.MainWindow
             // 
             Menu_Theme_Winter.BackColor = Color.White;
             Menu_Theme_Winter.Name = "Menu_Theme_Winter";
-            Menu_Theme_Winter.Size = new Size(153, 22);
+            Menu_Theme_Winter.Size = new Size(180, 22);
             Menu_Theme_Winter.Text = "Winter";
             Menu_Theme_Winter.Click += Menu_Tema_Click;
             // 
@@ -554,7 +556,7 @@ namespace DigitalProductionProgram.MainWindow
             // 
             Menu_Theme_Light.BackColor = Color.SeaShell;
             Menu_Theme_Light.Name = "Menu_Theme_Light";
-            Menu_Theme_Light.Size = new Size(153, 22);
+            Menu_Theme_Light.Size = new Size(180, 22);
             Menu_Theme_Light.Text = "Light";
             Menu_Theme_Light.Click += Menu_Tema_Click;
             // 
@@ -562,35 +564,35 @@ namespace DigitalProductionProgram.MainWindow
             // 
             Menu_Theme_Pink.BackColor = Color.Violet;
             Menu_Theme_Pink.Name = "Menu_Theme_Pink";
-            Menu_Theme_Pink.Size = new Size(153, 22);
+            Menu_Theme_Pink.Size = new Size(180, 22);
             Menu_Theme_Pink.Text = "Pink";
             Menu_Theme_Pink.Click += Menu_Tema_Click;
             // 
             // Menu_Theme_Cars
             // 
             Menu_Theme_Cars.Name = "Menu_Theme_Cars";
-            Menu_Theme_Cars.Size = new Size(153, 22);
+            Menu_Theme_Cars.Size = new Size(180, 22);
             Menu_Theme_Cars.Text = "Cars";
             Menu_Theme_Cars.Click += Menu_Tema_Click;
             // 
             // Menu_Theme_Animals
             // 
             Menu_Theme_Animals.Name = "Menu_Theme_Animals";
-            Menu_Theme_Animals.Size = new Size(153, 22);
+            Menu_Theme_Animals.Size = new Size(180, 22);
             Menu_Theme_Animals.Text = "Animals";
             Menu_Theme_Animals.Click += Menu_Tema_Click;
             // 
             // Menu_Theme_Music
             // 
             Menu_Theme_Music.Name = "Menu_Theme_Music";
-            Menu_Theme_Music.Size = new Size(153, 22);
+            Menu_Theme_Music.Size = new Size(180, 22);
             Menu_Theme_Music.Text = "Music";
             Menu_Theme_Music.Click += Menu_Tema_Click;
             // 
             // Menu_Theme_Houses
             // 
             Menu_Theme_Houses.Name = "Menu_Theme_Houses";
-            Menu_Theme_Houses.Size = new Size(153, 22);
+            Menu_Theme_Houses.Size = new Size(180, 22);
             Menu_Theme_Houses.Text = "Houses";
             Menu_Theme_Houses.Click += Menu_Tema_Click;
             // 
@@ -599,7 +601,7 @@ namespace DigitalProductionProgram.MainWindow
             Menu_Theme_Nature.BackColor = Color.ForestGreen;
             Menu_Theme_Nature.ForeColor = Color.LightCoral;
             Menu_Theme_Nature.Name = "Menu_Theme_Nature";
-            Menu_Theme_Nature.Size = new Size(153, 22);
+            Menu_Theme_Nature.Size = new Size(180, 22);
             Menu_Theme_Nature.Text = "Nature";
             Menu_Theme_Nature.Click += Menu_Tema_Click;
             // 
@@ -608,7 +610,7 @@ namespace DigitalProductionProgram.MainWindow
             Menu_Theme_Dark.BackColor = Color.FromArgb(25, 25, 25);
             Menu_Theme_Dark.ForeColor = Color.DarkGray;
             Menu_Theme_Dark.Name = "Menu_Theme_Dark";
-            Menu_Theme_Dark.Size = new Size(153, 22);
+            Menu_Theme_Dark.Size = new Size(180, 22);
             Menu_Theme_Dark.Text = "Dark";
             Menu_Theme_Dark.Click += Menu_Tema_Click;
             // 
@@ -616,14 +618,14 @@ namespace DigitalProductionProgram.MainWindow
             // 
             Menu_Theme_Discography.BackColor = Color.IndianRed;
             Menu_Theme_Discography.Name = "Menu_Theme_Discography";
-            Menu_Theme_Discography.Size = new Size(153, 22);
+            Menu_Theme_Discography.Size = new Size(180, 22);
             Menu_Theme_Discography.Text = "Discography";
             Menu_Theme_Discography.Click += Menu_Tema_Click;
             // 
             // Menu_Theme_Optinova
             // 
             Menu_Theme_Optinova.Name = "Menu_Theme_Optinova";
-            Menu_Theme_Optinova.Size = new Size(153, 22);
+            Menu_Theme_Optinova.Size = new Size(180, 22);
             Menu_Theme_Optinova.Text = "Optinova";
             Menu_Theme_Optinova.Click += Menu_Tema_Click;
             // 
@@ -695,7 +697,7 @@ namespace DigitalProductionProgram.MainWindow
             // 
             // Menu_Developer
             // 
-            Menu_Developer.DropDownItems.AddRange(new ToolStripItem[] { Menu_Developer_GetOrderInfo, Menu_Developer_SendMailToAllUsers, Menu_Developer_AddGallup, Menu_Developer_CheckGallup, Menu_Developer_OpenRandomOrder, Menu_Developer_InsertHalvfabrikat, Menu_Developer_NewProtocol_Extrudering_TEF, Menu_Developer_Test_RGB, Menu_Developer_NewMeasureProtocol, Menu_Developer_MoveDataKorprotokollValues, Menu_Utvecklare_MoveDataFEP, Menu_Developer_Timer_test, moveProcesskortExtruderingTEFTillProcesscardDataToolStripMenuItem, raderaExtruderingTEFFrånProcesscardDataToolStripMenuItem, Menu_Developer_ExportHS_Data, kontrolleraFEPDataSomÄrFelPåExtruderToolStripMenuItem, Menu_Developer_GetDataForQuoting, Menu_Developer_INSERT_Rengjort, Menu_Developer_INSERT_Verktyg_Typ, testaNAntalKörningarPåArtikelNrToolStripMenuItem, Menu_Developer_AddThemePicture, Menu_Developer_TestNewProtocol, testCalendarToolStripMenuItem, Developer_AddLineClearance_Table, påskäggToolStripMenuItem, Developer_CountSql_Queries, Developer_Clear_Sql_Queries, testaChartToolStripMenuItem });
+            Menu_Developer.DropDownItems.AddRange(new ToolStripItem[] { Menu_Developer_GetOrderInfo, Menu_Developer_SendMailToAllUsers, Menu_Developer_AddGallup, Menu_Developer_CheckGallup, Menu_Developer_OpenRandomOrder, Menu_Developer_InsertHalvfabrikat, Menu_Developer_NewProtocol_Extrudering_TEF, Menu_Developer_Test_RGB, Menu_Developer_NewMeasureProtocol, Menu_Developer_MoveDataKorprotokollValues, Menu_Utvecklare_MoveDataFEP, Menu_Developer_Timer_test, moveProcesskortExtruderingTEFTillProcesscardDataToolStripMenuItem, raderaExtruderingTEFFrånProcesscardDataToolStripMenuItem, Menu_Developer_ExportHS_Data, kontrolleraFEPDataSomÄrFelPåExtruderToolStripMenuItem, Menu_Developer_GetDataForQuoting, Menu_Developer_INSERT_Rengjort, Menu_Developer_INSERT_Verktyg_Typ, testaNAntalKörningarPåArtikelNrToolStripMenuItem, Menu_Developer_AddThemePicture, Menu_Developer_TestNewProtocol, testCalendarToolStripMenuItem, Developer_AddLineClearance_Table, påskäggToolStripMenuItem, Developer_CountSql_Queries, Developer_Clear_Sql_Queries, testaChartToolStripMenuItem, flyttaDataFrånSvetsnigToolStripMenuItem, flyttaMätdataFrånSvetsningToolStripMenuItem });
             Menu_Developer.ForeColor = Color.DeepSkyBlue;
             Menu_Developer.Name = "Menu_Developer";
             Menu_Developer.Size = new Size(81, 32);
@@ -927,13 +929,20 @@ namespace DigitalProductionProgram.MainWindow
             testaChartToolStripMenuItem.Text = "Kolla medelvärden!";
             testaChartToolStripMenuItem.Click += testaChartToolStripMenuItem_Click;
             // 
+            // flyttaDataFrånSvetsnigToolStripMenuItem
+            // 
+            flyttaDataFrånSvetsnigToolStripMenuItem.Name = "flyttaDataFrånSvetsnigToolStripMenuItem";
+            flyttaDataFrånSvetsnigToolStripMenuItem.Size = new Size(401, 22);
+            flyttaDataFrånSvetsnigToolStripMenuItem.Text = "Flytta data från Svetsning";
+            flyttaDataFrånSvetsnigToolStripMenuItem.Click += flyttaDataFrånSvetsnigToolStripMenuItem_Click;
+            // 
             // menuStrip
             // 
             menuStrip.BackColor = Color.Transparent;
             menuStrip.Dock = DockStyle.Fill;
             menuStrip.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             menuStrip.ImageScalingSize = new Size(28, 28);
-            menuStrip.Items.AddRange(new ToolStripItem[] { Menu_Arkiv, Menu_Order, Menu_Protocol, Menu_Equipment, Menu_User, Menu_Help, Menu_Themes, Menu_Settings, Menu_Developer });
+            menuStrip.Items.AddRange(new ToolStripItem[] { Menu_Arkiv, Menu_Order, Menu_Protocol, Menu_Equipment, Menu_User, Menu_Help, Menu_Settings, Menu_Themes, Menu_Developer });
             menuStrip.LayoutStyle = ToolStripLayoutStyle.HorizontalStackWithOverflow;
             menuStrip.Location = new Point(0, 0);
             menuStrip.Name = "menuStrip";
@@ -976,6 +985,13 @@ namespace DigitalProductionProgram.MainWindow
             Menu_Equipment_UseSilpaket.Size = new Size(181, 22);
             Menu_Equipment_UseSilpaket.Text = "Använd Silpaket";
             Menu_Equipment_UseSilpaket.Click += Menu_Protocol_UseSilpaket_Click;
+            // 
+            // flyttaMätdataFrånSvetsningToolStripMenuItem
+            // 
+            flyttaMätdataFrånSvetsningToolStripMenuItem.Name = "flyttaMätdataFrånSvetsningToolStripMenuItem";
+            flyttaMätdataFrånSvetsningToolStripMenuItem.Size = new Size(401, 22);
+            flyttaMätdataFrånSvetsningToolStripMenuItem.Text = "Flytta Mätdata från Svetsning";
+            flyttaMätdataFrånSvetsningToolStripMenuItem.Click += flyttaMätDataFrånSvetsnigToolStripMenuItem_Click;
             // 
             // Main_Menu
             // 
@@ -1106,5 +1122,7 @@ namespace DigitalProductionProgram.MainWindow
         private ToolStripMenuItem Developer_Clear_Sql_Queries;
         private ToolStripMenuItem testaChartToolStripMenuItem;
         private ToolStripMenuItem Menu_Arkiv_UpdateDPP;
+        private ToolStripMenuItem flyttaDataFrånSvetsnigToolStripMenuItem;
+        private ToolStripMenuItem flyttaMätdataFrånSvetsningToolStripMenuItem;
     }
 }

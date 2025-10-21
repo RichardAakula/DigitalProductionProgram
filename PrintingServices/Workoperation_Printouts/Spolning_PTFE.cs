@@ -1,8 +1,4 @@
-﻿using System;
-using Microsoft.Data.SqlClient;
-using System.Drawing.Printing;
-using System.Windows.Forms;
-using DigitalProductionProgram.DatabaseManagement;
+﻿using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.Processcards;
@@ -10,6 +6,11 @@ using DigitalProductionProgram.Protocols.Protocol;
 using DigitalProductionProgram.Protocols.Template_Management;
 using DigitalProductionProgram.Templates;
 using DigitalProductionProgram.User;
+using Microsoft.Data.SqlClient;
+using System;
+using System.Drawing.Printing;
+using System.Windows.Forms;
+using static DigitalProductionProgram.PrintingServices.PrintVariables;
 
 namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
 {
@@ -40,6 +41,9 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
             {
                 PagesSpolning = (int)Math.Ceiling((double)Module.TotalStartUps / 24)
             };
+            Print_Protocol.SetHeightMeasureInstruments();
+            Print_Protocol.totalPrintOuts.PagesExtraMeasureInstruments = 1;
+
             PrintVariables.CommentIndex = 0;
 
             Measureprotocol.FirstRowMeasurment = 1;
@@ -64,6 +68,9 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                 if (i < antal_Utskrifter)
                     PrintVariables.Active_PrintOut ++;
             }
+            //Skrivet ut Mätdon
+            if (Print_Protocol.Height_MeasureInstruments > 0)
+               Print_Protocol.PrintMeasureInstruments(IsPrinting);
 
             //Skriver ut Mätprotokoll
             for (var ctr = 1; ctr < Measureprotocol.TotalMeasureProtocols + 1; ctr++)

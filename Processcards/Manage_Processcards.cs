@@ -300,7 +300,7 @@ namespace DigitalProductionProgram.Processcards
             cb_TemplateRevision.SelectedIndex = cb_TemplateRevision.Items.Count - 1;
 
             Change_UI_WorkOperation();
-
+           
             ProcesscardBasedOn.rb_FramtagningAvProcessfönster.Enabled = true;
             ProcesscardBasedOn.rb_HistoricalData.Enabled = true;
             ProcesscardBasedOn.rb_Validated.Enabled = true;
@@ -342,6 +342,10 @@ namespace DigitalProductionProgram.Processcards
 
             ProcesscardBasedOn.lbl_RevNr.Click += RevNrChanged;
             IsStartingForm = false;
+
+            Fill_cb_ProtocolTemplateRevision();
+            Templates_Protocol.MainTemplate.Load_MainTemplateID(cb_ProtocolTemplateName.SelectedItem?.ToString(), cb_TemplateRevision.SelectedItem?.ToString());
+            LoadTemplate();
         }
 
 
@@ -460,16 +464,13 @@ namespace DigitalProductionProgram.Processcards
                 case Manage_WorkOperation.WorkOperations.Slipning:
                     Change_UI_Slipning();
                     break;
-                case Manage_WorkOperation.WorkOperations.Svetsning:
-                    Change_UI_Svetsning();
-                    break;
                 case Manage_WorkOperation.WorkOperations.Nothing:
                     break;
                 default:
                     tab_Main.SelectedTab = tp_Protocol;
                     break;
             }
-            dgv_Revision.BackgroundColor = flp_Left.BackColor = tp_Protocol.BackColor = CustomColors.Load_BackColor_WorkOperation(Order.WorkOperation.ToString());// tlp_Machines.BackColor =
+            dgv_Revision.BackgroundColor = flp_Left.BackColor = tp_Protocol.BackColor = CustomColors.Load_BackColor_WorkOperation(Order.WorkOperation.ToString());
         }
 
         private void Change_UI_Inactive_ArtikelNr()
@@ -526,20 +527,7 @@ namespace DigitalProductionProgram.Processcards
             tb_ProdType.Visible = false;
             label_ProductType.Visible = false;
         }
-        private void Change_UI_Svetsning()
-        {
-            tab_Main.SelectedTab = tp_Svetsning;
-            tlp_Main.ColumnStyles[0].Width = 855;
-            tlp_Main_Processkort.Width = 590;
-            tlp_Main_Processkort.Height = 195;
-
-            panel_ProductionLine.Visible = false;
-            panel_Tips.Visible = false;
-            flp_ExtraInfo.Visible = false;
-
-            tb_ProdType.Visible = false;
-            label_ProductType.Visible = false;
-        }
+       
 
 
         private void Clear_Data()
@@ -554,9 +542,6 @@ namespace DigitalProductionProgram.Processcards
                     break;
                 case Manage_WorkOperation.WorkOperations.Slipning:
                     Processkort_Slipning.Clear_Data();
-                    break;
-                case Manage_WorkOperation.WorkOperations.Svetsning:
-                    Processkort_Svetsning.Clear_Data();
                     break;
             }
 
@@ -630,9 +615,6 @@ namespace DigitalProductionProgram.Processcards
                     break;
                 case Manage_WorkOperation.WorkOperations.Slipning:
                     Processkort_Slipning.Load_Data();
-                    break;
-                case Manage_WorkOperation.WorkOperations.Svetsning:
-                    Processkort_Svetsning.Load_Data();
                     break;
                 case Manage_WorkOperation.WorkOperations.Nothing:
                     break;
@@ -1020,9 +1002,7 @@ namespace DigitalProductionProgram.Processcards
                 case Manage_WorkOperation.WorkOperations.Slipning:
                     Processkort_Slipning.Save_Data(ref IsOk, Parameters_Main);
                     break;
-                case Manage_WorkOperation.WorkOperations.Svetsning:
-                    Processkort_Svetsning.Save_Data(ref IsOk, Parameters_Main);
-                    break;
+              
             }
 
             pbar.Close();
@@ -1069,10 +1049,6 @@ namespace DigitalProductionProgram.Processcards
                 case Manage_WorkOperation.WorkOperations.Slipning:
                     Processkort_Slipning.Update_Data(ref IsOk, Parameters_Main);
                     break;
-                case Manage_WorkOperation.WorkOperations.Svetsning:
-                    Processkort_Svetsning.Update_Data(ref IsOk, Parameters_Main);
-                    break;
-
                 case Manage_WorkOperation.WorkOperations.Nothing:
                     break;
             }

@@ -878,6 +878,23 @@ namespace DigitalProductionProgram.PrintingServices
                 else
                     e.Graphics.DrawString(date, CustomFonts.operatörFont, CustomFonts.parametrar_clr, x + 254, PrintVariables.Y + 83);
             }
+            public static int Height_RevInfoText(PrintPageEventArgs e)
+            {
+                var revInfo = utskrift_Processkort["RevInfo"];
+                float pageWidth = PrintVariables.MaxPaperWidth - PrintVariables.LeftMargin - 20;
+                const float padding = 10;
+                var commentLines = Regex.Split(revInfo, @"\r\n|\r|\n"); //comments.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+                var index = 0;
+                float totalHeight = 0;
+                while (index < commentLines.Length)
+                {
+                    var text = commentLines[index].Replace("\t", "    "); // Replace tab with four spaces
+                    var textSize = e.Graphics.MeasureString(text, CustomFonts.operatörFont, (int)pageWidth - PrintVariables.LeftMargin);
+                    totalHeight += textSize.Height + 4; // RowHeight;//* (int)padding + 10;
+                    index++;
+                }
+                return (int)totalHeight + 30;
+            }
             private static void RevisionInfo(PrintPageEventArgs e, int x)
             {
                 var rectangle_StartY = PrintVariables.Y;

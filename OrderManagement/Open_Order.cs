@@ -36,16 +36,16 @@ namespace DigitalProductionProgram.OrderManagement
         private async void Open_Order_Shown(object sender, EventArgs e)
         {
             // Start progress on its own UI thread so it keeps animating while main thread is busy.
-            ShowProgressOnNewThread("Laddar ordrar...");
+            // ShowProgressOnNewThread("Laddar ordrar...");
 
             // Small delay to ensure progress window paints before binding starts
-            await Task.Delay(150);
+            // await Task.Delay(150);
 
             // Perform the slow UI-thread binding (DataGridView must be updated on UI thread)
             Fill_dgv_OrderList();
 
             // Close the progress window
-            CloseProgressbar();
+            // CloseProgressbar();
         }
 
         private void Translate_Form()
@@ -56,6 +56,7 @@ namespace DigitalProductionProgram.OrderManagement
 
         public async Task Load_dt_Korprotokoll_MainDataAsync()
         {
+            dt_Korprotokoll_MainData = new DataTable();
             try
             {
                 await using var con = new SqlConnection(Database.cs_Protocol);
@@ -76,8 +77,9 @@ namespace DigitalProductionProgram.OrderManagement
                 await using var reader = await cmd.ExecuteReaderAsync();
 
                 var dt = new DataTable();
+               
                 dt.Load(reader);
-
+                int test = dt.Rows.Count;
                 dt_Korprotokoll_MainData = dt;
             }
             catch (Exception ex)
@@ -87,13 +89,17 @@ namespace DigitalProductionProgram.OrderManagement
             }
         }
 
-        private void Fill_dgv_OrderList()
+        private async void Fill_dgv_OrderList()
         {
+            ShowProgressOnNewThread("Laddar ordrar...");
+            await Task.Delay(150);
+
             dgv_OrderList.DataSource = dt_Korprotokoll_MainData;
             dgv_OrderList.Columns[0].Visible = false;
             dgv_OrderList.Columns[0].Width = 0;
             date_From.Value = DateTime.Parse(dt_Korprotokoll_MainData.Rows[^1]["Date_Start"].ToString());
             OrderList_ChangeWidth();
+            CloseProgressbar();
         }
         private void Öppna_Click(object sender, EventArgs e)
         {
@@ -121,8 +127,8 @@ namespace DigitalProductionProgram.OrderManagement
                 filterCondition += $"AND [Name] = '{tb_TemplateName.Text}' ";
 
             filterCondition += $"AND [Date_Start] >= '{date_From.Value}' AND [Date_Start] <= '{date_To.Value}'";
-
             dt_Korprotokoll_MainData.DefaultView.RowFilter = filterCondition;
+            Fill_dgv_OrderList();
             OrderList_ChangeWidth();
         }
 
@@ -131,7 +137,7 @@ namespace DigitalProductionProgram.OrderManagement
         {
             if (date_From.Value < lastDateFromValue)
             {
-                Load_dt_Korprotokoll_MainDataAsync();
+                await Load_dt_Korprotokoll_MainDataAsync();
                 lastDateFromValue = date_From.Value;
                 Filter_TextChanged(sender, e);
             }

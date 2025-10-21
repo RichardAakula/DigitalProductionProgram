@@ -183,7 +183,6 @@ namespace DigitalProductionProgram.Processcards
             btn_ProcesscardBasedOn.Text = "Processkort är baserat på:";
             btn_ProcesscardBasedOn.TextAlign = ContentAlignment.TopLeft;
             btn_ProcesscardBasedOn.UseVisualStyleBackColor = false;
-            btn_ProcesscardBasedOn.Click += ProcesscardBasedOn_MouseClick;
             // 
             // label_Empty_0
             // 
@@ -317,7 +316,6 @@ namespace DigitalProductionProgram.Processcards
             Margin = new Padding(4, 3, 4, 3);
             Name = "ProcesscardBasedOn";
             Size = new Size(737, 89);
-            MouseHover += ProcesscardBasedOn_MouseClick;
             tlp_Main.ResumeLayout(false);
             tlp_Main.PerformLayout();
             ResumeLayout(false);

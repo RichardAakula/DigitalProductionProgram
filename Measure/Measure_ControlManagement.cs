@@ -1,4 +1,5 @@
-﻿using DigitalProductionProgram.OrderManagement;
+﻿using System.Data;
+using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.Help;
 using DigitalProductionProgram.PrintingServices;
 using DigitalProductionProgram.DatabaseManagement;
@@ -536,7 +537,7 @@ namespace DigitalProductionProgram.Measure
                         Item
                     FROM MeasureProtocol.ItemsList
                     WHERE MeasureProtocolMainTemplateID = @maintemplateid
-                    AND DescriptionID = @descriptionid";//(SELECT DescriptionID FROM MeasureProtocol.Template WHERE MeasureProtocolMainTemplateID = @maintemplateid AND ColumnIndex = @columnindex)";
+                    AND DescriptionID = @descriptionid";
                 var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@maintemplateid", Templates_MeasureProtocol.MainTemplate.ID);
                 cmd.Parameters.AddWithValue("@descriptionid", tb.DescriptionID);
@@ -550,10 +551,23 @@ namespace DigitalProductionProgram.Measure
             switch (codename)
             {
                 case "PreFab":
-                    if (PreFab.DataTable_Halvfabrikat_Krympslang(Order.OrderID).Rows.Count <= 0)
+                    if (PreFab.DataTable_PreFab(Order.OrderID).Rows.Count <= 0)
                         return;
-                    items = Monitor.Monitor.PreFab_BatchNr(PreFab.DataTable_Halvfabrikat_Krympslang(Order.OrderID).Rows[0][LanguageManager.GetString("label_PartNumber")].ToString());
+                    items = Monitor.Monitor.PreFab_BatchNr(PreFab.DataTable_PreFab(Order.OrderID).Rows[0][LanguageManager.GetString("label_PartNumber")].ToString());
                     break;
+                case "BatchNr_Skärmad":
+                    var partNr = string.Empty;
+                    foreach (DataRow row in PreFab.DataTable_PreFab(Order.OrderID).Rows)
+                    {
+                        if (row["Slang:"].ToString()== "Skärmad")
+                        {
+                            partNr = row[$"{LanguageManager.GetString("label_PartNumber")}"].ToString();
+                            break;
+                        }
+                    }
+                    items = Monitor.Monitor.PreFab_BatchNr(partNr);
+                    break;
+
             }
 
 
@@ -829,6 +843,8 @@ namespace DigitalProductionProgram.Measure
                     Margin = new Padding(1, 1, 0, 0),
                     Padding = new Padding(18, 0, 0, 0),
                     Width = width,
+                    AutoSize = false,
+                    Height = 22,
                     Name = name
                 };
                 flp_InputControls.Controls.Add(checkBox);

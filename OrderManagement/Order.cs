@@ -958,6 +958,7 @@ namespace DigitalProductionProgram.OrderManagement
                         break;
 
                     case WorkOperations.Skärmning:
+                    case WorkOperations.Svetsning:
                         PreFab.SaveData.SavePrefabFromMonitor();
                         //PreFab.SaveData.INSERT_Skärmning();
                         break;

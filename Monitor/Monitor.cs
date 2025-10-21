@@ -229,7 +229,7 @@ namespace DigitalProductionProgram.Monitor
             }
         }
 
-        public static decimal Balance(string partNumber, string serialNumber = null)
+        public static decimal Balance(string? partNumber, string? serialNumber = null)
         {
             var part = Utilities.GetOneFromMonitor<Inventory.Parts>($"filter=PartNumber Eq'{partNumber}'");
             if (part == null)
@@ -248,7 +248,7 @@ namespace DigitalProductionProgram.Monitor
             return quantity;
         }
 
-        public static string BestBeforeDate(string partNumber, string serialNumber)
+        public static string BestBeforeDate(string? partNumber, string? serialNumber)
         {
             var part = Utilities.GetOneFromMonitor<Inventory.Parts>($"filter=PartNumber Eq'{partNumber}'");
             if (part == null || string.IsNullOrEmpty(serialNumber))
@@ -284,7 +284,7 @@ namespace DigitalProductionProgram.Monitor
             return MeasurePoint.Value;
 
         }
-        public static string Units(string artikelNr)
+        public static string Units(string? artikelNr)
         {
             var part = Utilities.GetOneFromMonitor<Inventory.Parts>($"filter=PartNumber Eq'{artikelNr}'");
             if (part is null)

@@ -446,7 +446,7 @@ namespace DigitalProductionProgram.Templates
             dgv_Template.Rows.Add();
             dgv_Template.Rows[dgv_Template.Rows.Count - 1].Cells["col_DescriptionID"].Value = descriptionid;
             dgv_Template.Rows[dgv_Template.Rows.Count - 1].Cells["col_Parameter"].Value = parameter;
-            tb_AddNewParameter.Text = string.Empty;
+            tb_FilterCodeText.Text = string.Empty;
 
             TemplateState.IsOkUpdateTemplate = false;
         }
@@ -579,7 +579,7 @@ namespace DigitalProductionProgram.Templates
             }
             dgv_Template.CellValueChanged += Template_CellValueChanged;
         }
-        
+
         private void Template_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
             var cellParameter = dgv_Template.Rows[e.RowIndex].Cells["col_Parameter"];
@@ -710,12 +710,22 @@ namespace DigitalProductionProgram.Templates
         {
             e.ThrowException = false; // Prevent the default error dialog
         }
-        private void AddNewParameter_TextChanged(object sender, EventArgs e)
+        private void FilterCodeText_TextChanged(object sender, EventArgs e)
         {
-            var filterCondition = $"[CodeName] LIKE '%{tb_AddNewParameter.Text}%' ";
+            var filterCondition = $"[CodeName] LIKE '%{tb_FilterCodeText.Text}%' ";
             Parameters.dt_Parameters.DefaultView.RowFilter = filterCondition;
         }
-
+        private void btn_AddParameter_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(tb_NewCodeText.Text))
+            {
+                InfoText.Show("Fyll i både parameter och enhet före du sparar data.", CustomColors.InfoText_Color.Bad, "Warning!", this);
+                return;
+            }
+            Parameters.InsertNewParameter(tb_NewCodeText.Text, chb_IsMeasureValue.Checked);
+            Parameters.Load(dgv_Parameters);
+            tb_NewCodeText.Text = string.Empty;
+        }
 
         private void Fill_Template_RevisionNr()
         {
@@ -769,6 +779,25 @@ namespace DigitalProductionProgram.Templates
                 dgv.Columns[1].FillWeight = 100;
                 dgv.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
                 dgv.Columns[0].Visible = false;
+            }
+            public static void InsertNewParameter(string codeText, bool isMeasureValue)
+            {
+                using var con = new SqlConnection(Database.cs_Protocol);
+                const string query = @"
+                    IF NOT EXISTS 
+                        (
+                            SELECT * FROM MeasureProtocol.Description 
+                            WHERE CodeName = @codename
+                        )
+                    BEGIN
+                        INSERT INTO MeasureProtocol.Description (CodeName, IsMeasureValue) 
+                        VALUES (@codename, @ismeasurevalue)
+                    END";
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                cmd.Parameters.AddWithValue("@codename", codeText);
+                cmd.Parameters.AddWithValue("@ismeasurevalue", isMeasureValue);
+                con.Open();
+                cmd.ExecuteNonQuery();
             }
         }
 

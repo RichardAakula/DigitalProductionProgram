@@ -265,15 +265,6 @@
     <Compile Update="Protocols\Spolning_PTFE\Spolning_PTFE.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="Protocols\Svetsning_TEF\MainProtocol_Svetsning_TEF.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Protocols\Svetsning_TEF\PC_Svetsning_TEF.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Protocols\Svetsning_TEF\Svetsning_TEF.cs">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Update="QC\FeedBackQC.cs">
       <SubType>UserControl</SubType>
     </Compile>

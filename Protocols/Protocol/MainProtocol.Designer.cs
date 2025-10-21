@@ -57,7 +57,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
             // 
             tlp_Main.ColumnCount = 2;
             tlp_Main.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
-            tlp_Main.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 481F));
+            tlp_Main.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 450F));
             tlp_Main.Controls.Add(panel_LineClearance, 0, 1);
             tlp_Main.Controls.Add(tlp_Right, 1, 2);
             tlp_Main.Controls.Add(panel_MainInfo, 0, 0);
@@ -106,25 +106,25 @@ namespace DigitalProductionProgram.Protocols.Protocol
             tlp_Right.Controls.Add(ProcesscardBasedOn, 0, 2);
             tlp_Right.Controls.Add(PreFab, 0, 1);
             tlp_Right.Dock = DockStyle.Fill;
-            tlp_Right.Location = new Point(2162, 143);
+            tlp_Right.Location = new Point(2193, 143);
             tlp_Right.Margin = new Padding(6, 0, 0, 0);
             tlp_Right.Name = "tlp_Right";
             tlp_Right.RowCount = 5;
             tlp_Right.RowStyles.Add(new RowStyle(SizeType.Absolute, 323F));
-            tlp_Right.RowStyles.Add(new RowStyle(SizeType.Absolute, 32F));
+            tlp_Right.RowStyles.Add(new RowStyle(SizeType.Absolute, 150F));
             tlp_Right.RowStyles.Add(new RowStyle(SizeType.Absolute, 32F));
             tlp_Right.RowStyles.Add(new RowStyle(SizeType.Absolute, 32F));
             tlp_Right.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            tlp_Right.Size = new Size(475, 1081);
+            tlp_Right.Size = new Size(444, 1081);
             tlp_Right.TabIndex = 2;
             // 
             // Comments
             // 
             Comments.Dock = DockStyle.Fill;
-            Comments.Location = new Point(1, 419);
+            Comments.Location = new Point(1, 537);
             Comments.Margin = new Padding(1, 0, 0, 1);
             Comments.Name = "Comments";
-            Comments.Size = new Size(474, 661);
+            Comments.Size = new Size(443, 543);
             Comments.TabIndex = 1;
             // 
             // flp_Buttons
@@ -141,7 +141,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
             flp_Buttons.Location = new Point(0, 0);
             flp_Buttons.Margin = new Padding(0, 0, 0, 1);
             flp_Buttons.Name = "flp_Buttons";
-            flp_Buttons.Size = new Size(475, 322);
+            flp_Buttons.Size = new Size(444, 322);
             flp_Buttons.TabIndex = 2;
             // 
             // btn_AddStartUp
@@ -264,10 +264,10 @@ namespace DigitalProductionProgram.Protocols.Protocol
             btn_ExtraComments.FlatStyle = FlatStyle.Flat;
             btn_ExtraComments.Font = new Font("Palatino Linotype", 10F);
             btn_ExtraComments.ForeColor = Color.SaddleBrown;
-            btn_ExtraComments.Location = new Point(0, 387);
+            btn_ExtraComments.Location = new Point(0, 505);
             btn_ExtraComments.Margin = new Padding(0, 0, 0, 2);
             btn_ExtraComments.Name = "btn_ExtraComments";
-            btn_ExtraComments.Size = new Size(475, 30);
+            btn_ExtraComments.Size = new Size(444, 30);
             btn_ExtraComments.TabIndex = 1;
             btn_ExtraComments.Text = "Extra Kommentarer";
             btn_ExtraComments.TextAlign = ContentAlignment.TopLeft;
@@ -279,10 +279,10 @@ namespace DigitalProductionProgram.Protocols.Protocol
             ProcesscardBasedOn.BackColor = Color.Black;
             ProcesscardBasedOn.Cursor = Cursors.Hand;
             ProcesscardBasedOn.Dock = DockStyle.Fill;
-            ProcesscardBasedOn.Location = new Point(0, 355);
+            ProcesscardBasedOn.Location = new Point(0, 473);
             ProcesscardBasedOn.Margin = new Padding(0, 0, 0, 1);
             ProcesscardBasedOn.Name = "ProcesscardBasedOn";
-            ProcesscardBasedOn.Size = new Size(475, 31);
+            ProcesscardBasedOn.Size = new Size(444, 31);
             ProcesscardBasedOn.TabIndex = 0;
             // 
             // PreFab
@@ -292,7 +292,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
             PreFab.Location = new Point(0, 323);
             PreFab.Margin = new Padding(0, 0, 1, 1);
             PreFab.Name = "PreFab";
-            PreFab.Size = new Size(474, 31);
+            PreFab.Size = new Size(443, 149);
             PreFab.TabIndex = 1;
             // 
             // panel_MainInfo
@@ -313,7 +313,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
             flp_Machines.Dock = DockStyle.Fill;
             flp_Machines.Location = new Point(3, 146);
             flp_Machines.Name = "flp_Machines";
-            flp_Machines.Size = new Size(2150, 1075);
+            flp_Machines.Size = new Size(2181, 1075);
             flp_Machines.TabIndex = 906;
             flp_Machines.WrapContents = false;
             flp_Machines.SizeChanged += flp_Machines_SizeChanged;

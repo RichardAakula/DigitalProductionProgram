@@ -160,7 +160,7 @@ namespace DigitalProductionProgram.MainWindow
                 Enum.TryParse(Settings.Settings.Tema, out Teman.Theme);
 
                 Teman.Choose_Theme();
-                Change_Theme();
+                //Change_Theme();
 
                 if (!Program.IsComputerOnlyForMeasurements && IsAutoOpenOrder == false)
                     OrderInformation.tb_OrderNr.AutoCompleteCustomSource = Monitor.Monitor.AutoFillOrdernr;
@@ -207,8 +207,7 @@ namespace DigitalProductionProgram.MainWindow
             await Activity.Stop($"Uppstart av program # {processes.Length}");
             startTime = DateTime.Now;
             Initialize_Timers();
-            if (IsBetaMode)
-                ChangeToBetaMode();
+            Change_GUI_StandardColor();
 
         }
 
@@ -382,6 +381,8 @@ namespace DigitalProductionProgram.MainWindow
             measureStats.Translate_Form();
 
         }
+
+        private Color tlp_LeftBack;
         public void Change_GUI_OrderKlar()
         {
             AQL.Visible = false;
@@ -411,17 +412,21 @@ namespace DigitalProductionProgram.MainWindow
                 pb_Info_UserPoints.Visible = true;
             }
         }
-        public void Change_GUI_OrderEjKlar()
+        public void Change_GUI_StandardColor()
         {
-            BackColor = Color.Black;
+           // BackColor = Color.FromArgb(255, 25,25,25);
+           // tlp_ExtraInfo.BackColor = Color.Transparent;
             PriorityPlanning.Change_GUI_OrderNotFinished();
             MainMenu.Change_GUI_OrderNotFinished();
             Buttons.Change_GUI_OrderNotFinished();
 
             label_ExtraInfo.Visible = true;
+            lbl_Rating.Visible = false;
 
             Change_GUI_ExtraInfo();
-            lbl_Rating.Visible = false;
+            if (IsBetaMode)
+                ChangeToBetaMode();
+            Change_Theme();
         }
         private void Change_GUI_Mätdator()
         {
@@ -478,7 +483,7 @@ namespace DigitalProductionProgram.MainWindow
         {
             if (Environment.MachineName != "OH-ID61")
                 InfoText.Show(LanguageManager.GetString("warning_Testdatabase"), CustomColors.InfoText_Color.Bad, "Warning");
-            tlp_Left.BackColor = OrderInformation.BackColor = panel_Right.BackColor = Color.Pink;
+            tlp_Left.BackColor =  panel_Right.BackColor = Color.Pink;//OrderInformation.BackColor =
             if (Environment.MachineName == "THAI-DPP-TEST01" || Environment.MachineName == "OH-ID61")
                 return;
             var betaOverlay = new BetaOverlayForm(this);
@@ -596,7 +601,7 @@ namespace DigitalProductionProgram.MainWindow
             if (Order.IsOrderDone)
                 Change_GUI_OrderKlar();
             else
-                Change_GUI_OrderEjKlar();
+                Change_GUI_StandardColor();
 
             MainMenu.Unlock_Korprotokoll_Menu();
         }
@@ -920,10 +925,6 @@ namespace DigitalProductionProgram.MainWindow
                 case Manage_WorkOperation.WorkOperations.Spolning_PTFE:
                     Spolning_PTFE.PrintPreview_Order(false);
                     break;
-                case Manage_WorkOperation.WorkOperations.Svetsning:
-                    Svetsning.Print_Preview_Order(false);
-                    break;
-
                 case Manage_WorkOperation.WorkOperations.Nothing:
                     var bg = new BlackBackground(string.Empty, 70);
                     bg.Show();

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.Data.SqlClient;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
@@ -186,18 +187,46 @@ namespace DigitalProductionProgram.Protocols.Protocol
         [DebuggerStepThrough]
         private void Label_LEFT_Paint(object sender, PaintEventArgs e)
         {
-            LeftHeader = LeftHeader?.Replace("\n", "");
-            var width = Processcard.TextLength(LeftHeader, new Font("Arial", 8), CreateGraphics());
-            Print_LeftLabel(e, LeftHeader, TotalModuleHeight / 2 - width / 2);
+            if (string.IsNullOrWhiteSpace(LeftHeader))
+                return;
 
+            // Ta bort radbrytningar
+            LeftHeader = LeftHeader.Replace("\n", "");
+
+            // Börja med en standardfont
+            float fontSize = 8f;
+            Font font = new Font("Arial", fontSize);
+
+            // Beräkna tillgänglig höjd (hur mycket plats vi har att rita på)
+            float availableHeight = TotalModuleHeight;
+
+            // Mät textens längd (eftersom den ritas vertikalt, så är "bredd" = textens höjd)
+            float textLength = Processcard.TextLength(LeftHeader, font, CreateGraphics());
+
+            // Minska fontstorleken tills texten får plats
+            while (textLength > availableHeight && fontSize > 4f)
+            {
+                font.Dispose();
+                fontSize -= 0.5f;
+                font = new Font("Arial", fontSize);
+                textLength = Processcard.TextLength(LeftHeader, font, CreateGraphics());
+            }
+            // Räkna ut var texten ska börja för att centreras vertikalt
+            float y = (availableHeight / 2f) - (textLength / 2f);
+
+            // Rita texten
+            Print_LeftLabel(e, LeftHeader,  (int)availableHeight, (int)y, font);
+            
             dgv_Module.ClearSelection();
         }
-        public static void Print_LeftLabel(PaintEventArgs e, string? text, int y, Font? font = null)
+        public static void Print_LeftLabel(PaintEventArgs e, string? text, int top, int y, Font? font = null)
         {
             font ??= new Font("Arial", 8);
             var g = e.Graphics;
 
             g.DrawString(text, font, Brushes.Black, 0, y, new StringFormat(StringFormatFlags.DirectionVertical));
+            using var pen = new Pen(Color.Black, 3);
+            g.DrawLine(pen, 0,top, 20, top);
         }
 
         private static bool IsCodeTextExistInModule(DataGridView dgv, string codeText)

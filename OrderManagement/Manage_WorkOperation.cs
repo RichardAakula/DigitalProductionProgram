@@ -107,10 +107,12 @@ namespace DigitalProductionProgram.OrderManagement
             Spolning_PTFE = 17,
             Svetsning = 18,
             Synergy_PTFE_K18 = 19,
+            Synergy_PTFE_K25 = 24,
             Bump_PTFE = 20,
             Slitting_PTFE = 21,
             Extrusion_HS = 22,
             Kragning_K20_TEF = 23,
+            Tapering_Bump_PTFE_K28 = 24,
             Plockning_PTFE,
             Spetsformning_PTFE
         }
@@ -302,6 +304,5 @@ namespace DigitalProductionProgram.OrderManagement
             WorkOperation.ShowDialog();
             return Order.WorkOperation;
         }
-       // private static WorkOperations Load_WorkOperaion()
     }
 }

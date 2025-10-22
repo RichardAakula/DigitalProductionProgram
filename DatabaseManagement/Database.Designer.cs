@@ -68,6 +68,7 @@
             // 
             // cb_DPP
             // 
+            cb_DPP.Cursor = Cursors.Arrow;
             cb_DPP.FormattingEnabled = true;
             cb_DPP.Items.AddRange(new object[] { "Godby", "Godby Test", "Thailand", "Valley Forge" });
             cb_DPP.Location = new Point(21, 46);
@@ -80,6 +81,7 @@
             // 
             // cb_Toolregister
             // 
+            cb_Toolregister.Cursor = Cursors.Arrow;
             cb_Toolregister.FormattingEnabled = true;
             cb_Toolregister.Items.AddRange(new object[] { "Godby", "Thailand", "Valley Forge" });
             cb_Toolregister.Location = new Point(21, 121);
@@ -120,6 +122,7 @@
             // 
             // cb_MonitorCompany
             // 
+            cb_MonitorCompany.Cursor = Cursors.Arrow;
             cb_MonitorCompany.FormattingEnabled = true;
             cb_MonitorCompany.Items.AddRange(new object[] { "001.1", "003.1", "010.1", "012.1" });
             cb_MonitorCompany.Location = new Point(318, 47);
@@ -144,6 +147,7 @@
             // 
             // cb_MonitorHost
             // 
+            cb_MonitorHost.Cursor = Cursors.Arrow;
             cb_MonitorHost.FormattingEnabled = true;
             cb_MonitorHost.Items.AddRange(new object[] { "optig5", "stage-optig5.optinova.fi" });
             cb_MonitorHost.Location = new Point(318, 122);

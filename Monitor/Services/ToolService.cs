@@ -80,7 +80,8 @@ namespace DigitalProductionProgram.Monitor.Services
             foreach (var part in parts)
             {
                 var idNr = Utilities.GetOneFromMonitor<Common.ExtraFields>($"filter=ParentId eq'{part.Id}' AND Identifier eq'{identifier}'");
-                items.Add(idNr.StringValue);
+                if (idNr != null && !string.IsNullOrEmpty(idNr.StringValue))
+                    items.Add(idNr.StringValue);
             }
 
             return;

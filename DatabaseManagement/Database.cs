@@ -236,7 +236,7 @@ namespace DigitalProductionProgram.DatabaseManagement
                     timeout = 5;
                     Password = "GOD-Stout4-Gladiator-Gazing-Retail-Pegboard";
                     cb_Toolregister.Text = @"Godby";
-                    cb_MonitorCompany.Text = @"001_3.1";
+                    cb_MonitorCompany.Text = @"001.1";
                     break;
                 case "Thailand":
                     ServerDPP = ServerOTH;

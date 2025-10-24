@@ -277,7 +277,7 @@ namespace DigitalProductionProgram.Templates
             const string query = @"
                 SELECT Name, PartCode, EndPoint, ExtraField, FilterExpression 
                 FROM List.ItemFields as fields
-                JOIN List.Items as items 
+                LEFT JOIN List.Items as items 
                     ON fields.ItemId = items.Id
                 WHERE TemplateID = @templateID AND ListType = @listType
                 ORDER BY ItemOrder";

@@ -122,21 +122,17 @@ namespace DigitalProductionProgram.Templates
                     var label_Name = new Label();
                     foreach (var lbl in panel.Controls.OfType<Label>())
                         label_Name = lbl;
-                    int.TryParse(panel.Name, out var formtemplateID);
 
-                    DataGridView dgv_FormTemplate = null;
                     DataGridView dgv_Template = null;
                     foreach (var dgv in panel.Controls.OfType<DataGridView>())
                     {
-                        if (dgv.Name == "dgv_FormTemplate")
-                            dgv_FormTemplate = dgv;
-                        else
+                        if (dgv.Name != "dgv_FormTemplate")
                             dgv_Template = dgv;
 
                     }
                     foreach (DataGridViewRow row in dgv_Template.Rows)
                     {
-                        string? codeText = row.Cells["col_CodeText"].Value == null ? "" : row.Cells["col_CodeText"].Value.ToString();
+                        var codeText = row.Cells["col_CodeText"].Value == null ? "" : row.Cells["col_CodeText"].Value.ToString();
                         var protocolDescriptionID = row.Cells["col_ProtocolDescriptionID"].Value == null ? 0 : int.Parse(row.Cells["col_ProtocolDescriptionID"].Value.ToString() ?? "0");
 
                         if (list_ProtocolDescriptionID.Contains(protocolDescriptionID))
@@ -147,7 +143,6 @@ namespace DigitalProductionProgram.Templates
                         list_ProtocolDescriptionID.Add(protocolDescriptionID);
                     }
                 }
-                MessageBox.Show(list_ProtocolDescriptionID.Count.ToString());
                 if (MainTemplate.IsTemplateExist(cb_TemplateName.Text, cb_TemplateRevision.Text))
                 {
                     InfoText.Show("Denna Revision finns redan, om du vill spara en ny mall måste du ändra Revision först.", CustomColors.InfoText_Color.Bad, "Warning!", this);

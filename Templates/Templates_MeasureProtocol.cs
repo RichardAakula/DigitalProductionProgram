@@ -23,30 +23,32 @@ namespace DigitalProductionProgram.Templates
 {
     public partial class Templates_MeasureProtocol : Form
     {
-        public static int TotalConnectedProcesscardsToTemplate
+        public int TotalConnectedProcesscardsToTemplate
         {
             get
             {
                 using var con = new SqlConnection(Database.cs_Protocol);
                 const string query = @"
-                    SELECT COUNT(*) FROM Processcard.MainData WHERE MeasureProtocolMainTemplateID = @maintemplateid";
+                    SELECT COUNT(*) FROM Processcard.MainData WHERE MeasureProtocolMainTemplateID = (SELECT MeasureProtocolMainTemplateID FROM MeasureProtocol.MainTemplate WHERE Name = @name AND Revision = @revision)";
                 var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 con.Open();
-                cmd.Parameters.AddWithValue("@maintemplateid", MainTemplate.ID);
+                cmd.Parameters.AddWithValue("@name", cb_TemplateName.Text);
+                cmd.Parameters.AddWithValue("@revision", cb_Revision.Text);
                 var value = cmd.ExecuteScalar();
                 return value == null ? 0 : int.Parse(value.ToString() ?? string.Empty);
             }
         }
-        public static int TotalConnectedOrdersToTemplate
+        public int TotalConnectedOrdersToTemplate
         {
             get
             {
                 using var con = new SqlConnection(Database.cs_Protocol);
                 const string query = @"
-                    SELECT COUNT(*) FROM [Order].MainData WHERE MeasureProtocolMainTemplateID = @maintemplateid";
+                    SELECT COUNT(*) FROM [Order].MainData WHERE MeasureProtocolMainTemplateID = (SELECT MeasureProtocolMainTemplateID FROM MeasureProtocol.MainTemplate WHERE Name = @name AND Revision = @revision)";
                 var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 con.Open();
-                cmd.Parameters.AddWithValue("@maintemplateid", MainTemplate.ID);
+                cmd.Parameters.AddWithValue("@name", cb_TemplateName.Text);
+                cmd.Parameters.AddWithValue("@revision", cb_Revision.Text);
                 var value = cmd.ExecuteScalar();
                 return value == null ? 0 : int.Parse(value.ToString() ?? string.Empty);
             }
@@ -118,11 +120,11 @@ namespace DigitalProductionProgram.Templates
                 if (IsNewRevisionSet)
                     return true;
 
-                if (TemplateState.IsOkUpdateTemplate == false)
-                {
-                    InfoText.Show("Du har gjort ändringar i mallen som kräver en ny Revision av Mallen.", CustomColors.InfoText_Color.Bad, "Warning", this);
-                    return false;
-                }
+                //if (TemplateState.IsOkUpdateTemplate == false)
+                //{
+                //    InfoText.Show("Du har gjort ändringar i mallen som kräver en ny Revision av Mallen.", CustomColors.InfoText_Color.Bad, "Warning", this);
+                //    return false;
+                //}
 
                 return true;
             }
@@ -135,14 +137,11 @@ namespace DigitalProductionProgram.Templates
             InitializeComponent();
             MainTemplate.SetNew_MainTemplateID();
 
-            cb_TemplateName.SelectedIndexChanged -= Template_Name_SelectedIndexChanged;
-
             Fill_MeasureProtocolTemplate_Names();
             cb_Workoperation.DataSource = Manage_WorkOperation.WorkOperation.Description;
             cb_Workoperation.SelectedIndex = -1;
             Load_PDF();
 
-            cb_TemplateName.SelectedIndexChanged += Template_Name_SelectedIndexChanged;
         }
         private void Templates_MeasureProtocol_Load(object sender, EventArgs e)
         {
@@ -169,13 +168,11 @@ namespace DigitalProductionProgram.Templates
 
         private void Fill_MeasureProtocolTemplate_Names()
         {
-            cb_TemplateName.SelectedIndexChanged -= Template_Name_SelectedIndexChanged;
             cb_TemplateName.Items.Clear();
             List_TemplateNames.Clear();
 
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                const string query = @"
+            using var con = new SqlConnection(Database.cs_Protocol);
+            const string query = @"
                 WITH LatestRevisions AS 
                 (
                     SELECT 
@@ -193,18 +190,15 @@ namespace DigitalProductionProgram.Templates
                 LatestRevisions
                 WHERE rn = 1
                 ORDER BY Name";
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                con.Open();
-                var reader = cmd.ExecuteReader();
-                while (reader.Read())
-                {
-                    cb_TemplateName.Items.Add(reader.GetString(0));
-                    List_TemplateNames.Add(reader.GetString(0));
-                    List_MeasureProtocolMainTemplateID.Add(int.Parse(reader["MeasureProtocolMainTemplateID"].ToString()));
-                }
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            con.Open();
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                cb_TemplateName.Items.Add(reader.GetString(0));
+                List_TemplateNames.Add(reader.GetString(0));
+                List_MeasureProtocolMainTemplateID.Add(int.Parse(reader["MeasureProtocolMainTemplateID"].ToString()));
             }
-
-            cb_TemplateName.SelectedIndexChanged += Template_Name_SelectedIndexChanged;
         }
 
 
@@ -255,8 +249,8 @@ namespace DigitalProductionProgram.Templates
             AND maintemplate.Revision = @revision
         ORDER BY template.ColumnIndex", con))
             {
-                cmd.Parameters.AddWithValue("@name", cb_TemplateName.Text);
-                cmd.Parameters.AddWithValue("@revision", cb_Revision.Text);
+                cmd.Parameters.AddWithValue("@name", cb_TemplateName.SelectedItem?.ToString() ?? "");
+                cmd.Parameters.AddWithValue("@revision", cb_Revision.SelectedItem?.ToString() ?? "");
                 con.Open();
 
                 using (var reader = cmd.ExecuteReader())
@@ -319,10 +313,14 @@ namespace DigitalProductionProgram.Templates
             TemplateState.IsOkUpdateTemplate = true;
             IsNewRevisionSet = false;
 
-            label_TotalConnectedProcesscards.Text = $"Antal Processkort kopplade till mallen: {TotalConnectedProcesscardsToTemplate}";
-            label_TotalConnectedOrders.Text = $"Antal Ordrar kopplade till mallen: {TotalConnectedOrdersToTemplate}";
+            SetTotalConnectedTemplates();
         }
 
+        private void SetTotalConnectedTemplates()
+        {
+            label_TotalConnectedProcesscards.Text = $@"Antal Processkort kopplade till mallen: {TotalConnectedProcesscardsToTemplate}";
+            label_TotalConnectedOrders.Text = $@"Antal Ordrar kopplade till mallen: {TotalConnectedOrdersToTemplate}";
+        }
         private static string EvaluateFormula(string formula, Dictionary<int, string> parameterValues)
         {
             foreach (var kvp in parameterValues)
@@ -444,8 +442,8 @@ namespace DigitalProductionProgram.Templates
             //if (TemplateControls.IsCodeTextExistInModule(dgv_ProtocolsActive_Main, codetext))
             //    return;
             dgv_Template.Rows.Add();
-            dgv_Template.Rows[dgv_Template.Rows.Count - 1].Cells["col_DescriptionID"].Value = descriptionid;
-            dgv_Template.Rows[dgv_Template.Rows.Count - 1].Cells["col_Parameter"].Value = parameter;
+            dgv_Template.Rows[^1].Cells["col_DescriptionID"].Value = descriptionid;
+            dgv_Template.Rows[^1].Cells["col_Parameter"].Value = parameter;
             tb_FilterCodeText.Text = string.Empty;
 
             TemplateState.IsOkUpdateTemplate = false;
@@ -657,20 +655,24 @@ namespace DigitalProductionProgram.Templates
         }
 
 
-        private void Template_Name_SelectedIndexChanged(object? sender, EventArgs e)
+       
+        private void TemplateName_SelectionChangeCommitted(object sender, EventArgs e)
         {
             cb_Revision.SelectedIndexChanged -= Template_RevisionNr_SelectedIndexChanged;
-
+            TemplateState.IsOkUpdateTemplate = false;
             Fill_Template_RevisionNr();
             dgv_Parameters.Visible = true;
 
             LoadData();
             cb_Revision.SelectedIndexChanged += Template_RevisionNr_SelectedIndexChanged;
         }
-        private void TemplateName_TextChanged(object sender, EventArgs e)
+        private void cb_TemplateName_KeyDown(object sender, KeyEventArgs e)
         {
-
+            TemplateState.IsOkUpdateTemplate = false;
+            cb_Revision.SelectedIndex = 0;
+            SetTotalConnectedTemplates();
         }
+
         private void Monitor_MeasuringTemplate_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (cb_Monitor_MeasuringTemplate.SelectedIndex <= 0) return;
@@ -729,7 +731,6 @@ namespace DigitalProductionProgram.Templates
 
         private void Fill_Template_RevisionNr()
         {
-            cb_TemplateName.SelectedIndexChanged -= Template_Name_SelectedIndexChanged;
             cb_Revision.Items.Clear();
             List_RevisionNr.Clear();
 
@@ -740,7 +741,7 @@ namespace DigitalProductionProgram.Templates
                 FROM Measureprotocol.MainTemplate
                 WHERE Name = @name";
                 var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@name", cb_TemplateName.Text);
+                cmd.Parameters.AddWithValue("@name", cb_TemplateName.SelectedItem?.ToString() ?? "");
                 con.Open();
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
@@ -750,7 +751,6 @@ namespace DigitalProductionProgram.Templates
                 }
             }
 
-            cb_TemplateName.SelectedIndexChanged += Template_Name_SelectedIndexChanged;
             cb_Revision.SelectedIndex = cb_Revision.Items.Count - 1;
             MainTemplate.Revision = cb_Revision.Text;
         }

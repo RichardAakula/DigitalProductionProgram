@@ -71,7 +71,10 @@ namespace DigitalProductionProgram.MainWindow
 
         public void Change_GUI_OrderNotFinished()
         {
-            Visible = true;
+            if (InvokeRequired)
+                Invoke(Change_GUI_OrderNotFinished);
+            else
+                Visible = true;
         }
         public void Change_GUI_OrderFinished()
         {

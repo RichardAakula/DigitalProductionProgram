@@ -133,6 +133,20 @@ namespace DigitalProductionProgram.MainWindow
             mainForm.Change_GUI_StandardColor();
             _ = Log.Activity.Stop("Användare klickar på Ny Order");
         }
+        private void Menu_Arkiv_UpdateDPP_Click(object sender, EventArgs e)
+        {
+            var updaterPath = @"\\optifil\dpp\Update\Update DPP.exe"; // Ändra till rätt filnamn
+            if (File.Exists(updaterPath))
+            {
+                Process.Start(updaterPath);
+            }
+            else
+            {
+                MessageBox.Show("Updatern kunde inte hittas.", "Fel", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            Application.Exit(); // Stänger DPP
+
+        }
         private async void Menu_Arkiv_Öppna_Click(object sender, EventArgs e)
         {
             if (Main_Form.IsZumbachÖppet)
@@ -657,11 +671,7 @@ Protocol.MainTemplate.Revision = {Templates_Protocol.MainTemplate.Revision}"
             using var gallup = new UserPoll();
             gallup.ShowDialog();
         }
-        private void Menu_Developer_New_MeasureProtocol_Click(object sender, EventArgs e)
-        {
-            using var mp = new Measurement_Protocol();
-            mp.ShowDialog();
-        }
+       
         private void Menu_Developer_Timer_test_Click(object sender, EventArgs e)
         {
             using var pbar = new ProgressBar();
@@ -680,251 +690,6 @@ Protocol.MainTemplate.Revision = {Templates_Protocol.MainTemplate.Revision}"
         private void Menu_Developer_GetDataForQuoting_Click(object sender, EventArgs e)
         {
             Get_Protocol_Data.Get_QuoteData.TransferData();
-        }
-        private void Menu_Developer_INSERT_Rengjort_Click(object sender, EventArgs e)
-        {
-            //Lägger till Rengjort Extruder före till [Order].Data
-            using var pbar = new ProgressBar();
-            double percent = 0;
-
-            pbar.Show();
-            var listOrderId = new List<int>();
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query =
-                    @"
-                    SELECT OrderID 
-                    FROM [Order].MainData 
-                    WHERE (WorkOperation = 'Extrudering_Termo' OR WorkOperation = 'Extrudering_Tryck')  
-                    ORDER BY OrderID ";
-
-                //var query =
-                //    @"
-                //    SELECT OrderID 
-                //    FROM [Order].MainData 
-                //    WHERE OrderID = @orderid";
-
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter(); ServerStatus.Add_Sql_Counter();
-                //cmd.Parameters.AddWithValue("@orderid", Order.ID);
-                con.Open();
-                var reader = cmd.ExecuteReader();
-
-                while (reader.Read())
-                    listOrderId.Add(int.Parse(reader[0].ToString()));
-            }
-            double step_Value = 100f / listOrderId.Count;
-            foreach (var orderid in listOrderId)
-            {
-                var TextValue = string.Empty;
-                var totalStartups = 0;
-                var totalMachines = 0;
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    var query =
-                        @"SELECT MAX(Uppstart), MAX(MachineIndex) FROM [Order].Data WHERE OrderID = @orderid";
-
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter(); ServerStatus.Add_Sql_Counter();
-                    cmd.Parameters.AddWithValue("@orderid", orderid);
-                    con.Open();
-                    var reader = cmd.ExecuteReader();
-                    while (reader.Read())
-                    {
-                        int.TryParse(reader[0].ToString(), out totalStartups);
-                        int.TryParse(reader[1].ToString(), out totalMachines);
-                    }
-
-                }
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    var query =
-                        @"SELECT LC_Rengjort_Extrudern_Ja, LC_Rengjort_Extrudern_Nej_Samma_Mtrl, LC_Rengjort_Extrudern_Mjukt_Hårt, LC_Rengjort_Extrudern_Ljus_Mörk
-                            FROM [Order].MainData
-                            WHERE OrderID = @orderid";
-
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter(); ServerStatus.Add_Sql_Counter();
-                    cmd.Parameters.AddWithValue("@orderid", orderid);
-                    con.Open();
-                    var reader = cmd.ExecuteReader();
-                    var Is_Yes = false;
-                    var Is_SameMtrl = false;
-                    var Is_Soft_Hard = false;
-                    var Is_Light_Dark = false;
-
-                    while (reader.Read())
-                    {
-                        bool.TryParse(reader[0].ToString(), out Is_Yes);
-                        bool.TryParse(reader[1].ToString(), out Is_SameMtrl);
-                        bool.TryParse(reader[2].ToString(), out Is_Soft_Hard);
-                        bool.TryParse(reader[3].ToString(), out Is_Light_Dark);
-                    }
-
-
-                    if (Is_Yes)
-                        TextValue = "Ja";
-                    if (Is_SameMtrl)
-                        TextValue = "Nej, samma material som föreg. uppstart";
-                    if (Is_Soft_Hard)
-                        TextValue = "Nej, mjukt till hårt material";
-                    if (Is_Light_Dark)
-                        TextValue = "Nej, ljus till mörk färg";
-                }
-
-                for (var uppstart = 1; uppstart < totalStartups + 1; uppstart++)
-                {
-                    for (var machineIndex = 1; machineIndex < totalMachines + 1; machineIndex++)
-                    {
-                        if (machineIndex == 0)
-                        {
-                            InfoText.Show($"Maskin är 0 på OrderID {orderid}", CustomColors.InfoText_Color.Bad, "Warning", this);
-                            return;
-                        }
-                        if (uppstart == 0)
-                        {
-                            InfoText.Show($"Uppstart är 0 på OrderID {orderid}", CustomColors.InfoText_Color.Bad, "Warning", this);
-                            return;
-                        }
-                        if (string.IsNullOrEmpty(TextValue))
-                            continue;
-
-                        if (uppstart == 1)
-                            INSERT_DATA_Korprotokoll_TextValue(orderid, 325, TextValue, uppstart, machineIndex);
-                        else
-                            INSERT_DATA_Korprotokoll_TextValue(orderid, 325, "N/A, se CC217", uppstart, machineIndex);
-
-                        INSERT_DATA_Korprotokoll_TextValue(orderid, 326, "N/A, se CC217", uppstart, machineIndex);
-                    }
-
-                }
-
-                pbar.Set_ValueProgressBar(percent, $"Lägger till data för Rengjort Extrudern i Körprotokollet: {orderid}");
-                percent += step_Value;
-            }
-
-            pbar.Close();
-        }
-        private void Menu_Developer_INSERT_Verktyg_Typ_Click(object sender, EventArgs e)
-        {
-            //Lägger till Verktygstyper för alla uppstarter på en order
-            var pbar = new ProgressBar();
-            double percent = 0;
-
-            pbar.Show();
-            var listOrderId = new List<int>();
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query =
-                    @"
-                    SELECT OrderID 
-                    FROM [Order].MainData 
-                    WHERE (WorkOperation = 'Extrudering_Termo' OR WorkOperation = 'Extrudering_Tryck')
-                    AND OrderID < 10001
-                    ORDER BY OrderID ";
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                con.Open();
-                var reader = cmd.ExecuteReader();
-
-                while (reader.Read())
-                    listOrderId.Add(int.Parse(reader[0].ToString()));
-            }
-            double step_Value = 100f / listOrderId.Count;
-            foreach (var orderid in listOrderId)
-            {
-                var totalStartups = 0;
-                var MunstyckeTyp = string.Empty;
-                var KanylTyp = string.Empty;
-
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    var query =
-                        @"SELECT MAX(Uppstart), MAX(MachineIndex) FROM [Order].Data WHERE OrderID = @orderid";
-
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    cmd.Parameters.AddWithValue("@orderid", orderid);
-                    con.Open();
-                    var reader = cmd.ExecuteReader();
-                    while (reader.Read())
-                    {
-                        int.TryParse(reader[0].ToString(), out totalStartups);
-                    }
-
-                }
-
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    var query =
-                        @"SELECT ProtocolDescriptionID, TextValue
-                            FROM [Order].Data
-                            WHERE OrderID = @orderid AND (ProtocolDescriptionID = 310 OR ProtocolDescriptionID = 311)";
-
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    cmd.Parameters.AddWithValue("@orderid", orderid);
-                    con.Open();
-                    var reader = cmd.ExecuteReader();
-
-                    while (reader.Read())
-                    {
-                        if (int.TryParse(reader[0].ToString(), out var id))
-                        {
-                            if (id == 310)
-                                MunstyckeTyp = reader[1].ToString();
-                            else
-                                KanylTyp = reader[1].ToString();
-                        }
-                    }
-                }
-
-                if (string.IsNullOrEmpty(MunstyckeTyp))
-                {
-                    using (var con = new SqlConnection(Database.cs_Protocol))
-                    {
-                        var query =
-                            @"SELECT TextValue
-                            FROM Processcard.Data
-                            WHERE PartID = (SELECT PartID FROM [Order].MainData WHERE OrderID = @orderid) AND TemplateID = 942";
-
-                        var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                        cmd.Parameters.AddWithValue("@orderid", orderid);
-                        con.Open();
-                        var reader = cmd.ExecuteReader();
-                        while (reader.Read())
-                            MunstyckeTyp = reader[0].ToString();
-                    }
-                }
-
-                if (string.IsNullOrEmpty(KanylTyp))
-                {
-                    using (var con = new SqlConnection(Database.cs_Protocol))
-                    {
-                        var query =
-                            @"SELECT TextValue
-                            FROM Processcard.Data
-                            WHERE PartID = (SELECT PartID FROM [Order].MainData WHERE OrderID = @orderid) AND TemplateID = 945";
-
-                        var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                        cmd.Parameters.AddWithValue("@orderid", orderid);
-                        con.Open();
-                        var reader = cmd.ExecuteReader();
-
-                        while (reader.Read())
-                            KanylTyp = reader[0].ToString();
-                    }
-                }
-
-                for (var uppstart = 1; uppstart < totalStartups + 1; uppstart++)
-                {
-                    if (string.IsNullOrEmpty(MunstyckeTyp) == false)
-                        INSERT_DATA_Korprotokoll_TextValue(orderid, 310, MunstyckeTyp, uppstart, 1);
-                    else
-                        continue;
-
-                    if (string.IsNullOrEmpty(KanylTyp) == false)
-                        INSERT_DATA_Korprotokoll_TextValue(orderid, 311, KanylTyp, uppstart, 1);
-                }
-                pbar.Set_ValueProgressBar(percent, $"Lägger till data för Verktyg Typ i Körprotokollet: {orderid}");
-                percent += step_Value;
-            }
-
-            pbar.Close();
         }
         private void Menu_Developer_TestNewProtocol_Click(object sender, EventArgs e)
         {
@@ -989,57 +754,6 @@ Protocol.MainTemplate.Revision = {Templates_Protocol.MainTemplate.Revision}"
 
 
 
-        private void Menu_Utvecklare_MoveDataFromKorprotokollToKorprotokoll_Values(object sender, EventArgs e)
-        {
-            //Denna kod lägger till NULL-värden där det behövs när användare har lagt till Uppstart för Utrustningen men lämnat övriga moduler tomma
-            MessageBox.Show("Radera detta meddelande om denna funktion skall användas igen.");
-            return;
-            var pbar = new ProgressBar();
-            double percent = 0;
-
-            pbar.Show();
-            var listOrderId = new List<int>();
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query =
-                    @"
-                    SELECT data.OrderID, Uppstart, MachineIndex FROM [Order].Data AS data
-JOIN [Order].MainData as main
-	ON data.OrderID = main.OrderID
-WHERE ProtocolDescriptionID = 80 AND Uppstart > 1
-AND data.OrderID IN (SELECT OrderID FROM [Order].MainData WHERE Workoperation = 'Extrudering_Termo')
-
-AND NOT EXISTS(
-	SELECT 1
-	FROM [Order].Data AS SubQuery
-	WHERE SubQuery.ProtocolDescriptionID = 213
-	AND SubQuery.Uppstart > 1
-	AND SubQuery.OrderID = data.OrderID
-	)
-ORDER BY OrderID DESC ";
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                con.Open();
-                var reader = cmd.ExecuteReader();
-
-                while (reader.Read())
-                {
-                    int.TryParse(reader[0].ToString(), out var orderid);
-                    int.TryParse(reader[1].ToString(), out var uppstart);
-                    int.TryParse(reader[2].ToString(), out var machine);
-
-                    INSERT_DATA_Korprotokoll_Value(orderid, 276, "", uppstart, machine);  //TorkTemperatur
-                    INSERT_DATA_Korprotokoll_Value(orderid, 213, "", uppstart, machine);    //KYLN. AV INMATN. FLÖDE
-                    if (machine < 2)
-                    {
-                        INSERT_DATA_Korprotokoll_Value(orderid, 99, "", uppstart, 0); //Draghastighet
-                        INSERT_DATA_Korprotokoll_TextValue(orderid, 237, "", uppstart); //SPOLE / PÅSE
-                    }
-                }
-
-            }
-
-            pbar.Close();
-        }
 
 
 
@@ -1226,7 +940,7 @@ ORDER BY OrderID DESC ";
             con.Open();
             cmd.ExecuteNonQuery();
         }
-        private void INSERT_MätDataValue(int orderid, int descrid,string? value, int rowindex)
+        private void INSERT_MätDataValue(int orderid, int descrid, string? value, int rowindex)
         {
             using var con = new SqlConnection(Database.cs_Protocol);
             var query = @"
@@ -1414,9 +1128,6 @@ ORDER BY OrderID DESC ";
 
         }
 
-        private void Menu_User_EditUser_Click(object sender, EventArgs e)
-        {
-        }
 
         private void Menu_Developer_AddThemePicture_Click(object sender, EventArgs e)
         {
@@ -1441,49 +1152,6 @@ ORDER BY OrderID DESC ";
         }
 
 
-        private void testToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Order.Check_BioBurden_Samples(1, 1, this);
-        }
-
-
-
-
-
-        private void Menu_Developer_ChangeLog_Click(object sender, EventArgs e)
-        {
-            ChangeLog log = new ChangeLog(null);
-            log.Show(this);
-        }
-        [DllImport("user32.dll")]
-        static extern void SetCursorPos(int X, int Y);
-
-        private void musTestToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            int repetitions = 20;
-            int movementAmount = 50; // Move 50 pixels up and down
-            int delay = 1000; // 500ms between movements
-            Stopwatch sw = Stopwatch.StartNew();
-            Point startPos = Cursor.Position;
-
-            for (int i = 0; i < repetitions; i++)
-            {
-                // Move up
-                SetCursorPos(startPos.X, startPos.Y - movementAmount);
-                Thread.Sleep(delay);
-
-                // Move down
-                SetCursorPos(startPos.X, startPos.Y + movementAmount);
-                Thread.Sleep(delay);
-                Debug.WriteLine(i);
-            }
-
-            // Optionally reset the cursor to the original position
-            SetCursorPos(startPos.X, startPos.Y);
-            sw.Stop();
-            MessageBox.Show($"{repetitions} repetioner tog {sw.ElapsedMilliseconds} ms. {sw.ElapsedMilliseconds / repetitions} ms/Repetion");
-        }
-
         private void påskäggToolStripMenuItem_Click(object sender, EventArgs e)
         {
             using var easterEgg = new EasterEgg_Code();
@@ -1495,20 +1163,7 @@ ORDER BY OrderID DESC ";
             MainMeasureStatistics.ValidateMeasurements.AverageValues();
         }
 
-        private void Menu_Arkiv_UpdateDPP_Click(object sender, EventArgs e)
-        {
-            var updaterPath = @"\\optifil\dpp\Update\Update DPP.exe"; // Ändra till rätt filnamn
-            if (File.Exists(updaterPath))
-            {
-                Process.Start(updaterPath);
-            }
-            else
-            {
-                MessageBox.Show("Updatern kunde inte hittas.", "Fel", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            Application.Exit(); // Stänger DPP
-
-        }
+        
 
 
         private void flyttaDataFrånSvetsnigToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1524,14 +1179,14 @@ ORDER BY OrderID DESC ";
                 cmd.Parameters.AddWithValue("@ugn", DBNull.Value);
 
                 con.Open();
-               var reader = cmd.ExecuteReader();
-               while (reader.Read())
-               {
-                   int.TryParse(reader[0].ToString(), out var orderid);
-                   listOrderId.Add(orderid);
-               }
+                var reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    int.TryParse(reader[0].ToString(), out var orderid);
+                    listOrderId.Add(orderid);
+                }
             }
-            
+
             foreach (var orderid in listOrderId)
             {
                 using (var con = new SqlConnection(Database.cs_Protocol))

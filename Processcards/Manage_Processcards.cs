@@ -717,10 +717,9 @@ namespace DigitalProductionProgram.Processcards
                 {
                     while (reader.Read())
                     {
-                        int partID = reader.GetInt32(4);
-                        int totalOrders = Part.TotalOrders_WithProcesscard(partID); // Get total orders
+                        var partID = reader.GetInt32(4);
+                        var totalOrders = Part.TotalOrders_WithProcesscard(partID); // Get total orders
                         DateTime.TryParse(reader["RevÄndratDatum"].ToString(), out DateTime date);
-
 
                         // 🔥 Add row directly to DataGridView
                         dgv_Revision.Rows.Add(reader["RevNr"],
@@ -957,7 +956,7 @@ namespace DigitalProductionProgram.Processcards
 
             if (is_Ok == false)
                 return;
-            Choose_And_Load_PartNr();
+            //Choose_And_Load_PartNr();
             IsUpdateProcesscard = true;
             Points.Add_Points(10, "Sparar/Uppdaterar Processkortet");
         }
@@ -1111,16 +1110,28 @@ namespace DigitalProductionProgram.Processcards
         {
             if (IsLoadingData || e.RowIndex < 0)
                 return;
+
             IsLoadingData = true;
 
-            ProcesscardBasedOn.lbl_RevNr.Text = dgv_Revision.Rows[e.RowIndex].Cells[0].Value.ToString();
-            if (int.TryParse(dgv_Revision.Rows[e.RowIndex].Cells[4].Value.ToString(), out var partID))
+            var row = dgv_Revision.Rows[e.RowIndex];
+
+            // --- Säker åtkomst till cell[0] ---
+            var revValue = row.Cells[0].Value;
+            ProcesscardBasedOn.lbl_RevNr.Text = revValue?.ToString() ?? string.Empty;
+
+            // --- Säker åtkomst till cell[4] och parse ---
+            var partValue = row.Cells[4].Value?.ToString();
+            if (int.TryParse(partValue, out var partID))
                 Order.PartID = partID;
+            else
+                Order.PartID = 0;
+
             if (Order.PartID != 0)
                 Load_Data_Processcard(false);
 
             IsLoadingData = false;
         }
+
         private void SelectPartNr(object sender, EventArgs e)
         {
             var artikelNr_Aktiv = chb_HideInactive_PartNr.Checked;

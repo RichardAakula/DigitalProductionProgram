@@ -49,6 +49,7 @@ namespace DigitalProductionProgram.Templates
             tb_FilterCodeText = new TextBox();
             btn_AddParameter = new Button();
             gbx_MeasureParameters = new GroupBox();
+            chb_IsMeasureValue = new CheckBox();
             tb_NewCodeText = new TextBox();
             label_FilterCodeText = new Label();
             gbox_MeasureProtocolTemplate = new GroupBox();
@@ -87,7 +88,6 @@ namespace DigitalProductionProgram.Templates
             col_Formula = new DataGridViewTextBoxColumn();
             col_Width = new DataGridViewTextBoxColumn();
             col_MaxChars = new DataGridViewTextBoxColumn();
-            chb_IsMeasureValue = new CheckBox();
             ((ISupportInitialize)dgv_Parameters).BeginInit();
             ((ISupportInitialize)btn_MoveTaskUp).BeginInit();
             ((ISupportInitialize)btn_MoveTaskDown).BeginInit();
@@ -132,8 +132,8 @@ namespace DigitalProductionProgram.Templates
             cb_TemplateName.Name = "cb_TemplateName";
             cb_TemplateName.Size = new Size(372, 25);
             cb_TemplateName.TabIndex = 4;
-            cb_TemplateName.SelectedIndexChanged += Template_Name_SelectedIndexChanged;
-            cb_TemplateName.TextChanged += TemplateName_TextChanged;
+            cb_TemplateName.SelectionChangeCommitted += TemplateName_SelectionChangeCommitted;
+            cb_TemplateName.KeyDown += cb_TemplateName_KeyDown;
             // 
             // btn_SaveTemplate
             // 
@@ -316,6 +316,18 @@ namespace DigitalProductionProgram.Templates
             gbx_MeasureParameters.TabIndex = 21;
             gbx_MeasureParameters.TabStop = false;
             gbx_MeasureParameters.Text = "Mätparametrar";
+            // 
+            // chb_IsMeasureValue
+            // 
+            chb_IsMeasureValue.AutoSize = true;
+            chb_IsMeasureValue.Checked = true;
+            chb_IsMeasureValue.CheckState = CheckState.Checked;
+            chb_IsMeasureValue.Location = new Point(203, 56);
+            chb_IsMeasureValue.Name = "chb_IsMeasureValue";
+            chb_IsMeasureValue.Size = new Size(94, 20);
+            chb_IsMeasureValue.TabIndex = 15;
+            chb_IsMeasureValue.Text = "Mätvärde?";
+            chb_IsMeasureValue.UseVisualStyleBackColor = true;
             // 
             // tb_NewCodeText
             // 
@@ -803,18 +815,6 @@ namespace DigitalProductionProgram.Templates
             col_MaxChars.HeaderText = "Max tecken";
             col_MaxChars.Name = "col_MaxChars";
             col_MaxChars.Width = 60;
-            // 
-            // chb_IsMeasureValue
-            // 
-            chb_IsMeasureValue.AutoSize = true;
-            chb_IsMeasureValue.Checked = true;
-            chb_IsMeasureValue.CheckState = CheckState.Checked;
-            chb_IsMeasureValue.Location = new Point(203, 56);
-            chb_IsMeasureValue.Name = "chb_IsMeasureValue";
-            chb_IsMeasureValue.Size = new Size(94, 20);
-            chb_IsMeasureValue.TabIndex = 15;
-            chb_IsMeasureValue.Text = "Mätvärde?";
-            chb_IsMeasureValue.UseVisualStyleBackColor = true;
             // 
             // Templates_MeasureProtocol
             // 

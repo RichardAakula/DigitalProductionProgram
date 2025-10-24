@@ -252,6 +252,8 @@ ORDER BY v.Major DESC, v.Minor DESC, v.Patch DESC, v.Build DESC;";
         {
             this.Controls.Clear(); // Clear existing controls in the panel
             var data = await LoadChartDataAsync(query);
+            if (data == null || !data.Any())
+                return;
             var values = data.Select(d => (double)d.Value).ToArray();
             var labels = data.Select(d => d.Label).ToArray();
             var columnSeries = new ColumnSeries<double>

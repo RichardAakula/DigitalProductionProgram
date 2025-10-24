@@ -112,7 +112,7 @@ namespace DigitalProductionProgram.OrderManagement
             Slitting_PTFE = 21,
             Extrusion_HS = 22,
             Kragning_K20_TEF = 23,
-            Tapering_Bump_PTFE_K28 = 24,
+            Tapering_Bump_PTFE_K28 = 25,
             Plockning_PTFE,
             Spetsformning_PTFE
         }

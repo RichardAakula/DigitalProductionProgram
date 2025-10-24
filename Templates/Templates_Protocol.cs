@@ -1170,6 +1170,8 @@ namespace DigitalProductionProgram.Templates
 
             public static void Load_MainTemplateID(string? templateName, string revision)
             {
+                if (templateName == null)
+                    return;
                 using var con = new SqlConnection(Database.cs_Protocol);
                 const string query =
                     @"SELECT ID FROM Protocol.MainTemplate WHERE Name = @name AND Revision = @revision";

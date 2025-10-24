@@ -180,6 +180,7 @@ namespace DigitalProductionProgram.MainWindow
 
             Mail.AutoTestJira();
             CheckForMaintenanceWork();
+            Initialize_Timers();
         }
         private async void MainForm_Load(object sender, EventArgs e)
         {
@@ -241,7 +242,6 @@ namespace DigitalProductionProgram.MainWindow
             pbOperatör.Image = Person.ProfilePicture(Person.Name);
             Person.Mail = "richard.aakula@optinova.com";
             ActiveOrdersUser.Visible = true;
-            Statistics_DPP.Visible = true;
 
             lbl_EmpNr.Text = Person.EmployeeNr;
             lbl_Sign.Text = Person.Sign;
@@ -382,7 +382,6 @@ namespace DigitalProductionProgram.MainWindow
 
         }
 
-        private Color tlp_LeftBack;
         public void Change_GUI_OrderKlar()
         {
             AQL.Visible = false;
@@ -414,8 +413,6 @@ namespace DigitalProductionProgram.MainWindow
         }
         public void Change_GUI_StandardColor()
         {
-           // BackColor = Color.FromArgb(255, 25,25,25);
-           // tlp_ExtraInfo.BackColor = Color.Transparent;
             PriorityPlanning.Change_GUI_OrderNotFinished();
             MainMenu.Change_GUI_OrderNotFinished();
             Buttons.Change_GUI_OrderNotFinished();
@@ -439,6 +436,12 @@ namespace DigitalProductionProgram.MainWindow
 
         private void Change_GUI_ExtraInfo()
         {
+            if (InvokeRequired)
+            {
+                Invoke(Change_GUI_ExtraInfo);
+                return;
+            }
+
             if (!string.IsNullOrEmpty(lbl_ExtraInfo.Text))
             {
                 label_ExtraInfo.Visible = true;
@@ -450,6 +453,7 @@ namespace DigitalProductionProgram.MainWindow
                 tlp_ExtraInfo.Visible = false;
             }
         }
+
         private void Change_GUI_Grade()
         {
             if (string.IsNullOrEmpty(Person.EmployeeNr))
@@ -868,8 +872,19 @@ namespace DigitalProductionProgram.MainWindow
                 Order.WorkOperation = Manage_WorkOperation.Load_WorkOperation();
                 _ = StartOrLoadOrder(true);
             }
-
             #endregion
+
+            if (User.Person.Name == "Richard Aakula" || User.Person.Name == "Kenny Lindqvist")
+            {
+                var target = new DateTime(2025, 11, 4, 18, 30, 0);
+                DateTime now = DateTime.Now;
+                TimeSpan difference = target - now;
+                int days = difference.Days;
+                int hours = difference.Hours;
+                int minutes = difference.Minutes;
+                if (days >= 0)
+                    InfoText.Show($"JAHA!!!! {days} dagar, {hours} timmar och {minutes} minuter tills de bär av till Prag nu!!", CustomColors.InfoText_Color.Info, "Kennyboy", this);
+            }
 
 
             MainMenu.Unlock_Menu();
@@ -1044,7 +1059,7 @@ namespace DigitalProductionProgram.MainWindow
             }
             
             // 5 min: Kolla statistik
-            if (counter_UpdateChart >= 5 && IsZumbachÖppet == false)
+            if (counter_UpdateChart >= 1 && IsZumbachÖppet == false)
             {
                 counter_UpdateChart = 0;
                 
@@ -1117,8 +1132,8 @@ namespace DigitalProductionProgram.MainWindow
         }
         private void CheckForMaintenanceWork()
         {
-            if (Person.Role == "SuperAdmin")
-                return;
+            //if (Person.Role == "SuperAdmin")
+            //    return;
 
             if (Maintenance.IsMaintenance_Ongoing)
             {

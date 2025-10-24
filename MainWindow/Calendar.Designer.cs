@@ -40,19 +40,19 @@
             Main_Calendar.Location = new Point(0, 0);
             Main_Calendar.Margin = new Padding(0);
             Main_Calendar.Name = "Main_Calendar";
-            Main_Calendar.Size = new Size(1210, 818);
+            Main_Calendar.Size = new Size(1713, 871);
             Main_Calendar.TabIndex = 0;
             // 
             // timer_UpdateUsers
             // 
-            timer_UpdateUsers.Interval = 60000;
+            timer_UpdateUsers.Interval = 120000;
             timer_UpdateUsers.Tick += Timer_UpdateUsers_Tick;
             // 
             // LoggedInUsers
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1210, 818);
+            ClientSize = new Size(1713, 871);
             Controls.Add(Main_Calendar);
             Margin = new Padding(4, 3, 4, 3);
             Name = "LoggedInUsers";

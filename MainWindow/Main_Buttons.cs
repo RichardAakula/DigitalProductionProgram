@@ -79,9 +79,16 @@ namespace DigitalProductionProgram.MainWindow
         }
         public void Change_GUI_OrderNotFinished()
         {
+            if (InvokeRequired)
+            {
+                Invoke(new Action(Change_GUI_OrderNotFinished));
+                return;
+            }
+
             panel_Pictures.Visible = true;
             pb_UploadPicture.Visible = true;
         }
+
         public void Change_GUI_Show_Compund()
         {
             Compound.Visible = true;

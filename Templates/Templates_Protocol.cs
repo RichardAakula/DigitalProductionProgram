@@ -5,20 +5,9 @@ using DigitalProductionProgram.Help;
 using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.PrintingServices;
-using DigitalProductionProgram.Processcards;
-using DigitalProductionProgram.Protocols.Template_Management;
 using DigitalProductionProgram.User;
 using Microsoft.Data.SqlClient;
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using static DigitalProductionProgram.Templates.Templates_Protocol;
-using ProgressBar = DigitalProductionProgram.ControlsManagement.CustomProgressBar;
 
 namespace DigitalProductionProgram.Templates
 {
@@ -126,6 +115,45 @@ namespace DigitalProductionProgram.Templates
         {
             get
             {
+                var list_ProtocolDescriptionID = new List<int>();
+
+                foreach (Panel panel in flp_Main.Controls)
+                {
+                    var label_Name = new Label();
+                    foreach (var lbl in panel.Controls.OfType<Label>())
+                        label_Name = lbl;
+                    int.TryParse(panel.Name, out var formtemplateID);
+
+                    DataGridView dgv_FormTemplate = null;
+                    DataGridView dgv_Template = null;
+                    foreach (var dgv in panel.Controls.OfType<DataGridView>())
+                    {
+                        if (dgv.Name == "dgv_FormTemplate")
+                            dgv_FormTemplate = dgv;
+                        else
+                            dgv_Template = dgv;
+
+                    }
+                    foreach (DataGridViewRow row in dgv_Template.Rows)
+                    {
+                        string? codeText = row.Cells["col_CodeText"].Value == null ? "" : row.Cells["col_CodeText"].Value.ToString();
+                        var protocolDescriptionID = row.Cells["col_ProtocolDescriptionID"].Value == null ? 0 : int.Parse(row.Cells["col_ProtocolDescriptionID"].Value.ToString() ?? "0");
+
+                        if (list_ProtocolDescriptionID.Contains(protocolDescriptionID))
+                        {
+                            InfoText.Show($"Parametern '{codeText}' finns redan i modulen \n'{label_Name.Text}', du kan inte ha samma parameter flera gånger i samma mall.", CustomColors.InfoText_Color.Bad, "Warning!", this);
+                            return false;
+                        }
+                        list_ProtocolDescriptionID.Add(protocolDescriptionID);
+                    }
+                }
+                MessageBox.Show(list_ProtocolDescriptionID.Count.ToString());
+                if (MainTemplate.IsTemplateExist(cb_TemplateName.Text, cb_TemplateRevision.Text))
+                {
+                    InfoText.Show("Denna Revision finns redan, om du vill spara en ny mall måste du ändra Revision först.", CustomColors.InfoText_Color.Bad, "Warning!", this);
+                    return false;
+                }
+
                 if (string.IsNullOrEmpty(cb_TemplateRevision.Text))
                 {
                     InfoText.Show("Fyll i mallens revisionsnr före du sparar mallen.", CustomColors.InfoText_Color.Bad, "Warning!", this);
@@ -145,7 +173,7 @@ namespace DigitalProductionProgram.Templates
                 return true;
             }
         }
-
+       
 
         public Templates_Protocol()
         {
@@ -318,11 +346,7 @@ namespace DigitalProductionProgram.Templates
         {
             if (IsOkSaveTemplate == false)
                 return;
-            if (MainTemplate.IsTemplateExist(cb_TemplateName.Text, cb_TemplateRevision.Text))
-            {
-                InfoText.Show("Denna Revision finns redan, om du vill spara en ny mall måste du ändra Revision först.", CustomColors.InfoText_Color.Bad, "Warning!", this);
-                return;
-            }
+           
 
             MainTemplate.Save_NewTemplate(cb_TemplateName.Text, cb_TemplateRevision.Text, chb_IsUsingPreFab.Checked, chb_IsProductionLineNeeded.Checked, cb_LineClearance_Revision.Text, cb_MainInfo_Template.Text, tb_Workoperation.Text, flp_Main);
 
@@ -611,7 +635,7 @@ namespace DigitalProductionProgram.Templates
         {
             dgv_ProtocolsActive_Main.Rows.RemoveAt(dgv_ProtocolsActive_Main.CurrentCell.RowIndex);
 
-            _ = preview.Update_TemplateAsync(flp_Main);
+            //_ = preview.Update_TemplateAsync(flp_Main);
             TemplateButtons.IsOkUpdateTemplate = false;
         }
         private void CodeTextUp_Click(object sender, EventArgs e)

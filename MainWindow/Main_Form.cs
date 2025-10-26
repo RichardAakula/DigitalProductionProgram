@@ -1132,14 +1132,15 @@ namespace DigitalProductionProgram.MainWindow
         }
         private void CheckForMaintenanceWork()
         {
-            //if (Person.Role == "SuperAdmin")
-            //    return;
+            if (Person.Role == "SuperAdmin")
+                return;
 
             if (Maintenance.IsMaintenance_Ongoing)
             {
                 InfoText.Show($"{LanguageManager.GetString("maintenanceWork_1")} {Maintenance.Time_Ongoing}.",
                     CustomColors.InfoText_Color.Bad, "Info", this);
                 Application.Exit();
+                Environment.Exit(0);
                 return;
             }
 

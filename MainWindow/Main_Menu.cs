@@ -1168,6 +1168,7 @@ Protocol.MainTemplate.Revision = {Templates_Protocol.MainTemplate.Revision}"
 
         private void flyttaDataFrånSvetsnigToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            return;
             List<int> listOrderId = new List<int>();
             using (var con = new SqlConnection(Database.cs_Protocol))
             {
@@ -1260,11 +1261,22 @@ Protocol.MainTemplate.Revision = {Templates_Protocol.MainTemplate.Revision}"
         }
         private void flyttaMätDataFrånSvetsnigToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            return;
             List<int> listOrderId = new List<int>();
             using (var con = new SqlConnection(Database.cs_Protocol))
             {
                 var query = @"
-                   SELECT OrderID FROM [Order].MainData WHERE WorkoperationID = 14";
+                SELECT DISTINCT m.OrderID
+FROM [Order].MainData m
+INNER JOIN Korprotokoll_Svetsning_Parametrar k
+    ON m.OrderID = k.OrderID
+LEFT JOIN MeasureProtocol.Data d
+    ON m.OrderID = d.OrderID
+WHERE m.WorkoperationID = 14
+  AND d.OrderID IS NULL
+
+  ORDER BY OrderID;
+";
 
                 var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@uppstart", DBNull.Value);
@@ -1301,7 +1313,7 @@ Protocol.MainTemplate.Revision = {Templates_Protocol.MainTemplate.Revision}"
                             ,[AnstNr]
                             ,[Sign]
                             
-                        FROM [GOD_DPP_DEV].[dbo].[Korprotokoll_Svetsning_Parametrar]
+                        FROM [Korprotokoll_Svetsning_Parametrar]
                         WHERE OrderID = @orderid
                         ORDER BY  [DatumTid]";
                 var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();

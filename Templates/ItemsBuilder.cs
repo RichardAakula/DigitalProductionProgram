@@ -275,7 +275,7 @@ namespace DigitalProductionProgram.Templates
             var items = new List<string>();
             using var con = new SqlConnection(Database.cs_Protocol);
             const string query = @"
-                SELECT Name, PartCode, EndPoint, ExtraField, FilterExpression 
+                SELECT Name, PartCode, EndPoint, ExtraField, Property 
                 FROM List.ItemFields as fields
                 LEFT JOIN List.Items as items 
                     ON fields.ItemId = items.Id
@@ -288,7 +288,7 @@ namespace DigitalProductionProgram.Templates
             using var reader = cmd.ExecuteReader();
             string? endPoint = null;
             string? columnName = null;
-            string? filter = null;
+            string? property = null;
             string? partCode = null;
             while (reader.Read())
             {
@@ -299,13 +299,13 @@ namespace DigitalProductionProgram.Templates
                 partCode = reader["PartCode"] as string ?? reader["PartCode"]?.ToString();
                 endPoint = reader["EndPoint"] as string ?? reader["EndPoint"]?.ToString();
                 columnName = reader["ExtraField"] as string ?? reader["ExtraField"]?.ToString();
-                filter = reader["FilterExpression"] as string ?? reader["FilterExpression"]?.ToString();
+                property = reader["Property"] as string ?? reader["Property"]?.ToString();
             }
             items.Add("N/A");
             var typeName = endPoint != null ? $"DigitalProductionProgram.Monitor.GET.{endPoint}, DigitalProductionProgram" : null;
             var tableType = typeName != null ? Type.GetType(typeName) : null;
             if (tableType != null && partCode != null)
-                Monitor.Services.ToolService.Add_Equipment(items, tableType, partCode, columnName, filter);
+                Monitor.Services.ToolService.Add_Equipment(items, tableType, partCode, columnName, property);
 
             return items;
         }
@@ -361,7 +361,7 @@ namespace DigitalProductionProgram.Templates
             while (reader.Read())
             {
                 ItemsFieldId = reader["ItemFieldsId"] != DBNull.Value ? Convert.ToInt32(reader["ItemFieldsId"]) : 0;
-                cb_PartCode.Text = reader["PartCode"].ToString();
+               // cb_PartCode.Text = reader["PartCode"].ToString();
                 cb_ExtraField.SelectedValue = reader["ExtraField"].ToString();
             }
         }

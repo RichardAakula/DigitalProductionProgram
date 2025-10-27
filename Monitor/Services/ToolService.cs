@@ -1,9 +1,4 @@
 ﻿using DigitalProductionProgram.Monitor.GET;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DigitalProductionProgram.Monitor.Services
 {
@@ -77,12 +72,26 @@ namespace DigitalProductionProgram.Monitor.Services
         {
             var partCodeId = Utilities.GetOneFromMonitor<Inventory.PartCodes>($"filter=Code Eq'{partCode}'")?.Id ?? 0;
             var parts = Utilities.GetFromMonitor<Inventory.Parts>($"filter=PartCodeId eq'{partCodeId}'");
-            foreach (var part in parts)
+            if (string.IsNullOrEmpty(filter))
             {
-                var idNr = Utilities.GetOneFromMonitor<Common.ExtraFields>($"filter=ParentId eq'{part.Id}' AND Identifier eq'{identifier}'");
-                if (idNr != null && !string.IsNullOrEmpty(idNr.StringValue))
-                    items.Add(idNr.StringValue);
+                foreach (var part in parts)
+                {
+                    var idNr = Utilities.GetOneFromMonitor<Common.ExtraFields>($"filter=ParentId eq'{part.Id}' AND Identifier eq'{identifier}'");
+                    if (idNr != null && !string.IsNullOrEmpty(idNr.StringValue))
+                        items.Add(idNr.StringValue);
+                }
             }
+            else
+            {
+                var property = typeof(Inventory.Parts).GetProperty(filter);
+                foreach (var part in parts)
+                {
+                    var value = property.GetValue(part)?.ToString();
+                    if (!string.IsNullOrEmpty(value) && items.Contains(value) == false)
+                        items.Add(value);
+                }
+            }
+            
 
             return;
             //var method = typeof(Utilities).GetMethod("GetFromMonitor").MakeGenericMethod(tableType);

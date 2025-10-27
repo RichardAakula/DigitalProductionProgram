@@ -109,11 +109,11 @@ namespace DigitalProductionProgram.Protocols.Protocol
         private static string? TipType;
 
 
+        [DebuggerStepThrough]
         private static string? MIN_Value(DataGridViewRow dgv_Row)
         {
             return dgv_Row.Cells["col_MIN"].Value?.ToString();
         }
-        [DebuggerStepThrough]
         private static string? NOM_Value(DataGridViewRow dgv_Row)
         {
             return dgv_Row.Cells["col_NOM"].Value?.ToString();

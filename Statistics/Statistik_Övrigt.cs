@@ -170,13 +170,6 @@ namespace DigitalProductionProgram.Statistics
         private DataTable? dt_Mätningar_Slipning_Day { get; set; }
         private DataTable? dt_Mätningar_Slipning_LastWeek { get; set; }
         private DataTable? dt_Mätningar_Slipning_DayOfWeek { get; set; }
-        //Mätningar - Svetsning - 6st
-        private DataTable? dt_Mätningar_Svetsning_Year { get; set; }
-        private DataTable? dt_Mätningar_Svetsning_Year_Skift { get; set; }
-        private DataTable? dt_Mätningar_Svetsning_Month { get; set; }
-        private DataTable? dt_Mätningar_Svetsning_Day { get; set; }
-        private DataTable? dt_Mätningar_Svetsning_LastWeek { get; set; }
-        private DataTable? dt_Mätningar_Svetsning_DayOfWeek { get; set; }
         //Ordrar - 7st
         private DataTable? dt_Ordrar_Year { get; set; }
         private DataTable? dt_Ordrar_Month { get; set; }
@@ -240,13 +233,6 @@ namespace DigitalProductionProgram.Statistics
                     dt_Mätningar_Slipning_Day,
                     dt_Mätningar_Slipning_LastWeek,
                     dt_Mätningar_Slipning_DayOfWeek,
-                    //Mätningar - Svetsning - 6st
-                    dt_Mätningar_Svetsning_Year,
-                    dt_Mätningar_Svetsning_Year_Skift,
-                    dt_Mätningar_Svetsning_Month,
-                    dt_Mätningar_Svetsning_Day,
-                    dt_Mätningar_Svetsning_LastWeek,
-                    dt_Mätningar_Svetsning_DayOfWeek,
                     //Ordrar - 7st
                     dt_Ordrar_Year,
                     dt_Ordrar_Month,
@@ -1043,133 +1029,6 @@ namespace DigitalProductionProgram.Statistics
                 var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
 
                 dt_Mätningar_Slipning_DayOfWeek.Load(cmd.ExecuteReader());
-            }
-        }
-        //Mätningar - Svetsning - 6st
-        private void Load_dt_Mätning_Svetsning_Year()
-        {
-            dt_Mätningar_Svetsning_Year = new DataTable();
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query = "SELECT YEAR(Datum), COUNT(*) AS Antal FROM Korprotokoll_Svetsning_Parametrar WHERE Tid > '' AND Tid != '-' GROUP BY Year(Datum) ORDER BY Year(Datum)";
-                con.Open();
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-
-                dt_Mätningar_Svetsning_Year.Load(cmd.ExecuteReader());
-            }
-        }
-        private void Load_dt_Mätning_Svetsning_Year_Skift()
-        {
-            dt_Mätningar_Svetsning_Year_Skift = new DataTable();
-            dt_Mätningar_Svetsning_Year_Skift.Columns.Add("Year");
-            dt_Mätningar_Svetsning_Year_Skift.Columns.Add("MorgonSkift");
-            dt_Mätningar_Svetsning_Year_Skift.Columns.Add("Kvällskift");
-            dt_Mätningar_Svetsning_Year_Skift.Columns.Add("Nattskift");
-            var row = 0;
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query = "SELECT YEAR(Datum), COUNT(*) AS Antal FROM Korprotokoll_Svetsning_Parametrar WHERE Tid BETWEEN '06:00' AND '13:59'  GROUP BY Year(Datum) ORDER BY Year(Datum)";
-                con.Open();
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                var reader = cmd.ExecuteReader();
-                while (reader.Read())
-                {
-                    dt_Mätningar_Svetsning_Year_Skift.Rows.Add();
-                    dt_Mätningar_Svetsning_Year_Skift.Rows[row][0] = reader[0].ToString();
-                    dt_Mätningar_Svetsning_Year_Skift.Rows[row][1] = reader[1].ToString();
-                    row++;
-                }
-            }
-            row = 0;
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query = "SELECT YEAR(Datum), COUNT(*) AS Antal FROM Korprotokoll_Svetsning_Parametrar WHERE Tid BETWEEN '14:00' AND '21:59' GROUP BY Year(Datum) ORDER BY Year(Datum)";
-                con.Open();
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                var reader = cmd.ExecuteReader();
-                while (reader.Read())
-                {
-                    dt_Mätningar_Svetsning_Year_Skift.Rows[row][2] = reader[1].ToString();
-                    row++;
-                }
-            }
-            row = 0;
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query = "SELECT YEAR(Datum), COUNT(*) AS Antal FROM Korprotokoll_Svetsning_Parametrar WHERE Tid BETWEEN '22:00' AND '23:59' OR Tid BETWEEN '00:00' AND '05:59' GROUP BY Year(Datum) ORDER BY Year(Datum)";
-                con.Open();
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                var reader = cmd.ExecuteReader();
-                while (reader.Read())
-                {
-                    dt_Mätningar_Svetsning_Year_Skift.Rows[row][3] = reader[1].ToString();
-                    row++;
-                }
-            }
-        }
-        private void Load_dt_Mätning_Svetsning_Month()
-        {
-            dt_Mätningar_Svetsning_Month = new DataTable();
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query = "SELECT MONTH(Datum), COUNT(*) AS Antal FROM Korprotokoll_Svetsning_Parametrar WHERE Tid > '' AND Tid != '-' GROUP BY MONTH(Datum) ORDER BY MONTH(Datum)";
-                con.Open();
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-
-                dt_Mätningar_Svetsning_Month.Load(cmd.ExecuteReader());
-            }
-        }
-        private void Load_dt_Mätning_Svetsning_Day()
-        {
-            dt_Mätningar_Svetsning_Day = new DataTable();
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query = "SELECT Datum, COUNT(*) AS Antal FROM Korprotokoll_Svetsning_Parametrar WHERE Tid > '' AND Tid != '-' GROUP BY Datum ORDER BY Datum";
-                con.Open();
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-
-                dt_Mätningar_Svetsning_Day.Load(cmd.ExecuteReader());
-            }
-        }
-        private void Load_dt_Mätning_Svetsning_LastWeek()
-        {
-            dt_Mätningar_Svetsning_LastWeek = new DataTable();
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query = @"SELECT DATENAME(WEEKDAY, Datum), COUNT(*) AS Antal 
-                    FROM Korprotokoll_Svetsning_Parametrar 
-                    WHERE Tid > '' AND Tid != '-' AND Datum > @date 
-                    GROUP BY DATENAME(WEEKDAY, Datum), Datum
-                    ORDER BY Datum";
-                con.Open();
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@date", DateTime.Now.AddDays(-7));
-                dt_Mätningar_Svetsning_LastWeek.Load(cmd.ExecuteReader());
-            }
-        }
-        private void Load_dt_Mätning_Svetsning_DayOfWeek()
-        {
-            dt_Mätningar_Svetsning_DayOfWeek = new DataTable();
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query = @"SELECT DATENAME(WEEKDAY, Datum), COUNT(*) AS Antal
-                    FROM Korprotokoll_Svetsning_Parametrar 
-                    WHERE Tid > '' AND Tid != '-' 
-                    GROUP BY DATENAME(WEEKDAY, Datum) 
-                    ORDER BY CASE DATENAME(WEEKDAY, Datum)
-                    WHEN 'Monday' Then 1 
-                    WHEN 'Tuesday' Then 2 
-                    WHEN 'Wednesday' Then 3
-                    WHEN 'Thursday' Then 4
-                    WHEN 'Friday' Then 5
-                    WHEN 'Saturday' Then 6
-                    WHEN 'Sunday' Then 7
-                    END
-                    ";
-                con.Open();
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-
-                dt_Mätningar_Svetsning_DayOfWeek.Load(cmd.ExecuteReader());
             }
         }
         //Ordrar - 7st
@@ -2009,13 +1868,6 @@ namespace DigitalProductionProgram.Statistics
                     Load_dt_Mätning_Slipning_Day,
                     Load_dt_Mätning_Slipning_LastWeek,
                     Load_dt_Mätning_Slipning_DayOfWeek,
-                    //Mätningar - Svetsning - 6st
-                    Load_dt_Mätning_Svetsning_Year,
-                    Load_dt_Mätning_Svetsning_Year_Skift,
-                    Load_dt_Mätning_Svetsning_Month,
-                    Load_dt_Mätning_Svetsning_Day,
-                    Load_dt_Mätning_Svetsning_LastWeek,
-                    Load_dt_Mätning_Svetsning_DayOfWeek,
                     //Ordrar - 7st
                     Load_dt_Ordrar_Year,
                     Load_dt_Ordrar_Month,

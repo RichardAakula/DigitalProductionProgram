@@ -26,8 +26,7 @@ namespace DigitalProductionProgram.User
                 var query = @"SELECT Date, NULL, TempID FROM Measureprotocol.MainData WHERE OrderID = @orderid AND MONTH(Date) = @month AND YEAR(Date) = @year
                     UNION 
                     SELECT CAST(Date_Time AS Date), CAST(Date_Time AS time), TempID FROM Korprotokoll_Slipning_Produktion WHERE OrderID = @orderid AND Column_Index IS NULL AND MONTH(Date_Time) = @month AND YEAR(Date_Time) = @year
-                    UNION
-                    SELECT Datum, Tid, TempID FROM Korprotokoll_Svetsning_Parametrar WHERE OrderID = @orderid AND MONTH(Datum) = @month AND YEAR(Datum) = @year
+                   
                     ORDER BY TempID";
                 con.Open();
                 var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
@@ -53,8 +52,7 @@ namespace DigitalProductionProgram.User
                 var query = @"SELECT Date, NULL, TempID FROM Measureprotocol.MainData WHERE OrderID = @orderid AND MONTH(Date) = @month AND YEAR(Date) = @year 
                     UNION 
                     SELECT CAST(Date_Time AS Date), CAST(Date_Time AS time), TempID FROM Korprotokoll_Slipning_Produktion WHERE OrderID = @orderid AND Column_Index IS NULL AND MONTH(Date_Time) = @month AND YEAR(Date_Time) = @year
-                    UNION 
-                    SELECT Datum, Tid, TempID FROM Korprotokoll_Svetsning_Parametrar WHERE OrderID = @orderid AND MONTH(Datum) = @month AND YEAR(Datum) = @year 
+                   
                     ORDER BY TempID DESC";
                 con.Open();
                 var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
@@ -161,8 +159,7 @@ namespace DigitalProductionProgram.User
             using (var con = new SqlConnection(Database.cs_Protocol))
             {
                 const string query = @"SELECT (SELECT COUNT(*) FROM Measureprotocol.MainData WHERE OrderID = @orderid AND AnstNr = @employeenumber AND MONTH(Date) = @month AND YEAR(Date) = @year)
-                    + (SELECT COUNT(*) FROM Korprotokoll_Slipning_Produktion WHERE OrderID = @orderid AND Column_Index IS NULL AND AnstNr = @employeenumber AND MONTH(Date_Time) = @month AND YEAR(Date_Time) = @year) 
-                    + (SELECT COUNT(*) FROM Korprotokoll_Svetsning_Parametrar WHERE OrderID = @orderid AND AnstNr = @employeenumber AND MONTH(Datum) = @month AND YEAR(Datum) = @year) ";
+                    + (SELECT COUNT(*) FROM Korprotokoll_Slipning_Produktion WHERE OrderID = @orderid AND Column_Index IS NULL AND AnstNr = @employeenumber AND MONTH(Date_Time) = @month AND YEAR(Date_Time) = @year)";
                 con.Open();
                 var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", orderid);
@@ -178,8 +175,7 @@ namespace DigitalProductionProgram.User
             using (var con = new SqlConnection(Database.cs_Protocol))
             {
                 const string query = @"SELECT (SELECT COUNT(*) FROM Measureprotocol.MainData WHERE OrderID = @orderid AND MONTH(Date) = @month AND YEAR(Date) = @year)
-                    + (SELECT COUNT(*) FROM Korprotokoll_Slipning_Produktion WHERE OrderID = @orderid AND Column_Index IS NULL AND MONTH(Date_Time) = @month AND YEAR(Date_Time) = @year) 
-                    + (SELECT COUNT(*) FROM Korprotokoll_Svetsning_Parametrar WHERE OrderID = @orderid AND MONTH(Datum) = @month AND YEAR(Datum) = @year) ";
+                    + (SELECT COUNT(*) FROM Korprotokoll_Slipning_Produktion WHERE OrderID = @orderid AND Column_Index IS NULL AND MONTH(Date_Time) = @month AND YEAR(Date_Time) = @year)";
                 con.Open();
                 var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", id);
@@ -223,8 +219,7 @@ namespace DigitalProductionProgram.User
             {
                 const string query = @"SELECT
                     (SELECT COUNT (DISTINCT OrderID) FROM Measureprotocol.MainData WHERE MONTH(Date) = @month AND YEAR(Date) = @year AND AnstNr = @employeenumber)
-                    + (SELECT COUNT (DISTINCT OrderID) FROM Korprotokoll_Slipning_Produktion WHERE Column_Index IS NULL AND MONTH(Date_Time) = @month AND YEAR(Date_Time) = @year AND AnstNr = @employeenumber)
-                    + (SELECT COUNT (DISTINCT OrderID) FROM Korprotokoll_Svetsning_Parametrar WHERE MONTH(Datum) = @month AND YEAR(Datum) = @year AND AnstNr = @employeenumber)";
+                    + (SELECT COUNT (DISTINCT OrderID) FROM Korprotokoll_Slipning_Produktion WHERE Column_Index IS NULL AND MONTH(Date_Time) = @month AND YEAR(Date_Time) = @year AND AnstNr = @employeenumber)";
                 con.Open();
                 var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@month", month);
@@ -241,8 +236,7 @@ namespace DigitalProductionProgram.User
                 {
                     const string query = @"SELECT
                         (SELECT COUNT(*) FROM Measureprotocol.MainData WHERE MONTH(Date) = @month AND YEAR(Date) = @year AND AnstNr = @employeenumber)
-                        + (SELECT COUNT (DISTINCT OrderID) FROM Korprotokoll_Slipning_Produktion WHERE Column_Index IS NULL AND MONTH(Date_Time) = @month AND YEAR(Date_Time) = @year AND AnstNr = @employeenumber)
-                        + (SELECT COUNT(*) FROM Korprotokoll_Svetsning_Parametrar WHERE MONTH(Datum) = @month AND YEAR(Datum) = @year AND AnstNr = @employeenumber)";
+                        + (SELECT COUNT (DISTINCT OrderID) FROM Korprotokoll_Slipning_Produktion WHERE Column_Index IS NULL AND MONTH(Date_Time) = @month AND YEAR(Date_Time) = @year AND AnstNr = @employeenumber)";
                     con.Open();
                     var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@month", month);
@@ -513,9 +507,7 @@ namespace DigitalProductionProgram.User
             {
                 var query = @"SELECT DISTINCT OrderID FROM Measureprotocol.MainData WHERE AnstNr = @employeenumber AND MONTH(Date) = @month AND YEAR(Date) = @year 
                     UNION 
-                    SELECT DISTINCT OrderID FROM Korprotokoll_Slipning_Produktion WHERE Column_Index IS NULL AND AnstNr = @employeenumber AND MONTH(Date_Time) = @month AND YEAR(Date_Time) = @year 
-                    UNION 
-                    SELECT DISTINCT OrderID FROM Korprotokoll_Svetsning_Parametrar WHERE AnstNr = @employeenumber AND MONTH(Datum) = @month AND YEAR(Datum) = @year ";
+                    SELECT DISTINCT OrderID FROM Korprotokoll_Slipning_Produktion WHERE Column_Index IS NULL AND AnstNr = @employeenumber AND MONTH(Date_Time) = @month AND YEAR(Date_Time) = @year";
                 con.Open();
                 var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@employeenumber", AnstNr);
@@ -724,9 +716,7 @@ namespace DigitalProductionProgram.User
             {
                 var query = @"SELECT DISTINCT AnstNr FROM Measureprotocol.MainData WHERE OrderID = @orderid
                                UNION
-                               SELECT DISTINCT AnstNr FROM Korprotokoll_Slipning_Produktion WHERE OrderID = @orderid
-                               UNION
-                               SELECT DISTINCT AnstNr FROM Korprotokoll_Svetsning_Parametrar WHERE OrderID = @orderid";
+                               SELECT DISTINCT AnstNr FROM Korprotokoll_Slipning_Produktion WHERE OrderID = @orderid";
                 con.Open();
                 var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", id);
@@ -748,8 +738,7 @@ namespace DigitalProductionProgram.User
             using (var con = new SqlConnection(Database.cs_Protocol))
             {
                 var query = @"SELECT (SELECT COUNT(*) FROM Measureprotocol.MainData WHERE AnstNr = @employeenumber AND OrderID = @orderid) 
-                                + (SELECT COUNT(*) FROM Korprotokoll_Slipning_Produktion WHERE AnstNr = @employeenumber AND Column_Index IS NULL AND OrderID = @orderid)
-                                + (SELECT COUNT(*) FROM Korprotokoll_Svetsning_Parametrar WHERE AnstNr = @employeenumber AND OrderID = @orderid)";
+                                + (SELECT COUNT(*) FROM Korprotokoll_Slipning_Produktion WHERE AnstNr = @employeenumber AND Column_Index IS NULL AND OrderID = @orderid)";
                 con.Open();
                 var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", id);

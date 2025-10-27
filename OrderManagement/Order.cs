@@ -668,8 +668,6 @@ namespace DigitalProductionProgram.OrderManagement
                         DELETE FROM [Order].MainData WHERE OrderID = @id    
                         DELETE FROM Korprotokoll_Slipning_Maskinparametrar WHERE OrderID = @id                         
                         DELETE FROM Korprotokoll_Slipning_Produktion WHERE OrderID = @id
-                        DELETE FROM Korprotokoll_Svetsning_Parametrar WHERE OrderID = @id
-                        DELETE FROM Korprotokoll_Svetsning_Maskinparametrar WHERE OrderID = @id 
                         
                         DELETE FROM [Order].PreFab WHERE OrderID = @id
                         DELETE FROM Measureprotocol.Data WHERE OrderID = @id 
@@ -1023,6 +1021,7 @@ namespace DigitalProductionProgram.OrderManagement
                             return Is_Blandning_PTFE_Done(main);
                         
                         case WorkOperations.Extrudering_FEP:
+                        case WorkOperations.Svetsning:
                             return Is_Protocol_Done(formTemplateIDs, main) && Is_Halvfabrikat_Done(main) && IsCommentsDone(main);
                         
                         case WorkOperations.Extrudering_PTFE:
@@ -1048,9 +1047,6 @@ namespace DigitalProductionProgram.OrderManagement
                             return true;
                         case WorkOperations.Slipning:
                             return Is_Slipning_Done(main) && IsCommentsDone(main);
-                       
-                        case WorkOperations.Svetsning:
-                            return Is_Svetsning_Done(main) && IsCommentsDone(main);
                     }
                     return false;
             }
@@ -1238,43 +1234,7 @@ namespace DigitalProductionProgram.OrderManagement
                 return true;
             }
 
-            private static bool Is_Svetsning_Done(Main_Form main)
-            {
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    var query = $"SELECT * FROM Korprotokoll_Svetsning_Maskinparametrar {Queries.WHERE_OrderID}";
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    cmd.Parameters.AddWithValue("@id", OrderID);
-                    con.Open();
-                    var reader = cmd.ExecuteReader();
-                    if (!reader.HasRows)
-                        return ShowMessage("Fyll i Maskinparametrarna i Körprotokollet", main);
-                }
-
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    var query = $"SELECT * FROM Korprotokoll_Svetsning_Parametrar {Queries.WHERE_OrderID}";
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    cmd.Parameters.AddWithValue("@id", OrderID);
-                    con.Open();
-                    var reader = cmd.ExecuteReader();
-                    if (!reader.HasRows)
-                        return ShowMessage("Fyll i Produktionsparametrarna i Körprotokollet", main);
-                }
-
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    var query = $"SELECT * FROM [Order].PreFab {Queries.WHERE_OrderID}";
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    cmd.Parameters.AddWithValue("@id", OrderID);
-                    con.Open();
-                    var reader = cmd.ExecuteReader();
-                    if (!reader.HasRows)
-                        return ShowMessage("Fyll i Halvfabrikatet i Körprotokollet", main);
-                }
-
-                return true;
-            }
+           
             private static bool Is_Slipning_Done(Main_Form main)
             {
                 using (var con = new SqlConnection(Database.cs_Protocol))

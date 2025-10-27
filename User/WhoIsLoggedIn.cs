@@ -75,13 +75,6 @@ namespace DigitalProductionProgram.User
                             ON slip.OrderID = main.OrderID
                     WHERE AnstNr = @employeenumber
 
-                    UNION 
-                    SELECT svets.OrderID, Datum
-                    FROM Korprotokoll_Svetsning_Parametrar AS svets 
-                        JOIN [Order].MainData AS main
-                            ON svets.OrderID = main.OrderID
-                    WHERE AnstNr = @employeenumber
-
                     ORDER BY Datum DESC";
 
                 var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();

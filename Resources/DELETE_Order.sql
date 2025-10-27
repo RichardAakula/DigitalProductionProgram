@@ -7,8 +7,6 @@
     DELETE FROM [Order].Compound_Main                          WHERE OrderID = @id
     DELETE FROM Korprotokoll_Slipning_Produktion                    WHERE OrderID = @id
     DELETE FROM Korprotokoll_Slipning_Maskinparametrar              WHERE OrderID = @id                                                
-    DELETE FROM Korprotokoll_Svetsning_Parametrar                   WHERE OrderID = @id
-    DELETE FROM Korprotokoll_Svetsning_Maskinparametrar             WHERE OrderID = @id
                                                 
     DELETE FROM [Order].ExtraComments                          WHERE OrderID = @id
     DELETE FROM [Order].PreFab                                        WHERE OrderID = @id

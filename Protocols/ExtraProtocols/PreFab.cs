@@ -383,7 +383,7 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
 
                     if (items != null)
                     {
-                        choose_Item = new Choose_Item(items, new[] { dgv.Rows[e.RowIndex].Cells[e.ColumnIndex] }, null, 0, 0, false);
+                        choose_Item = new Choose_Item(items, new[] { dgv.Rows[e.RowIndex].Cells[e.ColumnIndex] }, null, 0, 0, true);
                         choose_Item.ShowDialog();
                     }
 

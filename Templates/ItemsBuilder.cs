@@ -107,14 +107,12 @@ namespace DigitalProductionProgram.Protocols.Template_Management
                         INSERT INTO MeasureProtocol.ItemsList (MeasureProtocolMainTemplateID, DescriptionID, Item)
                         VALUES (@maintemplateid, @descriptionid, @items)
                     END";
-                using (var cmd = new SqlCommand(query, con))
-                {
-                    cmd.Parameters.Add("@items", SqlDbType.NVarChar).Value = item;
-                    cmd.Parameters.AddWithValue("@maintemplateid", Templates_MeasureProtocol.MainTemplate.ID);
-                    cmd.Parameters.AddWithValue("@descriptionid", DescriptionID);
-                    con.Open();
-                    cmd.ExecuteScalar();
-                }
+                using var cmd = new SqlCommand(query, con);
+                cmd.Parameters.Add("@items", SqlDbType.NVarChar).Value = item;
+                cmd.Parameters.AddWithValue("@maintemplateid", Templates_MeasureProtocol.MainTemplate.ID);
+                cmd.Parameters.AddWithValue("@descriptionid", DescriptionID);
+                con.Open();
+                cmd.ExecuteScalar();
             }
          
             private void SaveItems_Click(object sender, EventArgs e)

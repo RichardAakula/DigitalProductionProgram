@@ -606,7 +606,7 @@ namespace DigitalProductionProgram.MainWindow
                 workcenterDescription = Monitor.Monitor.WorkCenter.Description;
                 workcenterProdGroup = Monitor.Monitor.WorkCenter.Number;
             }
-                
+
 
 
             InfoText.Show(
@@ -1428,6 +1428,11 @@ ORDER BY OrderID DESC ";
             }
             Application.Exit(); // Stänger DPP
 
+        }
+
+        private void testaLaddaAllaVerktygFrånMonitorToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            List<string> list = Monitor.Monitor.List_All_Tools();
         }
     }
 }

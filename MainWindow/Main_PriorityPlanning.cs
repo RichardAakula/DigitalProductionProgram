@@ -156,58 +156,132 @@ namespace DigitalProductionProgram.MainWindow
 
             return result;
         }
-        public void Load_PriorityPlanning()
+        //public void Load_PriorityPlanning()
+        //{
+        //    workOperation = Manage_WorkOperation.Load_WorkOperationProdLine(false, tb_ProdBenämning.Text);
+
+        //    var dt = dt_PriorityPlan;
+        //    dgv_PriorityPlanning.Invoke(new Action(() => dgv_PriorityPlanning.DataSource = null));
+
+        //    if (Settings.Settings.MeasuringComputerOnly || Main_Form.IsLoadingPriorityPlan == false)
+        //        return;
+
+        //    var WorkCenter = Utilities.GetOneFromMonitor<Manufacturing.WorkCenters>($"filter=Number Eq'{tb_ProdGrupp.Text}'");
+        //    if (WorkCenter is null)
+        //        return;
+
+        //    var orderOperations = Utilities.GetFromMonitor<Manufacturing.ManufacturingOrderOperations>($"filter=WorkCenterId Eq'{WorkCenter.Id}' AND RestQuantity gt'0'", "orderby=Priority");
+        //    var ctr = -1;
+
+
+
+        //    // Fyll cache för order start-status
+        //    var neededChecks = new List<(string OrderNumber, string OperationNumber)>();
+
+        //    foreach (var row in orderOperations)
+        //    {
+        //        var ordernr = Utilities.GetOneFromMonitor<Manufacturing.ManufacturingOrders>($"filter=Id Eq'{row.ManufacturingOrderId}'");
+        //        if (ordernr == null)
+        //            continue;
+
+        //        var key = $"{ordernr.OrderNumber}-{row.OperationNumber}";
+        //        if (!dictIsOrderExist.ContainsKey(key))
+        //        {
+        //            neededChecks.Add((ordernr.OrderNumber, row.OperationNumber.ToString()));
+        //        }
+        //    }
+        //    // 2. Hämta data i bulk från DB och fyll cachen
+        //    var loadedCache = LoadOrderExistCache(neededChecks);
+        //    foreach (var kvp in loadedCache)
+        //    {
+        //        dictIsOrderExist[kvp.Key] = kvp.Value.IsStarted;
+        //        dictOrderID[kvp.Key] = kvp.Value.OrderID;  // _orderIDCache är en ny Dictionary<string, int?>
+        //    }
+
+        //    // Bygg datatable med data och använd cachen för isStarted
+        //    foreach (var row in orderOperations)
+        //    {
+        //        ctr++;
+        //        var ordernr = Utilities.GetOneFromMonitor<Manufacturing.ManufacturingOrders>($"filter=Id Eq'{row.ManufacturingOrderId}'");
+        //        var part = Utilities.GetOneFromMonitor<Inventory.Parts>($"filter=Id Eq'{row.PartId}'");
+        //        var ts = row.PlannedFinishDate - row.PlannedStartDate;
+        //        if (ordernr == null)
+        //            continue;
+
+        //        var key = $"{ordernr.OrderNumber}-{row.OperationNumber}";
+        //        dictIsOrderExist.TryGetValue(key, out bool isStarted);
+
+        //        dt.Rows.Add();
+        //        dt.Rows[^1]["OrderNr"] = ordernr.OrderNumber;
+        //        dt.Rows[^1]["Operation"] = row.OperationNumber;
+        //        dt.Rows[^1]["ArtikelNr"] = part.PartNumber;
+        //        dt.Rows[^1]["Benämning"] = part.Description;
+        //        dt.Rows[^1]["ProdLine"] = row.Description;
+        //        dt.Rows[^1]["Antal Rest"] = $"{row.RestQuantity:0}";
+        //        dt.Rows[^1]["Antal"] = $"{row.PlannedQuantity:0}";
+        //        dt.Rows[^1]["Total Tid"] = $"{ts.TotalHours:0.0}";
+        //        dt.Rows[^1]["Planerad Start"] = $"{row.PlannedStartDate:yyyy-MM-dd}";
+        //        dt.Rows[^1]["Planerad Stopp"] = $"{row.PlannedFinishDate:yyyy-MM-dd}";
+        //        dt.Rows[^1]["Order Startad"] = isStarted;
+        //        dt.Rows[^1]["Processkort Godkänt"] = Part.IsPartNr_ApprovedQA;
+
+
+        //    }
+
+
+        //    dgv_PriorityPlanning.Invoke(new Action(() => dgv_PriorityPlanning.DataSource = dt));
+        //    dgv_PriorityPlanning.Invoke(new Action(() => dgv_PriorityPlanning.Columns["Order Startad"].Visible = false));
+        //    dgv_PriorityPlanning.Invoke(new Action(() => dgv_PriorityPlanning.Columns["Processkort Godkänt"].Visible = false));
+        //    dgv_PriorityPlanning.Invoke(new Action(() => dgv_PriorityPlanning.Columns["PartID"].Visible = false));
+        //    SetProcesscardStatus(dt);
+        //    SetColorsPriorityPlan();
+        //}
+        public async Task Load_PriorityPlanning()
         {
-            workOperation = Manage_WorkOperation.Load_WorkOperationProdLine(false, tb_ProdBenämning.Text);
+            workOperation = await Task.Run(() => Manage_WorkOperation.Load_WorkOperationProdLine(false, tb_ProdBenämning.Text));
 
             var dt = dt_PriorityPlan;
-            dgv_PriorityPlanning.Invoke(new Action(() => dgv_PriorityPlanning.DataSource = null));
+            dgv_PriorityPlanning.DataSource = null;
 
             if (Settings.Settings.MeasuringComputerOnly || Main_Form.IsLoadingPriorityPlan == false)
                 return;
 
-            var WorkCenter = Utilities.GetOneFromMonitor<Manufacturing.WorkCenters>($"filter=Number Eq'{tb_ProdGrupp.Text}'");
-            if (WorkCenter is null)
+            var workCenter = await Task.Run(() => Utilities.GetOneFromMonitor<Manufacturing.WorkCenters>($"filter=Number Eq'{tb_ProdGrupp.Text}'"));
+            if (workCenter == null)
                 return;
 
-            var orderOperations = Utilities.GetFromMonitor<Manufacturing.ManufacturingOrderOperations>($"filter=WorkCenterId Eq'{WorkCenter.Id}' AND RestQuantity gt'0'", "orderby=Priority");
-            var ctr = -1;
+            var orderOperations = await Task.Run(() =>
+                Utilities.GetFromMonitor<Manufacturing.ManufacturingOrderOperations>(
+                    $"filter=WorkCenterId Eq'{workCenter.Id}' AND RestQuantity gt'0'", "orderby=Priority"));
 
-
-
-            // Fyll cache för order start-status
             var neededChecks = new List<(string OrderNumber, string OperationNumber)>();
 
             foreach (var row in orderOperations)
             {
-                var ordernr = Utilities.GetOneFromMonitor<Manufacturing.ManufacturingOrders>($"filter=Id Eq'{row.ManufacturingOrderId}'");
+                var ordernr = await Task.Run(() => Utilities.GetOneFromMonitor<Manufacturing.ManufacturingOrders>($"filter=Id Eq'{row.ManufacturingOrderId}'"));
                 if (ordernr == null)
                     continue;
 
                 var key = $"{ordernr.OrderNumber}-{row.OperationNumber}";
                 if (!dictIsOrderExist.ContainsKey(key))
-                {
                     neededChecks.Add((ordernr.OrderNumber, row.OperationNumber.ToString()));
-                }
             }
-            // 2. Hämta data i bulk från DB och fyll cachen
-            var loadedCache = LoadOrderExistCache(neededChecks);
+
+            var loadedCache = await Task.Run(() => LoadOrderExistCache(neededChecks));
             foreach (var kvp in loadedCache)
             {
                 dictIsOrderExist[kvp.Key] = kvp.Value.IsStarted;
-                dictOrderID[kvp.Key] = kvp.Value.OrderID;  // _orderIDCache är en ny Dictionary<string, int?>
+                dictOrderID[kvp.Key] = kvp.Value.OrderID;
             }
 
-            // Bygg datatable med data och använd cachen för isStarted
             foreach (var row in orderOperations)
             {
-                ctr++;
-                var ordernr = Utilities.GetOneFromMonitor<Manufacturing.ManufacturingOrders>($"filter=Id Eq'{row.ManufacturingOrderId}'");
-                var part = Utilities.GetOneFromMonitor<Inventory.Parts>($"filter=Id Eq'{row.PartId}'");
-                var ts = row.PlannedFinishDate - row.PlannedStartDate;
-                if (ordernr == null)
+                var ordernr = await Task.Run(() => Utilities.GetOneFromMonitor<Manufacturing.ManufacturingOrders>($"filter=Id Eq'{row.ManufacturingOrderId}'"));
+                var part = await Task.Run(() => Utilities.GetOneFromMonitor<Inventory.Parts>($"filter=Id Eq'{row.PartId}'"));
+                if (ordernr == null || part == null)
                     continue;
 
+                var ts = row.PlannedFinishDate - row.PlannedStartDate;
                 var key = $"{ordernr.OrderNumber}-{row.OperationNumber}";
                 dictIsOrderExist.TryGetValue(key, out bool isStarted);
 
@@ -224,15 +298,13 @@ namespace DigitalProductionProgram.MainWindow
                 dt.Rows[^1]["Planerad Stopp"] = $"{row.PlannedFinishDate:yyyy-MM-dd}";
                 dt.Rows[^1]["Order Startad"] = isStarted;
                 dt.Rows[^1]["Processkort Godkänt"] = Part.IsPartNr_ApprovedQA;
-
-
             }
 
-
-            dgv_PriorityPlanning.Invoke(new Action(() => dgv_PriorityPlanning.DataSource = dt));
-            dgv_PriorityPlanning.Invoke(new Action(() => dgv_PriorityPlanning.Columns["Order Startad"].Visible = false));
-            dgv_PriorityPlanning.Invoke(new Action(() => dgv_PriorityPlanning.Columns["Processkort Godkänt"].Visible = false));
-            dgv_PriorityPlanning.Invoke(new Action(() => dgv_PriorityPlanning.Columns["PartID"].Visible = false));
+            // UI-uppdatering efter async-arbete
+            dgv_PriorityPlanning.DataSource = dt;
+            dgv_PriorityPlanning.Columns["Order Startad"].Visible = false;
+            dgv_PriorityPlanning.Columns["Processkort Godkänt"].Visible = false;
+            dgv_PriorityPlanning.Columns["PartID"].Visible = false;
             SetProcesscardStatus(dt);
             SetColorsPriorityPlan();
         }

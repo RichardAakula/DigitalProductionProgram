@@ -114,17 +114,29 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
             }
             return dt;
         }
-        public static List<string?> List_BatchNr(string? partNr)
+        //public static List<string?> List_BatchNr(string? partNr)
+        //{
+        //    var list = Monitor.Monitor.PreFab_BatchNr(partNr);
+        //    if (list != null)
+        //    {
+        //        var list_Parts = Monitor.Monitor.PreFab_BatchNr(partNr).ToList();
+        //        return list_Parts;
+        //    }
+
+        //    return null;
+        //}
+        public static async Task<List<string?>?> List_BatchNr(string? partNr)
         {
-            var list = Monitor.Monitor.PreFab_BatchNr(partNr);
+            if (partNr == null)
+                return null;
+
+            var list = await Monitor.Monitor.PreFab_BatchNr(partNr);
             if (list != null)
-            {
-                var list_Parts = Monitor.Monitor.PreFab_BatchNr(partNr).ToList();
-                return list_Parts;
-            }
+                return list.ToList();
 
             return null;
         }
+
         public static List<string?> ListBatchNr
         {
             get
@@ -291,15 +303,59 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
             dgv.Columns["TempID"].Visible = false;
             dgv.ClearSelection();
         }
-       
 
-        private void PreFab_CellClick(object sender, DataGridViewCellEventArgs e)
+
+        //private void PreFab_CellClick(object sender, DataGridViewCellEventArgs e)
+        //{
+        //    if (Browse_Protocols.Browse_Protocols.Is_BrowsingProtocols)
+        //        return;
+        //    List<string?> items;
+
+        //    if (e.ColumnIndex == ExtruderColumn)//Extruder
+        //    {
+        //        items = Machines.Extruders("EXTRUDER", Order.OrderID);
+        //        using var choose_Item = new Choose_Item(items, new[] { dgv.Rows[e.RowIndex].Cells[e.ColumnIndex] });
+        //        choose_Item.ShowDialog();
+        //        dgv.ClearSelection();
+        //    }
+
+        //    if (e.ColumnIndex == BatchNrColumn)//BatchNr
+        //    {
+        //        items = List_BatchNr(dgv.Rows[e.RowIndex].Cells[0].Value.ToString());
+
+        //        if (!string.IsNullOrEmpty(dgv.Rows[e.RowIndex].Cells["BatchNr:"].Value.ToString()) && Is_CommentNeededToChangeBatchNr)
+        //        {
+        //            using var byt_BatchNr = new Change_ChargeNr_AddComment();
+        //            using var black = new BlackBackground("", 80);
+        //            black.Show();
+        //            byt_BatchNr.ShowDialog();
+        //            if (string.IsNullOrEmpty(byt_BatchNr.Kommentar))
+        //            {
+        //                InfoText.Show(LanguageManager.GetString("changeBatchNr_Info_1"), CustomColors.InfoText_Color.Info, "Warning", this);
+
+        //                black.Close();
+        //                return;
+        //            }
+        //            black.Close();
+        //            DatabaseManagement.SaveData.INSERT_Kommentar_Byte_BatchNr($"{LanguageManager.GetString("changeBatchNr_Info_2")} {byt_BatchNr.Kommentar}");
+        //        }
+        //        if (items != null)
+        //        {
+        //            using var choose_Item = new Choose_Item(items, new[] { dgv.Rows[e.RowIndex].Cells[e.ColumnIndex] }, null, 0, 0, false);
+        //            choose_Item.ShowDialog();
+        //        }
+
+        //        dgv.ClearSelection();
+        //    }
+        //}
+        private async void PreFab_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             if (Browse_Protocols.Browse_Protocols.Is_BrowsingProtocols)
                 return;
+
             List<string?> items;
 
-            if (e.ColumnIndex == ExtruderColumn)//Extruder
+            if (e.ColumnIndex == ExtruderColumn) // Extruder
             {
                 items = Machines.Extruders("EXTRUDER", Order.OrderID);
                 using var choose_Item = new Choose_Item(items, new[] { dgv.Rows[e.RowIndex].Cells[e.ColumnIndex] });
@@ -307,11 +363,11 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
                 dgv.ClearSelection();
             }
 
-            if (e.ColumnIndex == BatchNrColumn)//BatchNr
+            if (e.ColumnIndex == BatchNrColumn) // BatchNr
             {
-                items = List_BatchNr(dgv.Rows[e.RowIndex].Cells[0].Value.ToString());
+                items = await List_BatchNr(dgv.Rows[e.RowIndex].Cells[0].Value?.ToString());
 
-                if (!string.IsNullOrEmpty(dgv.Rows[e.RowIndex].Cells["BatchNr:"].Value.ToString()) && Is_CommentNeededToChangeBatchNr)
+                if (!string.IsNullOrEmpty(dgv.Rows[e.RowIndex].Cells["BatchNr:"].Value?.ToString()) && Is_CommentNeededToChangeBatchNr)
                 {
                     using var byt_BatchNr = new Change_ChargeNr_AddComment();
                     using var black = new BlackBackground("", 80);
@@ -320,13 +376,13 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
                     if (string.IsNullOrEmpty(byt_BatchNr.Kommentar))
                     {
                         InfoText.Show(LanguageManager.GetString("changeBatchNr_Info_1"), CustomColors.InfoText_Color.Info, "Warning", this);
-
                         black.Close();
                         return;
                     }
                     black.Close();
                     DatabaseManagement.SaveData.INSERT_Kommentar_Byte_BatchNr($"{LanguageManager.GetString("changeBatchNr_Info_2")} {byt_BatchNr.Kommentar}");
                 }
+
                 if (items != null)
                 {
                     using var choose_Item = new Choose_Item(items, new[] { dgv.Rows[e.RowIndex].Cells[e.ColumnIndex] }, null, 0, 0, false);
@@ -336,42 +392,84 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
                 dgv.ClearSelection();
             }
         }
-        private void Save_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+
+        //private void Save_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        //{
+        //    if (Module.IsOkToSave == false)
+        //        return;
+
+        //    var col = e.ColumnIndex;
+        //    if (col == BatchNrColumn)
+        //    {
+        //        var row = dgv.CurrentCell.RowIndex;
+        //        var cell_Saldo = dgv.Rows[row].Cells[LanguageManager.GetString("preFab_Balance")];
+        //        var cell_BatchNr = dgv.Rows[row].Cells["BatchNr:"];
+        //        var cell_ArtikelNr = dgv.Rows[row].Cells[LanguageManager.GetString("label_PartNumber")];
+        //        string bestBeforeDate = null;
+        //        var columnName = LanguageManager.GetString("preFab_BestBefore");
+        //        string batchNr = cell_BatchNr.Value.ToString();
+        //        if (dgv.Columns.Contains(columnName))
+        //        {
+        //            var cell_BestBefore = dgv.Rows[row].Cells[LanguageManager.GetString("preFab_BestBefore")];
+        //            var bestBefore = Monitor.Monitor.BestBeforeDate(cell_ArtikelNr.Value.ToString(), cell_BatchNr.Value.ToString());
+        //            cell_BestBefore.Value = DateTime.TryParse(bestBefore, out DateTime result) ? (object)result : DBNull.Value;
+
+        //            bestBeforeDate = cell_BestBefore.Value.ToString();
+        //        }
+
+        //        cell_Saldo.Value = $"{Monitor.Monitor.Balance(cell_ArtikelNr.Value.ToString(), cell_BatchNr.Value.ToString()):0.00} {Monitor.Monitor.Units(cell_ArtikelNr.Value.ToString())}";
+
+
+        //        UPDATE_PreFab(cell_ArtikelNr.Value.ToString(), batchNr, int.Parse(dgv.Rows[row].Cells["TempID"].Value.ToString()), bestBeforeDate);
+        //    }
+
+        //    if (col == ExtruderColumn)
+        //    {
+        //        var row = dgv.CurrentCell.RowIndex;
+        //        UPDATE_PreFab_Extruder(dgv.Rows[row].Cells[LanguageManager.GetString("label_PartNumber")].Value.ToString(), dgv.Rows[row].Cells["Extruder:"].Value.ToString());
+        //    }
+        //}
+        private async void Save_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
             if (Module.IsOkToSave == false)
                 return;
 
             var col = e.ColumnIndex;
+            var row = dgv.CurrentCell.RowIndex;
+
             if (col == BatchNrColumn)
             {
-                var row = dgv.CurrentCell.RowIndex;
                 var cell_Saldo = dgv.Rows[row].Cells[LanguageManager.GetString("preFab_Balance")];
                 var cell_BatchNr = dgv.Rows[row].Cells["BatchNr:"];
                 var cell_ArtikelNr = dgv.Rows[row].Cells[LanguageManager.GetString("label_PartNumber")];
+
                 string bestBeforeDate = null;
                 var columnName = LanguageManager.GetString("preFab_BestBefore");
-                string batchNr = cell_BatchNr.Value.ToString();
+                string batchNr = cell_BatchNr.Value?.ToString() ?? "";
+
                 if (dgv.Columns.Contains(columnName))
                 {
-                    var cell_BestBefore = dgv.Rows[row].Cells[LanguageManager.GetString("preFab_BestBefore")];
-                    var bestBefore = Monitor.Monitor.BestBeforeDate(cell_ArtikelNr.Value.ToString(), cell_BatchNr.Value.ToString());
+                    var cell_BestBefore = dgv.Rows[row].Cells[columnName];
+                    var bestBefore = await Task.Run(() => Monitor.Monitor.BestBeforeDate(cell_ArtikelNr.Value?.ToString(), batchNr));
                     cell_BestBefore.Value = DateTime.TryParse(bestBefore, out DateTime result) ? (object)result : DBNull.Value;
-
-                    bestBeforeDate = cell_BestBefore.Value.ToString();
+                    bestBeforeDate = cell_BestBefore.Value?.ToString();
                 }
 
-                cell_Saldo.Value = $"{Monitor.Monitor.Balance(cell_ArtikelNr.Value.ToString(), cell_BatchNr.Value.ToString()):0.00} {Monitor.Monitor.Units(cell_ArtikelNr.Value.ToString())}";
+                var balance = await Task.Run(() => Monitor.Monitor.Balance(cell_ArtikelNr.Value?.ToString(), batchNr));
+                var units = await Task.Run(() => Monitor.Monitor.Units(cell_ArtikelNr.Value?.ToString()));
+                cell_Saldo.Value = $"{balance:0.00} {units}";
 
-                
-                UPDATE_PreFab(cell_ArtikelNr.Value.ToString(), batchNr, int.Parse(dgv.Rows[row].Cells["TempID"].Value.ToString()), bestBeforeDate);
+                await Task.Run(() => UPDATE_PreFab(cell_ArtikelNr.Value?.ToString(), batchNr, int.Parse(dgv.Rows[row].Cells["TempID"].Value.ToString()), bestBeforeDate));
             }
 
             if (col == ExtruderColumn)
             {
-                var row = dgv.CurrentCell.RowIndex;
-                UPDATE_PreFab_Extruder(dgv.Rows[row].Cells[LanguageManager.GetString("label_PartNumber")].Value.ToString(), dgv.Rows[row].Cells["Extruder:"].Value.ToString());
+                var cell_ArtikelNr = dgv.Rows[row].Cells[LanguageManager.GetString("label_PartNumber")];
+                var extruderValue = dgv.Rows[row].Cells["Extruder:"].Value?.ToString();
+                await Task.Run(() => UPDATE_PreFab_Extruder(cell_ArtikelNr.Value?.ToString(), extruderValue));
             }
         }
+
         private void CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
             if (dgv.Columns[e.ColumnIndex].Name == LanguageManager.GetString("preFab_BestBefore"))
@@ -434,7 +532,76 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
 
         public class SaveData
         {
-            public static void INSERT_Halvfabrikat(long ManufacturingOrderId = 0)
+            //public static void INSERT_Halvfabrikat(long ManufacturingOrderId = 0)
+            //{
+            //    if (ManufacturingOrderId == 0)
+            //    {
+            //        if (Monitor.Monitor.Order is null)
+            //            return;
+            //        ManufacturingOrderId = Monitor.Monitor.Order.Id;
+            //    }
+
+            //    //ListPartID Måste hämtas utan Operation för Extrudering PTFE pga av att halvfabriaktet är kopplat till operation 10 och dom använder operation 20 i DPP
+            //    List<Manufacturing.ManufacturingOrderMaterials> ListPartID;
+            //    if (CheckAuthority.IsWorkoperationAuthorized(CheckAuthority.TemplateWorkoperation.LoadPrefabWithoutOperation))
+            //        ListPartID = Utilities.GetFromMonitor<Manufacturing.ManufacturingOrderMaterials>("select=PartId", $"filter=ManufacturingOrderId Eq'{ManufacturingOrderId}'");
+            //    else
+            //        ListPartID = Utilities.GetFromMonitor<Manufacturing.ManufacturingOrderMaterials>("select=PartId", $"filter=ManufacturingOrderId Eq'{ManufacturingOrderId}' AND ToOperationNumber Eq'{Order.Operation}'");
+
+            //    if (ListPartID is null)
+            //        return;
+            //    foreach (var partID in ListPartID)
+            //    {
+            //        var ListParts = Utilities.GetFromMonitor<Inventory.Parts>( $"filter=Id Eq'{partID.PartId}'");
+            //        if (ListParts is null)
+            //            continue;
+
+            //        foreach (var part in ListParts)
+            //        {
+            //            using var con = new SqlConnection(Database.cs_Protocol);
+            //            string query;
+            //            if (CheckAuthority.IsWorkoperationAuthorized(CheckAuthority.TemplateWorkoperation.SaveMeasurepointsWithPrefab))
+            //                query = @"IF NOT EXISTS (SELECT * FROM [Order].PreFab WHERE OrderID = @orderid AND Halvfabrikat_ArtikelNr = @partnumber)
+            //                            INSERT INTO [Order].PreFab (OrderID, Halvfabrikat_ArtikelNr, Halvfabrikat_ID, Halvfabrikat_OD, Halvfabrikat_W) 
+            //                                VALUES (@orderid, @partnumber, @H_ID, @H_OD, @H_W)";
+            //            else
+            //                query = @"IF NOT EXISTS (SELECT * FROM [Order].PreFab WHERE OrderID = @orderid AND Halvfabrikat_ArtikelNr = @partnumber)
+            //                            INSERT INTO [Order].PreFab (OrderID, Halvfabrikat_ArtikelNr, Halvfabrikat_Benämning) 
+            //                                VALUES (@orderid, @partnumber, @description)";
+
+
+            //            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            //            cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
+            //            cmd.Parameters.AddWithValue("@partnumber", part.PartNumber);
+            //            SQL_Parameter.String(cmd.Parameters, "@description", part.Description);
+
+            //            if (CheckAuthority.IsWorkoperationAuthorized(CheckAuthority.TemplateWorkoperation.SaveMeasurepointsWithPrefab))
+            //            {
+            //                var id = Monitor.Monitor.MeasurePoint(part.PartNumber, "ID");
+            //                var od = Monitor.Monitor.MeasurePoint(part.PartNumber,  "OD");
+            //                var w = Monitor.Monitor.MeasurePoint(part.PartNumber,  "Wall");
+            //                if (id > od)    //Blir ibland fel att ID och OD mixas
+            //                {
+            //                    Activity.Start();
+            //                    SQL_Parameter.Double(cmd.Parameters, "@H_ID", id);
+            //                    SQL_Parameter.Double(cmd.Parameters, "@H_OD", od);
+            //                    SQL_Parameter.Double(cmd.Parameters, "@H_W", w);
+            //                    _ = Activity.Stop($"Halvfabrikat fel ID/OD: ID = {id} - OD = {od}");
+            //                }
+            //                else
+            //                {
+            //                    SQL_Parameter.Double(cmd.Parameters, "@H_ID", id);
+            //                    SQL_Parameter.Double(cmd.Parameters, "@H_OD", od);
+            //                    SQL_Parameter.Double(cmd.Parameters, "@H_W", w);
+            //                }
+            //            }
+            //            con.Open();
+            //            cmd.ExecuteNonQuery();
+            //        }
+            //    }
+            //}
+
+            public static async Task INSERT_Halvfabrikat(long ManufacturingOrderId = 0)
             {
                 if (ManufacturingOrderId == 0)
                 {
@@ -443,18 +610,18 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
                     ManufacturingOrderId = Monitor.Monitor.Order.Id;
                 }
 
-                //ListPartID Måste hämtas utan Operation för Extrudering PTFE pga av att halvfabriaktet är kopplat till operation 10 och dom använder operation 20 i DPP
                 List<Manufacturing.ManufacturingOrderMaterials> ListPartID;
                 if (CheckAuthority.IsWorkoperationAuthorized(CheckAuthority.TemplateWorkoperation.LoadPrefabWithoutOperation))
-                    ListPartID = Utilities.GetFromMonitor<Manufacturing.ManufacturingOrderMaterials>("select=PartId", $"filter=ManufacturingOrderId Eq'{ManufacturingOrderId}'");
+                    ListPartID = await Task.Run(() => Utilities.GetFromMonitor<Manufacturing.ManufacturingOrderMaterials>("select=PartId", $"filter=ManufacturingOrderId Eq'{ManufacturingOrderId}'"));
                 else
-                    ListPartID = Utilities.GetFromMonitor<Manufacturing.ManufacturingOrderMaterials>("select=PartId", $"filter=ManufacturingOrderId Eq'{ManufacturingOrderId}' AND ToOperationNumber Eq'{Order.Operation}'");
+                    ListPartID = await Task.Run(() => Utilities.GetFromMonitor<Manufacturing.ManufacturingOrderMaterials>("select=PartId", $"filter=ManufacturingOrderId Eq'{ManufacturingOrderId}' AND ToOperationNumber Eq'{Order.Operation}'"));
 
                 if (ListPartID is null)
                     return;
+
                 foreach (var partID in ListPartID)
                 {
-                    var ListParts = Utilities.GetFromMonitor<Inventory.Parts>( $"filter=Id Eq'{partID.PartId}'");
+                    var ListParts = await Task.Run(() => Utilities.GetFromMonitor<Inventory.Parts>($"filter=Id Eq'{partID.PartId}'"));
                     if (ListParts is null)
                         continue;
 
@@ -464,13 +631,12 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
                         string query;
                         if (CheckAuthority.IsWorkoperationAuthorized(CheckAuthority.TemplateWorkoperation.SaveMeasurepointsWithPrefab))
                             query = @"IF NOT EXISTS (SELECT * FROM [Order].PreFab WHERE OrderID = @orderid AND Halvfabrikat_ArtikelNr = @partnumber)
-                                        INSERT INTO [Order].PreFab (OrderID, Halvfabrikat_ArtikelNr, Halvfabrikat_ID, Halvfabrikat_OD, Halvfabrikat_W) 
-                                            VALUES (@orderid, @partnumber, @H_ID, @H_OD, @H_W)";
+                            INSERT INTO [Order].PreFab (OrderID, Halvfabrikat_ArtikelNr, Halvfabrikat_ID, Halvfabrikat_OD, Halvfabrikat_W) 
+                                VALUES (@orderid, @partnumber, @H_ID, @H_OD, @H_W)";
                         else
                             query = @"IF NOT EXISTS (SELECT * FROM [Order].PreFab WHERE OrderID = @orderid AND Halvfabrikat_ArtikelNr = @partnumber)
-                                        INSERT INTO [Order].PreFab (OrderID, Halvfabrikat_ArtikelNr, Halvfabrikat_Benämning) 
-                                            VALUES (@orderid, @partnumber, @description)";
-
+                            INSERT INTO [Order].PreFab (OrderID, Halvfabrikat_ArtikelNr, Halvfabrikat_Benämning) 
+                                VALUES (@orderid, @partnumber, @description)";
 
                         var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                         cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
@@ -479,10 +645,11 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
 
                         if (CheckAuthority.IsWorkoperationAuthorized(CheckAuthority.TemplateWorkoperation.SaveMeasurepointsWithPrefab))
                         {
-                            var id = Monitor.Monitor.MeasurePoint(part.PartNumber, "ID");
-                            var od = Monitor.Monitor.MeasurePoint(part.PartNumber,  "OD");
-                            var w = Monitor.Monitor.MeasurePoint(part.PartNumber,  "Wall");
-                            if (id > od)    //Blir ibland fel att ID och OD mixas
+                            var id = await Task.Run(() => Monitor.Monitor.MeasurePoint(part.PartNumber, "ID"));
+                            var od = await Task.Run(() => Monitor.Monitor.MeasurePoint(part.PartNumber, "OD"));
+                            var w = await Task.Run(() => Monitor.Monitor.MeasurePoint(part.PartNumber, "Wall"));
+
+                            if (id > od)
                             {
                                 Activity.Start();
                                 SQL_Parameter.Double(cmd.Parameters, "@H_ID", id);
@@ -497,11 +664,13 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
                                 SQL_Parameter.Double(cmd.Parameters, "@H_W", w);
                             }
                         }
-                        con.Open();
-                        cmd.ExecuteNonQuery();
+
+                        await con.OpenAsync();
+                        await cmd.ExecuteNonQueryAsync();
                     }
                 }
             }
+
             public static void INSERT_Skärmning()
             {
                 var tråd_Benämning = Monitor.Monitor.Part_Material.Description;

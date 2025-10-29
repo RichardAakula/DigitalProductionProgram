@@ -54,15 +54,15 @@
             gbx_Filter = new GroupBox();
             tb_FilterText = new TextBox();
             label_FilterText = new Label();
-            cb_FilterColumn = new ComboBox();
+            cb_FilterCodeText = new ComboBox();
             label_FilterColumn = new Label();
             cb_FilterFunctions = new ComboBox();
             label_Filter = new Label();
             gbx_MonitorAPI = new GroupBox();
-            cb_ExtraField = new ComboBox();
+            cb_Identifier = new ComboBox();
             label_Column = new Label();
-            cb_Resource = new ComboBox();
-            label_Resource = new Label();
+            cb_Properties = new ComboBox();
+            label_Property = new Label();
             cb_Module = new ComboBox();
             label_Module = new Label();
             label_ListMonitor = new Label();
@@ -391,7 +391,7 @@
             // 
             gbx_Filter.Controls.Add(tb_FilterText);
             gbx_Filter.Controls.Add(label_FilterText);
-            gbx_Filter.Controls.Add(cb_FilterColumn);
+            gbx_Filter.Controls.Add(cb_FilterCodeText);
             gbx_Filter.Controls.Add(label_FilterColumn);
             gbx_Filter.Controls.Add(cb_FilterFunctions);
             gbx_Filter.Controls.Add(label_Filter);
@@ -404,7 +404,7 @@
             gbx_Filter.Size = new Size(199, 802);
             gbx_Filter.TabIndex = 32;
             gbx_Filter.TabStop = false;
-            gbx_Filter.Text = "Välj Typ";
+            gbx_Filter.Text = "Välj Filter";
             // 
             // tb_FilterText
             // 
@@ -413,7 +413,6 @@
             tb_FilterText.Name = "tb_FilterText";
             tb_FilterText.Size = new Size(193, 24);
             tb_FilterText.TabIndex = 35;
-            tb_FilterText.Visible = false;
             // 
             // label_FilterText
             // 
@@ -425,18 +424,16 @@
             label_FilterText.Size = new Size(73, 26);
             label_FilterText.TabIndex = 34;
             label_FilterText.Text = "Filter Text";
-            label_FilterText.Visible = false;
             // 
-            // cb_FilterColumn
+            // cb_FilterCodeText
             // 
-            cb_FilterColumn.Dock = DockStyle.Top;
-            cb_FilterColumn.DropDownStyle = ComboBoxStyle.DropDownList;
-            cb_FilterColumn.FormattingEnabled = true;
-            cb_FilterColumn.Items.AddRange(new object[] { "Description" });
-            cb_FilterColumn.Location = new Point(3, 96);
-            cb_FilterColumn.Name = "cb_FilterColumn";
-            cb_FilterColumn.Size = new Size(193, 24);
-            cb_FilterColumn.TabIndex = 33;
+            cb_FilterCodeText.Dock = DockStyle.Top;
+            cb_FilterCodeText.DropDownStyle = ComboBoxStyle.DropDownList;
+            cb_FilterCodeText.FormattingEnabled = true;
+            cb_FilterCodeText.Location = new Point(3, 96);
+            cb_FilterCodeText.Name = "cb_FilterCodeText";
+            cb_FilterCodeText.Size = new Size(193, 24);
+            cb_FilterCodeText.TabIndex = 33;
             // 
             // label_FilterColumn
             // 
@@ -445,9 +442,9 @@
             label_FilterColumn.Location = new Point(3, 70);
             label_FilterColumn.Name = "label_FilterColumn";
             label_FilterColumn.Padding = new Padding(0, 5, 0, 5);
-            label_FilterColumn.Size = new Size(34, 26);
+            label_FilterColumn.Size = new Size(148, 26);
             label_FilterColumn.TabIndex = 32;
-            label_FilterColumn.Text = "Typ";
+            label_FilterColumn.Text = "Filtrera på CodeText?";
             // 
             // cb_FilterFunctions
             // 
@@ -475,10 +472,10 @@
             // 
             // gbx_MonitorAPI
             // 
-            gbx_MonitorAPI.Controls.Add(cb_ExtraField);
+            gbx_MonitorAPI.Controls.Add(cb_Identifier);
             gbx_MonitorAPI.Controls.Add(label_Column);
-            gbx_MonitorAPI.Controls.Add(cb_Resource);
-            gbx_MonitorAPI.Controls.Add(label_Resource);
+            gbx_MonitorAPI.Controls.Add(cb_Properties);
+            gbx_MonitorAPI.Controls.Add(label_Property);
             gbx_MonitorAPI.Controls.Add(cb_Module);
             gbx_MonitorAPI.Controls.Add(label_Module);
             gbx_MonitorAPI.Dock = DockStyle.Fill;
@@ -492,16 +489,16 @@
             gbx_MonitorAPI.TabStop = false;
             gbx_MonitorAPI.Text = "Extra Fält";
             // 
-            // cb_ExtraField
+            // cb_Identifier
             // 
-            cb_ExtraField.Dock = DockStyle.Top;
-            cb_ExtraField.DropDownStyle = ComboBoxStyle.DropDownList;
-            cb_ExtraField.FormattingEnabled = true;
-            cb_ExtraField.Items.AddRange(new object[] { "PartNumber", "Description" });
-            cb_ExtraField.Location = new Point(3, 146);
-            cb_ExtraField.Name = "cb_ExtraField";
-            cb_ExtraField.Size = new Size(205, 24);
-            cb_ExtraField.TabIndex = 31;
+            cb_Identifier.Dock = DockStyle.Top;
+            cb_Identifier.DropDownStyle = ComboBoxStyle.DropDownList;
+            cb_Identifier.FormattingEnabled = true;
+            cb_Identifier.Items.AddRange(new object[] { "PartNumber", "Description" });
+            cb_Identifier.Location = new Point(3, 146);
+            cb_Identifier.Name = "cb_Identifier";
+            cb_Identifier.Size = new Size(205, 24);
+            cb_Identifier.TabIndex = 31;
             // 
             // label_Column
             // 
@@ -514,29 +511,27 @@
             label_Column.TabIndex = 30;
             label_Column.Text = "Extra Fält";
             // 
-            // cb_Resource
+            // cb_Properties
             // 
-            cb_Resource.Dock = DockStyle.Top;
-            cb_Resource.DropDownStyle = ComboBoxStyle.DropDownList;
-            cb_Resource.FormattingEnabled = true;
-            cb_Resource.Location = new Point(3, 96);
-            cb_Resource.Name = "cb_Resource";
-            cb_Resource.Size = new Size(205, 24);
-            cb_Resource.TabIndex = 27;
-            cb_Resource.Visible = false;
-            cb_Resource.SelectedIndexChanged += cb_Resource_SelectedIndexChanged;
+            cb_Properties.Dock = DockStyle.Top;
+            cb_Properties.DropDownStyle = ComboBoxStyle.DropDownList;
+            cb_Properties.FormattingEnabled = true;
+            cb_Properties.Items.AddRange(new object[] { "PartNumber", "ExtraDescription", "Description" });
+            cb_Properties.Location = new Point(3, 96);
+            cb_Properties.Name = "cb_Properties";
+            cb_Properties.Size = new Size(205, 24);
+            cb_Properties.TabIndex = 27;
             // 
-            // label_Resource
+            // label_Property
             // 
-            label_Resource.AutoSize = true;
-            label_Resource.Dock = DockStyle.Top;
-            label_Resource.Location = new Point(3, 70);
-            label_Resource.Name = "label_Resource";
-            label_Resource.Padding = new Padding(0, 5, 0, 5);
-            label_Resource.Size = new Size(51, 26);
-            label_Resource.TabIndex = 29;
-            label_Resource.Text = "Resurs";
-            label_Resource.Visible = false;
+            label_Property.AutoSize = true;
+            label_Property.Dock = DockStyle.Top;
+            label_Property.Location = new Point(3, 70);
+            label_Property.Name = "label_Property";
+            label_Property.Padding = new Padding(0, 5, 0, 5);
+            label_Property.Size = new Size(64, 26);
+            label_Property.TabIndex = 29;
+            label_Property.Text = "Property";
             // 
             // cb_Module
             // 
@@ -661,15 +656,15 @@
         private GroupBox gbx_Filter;
         private TextBox tb_FilterText;
         private Label label_FilterText;
-        private ComboBox cb_FilterColumn;
+        private ComboBox cb_FilterCodeText;
         private Label label_FilterColumn;
         private ComboBox cb_FilterFunctions;
         private Label label_Filter;
         private GroupBox gbx_MonitorAPI;
-        private ComboBox cb_ExtraField;
+        private ComboBox cb_Identifier;
         private Label label_Column;
-        private ComboBox cb_Resource;
-        private Label label_Resource;
+        private ComboBox cb_Properties;
+        private Label label_Property;
         private ComboBox cb_Module;
         private Label label_Module;
         private Label label_ListMonitor;

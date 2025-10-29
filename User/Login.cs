@@ -645,10 +645,25 @@ namespace DigitalProductionProgram.User
 
 
 
-        private void AnstNr_Leave(object sender, EventArgs e)
+        //private void AnstNr_Leave(object sender, EventArgs e)
+        //{
+        //    int.TryParse(tb_AnstNr.Text, out var employeeNumber);
+        //    var person = Monitor.Monitor.User(employeeNumber);
+        //    if (person != null)
+        //    {
+        //        tb_Förnamn.Text = person.FirstName;
+        //        tb_Efternamn.Text = person.LastName;
+        //        tb_Mail.Text = person.EmailAddress;
+        //        tb_Sign.Text = person.Initials;
+        //    }
+        //}
+        private async void AnstNr_Leave(object sender, EventArgs e)
         {
-            int.TryParse(tb_AnstNr.Text, out var employeeNumber);
-            var person = Monitor.Monitor.User(employeeNumber);
+            if (!int.TryParse(tb_AnstNr.Text, out var employeeNumber))
+                return;
+
+            var person = await Task.Run(() => Monitor.Monitor.User(employeeNumber));
+
             if (person != null)
             {
                 tb_Förnamn.Text = person.FirstName;
@@ -657,6 +672,7 @@ namespace DigitalProductionProgram.User
                 tb_Sign.Text = person.Initials;
             }
         }
+
         private void Name_Leave(object sender, EventArgs e)
         {
             var person = Monitor.Monitor.User(tb_Förnamn.Text, tb_Efternamn.Text);

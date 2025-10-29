@@ -160,7 +160,11 @@ namespace DigitalProductionProgram.MainWindow
                 Change_Theme();
 
                 if (!Program.IsComputerOnlyForMeasurements && IsAutoOpenOrder == false)
-                    OrderInformation.tb_OrderNr.AutoCompleteCustomSource = Monitor.Monitor.AutoFillOrdernr;
+                {
+                    // Läs egenskapen direkt
+                    OrderInformation.tb_OrderNr.AutoCompleteCustomSource = Monitor.Monitor.AutoFillOrdernr().GetAwaiter().GetResult();
+                }
+
 
                 _ = Main_FilterQuickOpen.Load_ListAsync(dgv_QuickOpen);
                 // WindowState = FormWindowState.Normal;
@@ -207,6 +211,7 @@ namespace DigitalProductionProgram.MainWindow
             if (IsBetaMode)
                 ChangeToBetaMode();
 
+           
         }
 
         protected override void SetVisibleCore(bool value)

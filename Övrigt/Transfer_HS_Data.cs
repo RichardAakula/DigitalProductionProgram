@@ -73,32 +73,32 @@ namespace DigitalProductionProgram.Övrigt
             return "";
 
         }
-        public static string? Halvfabrikat_PartNr(string? ordernr)
-        {
-            long ManufacturingOrderId = 0;
-            if (!string.IsNullOrEmpty(ordernr))
-                Monitor.Monitor.Load_Order(ordernr);
-            ManufacturingOrderId = Monitor.Monitor.Order.Id;
-            //long ManufacturingOrderId = Monitor.Monitor.OrderId(partnr);
+        //public static string? Halvfabrikat_PartNr(string? ordernr)
+        //{
+        //    long ManufacturingOrderId = 0;
+        //    if (!string.IsNullOrEmpty(ordernr))
+        //        Monitor.Monitor.Load_Order(ordernr);
+        //    ManufacturingOrderId = Monitor.Monitor.Order.Id;
+        //    //long ManufacturingOrderId = Monitor.Monitor.OrderId(partnr);
 
 
-            var ListPartID = Utilities.GetFromMonitor<Manufacturing.ManufacturingOrderMaterials>("select=PartId", $"filter=ManufacturingOrderId Eq'{ManufacturingOrderId}' AND ToOperationNumber Eq'{10}'");
-            if (ListPartID is null)
-                return "N/A";
-            foreach (var partID in ListPartID)
-            {
-                var ListParts = Utilities.GetFromMonitor<Inventory.Parts>($"filter=Id Eq'{partID.PartId}'");
-                if (ListParts is null)
-                    continue;
+        //    var ListPartID = Utilities.GetFromMonitor<Manufacturing.ManufacturingOrderMaterials>("select=PartId", $"filter=ManufacturingOrderId Eq'{ManufacturingOrderId}' AND ToOperationNumber Eq'{10}'");
+        //    if (ListPartID is null)
+        //        return "N/A";
+        //    foreach (var partID in ListPartID)
+        //    {
+        //        var ListParts = Utilities.GetFromMonitor<Inventory.Parts>($"filter=Id Eq'{partID.PartId}'");
+        //        if (ListParts is null)
+        //            continue;
 
-                foreach (var part in ListParts)
-                {
-                    return part.PartNumber;
-                }
-            }
+        //        foreach (var part in ListParts)
+        //        {
+        //            return part.PartNumber;
+        //        }
+        //    }
 
-            return "N/A";
-        }
+        //    return "N/A";
+        //}
         public static string Codetext(int partid, int type, int column, int row)
         {
             var value = "N/A";

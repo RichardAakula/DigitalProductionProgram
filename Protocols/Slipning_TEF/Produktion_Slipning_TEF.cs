@@ -400,25 +400,51 @@ namespace DigitalProductionProgram.Protocols.Slipning_TEF
             }
             catch { }
         }
-        private void Inledande_LotNr_Enter(object sender, EventArgs e)
+        //private void Inledande_LotNr_Enter(object sender, EventArgs e)
+        //{
+        //    var ctrl = (Control) sender;
+        //    var list = new List<string?>();
+
+        //    if (Monitor.Monitor.Part_Material is null == false)
+        //        list = Monitor.Monitor.PreFab_BatchNr(Monitor.Monitor.Part_Material.PartNumber);
+
+        //    for (var i = 0; i < dgv_Produktion.Rows.Count; i++)
+        //    {
+        //        if (list.Contains(dgv_Produktion.Rows[i].Cells[0].Value.ToString()) == false)
+        //            list.Add(dgv_Produktion.Rows[i].Cells[0].Value.ToString());
+        //    }
+        //    using var choose_Item = new Choose_Item(list, new[] {ctrl}, false);
+        //    choose_Item.ShowDialog();
+
+        //    _ = Activity.Stop(Monitor.Monitor.Part_Material is null == false ? 
+        //        $"Felsökning tomma lotnr Slipning: ArtikelNr halvfabrikat: {Monitor.Monitor.Part_Material.PartNumber}. Antal i list: {list.Count}" : 
+        //        $"Felsökning tomma lotnr Slipning: Monitor.Load_Data.Part_Material.PartNumber is null. Antal i list: {list.Count}");
+        //}
+        private async void Inledande_LotNr_Enter(object sender, EventArgs e)
         {
-            var ctrl = (Control) sender;
+            var ctrl = (Control)sender;
             var list = new List<string?>();
 
-            if (Monitor.Monitor.Part_Material is null == false)
-                list = Monitor.Monitor.PreFab_BatchNr(Monitor.Monitor.Part_Material.PartNumber);
+            if (Monitor.Monitor.Part_Material != null)
+            {
+                // Kör PreFab_BatchNr asynkront
+                list = await Task.Run(() => Monitor.Monitor.PreFab_BatchNr(Monitor.Monitor.Part_Material.PartNumber));
+            }
 
+            // Lägg till lotnr från datagrid
             for (var i = 0; i < dgv_Produktion.Rows.Count; i++)
             {
-                if (list.Contains(dgv_Produktion.Rows[i].Cells[0].Value.ToString()) == false)
-                    list.Add(dgv_Produktion.Rows[i].Cells[0].Value.ToString());
+                var value = dgv_Produktion.Rows[i].Cells[0].Value?.ToString();
+                if (!string.IsNullOrEmpty(value) && !list.Contains(value))
+                    list.Add(value);
             }
-            using var choose_Item = new Choose_Item(list, new[] {ctrl}, false);
+
+            using var choose_Item = new Choose_Item(list, new[] { ctrl }, false);
             choose_Item.ShowDialog();
 
-            _ = Activity.Stop(Monitor.Monitor.Part_Material is null == false ? 
-                $"Felsökning tomma lotnr Slipning: ArtikelNr halvfabrikat: {Monitor.Monitor.Part_Material.PartNumber}. Antal i list: {list.Count}" : 
-                $"Felsökning tomma lotnr Slipning: Monitor.Load_Data.Part_Material.PartNumber is null. Antal i list: {list.Count}");
+            _ = Activity.Stop(Monitor.Monitor.Part_Material != null
+                ? $"Felsökning tomma lotnr Slipning: ArtikelNr halvfabrikat: {Monitor.Monitor.Part_Material.PartNumber}. Antal i list: {list.Count}"
+                : $"Felsökning tomma lotnr Slipning: Monitor.Load_Data.Part_Material.PartNumber is null. Antal i list: {list.Count}");
         }
 
 

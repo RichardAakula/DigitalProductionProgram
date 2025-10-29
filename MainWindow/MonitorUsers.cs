@@ -258,11 +258,31 @@ namespace DigitalProductionProgram.MainWindow
         {
             return flp_List.Controls.Cast<Control>().Any(control => control.Name == name);
         }
-        public void Fill_OnlineMonitorUsers()
+        //public void Fill_OnlineMonitorUsers()
+        //{
+        //    if (Monitor.Monitor.List_Users() is null)
+        //        return;
+        //    foreach (var user in Monitor.Monitor.List_Users())
+        //    {
+        //        var name = $"{user.FirstName} {user.LastName}";
+        //        if (Is_flp_Exist(name))
+        //        {
+        //            var flp = (FlowLayoutPanel)flp_List.Controls[name];
+        //            Update_User_flp(flp, user);
+        //        }
+        //        else
+        //            Add_User_flp(user);
+        //    }
+        //    Login_Monitor.Login_API();
+        //}
+        public async Task Fill_OnlineMonitorUsers()
         {
-            if (Monitor.Monitor.List_Users is null)
+            // Hämta användare asynkront
+            var users = await Monitor.Monitor.List_Users();
+            if (users is null)
                 return;
-            foreach (var user in Monitor.Monitor.List_Users)
+
+            foreach (var user in users)
             {
                 var name = $"{user.FirstName} {user.LastName}";
                 if (Is_flp_Exist(name))
@@ -271,10 +291,15 @@ namespace DigitalProductionProgram.MainWindow
                     Update_User_flp(flp, user);
                 }
                 else
+                {
                     Add_User_flp(user);
+                }
             }
-            Login_Monitor.Login_API();
+
+            // Kör inloggning i bakgrundstråd om det är en synkron metod
+            await Task.Run(() => Login_Monitor.Login_API());
         }
+
         private void Add_User_flp(TimeRecording.AttendanceChart user)
         {
             if (flp_List.InvokeRequired)

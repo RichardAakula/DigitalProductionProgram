@@ -521,47 +521,105 @@ namespace DigitalProductionProgram.Measure
                 _ = Log.Activity.Stop($"Fail: CurrentMemory = {Log.Activity.CurrentMemory / 1000000} - PeakMemory = {Log.Activity.PeakMemory / 1000000} - DrawCross_Section: - {ex}");
             }
         }
-        private static void ShowSpecialItems(object sender, EventArgs e)
+        //private static void ShowSpecialItems(object sender, EventArgs e)
+        //{
+        //    if (MeasureInformation.IsOpening)
+        //        return;
+        //    var tb = (InputTextBox)sender;
+        //    var codename = tb.Monitor_Name;
+        //    var items = new List<string?> { "N/A" };
+
+        //    using (var con = new SqlConnection(Database.cs_Protocol))
+        //    {
+        //        const string query = @"
+        //            SELECT
+        //                Item
+        //            FROM MeasureProtocol.ItemsList
+        //            WHERE MeasureProtocolMainTemplateID = @maintemplateid
+        //            AND DescriptionID = @descriptionid";//(SELECT DescriptionID FROM MeasureProtocol.Template WHERE MeasureProtocolMainTemplateID = @maintemplateid AND ColumnIndex = @columnindex)";
+        //        var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+        //        cmd.Parameters.AddWithValue("@maintemplateid", Templates_MeasureProtocol.MainTemplate.ID);
+        //        cmd.Parameters.AddWithValue("@descriptionid", tb.DescriptionID);
+
+        //        con.Open();
+        //        var reader = cmd.ExecuteReader();
+        //        while (reader.Read())
+        //            items.Add(reader["Item"].ToString());
+        //    }
+
+        //    switch (codename)
+        //    {
+        //        case "PreFab":
+        //            if (PreFab.DataTable_Halvfabrikat_Krympslang(Order.OrderID).Rows.Count <= 0)
+        //                return;
+        //            items = Monitor.Monitor.PreFab_BatchNr(PreFab.DataTable_Halvfabrikat_Krympslang(Order.OrderID).Rows[0][LanguageManager.GetString("label_PartNumber")].ToString());
+        //            break;
+        //    }
+
+
+        //    if (items is null || items.Count <= 0)
+        //        return;
+        //    using var chooseItem = new Choose_Item(items, new Control[] { tb }, false, true);
+        //    chooseItem.ShowDialog();
+        //}
+        private static async Task ShowSpecialItems(object sender, EventArgs e)
         {
             if (MeasureInformation.IsOpening)
                 return;
+
             var tb = (InputTextBox)sender;
             var codename = tb.Monitor_Name;
             var items = new List<string?> { "N/A" };
 
-            using (var con = new SqlConnection(Database.cs_Protocol))
+            // Hämta data från databasen asynkront
+            await using (var con = new SqlConnection(Database.cs_Protocol))
             {
                 const string query = @"
-                    SELECT
-                        Item
-                    FROM MeasureProtocol.ItemsList
-                    WHERE MeasureProtocolMainTemplateID = @maintemplateid
-                    AND DescriptionID = @descriptionid";//(SELECT DescriptionID FROM MeasureProtocol.Template WHERE MeasureProtocolMainTemplateID = @maintemplateid AND ColumnIndex = @columnindex)";
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            SELECT Item
+            FROM MeasureProtocol.ItemsList
+            WHERE MeasureProtocolMainTemplateID = @maintemplateid
+              AND DescriptionID = @descriptionid";
+
+                await con.OpenAsync();
+
+                await using var cmd = new SqlCommand(query, con);
+                ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@maintemplateid", Templates_MeasureProtocol.MainTemplate.ID);
                 cmd.Parameters.AddWithValue("@descriptionid", tb.DescriptionID);
 
-                con.Open();
-                var reader = cmd.ExecuteReader();
-                while (reader.Read())
+                await using var reader = await cmd.ExecuteReaderAsync();
+                while (await reader.ReadAsync())
+                {
                     items.Add(reader["Item"].ToString());
+                }
             }
 
+            // Switch för Monitor-anrop
             switch (codename)
             {
                 case "PreFab":
-                    if (PreFab.DataTable_Halvfabrikat_Krympslang(Order.OrderID).Rows.Count <= 0)
+                    // Hämta DataTable synkront (antag att det inte är tungt)
+                    var dt = PreFab.DataTable_Halvfabrikat_Krympslang(Order.OrderID);
+                    if (dt.Rows.Count <= 0)
                         return;
-                    items = Monitor.Monitor.PreFab_BatchNr(PreFab.DataTable_Halvfabrikat_Krympslang(Order.OrderID).Rows[0][LanguageManager.GetString("label_PartNumber")].ToString());
+
+                    var partNr = dt.Rows[0][LanguageManager.GetString("label_PartNumber")].ToString();
+
+                    // Hämta batchnummer från Monitor asynkront
+                    items = await Monitor.Monitor.PreFab_BatchNr(partNr);
                     break;
+
+                // Lägg till fler case här om du vill
             }
 
-
-            if (items is null || items.Count <= 0)
+            if (items == null || items.Count <= 0)
                 return;
+
+            // Visa Choose_Item dialog på UI-tråden
             using var chooseItem = new Choose_Item(items, new Control[] { tb }, false, true);
             chooseItem.ShowDialog();
         }
+
         private static void Validate_Value_TextChanged(object? sender, EventArgs e)
         {
             var ctrl = (Control)sender;
@@ -912,8 +970,8 @@ namespace DigitalProductionProgram.Measure
                 tb.MouseDoubleClick += Public_Events.Control_MouseDoubleClick;
                 if (isList)
                 {
-                    tb.Enter += ShowSpecialItems;
-                    tb.Click += ShowSpecialItems;
+                    tb.Enter += async (s, e) => await ShowSpecialItems(s, e);
+                    tb.Click += async (s, e) => await ShowSpecialItems(s, e);
                 }
 
                 flp_InputControls.Controls.Add(tb);

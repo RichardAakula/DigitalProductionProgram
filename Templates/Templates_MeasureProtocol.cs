@@ -162,10 +162,12 @@ namespace DigitalProductionProgram.Templates
             comboBoxColumn.ValueMember = "Name";
 
             cb_Monitor_MeasuringTemplate.DataSource = Monitor.Monitor.DataTable_MeasuringTemplates;
+
             cb_Monitor_MeasuringTemplate.DisplayMember = "Description";
             cb_Monitor_MeasuringTemplate.ValueMember = "FormTemplateId";
             cb_Monitor_MeasuringTemplate.SelectedIndex = -1;
         }
+        
 
         private void Fill_MeasureProtocolTemplate_Names()
         {

@@ -30,69 +30,141 @@ namespace DigitalProductionProgram.Monitor
                 InfoText.Show(LanguageManager.GetString("warning_MonitorTestserver"), CustomColors.InfoText_Color.Bad, null);
         }
         [DebuggerStepThrough]
-        public static void Login_API(string? company = null)
+        //public static void Login_API(string? company = null)
+        //{
+        //   try
+        //   {
+        //       Log.Activity.Start();
+        //       var sw = Stopwatch.StartNew();
+        //       company ??= Database.MonitorCompany;
+
+        //       BaseAddress = $"https://{Database.MonitorHost}:8001/{LanguageCode}/{company}/";
+
+        //       var handler = new HttpClientHandler
+        //       {
+        //           ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true
+        //       };
+
+        //       httpClient = new HttpClient(handler)
+        //       {
+        //           BaseAddress = new Uri(BaseAddress)
+        //       };
+
+        //       httpClient.DefaultRequestHeaders.Accept.Clear();
+        //       httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+        //       // Load from config
+        //       var credentials = Database.LoadCredentials();
+        //       //var decryptedPassword = Database.AesEncryption.Decrypt(credentials.Password);
+
+        //       var authenticationData = new
+        //       {
+        //           Username = credentials.Username,
+        //           Password = credentials.Password,
+        //           ForceRelogin = true
+        //       };
+        //       var authentication = httpClient.PostAsJsonAsync("login", authenticationData).Result;
+
+        //       if (authentication.IsSuccessStatusCode)
+        //       {
+        //           var sessionId = authentication.Headers.ToList()
+        //               .FirstOrDefault(x => x.Key.Contains("SessionId")).Value.FirstOrDefault();
+        //           httpClient.DefaultRequestHeaders.Add("X-Monitor-SessionId", sessionId);
+
+        //           var cookieContainer = new CookieContainer();
+        //           cookieContainer.Add(httpClient.BaseAddress, new Cookie("SessionId", sessionId));
+
+        //           sw.Stop();
+        //           if (sw.ElapsedMilliseconds < 1000)
+        //               Monitor.Set_Monitorstatus(Monitor.Status.Ok, sw.ElapsedMilliseconds.ToString());
+        //           else
+        //               Monitor.Set_Monitorstatus(Monitor.Status.Warning, sw.ElapsedMilliseconds.ToString());
+        //       }
+        //       else
+        //       {
+        //           Monitor.Set_Monitorstatus(Monitor.Status.Bad, "Failed to authenticate with API.");
+        //       }
+
+        //       Log.Activity.Stop("Login_Monitor");
+        //   }
+        //   catch (Exception exc)
+        //   {
+        //             Monitor.Set_Monitorstatus(Monitor.Status.Bad, exc.Message);
+        //        InfoText.Show(exc.Message, CustomColors.InfoText_Color.Bad, "Problem with Monitor.");
+        //   }
+        //}
+        public static async Task Login_API(string? company = null)
         {
-           try
-           {
-               Log.Activity.Start();
-               var sw = Stopwatch.StartNew();
-               company ??= Database.MonitorCompany;
+            try
+            {
+                Log.Activity.Start();
+                var sw = Stopwatch.StartNew();
+                company ??= Database.MonitorCompany;
 
-               BaseAddress = $"https://{Database.MonitorHost}:8001/{LanguageCode}/{company}/";
+                BaseAddress = $"https://{Database.MonitorHost}:8001/{LanguageCode}/{company}/";
 
-               var handler = new HttpClientHandler
-               {
-                   ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true
-               };
+                var handler = new HttpClientHandler
+                {
+                    ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true
+                };
 
-               httpClient = new HttpClient(handler)
-               {
-                   BaseAddress = new Uri(BaseAddress)
-               };
+                httpClient = new HttpClient(handler)
+                {
+                    BaseAddress = new Uri(BaseAddress)
+                };
 
-               httpClient.DefaultRequestHeaders.Accept.Clear();
-               httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                httpClient.DefaultRequestHeaders.Accept.Clear();
+                httpClient.DefaultRequestHeaders.Accept.Add(
+                    new MediaTypeWithQualityHeaderValue("application/json"));
 
-               // Load from config
-               var credentials = Database.LoadCredentials();
-               //var decryptedPassword = Database.AesEncryption.Decrypt(credentials.Password);
+                // Load credentials
+                var credentials = Database.LoadCredentials();
 
-               var authenticationData = new
-               {
-                   Username = credentials.Username,
-                   Password = credentials.Password,
-                   ForceRelogin = true
-               };
-               var authentication = httpClient.PostAsJsonAsync("login", authenticationData).Result;
+                var authenticationData = new
+                {
+                    Username = credentials.Username,
+                    Password = credentials.Password,
+                    ForceRelogin = true
+                };
 
-               if (authentication.IsSuccessStatusCode)
-               {
-                   var sessionId = authentication.Headers.ToList()
-                       .FirstOrDefault(x => x.Key.Contains("SessionId")).Value.FirstOrDefault();
-                   httpClient.DefaultRequestHeaders.Add("X-Monitor-SessionId", sessionId);
+                // 🔹 Asynkront anrop istället för .Result
+                var authentication = await httpClient.PostAsJsonAsync("login", authenticationData)
+                                                     .ConfigureAwait(false);
 
-                   var cookieContainer = new CookieContainer();
-                   cookieContainer.Add(httpClient.BaseAddress, new Cookie("SessionId", sessionId));
+                if (authentication.IsSuccessStatusCode)
+                {
+                    var sessionId = authentication.Headers.ToList()
+                        .FirstOrDefault(x => x.Key.Contains("SessionId"))
+                        .Value.FirstOrDefault();
 
-                   sw.Stop();
-                   if (sw.ElapsedMilliseconds < 1000)
-                       Monitor.Set_Monitorstatus(Monitor.Status.Ok, sw.ElapsedMilliseconds.ToString());
-                   else
-                       Monitor.Set_Monitorstatus(Monitor.Status.Warning, sw.ElapsedMilliseconds.ToString());
-               }
-               else
-               {
-                   Monitor.Set_Monitorstatus(Monitor.Status.Bad, "Failed to authenticate with API.");
-               }
+                    if (!string.IsNullOrEmpty(sessionId))
+                    {
+                        httpClient.DefaultRequestHeaders.Add("X-Monitor-SessionId", sessionId);
 
-               Log.Activity.Stop("Login_Monitor");
-           }
-           catch (Exception exc)
-           {
-                     Monitor.Set_Monitorstatus(Monitor.Status.Bad, exc.Message);
+                        var cookieContainer = new CookieContainer();
+                        cookieContainer.Add(httpClient.BaseAddress, new Cookie("SessionId", sessionId));
+                    }
+
+                    sw.Stop();
+                    if (sw.ElapsedMilliseconds < 1000)
+                        Monitor.Set_Monitorstatus(Monitor.Status.Ok, sw.ElapsedMilliseconds.ToString());
+                    else
+                        Monitor.Set_Monitorstatus(Monitor.Status.Warning, sw.ElapsedMilliseconds.ToString());
+                }
+                else
+                {
+                    Monitor.Set_Monitorstatus(Monitor.Status.Bad, "Failed to authenticate with API.");
+                }
+
+                Log.Activity.Stop("Login_Monitor");
+            }
+            catch (Exception exc)
+            {
+                Monitor.Set_Monitorstatus(Monitor.Status.Bad, exc.Message);
                 InfoText.Show(exc.Message, CustomColors.InfoText_Color.Bad, "Problem with Monitor.");
-           }
+            }
         }
+
 
     }
 }

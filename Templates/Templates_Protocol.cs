@@ -1033,7 +1033,17 @@ namespace DigitalProductionProgram.Templates
 
                 if (e.RowIndex < 0 || e.ColumnIndex < 0)
                     return;
+                List<string> list_CodeText = new List<string>();
+                foreach (DataGridViewRow row in dgv.Rows)
+                {
+                    // Hoppa över tomma rader eller new row
+                    if (row.IsNewRow)
+                        continue;
 
+                    var codeText = row.Cells["col_CodeText"].Value?.ToString();
+                    if (!string.IsNullOrEmpty(codeText))
+                        list_CodeText.Add(codeText);
+                }
                 try
                 {
                     switch (dgv.Columns[e.ColumnIndex].Name)
@@ -1050,7 +1060,7 @@ namespace DigitalProductionProgram.Templates
                         case "col_ProcesscardList":
                             if (IsLoading)
                                 return;
-                            var itemsBuilder = new ItemsBuilder(cellParameter?.Value.ToString() ?? string.Empty, ItemsBuilder.ListType.Processcard, templateID);
+                            var itemsBuilder = new ItemsBuilder(cellParameter?.Value.ToString() ?? string.Empty, ItemsBuilder.ListType.Processcard, templateID, list_CodeText);
                             itemsBuilder.ShowDialog();
                             _suppressCellValueChanged = true;
                             dgv.Rows[e.RowIndex].Cells["col_ProcesscardList"].Value = itemsBuilder.IsListActivated;
@@ -1253,32 +1263,25 @@ namespace DigitalProductionProgram.Templates
             {
                 try
                 {
-                    using (var con = new SqlConnection(Database.cs_Protocol))
-                    {
-                        const string query = @"
+                    using var con = new SqlConnection(Database.cs_Protocol);
+                    const string query = @"
                             SELECT ID, IsUsingPreFab, IsProdLineUsedInProcesscard, LineClearance_Template, MainInfo_Template
                             FROM Protocol.MainTemplate as protocol
                             WHERE Name = @name AND Revision = @revision";
-                        using (var cmd = new SqlCommand(query, con))
-                        {
-                            cmd.Parameters.AddWithValue("@name", name);
-                            cmd.Parameters.AddWithValue("@revision", revision);
-                            con.Open();
-                            using (var reader = cmd.ExecuteReader())
-                            {
+                    using var cmd = new SqlCommand(query, con);
+                    cmd.Parameters.AddWithValue("@name", name);
+                    cmd.Parameters.AddWithValue("@revision", revision);
+                    con.Open();
+                    using var reader = cmd.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        if (bool.TryParse(reader["IsUsingPreFab"].ToString(), out var isUsingPreFab))
+                            chb_UsingPreFab.Checked = isUsingPreFab;
+                        if (bool.TryParse(reader["IsProdLineUsedInProcesscard"].ToString(), out var isUsingProdLine))
+                            chb_IsUsingProdLine.Checked = isUsingProdLine;
 
-                                while (reader.Read())
-                                {
-                                    if (bool.TryParse(reader["IsUsingPreFab"].ToString(), out var isUsingPreFab))
-                                        chb_UsingPreFab.Checked = isUsingPreFab;
-                                    if (bool.TryParse(reader["IsProdLineUsedInProcesscard"].ToString(), out var isUsingProdLine))
-                                        chb_IsUsingProdLine.Checked = isUsingProdLine;
-
-                                    cb_LineClearanceTemplate.Text = reader["LineClearance_Template"]?.ToString() ?? "Standard";
-                                    cb_MainInfoTemplate.Text = reader["MainInfo_Template"]?.ToString() ?? string.Empty;
-                                }
-                            }
-                        }
+                        cb_LineClearanceTemplate.Text = reader["LineClearance_Template"]?.ToString() ?? "Standard";
+                        cb_MainInfoTemplate.Text = reader["MainInfo_Template"]?.ToString() ?? string.Empty;
                     }
                 }
                 catch (Exception e)
@@ -1614,8 +1617,26 @@ namespace DigitalProductionProgram.Templates
                     template.Decimals, 
                     template.IsUsedInProcesscard, 
                     template.IsValueCritical, 
-                    template.IsList_Processcard, 
-                    template.IsList_Protocol, 
+                    CASE 
+                        WHEN EXISTS 
+                        (
+                            SELECT 1 
+                            FROM List.ItemFields AS list 
+                            WHERE list.TemplateID = template.ID 
+                                AND list.ListType = 'Processcard'
+                        ) THEN CAST(1 AS bit) 
+                    ELSE CAST(0 AS bit) 
+                    END AS IsList_Processcard,
+                    CASE 
+                        WHEN EXISTS 
+                        (
+                            SELECT 1 
+                            FROM List.ItemFields AS list 
+                            WHERE list.TemplateID = template.ID 
+                                AND list.ListType = 'Protocol'
+                        ) THEN CAST(1 AS bit) 
+                        ELSE CAST(0 AS bit) 
+                    END AS IsList_Protocol,
                     template.IsOkWriteText, 
                     template.IsRequired
                 FROM Protocol.Template AS template

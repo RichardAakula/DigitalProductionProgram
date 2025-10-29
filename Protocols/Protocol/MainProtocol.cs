@@ -140,7 +140,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                 else
                     Module.IsOkShowList = true;
 
-
+            Set_PreFabHeight();
             if (Order.IsOrderDone)
                 return;
             var isOkToCloseForm = false;
@@ -473,23 +473,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                 extraComments.Close();
         }
 
-        //private void PreFab_Click(object? sender, EventArgs e)
-        //{
-        //    tlp_Right.RowStyles[1].Height = tlp_Right.RowStyles[1].Height == 32 ? 150 : 32;
-
-        //    if (tlp_Right.RowStyles[1].Height == 32 && tlp_Right.RowStyles[2].Height == 32)
-        //        tlp_Main.ColumnStyles[1].Width = 450;
-        //    else
-        //        tlp_Main.ColumnStyles[1].Width = 600;
-        //}
-        //private void ProcesscardBasedOn_Click(object? sender, EventArgs e)
-        //{
-        //    tlp_Right.RowStyles[2].Height = tlp_Right.RowStyles[2].Height == 32 ? 150 : 32;
-        //    if (tlp_Right.RowStyles[1].Height == 32 && tlp_Right.RowStyles[2].Height == 32)
-        //        tlp_Main.ColumnStyles[1].Width = 450;
-        //    else
-        //        tlp_Main.ColumnStyles[1].Width = 600;
-        //}
+       
         private void TogglePanelHeight(int rowIndex, int height)
         {
             // Växla höjd mellan 32 och 150
@@ -505,10 +489,15 @@ namespace DigitalProductionProgram.Protocols.Protocol
 
         private void PreFab_Click(object? sender, EventArgs e)
         {
+           Set_PreFabHeight();
+        }
+
+        public void Set_PreFabHeight()
+        {
             int maxHeight = 250;
             int height = PreFab.dgv.RowTemplate.Height * PreFab.dgv.Rows.Count + PreFab.dgv.ColumnHeadersHeight + PreFab.btn_AddPreFab.Height + PreFab.btn_PreFab.Height;
             TogglePanelHeight(1, Math.Min(height, maxHeight));
-        } 
+        }
         private void ProcesscardBasedOn_Click(object? sender, EventArgs e)
             => TogglePanelHeight(2, 125);
 

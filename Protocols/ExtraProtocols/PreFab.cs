@@ -13,6 +13,7 @@ using DigitalProductionProgram.PrintingServices;
 using DigitalProductionProgram.Protocols.Protocol;
 using DigitalProductionProgram.User;
 using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.FileSystemGlobbing;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -274,17 +275,17 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
                 cmd.Parameters.AddWithValue("@wall", wall ?? (object)DBNull.Value);
                 cmd.ExecuteNonQuery();
             }
+            
         }
-        public static void UPDATE_PreFab_Extruder(string artikelnr, string extruder)
+        public static void UPDATE_PreFab_Extruder(string extruder, int tempID)
         {
             if (Module.IsOkToSave)
             {
                 using var con = new SqlConnection(Database.cs_Protocol);
-                var query = $"UPDATE [Order].PreFab SET Extruder = @extruder WHERE OrderID = @orderid AND Halvfabrikat_ArtikelNr = @halv_ArtikelNr";
+                var query = $"UPDATE [Order].PreFab SET Extruder = @extruder WHERE TempID = @tempid";
                 con.Open();
                 var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
-                cmd.Parameters.AddWithValue("@halv_ArtikelNr", artikelnr);
+                cmd.Parameters.AddWithValue("@tempid", tempID);
 
                 if (string.IsNullOrEmpty(extruder))
                     cmd.Parameters.AddWithValue(@"extruder", DBNull.Value);
@@ -412,6 +413,7 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
                 case "Slang:":
                     var slang = dgv.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString();
                     UPDATE_PreFab(null, slang, null, null, null, tempid, null);
+                    _ = Activity.Stop($"Användare {User.Person.Name} uppdaterar Prefab: (Slang = {slang}) - TempID = {tempid}");
                     break;
 
                 //var col = e.ColumnIndex;
@@ -428,41 +430,45 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
                         var columnName = LanguageManager.GetString("preFab_BestBefore");
 
 
-                        //if (dgv.Columns.Contains(columnName))
+                        if (columnName != null && dgv.Columns.Contains(columnName))
+                        {
+                            var cell_BestBefore = dgv.Rows[row].Cells[columnName];
+                            var bestBefore = Monitor.Monitor.BestBeforeDate(cell_ArtikelNr.Value.ToString(), cell_BatchNr.Value.ToString());
+                            cell_BestBefore.Value = DateTime.TryParse(bestBefore, out DateTime result) ? (object)result : DBNull.Value;
 
-                        var cell_BestBefore = dgv.Rows[row].Cells[LanguageManager.GetString("preFab_BestBefore") ?? string.Empty];
-                        var bestBefore = Monitor.Monitor.BestBeforeDate(cell_ArtikelNr.Value.ToString(), cell_BatchNr.Value.ToString());
-                        cell_BestBefore.Value = DateTime.TryParse(bestBefore, out DateTime result) ? (object)result : DBNull.Value;
-
-                        bestBeforeDate = cell_BestBefore.Value.ToString();
+                            bestBeforeDate = cell_BestBefore.Value.ToString();
+                        }
                         cell_Saldo.Value = $"{Monitor.Monitor.Balance(cell_ArtikelNr.Value.ToString(), cell_BatchNr.Value.ToString()):0.00} {Monitor.Monitor.Units(cell_ArtikelNr.Value.ToString())}";
                     }
-
                     UPDATE_PreFab(batchNr, null, null, null, null, tempid, bestBeforeDate);
+                    _ = Activity.Stop($"Användare {User.Person.Name} uppdaterar Prefab: (BatchNr = {batchNr}) - (BestBeforeDate = {bestBeforeDate}) - TempID = {tempid}");
                     break;
-                    case "Extruder:":
-                    //if (col == ExtruderColumn)
-                        UPDATE_PreFab_Extruder(dgv.Rows[row].Cells[LanguageManager.GetString("label_PartNumber")].Value.ToString(), dgv.Rows[row].Cells["Extruder:"].Value.ToString());
+                case "Extruder:":
+                    var extruder = dgv.Rows[row].Cells["Extruder:"].Value.ToString();
+                    UPDATE_PreFab_Extruder(extruder, tempid); 
+                    _ = Activity.Stop($"Användare {User.Person.Name} uppdaterar Prefab_Extruder: (Extruder = {extruder}) - TempID = {tempid}");
                     break;
-
                 case "ID":
                     double? id = null;
                     if (double.TryParse(dgv.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString(), out var parsedID))
                         id = parsedID;
                     UPDATE_PreFab(null, null, id, null, null, tempid, null);
+                    _ = Activity.Stop($"Användare {User.Person.Name} uppdaterar PreFab: (ID = {id}) - TempID = {tempid}");
                     break;
                 case "OD":
                     double? od = null;
                     if (double.TryParse(dgv.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString(), out var parsedOD))
                         od = parsedOD;
                     UPDATE_PreFab(null, null, null, od, null, tempid, null);
+                    _ = Activity.Stop($"Användare {User.Person.Name} uppdaterar PreFab: (OD = {od}) - TempID = {tempid}");
                     break;
                 case "Wall":
+                case "W":
                     double? wall = null;
                     if (double.TryParse(dgv.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString(), out var parsedWall))
                         wall = parsedWall;
                     UPDATE_PreFab(null, null, null, null, wall, tempid, null);
-
+                    _ = Activity.Stop($"Användare {User.Person.Name} uppdaterar PreFab: (Wall = {wall}) - TempID = {tempid}");
                     break;
             }
         }
@@ -493,31 +499,37 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
                 SaveData.SavePrefabFromMonitor();
             else
             {
-                if (dgv.CurrentCell.RowIndex < 0)
+                if (dgv.CurrentCell.RowIndex <= 0)
                 {
+                    if (Person.Role == "SuperAdmin")
+                    {
+                        SaveData.SavePrefabFromMonitor();
+                        Load_Data(Order.OrderID);
+                        return;
+                    }
                     InfoText.Show("Välj först vilken rad du vill lägga till en ny rad av.", CustomColors.InfoText_Color.Warning, "Warning", this);
                     return;
                 }
-
                 SaveData.INSERT_ExtraRow(dgv.CurrentCell.RowIndex);
             }
-
             Load_Data(Order.OrderID);
         }
         private void Delete_PreFab_Click(object sender, EventArgs e)
         {
             if (dgv.Rows.Count == 0)
                 return;
-            var activeBatchNr = dgv.Rows[dgv.CurrentCell.RowIndex].Cells[0].Value.ToString();
+            var columnPartNumber = dgv.Columns[LanguageManager.GetString("label_PartNumber")].Name;
+            var activeBatchNr = dgv.Rows[dgv.CurrentCell.RowIndex].Cells[columnPartNumber].Value.ToString();
             var tempID = (int)dgv.Rows[dgv.CurrentCell.RowIndex].Cells["TempID"].Value;
             var IsOkDeleteRow = false;
             foreach (DataGridViewRow row in dgv.Rows)
-                if (row.Cells[0].Value.ToString() == activeBatchNr && row != dgv.CurrentRow)
+                if (row.Cells[columnPartNumber].Value.ToString() == activeBatchNr && row != dgv.CurrentRow)
                     IsOkDeleteRow = true;
             if (IsOkDeleteRow)
             {
                 dgv.Rows.RemoveAt(dgv.CurrentCell.RowIndex);
                 SaveData.DELETE_Row(tempID);
+                _ = Activity.Stop($"Användare {User.Person.Name} raderar Prefab: (ArtikelNr = {activeBatchNr}) - TempID = {tempID}");
             }
         }
         private void Info_Click(object sender, EventArgs e)
@@ -616,19 +628,18 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
                 cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                 cmd.Parameters.AddWithValue("@tempid", tempId);
                 cmd.ExecuteNonQuery();
+                _ = Activity.Stop($"Användare {User.Person.Name} Lägger till Prefab: TempID = {tempId}");
             }
             public static void DELETE_Row(int tempID)
             {
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    const string query = @"
+                using var con = new SqlConnection(Database.cs_Protocol);
+                const string query = @"
                             DELETE FROM [Order].PreFab WHERE TempID = @tempid";
 
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    con.Open();
-                    cmd.Parameters.AddWithValue("@tempid", tempID);
-                    cmd.ExecuteNonQuery();
-                }
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                con.Open();
+                cmd.Parameters.AddWithValue("@tempid", tempID);
+                cmd.ExecuteNonQuery();
             }
         }
 

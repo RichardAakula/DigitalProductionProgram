@@ -196,57 +196,86 @@ namespace DigitalProductionProgram.Templates
         {
             using var con = new SqlConnection(Database.cs_Protocol);
             const string query = @"
-                WITH OrderedRevisions AS 
-                (
-                    SELECT 
-                        PartID, 
-                        PartGroupID, 
-                        RevNr, 
-                        ProdLine,
-                        ProdType,
-                        QA_sign,
-                        Historiska_Data, 
-                        Validerat,  
-                        Framtagning_Processfönster,
-                        Aktiv,
-                        ROW_NUMBER() OVER (PARTITION BY PartGroupID ORDER BY RevNr DESC) AS RowNum, -- Latest revision first
-                        COUNT(*) OVER (PARTITION BY PartGroupID) AS TotalRevisions,
-                        MIN(RevNr) OVER (PARTITION BY PartGroupID) AS FirstRev, -- First revision 
-                        MAX(RevNr) OVER (PARTITION BY PartGroupID) AS LatestRev, -- Latest revision
-                        MAX(CASE WHEN Framtagning_Processfönster = 'True' THEN RevNr END) OVER (PARTITION BY PartGroupID) AS LatestFramtagningRev, -- Latest revision where Framtagning_Processfönster = TRUE
-                        MAX(CASE WHEN QA_sign IS NOT NULL THEN RevNr END) OVER (PARTITION BY PartGroupID) AS LatestApprovedRev -- Find latest approved revision
-                    FROM Processcard.MainData 
-                    WHERE PartNr = @partnr
-                        AND WorkoperationID = (SELECT ID FROM Workoperation.Names WHERE Name = @workoperation)
-                 ),
-                    CheckAllNulls AS 
-                    (
-                        -- Find PartGroupIDs where ALL revisions have QA_sign = NULL
-                        SELECT PartGroupID 
-                        FROM OrderedRevisions 
-                        GROUP BY PartGroupID 
-                        HAVING COUNT(*) = COUNT(CASE WHEN QA_sign IS NULL THEN 1 END) 
-                    )
-                SELECT DISTINCT 
-                    PartID, 
-                    PartGroupID, 
-                    RevNr, 
-                    ProdLine, 
-                    ProdType, 
-                    QA_sign, 
-                    Historiska_Data, 
-                    Validerat, 
-                    Framtagning_Processfönster,
-                    Aktiv,
-                    LatestRev,
-                    CASE WHEN RevNr = LatestRev THEN 1 ELSE 0 END AS LatestRevSelected
-                FROM OrderedRevisions
-                WHERE (@IsOkSelectLatestRev = 1 AND RevNr = LatestRev) -- Select LatestRev if IsOkSelectLatestRev is true
-                    OR (@IsOkSelectLatestRev = 0 AND ((RevNr = LatestApprovedRev)
-                    OR (RevNr = FirstRev AND PartGroupID IN (SELECT PartGroupID FROM CheckAllNulls) AND Framtagning_Processfönster = 'False')
-                    OR (RevNr = LatestFramtagningRev AND PartGroupID IN (SELECT PartGroupID FROM CheckAllNulls) AND EXISTS (SELECT 1 FROM OrderedRevisions WHERE PartGroupID = OrderedRevisions.PartGroupID AND Framtagning_Processfönster = 'True'))
-                ))
-                ORDER BY PartGroupID, RevNr DESC;";
+               WITH OrderedRevisions AS 
+(
+    SELECT 
+        PartID, 
+        PartGroupID, 
+        RevNr, 
+        TRY_CAST(RevNr AS INT) AS RevNrInt,
+        ProdLine,
+        ProdType,
+        QA_sign,
+        Historiska_Data, 
+        Validerat,  
+        Framtagning_Processfönster,
+        Aktiv,
+        ROW_NUMBER() OVER (
+            PARTITION BY PartGroupID 
+            ORDER BY TRY_CAST(RevNr AS INT) DESC, RevNr DESC
+        ) AS RowNum,
+        COUNT(*) OVER (PARTITION BY PartGroupID) AS TotalRevisions,
+        MIN(RevNr) OVER (PARTITION BY PartGroupID) AS FirstRev,
+        MAX(RevNr) OVER (PARTITION BY PartGroupID) AS LatestRev,
+        MAX(CASE WHEN Framtagning_Processfönster = 'True' THEN RevNr END) 
+            OVER (PARTITION BY PartGroupID) AS LatestFramtagningRev,
+        MAX(CASE WHEN QA_sign IS NOT NULL THEN RevNr END) 
+            OVER (PARTITION BY PartGroupID) AS LatestApprovedRev
+    FROM Processcard.MainData 
+    WHERE PartNr = '329209'
+      AND WorkoperationID = (
+          SELECT ID FROM Workoperation.Names WHERE Name = 'Extrudering_Termo'
+      )
+),
+CheckAllNulls AS 
+(
+    SELECT PartGroupID 
+    FROM OrderedRevisions 
+    GROUP BY PartGroupID 
+    HAVING COUNT(*) = COUNT(CASE WHEN QA_sign IS NULL THEN 1 END)
+),
+FinalSelection AS
+(
+    SELECT *,
+        CASE 
+            WHEN 0 = 1 AND RevNr = LatestRev THEN 1
+            WHEN 0 = 0 AND RevNr = LatestApprovedRev THEN 1
+            WHEN 0 = 0 AND PartGroupID IN (SELECT PartGroupID FROM CheckAllNulls)
+                 AND EXISTS (
+                     SELECT 1 FROM OrderedRevisions o2 
+                     WHERE o2.PartGroupID = OrderedRevisions.PartGroupID 
+                       AND o2.Framtagning_Processfönster = 'True'
+                 )
+                 AND RevNr = LatestFramtagningRev THEN 1
+            WHEN 0 = 0 AND PartGroupID IN (SELECT PartGroupID FROM CheckAllNulls)
+                 AND NOT EXISTS (
+                     SELECT 1 FROM OrderedRevisions o2 
+                     WHERE o2.PartGroupID = OrderedRevisions.PartGroupID 
+                       AND o2.Framtagning_Processfönster = 'True'
+                 )
+                 AND RevNr = FirstRev THEN 1
+            WHEN 0 = 0 AND Framtagning_Processfönster = 'True' AND RevNr = LatestRev THEN 1
+            ELSE 0
+        END AS IsSelected
+    FROM OrderedRevisions
+)
+SELECT TOP 1 WITH TIES
+    PartID, 
+    PartGroupID, 
+    RevNr, 
+    ProdLine, 
+    ProdType, 
+    QA_sign, 
+    Historiska_Data, 
+    Validerat, 
+    Framtagning_Processfönster,
+    Aktiv,
+    LatestRev,
+    CASE WHEN RevNr = LatestRev THEN 1 ELSE 0 END AS LatestRevSelected
+FROM FinalSelection
+WHERE IsSelected = 1
+ORDER BY ROW_NUMBER() OVER (PARTITION BY PartGroupID ORDER BY TRY_CAST(RevNr AS INT) DESC);
+;";
 
             var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             cmd.Parameters.Add("@partnr", SqlDbType.NVarChar).Value = Order.PartNumber;

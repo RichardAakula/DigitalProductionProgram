@@ -14,9 +14,10 @@ namespace DigitalProductionProgram.Monitor
 {
     public static class Utilities
     {
-
+        public static int CounterMonitorRequests;
         private static HttpResponseMessage Http_response(string query)
         {
+            CounterMonitorRequests++;
             var ctr_ErrorLogin = 0;
         Start:
             var response = Login_Monitor.httpClient.GetAsync(query).Result;

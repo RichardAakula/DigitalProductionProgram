@@ -580,19 +580,17 @@ namespace DigitalProductionProgram.Monitor
             var list = new List<string>();
             var sw = new Stopwatch();
             sw.Start();
-
+            Utilities.CounterMonitorRequests = 0;
             // Hämta partCodes i bakgrundstråd
-            var partCodes = Utilities.GetFromMonitor<Inventory.PartCodes>($"filter=Alias Eq'TOOLS'"));
+            var partCodes = Utilities.GetFromMonitor<Inventory.PartCodes>($"filter=Code Eq'HACKHYLSOR'");
 
             foreach (var partCode in partCodes)
             {
-                var parts = Task.Run(() =>
-                    Utilities.GetFromMonitor<Inventory.Parts>($"filter=PartCodeId Eq'{partCode.Id}'")).Result;
+                var parts = Utilities.GetFromMonitor<Inventory.Parts>($"filter=PartCodeId Eq'{partCode.Id}'");
 
                 foreach (var part in parts)
                 {
-                    var idNr = Task.Run(() =>
-                        Utilities.GetOneFromMonitor<Common.ExtraFields>($"filter=ParentId Eq'{part.Id}' AND Identifier Eq'P119'")).Result;
+                    var idNr = Utilities.GetOneFromMonitor<Common.ExtraFields>($"filter=ParentId Eq'{part.Id}' AND Identifier Eq'P121'");
 
                     if (idNr != null)
                         list.Add(idNr.StringValue);
@@ -600,7 +598,7 @@ namespace DigitalProductionProgram.Monitor
             }
 
             sw.Stop();
-            MessageBox.Show($"Antal verktyg: {list.Count}\nTid för hämtning: {sw.ElapsedMilliseconds} ms");
+            MessageBox.Show($"Utan Expand: Antal verktyg: {list.Count}\nTid för hämtning: {sw.ElapsedMilliseconds} ms. Total MonitorRequests = {Utilities.CounterMonitorRequests}");
 
             return list;
         }
@@ -610,31 +608,30 @@ namespace DigitalProductionProgram.Monitor
             var list = new List<string>();
             var sw = new Stopwatch();
             sw.Start();
-
+            Utilities.CounterMonitorRequests = 0;
             // Hämta partCodes i bakgrundstråd
-            var partCodes = Task.Run(() => Utilities.GetFromMonitor<Inventory.PartCodes>($"filter=Alias Eq'TOOLS'")).Result;
+            var partCodes =  Utilities.GetFromMonitor<Inventory.PartCodes>($"filter=Code Eq'HACKHYLSOR'");
 
             foreach (var partCode in partCodes)
             {
-                var parts = Task.Run(() => Utilities.GetFromMonitor<Inventory.Parts>($"filter=PartCodeId eq'{partCode.Id}'", $"select=Id,PartNumber,ExtraDescription", "expand=ExtraFields")).Result;
+                var parts = Utilities.GetFromMonitor<Inventory.Parts>($"filter=PartCodeId eq'{partCode.Id}'", $"select=Id,PartNumber,ExtraDescription", "expand=ExtraFields");
                 if (parts is null)
                     continue;
                 foreach (var part in parts)
                 {
                     foreach (var field in part.ExtraFields)
                     {
-                        if (field.Identifier == "121")
+                        if (field.Identifier == "P121")
                         {
                             if (field != null)
                                 list.Add(field.StringValue);
                         }
                     }
                 }
-
             }
 
             sw.Stop();
-            MessageBox.Show($"Antal verktyg: {list.Count}\nTid för hämtning: {sw.ElapsedMilliseconds} ms");
+            MessageBox.Show($"Med Expand: Antal verktyg: {list.Count}\nTid för hämtning: {sw.ElapsedMilliseconds} ms. Total MonitorRequests = {Utilities.CounterMonitorRequests}");
 
             return list;
         }

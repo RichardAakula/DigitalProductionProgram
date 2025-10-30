@@ -30,7 +30,18 @@ namespace DigitalProductionProgram.Monitor.GET
 
             public long Id { get; set; }
         }
+        internal class ExtraFields : DTO
+        {
+            public override string URL => "Common/ExtraFields";
 
+            public long Id { get; set; }
+            public string ParentClass { get; set; }
+            public long? ParentId { get; set; }
+            public string StringValue { get; set; }
+            public int? IntegerValue { get; set; }
+            public double? DecimalValue { get; set; }
+            public string? Identifier { get; set; }
+        }
         internal class FormTemplates : DTO
         {
             public override string URL => "Common/FormTemplates";

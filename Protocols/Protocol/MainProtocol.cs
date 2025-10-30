@@ -151,6 +151,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
             Module.IsOkToSave = true;
             PreFab.HeaderClicked += PreFab_Click;
             ProcesscardBasedOn.HeaderClicked += ProcesscardBasedOn_Click;
+            PreFab.ParentProtocol = this;
         }
 
         public void Translate_Form()
@@ -479,7 +480,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
             // Växla höjd mellan 32 och 150
             var row = tlp_Right.RowStyles[rowIndex];
             row.Height = row.Height == 32 ? height : 32;
-
+           
             // Justera kolumnbredden dynamiskt
             tlp_Main.ColumnStyles[1].Width =
                 (tlp_Right.RowStyles[1].Height == 32 && tlp_Right.RowStyles[2].Height == 32)

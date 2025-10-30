@@ -27,6 +27,7 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
     public partial class PreFab : UserControl
     {
         public event EventHandler? HeaderClicked;
+        public MainProtocol? ParentProtocol { get; set; }
 
         public static bool IsUsingPreFab;
         public static int TotalRows_PreFab
@@ -499,20 +500,21 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
                 SaveData.SavePrefabFromMonitor();
             else
             {
-                if (dgv.CurrentCell.RowIndex <= 0)
+                if (dgv.CurrentCell.RowIndex < 0)
                 {
-                    if (Person.Role == "SuperAdmin")
-                    {
-                        SaveData.SavePrefabFromMonitor();
-                        Load_Data(Order.OrderID);
-                        return;
-                    }
+                    //if (Person.Role == "SuperAdmin")
+                    //{
+                    //    SaveData.SavePrefabFromMonitor();
+                    //    Load_Data(Order.OrderID);
+                    //    return;
+                    //}
                     InfoText.Show("Välj först vilken rad du vill lägga till en ny rad av.", CustomColors.InfoText_Color.Warning, "Warning", this);
                     return;
                 }
                 SaveData.INSERT_ExtraRow(dgv.CurrentCell.RowIndex);
             }
             Load_Data(Order.OrderID);
+            ParentProtocol?.Set_PreFabHeight();
         }
         private void Delete_PreFab_Click(object sender, EventArgs e)
         {

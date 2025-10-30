@@ -121,7 +121,7 @@ namespace DigitalProductionProgram.Monitor
 
             return null;
         }
-        //[DebuggerStepThrough]
+        [DebuggerStepThrough]
         public static async Task<List<T>> GetFromMonitor<T>(params string[] queryOptions) where T : DTO, new()
         {
             var query = BuildQuery<T>(queryOptions);

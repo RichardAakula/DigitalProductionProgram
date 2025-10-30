@@ -1347,7 +1347,7 @@ namespace DigitalProductionProgram.Monitor
             var list = new List<string>();
             var sw = new Stopwatch();
             sw.Start();
-
+           
             // Hämta partCodes i bakgrundstråd
             var partCodes = Task.Run(() => Utilities.GetFromMonitor<Inventory.PartCodes>($"filter=Alias Eq'TOOLS'")).Result;
 

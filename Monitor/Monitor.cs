@@ -1349,7 +1349,7 @@ namespace DigitalProductionProgram.Monitor
             sw.Start();
             Utilities.CounterMonitorRequests = 0;
             // Hämta partCodes i bakgrundstråd
-            var partCodes = Task.Run(() => Utilities.GetFromMonitor<Inventory.PartCodes>($"filter=Code Eq'KANYLER'")).Result;
+            var partCodes =  Utilities.GetFromMonitor<Inventory.PartCodes>($"filter=Code Eq'HACKHYLSOR'");
 
             foreach (var partCode in partCodes)
             {

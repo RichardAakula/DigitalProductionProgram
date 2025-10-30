@@ -575,6 +575,69 @@ namespace DigitalProductionProgram.Monitor
             }
         }
 
-        
+        public static List<string> List_All_Tools()
+        {
+            var list = new List<string>();
+            var sw = new Stopwatch();
+            sw.Start();
+
+            // Hämta partCodes i bakgrundstråd
+            var partCodes = Utilities.GetFromMonitor<Inventory.PartCodes>($"filter=Alias Eq'TOOLS'"));
+
+            foreach (var partCode in partCodes)
+            {
+                var parts = Task.Run(() =>
+                    Utilities.GetFromMonitor<Inventory.Parts>($"filter=PartCodeId Eq'{partCode.Id}'")).Result;
+
+                foreach (var part in parts)
+                {
+                    var idNr = Task.Run(() =>
+                        Utilities.GetOneFromMonitor<Common.ExtraFields>($"filter=ParentId Eq'{part.Id}' AND Identifier Eq'P119'")).Result;
+
+                    if (idNr != null)
+                        list.Add(idNr.StringValue);
+                }
+            }
+
+            sw.Stop();
+            MessageBox.Show($"Antal verktyg: {list.Count}\nTid för hämtning: {sw.ElapsedMilliseconds} ms");
+
+            return list;
+        }
+
+        public static List<string> List_All_Tools_2()
+        {
+            var list = new List<string>();
+            var sw = new Stopwatch();
+            sw.Start();
+
+            // Hämta partCodes i bakgrundstråd
+            var partCodes = Task.Run(() => Utilities.GetFromMonitor<Inventory.PartCodes>($"filter=Alias Eq'TOOLS'")).Result;
+
+            foreach (var partCode in partCodes)
+            {
+                var parts = Task.Run(() => Utilities.GetFromMonitor<Inventory.Parts>($"filter=PartCodeId eq'{partCode.Id}'", $"select=Id,PartNumber,ExtraDescription", "expand=ExtraFields")).Result;
+                if (parts is null)
+                    continue;
+                foreach (var part in parts)
+                {
+                    foreach (var field in part.ExtraFields)
+                    {
+                        if (field.Identifier == "121")
+                        {
+                            if (field != null)
+                                list.Add(field.StringValue);
+                        }
+                    }
+                }
+
+            }
+
+            sw.Stop();
+            MessageBox.Show($"Antal verktyg: {list.Count}\nTid för hämtning: {sw.ElapsedMilliseconds} ms");
+
+            return list;
+        }
+
     }
 }

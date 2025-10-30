@@ -29,7 +29,19 @@ namespace DigitalProductionProgram.Monitor.GET
             public decimal StandardPrice { get; set; }
             public long StandardUnitId { get; set; }
 
-            public List<ProductRecords> ProductRecords { get; set; }
+            // public List<ProductRecords> ProductRecords { get; set; }
+
+            public List<Common.ExtraFields>? ExtraFields { get; set; }
+        }
+        internal class PartCodes : DTO
+        {
+            public override string URL => "Inventory/PartCodes";
+
+            public long Id { get; set; }
+            public string? Alias { get; set; }
+            public string? Code { get; set; }
+            public string? Description { get; set; }
+
         }
 
         internal class ProductRecords : DTO

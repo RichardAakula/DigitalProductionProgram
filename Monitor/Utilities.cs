@@ -39,8 +39,10 @@ namespace DigitalProductionProgram.Monitor
         //    }
         //    return response;
         //}
+        public static int CounterMonitorRequests;
         private static async Task<HttpResponseMessage?> Http_responseAsync(string query, int maxRetries = 5, TimeSpan? initialDelay = null, CancellationToken cancellationToken = default)
         {
+            CounterMonitorRequests++;
             initialDelay ??= TimeSpan.FromMilliseconds(200);
             var delay = initialDelay.Value;
             var rnd = new Random();

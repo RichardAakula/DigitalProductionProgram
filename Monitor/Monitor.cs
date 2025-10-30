@@ -1316,10 +1316,10 @@ namespace DigitalProductionProgram.Monitor
             var list = new List<string>();
             var sw = new Stopwatch();
             sw.Start();
-
+            Utilities.CounterMonitorRequests = 0;
             // Hämta partCodes i bakgrundstråd
             var partCodes = Task.Run(() =>
-                Utilities.GetFromMonitor<Inventory.PartCodes>($"filter=Alias Eq'TOOLS'")).Result;
+                Utilities.GetFromMonitor<Inventory.PartCodes>($"filter=Code Eq'KANYLER'")).Result;
 
             foreach (var partCode in partCodes)
             {
@@ -1329,7 +1329,7 @@ namespace DigitalProductionProgram.Monitor
                 foreach (var part in parts)
                 {
                     var idNr = Task.Run(() =>
-                        Utilities.GetOneFromMonitor<Common.ExtraFields>($"filter=ParentId Eq'{part.Id}' AND Identifier Eq'P119'")).Result;
+                        Utilities.GetOneFromMonitor<Common.ExtraFields>($"filter=ParentId Eq'{part.Id}' AND Identifier Eq'P121'")).Result;
 
                     if (idNr != null)
                         list.Add(idNr.StringValue);
@@ -1337,7 +1337,7 @@ namespace DigitalProductionProgram.Monitor
             }
 
             sw.Stop();
-            MessageBox.Show($"Antal verktyg: {list.Count}\nTid för hämtning: {sw.ElapsedMilliseconds} ms");
+            MessageBox.Show($"Utan Expand: Antal verktyg: {list.Count}\nTid för hämtning: {sw.ElapsedMilliseconds} ms. MonitorRequests = {Utilities.CounterMonitorRequests}");
 
             return list;
         }
@@ -1347,9 +1347,9 @@ namespace DigitalProductionProgram.Monitor
             var list = new List<string>();
             var sw = new Stopwatch();
             sw.Start();
-           
+            Utilities.CounterMonitorRequests = 0;
             // Hämta partCodes i bakgrundstråd
-            var partCodes = Task.Run(() => Utilities.GetFromMonitor<Inventory.PartCodes>($"filter=Alias Eq'TOOLS'")).Result;
+            var partCodes = Task.Run(() => Utilities.GetFromMonitor<Inventory.PartCodes>($"filter=Code Eq'KANYLER'")).Result;
 
             foreach (var partCode in partCodes)
             {
@@ -1360,7 +1360,7 @@ namespace DigitalProductionProgram.Monitor
                 {
                     foreach (var field in part.ExtraFields)
                     {
-                        if (field.Identifier == "121")
+                        if (field.Identifier == "P121")
                         {
                             if (field != null)
                                 list.Add(field.StringValue);
@@ -1371,7 +1371,7 @@ namespace DigitalProductionProgram.Monitor
             }
 
             sw.Stop();
-            MessageBox.Show($"Antal verktyg: {list.Count}\nTid för hämtning: {sw.ElapsedMilliseconds} ms");
+            MessageBox.Show($"Expand: Antal verktyg: {list.Count}\nTid för hämtning: {sw.ElapsedMilliseconds} ms. MonitorRequests = {Utilities.CounterMonitorRequests}");
 
             return list;
         }

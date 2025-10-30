@@ -219,7 +219,7 @@ namespace DigitalProductionProgram.Monitor.Services
         //    //}
         //}
 
-        public static async Task Add_Equipment(List<string> items, Type tableType, string partCode, string? identifier, string? property, string? filterCodeText, int dataType)
+        public static async Task Add_Equipment(List<string> items, Type tableType, string partCode, string? name, string? property, string? filterCodeText, int dataType)
         {
             Stopwatch sw = new Stopwatch();
             sw.Start();
@@ -231,80 +231,9 @@ namespace DigitalProductionProgram.Monitor.Services
             string filter = string.Empty;
             filter = string.IsNullOrEmpty(filterCodeText) ? $"filter=PartCodeId eq'{partCodeId}'" : $"filter=PartCodeId eq'{partCodeId}' AND ExtraDescription Eq'{filterCodeText}'";
 
-            List<Inventory.Parts>? parts;
+            var parts = await Utilities.GetFromMonitor<Inventory.Parts>("select=Id,PartNumber,ExtraDescription", filter);
 
-            if (string.IsNullOrEmpty(identifier))
-            {
-                parts = await Utilities.GetFromMonitor<Inventory.Parts>("select=Id,PartNumber,ExtraDescription", filter);
-
-                var properties = typeof(Inventory.Parts).GetProperty(property);
-                foreach (var part in parts)
-                {
-                    var value = properties?.GetValue(part)?.ToString();
-                    if (!string.IsNullOrEmpty(value) && !items.Contains(value))
-                        items.Add(value);
-                }
-            }
-
-            else
-            {
-                parts = await Utilities.GetFromMonitor<Inventory.Parts>("select=Id,PartNumber,ExtraDescription", filter, "expand=ExtraFields");
-
-                //Denna är test
-                foreach (var part in parts)
-                {
-                    foreach (var field in part.ExtraFields)
-                    {
-                        if (field.Identifier == identifier)
-                        {
-                            var stringValue = field.StringValue;
-                            if (!string.IsNullOrEmpty(stringValue) && !items.Contains(stringValue))
-                                items.Add(stringValue);
-                            var decimalValue = field.DecimalValue?.ToString();
-                            if (!string.IsNullOrEmpty(decimalValue) && !items.Contains(decimalValue))
-                                items.Add(decimalValue);
-                            var intValue = field.IntegerValue?.ToString();
-                            if (!string.IsNullOrEmpty(intValue) && !items.Contains(intValue))
-                                items.Add(intValue);
-                        }
-                    }
-                }
-
-                sw.Stop();
-                MessageBox.Show(sw.ElapsedMilliseconds.ToString());
-                return;
-            }
-            //Test Slut
-
-            return;
-        if (parts == null)
-                return;
-            
-
-            if (string.IsNullOrEmpty(property))
-            {
-                foreach (var part in parts)
-                {
-                    // Hämta ExtraFields asynkront
-                    var idNr = await Utilities.GetOneFromMonitor<Common.ExtraFields>("select=StringValue,DecimalValue,IntegerValue", $"filter=ParentId eq'{part.Id}' AND Identifier eq'{identifier}'");
-
-                    if (idNr == null)
-                        continue;
-
-                    var stringValue = idNr.StringValue;
-                    if (!string.IsNullOrEmpty(stringValue) && !items.Contains(stringValue))
-                        items.Add(stringValue);
-
-                    var decimalValue = idNr.DecimalValue?.ToString();
-                    if (!string.IsNullOrEmpty(decimalValue) && !items.Contains(decimalValue))
-                        items.Add(decimalValue);
-
-                    var intValue = idNr.IntegerValue?.ToString();
-                    if (!string.IsNullOrEmpty(intValue) && !items.Contains(intValue))
-                        items.Add(intValue);
-                }
-            }
-            else
+            if (string.IsNullOrEmpty(name))
             {
                 var properties = typeof(Inventory.Parts).GetProperty(property);
                 foreach (var part in parts)
@@ -313,7 +242,35 @@ namespace DigitalProductionProgram.Monitor.Services
                     if (!string.IsNullOrEmpty(value) && !items.Contains(value))
                         items.Add(value);
                 }
+
+                return;
             }
+          
+            if (parts == null)
+                return;
+
+            foreach (var part in parts)
+            {
+                // Hämta ExtraFields asynkront
+                var identifier = await Utilities.GetOneFromMonitor<Common.ExtraFieldTemplates>($"filter=Name Eq'{name}'");
+                var idNr = await Utilities.GetOneFromMonitor<Common.ExtraFields>("select=StringValue,DecimalValue,IntegerValue", $"filter=ParentId eq'{part.Id}' AND Identifier eq'{identifier.Identifier}'");
+
+                if (idNr == null)
+                    continue;
+
+                var stringValue = idNr.StringValue;
+                if (!string.IsNullOrEmpty(stringValue) && !items.Contains(stringValue))
+                    items.Add(stringValue);
+
+                var decimalValue = idNr.DecimalValue?.ToString();
+                if (!string.IsNullOrEmpty(decimalValue) && !items.Contains(decimalValue))
+                    items.Add(decimalValue);
+
+                var intValue = idNr.IntegerValue?.ToString();
+                if (!string.IsNullOrEmpty(intValue) && !items.Contains(intValue))
+                    items.Add(intValue);
+            }
+           
 
             sw.Stop();
             MessageBox.Show(sw.ElapsedMilliseconds.ToString());

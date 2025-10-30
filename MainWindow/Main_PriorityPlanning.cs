@@ -301,12 +301,27 @@ namespace DigitalProductionProgram.MainWindow
             }
 
             // UI-uppdatering efter async-arbete
-            dgv_PriorityPlanning.DataSource = dt;
-            dgv_PriorityPlanning.Columns["Order Startad"].Visible = false;
-            dgv_PriorityPlanning.Columns["Processkort Godkänt"].Visible = false;
-            dgv_PriorityPlanning.Columns["PartID"].Visible = false;
-            SetProcesscardStatus(dt);
-            SetColorsPriorityPlan();
+            if (dgv_PriorityPlanning.InvokeRequired)
+            {
+                dgv_PriorityPlanning.Invoke(() =>
+                {
+                    dgv_PriorityPlanning.DataSource = dt;
+                    dgv_PriorityPlanning.Columns["Order Startad"].Visible = false;
+                    dgv_PriorityPlanning.Columns["Processkort Godkänt"].Visible = false;
+                    dgv_PriorityPlanning.Columns["PartID"].Visible = false;
+                    SetProcesscardStatus(dt);
+                    SetColorsPriorityPlan();
+                });
+            }
+            else
+            {
+                dgv_PriorityPlanning.DataSource = dt;
+                dgv_PriorityPlanning.Columns["Order Startad"].Visible = false;
+                dgv_PriorityPlanning.Columns["Processkort Godkänt"].Visible = false;
+                dgv_PriorityPlanning.Columns["PartID"].Visible = false;
+                SetProcesscardStatus(dt);
+                SetColorsPriorityPlan();
+            }
         }
 
         private void SetProcesscardStatus(DataTable dt)

@@ -1263,23 +1263,16 @@ namespace DigitalProductionProgram.Monitor
             cb.ValueMember = "Code";
         }
 
-        public static async Task Fill_ComboBox_Propertys(ComboBox cb)
+        public static async Task<List<Common.ExtraFieldTemplates>> Get_PropertyList(bool clone = false)
         {
             var fieldGroup = await Utilities.GetOneFromMonitor<Common.ExtraFieldGroups>("filter=Name eq'Variables'");
-            if (fieldGroup is null)
-            {
-                // eventuellt gör en tom lista eller returnera tidigt
-                cb.DataSource = new List<Common.ExtraFieldTemplates>();
-                return;
-            }
+            var properties = await Utilities.GetFromMonitor<Common.ExtraFieldTemplates>(
+                "select=Name",
+                $"filter=ParentId Eq'{fieldGroup?.Id}'",
+                "orderby=Name");
 
-            var properties = await Utilities.GetFromMonitor<Common.ExtraFieldTemplates>("select=Name,Identifier", $"filter=ParentId Eq'{fieldGroup.Id}'", "orderby=RowNumber");
-
-            // Sätt DataSource på UI-tråden — om du redan är på UI-tråden (vanligt i Load) går det direkt
             var list = properties?.ToList() ?? new List<Common.ExtraFieldTemplates>();
-            cb.DataSource = list;
-            cb.DisplayMember = "Name";
-            cb.ValueMember = "Identifier";
+            return clone ? new List<Common.ExtraFieldTemplates>(list) : list;
         }
 
 
@@ -1342,39 +1335,39 @@ namespace DigitalProductionProgram.Monitor
             return list;
         }
 
-        public static List<string> List_All_Tools_2()
-        {
-            var list = new List<string>();
-            var sw = new Stopwatch();
-            sw.Start();
-            Utilities.CounterMonitorRequests = 0;
-            // Hämta partCodes i bakgrundstråd
-            var partCodes =  Utilities.GetFromMonitor<Inventory.PartCodes>($"filter=Code Eq'HACKHYLSOR'");
+        //public static List<string> List_All_Tools_2()
+        //{
+        //    var list = new List<string>();
+        //    var sw = new Stopwatch();
+        //    sw.Start();
+        //    Utilities.CounterMonitorRequests = 0;
+        //    // Hämta partCodes i bakgrundstråd
+        //    var partCodes =  Utilities.GetFromMonitor<Inventory.PartCodes>($"filter=Code Eq'HACKHYLSOR'");
 
-            foreach (var partCode in partCodes)
-            {
-                var parts = Task.Run(() => Utilities.GetFromMonitor<Inventory.Parts>($"filter=PartCodeId eq'{partCode.Id}'",$"select=Id,PartNumber,ExtraDescription", "expand=ExtraFields")).Result;
-                if (parts is null)
-                    continue;
-                foreach (var part in parts)
-                {
-                    foreach (var field in part.ExtraFields)
-                    {
-                        if (field.Identifier == "P121")
-                        {
-                            if (field != null)
-                                list.Add(field.StringValue);
-                        }
-                    }
-                }
+        //    foreach (var partCode in partCodes)
+        //    {
+        //        var parts = Task.Run(() => Utilities.GetFromMonitor<Inventory.Parts>($"filter=PartCodeId eq'{partCode.Id}'",$"select=Id,PartNumber,ExtraDescription", "expand=ExtraFields")).Result;
+        //        if (parts is null)
+        //            continue;
+        //        foreach (var part in parts)
+        //        {
+        //            foreach (var field in part.ExtraFields)
+        //            {
+        //                if (field.Identifier == "P121")
+        //                {
+        //                    if (field != null)
+        //                        list.Add(field.StringValue);
+        //                }
+        //            }
+        //        }
 
-            }
+        //    }
 
-            sw.Stop();
-            MessageBox.Show($"Expand: Antal verktyg: {list.Count}\nTid för hämtning: {sw.ElapsedMilliseconds} ms. MonitorRequests = {Utilities.CounterMonitorRequests}");
+        //    sw.Stop();
+        //    MessageBox.Show($"Expand: Antal verktyg: {list.Count}\nTid för hämtning: {sw.ElapsedMilliseconds} ms. MonitorRequests = {Utilities.CounterMonitorRequests}");
 
-            return list;
-        }
+        //    return list;
+        //}
 
         //public static void Fill_ComboBox_List_ExtraFields(ComboBox cb)
         //{

@@ -59,13 +59,18 @@
             cb_FilterFunctions = new ComboBox();
             label_Filter = new Label();
             gbx_MonitorAPI = new GroupBox();
-            cb_Identifier = new ComboBox();
+            cb_Name = new ComboBox();
             label_Column = new Label();
             cb_Properties = new ComboBox();
             label_Property = new Label();
             cb_Module = new ComboBox();
             label_Module = new Label();
             label_ListMonitor = new Label();
+            gbx_ExtraCodeText = new GroupBox();
+            cb_SecondaryName = new ComboBox();
+            label2 = new Label();
+            cb_SecondaryCodeText = new ComboBox();
+            label3 = new Label();
             page_DPP_Lists = new TabPage();
             label_CodeText = new Label();
             tlp_Main.SuspendLayout();
@@ -81,6 +86,7 @@
             gbx_MonitorPartCode.SuspendLayout();
             gbx_Filter.SuspendLayout();
             gbx_MonitorAPI.SuspendLayout();
+            gbx_ExtraCodeText.SuspendLayout();
             SuspendLayout();
             // 
             // tlp_Main
@@ -345,15 +351,17 @@
             // tlp_MonitorLists
             // 
             tlp_MonitorLists.BackColor = Color.FromArgb(6, 81, 87);
-            tlp_MonitorLists.ColumnCount = 4;
+            tlp_MonitorLists.ColumnCount = 5;
             tlp_MonitorLists.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 202F));
-            tlp_MonitorLists.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 213F));
-            tlp_MonitorLists.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 201F));
-            tlp_MonitorLists.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 8F));
+            tlp_MonitorLists.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 210F));
+            tlp_MonitorLists.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 210F));
+            tlp_MonitorLists.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 210F));
+            tlp_MonitorLists.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 22F));
             tlp_MonitorLists.Controls.Add(gbx_MonitorPartCode, 0, 1);
-            tlp_MonitorLists.Controls.Add(gbx_Filter, 2, 1);
-            tlp_MonitorLists.Controls.Add(gbx_MonitorAPI, 1, 1);
             tlp_MonitorLists.Controls.Add(label_ListMonitor, 0, 0);
+            tlp_MonitorLists.Controls.Add(gbx_MonitorAPI, 2, 1);
+            tlp_MonitorLists.Controls.Add(gbx_ExtraCodeText, 3, 1);
+            tlp_MonitorLists.Controls.Add(gbx_Filter, 1, 1);
             tlp_MonitorLists.Dock = DockStyle.Fill;
             tlp_MonitorLists.Location = new Point(3, 3);
             tlp_MonitorLists.Name = "tlp_MonitorLists";
@@ -398,10 +406,10 @@
             gbx_Filter.Dock = DockStyle.Fill;
             gbx_Filter.Font = new Font("Lucida Sans", 10.25F);
             gbx_Filter.ForeColor = Color.FromArgb(239, 228, 177);
-            gbx_Filter.Location = new Point(417, 45);
+            gbx_Filter.Location = new Point(204, 45);
             gbx_Filter.Margin = new Padding(2, 5, 0, 0);
             gbx_Filter.Name = "gbx_Filter";
-            gbx_Filter.Size = new Size(199, 802);
+            gbx_Filter.Size = new Size(208, 802);
             gbx_Filter.TabIndex = 32;
             gbx_Filter.TabStop = false;
             gbx_Filter.Text = "Välj Filter";
@@ -411,7 +419,7 @@
             tb_FilterText.Dock = DockStyle.Top;
             tb_FilterText.Location = new Point(3, 146);
             tb_FilterText.Name = "tb_FilterText";
-            tb_FilterText.Size = new Size(193, 24);
+            tb_FilterText.Size = new Size(202, 24);
             tb_FilterText.TabIndex = 35;
             // 
             // label_FilterText
@@ -432,7 +440,7 @@
             cb_FilterCodeText.FormattingEnabled = true;
             cb_FilterCodeText.Location = new Point(3, 96);
             cb_FilterCodeText.Name = "cb_FilterCodeText";
-            cb_FilterCodeText.Size = new Size(193, 24);
+            cb_FilterCodeText.Size = new Size(202, 24);
             cb_FilterCodeText.TabIndex = 33;
             // 
             // label_FilterColumn
@@ -454,7 +462,7 @@
             cb_FilterFunctions.Items.AddRange(new object[] { "eq", "startswith", "endwith" });
             cb_FilterFunctions.Location = new Point(3, 46);
             cb_FilterFunctions.Name = "cb_FilterFunctions";
-            cb_FilterFunctions.Size = new Size(193, 24);
+            cb_FilterFunctions.Size = new Size(202, 24);
             cb_FilterFunctions.TabIndex = 28;
             cb_FilterFunctions.Visible = false;
             // 
@@ -472,7 +480,7 @@
             // 
             // gbx_MonitorAPI
             // 
-            gbx_MonitorAPI.Controls.Add(cb_Identifier);
+            gbx_MonitorAPI.Controls.Add(cb_Name);
             gbx_MonitorAPI.Controls.Add(label_Column);
             gbx_MonitorAPI.Controls.Add(cb_Properties);
             gbx_MonitorAPI.Controls.Add(label_Property);
@@ -481,24 +489,24 @@
             gbx_MonitorAPI.Dock = DockStyle.Fill;
             gbx_MonitorAPI.Font = new Font("Lucida Sans", 10.25F);
             gbx_MonitorAPI.ForeColor = Color.FromArgb(239, 228, 177);
-            gbx_MonitorAPI.Location = new Point(204, 45);
+            gbx_MonitorAPI.Location = new Point(414, 45);
             gbx_MonitorAPI.Margin = new Padding(2, 5, 0, 0);
             gbx_MonitorAPI.Name = "gbx_MonitorAPI";
-            gbx_MonitorAPI.Size = new Size(211, 802);
+            gbx_MonitorAPI.Size = new Size(208, 802);
             gbx_MonitorAPI.TabIndex = 30;
             gbx_MonitorAPI.TabStop = false;
             gbx_MonitorAPI.Text = "Extra Fält";
             // 
-            // cb_Identifier
+            // cb_Name
             // 
-            cb_Identifier.Dock = DockStyle.Top;
-            cb_Identifier.DropDownStyle = ComboBoxStyle.DropDownList;
-            cb_Identifier.FormattingEnabled = true;
-            cb_Identifier.Items.AddRange(new object[] { "PartNumber", "Description" });
-            cb_Identifier.Location = new Point(3, 146);
-            cb_Identifier.Name = "cb_Identifier";
-            cb_Identifier.Size = new Size(205, 24);
-            cb_Identifier.TabIndex = 31;
+            cb_Name.Dock = DockStyle.Top;
+            cb_Name.DropDownStyle = ComboBoxStyle.DropDownList;
+            cb_Name.FormattingEnabled = true;
+            cb_Name.Items.AddRange(new object[] { "PartNumber", "Description" });
+            cb_Name.Location = new Point(3, 146);
+            cb_Name.Name = "cb_Name";
+            cb_Name.Size = new Size(202, 24);
+            cb_Name.TabIndex = 31;
             // 
             // label_Column
             // 
@@ -507,9 +515,9 @@
             label_Column.Location = new Point(3, 120);
             label_Column.Name = "label_Column";
             label_Column.Padding = new Padding(0, 5, 0, 5);
-            label_Column.Size = new Size(68, 26);
+            label_Column.Size = new Size(44, 26);
             label_Column.TabIndex = 30;
-            label_Column.Text = "Extra Fält";
+            label_Column.Text = "Name";
             // 
             // cb_Properties
             // 
@@ -519,7 +527,7 @@
             cb_Properties.Items.AddRange(new object[] { "PartNumber", "ExtraDescription", "Description" });
             cb_Properties.Location = new Point(3, 96);
             cb_Properties.Name = "cb_Properties";
-            cb_Properties.Size = new Size(205, 24);
+            cb_Properties.Size = new Size(202, 24);
             cb_Properties.TabIndex = 27;
             // 
             // label_Property
@@ -541,7 +549,7 @@
             cb_Module.Items.AddRange(new object[] { "Common", "Inventory", "Manufacturing", "" });
             cb_Module.Location = new Point(3, 46);
             cb_Module.Name = "cb_Module";
-            cb_Module.Size = new Size(205, 24);
+            cb_Module.Size = new Size(202, 24);
             cb_Module.TabIndex = 27;
             cb_Module.Visible = false;
             cb_Module.SelectedIndexChanged += cb_Module_SelectedIndexChanged;
@@ -567,10 +575,69 @@
             label_ListMonitor.ForeColor = Color.FromArgb(184, 220, 231);
             label_ListMonitor.Location = new Point(3, 0);
             label_ListMonitor.Name = "label_ListMonitor";
-            label_ListMonitor.Size = new Size(409, 40);
+            label_ListMonitor.Size = new Size(406, 40);
             label_ListMonitor.TabIndex = 29;
             label_ListMonitor.Text = "Monitor Listor";
             label_ListMonitor.TextAlign = ContentAlignment.MiddleCenter;
+            // 
+            // gbx_ExtraCodeText
+            // 
+            gbx_ExtraCodeText.Controls.Add(cb_SecondaryName);
+            gbx_ExtraCodeText.Controls.Add(label2);
+            gbx_ExtraCodeText.Controls.Add(cb_SecondaryCodeText);
+            gbx_ExtraCodeText.Controls.Add(label3);
+            gbx_ExtraCodeText.Font = new Font("Lucida Sans", 10.25F);
+            gbx_ExtraCodeText.ForeColor = Color.FromArgb(239, 228, 177);
+            gbx_ExtraCodeText.Location = new Point(624, 45);
+            gbx_ExtraCodeText.Margin = new Padding(2, 5, 0, 0);
+            gbx_ExtraCodeText.Name = "gbx_ExtraCodeText";
+            gbx_ExtraCodeText.Size = new Size(208, 802);
+            gbx_ExtraCodeText.TabIndex = 33;
+            gbx_ExtraCodeText.TabStop = false;
+            gbx_ExtraCodeText.Text = "Extra CodeText";
+            // 
+            // cb_SecondaryName
+            // 
+            cb_SecondaryName.Dock = DockStyle.Top;
+            cb_SecondaryName.DropDownStyle = ComboBoxStyle.DropDownList;
+            cb_SecondaryName.FormattingEnabled = true;
+            cb_SecondaryName.Location = new Point(3, 96);
+            cb_SecondaryName.Name = "cb_SecondaryName";
+            cb_SecondaryName.Size = new Size(202, 24);
+            cb_SecondaryName.TabIndex = 33;
+            // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.Dock = DockStyle.Top;
+            label2.Location = new Point(3, 70);
+            label2.Name = "label2";
+            label2.Padding = new Padding(0, 5, 0, 5);
+            label2.Size = new Size(120, 26);
+            label2.TabIndex = 32;
+            label2.Text = "Secondary Name";
+            // 
+            // cb_SecondaryCodeText
+            // 
+            cb_SecondaryCodeText.Dock = DockStyle.Top;
+            cb_SecondaryCodeText.DropDownStyle = ComboBoxStyle.DropDownList;
+            cb_SecondaryCodeText.FormattingEnabled = true;
+            cb_SecondaryCodeText.Items.AddRange(new object[] { "eq", "startswith", "endwith" });
+            cb_SecondaryCodeText.Location = new Point(3, 46);
+            cb_SecondaryCodeText.Name = "cb_SecondaryCodeText";
+            cb_SecondaryCodeText.Size = new Size(202, 24);
+            cb_SecondaryCodeText.TabIndex = 28;
+            // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Dock = DockStyle.Top;
+            label3.Location = new Point(3, 20);
+            label3.Name = "label3";
+            label3.Padding = new Padding(0, 5, 0, 5);
+            label3.Size = new Size(149, 26);
+            label3.TabIndex = 29;
+            label3.Text = "Secondary CodeText";
             // 
             // page_DPP_Lists
             // 
@@ -626,6 +693,8 @@
             gbx_Filter.PerformLayout();
             gbx_MonitorAPI.ResumeLayout(false);
             gbx_MonitorAPI.PerformLayout();
+            gbx_ExtraCodeText.ResumeLayout(false);
+            gbx_ExtraCodeText.PerformLayout();
             ResumeLayout(false);
 
         }
@@ -661,7 +730,7 @@
         private ComboBox cb_FilterFunctions;
         private Label label_Filter;
         private GroupBox gbx_MonitorAPI;
-        private ComboBox cb_Identifier;
+        private ComboBox cb_Name;
         private Label label_Column;
         private ComboBox cb_Properties;
         private Label label_Property;
@@ -669,5 +738,10 @@
         private Label label_Module;
         private Label label_ListMonitor;
         private TabPage page_DPP_Lists;
+        private GroupBox gbx_ExtraCodeText;
+        private ComboBox cb_SecondaryName;
+        private Label label2;
+        private ComboBox cb_SecondaryCodeText;
+        private Label label3;
     }
 }

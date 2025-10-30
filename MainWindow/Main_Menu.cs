@@ -1434,5 +1434,10 @@ ORDER BY OrderID DESC ";
         {
             List<string> list = Monitor.Monitor.List_All_Tools();
         }
+
+        private void laddaAlalVerktyMedExpandAPIToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            List<string> list = Monitor.Monitor.List_All_Tools_2();
+        }
     }
 }

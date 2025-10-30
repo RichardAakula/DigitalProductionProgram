@@ -231,10 +231,55 @@ namespace DigitalProductionProgram.Monitor.Services
             string filter = string.Empty;
             filter = string.IsNullOrEmpty(filterCodeText) ? $"filter=PartCodeId eq'{partCodeId}'" : $"filter=PartCodeId eq'{partCodeId}' AND ExtraDescription Eq'{filterCodeText}'";
 
-            var parts = await Utilities.GetFromMonitor<Inventory.Parts>("select=Id,PartNumber,ExtraDescription", filter);
+            List<Inventory.Parts>? parts;
 
-            if (parts == null)
+            if (string.IsNullOrEmpty(identifier))
+            {
+                parts = await Utilities.GetFromMonitor<Inventory.Parts>("select=Id,PartNumber,ExtraDescription", filter);
+
+                var properties = typeof(Inventory.Parts).GetProperty(property);
+                foreach (var part in parts)
+                {
+                    var value = properties?.GetValue(part)?.ToString();
+                    if (!string.IsNullOrEmpty(value) && !items.Contains(value))
+                        items.Add(value);
+                }
+            }
+
+            else
+            {
+                parts = await Utilities.GetFromMonitor<Inventory.Parts>("select=Id,PartNumber,ExtraDescription", filter, "expand=ExtraFields");
+
+                //Denna är test
+                foreach (var part in parts)
+                {
+                    foreach (var field in part.ExtraFields)
+                    {
+                        if (field.Identifier == identifier)
+                        {
+                            var stringValue = field.StringValue;
+                            if (!string.IsNullOrEmpty(stringValue) && !items.Contains(stringValue))
+                                items.Add(stringValue);
+                            var decimalValue = field.DecimalValue?.ToString();
+                            if (!string.IsNullOrEmpty(decimalValue) && !items.Contains(decimalValue))
+                                items.Add(decimalValue);
+                            var intValue = field.IntegerValue?.ToString();
+                            if (!string.IsNullOrEmpty(intValue) && !items.Contains(intValue))
+                                items.Add(intValue);
+                        }
+                    }
+                }
+
+                sw.Stop();
+                MessageBox.Show(sw.ElapsedMilliseconds.ToString());
                 return;
+            }
+            //Test Slut
+
+            return;
+        if (parts == null)
+                return;
+            
 
             if (string.IsNullOrEmpty(property))
             {

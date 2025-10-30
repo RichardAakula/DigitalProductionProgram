@@ -32,6 +32,8 @@ namespace DigitalProductionProgram.Monitor.GET
             public long StandardUnitId { get; set; }
 
            // public List<ProductRecords> ProductRecords { get; set; }
+
+           public List<Common.ExtraFields>? ExtraFields { get; set; }
         }
         internal class PartCodes : DTO, ToolService.IHasId
         {

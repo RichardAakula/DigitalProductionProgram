@@ -9,6 +9,7 @@ using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.PrintingServices;
 using DigitalProductionProgram.User;
 using Microsoft.Data.SqlClient;
+using NAudio.CoreAudioApi;
 using NCalc.Domain;
 using System;
 using System.Collections.Generic;
@@ -19,6 +20,7 @@ using System.Drawing;
 using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
+using static DigitalProductionProgram.Monitor.GET.Inventory;
 
 namespace DigitalProductionProgram.Monitor
 {
@@ -1317,20 +1319,17 @@ namespace DigitalProductionProgram.Monitor
 
             // Hämta partCodes i bakgrundstråd
             var partCodes = Task.Run(() =>
-                Utilities.GetFromMonitor<Inventory.PartCodes>($"filter=Alias Eq'TOOLS'")
-            ).Result;
+                Utilities.GetFromMonitor<Inventory.PartCodes>($"filter=Alias Eq'TOOLS'")).Result;
 
             foreach (var partCode in partCodes)
             {
                 var parts = Task.Run(() =>
-                    Utilities.GetFromMonitor<Inventory.Parts>($"filter=PartCodeId Eq'{partCode.Id}'")
-                ).Result;
+                    Utilities.GetFromMonitor<Inventory.Parts>($"filter=PartCodeId Eq'{partCode.Id}'")).Result;
 
                 foreach (var part in parts)
                 {
                     var idNr = Task.Run(() =>
-                        Utilities.GetOneFromMonitor<Common.ExtraFields>($"filter=ParentId Eq'{part.Id}' AND Identifier Eq'P119'")
-                    ).Result;
+                        Utilities.GetOneFromMonitor<Common.ExtraFields>($"filter=ParentId Eq'{part.Id}' AND Identifier Eq'P119'")).Result;
 
                     if (idNr != null)
                         list.Add(idNr.StringValue);
@@ -1343,7 +1342,39 @@ namespace DigitalProductionProgram.Monitor
             return list;
         }
 
+        public static List<string> List_All_Tools_2()
+        {
+            var list = new List<string>();
+            var sw = new Stopwatch();
+            sw.Start();
 
+            // Hämta partCodes i bakgrundstråd
+            var partCodes = Task.Run(() => Utilities.GetFromMonitor<Inventory.PartCodes>($"filter=Alias Eq'TOOLS'")).Result;
+
+            foreach (var partCode in partCodes)
+            {
+                var parts = Task.Run(() => Utilities.GetFromMonitor<Inventory.Parts>($"filter=PartCodeId eq'{partCode.Id}'",$"select=Id,PartNumber,ExtraDescription", "expand=ExtraFields")).Result;
+                if (parts is null)
+                    continue;
+                foreach (var part in parts)
+                {
+                    foreach (var field in part.ExtraFields)
+                    {
+                        if (field.Identifier == "121")
+                        {
+                            if (field != null)
+                                list.Add(field.StringValue);
+                        }
+                    }
+                }
+
+            }
+
+            sw.Stop();
+            MessageBox.Show($"Antal verktyg: {list.Count}\nTid för hämtning: {sw.ElapsedMilliseconds} ms");
+
+            return list;
+        }
 
         //public static void Fill_ComboBox_List_ExtraFields(ComboBox cb)
         //{
@@ -1352,18 +1383,18 @@ namespace DigitalProductionProgram.Monitor
         //        return;
         //    var fields = Utilities.GetFromMonitor<Common.ExtraFieldTemplates>($"filter=ParentId Eq'{fieldGroup.Id}'", "orderby=RowNumber");
 
-        //    // Skapa en ny lista och lägg till en extra rad - Denna används om Användaren vill att man skall välja Typ(Description) istället för ID-nummer
-        //    var extendedFields = new List<Common.ExtraFieldTemplates>
-        //    {
-        //        new Common.ExtraFieldTemplates { Name = "Description", Identifier = "Description" }
-        //    };
-        //    extendedFields.AddRange(fields);
+            //    // Skapa en ny lista och lägg till en extra rad - Denna används om Användaren vill att man skall välja Typ(Description) istället för ID-nummer
+            //    var extendedFields = new List<Common.ExtraFieldTemplates>
+            //    {
+            //        new Common.ExtraFieldTemplates { Name = "Description", Identifier = "Description" }
+            //    };
+            //    extendedFields.AddRange(fields);
 
-        //    cb.DataSource = extendedFields;
+            //    cb.DataSource = extendedFields;
 
-        //    cb.DisplayMember = "Name"; // vad användaren ser
-        //    cb.ValueMember = "Identifier";
-        //}
+            //    cb.DisplayMember = "Name"; // vad användaren ser
+            //    cb.ValueMember = "Identifier";
+            //}
         public static void Fill_ComboBox_List_ExtraFields(ComboBox cb)
         {
             // Hämta fieldGroup i bakgrundstråd

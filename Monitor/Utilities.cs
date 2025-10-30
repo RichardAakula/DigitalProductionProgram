@@ -221,7 +221,8 @@ namespace DigitalProductionProgram.Monitor
         //        return null;
         //    }
         //}
-       // [DebuggerStepThrough]
+        // [DebuggerStepThrough]
+        [DebuggerStepThrough]
         private static string BuildQuery<T>(string[] queryOptions) where T : DTO, new()
         {
             // Combine the query options. If the first one starts with /xxx, it means that it's an ID select. This means that option 2, if one exists, has to start with ?$ instead of &$

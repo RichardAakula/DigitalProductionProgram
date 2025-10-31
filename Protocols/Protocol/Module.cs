@@ -784,7 +784,6 @@ namespace DigitalProductionProgram.Protocols.Protocol
             var dgv_Row = dgv_Module.Rows[row];
             List<string?>? items = new List<string?>();
             dgv_Module.Rows[e.RowIndex].Cells[e.ColumnIndex].Selected = true;
-            var IsItemsMultipleColumns = false;
             int.TryParse(dgv_Module.Rows[row].Cells["col_ProtocolDescriptionID"].Value.ToString(), out var protocolDescriptionID);
             int.TryParse(dgv_Module.Rows[row].Cells["col_TemplateID"].Value.ToString(), out var templateID);
             int.TryParse(dgv_Module.Rows[row].Cells["col_DataType"].Value.ToString(), out var dataType);
@@ -794,7 +793,9 @@ namespace DigitalProductionProgram.Protocols.Protocol
                 bool.TryParse(dgv_Module.Rows[row].Cells["col_IsOkWriteText"].Value.ToString(), out var isOkWriteText);
                 bool.TryParse(dgv_Module.Rows[e.RowIndex].Cells["col_IsList_Protocol"].Value.ToString(), out var IsListProtocol);
                 int.TryParse(dgv_Module.Columns[e.ColumnIndex].HeaderText, out var startup);
-                items = await ItemsBuilder.GetListItems(templateID, isProcesscardUnderManagement ? "Processcard" : "Protocol", dataType, Filter_Variable);
+                var result = await ItemsBuilder.GetListItems(templateID, isProcesscardUnderManagement ? "Processcard" : "Protocol", dataType, Filter_Variable);
+                items = result.Items;
+                var IsItemsMultipleColumns = result.IsItemsMultipleColumns;
 
                 if (IsListProtocol)
                 {
@@ -920,7 +921,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                                 TipType = "Kanyler FEP";
                             else
                                 TipType = Value(col, 311);
-                            items = Monitor.Services.ToolService.List_Tools(TipType, "Landlängd Nom");
+                            //items = Monitor.Services.ToolService.List_Tools(TipType, "Landlängd Nom");
                             items = DigitalProductionProgram.Equipment.Equipment.List_Tool(TipType, MIN_Value(dgv_Row), MAX_Value(dgv_Row));
                             IsItemsMultipleColumns = true;
                             break;

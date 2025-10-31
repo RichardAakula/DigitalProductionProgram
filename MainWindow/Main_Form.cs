@@ -159,11 +159,7 @@ namespace DigitalProductionProgram.MainWindow
                 Teman.Choose_Theme();
                 Change_Theme();
 
-                if (!Program.IsComputerOnlyForMeasurements && IsAutoOpenOrder == false)
-                {
-                    // Läs egenskapen direkt
-                    OrderInformation.tb_OrderNr.AutoCompleteCustomSource = Monitor.Monitor.AutoFillOrdernr().GetAwaiter().GetResult();
-                }
+               
 
 
                 _ = Main_FilterQuickOpen.Load_ListAsync(dgv_QuickOpen);
@@ -204,7 +200,23 @@ namespace DigitalProductionProgram.MainWindow
                 else
                     black.Close();
             }
-           
+
+            if (!Program.IsComputerOnlyForMeasurements && IsAutoOpenOrder == false)
+            {
+                var result = await Monitor.Monitor.AutoFillOrdernr();
+
+                if (OrderInformation.tb_OrderNr.InvokeRequired)
+                {
+                    OrderInformation.tb_OrderNr.Invoke(() =>
+                    {
+                        OrderInformation.tb_OrderNr.AutoCompleteCustomSource = result;
+                    });
+                }
+                else
+                {
+                    OrderInformation.tb_OrderNr.AutoCompleteCustomSource = result;
+                }
+            }
 
             await Activity.Stop("Uppstart av program");
             Initialize_Timers();

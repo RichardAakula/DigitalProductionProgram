@@ -219,7 +219,113 @@ namespace DigitalProductionProgram.Monitor.Services
         //    //}
         //}
 
-        public static async Task Add_Equipment(List<string> items, Type tableType, string partCode, string? name, string? property, string? filterCodeText, int dataType)
+        //public static async Task Add_Equipment(List<string> items, Type tableType, string partCode, string? name, string? property, string? filterCodeText, int dataType, bool IsItemsMultipleColumns, string? secondaryName = null, string? secondaryCodeText = null)
+        //{
+        //    Stopwatch sw = new Stopwatch();
+        //    sw.Start();
+        //    // Hämta PartCodeId asynkront
+        //    var partCodeObj = await Utilities.GetOneFromMonitor<Inventory.PartCodes>($"filter=Code Eq'{partCode}'");
+        //    var partCodeId = partCodeObj?.Id ?? 0;
+
+        //    // Hämta parts asynkront
+        //    string filter = string.Empty;
+        //    filter = string.IsNullOrEmpty(filterCodeText) ? $"filter=PartCodeId eq'{partCodeId}'" : $"filter=PartCodeId eq'{partCodeId}' AND ExtraDescription Eq'{filterCodeText}'";
+
+        //    var parts = await Utilities.GetFromMonitor<Inventory.Parts>("select=Id,PartNumber,ExtraDescription", filter);
+
+        //    if (string.IsNullOrEmpty(name))
+        //    {
+        //        var properties = typeof(Inventory.Parts).GetProperty(property);
+        //        foreach (var part in parts)
+        //        {
+        //            var value = properties?.GetValue(part)?.ToString();
+        //            if (!string.IsNullOrEmpty(value) && !items.Contains(value))
+        //                items.Add(value);
+        //        }
+
+        //        return;
+        //    }
+
+        //    if (parts == null)
+        //        return;
+
+        //    foreach (var part in parts)
+        //    {
+        //        // Hämta ExtraFields asynkront
+        //        var value = string.Empty;
+        //        var identifier = await Utilities.GetOneFromMonitor<Common.ExtraFieldTemplates>($"filter=Name Eq'{name}'");
+
+        //        var idNr = await Utilities.GetOneFromMonitor<Common.ExtraFields>("select=StringValue,DecimalValue,IntegerValue", $"filter=ParentId eq'{part.Id}' AND Identifier eq'{identifier.Identifier}'");
+
+        //        if (idNr == null)
+        //            continue;
+
+        //        var stringValue = idNr.StringValue;
+        //        if (!string.IsNullOrEmpty(stringValue))
+        //            value = stringValue;
+
+        //        var decimalValue = idNr.DecimalValue?.ToString();
+        //        if (!string.IsNullOrEmpty(decimalValue))
+        //            value = decimalValue;
+
+        //        var intValue = idNr.IntegerValue?.ToString();
+        //        if (!string.IsNullOrEmpty(intValue))
+        //            value = intValue;
+
+        //        if (secondaryName != null && IsItemsMultipleColumns)
+        //        {
+        //            var secondaryIdentifier = await Utilities.GetOneFromMonitor<Common.ExtraFieldTemplates>($"filter=Name Eq'{secondaryName}'");
+        //            var secondaryIdNr = await Utilities.GetOneFromMonitor<Common.ExtraFields>("select=StringValue,DecimalValue,IntegerValue", $"filter=ParentId eq'{part.Id}' AND Identifier eq'{secondaryIdentifier.Identifier}'");
+        //            if (secondaryIdNr != null)
+        //            {
+        //                stringValue = secondaryIdNr.StringValue;
+        //                if (!string.IsNullOrEmpty(stringValue))
+        //                    value = value + " : " + stringValue;
+
+        //                decimalValue = secondaryIdNr.DecimalValue?.ToString();
+        //                if (!string.IsNullOrEmpty(decimalValue))
+        //                    value = value + " : " + decimalValue;
+
+        //                intValue = secondaryIdNr.IntegerValue?.ToString();
+        //                if (!string.IsNullOrEmpty(intValue))
+        //                    value = value + " : " + intValue;
+        //            }
+        //        }
+        //        if (!string.IsNullOrEmpty(value) && !items.Contains(value))
+        //            items.Add(value);
+        //    }
+
+
+        //    sw.Stop();
+        //    MessageBox.Show(sw.ElapsedMilliseconds.ToString());
+        //}
+
+
+
+
+
+
+        //public static List<string?> List_Tools<Table1, Table2>(string templateName)
+        //    where Table1 : DTO, IHasId, new()
+        //    where Table2 : DTO, new()
+        //{
+        //    var templateID = Utilities.GetOneFromMonitor<Table1>($"filter=Description Eq'{templateName}'")?.Id ?? 0;
+
+        //    var parts = Utilities.GetFromMonitor<Table2>($"filter=PartTemplateId Eq'{templateID}'");
+        //    var list = new List<string?>();
+        //    foreach (var part in parts)
+        //    {
+        //        var descriptionProp = typeof(Table2).GetProperty("Description");
+        //        var value = descriptionProp?.GetValue(part) as string;
+        //        if (!list.Contains(value))
+        //            list.Add(value);
+        //    }
+
+        //    return list;
+        //}
+
+
+        public static async Task Add_Equipment(List<string> items, Type tableType, string partCode, string? name, string? property, string? filterCodeText, int dataType, bool IsItemsMultipleColumns, string? secondaryName = null, string? secondaryCodeText = null)
         {
             Stopwatch sw = new Stopwatch();
             sw.Start();
@@ -245,60 +351,66 @@ namespace DigitalProductionProgram.Monitor.Services
 
                 return;
             }
-          
+
             if (parts == null)
                 return;
 
+            // Bygg ett OData-filter manuellt
+            var templateFilter = $"filter=Name eq '{name}'";
+            if (!string.IsNullOrEmpty(secondaryName))
+                templateFilter += $" or Name eq '{secondaryName}'";
+
+            var templates = await Utilities.GetFromMonitor<Common.ExtraFieldTemplates>(templateFilter);
+
+            var primaryIdentifier = templates.FirstOrDefault(t => t.Name == name)?.Identifier;
+            var secondaryIdentifier = templates.FirstOrDefault(t => t.Name == secondaryName)?.Identifier;
+
+            // Bygg lista av ParentIds
+            var partIds = string.Join(" or ", parts.Select(p => $"ParentId eq '{p.Id}'"));
+            var fieldFilter = $"filter={partIds}";
+
+            // Hämta alla ExtraFields för dessa ParentIds
+            var allExtraFields = await Utilities.GetFromMonitor<Common.ExtraFields>("select=ParentId,Identifier,StringValue,DecimalValue,IntegerValue", fieldFilter);
+
+            // --- Lokalt arbete ---
             foreach (var part in parts)
             {
-                // Hämta ExtraFields asynkront
-                var identifier = await Utilities.GetOneFromMonitor<Common.ExtraFieldTemplates>($"filter=Name Eq'{name}'");
-                var idNr = await Utilities.GetOneFromMonitor<Common.ExtraFields>("select=StringValue,DecimalValue,IntegerValue", $"filter=ParentId eq'{part.Id}' AND Identifier eq'{identifier.Identifier}'");
+                var partFields = allExtraFields.Where(f => f.ParentId == part.Id).ToList();
+                if (partFields.Count == 0) continue;
 
-                if (idNr == null)
-                    continue;
+                var valueField = partFields.FirstOrDefault(f => f.Identifier == primaryIdentifier);
+                var value = GetFieldValue(valueField);
 
-                var stringValue = idNr.StringValue;
-                if (!string.IsNullOrEmpty(stringValue) && !items.Contains(stringValue))
-                    items.Add(stringValue);
+                if (IsItemsMultipleColumns && secondaryName != null)
+                {
+                    var secField = partFields.FirstOrDefault(f => f.Identifier == secondaryIdentifier);
+                    var secValue = GetFieldValue(secField);
+                    if (!string.IsNullOrEmpty(secValue))
+                        value = $"{value} : {secValue}";
+                }
 
-                var decimalValue = idNr.DecimalValue?.ToString();
-                if (!string.IsNullOrEmpty(decimalValue) && !items.Contains(decimalValue))
-                    items.Add(decimalValue);
-
-                var intValue = idNr.IntegerValue?.ToString();
-                if (!string.IsNullOrEmpty(intValue) && !items.Contains(intValue))
-                    items.Add(intValue);
+                if (!string.IsNullOrEmpty(value) && !items.Contains(value))
+                    items.Add(value);
             }
-           
+
+            // Hjälpmetod
+            static string GetFieldValue(Common.ExtraFields? field)
+            {
+                if (field == null) return string.Empty;
+                if (!string.IsNullOrEmpty(field.StringValue)) return field.StringValue;
+                if (field.DecimalValue.HasValue) return field.DecimalValue.ToString();
+                if (field.IntegerValue.HasValue) return field.IntegerValue.ToString();
+                return string.Empty;
+            }
+
+
+
 
             sw.Stop();
             MessageBox.Show(sw.ElapsedMilliseconds.ToString());
         }
 
 
-
-
-
-
-        //public static List<string?> List_Tools<Table1, Table2>(string templateName)
-        //    where Table1 : DTO, IHasId, new()
-        //    where Table2 : DTO, new()
-        //{
-        //    var templateID = Utilities.GetOneFromMonitor<Table1>($"filter=Description Eq'{templateName}'")?.Id ?? 0;
-
-        //    var parts = Utilities.GetFromMonitor<Table2>($"filter=PartTemplateId Eq'{templateID}'");
-        //    var list = new List<string?>();
-        //    foreach (var part in parts)
-        //    {
-        //        var descriptionProp = typeof(Table2).GetProperty("Description");
-        //        var value = descriptionProp?.GetValue(part) as string;
-        //        if (!list.Contains(value))
-        //            list.Add(value);
-        //    }
-
-        //    return list;
-        //}
         public static List<string?> List_Tools<Table1, Table2>(string templateName)
             where Table1 : DTO, IHasId, new()
             where Table2 : DTO, new()

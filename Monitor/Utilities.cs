@@ -42,7 +42,7 @@ namespace DigitalProductionProgram.Monitor
         public static int CounterMonitorRequests;
         private static async Task<HttpResponseMessage?> Http_responseAsync(string query, int maxRetries = 5, TimeSpan? initialDelay = null, CancellationToken cancellationToken = default)
         {
-            CounterMonitorRequests++;
+             CounterMonitorRequests++;
             initialDelay ??= TimeSpan.FromMilliseconds(200);
             var delay = initialDelay.Value;
             var rnd = new Random();
@@ -123,7 +123,7 @@ namespace DigitalProductionProgram.Monitor
 
             return null;
         }
-        [DebuggerStepThrough]
+        //[DebuggerStepThrough]
         public static async Task<List<T>> GetFromMonitor<T>(params string[] queryOptions) where T : DTO, new()
         {
             var query = BuildQuery<T>(queryOptions);

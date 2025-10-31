@@ -937,13 +937,6 @@ namespace DigitalProductionProgram.MainWindow
             testaLaddaAllaVerktygFrånMonitorToolStripMenuItem.Text = "Testa ladda alla verktyg från Monitor";
             testaLaddaAllaVerktygFrånMonitorToolStripMenuItem.Click += testaLaddaAllaVerktygFrånMonitorToolStripMenuItem_Click;
             // 
-            // laddaAlalVerktyMedExpandAPIToolStripMenuItem
-            // 
-            laddaAlalVerktyMedExpandAPIToolStripMenuItem.Name = "laddaAlalVerktyMedExpandAPIToolStripMenuItem";
-            laddaAlalVerktyMedExpandAPIToolStripMenuItem.Size = new Size(401, 22);
-            laddaAlalVerktyMedExpandAPIToolStripMenuItem.Text = "Ladda alal verkty med expand API";
-            laddaAlalVerktyMedExpandAPIToolStripMenuItem.Click += laddaAlalVerktyMedExpandAPIToolStripMenuItem_Click;
-            // 
             // menuStrip
             // 
             menuStrip.BackColor = Color.Transparent;

@@ -295,13 +295,14 @@ namespace DigitalProductionProgram.Templates
 
 
 
-       
-        public static async Task<List<string?>> GetListItems(int TemplateID, string ListType, int dataType, Func<string, string?>? filterVariable = null)
+
+        public static async Task<(List<string?> Items, bool IsItemsMultipleColumns)> GetListItems(int TemplateID, string ListType, int dataType, Func<string, string?>? filterVariable = null)
         {
+            bool isMultipleColumns = false;
             var items = new List<string>();
             await using var con = new SqlConnection(Database.cs_Protocol);
             const string query = @"
-                SELECT Name, PartCode, EndPoint, Property, Name, SecondaryName, FilterCodeText, SecondaryCodeText
+                SELECT PartCode, EndPoint, Property, fields.Name, SecondaryName, FilterCodeText, SecondaryCodeText
                 FROM List.ItemFields as fields
                     LEFT JOIN List.Items as items 
                         ON fields.ItemId = items.Id
@@ -314,9 +315,11 @@ namespace DigitalProductionProgram.Templates
             await using var reader = await cmd.ExecuteReaderAsync();
             string? endPoint = null;
             string? name = null;
+            string? secondaryName = null;
             string? property = null;
             string? partCode = null;
             string? filterCodeText = null;
+            string? secondaryCodeText = null;
 
             while (reader.Read())
             {
@@ -328,18 +331,22 @@ namespace DigitalProductionProgram.Templates
                 endPoint = reader["EndPoint"] as string ?? reader["EndPoint"]?.ToString();
                 property = reader["Property"] as string ?? reader["Property"]?.ToString();
                 name = reader["Name"] as string ?? reader["Name"]?.ToString();
+                secondaryName = reader["SecondaryName"] as string ?? reader["SecondaryName"]?.ToString();
                 filterCodeText = reader["FilterCodeText"] as string ?? reader["FilterCodeText"]?.ToString();
+                secondaryCodeText = reader["SecondaryCodeText"] as string ?? reader["SecondaryCodeText"]?.ToString();
 
             }
             items.Add("N/A");
-            var variable = filterVariable(filterCodeText);
+            var variable = filterVariable?.Invoke(filterCodeText);
+            if (!string.IsNullOrEmpty(secondaryCodeText))
+                isMultipleColumns = true;
 
             var typeName = endPoint != null ? $"DigitalProductionProgram.Monitor.GET.{endPoint}, DigitalProductionProgram" : null;
             var tableType = typeName != null ? Type.GetType(typeName) : null;
             if (tableType != null && partCode != null)
-                await Monitor.Services.ToolService.Add_Equipment(items, tableType, partCode, name, property, variable, dataType);
+                await Monitor.Services.ToolService.Add_Equipment(items, tableType, partCode, name, property, variable, dataType, isMultipleColumns, secondaryName, secondaryCodeText);
 
-            return items;
+            return (items, isMultipleColumns);
         }
 
         private static void Load_ListItems(DataGridView dgv_Items, DataGridView dgv_ListItems, ComboBox cb_PartCode, ComboBox cb_Name, ComboBox cb_Properties, ComboBox cb_FilterCodeText, string ListType, int TemplateID)

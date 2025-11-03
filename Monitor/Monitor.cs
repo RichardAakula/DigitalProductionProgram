@@ -575,22 +575,22 @@ namespace DigitalProductionProgram.Monitor
             }
         }
 
-        public static List<string> List_All_Tools()
+        public static List<string> List_All_Tools_WithOutExpand()
         {
             var list = new List<string>();
             var sw = new Stopwatch();
             sw.Start();
             Utilities.CounterMonitorRequests = 0;
             // Hämta partCodes i bakgrundstråd
-            var partCodes = Utilities.GetFromMonitor<Inventory.PartCodes>($"filter=Code Eq'HACKHYLSOR'");
+            var partCodes = Utilities.GetFromMonitor<Inventory.PartCodes>($"filter=Code Eq'KANYLER'");
 
             foreach (var partCode in partCodes)
             {
-                var parts = Utilities.GetFromMonitor<Inventory.Parts>($"filter=PartCodeId Eq'{partCode.Id}'");
+                var parts = Utilities.GetFromMonitor<Inventory.Parts>($"filter=PartCodeId Eq'{partCode.Id}' AND ExtraDescription eq'Kanyler FEP'");
 
                 foreach (var part in parts)
                 {
-                    var idNr = Utilities.GetOneFromMonitor<Common.ExtraFields>($"filter=ParentId Eq'{part.Id}' AND Identifier Eq'P121'");
+                    var idNr = Utilities.GetOneFromMonitor<Common.ExtraFields>("select=StringValue,DecimalValue,IntegerValue", $"filter=ParentId Eq'{part.Id}' AND Identifier Eq'P119'");
 
                     if (idNr != null)
                         list.Add(idNr.StringValue);
@@ -598,40 +598,43 @@ namespace DigitalProductionProgram.Monitor
             }
 
             sw.Stop();
-            MessageBox.Show($"Utan Expand: Antal verktyg: {list.Count}\nTid för hämtning: {sw.ElapsedMilliseconds} ms. Total MonitorRequests = {Utilities.CounterMonitorRequests}");
+            MessageBox.Show($"Utan Expand: Antal verktyg: {list.Count}\nTid för hämtning: {sw.ElapsedMilliseconds} ms. MonitorRequests = {Utilities.CounterMonitorRequests}");
 
             return list;
         }
 
-        public static List<string> List_All_Tools_2()
+        public static List<string> List_All_WithExpand()
         {
             var list = new List<string>();
             var sw = new Stopwatch();
             sw.Start();
             Utilities.CounterMonitorRequests = 0;
             // Hämta partCodes i bakgrundstråd
-            var partCodes =  Utilities.GetFromMonitor<Inventory.PartCodes>($"filter=Code Eq'HACKHYLSOR'");
+            var partCodes = Utilities.GetFromMonitor<Inventory.PartCodes>($"filter=Code Eq'KANYLER'");
 
             foreach (var partCode in partCodes)
             {
-                var parts = Utilities.GetFromMonitor<Inventory.Parts>($"filter=PartCodeId eq'{partCode.Id}'", $"select=Id,PartNumber,ExtraDescription", "expand=ExtraFields");
+                var parts =Utilities.GetFromMonitor<Inventory.Parts>($"filter=PartCodeId eq'{partCode.Id}' AND ExtraDescription eq'Kanyler FEP'", $"select=Id,PartNumber,ExtraDescription", "expand=ExtraFields");
                 if (parts is null)
                     continue;
+                sw.Stop();
+                MessageBox.Show($"Expand: Antal verktyg: {list.Count}\nTid för hämtning: {sw.ElapsedMilliseconds} ms. MonitorRequests = {Utilities.CounterMonitorRequests}");
                 foreach (var part in parts)
                 {
                     foreach (var field in part.ExtraFields)
                     {
-                        if (field.Identifier == "P121")
+                        if (field.Identifier == "P119")
                         {
                             if (field != null)
                                 list.Add(field.StringValue);
                         }
                     }
                 }
+
             }
 
             sw.Stop();
-            MessageBox.Show($"Med Expand: Antal verktyg: {list.Count}\nTid för hämtning: {sw.ElapsedMilliseconds} ms. Total MonitorRequests = {Utilities.CounterMonitorRequests}");
+            MessageBox.Show($"Expand: Antal verktyg: {list.Count}\nTid för hämtning: {sw.ElapsedMilliseconds} ms. MonitorRequests = {Utilities.CounterMonitorRequests}");
 
             return list;
         }

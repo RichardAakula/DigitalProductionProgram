@@ -1354,14 +1354,14 @@ WHERE m.WorkoperationID = 14
         }
 
 
-        private void testaLaddaAllaVerktygFrånMonitorToolStripMenuItem_Click(object sender, EventArgs e)
+        private void menu_MedExpand(object sender, EventArgs e)
         {
-            List<string> list = Monitor.Monitor.List_All_Tools();
+            List<string> list = Monitor.Monitor.List_All_WithExpand();
         }
 
-        private void laddaAlalVerktyMedExpandAPIToolStripMenuItem_Click(object sender, EventArgs e)
+        private void utanExpand(object sender, EventArgs e)
         {
-            List<string> list = Monitor.Monitor.List_All_Tools_2();
+            List<string> list = Monitor.Monitor.List_All_Tools_WithOutExpand();
         }
     }
 }

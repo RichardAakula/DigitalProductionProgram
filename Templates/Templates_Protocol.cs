@@ -1068,7 +1068,7 @@ namespace DigitalProductionProgram.Templates
                         case "col_ProtocolList":
                             if (IsLoading)
                                 return;
-                            itemsBuilder = new ItemsBuilder(cellParameter?.Value.ToString() ?? string.Empty, ItemsBuilder.ListType.Protocol, templateID);
+                            itemsBuilder = new ItemsBuilder(cellParameter?.Value.ToString() ?? string.Empty, ItemsBuilder.ListType.Protocol, templateID, list_CodeText);
                             itemsBuilder.ShowDialog();
                             _suppressCellValueChanged = true;
                             dgv.Rows[e.RowIndex].Cells["col_ProtocolList"].Value = itemsBuilder.IsListActivated;

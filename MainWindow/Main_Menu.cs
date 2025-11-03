@@ -1430,9 +1430,13 @@ ORDER BY OrderID DESC ";
 
         }
 
-        private void testaLaddaAllaVerktygFrånMonitorToolStripMenuItem_Click(object sender, EventArgs e)
+        private void menu_LoadToolsWithExpand_Click(object sender, EventArgs e)
         {
-            List<string> list = Monitor.Monitor.List_All_Tools();
+            List<string> list = Monitor.Monitor.List_All_WithExpand();
+        }
+        private void menu_LoadToolsWithOutExpand_Click(object sender, EventArgs e)
+        {
+            List<string> list = Monitor.Monitor.List_All_Tools_WithOutExpand();
         }
     }
 }

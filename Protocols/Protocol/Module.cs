@@ -760,6 +760,22 @@ namespace DigitalProductionProgram.Protocols.Protocol
 
             return null;
         }
+
+        private DataGridViewCell[] Cells(List<string> listCodetexts)
+        {
+            var cells = new List<DataGridViewCell> { dgv_Module.Rows[dgv_Module.CurrentCell.RowIndex].Cells[dgv_Module.CurrentCell.ColumnIndex] };
+
+            foreach (DataGridViewRow row in dgv_Module.Rows)
+            {
+                if (listCodetexts.Contains(row.Cells["col_CodeText"].Value.ToString()))
+                {
+                    cells.Add(row.Cells["col_NOM"]);
+                }
+            }
+
+            return cells.ToArray();
+        }
+
         public async void Module_ShowSpecialItems_CellRightMouseDown(object sender, DataGridViewCellMouseEventArgs e)
         {
             if (Browse_Protocols.Browse_Protocols.Is_BrowsingProtocols)
@@ -780,7 +796,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
             if (Manage_Processcards.IsProcesscardUnderManagement && isListProcesscard == false)
                 return;
 
-            DataGridViewCell[] cells = { dgv_Module.Rows[row].Cells[e.ColumnIndex] };
+            //DataGridViewCell[] cells = { dgv_Module.Rows[row].Cells[e.ColumnIndex] };
             var dgv_Row = dgv_Module.Rows[row];
             List<string?>? items = new List<string?>();
             dgv_Module.Rows[e.RowIndex].Cells[e.ColumnIndex].Selected = true;
@@ -795,8 +811,10 @@ namespace DigitalProductionProgram.Protocols.Protocol
                 int.TryParse(dgv_Module.Columns[e.ColumnIndex].HeaderText, out var startup);
                 var result = await ItemsBuilder.GetListItems(templateID, isProcesscardUnderManagement ? "Processcard" : "Protocol", dataType, Filter_Variable);
                 items = result.Items;
-                var IsItemsMultipleColumns = result.IsItemsMultipleColumns;
 
+                var IsItemsMultipleColumns = result.IsItemsMultipleColumns;
+                var Cells_Codetext = result.Cells_CodeText;
+                DataGridViewCell[] cells = Cells(Cells_Codetext);
                 if (IsListProtocol)
                 {
                     switch (protocolDescriptionID)
@@ -829,11 +847,6 @@ namespace DigitalProductionProgram.Protocols.Protocol
                            // items = CheckAuthority.IsWorkoperationAuthorized(CheckAuthority.TemplateWorkoperation.ExtruderRegister) ?
                            //     Monitor.Services.ToolService.List_Equipment<Manufacturing.WorkCenters>("Description", "startswith(PartNumber, 'EXT')") : Machines.Extruders("EXTRUDER");
                             //DigitalProductionProgram.Equipment.Equipment.List_From_Register("Extruder", "Extruder_Skruvar") : Machines.Extruders("EXTRUDER");
-                           
-
-                            //var method = typeof(Monitor.Services.ToolService).GetMethod("List_Equipment")?.MakeGenericMethod(tableType);
-                            //var result = method?.Invoke(null, new object[] { "Description", "filter=Type Eq'0'" });
-                            //items = result as List<string?>;
                         //    break;
 
                         case 81:    //CYLINDER
@@ -915,16 +928,16 @@ namespace DigitalProductionProgram.Protocols.Protocol
                         //    items = Monitor.Services.ToolService.List_Tools<Inventory.PartTemplates, Inventory.Parts>("TOOLS (Titus)");
                         //    // items = DigitalProductionProgram.Equipment.Equipment.List_Tool_Type("Kanyl");
                         //    break;
-                        case 209: //KÄRNA
-                            cells = new[] { dgv_Module.Rows[e.RowIndex].Cells[col], dgv_Module.Rows[e.RowIndex + 1].Cells[col] };
-                            if (Order.WorkOperation == Manage_WorkOperation.WorkOperations.Extrudering_FEP)
-                                TipType = "Kanyler FEP";
-                            else
-                                TipType = Value(col, 311);
-                            //items = Monitor.Services.ToolService.List_Tools(TipType, "Landlängd Nom");
-                            items = DigitalProductionProgram.Equipment.Equipment.List_Tool(TipType, MIN_Value(dgv_Row), MAX_Value(dgv_Row));
-                            IsItemsMultipleColumns = true;
-                            break;
+                        //case 209: //KÄRNA
+                        //    cells = new[] { dgv_Module.Rows[e.RowIndex].Cells[col], dgv_Module.Rows[e.RowIndex + 1].Cells[col] };
+                        //    if (Order.WorkOperation == Manage_WorkOperation.WorkOperations.Extrudering_FEP)
+                        //        TipType = "Kanyler FEP";
+                        //    else
+                        //        TipType = Value(col, 311);
+                        //    //items = Monitor.Services.ToolService.List_Tools(TipType, "Landlängd Nom");
+                        //    items = DigitalProductionProgram.Equipment.Equipment.List_Tool(TipType, MIN_Value(dgv_Row), MAX_Value(dgv_Row));
+                        //    IsItemsMultipleColumns = true;
+                        //    break;
                         //case 229:   //UPPTAGNING    Ext FEP
                         //    items.Add("Leveransspole");
                         //    items.Add("Mellanspolning");
@@ -940,25 +953,25 @@ namespace DigitalProductionProgram.Protocols.Protocol
                             if (isProcesscardUnderManagement)
                                 items = Task.Run(Monitor.Monitor.List_PartNumber_FilterType).Result;
                             else
-                            items = Task.Run(() => Monitor.Monitor.List_Serialnumber_Extrusion_Filter(NOM_Value(dgv_Row))).Result;
+                                items = Task.Run(() => Monitor.Monitor.List_Serialnumber_Extrusion_Filter(NOM_Value(dgv_Row))).Result;
                             break;
                         case 315: //FILTER ARTIKELNR
                             items = Task.Run(() => Monitor.Monitor.List_CandleFilter_PartNr("Candle")).Result;
                             break;
                         case 316: //KALIBRERINGSTYP
-                            items = DigitalProductionProgram.Equipment.Equipment.List_Register(true, NOM_Value(dgv_Row), "Register_Kalibreringar");
+                           // items = DigitalProductionProgram.Equipment.Equipment.List_Register(true, NOM_Value(dgv_Row), "Register_Kalibreringar");
                             //  IsItemsMultipleColumns = false;
                             break;
                         case 159:   //HS MASKIN
-                            items = Machines.HS_Machines;
+                           // items = Machines.HS_Machines;
                             break;
                         case 75:    //RÖR ID# POS 1
                         case 160:   //RÖR ID# POS 2
                         case 161:   //RÖR ID# POS 3
-                            items = Tools.RegisterList.List_HS_PipeID(isProcesscardUnderManagement);
+                          //  items = Tools.RegisterList.List_HS_PipeID(isProcesscardUnderManagement);
                             break;
                         case 71:    //HACKHYLSA
-                            items = Tools.RegisterList.List_HS_Hackhylsa;
+                          //  items = Tools.RegisterList.List_HS_Hackhylsa;
                             break;
                         case 73:    //UPPTAGARE/HACK
                             items = Machines.HS_Upptagare;
@@ -1028,15 +1041,16 @@ namespace DigitalProductionProgram.Protocols.Protocol
                 return;
             switch (protocolDescriptionID)
             {
-                case 75:
-                    Order.HS_Pipe_1 = Tools.PreviousOrders.HS_Pipe(protocolDescriptionID);
-                    break;
-                case 160:
-                    Order.HS_Pipe_2 = Tools.PreviousOrders.HS_Pipe(protocolDescriptionID);
-                    break;
-                case 161:
-                    Order.HS_Pipe_3 = Tools.PreviousOrders.HS_Pipe(protocolDescriptionID);
-                    break;
+                //Ingen aning om vad detta är?
+                //case 75:
+                //    Order.HS_Pipe_1 = Tools.PreviousOrders.HS_Pipe(protocolDescriptionID);
+                //    break;
+                //case 160:
+                //    Order.HS_Pipe_2 = Tools.PreviousOrders.HS_Pipe(protocolDescriptionID);
+                //    break;
+                //case 161:
+                //    Order.HS_Pipe_3 = Tools.PreviousOrders.HS_Pipe(protocolDescriptionID);
+                //    break;
                 case 83:
                 case 209:
                     if (isProcesscardUnderManagement)

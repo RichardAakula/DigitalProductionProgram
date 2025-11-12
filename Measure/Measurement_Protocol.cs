@@ -1,13 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using Microsoft.Data.SqlClient;
-using System.Drawing;
-using System.Globalization;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using DigitalProductionProgram.ControlsManagement;
+﻿using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Help;
 using DigitalProductionProgram.Log;
@@ -21,12 +12,25 @@ using DigitalProductionProgram.Protocols.Protocol;
 using DigitalProductionProgram.Protocols.Template_Management;
 using DigitalProductionProgram.Templates;
 using DigitalProductionProgram.User;
+using Microsoft.Data.SqlClient;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Data;
+using System.Drawing;
+using System.Globalization;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 using static DigitalProductionProgram.Measure.Measure_ControlManagement;
 
 namespace DigitalProductionProgram.Measure
 {
     public partial class Measurement_Protocol : Form
     {
+        
+
+
         private readonly Measure_ControlManagement controls;
         public static int Max_Bag_Value()
         {
@@ -234,123 +238,289 @@ namespace DigitalProductionProgram.Measure
             Korprotokoll.Load_Data(Order.OrderID, 250, 0, Antal_Stripes);
             Korprotokoll.Load_Data(Order.OrderID, 246, 1, tb_Hack);
         }
+        //private void Load_MeasureData()
+        //{
+        //    // dgv_Measurements.DataSource = null;
+        //    dgv_Measurements.Rows.Clear();
+        //    //GC.Collect();
+        //    //GC.WaitForPendingFinalizers();
+
+        //    if (Templates_MeasureProtocol.MainTemplate.ID == 0)
+        //        return;
+        //    using (var con = new SqlConnection(Database.cs_Protocol))
+        //    {
+        //        var query =
+        //            @"
+        //        SELECT 
+        //            Parameter_UserText, 
+        //            Parameter_Monitor,
+        //            Data.Value, 
+        //            TextValue,  
+        //            BoolValue, 
+        //            DateValue, 
+        //            Date, 
+        //            Discarded, 
+        //            ErrorCode, 
+        //            AnstNr, 
+        //            Sign, 
+        //            main.TempID, 
+        //            ColumnIndex, 
+        //            Decimals, 
+        //            data.RowIndex, 
+        //            template.DataType, 
+        //            template.ControlType, 
+        //            bag.value as Bag
+        //        FROM MeasureProtocol.Data as data
+        //     JOIN MeasureProtocol.Template as template
+        //            ON data.DescriptionId = template.DescriptionID
+        //        JOIN MeasureProtocol.MainData as main
+        //            ON data.RowIndex = main.RowIndex AND data.OrderID = main.OrderID
+        //        JOIN (SELECT OrderID, Rowindex, MAX(Value) as Value FROM MeasureProtocol.Data JOIN MeasureProtocol.Description as description ON data.DescriptionId = description.ID where CodeName= 'Bag' GROUP BY orderid, rowindex) bag 				
+        //            on bag.orderid = main.orderid and main.rowindex = bag.rowindex
+        //        WHERE data.OrderID = @orderid AND MeasureProtocolMainTemplateID = @maintemplateid ";
+
+        //        if (CheckAuthority.IsWorkoperationAuthorized(CheckAuthority.TemplateWorkoperation.SortMeasurementsDESC))
+        //            query += $"ORDER BY Bag {SortingOrder}, RowIndex, ColumnIndex";
+        //        else
+        //            query += $"ORDER BY Date {SortingOrder}, Bag, RowIndex, ColumnIndex";
+
+        //        var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+        //        con.Open();
+        //        cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
+        //        cmd.Parameters.AddWithValue("@maintemplateid", Templates_MeasureProtocol.MainTemplate.ID);
+        //        var reader = cmd.ExecuteReader();
+        //        while (reader.Read())
+        //        {
+        //            var text = string.Empty;
+        //            _ = reader["Parameter_UserText"].ToString();
+        //            var parameterName = reader["Parameter_Monitor"].ToString();
+        //            var colIndex = int.Parse(reader["ColumnIndex"].ToString());
+        //            int.TryParse(reader["Decimals"].ToString(), out var decimals);
+        //            int.TryParse(reader["DataType"].ToString(), out var DataType);
+        //            var tempid = int.Parse(reader["TempID"].ToString());
+
+
+        //            var controlType = reader["ControlType"].ToString();
+        //            bool.TryParse(reader["Discarded"].ToString(), out var IsDiscarded);
+
+        //            switch (controlType)
+        //            {
+        //                case "TextBox":
+        //                    switch (DataType)
+        //                    {
+        //                        case 0:
+        //                            text = double.TryParse(reader["Value"].ToString(), out var value) ? SetDecimals_Value(value, decimals) : "N/A";
+        //                            break;
+        //                        case 1:
+        //                            text = reader["TextValue"].ToString();
+        //                            break;
+        //                    }
+        //                    break;
+        //                case "NumericUpDown":
+        //                    if (double.TryParse(reader["Value"].ToString(), out var numValue))
+        //                        text = SetDecimals_Value(numValue, decimals);
+        //                    break;
+        //                case "CheckBox":
+        //                    if (bool.TryParse(reader["BoolValue"].ToString(), out var boolValue))
+        //                    {
+        //                        if (boolValue)
+        //                            text = "\u2714";
+        //                    }
+        //                    else
+        //                        text = "N/A";
+        //                    break;
+        //            }
+
+        //            var activeRow = dgv_Measurements.Rows.Count - 1;
+        //            if (colIndex == 0)
+        //            {
+        //                dgv_Measurements.Rows.Add();
+        //                var date = DateTime.Parse(reader["Date"].ToString());
+        //                activeRow = dgv_Measurements.Rows.Count - 1;
+        //                var dateTimeFormat = CultureInfo.CurrentCulture.DateTimeFormat;
+        //                var formattedDate = date.ToString($"{dateTimeFormat.ShortDatePattern} {dateTimeFormat.ShortTimePattern}", CultureInfo.CurrentCulture);
+
+        //                // Remove seconds if they are included in the ShortTimePattern
+        //                formattedDate = formattedDate.Replace(":ss", "");
+        //                Add_Text_DatagridCell(activeRow, dgv_Measurements.Rows[activeRow].Cells["Date"], formattedDate, IsDiscarded);
+        //                Add_Text_DatagridCell(activeRow, dgv_Measurements.Rows[activeRow].Cells["ErrorCode"], reader["ErrorCode"].ToString(), IsDiscarded);
+        //                Add_Text_DatagridCell(activeRow, dgv_Measurements.Rows[activeRow].Cells["AnstNr"], reader["AnstNr"].ToString(), IsDiscarded);
+        //                Add_Text_DatagridCell(activeRow, dgv_Measurements.Rows[activeRow].Cells["Sign"], reader["Sign"].ToString(), IsDiscarded);
+        //                Add_Text_DatagridCell(activeRow, dgv_Measurements.Rows[activeRow].Cells["Discarded"], reader["Discarded"].ToString(), IsDiscarded);
+        //                Add_Text_DatagridCell(activeRow, dgv_Measurements.Rows[activeRow].Cells["TempID"], tempid.ToString(), IsDiscarded);
+        //            }
+        //            Add_Text_DatagridCell(activeRow, dgv_Measurements.Rows[activeRow].Cells[colIndex], text, IsDiscarded, parameterName);
+        //        }
+        //    }
+        //    if (dgv_Measurements.Rows.Count > 0)
+        //        dgv_Measurements.FirstDisplayedScrollingRowIndex = dgv_Measurements.Rows.Count - 1;
+        //}
         private void Load_MeasureData()
         {
-            // dgv_Measurements.DataSource = null;
+            // Säkerställ att stilar finns
+            if (styleDiscarded == null)
+                Initialize_Styles();
+
+            dgv_Measurements.SuspendLayout();
+            dgv_Measurements.Visible = false;
             dgv_Measurements.Rows.Clear();
-            //GC.Collect();
-            //GC.WaitForPendingFinalizers();
 
             if (Templates_MeasureProtocol.MainTemplate.ID == 0)
                 return;
+
+            var rowsBuffer = new List<object[]>(); // mellanlagra alla rader i RAM
+
             using (var con = new SqlConnection(Database.cs_Protocol))
+            using (var cmd = new SqlCommand())
             {
-                var query =
-                    @"
+                cmd.Connection = con;
+                cmd.CommandText = @"
+            SELECT 
+                Parameter_UserText, 
+                Parameter_Monitor,
+                Data.Value, 
+                TextValue,  
+                BoolValue, 
+                DateValue, 
+                Date, 
+                Discarded, 
+                ErrorCode, 
+                AnstNr, 
+                Sign, 
+                main.TempID, 
+                ColumnIndex, 
+                Decimals, 
+                data.RowIndex, 
+                template.DataType, 
+                template.ControlType, 
+                bag.value as Bag
+            FROM MeasureProtocol.Data as data
+            JOIN MeasureProtocol.Template as template
+                ON data.DescriptionId = template.DescriptionID
+            JOIN MeasureProtocol.MainData as main
+                ON data.RowIndex = main.RowIndex AND data.OrderID = main.OrderID
+            JOIN (
                 SELECT 
-                    Parameter_UserText, 
-                    Parameter_Monitor,
-                    Data.Value, 
-                    TextValue,  
-                    BoolValue, 
-                    DateValue, 
-                    Date, 
-                    Discarded, 
-                    ErrorCode, 
-                    AnstNr, 
-                    Sign, 
-                    main.TempID, 
-                    ColumnIndex, 
-                    Decimals, 
-                    data.RowIndex, 
-                    template.DataType, 
-                    template.ControlType, 
-                    bag.value as Bag
-                FROM MeasureProtocol.Data as data
-	            JOIN MeasureProtocol.Template as template
-                    ON data.DescriptionId = template.DescriptionID
-                JOIN MeasureProtocol.MainData as main
-                    ON data.RowIndex = main.RowIndex AND data.OrderID = main.OrderID
-                JOIN (SELECT OrderID, Rowindex, MAX(Value) as Value FROM MeasureProtocol.Data JOIN MeasureProtocol.Description as description ON data.DescriptionId = description.ID where CodeName= 'Bag' GROUP BY orderid, rowindex) bag 				
-                    on bag.orderid = main.orderid and main.rowindex = bag.rowindex
-                WHERE data.OrderID = @orderid AND MeasureProtocolMainTemplateID = @maintemplateid ";
+                    OrderID, 
+                    Rowindex, 
+                    MAX(Value) as Value 
+                FROM MeasureProtocol.Data 
+                JOIN MeasureProtocol.Description as description 
+                    ON data.DescriptionId = description.ID 
+                WHERE CodeName = 'Bag' 
+                GROUP BY orderid, rowindex
+            ) bag ON bag.orderid = main.orderid AND main.rowindex = bag.rowindex
+            WHERE data.OrderID = @orderid 
+              AND MeasureProtocolMainTemplateID = @maintemplateid ";
 
                 if (CheckAuthority.IsWorkoperationAuthorized(CheckAuthority.TemplateWorkoperation.SortMeasurementsDESC))
-                    query += $"ORDER BY Bag {SortingOrder}, RowIndex, ColumnIndex";
+                    cmd.CommandText += $"ORDER BY Bag {SortingOrder}, RowIndex, ColumnIndex";
                 else
-                    query += $"ORDER BY Date {SortingOrder}, Bag, RowIndex, ColumnIndex";
+                    cmd.CommandText += $"ORDER BY Date {SortingOrder}, Bag, RowIndex, ColumnIndex";
 
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                cmd.Parameters.Add("@orderid", SqlDbType.Int).Value = Order.OrderID;
+                cmd.Parameters.Add("@maintemplateid", SqlDbType.Int).Value = Templates_MeasureProtocol.MainTemplate.ID;
+
+                ServerStatus.Add_Sql_Counter();
                 con.Open();
-                cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
-                cmd.Parameters.AddWithValue("@maintemplateid", Templates_MeasureProtocol.MainTemplate.ID);
-                var reader = cmd.ExecuteReader();
-                while (reader.Read())
+
+                using (var reader = cmd.ExecuteReader(CommandBehavior.SequentialAccess))
                 {
-                    var text = string.Empty;
-                    _ = reader["Parameter_UserText"].ToString();
-                    var parameterName = reader["Parameter_Monitor"].ToString();
-                    var colIndex = int.Parse(reader["ColumnIndex"].ToString());
-                    int.TryParse(reader["Decimals"].ToString(), out var decimals);
-                    int.TryParse(reader["DataType"].ToString(), out var DataType);
-                    var tempid = int.Parse(reader["TempID"].ToString());
-
-
-                    var controlType = reader["ControlType"].ToString();
-                    bool.TryParse(reader["Discarded"].ToString(), out var IsDiscarded);
-
-                    switch (controlType)
+                    while (reader.Read())
                     {
-                        case "TextBox":
-                            switch (DataType)
-                            {
-                                case 0:
-                                    text = double.TryParse(reader["Value"].ToString(), out var value) ? SetDecimals_Value(value, decimals) : "N/A";
-                                    break;
-                                case 1:
-                                    text = reader["TextValue"].ToString();
-                                    break;
-                            }
-                            break;
-                        case "NumericUpDown":
-                            if (double.TryParse(reader["Value"].ToString(), out var numValue))
-                                text = SetDecimals_Value(numValue, decimals);
-                            break;
-                        case "CheckBox":
-                            if (bool.TryParse(reader["BoolValue"].ToString(), out var boolValue))
-                            {
-                                if (boolValue)
-                                    text = "\u2714";
-                            }
-                            else
-                                text = "N/A";
-                            break;
+                        rowsBuffer.Add(new object[]
+                        {
+                    reader["Parameter_UserText"],
+                    reader["Parameter_Monitor"],
+                    reader["Value"],
+                    reader["TextValue"],
+                    reader["BoolValue"],
+                    reader["Date"],
+                    reader["Discarded"],
+                    reader["ErrorCode"],
+                    reader["AnstNr"],
+                    reader["Sign"],
+                    reader["TempID"],
+                    reader["ColumnIndex"],
+                    reader["Decimals"],
+                    reader["DataType"],
+                    reader["ControlType"]
+                        });
                     }
-
-                    var activeRow = dgv_Measurements.Rows.Count - 1;
-                    if (colIndex == 0)
-                    {
-                        dgv_Measurements.Rows.Add();
-                        var date = DateTime.Parse(reader["Date"].ToString());
-                        activeRow = dgv_Measurements.Rows.Count - 1;
-                        var dateTimeFormat = CultureInfo.CurrentCulture.DateTimeFormat;
-                        var formattedDate = date.ToString($"{dateTimeFormat.ShortDatePattern} {dateTimeFormat.ShortTimePattern}", CultureInfo.CurrentCulture);
-
-                        // Remove seconds if they are included in the ShortTimePattern
-                        formattedDate = formattedDate.Replace(":ss", "");
-                        Add_Text_DatagridCell(activeRow, dgv_Measurements.Rows[activeRow].Cells["Date"], formattedDate, IsDiscarded);
-                        Add_Text_DatagridCell(activeRow, dgv_Measurements.Rows[activeRow].Cells["ErrorCode"], reader["ErrorCode"].ToString(), IsDiscarded);
-                        Add_Text_DatagridCell(activeRow, dgv_Measurements.Rows[activeRow].Cells["AnstNr"], reader["AnstNr"].ToString(), IsDiscarded);
-                        Add_Text_DatagridCell(activeRow, dgv_Measurements.Rows[activeRow].Cells["Sign"], reader["Sign"].ToString(), IsDiscarded);
-                        Add_Text_DatagridCell(activeRow, dgv_Measurements.Rows[activeRow].Cells["Discarded"], reader["Discarded"].ToString(), IsDiscarded);
-                        Add_Text_DatagridCell(activeRow, dgv_Measurements.Rows[activeRow].Cells["TempID"], tempid.ToString(), IsDiscarded);
-                    }
-                    Add_Text_DatagridCell(activeRow, dgv_Measurements.Rows[activeRow].Cells[colIndex], text, IsDiscarded, parameterName);
                 }
             }
+
+            // Bearbeta data i minnet
+            var dateTimeFormat = CultureInfo.CurrentCulture.DateTimeFormat;
+            DataGridViewRow currentRow = null;
+            int currentRowIndex = -1;
+
+            foreach (var rowObj in rowsBuffer)
+            {
+                var parameterName = rowObj[1]?.ToString();
+                var controlType = rowObj[14]?.ToString();
+                var colIndex = Convert.ToInt32(rowObj[11]);
+                int.TryParse(rowObj[12]?.ToString(), out var decimals);
+                int.TryParse(rowObj[13]?.ToString(), out var dataType);
+                bool.TryParse(rowObj[6]?.ToString(), out var isDiscarded);
+                var tempId = Convert.ToInt32(rowObj[10]);
+                string text = "";
+
+                switch (controlType)
+                {
+                    case "TextBox":
+                        if (dataType == 0 && double.TryParse(rowObj[2]?.ToString(), out var num))
+                            text = SetDecimals_Value(num, decimals);
+                        else if (dataType == 1)
+                            text = rowObj[3]?.ToString();
+                        else
+                            text = "N/A";
+                        break;
+
+                    case "NumericUpDown":
+                        if (double.TryParse(rowObj[2]?.ToString(), out var numValue))
+                            text = SetDecimals_Value(numValue, decimals);
+                        else
+                            text = "N/A";
+                        break;
+
+                    case "CheckBox":
+                        if (bool.TryParse(rowObj[4]?.ToString(), out var boolValue))
+                            text = boolValue ? "\u2714" : "";
+                        else
+                            text = "N/A";
+                        break;
+                }
+
+                // Starta ny rad om colIndex == 0
+                if (colIndex == 0)
+                {
+                    currentRowIndex = dgv_Measurements.Rows.Add();
+                    currentRow = dgv_Measurements.Rows[currentRowIndex];
+
+                    var date = DateTime.TryParse(rowObj[5]?.ToString(), out var dt) ? dt : DateTime.MinValue;
+                    var formattedDate = date.ToString($"{dateTimeFormat.ShortDatePattern} {dateTimeFormat.ShortTimePattern}", CultureInfo.CurrentCulture);
+                    formattedDate = formattedDate.Replace(":ss", "");
+
+                    Add_Text_DatagridCell(currentRowIndex, currentRow.Cells["Date"], formattedDate, isDiscarded);
+                    Add_Text_DatagridCell(currentRowIndex, currentRow.Cells["ErrorCode"], rowObj[7]?.ToString(), isDiscarded);
+                    Add_Text_DatagridCell(currentRowIndex, currentRow.Cells["AnstNr"], rowObj[8]?.ToString(), isDiscarded);
+                    Add_Text_DatagridCell(currentRowIndex, currentRow.Cells["Sign"], rowObj[9]?.ToString(), isDiscarded);
+                    Add_Text_DatagridCell(currentRowIndex, currentRow.Cells["Discarded"], rowObj[6]?.ToString(), isDiscarded);
+                    Add_Text_DatagridCell(currentRowIndex, currentRow.Cells["TempID"], tempId.ToString(), isDiscarded);
+                }
+
+                if (currentRow != null)
+                    Add_Text_DatagridCell(currentRowIndex, currentRow.Cells[colIndex], text, isDiscarded, parameterName);
+            }
+
             if (dgv_Measurements.Rows.Count > 0)
                 dgv_Measurements.FirstDisplayedScrollingRowIndex = dgv_Measurements.Rows.Count - 1;
+
+            dgv_Measurements.Visible = true;
+            dgv_Measurements.ResumeLayout();
         }
+
         private void Lock_Protocol()
         {
             btn_Discard.Enabled = btn_EditAmount.Enabled = btn_EditBag.Enabled = btn_TransferLengthMeasure.Enabled = btn_TransferMeasurement.Enabled = false;
@@ -360,76 +530,94 @@ namespace DigitalProductionProgram.Measure
             flp_InputControls.Controls.Clear();
         }
 
-        //private void Add_Text_DatagridCell(int row, DataGridViewCell cell, string? text, bool IsDiscarded, string? monitorName = null)
-        //{
-        //    cell.Value = text;
+        private DataGridViewCellStyle styleDiscarded;
+        private DataGridViewCellStyle styleNA;
+        private DataGridViewCellStyle styleOk;
 
-        //    if (string.IsNullOrEmpty(text) || ControlValidator.IsStringNA(text))
-        //    {
-        //        cell.Style.BackColor = Color.White;
-        //        cell.Style.ForeColor = Color.Red;
-        //        cell.Style.Font = new Font("Courier New", 8, FontStyle.Italic);
-        //        cell.Value = "N/A";
-        //    }
-        //    else if (IsDiscarded)
-        //    {
-        //        cell.Style.BackColor = CustomColors.Discarded_Back;
-        //        cell.Style.ForeColor = CustomColors.Discarded_Front;
-        //        cell.Style.Font = new Font(dgv_Measurements.DefaultCellStyle.Font, FontStyle.Strikeout);
-        //        return;
-        //    }
-        //    else
-        //    {
-        //        cell.Style.BackColor = CustomColors.Ok_Back;
-        //        cell.Style.ForeColor = CustomColors.Ok_Front;
-        //    }
-        //    if (string.IsNullOrEmpty(monitorName) == false)
-        //        MeasurementValidator.DataVerification_Value_dgv(dgv_Measurements, text, monitorName, row, cell.ColumnIndex);
+        private void Initialize_Styles()
+        {
+            styleDiscarded = new DataGridViewCellStyle
+            {
+                BackColor = CustomColors.Discarded_Back,
+                ForeColor = CustomColors.Discarded_Front,
+                Font = StrikeoutFont
+            };
 
+            styleNA = new DataGridViewCellStyle
+            {
+                BackColor = Color.White,
+                ForeColor = Color.Red,
+                Font = ItalicFont
+            };
 
-        //}
+            styleOk = new DataGridViewCellStyle
+            {
+                BackColor = CustomColors.Ok_Back,
+                ForeColor = CustomColors.Ok_Front
+            };
+        }
+
+       
 
         private static readonly Font StrikeoutFont = new Font("Segoe UI", 9, FontStyle.Strikeout);
         private static readonly Font ItalicFont = new Font("Courier New", 8, FontStyle.Italic);
 
-        private void Add_Text_DatagridCell(int row, DataGridViewCell cell, string text, bool IsDiscarded, string CodeText = null)
+        private void Add_Text_DatagridCell(int row, DataGridViewCell cell, string text, bool isDiscarded, string codeText = null)
         {
-            
-
-            if (IsDiscarded)
+            if (isDiscarded)
             {
-                cell.Style = new DataGridViewCellStyle
-                {
-                    BackColor = CustomColors.Discarded_Back,
-                    ForeColor = CustomColors.Discarded_Front,
-                    Font = StrikeoutFont
-                };
+                cell.Style = styleDiscarded;
             }
             else if (string.IsNullOrEmpty(text) || ControlValidator.IsStringNA(text))
             {
-                cell.Style = new DataGridViewCellStyle
-                {
-                    BackColor = Color.White,
-                    ForeColor = Color.Red,
-                    Font = ItalicFont,
-                    
-                };
+                cell.Style = styleNA;
                 text = "N/A";
             }
             else
             {
-                cell.Style = new DataGridViewCellStyle
-                {
-                    BackColor = CustomColors.Ok_Back,
-                    ForeColor = CustomColors.Ok_Front,
-                   // Font = dgv_Measurements.DefaultCellStyle.Font
-                };
-                if (string.IsNullOrEmpty(CodeText) == false)
-                    MeasurementValidator.DataVerification_Value_dgv(dgv_Measurements, text, CodeText, row, cell.ColumnIndex);
+                cell.Style = styleOk;
+                if (!string.IsNullOrEmpty(codeText))
+                    MeasurementValidator.DataVerification_Value_dgv(dgv_Measurements, text, codeText, row, cell.ColumnIndex);
             }
-            cell.Value = text;
 
+            cell.Value = text;
         }
+        //private void Add_Text_DatagridCell(int row, DataGridViewCell cell, string text, bool IsDiscarded, string CodeText = null)
+        //{
+        //    if (IsDiscarded)
+        //    {
+        //        cell.Style = new DataGridViewCellStyle
+        //        {
+        //            BackColor = CustomColors.Discarded_Back,
+        //            ForeColor = CustomColors.Discarded_Front,
+        //            Font = StrikeoutFont
+        //        };
+        //    }
+        //    else if (string.IsNullOrEmpty(text) || ControlValidator.IsStringNA(text))
+        //    {
+        //        cell.Style = new DataGridViewCellStyle
+        //        {
+        //            BackColor = Color.White,
+        //            ForeColor = Color.Red,
+        //            Font = ItalicFont,
+
+        //        };
+        //        text = "N/A";
+        //    }
+        //    else
+        //    {
+        //        cell.Style = new DataGridViewCellStyle
+        //        {
+        //            BackColor = CustomColors.Ok_Back,
+        //            ForeColor = CustomColors.Ok_Front,
+        //           // Font = dgv_Measurements.DefaultCellStyle.Font
+        //        };
+        //        if (string.IsNullOrEmpty(CodeText) == false)
+        //            MeasurementValidator.DataVerification_Value_dgv(dgv_Measurements, text, CodeText, row, cell.ColumnIndex);
+        //    }
+        //    cell.Value = text;
+
+        //}
         public static string SetDecimals_Value(double value, int decimals)
         {
             switch (decimals)

@@ -100,6 +100,9 @@
     <Compile Update="MainWindow\ServerStatus.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Update="Measure\Measurement_Protocol.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="Protocols\Protocol\Machine.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -117,9 +120,6 @@
     </Compile>
     <Compile Update="Measure\MeasureInstrument.cs">
       <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Measure\Measurement_Protocol.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Update="Measure\MeasurePoints.cs">
       <SubType>UserControl</SubType>

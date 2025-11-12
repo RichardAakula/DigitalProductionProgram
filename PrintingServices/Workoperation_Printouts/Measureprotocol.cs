@@ -191,7 +191,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
             if (Order.WorkOperation == Manage_WorkOperation.WorkOperations.Extrudering_FEP)
             {
                 e.Graphics?.DrawString("Hack/Upptagare nr:", CustomFonts.A11, CustomFonts.black, x_Text1, y - 66);
-                Print.Text_Operatör(e, Korprotokoll.Load_Data(Order.OrderID, 19, 246), x_Text2, y - 64, 100, false, true); //Hack
+                Print.Text_Operatör(e, Korprotokoll.Load_Data(Order.OrderID), x_Text2, y - 64, 100, false, true); //Hack
             }
 
 

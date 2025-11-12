@@ -41,3 +41,6 @@ node_modules/
 /DPP_Installer/Package.appxmanifest
 /app.config
 /DigitalProductionProgram.csproj
+/DPP_Installer/BundleArtifacts/Install DPP.appinstaller.xml
+/.gitignore
+/DPP_Installer/BundleArtifacts/x86.txt

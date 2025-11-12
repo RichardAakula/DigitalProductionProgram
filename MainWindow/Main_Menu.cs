@@ -1430,10 +1430,31 @@ ORDER BY OrderID DESC ";
 
         }
 
-        private void menu_LoadToolsWithExpand_Click(object sender, EventArgs e)
+        private async void menu_LoadToolsWithExpand_Click(object sender, EventArgs e)
         {
-            List<string> list = Monitor.Monitor.List_All_WithExpand();
+            try
+            {
+                // Inaktivera menyknappen så användaren inte klickar igen under laddning
+
+                // Visa t.ex. en "laddar"-text
+                Cursor = Cursors.WaitCursor;
+
+                // Kör den asynkront
+                var list = await Monitor.Monitor.List_All_WithExpandAsync();
+
+                // Klart!
+                MessageBox.Show($"Klar! Antal verktyg: {list.Count}");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Fel vid hämtning: {ex.Message}");
+            }
+            finally
+            {
+                Cursor = Cursors.Default;
+            }
         }
+
         private void menu_LoadToolsWithOutExpand_Click(object sender, EventArgs e)
         {
             List<string> list = Monitor.Monitor.List_All_Tools_WithOutExpand();

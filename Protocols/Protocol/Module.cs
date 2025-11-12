@@ -756,6 +756,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
             {
                 if (row.Cells["col_CodeText"].Value.ToString() == codeText)
                     return row.Cells["col_NOM"].Value.ToString();
+                //return row.Cells[dgv_Module.CurrentCell.ColumnIndex].Value.ToString();
             }
 
             return null;
@@ -768,9 +769,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
             foreach (DataGridViewRow row in dgv_Module.Rows)
             {
                 if (listCodetexts.Contains(row.Cells["col_CodeText"].Value.ToString()))
-                {
-                    cells.Add(row.Cells["col_NOM"]);
-                }
+                    cells.Add(row.Cells[dgv_Module.CurrentCell.ColumnIndex]);
             }
 
             return cells.ToArray();

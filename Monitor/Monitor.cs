@@ -1324,7 +1324,7 @@ namespace DigitalProductionProgram.Monitor
             foreach (var partCode in partCodes)
             {
                 var parts = Task.Run(() =>
-                    Utilities.GetFromMonitor<Inventory.Parts>($"filter=PartCodeId Eq'{partCode.Id}'")).Result;
+                    Utilities.GetFromMonitor<Inventory.Parts>($"filter=PartCodeId Eq'{partCode.Id}' AND ExtraDescription eq'Kanyler FEP'")).Result;
 
                 foreach (var part in parts)
                 {
@@ -1342,40 +1342,67 @@ namespace DigitalProductionProgram.Monitor
             return list;
         }
 
-        public static List<string> List_All_WithExpand()
+        public static async Task<List<string>> List_All_WithExpandAsync()
         {
             var list = new List<string>();
             var sw = new Stopwatch();
             sw.Start();
             Utilities.CounterMonitorRequests = 0;
-            // Hämta partCodes i bakgrundstråd
-            var partCodes = Task.Run(() =>
-                Utilities.GetFromMonitor<Inventory.PartCodes>($"filter=Code Eq'KANYLER'")).Result;
 
-            foreach (var partCode in partCodes)
+            // Hämta partCodes asynkront
+            var partCodes = await Utilities.GetFromMonitor<Inventory.PartCodes>(
+                "filter=Code Eq'KANYLER'"
+            );
+
+            if (partCodes == null || partCodes.Count == 0)
             {
-                var parts = Task.Run(() => Utilities.GetFromMonitor<Inventory.Parts>($"filter=PartCodeId eq'{partCode.Id}'", $"select=Id,PartNumber,ExtraDescription", "expand=ExtraFields")).Result;
-                if (parts is null)
-                    continue;
-                foreach (var part in parts)
+                MessageBox.Show("Inga PartCodes hittades.");
+                return list;
+            }
+
+            // Hämta alla parts parallellt — men max 5 i taget för att inte belasta servern för hårt
+            var throttler = new SemaphoreSlim(5);
+            var partTasks = partCodes.Select(async partCode =>
+            {
+                await throttler.WaitAsync();
+                try
                 {
-                    foreach (var field in part.ExtraFields)
+                    var parts = await Utilities.GetFromMonitor<Inventory.Parts>(
+                        $"filter=PartCodeId eq'{partCode.Id}' AND ExtraDescription eq'Kanyler FEP'",
+                        "select=Id,PartNumber,ExtraDescription",
+                        "expand=ExtraFields"
+                    );
+
+                    if (parts == null) return;
+
+                    lock (list) // trådsäkert tillägg till listan
                     {
-                        if (field.Identifier == "P119")
+                        foreach (var part in parts)
                         {
-                            if (field != null)
-                                list.Add(field.StringValue);
+                            if (part.ExtraFields == null) continue;
+
+                            foreach (var field in part.ExtraFields)
+                            {
+                                if (field?.Identifier == "P119" && !string.IsNullOrEmpty(field.StringValue))
+                                    list.Add(field.StringValue);
+                            }
                         }
                     }
                 }
+                finally
+                {
+                    throttler.Release();
+                }
+            });
 
-            }
+            await Task.WhenAll(partTasks);
 
             sw.Stop();
-            MessageBox.Show($"Expand: Antal verktyg: {list.Count}\nTid för hämtning: {sw.ElapsedMilliseconds} ms. MonitorRequests = {Utilities.CounterMonitorRequests}");
+            MessageBox.Show($"Expand: Antal verktyg: {list.Count}\nTid för hämtning: {sw.ElapsedMilliseconds} ms\nMonitorRequests = {Utilities.CounterMonitorRequests}");
 
             return list;
         }
+
 
         //public static void Fill_ComboBox_List_ExtraFields(ComboBox cb)
         //{

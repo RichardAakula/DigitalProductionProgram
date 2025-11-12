@@ -59,7 +59,7 @@ namespace DigitalProductionProgram.Monitor.GET
 
             public long Id { get; set; }
             public string? SerialNumber { get; set; }    //LotNr
-            public string? ChargeNumber { get; set; } //BatchNr
+            public string? ChargeNumber { get; set; }   //BatchNr
             public string? BestBeforeDate { get; set; }
         }
 

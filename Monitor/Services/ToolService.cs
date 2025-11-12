@@ -223,6 +223,8 @@ namespace DigitalProductionProgram.Monitor.Services
         {
             Stopwatch sw = new Stopwatch();
             sw.Start();
+            Login_Monitor.TotalLoginAttemps = 0;
+            Utilities.CounterMonitorRequests = 0;
             // Hämta PartCodeId asynkront
             var partCodeObj = await Utilities.GetOneFromMonitor<Inventory.PartCodes>($"filter=Code Eq'{partCode}'");
             var partCodeId = partCodeObj?.Id ?? 0;
@@ -243,7 +245,9 @@ namespace DigitalProductionProgram.Monitor.Services
                         items.Add(value);
                 }
                 sw.Stop();
-                MessageBox.Show(@$"Tid = {sw.ElapsedMilliseconds} - Antal MonitorFrågor = {Utilities.CounterMonitorRequests}.");
+                MessageBox.Show($"Tid = {sw.ElapsedMilliseconds} \n" +
+                                $"Antal MonitorFrågor = {Utilities.CounterMonitorRequests}. \n" +
+                                $"Antal inloggning Monitor = {Login_Monitor.TotalLoginAttemps}");
                 return;
             }
 
@@ -298,7 +302,9 @@ namespace DigitalProductionProgram.Monitor.Services
 
 
             sw.Stop();
-            MessageBox.Show(@$"Tid = {sw.ElapsedMilliseconds} - Antal MonitorFrågor = {Utilities.CounterMonitorRequests}.");
+            MessageBox.Show($"Tid = {sw.ElapsedMilliseconds} \n" +
+                            $"Antal MonitorFrågor = {Utilities.CounterMonitorRequests}. \n" +
+                            $"Antal inloggning Monitor = {Login_Monitor.TotalLoginAttemps}");
         }
 
 

@@ -29,7 +29,8 @@ namespace DigitalProductionProgram.Monitor
             if (Database.MonitorHost == "stage-optig5.optinova.fi")
                 InfoText.Show(LanguageManager.GetString("warning_MonitorTestserver"), CustomColors.InfoText_Color.Bad, null);
         }
-        [DebuggerStepThrough]
+       
+
         //public static void Login_API(string? company = null)
         //{
         //   try
@@ -93,6 +94,9 @@ namespace DigitalProductionProgram.Monitor
         //        InfoText.Show(exc.Message, CustomColors.InfoText_Color.Bad, "Problem with Monitor.");
         //   }
         //}
+
+        public static int TotalLoginAttemps;
+        [DebuggerStepThrough]
         public static async Task Login_API(string? company = null)
         {
             try
@@ -100,7 +104,7 @@ namespace DigitalProductionProgram.Monitor
                 Log.Activity.Start();
                 var sw = Stopwatch.StartNew();
                 company ??= Database.MonitorCompany;
-
+                TotalLoginAttemps++;
                 BaseAddress = $"https://{Database.MonitorHost}:8001/{LanguageCode}/{company}/";
 
                 var handler = new HttpClientHandler

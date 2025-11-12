@@ -9,6 +9,7 @@ using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.User;
 using Newtonsoft.Json;
 using Activity = DigitalProductionProgram.Log.Activity;
+//using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace DigitalProductionProgram.Monitor
 {
@@ -131,6 +132,7 @@ namespace DigitalProductionProgram.Monitor
             if (response is null) return null;
 
             var asString = await response.Content.ReadAsStringAsync();
+            //return JsonSerializer.Deserialize<List<T>>(asString);
             return JsonConvert.DeserializeObject<List<T>>(asString);
         }
 
@@ -185,11 +187,13 @@ namespace DigitalProductionProgram.Monitor
                 if (isIdSelect)
                 {
                     // Om det är en /ID-select (typ /1234), returnera direkt som objekt
+                    //return JsonSerializer.Deserialize<T>(asString);
                     return JsonConvert.DeserializeObject<T>(asString);
                 }
                 else
                 {
                     // Annars är det en lista – ta första elementet
+                    //var list = JsonSerializer.Deserialize<List<T>>(asString);
                     var list = JsonConvert.DeserializeObject<List<T>>(asString);
                     return list?.FirstOrDefault();
                 }

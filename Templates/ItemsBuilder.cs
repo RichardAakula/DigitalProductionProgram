@@ -252,8 +252,8 @@ namespace DigitalProductionProgram.Templates
                 cb_Name = cbName;
                 cb_SecondaryName = cbSecondaryName;
                 cb_Properties = cbProperties;
-                cb_FilterCodeText = cb_FilterCodeText;
-                cb_SecondaryCodeText = cb_SecondaryCodeText;
+                cb_FilterCodeText = cbFilterCodeText;
+                cb_SecondaryCodeText = cbSecondaryCodeText;
                 TemplateID = templateID;
             }
 
@@ -312,7 +312,7 @@ namespace DigitalProductionProgram.Templates
             var cells_CodeText = new List<string>();
             await using var con = new SqlConnection(Database.cs_Protocol);
             const string query = @"
-                SELECT PartCode, EndPoint, Property, fields.Name, SecondaryName, FilterCodeText, SecondaryCodeText
+                SELECT items.Name as ItemName, PartCode, EndPoint, Property, fields.Name, SecondaryName, FilterCodeText, SecondaryCodeText
                 FROM List.ItemFields as fields
                     LEFT JOIN List.Items as items 
                         ON fields.ItemId = items.Id
@@ -333,7 +333,7 @@ namespace DigitalProductionProgram.Templates
 
             while (reader.Read())
             {
-                var item = reader["Name"]?.ToString();
+                var item = reader["ItemName"]?.ToString();
                 if (item != null)
                     items.Add(item);
 
@@ -482,6 +482,8 @@ namespace DigitalProductionProgram.Templates
 
         private void Save_MonitorList(int templateID)
         {
+           
+
             if (dgv_Items.Rows.Count > 0)
                 return;
 
@@ -705,6 +707,12 @@ namespace DigitalProductionProgram.Templates
         }
         private void Close_Click(object sender, EventArgs e)
         {
+            if (string.IsNullOrEmpty(cb_PartCode.SelectedValue?.ToString()))
+            {
+                InfoText.Show("Du måste fylla i Typ av Verktyg för du sparar.", CustomColors.InfoText_Color.Bad, "Warning!", this);
+                cb_PartCode.Focus();
+                return;
+            }
             Save_MonitorList(TemplateID);
             CheckForTemplatesToUpdate();
 

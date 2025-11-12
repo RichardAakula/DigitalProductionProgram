@@ -24,7 +24,7 @@ namespace DigitalProductionProgram.Measure
     {
         public Wall wall;
 
-        private Bitmap Img_1_Layer
+        private Bitmap? Img_1_Layer
         {
             get
             {
@@ -40,7 +40,6 @@ namespace DigitalProductionProgram.Measure
                 if (wall.IsNeutral)
                     picture = "Neutral";
 
-
                 var basePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "Cross_Section_Tube", "1_Layer");
                 string imagePath;
                 if (runout.Contains('0') || runout == "1-1-1-1")
@@ -53,7 +52,10 @@ namespace DigitalProductionProgram.Measure
 
                 try
                 {
-                    // Open a FileStream and load the Bitmap from it, ensuring it's closed properly
+                    // Check if file exists before opening
+                    if (!File.Exists(imagePath))
+                        return null;
+
                     using var stream = new FileStream(imagePath, FileMode.Open, FileAccess.Read, FileShare.Read);
                     return new Bitmap(stream);
                 }
@@ -434,7 +436,7 @@ namespace DigitalProductionProgram.Measure
         {
             dgv.Rows.Add();
             //dgv.Rows[dgv.Rows.Count - 1].HeaderCell.Value = text;
-            dgv.Rows[dgv.Rows.Count - 1].Cells[0].Value = text;
+            dgv.Rows[^1].Cells[0].Value = text;
 
         }
         private void Add_GUI_HelpInput_Controls(Measurement_Protocol mp, bool isUsingSecondHelpInput)
@@ -514,7 +516,14 @@ namespace DigitalProductionProgram.Measure
 
             try
             {
-                SafeInvoke(mp.pb_CrossSectionTube, () => mp.pb_CrossSectionTube.BackgroundImage = bmp);
+                SafeInvoke(mp.pb_CrossSectionTube, () => {
+                    if (mp.pb_CrossSectionTube.BackgroundImage != null)
+                    {
+                        mp.pb_CrossSectionTube.BackgroundImage.Dispose();
+                        mp.pb_CrossSectionTube.BackgroundImage = null;
+                    }
+                    mp.pb_CrossSectionTube.BackgroundImage = bmp;
+                });
             }
             catch (Exception ex)
             {

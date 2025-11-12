@@ -180,7 +180,6 @@ namespace DigitalProductionProgram.MainWindow
 
             Mail.AutoTestJira();
             CheckForMaintenanceWork();
-            Initialize_Timers();
         }
         private async void MainForm_Load(object sender, EventArgs e)
         {
@@ -209,7 +208,6 @@ namespace DigitalProductionProgram.MainWindow
             startTime = DateTime.Now;
             Initialize_Timers();
             Change_GUI_StandardColor();
-
         }
 
         protected override void SetVisibleCore(bool value)
@@ -231,9 +229,13 @@ namespace DigitalProductionProgram.MainWindow
             Timer_UpdateSQL_Counter.Start();
             Timer_UpdateSQL_Counter.Interval = 1000; // 1 sekund
             Timer_UpdateSQL_Counter.Tick += (s, e) => Serverstatus.Set_Sql_Counter();
+           
 
-            //if (Database.IsGodby____ + Database.IsGodbyBeta + Database.IsGodbyThai + Database.IsThai_____ > 1)
             Serverstatus.lbl_SQL_Queries.Visible = true;
+            Serverstatus.lbl_Memory.Visible = true;
+            Serverstatus.label_Queries.Visible = true;
+            Serverstatus.label_Memory.Visible = true;
+
             Person.Name = "Richard Aakula";
             Person.Sign = "RA";
             Person.UserID = 24;
@@ -296,7 +298,10 @@ namespace DigitalProductionProgram.MainWindow
         private void Initialize_Timers()
         {
             timer_Master = new Timer();
-            timer_Master.Interval = 60000; // 1 minut
+            if (Environment.MachineName == adminHostName && IsAutoLoginSuperAdmin)
+                timer_Master.Interval = 1000; // sekunder
+            else
+                timer_Master.Interval = 60000; // 1 minut
             timer_Master.Tick += MasterTimer_Tick;
             timer_Master.Start();
         }
@@ -1037,6 +1042,8 @@ namespace DigitalProductionProgram.MainWindow
 
             Serverstatus.Set_Sql_Counter(); // Uppdatera serverstatus varje sekund
 
+            Activity.LoadMemory();
+            Serverstatus.Set_DPP_Memory_Usage(Activity.CurrentMemory.ToString());
             // 60 minuter: Kontrollera planerat stopp
             if (counter_PlaneratStopp >= timer_counterPlaneratStopp)
             {

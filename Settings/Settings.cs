@@ -419,17 +419,15 @@ namespace DigitalProductionProgram.Settings
 
             private void Load_MeasureInstruments()
             {
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    con.Open();
-                    const string query = @"
+                using var con = new SqlConnection(Database.cs_Protocol);
+                con.Open();
+                const string query = @"
                     SELECT MätdonsNr
                     FROM MeasureInstruments.Templates";
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    var reader = cmd.ExecuteReader();
-                    while (reader.Read())
-                        Add_Control_flp(reader.GetString(0), settings.flp_Measureinstruments);
-                }
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                var reader = cmd.ExecuteReader();
+                while (reader.Read())
+                    Add_Control_flp(reader.GetString(0), settings.flp_Measureinstruments);
             }
             private void Load_UsedMeasureInstruments()
             {

@@ -356,12 +356,15 @@ namespace DigitalProductionProgram.Measure
 
             this.Invoke(() => Controls.Add(cartesianChart));
         }
-        public async Task Add_Data_Chart_MainForm(string? codename, string? codetext)
+
+        public static string ActiveCodeName;
+        public static string ActiveCodeText;
+        public async Task Add_Data_Chart_MainForm()
         {
             this.Invoke(() => Visible = true);
             await RemoveChart();
 
-            this.Invoke(() => Initialize_Chart_MainForm(codename, codetext));
+            this.Invoke(() => Initialize_Chart_MainForm(ActiveCodeName, ActiveCodeText));
 
 
             await using var con = new SqlConnection(Database.cs_Protocol);
@@ -382,7 +385,7 @@ namespace DigitalProductionProgram.Measure
             {
                 ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
-                cmd.Parameters.AddWithValue("@codename", codename);
+                cmd.Parameters.AddWithValue("@codename", ActiveCodeName);
 
                 await con.OpenAsync();
 
@@ -432,6 +435,14 @@ namespace DigitalProductionProgram.Measure
 
         public Task RemoveChart()
         {
+            if (cartesianChart != null)
+            {
+                this.Invoke(() => {
+                    Controls.Remove(cartesianChart);
+                    cartesianChart.Dispose();
+                });
+                cartesianChart = null;
+            }
             this.Invoke(() => this.Controls.Clear());
             return Task.CompletedTask;
         }

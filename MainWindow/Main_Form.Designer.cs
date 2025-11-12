@@ -36,9 +36,9 @@ namespace DigitalProductionProgram.MainWindow
         {
             components = new Container();
             ComponentResourceManager resources = new ComponentResourceManager(typeof(Main_Form));
-            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle5 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle6 = new DataGridViewCellStyle();
             toolTip1 = new ToolTip(components);
             lbl_Rating = new Label();
             pb_Info_UserPoints = new PictureBox();
@@ -288,7 +288,7 @@ namespace DigitalProductionProgram.MainWindow
             tlp_Top.ColumnCount = 3;
             tlp_Top.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 665F));
             tlp_Top.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
-            tlp_Top.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 105F));
+            tlp_Top.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 169F));
             tlp_Top.Controls.Add(MainMenu, 0, 0);
             tlp_Top.Controls.Add(Serverstatus, 2, 0);
             tlp_Top.Controls.Add(RollingInformation, 1, 0);
@@ -314,10 +314,11 @@ namespace DigitalProductionProgram.MainWindow
             // 
             // Serverstatus
             // 
-            Serverstatus.Location = new Point(1824, 3);
+            Serverstatus.Dock = DockStyle.Fill;
+            Serverstatus.Location = new Point(1760, 3);
             Serverstatus.Margin = new Padding(5, 3, 5, 3);
             Serverstatus.Name = "Serverstatus";
-            Serverstatus.Size = new Size(95, 37);
+            Serverstatus.Size = new Size(159, 37);
             Serverstatus.TabIndex = 895;
             // 
             // RollingInformation
@@ -327,7 +328,7 @@ namespace DigitalProductionProgram.MainWindow
             RollingInformation.Location = new Point(669, 3);
             RollingInformation.Margin = new Padding(4, 3, 4, 3);
             RollingInformation.Name = "RollingInformation";
-            RollingInformation.Size = new Size(1146, 37);
+            RollingInformation.Size = new Size(1082, 37);
             RollingInformation.TabIndex = 896;
             // 
             // tlp_Left
@@ -610,37 +611,37 @@ namespace DigitalProductionProgram.MainWindow
             dgv_QuickOpen.AllowUserToResizeRows = false;
             dgv_QuickOpen.BackgroundColor = Color.FromArgb(60, 60, 60);
             dgv_QuickOpen.BorderStyle = BorderStyle.None;
-            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = SystemColors.Control;
-            dataGridViewCellStyle1.Font = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle1.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
-            dgv_QuickOpen.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle4.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = SystemColors.Control;
+            dataGridViewCellStyle4.Font = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle4.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle4.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle4.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = DataGridViewTriState.True;
+            dgv_QuickOpen.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle4;
             dgv_QuickOpen.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgv_QuickOpen.ColumnHeadersVisible = false;
             tlp_QuickOpen.SetColumnSpan(dgv_QuickOpen, 2);
-            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = SystemColors.Window;
-            dataGridViewCellStyle2.Font = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle2.ForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle2.SelectionBackColor = SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.False;
-            dgv_QuickOpen.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle5.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle5.BackColor = SystemColors.Window;
+            dataGridViewCellStyle5.Font = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle5.ForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle5.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle5.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle5.WrapMode = DataGridViewTriState.False;
+            dgv_QuickOpen.DefaultCellStyle = dataGridViewCellStyle5;
             dgv_QuickOpen.Dock = DockStyle.Fill;
             dgv_QuickOpen.Location = new Point(0, 75);
             dgv_QuickOpen.Margin = new Padding(0, 3, 0, 0);
             dgv_QuickOpen.Name = "dgv_QuickOpen";
-            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = SystemColors.Control;
-            dataGridViewCellStyle3.Font = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle3.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle3.SelectionBackColor = SystemColors.Highlight;
-            dataGridViewCellStyle3.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle3.WrapMode = DataGridViewTriState.True;
-            dgv_QuickOpen.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle6.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle6.BackColor = SystemColors.Control;
+            dataGridViewCellStyle6.Font = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle6.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle6.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle6.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle6.WrapMode = DataGridViewTriState.True;
+            dgv_QuickOpen.RowHeadersDefaultCellStyle = dataGridViewCellStyle6;
             dgv_QuickOpen.RowHeadersVisible = false;
             dgv_QuickOpen.RowHeadersWidth = 51;
             dgv_QuickOpen.ScrollBars = ScrollBars.None;

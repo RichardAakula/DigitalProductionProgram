@@ -40,8 +40,8 @@ internal class Activity
     public static void LoadMemory()
     {
         var proc = Process.GetCurrentProcess();
-        CurrentMemory = proc.WorkingSet64;
-        PeakMemory = proc.PeakWorkingSet64;
+        CurrentMemory = proc.WorkingSet64 / (1024 * 1024);
+        PeakMemory = proc.PeakWorkingSet64 / (1024 * 1024);
     }
         
     public static void Start()

@@ -457,12 +457,11 @@ namespace DigitalProductionProgram.Browse_Protocols
 
             if (Prefab.IsDisposed == false)
             {
-                if (Prefab.dgv.Columns.Count > 0)
-                {
-                    Prefab.Load_Data(null, false);
-                    Prefab.dgv.Columns[3].DefaultCellStyle.ForeColor = SystemColors.Highlight;
-                    Prefab.dgv.Columns[1].DefaultCellStyle.ForeColor = SystemColors.Highlight;
-                }
+                Prefab.Load_Data(null, false);
+                //Nedanstående kod används inte i nuläget, men kan aktiveras om man behöver filtrerar på halvfabriakt i orderlistan.
+
+                //Prefab.dgv.Columns[3].DefaultCellStyle.ForeColor = SystemColors.Highlight;
+                //Prefab.dgv.Columns[1].DefaultCellStyle.ForeColor = SystemColors.Highlight;
             }
 
             mainInfo_A.Load_Data(Order.OrderID);

@@ -250,6 +250,14 @@ ORDER BY v.Major DESC, v.Minor DESC, v.Patch DESC, v.Build DESC;";
 
         public async Task CreateChartAsync(string legendText, string query)
         {
+            foreach (Control ctrl in this.Controls)
+            {
+                if (ctrl is CartesianChart chart)
+                {
+                    chart.MouseDown -= chart_Statistics_MouseDown;
+                    chart.Dispose(); // Frigör resurser
+                }
+            }
             this.Controls.Clear(); // Clear existing controls in the panel
             var data = await LoadChartDataAsync(query);
             if (data == null || !data.Any())
@@ -308,6 +316,7 @@ ORDER BY v.Major DESC, v.Minor DESC, v.Patch DESC, v.Build DESC;";
         }
     }
 }
+
 
 
 

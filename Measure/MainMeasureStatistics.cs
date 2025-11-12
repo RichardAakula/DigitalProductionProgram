@@ -67,7 +67,6 @@ namespace DigitalProductionProgram.Measure
 
 
         //public static int Max_Bag => (int)GetMeasurementValue("MAX", "Bag");
-        public static string? active_MeasureCode;
         public static int MeasureStatsHeight;
         public static string? ChartCodename = string.Empty;
         public static string? ChartCodeText = string.Empty;
@@ -200,7 +199,13 @@ namespace DigitalProductionProgram.Measure
 
             if (!string.IsNullOrEmpty(ChartCodename))
             {
-                await Task.Run(() => measurementChart.Add_Data_Chart_MainForm(ChartCodename, ChartCodeText));
+                if (string.IsNullOrEmpty(MeasurementChart.ActiveCodeName))
+                {
+                    MeasurementChart.ActiveCodeName = ChartCodename;
+                    MeasurementChart.ActiveCodeText = ChartCodeText;
+                }
+                    
+                await Task.Run(() => measurementChart.Add_Data_Chart_MainForm());
             }
             else
             {
@@ -260,13 +265,14 @@ namespace DigitalProductionProgram.Measure
         public static async void Mätdata_Row_Click(object sender, EventArgs e)
         {
             var label = (Label)sender;
-            var mått = label.Name;
-            if (string.IsNullOrEmpty(mått))
+            var codeName = label.Name;
+            if (string.IsNullOrEmpty(codeName))
                 Load_MätStatistik();
             
-            active_MeasureCode = mått;
+            MeasurementChart.ActiveCodeName = codeName;
+            MeasurementChart.ActiveCodeText = label.Text;
 
-            await measurementChart?.Add_Data_Chart_MainForm(mått, label.Text);
+            await measurementChart?.Add_Data_Chart_MainForm();
         }
 
         private void ShowStats_Click(object sender, EventArgs e)

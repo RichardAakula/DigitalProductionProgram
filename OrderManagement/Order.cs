@@ -1012,8 +1012,8 @@ namespace DigitalProductionProgram.OrderManagement
             }
             public static bool Is_OkFinishOrder(Main_Form main)
             {
-                    if (IsOrderDone_Before)
-                        return true;
+                if (IsOrderDone_Before)
+                    return true;
                   
                 switch (WorkOperation)
                 {
@@ -1032,10 +1032,7 @@ namespace DigitalProductionProgram.OrderManagement
                         case WorkOperations.Extrudering_Tryck:
                         case WorkOperations.Extrusion_HS:
                             return Is_Protocol_Done(formTemplateIDs, main) && Is_MeasureEquipmentFilledIn(main) && Is_CompoundForm_Done(main) && Is_RoomClimate_Done(main) && Is_Halvfabrikat_Done(main) && IsCommentsDone(main);
-                            
-                        default:
-                            return Is_Protocol_Done(formTemplateIDs, main) && Is_MeasureEquipmentFilledIn(main) && IsCommentsDone(main);
-
+                        
                         case WorkOperations.Kragning_TEF:
                             return Is_Halvfabrikat_Done(main) && Is_Protocol_Done(formTemplateIDs, main);
 
@@ -1047,7 +1044,11 @@ namespace DigitalProductionProgram.OrderManagement
                             return true;
                         case WorkOperations.Slipning:
                             return Is_Slipning_Done(main) && IsCommentsDone(main);
-                    }
+
+
+                    default:
+                        return Is_Protocol_Done(formTemplateIDs, main) && Is_MeasureEquipmentFilledIn(main) && IsCommentsDone(main);
+                }
                     return false;
             }
             private static bool Is_Protocol_Done(IEnumerable<int> array_formtemplateid, Main_Form main)

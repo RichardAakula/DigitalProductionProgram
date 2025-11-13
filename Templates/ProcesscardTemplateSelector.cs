@@ -222,9 +222,9 @@ namespace DigitalProductionProgram.Templates
         MAX(CASE WHEN QA_sign IS NOT NULL THEN RevNr END) 
             OVER (PARTITION BY PartGroupID) AS LatestApprovedRev
     FROM Processcard.MainData 
-    WHERE PartNr = '329209'
+    WHERE PartNr = @partnr
       AND WorkoperationID = (
-          SELECT ID FROM Workoperation.Names WHERE Name = 'Extrudering_Termo'
+          SELECT ID FROM Workoperation.Names WHERE Name = @workoperation
       )
 ),
 CheckAllNulls AS 

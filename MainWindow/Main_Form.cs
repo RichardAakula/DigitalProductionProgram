@@ -299,7 +299,7 @@ namespace DigitalProductionProgram.MainWindow
         {
             timer_Master = new Timer();
             if (Environment.MachineName == adminHostName && IsAutoLoginSuperAdmin)
-                timer_Master.Interval = 1000; // sekunder
+                timer_Master.Interval = 10000; // 10 sekunder
             else
                 timer_Master.Interval = 60000; // 1 minut
             timer_Master.Tick += MasterTimer_Tick;

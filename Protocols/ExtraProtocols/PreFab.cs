@@ -224,8 +224,8 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
             }
         }
 
-        private int ExtruderColumn;
-        private int BatchNrColumn;
+        //private int ExtruderColumn;
+        //private int BatchNrColumn;
 
 
         public PreFab()
@@ -305,21 +305,21 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
             if (orderID == null)
                 orderID = Order.OrderID;
 
-            ExtruderColumn = 100;
+            //ExtruderColumn = 100;
             switch (Order.WorkOperation)
             {
                 case Manage_WorkOperation.WorkOperations.Extrudering_Termo:
                 case Manage_WorkOperation.WorkOperations.Extrudering_Tryck:
                 case Manage_WorkOperation.WorkOperations.Extrusion_HS:
                     dgv.DataSource = DataTable_PreFab(orderID, IsOkLoadBalance);
-                    ExtruderColumn = 2;
-                    BatchNrColumn = 3;
+              //      ExtruderColumn = 2;
+                //    BatchNrColumn = 3;
                     break;
                 case Manage_WorkOperation.WorkOperations.Synergy_PTFE_K18:
                     dgv.DataSource = DataTable_PreFab(orderID, IsOkLoadBalance);
                     dgv.Columns[LanguageManager.GetString("label_Description")].Visible = false;
                     dgv.Columns["Extruder:"].Visible = false;
-                    BatchNrColumn = 3;
+                  //  BatchNrColumn = 3;
                     break;
                 case Manage_WorkOperation.WorkOperations.Extrudering_PTFE:
                 case Manage_WorkOperation.WorkOperations.Extrudering_Grov_PTFE:
@@ -327,12 +327,12 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
                 case Manage_WorkOperation.WorkOperations.Extrudering_FEP:
                     dgv.DataSource = DataTable_PreFab(orderID, IsOkLoadBalance);
                     dgv.Columns["Extruder:"].Visible = false;
-                    BatchNrColumn = 3;
+                 //   BatchNrColumn = 3;
                     break;
                 case Manage_WorkOperation.WorkOperations.Krympslangsblåsning:
                 case Manage_WorkOperation.WorkOperations.HeatShrink:
                     dgv.DataSource = DataTable_PreFab(orderID);
-                    BatchNrColumn = 1;
+                 //   BatchNrColumn = 1;
                     break;
                 case Manage_WorkOperation.WorkOperations.Svetsning:
                     dgv.DataSource = DataTable_PreFab(orderID);

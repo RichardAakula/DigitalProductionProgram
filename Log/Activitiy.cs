@@ -49,7 +49,7 @@ internal class Activity
         StartTime = DateTime.Now;
     }
 
-    //[DebuggerStepThrough]
+    [DebuggerStepThrough]
     public static async Task Stop(string info, double tid = 0, [CallerMemberName] string? methodname = null)
     {
         try
@@ -68,7 +68,7 @@ internal class Activity
                 {
                     _ = cpuCounterDpp.NextValue();
                     _ = cpuCounterTotal.NextValue();
-                    await Task.Delay(250);//.ConfigureAwait(false);
+                    await Task.Delay(250).ConfigureAwait(false);
                     dppCpu = cpuCounterDpp.NextValue() / Environment.ProcessorCount;
                     totalCpu = cpuCounterTotal.NextValue();
                 }

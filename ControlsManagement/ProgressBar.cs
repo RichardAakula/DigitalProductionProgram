@@ -7,7 +7,7 @@ namespace DigitalProductionProgram.ControlsManagement
 {
     public partial class CustomProgressBar : Form
     {
-        [DebuggerStepThrough]
+        //[DebuggerStepThrough]
         public CustomProgressBar(int Total_Bars = 1)
         {
             InitializeComponent();
@@ -23,6 +23,8 @@ namespace DigitalProductionProgram.ControlsManagement
                 case 1:
                     pBar_Extra.Visible = false;
                     lbl_Percent_Extra.Visible = false;
+                    pBar_Main.Visible = true;
+                    lbl_Percent_Main.Visible = true;
                     Height = 60;
                     break;
 

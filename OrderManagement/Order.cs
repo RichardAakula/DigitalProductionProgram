@@ -1428,6 +1428,7 @@ namespace DigitalProductionProgram.OrderManagement
                     Mail.NotifyOrderFinishedCount_3();
 
                 _ = Main_FilterQuickOpen.Load_ListAsync(main.dgv_QuickOpen);
+               
             }
         }
 

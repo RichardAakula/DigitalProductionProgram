@@ -1,4 +1,5 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using System.Diagnostics;
+using Microsoft.Data.SqlClient;
 using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.MainWindow;
@@ -33,6 +34,8 @@ namespace DigitalProductionProgram.Statistics
 
             pbar = new CustomProgressBar();
             pbar.Show();
+            pbar.Set_ValueProgressBar(0, "Loading Data...");
+            this.Refresh();
             panel_Main.HorizontalScroll.Visible = false;
             screenWidth = Screen.FromControl(this).Bounds.Size.Width;
             Order.Save_TempOrderInfo();
@@ -42,7 +45,7 @@ namespace DigitalProductionProgram.Statistics
             PrintInfo();
             timer_UpdateInfo.Start();
             CustomProgressBar.close();
-
+            pbar.Close();
             Order.Restore_TempOrderInfo();
         }
 
@@ -55,78 +58,244 @@ namespace DigitalProductionProgram.Statistics
         {
             using (var con = new SqlConnection(Database.cs_Protocol))
             {
-                var query = @"
-                        SELECT * 
-                        FROM (SELECT ProdLine, PartNr, Customer, OrderNr, 
-                                Operation, Description, Amount,  
-                                Unit, Date_Start, IsOrderDone, 
-                                ROW_NUMBER() OVER(PARTITION BY ProdLine ORDER BY Date_Start DESC) rowNumber
-                              FROM [Order].MainData
-                              WHERE ProdLine > '' AND (IsDeleted = 'False' OR IsDeleted IS NULL)) a
-                        WHERE rowNumber = 1
+                // 🔹 1. Hämta antal rader
+                const string countQuery = @"
+                    SELECT COUNT(*) FROM 
+                        (
+                            SELECT ProdLine
+                            FROM 
+                                (
+                                    SELECT ProdLine, ROW_NUMBER() OVER(PARTITION BY ProdLine ORDER BY Date_Start DESC) rowNumber
+                                    FROM [Order].MainData
+                                    WHERE ProdLine > '' AND (IsDeleted = 'False' OR IsDeleted IS NULL) AND IsOrderDone = 'False'
+                                ) a
+                            WHERE rowNumber = 1
+                        ) AS b";
+
+                var totalCount = 0;
+                using (var countCmd = new SqlCommand(countQuery, con))
+                {
+                    ServerStatus.Add_Sql_Counter();
+                    con.Open();
+                    totalCount = (int)countCmd.ExecuteScalar();
+                    con.Close();
+                }
+
+                // 🔹 2. Hämta faktiska rader
+                const string query = @"
+                    SELECT * 
+                        FROM 
+                            (
+                                SELECT ProdLine, PartNr, Customer, OrderNr, Operation, Description, Amount, Unit, Date_Start, IsOrderDone, ROW_NUMBER() 
+                                OVER
+                                    (
+                                        PARTITION BY ProdLine 
+                                        ORDER BY Date_Start DESC
+                                    ) rowNumber
+                                FROM [Order].MainData
+                        WHERE ProdLine > '' AND (IsDeleted = 'False' OR IsDeleted IS NULL) AND IsOrderDone = 'False'
+                            ) a
+                    WHERE rowNumber = 1
                     ORDER BY IsOrderDone, Date_Start";
 
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                con.Open();
-                var reader = cmd.ExecuteReader();
-
-                while (reader.Read())
+                using (var cmd = new SqlCommand(query, con))
                 {
-                    pbar.Set_ValueProgressBar(ctr_pBar, LanguageManager.GetString("loadingProductionlines_1"));
-                    bool.TryParse(reader["IsOrderDone"].ToString(), out var isOrderDone);
-                    productionLines.Add(new ProductionLines
+                    ServerStatus.Add_Sql_Counter();
+                    con.Open();
+                    using (var reader = cmd.ExecuteReader())
                     {
-                        ProdLine = reader["ProdLine"].ToString(),
-                        PartNr = reader["PartNr"].ToString(),
-                        Customer = reader["Customer"].ToString(),
-                        OrderNr = reader["OrderNr"].ToString(),
-                        Operation = reader["Operation"].ToString(),
-                        Description = reader["Description"].ToString(),
-                        Amount = reader["Amount"].ToString(),
-                        Pcs = reader["Unit"].ToString(),
-                        Start = reader["Date_Start"].ToString(),
+                        int ctr = 0;
+                        while (reader.Read())
+                        {
+                            bool.TryParse(reader["IsOrderDone"].ToString(), out var isOrderDone);
 
-                        IsOrderDone = isOrderDone
+                            productionLines.Add(new ProductionLines
+                            {
+                                ProdLine = reader["ProdLine"].ToString(),
+                                PartNr = reader["PartNr"].ToString(),
+                                Customer = reader["Customer"].ToString(),
+                                OrderNr = reader["OrderNr"].ToString(),
+                                Operation = reader["Operation"].ToString(),
+                                Description = reader["Description"].ToString(),
+                                Amount = reader["Amount"].ToString(),
+                                Pcs = reader["Unit"].ToString(),
+                                Start = reader["Date_Start"].ToString(),
+                                IsOrderDone = isOrderDone
+                            });
 
-                    });
-                    ctr++;
+                            // 🔹 3. Uppdatera progressbar baserat på totalCount
+                            ctr++;
+                            double progress = totalCount > 0 ? (ctr / (double)totalCount) * 100 : 0;
+                            pbar.Set_ValueProgressBar(ctr, LanguageManager.GetString("loadingProductionlines_1"), progress, true);
+
+                            this.Refresh();
+                        }
+                    }
                 }
             }
-            ctr_pBar = 30;
+
+            ctr_pBar = 30; // Valfri logik, som du hade innan
         }
+
 
         private void PrintInfo()
         {
+            if (productionLines == null || productionLines.Count == 0)
+                return;
+
             var x = 20;
             var y = 60;
-            var add = (100 - ctr_pBar) / productionLines.Count;
-            for (var i = 1; i < productionLines.Count + 1; i++)
+            var total = productionLines.Count;
+
+            double startProgress = ctr_pBar;
+            double add = (100.0 - startProgress) / total;
+
+            for (var i = 0; i < total; i++)
             {
-                ctr = i - 1;
+                ctr = i;
                 Order.OrderNumber = productionLines[ctr].OrderNr;
                 Order.Operation = productionLines[ctr].Operation;
-                pbar.Set_ValueProgressBar(ctr_pBar, LanguageManager.GetString("loadingProductionlines_2"));
 
+                double newProgress = startProgress + (i + 1) * add;
+                newProgress = Math.Min(100.0, newProgress);
+                ctr_pBar = (int)newProgress;
+
+                pbar.Set_ValueProgressBar(ctr_pBar, LanguageManager.GetString("loadingProductionlines_2"), newProgress, true);
+
+                this.Refresh();
+
+                // Skriv ut panelen
                 Print_Panel(x, y);
-                Print_Name();
-                Print_OrderNr();
-                Print_Customer();
-                Print_Description();
-                Print_Amount();
+                PrintPanelContent();
 
-                Print_DateStart();
-                Print_OrderRuntime();
-                Print_TotalProductionTime(productionLines[ctr].ProdLine);
-
+                // Layout-placering
                 x = x + panelWidth + 20;
-                if (i % ctrPictures == 0)
+                if ((i + 1) % ctrPictures == 0)
                 {
                     x = 20;
                     y = y + panelHeight + 20;
                 }
-                ctr_pBar += add;
             }
+            ctr_pBar = 100;
         }
+
+
+        private void AddLabel(string titleKey, string value, int y, bool isOrderDone)
+        {
+            var title = LanguageManager.GetString(titleKey);
+
+            var valueLabel = new Label
+            {
+                Text = isOrderDone ? "N/A" : value,
+                AutoSize = true,
+                ForeColor = isOrderDone ? Color.Red : Color.White,
+                Location = new Point(lbl_x, y),
+                MaximumSize = new Size(215, 30)
+            };
+
+            var titleLabel = new Label
+            {
+                Text = title,
+                ForeColor = Color.DodgerBlue,
+                Location = new Point(10, y)
+            };
+
+            panels[ctr].Controls.Add(valueLabel);
+            panels[ctr].Controls.Add(titleLabel);
+        }
+
+        private void PrintPanelContent()
+        {
+            var line = productionLines[ctr];
+            bool isDone = line.IsOrderDone;
+
+            // Rad 1: Namn
+            var nameLabel = new Label
+            {
+                Text = line.ProdLine,
+                Font = new Font("Arial", 12, FontStyle.Bold),
+                AutoSize = true,
+                ForeColor = isDone ? Color.FromArgb(156, 0, 6) : Color.FromArgb(0, 97, 0),
+                Location = new Point((panelWidth / 2) - TextRenderer.MeasureText(line.ProdLine, new Font("Arial", 12, FontStyle.Bold)).Width / 2, 10)
+            };
+            panels[ctr].Controls.Add(nameLabel);
+           
+            // Rad 2–6: Generiska fält
+            AddLabel("label_OrderNr", line.OrderNr, 50, isDone);
+            AddLabel("label_Customer", line.Customer, 85, isDone);
+            AddLabel("label_Description", line.Description, 120, isDone);
+            AddLabel("label_Amount", $"{line.Amount} {line.Pcs}", 155, isDone);
+            AddLabel("dateStart", line.Start, 225, isDone);
+
+            // Rad 7: Runtime
+            AddOrderRuntimeLabel(line.Start, isDone);
+
+            // Rad 8: Produktionstid
+            AddTotalProductionTimeLabel(line.ProdLine, isDone);
+        }
+        private void AddOrderRuntimeLabel(string start, bool isDone)
+        {
+            DateTime.TryParse(start, out var birth);
+            var ts = DateTime.Now - birth;
+
+            var text = isDone
+                ? "N/A"
+                : $"{ts.Days} days, {ts.Hours} hours, {ts.Minutes} minutes";
+
+            var lbl = new Label
+            {
+                Text = text,
+                AutoSize = true,
+                ForeColor = isDone ? Color.Red : (ts.Days > 100 ? Color.Red : Color.White),
+                Location = new Point(lbl_x, 260)
+            };
+
+            var lbl2 = new Label
+            {
+                Text = LanguageManager.GetString("orderRuntime"),
+                ForeColor = Color.DodgerBlue,
+                Location = new Point(10, 260)
+            };
+
+            panels[ctr].Controls.Add(lbl);
+            panels[ctr].Controls.Add(lbl2);
+        }
+        private void AddTotalProductionTimeLabel(string prodLine, bool isDone)
+        {
+            if (isDone)
+            {
+                AddLabel("orderProdtime", "N/A", 295, true);
+                return;
+            }
+
+            var minutes = 0;
+            using (var con = new SqlConnection(Database.cs_Protocol))
+            {
+                var query = @"
+            SELECT DATEDIFF(MINUTE, Date_Start, Date_Stop)
+            FROM [Order].MainData
+            WHERE ProdLine = @prodline
+              AND Date_Start IS NOT NULL
+              AND Date_Stop IS NOT NULL
+              AND DATEDIFF(MINUTE, Date_Start, Date_Stop) > 0
+              AND DATEDIFF(HOUR, Date_Start, Date_Stop) < 1500
+              AND IsDeleted = 'false'";
+
+                using var cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@prodline", prodLine);
+                ServerStatus.Add_Sql_Counter();
+                con.Open();
+
+                using var reader = cmd.ExecuteReader();
+                while (reader.Read())
+                    minutes += reader.GetInt32(0);
+            }
+
+            var ts = TimeSpan.FromMinutes(minutes);
+            var text = $"{ts.Days} days, {ts.Hours} hours, {ts.Minutes} minutes";
+            AddLabel("orderProdtime", text, 295, false);
+        }
+
 
         private void Print_Panel(int x, int y)
         {
@@ -142,227 +311,7 @@ namespace DigitalProductionProgram.Statistics
             panel_Main.Controls.Add(panel);
             panels.Add(panel);
         }
-        private void Print_Name()
-        {
-            var lbl = new Label
-            {
-                Text = productionLines[ctr].ProdLine,
-                Font = new Font("Arial", 12, FontStyle.Bold),
-                AutoSize = true
-            };
-            if (productionLines[ctr].IsOrderDone)
-                lbl.ForeColor = Color.FromArgb(156, 0, 6);
-            else
-                lbl.ForeColor = Color.FromArgb(0, 97, 0);
-
-            lbl.Location = new Point((panelWidth / 2) - TextRenderer.MeasureText(lbl.Text, lbl.Font).Width / 2, 10);
-            panels[ctr].Controls.Add(lbl);
-        }
-        private void Print_OrderNr()
-        {
-            var lbl = new Label
-            {
-                ForeColor = Color.White,
-                AutoSize = true,
-                Location = new Point(lbl_x, 50)
-            };
-            if (productionLines[ctr].IsOrderDone == false)
-                lbl.Text = productionLines[ctr].OrderNr;
-            else
-            {
-                lbl.Text = "N/A";
-                lbl.ForeColor = Color.Red;
-            }
-            var lbl2 = new Label
-            {
-                Text = "OrderNr:",
-                ForeColor = Color.DodgerBlue,
-                Location = new Point(10, 50)
-            };
-            panels[ctr].Controls.Add(lbl);
-            panels[ctr].Controls.Add(lbl2);
-        }
-        private void Print_Customer()
-        {
-            var lbl = new Label
-            {
-                AutoSize = true,
-                ForeColor = Color.White,
-                Location = new Point(lbl_x, 85),
-                MaximumSize = new Size(215, 30)
-            };
-            if (productionLines[ctr].IsOrderDone == false)
-                lbl.Text = productionLines[ctr].Customer;
-            else
-            {
-                lbl.Text = "N/A";
-                lbl.ForeColor = Color.Red;
-            }
-
-            var lbl2 = new Label
-            {
-                Text = LanguageManager.GetString("label_Customer"),
-                ForeColor = Color.DodgerBlue,
-                Location = new Point(10, 85)
-            };
-            panels[ctr].Controls.Add(lbl);
-            panels[ctr].Controls.Add(lbl2);
-        }
-        private void Print_Description()
-        {
-            var lbl = new Label
-            {
-                AutoSize = true,
-                ForeColor = Color.White,
-                Location = new Point(lbl_x, 120),
-                MaximumSize = new Size(215, 30)
-            };
-            if (productionLines[ctr].IsOrderDone == false)
-                lbl.Text = productionLines[ctr].Description;
-            else
-            {
-                lbl.Text = "N/A";
-                lbl.ForeColor = Color.Red;
-            }
-
-            var lbl2 = new Label
-            {
-                Text = LanguageManager.GetString("label_Description"),
-                ForeColor = Color.DodgerBlue,
-                Location = new Point(10, 120)
-            };
-            panels[ctr].Controls.Add(lbl);
-            panels[ctr].Controls.Add(lbl2);
-        }
-        private void Print_Amount()
-        {
-            var lbl = new Label
-            {
-                AutoSize = true,
-                ForeColor = Color.White,
-                Location = new Point(lbl_x, 155)
-            };
-            if (productionLines[ctr].IsOrderDone == false)
-                lbl.Text = productionLines[ctr].Amount + " " + productionLines[ctr].Pcs;
-            else
-            {
-                lbl.Text = "N/A";
-                lbl.ForeColor = Color.Red;
-            }
-
-            var lbl2 = new Label
-            {
-                Text = LanguageManager.GetString("label_Amount"),
-                ForeColor = Color.DodgerBlue,
-                Location = new Point(10, 155)
-            };
-            panels[ctr].Controls.Add(lbl);
-            panels[ctr].Controls.Add(lbl2);
-        }
-        private void Print_DateStart()
-        {
-            var lbl = new Label
-            {
-                AutoSize = true,
-                ForeColor = Color.White,
-                Location = new Point(lbl_x, 225)
-            };
-            if (productionLines[ctr].IsOrderDone == false)
-                lbl.Text = productionLines[ctr].Start;
-            else
-            {
-                lbl.Text = "N/A";
-                lbl.ForeColor = Color.Red;
-            }
-
-            var lbl2 = new Label
-            {
-                Text = LanguageManager.GetString("dateStart"),
-                ForeColor = Color.DodgerBlue,
-                Location = new Point(10, 225)
-            };
-            panels[ctr].Controls.Add(lbl);
-            panels[ctr].Controls.Add(lbl2);
-        }
-        private void Print_OrderRuntime()
-        {
-            DateTime.TryParse(productionLines[ctr].Start, out var birth);
-            var now = DateTime.Now;
-
-            var lbl = new Label();
-            var ts = now - birth;
-            if (ts.Days > 100)
-                lbl.ForeColor = Color.Red;
-            else
-                lbl.ForeColor = Color.White;
-
-            if (productionLines[ctr].IsOrderDone == false)
-                lbl.Text = $"{ts.Days} days, {ts.Hours} hours, {ts.Minutes} minutes";
-            else
-            {
-                lbl.Text = "N/A";
-                lbl.ForeColor = Color.Red;
-            }
-
-            lbl.AutoSize = true;
-            lbl.Location = new Point(lbl_x, 260);
-
-            var lbl2 = new Label
-            {
-                Text = LanguageManager.GetString("orderRuntime"),
-                ForeColor = Color.DodgerBlue,
-                Location = new Point(10, 260)
-            };
-            panels[ctr].Controls.Add(lbl);
-            panels[ctr].Controls.Add(lbl2);
-        }
-        private void Print_TotalProductionTime(string? prodLinje)
-        {
-            Order.ProdLine = prodLinje;
-            Order.WorkOperation = Manage_WorkOperation.Load_WorkOperation(false);
-            var minutes = 0;
-           
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query = @"
-                SELECT DATEDIFF(MINUTE, Date_Start, Date_Stop), DATEDIFF(HH, Date_Start, Date_Stop)
-                FROM [Order].MainData 
-                   
-                WHERE ProdLine = @prodline
-                    AND Date_Start IS NOT NULL
-                    AND Date_Stop IS NOT NULL
-                    AND DATEDIFF(MINUTE, Date_Start, Date_Stop) > 0 AND DATEDIFF(HH, Date_Start, Date_Stop) < 1500
-                    AND IsDeleted = 'false'";
-                
-
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@prodline", productionLines[ctr].ProdLine);
-                con.Open();
-                var reader = cmd.ExecuteReader();
-                while (reader.Read())
-                {
-                    int.TryParse(reader[0].ToString(), out var value);
-                        minutes += value;
-                }
-            }
-            var ts = TimeSpan.FromMinutes(double.Parse(minutes.ToString()));
-            var lbl = new Label
-            {
-                Text = $"{ts.Days} days, {ts.Hours} hours, {ts.Minutes} minutes",
-                ForeColor = Color.White,
-                Location = new Point(lbl_x, 307),
-                AutoSize = true
-            };
-            var lbl2 = new Label
-            {
-                Text = LanguageManager.GetString("orderProdtime"),
-                ForeColor = Color.DodgerBlue,
-                Location = new Point(10, 295),
-                Height = 30
-            };
-            panels[ctr].Controls.Add(lbl);
-            panels[ctr].Controls.Add(lbl2);
-        }
+       
 
 
         private void Info_MouseEnter(object sender, EventArgs e)

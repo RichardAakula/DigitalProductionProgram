@@ -63,7 +63,10 @@ namespace DigitalProductionProgram.OrderManagement
             if (!string.IsNullOrEmpty(Person.Name))
             {   //Kontrollera om Skriv ut skall synas eller ej
                 if (Person.Role == "SuperAdmin")
+                {
+                    chb_FinishOrder_PrintOrder.Checked = false;
                     chb_FinishOrder_PrintOrder.Visible = true;
+                }
 
             }
             if (Order.IsOrderDone_Before)

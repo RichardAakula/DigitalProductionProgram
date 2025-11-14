@@ -49,7 +49,7 @@ internal class Activity
         StartTime = DateTime.Now;
     }
 
-
+    //[DebuggerStepThrough]
     public static async Task Stop(string info, double tid = 0, [CallerMemberName] string? methodname = null)
     {
         try
@@ -68,7 +68,7 @@ internal class Activity
                 {
                     _ = cpuCounterDpp.NextValue();
                     _ = cpuCounterTotal.NextValue();
-                    await Task.Delay(500);
+                    await Task.Delay(250);//.ConfigureAwait(false);
                     dppCpu = cpuCounterDpp.NextValue() / Environment.ProcessorCount;
                     totalCpu = cpuCounterTotal.NextValue();
                 }
@@ -85,7 +85,7 @@ internal class Activity
 
             ServerStatus.Add_Sql_Counter();
             await using var con = new SqlConnection(Database.cs_Protocol);
-            using var cmd = new SqlCommand(@"
+            await using var cmd = new SqlCommand(@"
             INSERT INTO Log.ActivityLog 
             (HostID, UserID, OrderID, Program, Version, Date, LoadingTime, Info, Memory, DPPMemory, CPU, DPPCPU, Resolution, WindowsVersion)
             VALUES 

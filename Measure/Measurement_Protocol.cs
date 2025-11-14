@@ -22,6 +22,7 @@ using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using DigitalProductionProgram.Protocols.LineClearance;
 using static DigitalProductionProgram.Measure.Measure_ControlManagement;
 
 namespace DigitalProductionProgram.Measure
@@ -186,6 +187,28 @@ namespace DigitalProductionProgram.Measure
             dgv_HelpInput_2.KeyDown += Public_Events.Enter_To_TAB_KeyDown;
 
             Translate_Form();
+
+            switch (Order.WorkOperation)
+            {
+                case Manage_WorkOperation.WorkOperations.Spolning_PTFE:
+                    break;
+                case Manage_WorkOperation.WorkOperations.Kragning_PTFE:
+                case Manage_WorkOperation.WorkOperations.Kragning_K22_PTFE:
+                case Manage_WorkOperation.WorkOperations.Synergy_PTFE_K18:
+                    if (LineClearance.IsLineClearanceApproved == false)
+                    {
+                        InfoText.Show(LanguageManager.GetString("Warning_OpenMeasureProtocol_3"), CustomColors.InfoText_Color.Bad, null);
+                        Lock_Protocol();
+                    }
+                    break;
+                default:
+                    if (Order.IsOrderDone == false && LineClearance.IsLineClearanceDone == false)
+                    {
+                        InfoText.Show(LanguageManager.GetString("Warning_OpenMeasureProtocol_4"), CustomColors.InfoText_Color.Bad, null);
+                        Lock_Protocol();
+                    }
+                    break;
+            }
 
             if (Order.IsOrderDone)
                 Lock_Protocol();

@@ -184,29 +184,6 @@ namespace DigitalProductionProgram.MainWindow
                 return;
             }
             
-
-            switch (Order.WorkOperation)
-            {
-                case Manage_WorkOperation.WorkOperations.Spolning_PTFE:
-                    break;
-                case Manage_WorkOperation.WorkOperations.Kragning_PTFE:
-                case Manage_WorkOperation.WorkOperations.Kragning_K22_PTFE:
-                case Manage_WorkOperation.WorkOperations.Synergy_PTFE_K18:
-                    if (LineClearance.IsLineClearanceApproved == false)
-                    {
-                        InfoText.Show(LanguageManager.GetString("Warning_OpenMeasureProtocol_3"), CustomColors.InfoText_Color.Bad, null);
-                        return;
-                    }
-                    break;
-                default:
-                    if (Order.IsOrderDone == false && LineClearance.IsLineClearanceDone == false)
-                    {
-                        InfoText.Show(LanguageManager.GetString("Warning_OpenMeasureProtocol_4"), CustomColors.InfoText_Color.Bad, null);
-                        return;
-                    }
-                    break;
-            }
-
             var screen = Screen.FromPoint(Cursor.Position);
             if (Order.OrderNumber != null)
             {

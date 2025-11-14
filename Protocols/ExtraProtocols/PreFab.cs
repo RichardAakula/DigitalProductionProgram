@@ -341,6 +341,7 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
                     return;
             }
             dgv.Columns["TempID"].Visible = false;
+            dgv.Columns[ LanguageManager.GetString("label_PartNumber")].ReadOnly = true;
             dgv.ClearSelection();
         }
        

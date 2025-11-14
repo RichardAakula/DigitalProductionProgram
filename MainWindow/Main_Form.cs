@@ -113,6 +113,7 @@ namespace DigitalProductionProgram.MainWindow
         private DateTime startTime;
         private const string? develop_OrderNr = "H67876";
         private const string? develop_Operation = "10";
+        private const int develop_MainTimer = 10000; // 10 sekunder
 
 
 
@@ -299,7 +300,7 @@ namespace DigitalProductionProgram.MainWindow
         {
             timer_Master = new Timer();
             if (Environment.MachineName == adminHostName && IsAutoLoginSuperAdmin)
-                timer_Master.Interval = 10000; // 10 sekunder
+                timer_Master.Interval = develop_MainTimer;
             else
                 timer_Master.Interval = 60000; // 1 minut
             timer_Master.Tick += MasterTimer_Tick;
@@ -543,6 +544,9 @@ namespace DigitalProductionProgram.MainWindow
         {
             MainMeasureStatistics.ChartCodeText = string.Empty;
             MainMeasureStatistics.ChartCodename = string.Empty;
+            MeasurementChart.ActiveCodeName = string.Empty;
+            MeasurementChart.ActiveCodeText = string.Empty;
+
             Order.Is_PrintOutCopy = true;
 
             // Stoppa MainTimer eventuellt om det blir problem
@@ -593,11 +597,8 @@ namespace DigitalProductionProgram.MainWindow
             Task.Run(Change_GUI_MainForm);
 
             Change_GUI_ExtraInfo();
-            // Stoppa MainTimer eventuellt om det blir problem
             Order.Set_NumberOfLayers();
             Load_MeasurePoints();
-            //Task.Factory.StartNew(MeasurementChart.LoadAvgValuesForLastOrder);
-            //Task.Factory.StartNew(MeasurementChart.LoadAvgValuesForPart);
             MeasurementChart.LoadAvgValuesForLastOrder();
             MeasurementChart.LoadAvgValuesForPart();
 
@@ -1069,8 +1070,8 @@ namespace DigitalProductionProgram.MainWindow
             if (counter_UpdateChart >= 1 && IsZumbachÖppet == false)
             {
                 counter_UpdateChart = 0;
-                
-                _ = Task.Run(() => measureStats.Add_MeasureInformation_MainForm(measurementChart, tlp_MainWindow));
+                if (!string.IsNullOrEmpty(Order.OrderNumber)) 
+                    _ = Task.Run(() => measureStats.Add_MeasureInformation_MainForm(measurementChart, tlp_MainWindow));
 
                 await Statistics_DPP.Load_StatisticsAsync();
             }
@@ -1190,8 +1191,8 @@ namespace DigitalProductionProgram.MainWindow
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             ControlManager.Close_All_Körprotokoll();
-
             SaveData.Reset_Processcard_Open(false);
+
             var topMethod = ServerStatus.dictMethodsSqlCounter
                 .OrderByDescending(kv => kv.Value)
                 .FirstOrDefault();
@@ -1199,8 +1200,13 @@ namespace DigitalProductionProgram.MainWindow
             var stopTime = DateTime.Now;
             var time = stopTime - startTime;
             var totalTime = time.ToString(@"hh\:mm\:ss");
-           
-            _ = Activity.Stop($"Stänger DPP: (Antal SQL_Frågor: {Database.SQL_Counter}) (Vanligaste Metod: {topMethod.Key} Antal frågor på vanligaste Metod: {topMethod.Value}) - Total Tid: {totalTime}");
+
+            // 👇 BLOCKERA tills async Stop() är helt klar
+            Activity.Stop(
+                $"Stänger DPP: (Antal SQL_Frågor: {Database.SQL_Counter}) " +
+                $"(Vanligaste Metod: {topMethod.Key} Antal frågor på vanligaste Metod: {topMethod.Value}) " +
+                $"- Total Tid: {totalTime}"
+            ).GetAwaiter().GetResult();
         }
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
         {

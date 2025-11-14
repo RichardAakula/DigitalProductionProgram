@@ -160,8 +160,45 @@ namespace DigitalProductionProgram.Measure
             return result - margin;
         }
 
-        public CartesianChart? cartesianChart;
-        private static LineSeries<ObservablePoint> serie_Values(string codetext)
+        public static int TotalValuesInChart
+        {
+            get
+            {
+                var currentCount = 0;
+                if (cartesianChart != null &&
+                    cartesianChart.Series != null &&
+                    cartesianChart.Series.Count() >= 3 &&
+                    cartesianChart.Series.ElementAt(2) is LineSeries<ObservablePoint> s &&
+                    s.Values is IEnumerable<ObservablePoint> values)
+                {
+                    currentCount = values.Count(); // 🔹 LINQ Count() extension
+                }
+                return currentCount;
+            }
+        }
+
+        public static int TotalValuesInMeasureProtocol
+        {
+            get
+            {
+                const string existsQuery = @"
+                SELECT COUNT(*)
+                FROM Measureprotocol.MainData
+                WHERE OrderID = @orderid
+                    AND (Discarded = 'False' OR Discarded IS NULL)";
+
+                using var con = new SqlConnection(Database.cs_Protocol);
+                con.OpenAsync();
+
+                using var cmd = new SqlCommand(existsQuery, con);
+                cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
+                var count = cmd.ExecuteScalar();
+                return int.Parse(count.ToString());
+            }
+        }
+
+        public static CartesianChart? cartesianChart;
+        private static LineSeries<ObservablePoint> serie_Values(string? codetext)
         {
             var serie = new LineSeries<ObservablePoint>
             {
@@ -256,7 +293,7 @@ namespace DigitalProductionProgram.Measure
        
 
 
-        private void Initialize_Chart_MainForm(string? codename, string codetext)
+        private void Initialize_Chart_MainForm(string? codename, string? codetext)
         {
             cartesianChart = new CartesianChart
             {
@@ -297,10 +334,9 @@ namespace DigitalProductionProgram.Measure
                         Yi = Y_Axis_MinValue(codename),
                         Yj = MeasurePoints.Tolerances.ActiveTolerance(codename, "LSL") ?? double.NaN,
                         Fill = new SolidColorPaint
-                        {
-                            Color = new SKColor(156,0,6,230)
-                        }
-
+                        { 
+                                Color = new SKColor(156,0,6,230)
+                       }
                     },
                     new()
                     {                    
@@ -357,11 +393,12 @@ namespace DigitalProductionProgram.Measure
             this.Invoke(() => Controls.Add(cartesianChart));
         }
 
-        public static string ActiveCodeName;
-        public static string ActiveCodeText;
+        public static string? ActiveCodeName;
+        public static string? ActiveCodeText;
         public async Task Add_Data_Chart_MainForm()
         {
             this.Invoke(() => Visible = true);
+
             await RemoveChart();
 
             this.Invoke(() => Initialize_Chart_MainForm(ActiveCodeName, ActiveCodeText));
@@ -392,8 +429,6 @@ namespace DigitalProductionProgram.Measure
                 await using (var reader = await cmd.ExecuteReaderAsync())
                 {
                     var measurementValues = new ObservableCollection<ObservablePoint>();
-                   // var avgLastOrderValues = new ObservableCollection<ObservablePoint>();
-                   // var avgPartValues = new ObservableCollection<ObservablePoint>();
 
                    var index = 1;
                     while (await reader.ReadAsync())
@@ -403,16 +438,6 @@ namespace DigitalProductionProgram.Measure
                             continue;
 
                         measurementValues.Add(new ObservablePoint(index, result));
-                        
-                        //if (dict_AverageValuesForLastOrder.TryGetValue(codename, out var avgLast))
-                        //    avgLastOrderValues.Add(new ObservablePoint(index, avgLast));
-                        //else
-                        //    avgLastOrderValues.Add(new ObservablePoint(index, double.NaN));
-
-                        //if (dict_AverageValuesForPart.TryGetValue(codename, out var avgPart))
-                        //    avgPartValues.Add(new ObservablePoint(index, avgPart));
-                        //else
-                        //    avgPartValues.Add(new ObservablePoint(index, avgPart));
 
                         index++;
                     }
@@ -425,8 +450,6 @@ namespace DigitalProductionProgram.Measure
                         seriesList[4] is LineSeries<ObservablePoint> series2)
                     {
                         series0.Values = measurementValues;
-                       // series1.Values = avgLastOrderValues;
-                       // series2.Values = avgPartValues;
                     }
                 }
             }

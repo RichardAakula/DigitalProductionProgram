@@ -15,6 +15,7 @@ using LiveChartsCore.Measure;
 using LiveChartsCore.Measure;
 using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.Painting;
+using LiveChartsCore.SkiaSharpView.SKCharts;
 using LiveChartsCore.SkiaSharpView.WinForms;
 using Microsoft.Data.SqlClient;
 using SkiaSharp;
@@ -108,9 +109,21 @@ namespace DigitalProductionProgram.Measure
         public async Task Add_MeasureInformation_MainForm(MeasurementChart _measurementChart, TableLayoutPanel tlp_MainWindow)
         {
             measurementChart = _measurementChart;
+            string axisName = MeasurementChart.cartesianChart?.YAxes.FirstOrDefault()?.Name ?? string.Empty;
+
             if (Order.OrderID is null || Templates_MeasureProtocol.MainTemplate.ID == 0 || Templates_MeasureProtocol.MainTemplate.ID is null)
                 return;
 
+            var hasSameValues = MeasurementChart.TotalValuesInChart == MeasurementChart.TotalValuesInMeasureProtocol;
+            var hasSameCodeText = MeasurementChart.ActiveCodeText == axisName;
+            var hasNoValues = MeasurementChart.TotalValuesInMeasureProtocol == 0;
+
+            if (!hasSameCodeText)
+                goto ExecuteMeasureStats;
+            if (hasSameValues && !hasNoValues)
+                return;
+
+            ExecuteMeasureStats:
             Invoke(new Action(() => DrawingControl.SuspendDrawing(this)));
 
             foreach (var flp in tlp_Main.Controls.OfType<FlowLayoutPanel>())

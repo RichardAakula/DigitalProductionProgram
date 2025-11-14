@@ -116,6 +116,11 @@ namespace DigitalProductionProgram.MainWindow
         //----------ARKIV/FILE----------
         private void Menu_Arkiv_NyOrder_Click(object sender, EventArgs e)
         {
+           ResetMainForm();
+        }
+
+        private void ResetMainForm()
+        {
             Order.Clear_Order();
             mainForm.Clear_Mainform();
             mainForm.OrderInformation.Clear();
@@ -123,7 +128,9 @@ namespace DigitalProductionProgram.MainWindow
             mainForm.measurePoints.ClearMeasurePoints();
             mainForm.measureStats.ClearData();
             mainForm.OrderInformation.tb_OrderNr.Enabled = true;
-
+            mainForm.Change_Theme();
+            mainForm.tlp_Left.BackColor = Color.Transparent;
+            mainForm.BackColor = Color.Transparent;
             //här
             //foreach (var series in MeasurementChart.chart.Series)
             //    if (series.Values is IList<double> values)
@@ -214,6 +221,9 @@ namespace DigitalProductionProgram.MainWindow
         private void Menu_Order_OrderKlar_Click(object sender, EventArgs e)
         {
             Order.Finish.Order(mainForm);
+
+            if (Person.Role == "SuperAdmin")
+                ResetMainForm();
         }
         private void Menu_Order_RedigeraOrder_Click(object sender, EventArgs e)
         {

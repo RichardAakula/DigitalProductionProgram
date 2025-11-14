@@ -918,7 +918,6 @@ namespace DigitalProductionProgram.MainWindow
         public Main_OrderInformation OrderInformation;
         public Main_AQL AQL;
         public Main_Buttons Buttons;
-        private TableLayoutPanel tlp_Left;
         public Panel panel_Profile;
         private PictureBox pbOperatör;
         private PictureBox pb_Grade;
@@ -954,5 +953,6 @@ namespace DigitalProductionProgram.MainWindow
         public Övrigt.TipsAndTrix TipsAndTrix;
         private MeasurementChart measurementChart;
         private RollingInformation RollingInformation;
+        public TableLayoutPanel tlp_Left;
     }
 }

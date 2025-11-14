@@ -238,23 +238,23 @@ FinalSelection AS
 (
     SELECT *,
         CASE 
-            WHEN 0 = 1 AND RevNr = LatestRev THEN 1
-            WHEN 0 = 0 AND RevNr = LatestApprovedRev THEN 1
-            WHEN 0 = 0 AND PartGroupID IN (SELECT PartGroupID FROM CheckAllNulls)
+            WHEN @IsOkSelectLatestRev = 1 AND RevNr = LatestRev THEN 1
+            WHEN @IsOkSelectLatestRev = 0 AND RevNr = LatestApprovedRev THEN 1
+            WHEN @IsOkSelectLatestRev = 0 AND PartGroupID IN (SELECT PartGroupID FROM CheckAllNulls)
                  AND EXISTS (
                      SELECT 1 FROM OrderedRevisions o2 
                      WHERE o2.PartGroupID = OrderedRevisions.PartGroupID 
                        AND o2.Framtagning_Processfönster = 'True'
                  )
                  AND RevNr = LatestFramtagningRev THEN 1
-            WHEN 0 = 0 AND PartGroupID IN (SELECT PartGroupID FROM CheckAllNulls)
+            WHEN @IsOkSelectLatestRev = 0 AND PartGroupID IN (SELECT PartGroupID FROM CheckAllNulls)
                  AND NOT EXISTS (
                      SELECT 1 FROM OrderedRevisions o2 
                      WHERE o2.PartGroupID = OrderedRevisions.PartGroupID 
                        AND o2.Framtagning_Processfönster = 'True'
                  )
                  AND RevNr = FirstRev THEN 1
-            WHEN 0 = 0 AND Framtagning_Processfönster = 'True' AND RevNr = LatestRev THEN 1
+            WHEN @IsOkSelectLatestRev = 0 AND Framtagning_Processfönster = 'True' AND RevNr = LatestRev THEN 1
             ELSE 0
         END AS IsSelected
     FROM OrderedRevisions
@@ -274,8 +274,7 @@ SELECT TOP 1 WITH TIES
     CASE WHEN RevNr = LatestRev THEN 1 ELSE 0 END AS LatestRevSelected
 FROM FinalSelection
 WHERE IsSelected = 1
-ORDER BY ROW_NUMBER() OVER (PARTITION BY PartGroupID ORDER BY TRY_CAST(RevNr AS INT) DESC);
-;";
+ORDER BY ROW_NUMBER() OVER (PARTITION BY PartGroupID ORDER BY TRY_CAST(RevNr AS INT) DESC);";
 
             var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             cmd.Parameters.Add("@partnr", SqlDbType.NVarChar).Value = Order.PartNumber;

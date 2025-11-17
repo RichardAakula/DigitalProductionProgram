@@ -161,13 +161,11 @@ namespace DigitalProductionProgram.MainWindow
                 Enum.TryParse(Settings.Settings.Tema, out Teman.Theme);
 
                 Teman.Choose_Theme();
-                //Change_Theme();
 
                 if (!Program.IsComputerOnlyForMeasurements && IsAutoOpenOrder == false)
                     OrderInformation.tb_OrderNr.AutoCompleteCustomSource = Monitor.Monitor.AutoFillOrdernr;
 
                 _ = Main_FilterQuickOpen.Load_ListAsync(dgv_QuickOpen);
-                // WindowState = FormWindowState.Normal;
             }
             OrderInformation.tb_OrderNr.Focus();
             dgv_QuickOpen.ClearSelection();
@@ -394,16 +392,16 @@ namespace DigitalProductionProgram.MainWindow
             TipsAndTrix.Visible = false;
             tlp_MainWindow.BackgroundImage = null;
 
-            measurePoints.tlp_Main.BackColor = measureStats.BackColor = tlp_ExtraInfo.BackColor = Color.Transparent;
+            //measurePoints.tlp_Main.BackColor = measureStats.BackColor = tlp_ExtraInfo.BackColor = Color.Transparent;
 
             tlp_Left.BackColor = Color.FromArgb(100, 20, 44, 20);
             BackColor = Color.FromArgb(20, 44, 20);
 
             tlp_ExtraInfo.Visible = true;
             Change_GUI_ExtraInfo();
-            MainMenu.Change_GUI_OrderFinished();
+           // MainMenu.Change_GUI_OrderFinished();
             PriorityPlanning.Visible = false;
-            Buttons.Change_GUI_OrderFinished();
+            //Buttons.Change_GUI_OrderFinished();
 
             if (!string.IsNullOrEmpty(Order.Rating))
             {

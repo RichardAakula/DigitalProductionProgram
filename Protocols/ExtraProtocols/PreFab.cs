@@ -491,7 +491,6 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
                         e.CellStyle.BackColor = CustomColors.Ok_Back;
                         e.CellStyle.ForeColor = CustomColors.Ok_Front;
                     }
-                        
                 }
             }
         }
@@ -532,7 +531,7 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
             {
                 dgv.Rows.RemoveAt(dgv.CurrentCell.RowIndex);
                 SaveData.DELETE_Row(tempID);
-                _ = Activity.Stop($"Användare {User.Person.Name} raderar Prefab: (ArtikelNr = {activeBatchNr}) - TempID = {tempID}");
+                _ = Activity.Stop($"Användare {Person.Name} raderar Prefab: (ArtikelNr = {activeBatchNr}) - TempID = {tempID}");
             }
         }
         private void Info_Click(object sender, EventArgs e)

@@ -130,7 +130,8 @@ namespace DigitalProductionProgram.MainWindow
             mainForm.OrderInformation.tb_OrderNr.Enabled = true;
             mainForm.Change_Theme();
             mainForm.tlp_Left.BackColor = Color.Transparent;
-            mainForm.BackColor = Color.Transparent;
+            mainForm.BackColor = Color.FromArgb(25, 25, 25);
+           
             //här
             //foreach (var series in MeasurementChart.chart.Series)
             //    if (series.Values is IList<double> values)
@@ -248,13 +249,11 @@ namespace DigitalProductionProgram.MainWindow
             {
                 Log.Activity.Start();
                 Order.DELETE_Order();
-                //Activity.Stop($"{Person.Name} raderade order {Order.OrderNumber} - Operation: {Order.Operation}");
-                //var task = Main_FilterQuickOpen.Load_ListAsync(mainForm.dgv_QuickOpen);
+                _ = Log.Activity.Stop($"{Person.Name} raderade order {Order.OrderNumber} - Operation: {Order.Operation}");
 
                 if (QC_Feedback.IsOperationHaveQCFeedback)
                     QC_Feedback.IncreaseRemainingViewsForOperation();
 
-                // Order.Clear_Order();//Detta görs i Clear_Mainform
                 mainForm.Clear_Mainform();
 
             }

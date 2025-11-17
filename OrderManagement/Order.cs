@@ -855,7 +855,7 @@ namespace DigitalProductionProgram.OrderManagement
                 IsOrderDone = false;
                 Load_ProdType();
                 Templates_Protocol.MainTemplate.Revision = Korprotokoll.ProtocolTemplateRevision.OrderNr(OrderID);
-                _ = Activity.Stop($"Startar Order: {Person.Name}");
+                _ = Activity.Stop($"Startar Order: {Order.OrderNumber} - {Order.Operation} av {Person.Name}");
                 _ = Main_FilterQuickOpen.Load_ListAsync(main.dgv_QuickOpen);
             }
 

@@ -192,6 +192,7 @@ namespace DigitalProductionProgram.Statistics
                 Location = new Point(lbl_x, y),
                 MaximumSize = new Size(215, 30)
             };
+            valueLabel.Click += Copy_TextClick;
 
             var titleLabel = new Label
             {
@@ -295,7 +296,11 @@ namespace DigitalProductionProgram.Statistics
             var text = $"{ts.Days} days, {ts.Hours} hours, {ts.Minutes} minutes";
             AddLabel("orderProdtime", text, 295, false);
         }
-
+        private void Copy_TextClick(object? sender, EventArgs e)
+        {
+            if (sender is Label lbl)
+                Clipboard.SetText(lbl.Text);
+        }
 
         private void Print_Panel(int x, int y)
         {

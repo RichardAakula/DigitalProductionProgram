@@ -37,7 +37,7 @@ namespace DigitalProductionProgram.Monitor.GET
 
             public long Id { get; set; }
             public string? Description { get; set; }
-            public int Priority { get; set; }
+            public int? Priority { get; set; }
             public long PartId { get; set; }
             public decimal PlannedQuantity { get; set; }
             public decimal ReportedQuantity { get; set; }

@@ -2366,4 +2366,7 @@ Kontakta IT-support om felet kvarstår.</value>
   <data name="Menu_Arkiv_UpdateDPP" xml:space="preserve">
     <value>Uppdatera DPP</value>
   </data>
+  <data name="processcard_ChangeProdType" xml:space="preserve">
+    <value>När du ändrar Produkttyp kommer processkortet att sparas som ett helt nytt processkort, och revisionen startar då om från A. Operatörerna får därefter själva välja vilket av processkorten de vill använda vid körning.</value>
+  </data>
 </root>

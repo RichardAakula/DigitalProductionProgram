@@ -129,6 +129,13 @@ namespace DigitalProductionProgram.Processcards
             }
             reader.Close();
         }
+        public void Reset_ProcesscardStatus()
+        {
+            lbl_RevNr.Text = @"A";
+            lbl_ApprovedDate.Text = string.Empty;
+            lbl_QA_Sign.Text = string.Empty;
+            lbl_UpprättatAv_Sign_AnstNr.Text = string.Empty;
+        }
 
         private void FramtagningAvProcessfönster_CheckedChanged(object sender, EventArgs e)
         {

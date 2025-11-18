@@ -2370,4 +2370,7 @@ Please contact IT support if the issue persists.</value>
   <data name="Menu_Arkiv_UpdateDPP" xml:space="preserve">
     <value>Update DPP</value>
   </data>
+  <data name="processcard_ChangeProdType" xml:space="preserve">
+    <value>When you change the Product Type, the process card is saved as a completely new process card, and the revision restarts from A. The operators can then choose which of the process cards they want to use during production.</value>
+  </data>
 </root>

@@ -341,9 +341,8 @@ namespace DigitalProductionProgram.Processcards
                 tb_PartNr.Text = IncomingPartNr;
 
             ProcesscardBasedOn.lbl_RevNr.Click += RevNrChanged;
-            IsStartingForm = false;
 
-            Fill_cb_ProtocolTemplateRevision();
+            Fill_cb_ProtocolTemplateRevision(cb_ProtocolTemplateName.SelectedItem?.ToString());
             Templates_Protocol.MainTemplate.Load_MainTemplateID(cb_ProtocolTemplateName.SelectedItem?.ToString(), cb_TemplateRevision.SelectedItem?.ToString());
             LoadTemplate();
         }
@@ -413,12 +412,12 @@ namespace DigitalProductionProgram.Processcards
         }
 
 
-        private void Fill_cb_ProtocolTemplateRevision()
+        private void Fill_cb_ProtocolTemplateRevision(string name)
         {
             var query = @"SELECT DISTINCT Revision FROM Protocol.MainTemplate WHERE Name = @name";
             var parameters = new Dictionary<string, object>
             {
-                { "@name", cb_ProtocolTemplateName.Text }
+                { "@name", name }
             };
             // Detach and reattach the event handler, and set the last item as selected.
             FillComboBox(cb_TemplateRevision, query, parameters, setLastSelected: true);
@@ -761,7 +760,26 @@ namespace DigitalProductionProgram.Processcards
         {
             panel_ProductionLine.Visible = Templates_Protocol.MainTemplate.IsProcesscardUsingProdline;
             bool IsOkCopyDataFromTemplate = false;
-            if (Templates_Protocol.MainTemplate.ID != ActiveMainTemplateID && ActiveMainTemplateID > 0 && IsOkAskQuestionCopyData)
+            bool IsProcesscardHasData = false;
+            foreach (var machine in flp_Machines.Controls.OfType<Machine>())
+            {
+                foreach (TableLayoutPanel tlp in machine.Controls)
+                    foreach (var module in tlp.Controls.OfType<Module>())
+                    {
+                       foreach (DataGridViewRow row in module.dgv_Module.Rows)
+                        {
+                            if (row.Cells["col_MIN"].Value != null || row.Cells["col_NOM"].Value != null || row.Cells["col_MAX"].Value != null)
+                            {
+                                IsProcesscardHasData = true;
+                                break;
+                            }
+                        }
+                    }
+            }
+
+           
+
+            if (Templates_Protocol.MainTemplate.ID != ActiveMainTemplateID && ActiveMainTemplateID > 0 && IsOkAskQuestionCopyData && IsProcesscardHasData)
             {
                 InfoText.Question("Vill du kopiera datan från den gamla mallen till den nya aktiva mallen?", CustomColors.InfoText_Color.Info, "Kopiera Data?", this);
                 if (InfoText.answer == InfoText.Answer.Yes)
@@ -795,7 +813,6 @@ namespace DigitalProductionProgram.Processcards
             tlp_Main.ColumnStyles[0].Width = width + 26;
             if (IsOkCopyDataFromTemplate)
             {
-                //InfoText.Show("Laddar data från tidigare mall till den nya mallen", CustomColors.InfoText_Color.Info, string.Empty,this);
                 Load_ProcessDataFromOldTemplateRevision();
                 dataTables_ProcessData.Clear();
             }
@@ -967,7 +984,7 @@ namespace DigitalProductionProgram.Processcards
             pbar.Set_ValueProgressBar(0, $"Saving Processcard {Order.PartNumber} - RevNr {Order.RevNr}");
 
             Order.PartID = Part.Get_NewPartID;
-            if (Part.IsPartNr_Exist(tb_NewPartNr.Text, Order.WorkOperation.ToString(), tb_ProdLine.Text, tb_ProdType.Text) == false)
+            if (Part.IsPartNr_Exist(tb_NewPartNr.Text, Order.WorkOperation.ToString(), tb_ProdLine.Text, tb_ProdType.Text, cb_ProtocolTemplateName.Text, cb_TemplateRevision.Text) == false)
                 Part.Create_NewPartGroup_ID();
             else
                 Part.Load_PartGroup_ID(Order.PartNumber, cb_ProtocolTemplateName.Text, Order.WorkOperation);
@@ -1187,12 +1204,15 @@ namespace DigitalProductionProgram.Processcards
         {
             if (tb_ProdType.Text != Order.ProdType)
                 Order.ProdType = tb_ProdType.Text;
+
+            ProcesscardBasedOn.Reset_ProcesscardStatus();
+            IsUpdateProcesscard = false;
+            if (Order.PartID > 0 && IsData_Loading == false)
+                InfoText.Show(LanguageManager.GetString("processcard_ChangeProdType"), CustomColors.InfoText_Color.Warning , "Warning", this);
         }
         private void ArtikelNr_TextChanged(object sender, EventArgs e)
         {
-            ProcesscardBasedOn.lbl_RevNr.Text = "A";
-            ProcesscardBasedOn.lbl_QA_Sign.Text = string.Empty;
-            ProcesscardBasedOn.lbl_UpprättatAv_Sign_AnstNr.Text = string.Empty;
+            ProcesscardBasedOn.Reset_ProcesscardStatus();
             IsUpdateProcesscard = false;
         }
         private void ProdLine_Click(object sender, EventArgs e)
@@ -1208,9 +1228,7 @@ namespace DigitalProductionProgram.Processcards
             {
                 IsUpdateProcesscard = false;
                 Order.ProdLine = tb_ProdLine.Text;
-                ProcesscardBasedOn.lbl_RevNr.Text = "A";
-                ProcesscardBasedOn.lbl_UpprättatAv_Sign_AnstNr.Text = string.Empty;
-                ProcesscardBasedOn.lbl_QA_Sign.Text = string.Empty;
+                ProcesscardBasedOn.Reset_ProcesscardStatus();
             }
         }
 
@@ -1224,17 +1242,20 @@ namespace DigitalProductionProgram.Processcards
             choose_Item.ShowDialog();
         }
 
-        private bool IsStartingForm = true;
         private void TemplateName_SelectedIndexChanged(object sender, EventArgs e)
         {
-            Fill_cb_ProtocolTemplateRevision();
+            Fill_cb_ProtocolTemplateRevision(cb_ProtocolTemplateName.SelectedItem?.ToString());
         }
         private void TemplateName_SelectionChangeCommitted(object sender, EventArgs e)
         {
+            Fill_cb_ProtocolTemplateRevision(cb_ProtocolTemplateName.SelectedItem?.ToString());
+
             Templates_Protocol.MainTemplate.Load_MainTemplateID(cb_ProtocolTemplateName.SelectedItem?.ToString(), cb_TemplateRevision.SelectedItem?.ToString());
             Templates_Protocol.MainTemplate.Revision = cb_TemplateRevision.SelectedItem?.ToString();
             CopyProcessDataToNewTemplateRevision();
             LoadTemplate();
+            ProcesscardBasedOn.Reset_ProcesscardStatus();
+            IsUpdateProcesscard = false;
         }
         private bool suppressTemplateRevisionSelectionChanged;
         private void RevNrChanged(object sender, EventArgs e)

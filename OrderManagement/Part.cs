@@ -199,14 +199,14 @@ namespace DigitalProductionProgram.OrderManagement
 
                 if (!string.IsNullOrEmpty(Order.ProdType))
                     query.Append(" AND ProdType = @prodtyp ");
-                if (Order.WorkOperation == Manage_WorkOperation.WorkOperations.Slipning || Order.WorkOperation == Manage_WorkOperation.WorkOperations.Svetsning)
+                if (Order.WorkOperation == Manage_WorkOperation.WorkOperations.Slipning)
                 {
                     if (Person.Role == "SuperAdmin")
-                        InfoText.Show("Om detta meddelande kommer så behövs nedanstående if-sats på Slipning och Svetsning, annars kan det tas bort. Slipning och Svetsning har troligen inte multipla processkort" +
+                        InfoText.Show("Om detta meddelande kommer så behövs nedanstående if-sats på Slipning, annars kan det tas bort. Slipning har troligen inte multipla processkort" +
                                       "", CustomColors.InfoText_Color.Ok, "", null);
                 }
                
-                if (Order.WorkOperation != Manage_WorkOperation.WorkOperations.Slipning && Order.WorkOperation != Manage_WorkOperation.WorkOperations.Svetsning) //Detta behöver nångång göras bättre, det blev en snabbfix nu. Dessa operationer använder inte Templates
+                if (Order.WorkOperation != Manage_WorkOperation.WorkOperations.Slipning) //Detta behöver nångång göras bättre, det blev en snabbfix nu. Dessa operationer använder inte Templates
                     query.Append(" AND ProtocolMainTemplateID = @maintemplateid");
             }
 
@@ -557,7 +557,7 @@ GROUP BY md.PartID";
                 return;
             Order.ProdLine = (string)cmd.ExecuteScalar();
         }
-        public static bool IsPartNr_Exist(string PartNr, string WorkOperation, string ProdLine, string ProdType)
+        public static bool IsPartNr_Exist(string PartNr, string WorkOperation, string ProdLine, string ProdType, string ProtocolTemplateName, string ProtocolTemplateRevision)
         {
             if (Order.PartID is null || Order.PartID == 0)
                 return false;
@@ -568,7 +568,8 @@ GROUP BY md.PartID";
                             WHERE PartNr = @partNr 
                                 AND WorkOperationID = (SELECT ID FROM Workoperation.Names WHERE Name = @workoperation AND ID IS NOT NULL) 
                                 AND (ProdLine = @prodline OR COALESCE(@prodline, '') = '') 
-                                AND (ProdType = @prodtype OR COALESCE(@prodtype, '') = '')";
+                                AND (ProdType = @prodtype OR COALESCE(@prodtype, '') = '')
+                                AND ProtocolMainTemplateID = (SELECT ID FROM Protocol.MainTemplate WHERE Name = @name AND Revision = @revision)";
 
             var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             var test = Order.PartNumber;
@@ -577,6 +578,8 @@ GROUP BY md.PartID";
             cmd.Parameters.AddWithValue("@workoperation", WorkOperation);
             cmd.Parameters.AddWithValue("@prodline", ProdLine);
             cmd.Parameters.AddWithValue("@prodtype", ProdType);
+            cmd.Parameters.AddWithValue("@name", ProtocolTemplateName);
+            cmd.Parameters.AddWithValue("@revision", ProtocolTemplateRevision);
 
             con.Open();
             var reader = cmd.ExecuteReader();

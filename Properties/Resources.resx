@@ -1925,4 +1925,7 @@
   <data name="Menu_Arkiv_UpdateDPP" xml:space="preserve">
     <value></value>
   </data>
+  <data name="processcard_ChangeProdType" xml:space="preserve">
+    <value></value>
+  </data>
 </root>

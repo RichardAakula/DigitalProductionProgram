@@ -164,8 +164,7 @@ namespace DigitalProductionProgram.Templates
                 case Manage_WorkOperation.WorkOperations.Kragning_TEF:
                 case Manage_WorkOperation.WorkOperations.Skärmning:
                 case Manage_WorkOperation.WorkOperations.Slipning:
-                case Manage_WorkOperation.WorkOperations.Svetsning:
-                    Add_TemplateName();
+                Add_TemplateName();
                     break;
                 case Manage_WorkOperation.WorkOperations.Nothing:
                     if (IsOperatorStartingOrder)
@@ -390,7 +389,7 @@ ORDER BY ROW_NUMBER() OVER (PARTITION BY PartGroupID ORDER BY TRY_CAST(RevNr AS 
             // var org_Arbetsoperation = Order.WorkOperation;
             using var con = new SqlConnection(Database.cs_Protocol);
             var query = @"
-                    SELECT DISTINCT maintemplate.Name, workoperation.Name
+                    SELECT DISTINCT maintemplate.Name, workoperation.Name, maintemplate.ID
                     FROM Processcard.MainData AS processcard
                         LEFT JOIN Protocol.MainTemplate AS maintemplate
                             ON processcard.ProtocolMainTemplateID = maintemplate.ID
@@ -400,7 +399,7 @@ ORDER BY ROW_NUMBER() OVER (PARTITION BY PartGroupID ORDER BY TRY_CAST(RevNr AS 
             if (IsOnlyProcesscard == false)
                 query +=
                     @"UNION
-                    SELECT DISTINCT maintemplate.Name, workoperation.Name
+                    SELECT DISTINCT maintemplate.Name, workoperation.Name, maintemplate.ID
                     FROM [Order].MainData AS protocol
                         LEFT JOIN Protocol.MainTemplate AS maintemplate
                             ON protocol.ProtocolMainTemplateID = maintemplate.ID
@@ -416,7 +415,9 @@ ORDER BY ROW_NUMBER() OVER (PARTITION BY PartGroupID ORDER BY TRY_CAST(RevNr AS 
             {
                 var templatename = reader[0].ToString();
                 var workoperation = reader[1].ToString();
-                if (workoperation != null) Add_Button_ProtocolTemplate(templatename, templatename, 0, workoperation, null, null, Order.PartID, Order.PartGroupID, true);
+                int.TryParse(reader[2].ToString(), out var mainTemplateID);
+
+                if (workoperation != null) Add_Button_ProtocolTemplate(templatename, templatename, mainTemplateID, workoperation, null, null, Order.PartID, Order.PartGroupID, true);
             }
         }
 

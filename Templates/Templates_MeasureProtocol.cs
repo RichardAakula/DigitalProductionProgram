@@ -313,6 +313,7 @@ namespace DigitalProductionProgram.Templates
             TemplateState.IsOkUpdateTemplate = true;
             IsNewRevisionSet = false;
 
+            Parameters.Load(dgv_Parameters);
             SetTotalConnectedTemplates();
         }
 
@@ -439,8 +440,8 @@ namespace DigitalProductionProgram.Templates
                 return;
             var parameter = dgv_Parameters.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString();
             var descriptionid = dgv_Parameters.Rows[e.RowIndex].Cells[0].Value.ToString();
-            //if (TemplateControls.IsCodeTextExistInModule(dgv_ProtocolsActive_Main, codetext))
-            //    return;
+
+            dgv_Parameters.Rows.RemoveAt(e.RowIndex);
             dgv_Template.Rows.Add();
             dgv_Template.Rows[^1].Cells["col_DescriptionID"].Value = descriptionid;
             dgv_Template.Rows[^1].Cells["col_Parameter"].Value = parameter;
@@ -677,7 +678,7 @@ namespace DigitalProductionProgram.Templates
         {
             if (cb_Monitor_MeasuringTemplate.SelectedIndex <= 0) return;
             var combobBoxColumn = (DataGridViewComboBoxColumn)dgv_Template.Columns["col_ParameterMonitor"];
-            int.TryParse(cb_Monitor_MeasuringTemplate.SelectedValue.ToString(), out var value);
+            string value = cb_Monitor_MeasuringTemplate.SelectedValue.ToString();
             var list = Monitor.Monitor.List_MonitorParameters(value);
             combobBoxColumn.DataSource = list;
         }
@@ -768,10 +769,17 @@ namespace DigitalProductionProgram.Templates
                 dt_Parameters = new DataTable();
                 using (var con = new SqlConnection(Database.cs_Protocol))
                 {
-                    const string query = @"SELECT ID, CodeName FROM MeasureProtocol.Description ORDER BY CodeName";
+                    const string query = @"
+                        SELECT 
+                            ID, 
+                            CodeName 
+                        FROM MeasureProtocol.Description 
+                        WHERE ID NOT IN (SELECT DescriptionID FROM MeasureProtocol.Template WHERE MeasureProtocolMainTemplateID = @measureprotocolmaintemplateid)
+                        ORDER BY CodeName";
                     var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                    cmd.Parameters.AddWithValue("@measureprotocolmaintemplateid", MainTemplate.ID);
                     con.Open();
-                    var dataAdapter = new SqlDataAdapter(query, con);
+                    var dataAdapter = new SqlDataAdapter(cmd);
                     dataAdapter.Fill(dt_Parameters);
                     dgv.DataSource = dt_Parameters;
                 }

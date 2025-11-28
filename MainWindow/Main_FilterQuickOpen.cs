@@ -1,21 +1,18 @@
-﻿using System;
-using System.Data;
-using Microsoft.Data.SqlClient;
-using System.Drawing;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using DigitalProductionProgram.DatabaseManagement;
+﻿using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Help;
 using DigitalProductionProgram.PrintingServices;
-using static DigitalProductionProgram.OrderManagement.Manage_WorkOperation;
+using Microsoft.Data.SqlClient;
+using System.Data;
+using DigitalProductionProgram.ControlsManagement;
 
 namespace DigitalProductionProgram.MainWindow
 {
     public partial class Main_FilterQuickOpen : Form
     {
-        public static DataTable? DataTable_SnabbÖppna { get; set; }
+        private static DataTable? DataTable_SnabbÖppna { get; set; }
         private readonly DataGridView dgv_QuickOpen;
-        public static Dictionary<int, (Color BackColor, Color ForeColor)> LoadQuickStartColors()
+        private static bool IsNoWorkoperationChecked = true;
+        private static Dictionary<int, (Color BackColor, Color ForeColor)> LoadQuickStartColors()
         {
             var result = new Dictionary<int, (Color, Color)>();
 
@@ -52,7 +49,7 @@ namespace DigitalProductionProgram.MainWindow
             dgv_QuickOpen = dgv;
         }
 
-        public string WorkOperation = string.Empty;
+        private string WorkOperation = string.Empty;
 
         private static bool IsWorkoperationSelected(int workoperationID)
         {
@@ -64,14 +61,16 @@ namespace DigitalProductionProgram.MainWindow
             cmd.Parameters.AddWithValue("@workoperationid", workoperationID);
             var reader = cmd.ExecuteReader();
             if (reader.HasRows)
+            {
+                IsNoWorkoperationChecked = false;
                 return true;
-
+            }
             return false;
         }
         public void AddWorkoperationCheckBoxes()
         {
             var total_height = 0;
-
+            IsNoWorkoperationChecked = true;
             using (var con = new SqlConnection(Database.cs_Protocol))
             {
                 var query = $"SELECT ID, Name, Description FROM Workoperation.Names ORDER BY Description";
@@ -88,17 +87,18 @@ namespace DigitalProductionProgram.MainWindow
                     var workoperationID = int.Parse(reader["ID"].ToString());
                     var name = reader["Name"].ToString();
                     var description = reader["Description"].ToString();
-                    Add_CheckBox(name, workoperationID, description, ref total_height);
-
+                    bool isChecked = IsWorkoperationSelected(workoperationID);
+                    Add_CheckBox(name, description, isChecked, ref total_height);
                 }
             }
-            
+            Add_CheckBox(null, LanguageManager.GetString("top10LatestOrders"), IsNoWorkoperationChecked, ref total_height);
             tlp_BackGround.RowStyles[1].Height = total_height;
             Height = total_height + 66;
         }
 
-        private void Add_CheckBox(string name, int workoperationid, string description, ref int total_height)
+        private void Add_CheckBox(string? name, string? description, bool isChecked, ref int total_height)
         {
+           
             var chb = new CheckBox
             {
                 Name = name,
@@ -108,10 +108,10 @@ namespace DigitalProductionProgram.MainWindow
                 Font = new Font("Segoe UI", 9, FontStyle.Bold),
                 Width = 228,
                 Cursor = Cursors.Hand,
-                Checked = IsWorkoperationSelected(workoperationid),
+                Checked = isChecked,
                 Margin = new Padding(0, 0, 0, 2)
             };
-            chb.CheckedChanged += WorkOperation_CheckBoxChangedAsync;
+            chb.CheckedChanged += WorkOperation_CheckBoxChanged;
             total_height += chb.Height + 2;
             flp_Labels.Controls.Add(chb);
         }
@@ -161,7 +161,7 @@ namespace DigitalProductionProgram.MainWindow
         }
 
 
-        public static void Load_QuickStart()
+        private static void Load_QuickStart()
         {
             var antal_arbetsOp = 0;
             DataTable_SnabbÖppna = new DataTable();
@@ -178,7 +178,10 @@ namespace DigitalProductionProgram.MainWindow
             var ctr = (int)Math.Floor(10 / (double)antal_arbetsOp);
 
             if (ctr < 0)
+            {
+                Fill_QuickStart();
                 return;
+            }
 
             using (var con = new SqlConnection(Database.cs_Protocol))
             {
@@ -193,6 +196,21 @@ namespace DigitalProductionProgram.MainWindow
                     Fill_QuickStart(workoperationID, ctr);
                 }
             }
+        }
+
+        private static void Fill_QuickStart()
+        {
+            using var con = new SqlConnection(Database.cs_Protocol);
+            var query = $@"SELECT TOP(10) OrderID, OrderNr, PartNr, PartID, Customer, Date_Start AS Datum, ProdLine, ProdType, WorkOperationID
+                                FROM [Order].MainData   
+                                WHERE IsOrderDone = 'False' 
+                                    AND OrderNr != 'Q12345' 
+                                    AND Date_Start IS NOT NULL 
+                                ORDER BY Datum DESC";
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            con.Open();
+            DataTable_SnabbÖppna?.Load(cmd.ExecuteReader());
+            con.Close();
         }
         private static void Fill_QuickStart(int workOperationID, int ctr)
         {
@@ -211,15 +229,35 @@ namespace DigitalProductionProgram.MainWindow
             con.Close();
         }
 
-        private void WorkOperation_CheckBoxChangedAsync(object sender, EventArgs e)
+        private void WorkOperation_CheckBoxChanged(object? sender, EventArgs e)
         {
             var chb = (CheckBox)sender;
             WorkOperation = chb.Name;
 
-            // Enum.TryParse(WorkOperation, out WorkOperations arbetsOperation);
             Settings.Settings.SaveData.Quickstart_WorkOperation(WorkOperation);
             var task = Load_ListAsync(dgv_QuickOpen);
-            //Load_List(dgv_QuickOpen, null);
+            //Checkar ur "Tio senaste startade orders" om någon workoperation är ikryssad
+            if (!string.IsNullOrEmpty(chb.Name))
+            {
+                foreach (CheckBox checkBox in flp_Labels.Controls)
+                {
+
+                    if (string.IsNullOrEmpty(checkBox.Name) && checkBox.Checked)
+                    {
+                        checkBox.CheckedChanged -= WorkOperation_CheckBoxChanged;
+                        checkBox.Checked = false;
+                        checkBox.CheckedChanged += WorkOperation_CheckBoxChanged;
+
+                    }
+                }
+            }
+
+            
+            if (string.IsNullOrEmpty(WorkOperation) && chb.Checked)
+            {
+                this.Close();
+            }
+            
         }
 
         private void Close_Click(object sender, EventArgs e)

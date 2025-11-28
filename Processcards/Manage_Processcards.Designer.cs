@@ -933,7 +933,7 @@ namespace DigitalProductionProgram.Processcards
             btn_DeActivate_PartNr.TabIndex = 1009;
             btn_DeActivate_PartNr.Text = "Inaktivera Processkortet";
             btn_DeActivate_PartNr.UseVisualStyleBackColor = true;
-            btn_DeActivate_PartNr.Click += Aktivera_Inaktivera_ArtikelNr_Click;
+            btn_DeActivate_PartNr.Click += ActivateDeactivateProcesscard_Click;
             // 
             // btn_UpdateTemplate
             // 

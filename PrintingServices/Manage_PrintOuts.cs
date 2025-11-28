@@ -52,8 +52,11 @@ namespace DigitalProductionProgram.PrintingServices
             var measureprotocol = new Measureprotocol();
         }
 
+        // Add keywords that identify virtual/PDF printers
+        private static readonly string[] PdfKeywords = new[] { "pdf", "xps", "microsoft print to pdf", "adobe pdf" };
         public static void Choose_PrintOut()
         {
+
             switch (Order.WorkOperation)
             {
                 case Manage_WorkOperation.WorkOperations.Blandning_PTFE:
@@ -77,7 +80,79 @@ namespace DigitalProductionProgram.PrintingServices
                     break;
             }
         }
-       
+
+        // Returns true if we have an acceptable physical printer (or user picked one).
+        public static bool IsPrinterSelected
+        {
+            get
+            {
+                var settings = new PrinterSettings();
+                var current = settings.PrinterName ?? string.Empty;
+
+                // If no valid printer or looks like PDF/XPS -> force selection
+                if (!settings.IsValid || ContainsPdfKeyword(current))
+                {
+                    var message = !settings.IsValid
+                        ? "No valid default printer was found. Please select a printer."
+                        : $"The current default printer is \"{current}\" which appears to be a PDF/XPS printer. Please select a physical printer.";
+
+                    var result = MessageBox.Show(message, "Printer check", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+                    if (result == DialogResult.Cancel)
+                        return false;
+
+                    return PromptUserToSelectPrinter();
+                }
+
+                return true;
+            }
+        }
+        // Shows a PrintDialog to let the operator choose a printer. Returns true if an acceptable choice was made.
+        private static bool PromptUserToSelectPrinter()
+        {
+            using var pd = new PrintDialog();
+            pd.AllowSomePages = false;
+            pd.AllowSelection = false;
+            pd.ShowHelp = false;
+            pd.PrinterSettings = new PrinterSettings();
+
+            if (pd.ShowDialog() != DialogResult.OK)
+                return false;
+
+            var chosen = pd.PrinterSettings.PrinterName ?? string.Empty;
+            if (ContainsPdfKeyword(chosen))
+            {
+                MessageBox.Show("Selected printer still looks like a PDF/XPS printer. Please choose a physical printer.", "Printer check", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
+
+            ApplyPrinterToAllPrintDocuments(chosen);
+            return true;
+        }
+        private static bool ContainsPdfKeyword(string printerName)
+        {
+            if (string.IsNullOrWhiteSpace(printerName))
+                return true;
+
+            foreach (var k in PdfKeywords)
+            {
+                if (printerName.IndexOf(k, StringComparison.OrdinalIgnoreCase) >= 0)
+                    return true;
+            }
+
+            return false;
+        }
+
+        // Set the chosen printer on the shared PrintDocument instances.
+        private static void ApplyPrinterToAllPrintDocuments(string printerName)
+        {
+            var docs = new[] { Print_Diagram_Sökning_Processkort, Print_Comments_And_ExtraComments, Print_ExtraComments, Print_Comments_Extra_Rows, Print_Pictures };
+            foreach (var doc in docs)
+            {
+                if (doc != null)
+                    doc.PrinterSettings.PrinterName = printerName;
+            }
+        }
+
         public static void Preview_Diagram()
         {
             Preview_Diagram_Sökning_Processkort.ShowDialog();

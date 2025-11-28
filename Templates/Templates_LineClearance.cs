@@ -751,9 +751,8 @@ namespace DigitalProductionProgram.Templates
             public static string LineClearance_CenturiLink { get; set; }
             public static int TotalConnectedProcesscardsToTemplate(string lineClearanceRevision)
             {
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    const string query = @"
+                using var con = new SqlConnection(Database.cs_Protocol);
+                const string query = @"
                             SELECT COUNT(*) 
                             FROM Processcard.MainData as maindata
                                 JOIN LineClearance.MainTemplate as lineclearancetemplate
@@ -762,19 +761,17 @@ namespace DigitalProductionProgram.Templates
 	                                ON protocolTemplate.ID = lineclearancetemplate.ProtocolMainTemplateID
                             WHERE maindata.ProtocolMainTemplateID = (SELECT ProtocolMainTemplateID FROM LineClearance.MainTemplate WHERE MainTemplateID = @lineclearancemaintemplateid)
                                 AND protocolTemplate.LineClearance_Template = @lineclearancerevision";
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    con.Open();
-                    cmd.Parameters.AddWithValue("@lineclearancemaintemplateid", LineClearance_MainTemplateID);
-                    cmd.Parameters.AddWithValue("@lineclearancerevision", lineClearanceRevision);
-                    var value = cmd.ExecuteScalar();
-                    return value == null ? 0 : int.Parse(value.ToString());
-                }
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                con.Open();
+                cmd.Parameters.AddWithValue("@lineclearancemaintemplateid", LineClearance_MainTemplateID);
+                cmd.Parameters.AddWithValue("@lineclearancerevision", lineClearanceRevision);
+                var value = cmd.ExecuteScalar();
+                return value == null ? 0 : int.Parse(value.ToString());
             }
             public static int TotalConnectedOrdersToTemplate(string lineClearanceRevision)
             {
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    const string query = @"
+                using var con = new SqlConnection(Database.cs_Protocol);
+                const string query = @"
                     SELECT COUNT(*) 
                     FROM [Order].MainData as maindata
                     JOIN LineClearance.MainTemplate as lineclearancetemplate
@@ -783,13 +780,12 @@ namespace DigitalProductionProgram.Templates
 	                    ON protocolTemplate.ID = lineclearancetemplate.ProtocolMainTemplateID
                     WHERE maindata.ProtocolMainTemplateID = (SELECT ProtocolMainTemplateID FROM LineClearance.MainTemplate WHERE MainTemplateID = @lineclearancemaintemplateid)
                         AND protocolTemplate.LineClearance_Template = @lineclearancerevision";
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    con.Open();
-                    cmd.Parameters.AddWithValue("@lineclearancemaintemplateid", LineClearance_MainTemplateID);
-                    cmd.Parameters.AddWithValue("@lineclearancerevision", lineClearanceRevision);
-                    var value = cmd.ExecuteScalar();
-                    return value == null ? 0 : int.Parse(value.ToString());
-                }
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                con.Open();
+                cmd.Parameters.AddWithValue("@lineclearancemaintemplateid", LineClearance_MainTemplateID);
+                cmd.Parameters.AddWithValue("@lineclearancerevision", lineClearanceRevision);
+                var value = cmd.ExecuteScalar();
+                return value == null ? 0 : int.Parse(value.ToString());
             }
             public static bool IsTemplateExist(string revision)
             {

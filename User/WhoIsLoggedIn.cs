@@ -1,26 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.Data.SqlClient;
-using System.Drawing;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using DigitalProductionProgram.DatabaseManagement;
+﻿using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.MainWindow;
+using LiveChartsCore;
+using LiveChartsCore.Defaults;
+using LiveChartsCore.SkiaSharpView;
+using LiveChartsCore.SkiaSharpView.Painting;
+using LiveChartsCore.SkiaSharpView.WinForms;
+using Microsoft.Data.SqlClient;
+using SkiaSharp;
 
 namespace DigitalProductionProgram.User
 {
     public partial class WhoIsLoggedIn : Form
     {
-        private readonly List<Users> listUsers = new List<Users>();
-        private readonly List<FlowLayoutPanel> panels = new List<FlowLayoutPanel>();
+        private readonly List<Users> listUsers = new();
+        private readonly List<FlowLayoutPanel> panels = new();
 
         public WhoIsLoggedIn()
         {
             InitializeComponent();
 
             new Users();
-            if (Person.Role == "SuperAdmin")
-                chart_Operatör.Visible = true;
 
             Log.Activity.Start();
             LoadUsersAsync(); // Async version
@@ -29,9 +28,8 @@ namespace DigitalProductionProgram.User
 
         private async void LoadUsersAsync()
         {
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                const string query = @"
+            await using var con = new SqlConnection(Database.cs_Protocol);
+            const string query = @"
                 SELECT Name, EmployeeNumber, RoleName 
                 FROM [User].Person as person
                 JOIN [User].Roles as roles
@@ -39,21 +37,20 @@ namespace DigitalProductionProgram.User
                 WHERE Online = 'True' 
                     AND CONVERT(date, Last_Point_Time) = CONVERT(date, GETDATE())
                 ORDER BY RoleName";
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                con.Open();
-                var reader = await cmd.ExecuteReaderAsync();
-                while (await reader.ReadAsync())
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            con.Open();
+            var reader = await cmd.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
+            {
+                listUsers.Add(new Users
                 {
-                    listUsers.Add(new Users
-                    {
-                        Name = reader["Name"].ToString(),
-                        AnstNr = reader["EmployeeNumber"].ToString(),
-                        Role = reader["RoleName"].ToString()
-                    });
-                }
-
-                await PrintUsers();
+                    Name = reader["Name"].ToString(),
+                    AnstNr = reader["EmployeeNumber"].ToString(),
+                    Role = reader["RoleName"].ToString()
+                });
             }
+
+            await PrintUsers();
         }
 
         private static async Task<int?> LastOrderIDAsync(string anstNr)
@@ -129,10 +126,6 @@ namespace DigitalProductionProgram.User
 
         private async Task PrintUsers()
         {
-            chart_Operatör.Series[0].Points.Clear();
-            chart_Operatör.Series[0].Name = "Antal Inloggningar";
-            chart_Operatör.ChartAreas[0].AxisX.Interval = 1;
-
             for (var i = 0; i < listUsers.Count; i++)
             {
                 AddPanel();
@@ -140,9 +133,11 @@ namespace DigitalProductionProgram.User
                 AddName(i);
                 AddEmployeeNr(i);
                 AddRole(i);
-                await AddProdLineAsync(i); // Async version
-                await InitializeChartOperatörInfo(listUsers[i].Name);
+                await AddProdLineAsync(i);
             }
+
+            // HÄR – rita diagrammet EN gång
+            await InitializeChartOperatörInfo(listUsers.Select(u => u.Name).ToList());
         }
         private async Task AddProdLineAsync(int i)
         {
@@ -212,50 +207,108 @@ namespace DigitalProductionProgram.User
             panels[i].Controls.Add(lbl);
         }
 
-        private async Task InitializeChartOperatörInfo(string? user)
-        {
-            var totalLogIns = TotalLogInsAsync();
 
-            if (!string.IsNullOrEmpty(user))
+
+        private async Task InitializeChartOperatörInfo(List<string> users)
+        {
+            panel_Chart.Controls.Clear();
+
+            var allCounts = await GetAllLoginCountsAsync();
+            int totalLogins = allCounts.Values.Sum();
+            if (totalLogins == 0) totalLogins = 1;
+
+            var seriesList = new List<ISeries>();
+
+            var rnd = new Random();
+
+            int xIndex = 0;
+
+            foreach (var user in users)
             {
-                var antal = await GetLoginCountAsync(user);
-                var percent = antal / (double)totalLogIns * 100;
-                chart_Operatör.Series[0].Points.AddXY($"{percent:0.0}% {user}", antal);
+                allCounts.TryGetValue(user, out int count);
+                double pct = count / (double)totalLogins * 100;
+
+                var color = new SKColor(
+                    (byte)rnd.Next(50, 200),
+                    (byte)rnd.Next(50, 200),
+                    (byte)rnd.Next(50, 200));
+
+                seriesList.Add(new ColumnSeries<ObservablePoint>
+                {
+                    Name = $"{user} ({pct:0.0}%)",
+                    Values = [new ObservablePoint(xIndex, count)], // keep unique X for each column
+
+                    Fill = new SolidColorPaint(color),
+                    Stroke = null,
+
+                    MaxBarWidth = 150,       // 👈 (valfritt) Begränsar maxbredden
+                    
+                    Padding = 0,
+                    DataLabelsPaint = new SolidColorPaint(SKColors.Black),
+                    DataLabelsFormatter = point => $"{pct:0.0}%"
+                });
+
+                xIndex++;
             }
+
+            var chart = new CartesianChart
+            {
+                Series = seriesList,
+
+                XAxes =
+                [
+                    new Axis
+                    {
+                        Labels = users,     // now matches X indexes
+                        LabelsRotation = 15,
+                    }
+                ],
+
+                YAxes =
+                [
+                    new Axis
+                    {
+                        Name = "Antal inloggningar",
+                        MinLimit = 0
+                    }
+                ],
+
+                LegendPosition = LiveChartsCore.Measure.LegendPosition.Right,
+                LegendTextPaint = new SolidColorPaint(SKColors.White),
+                Dock = DockStyle.Fill
+            };
+
+            panel_Chart.Controls.Add(chart);
         }
 
-        private async Task<int> GetLoginCountAsync(string? name)
+        public static async Task<Dictionary<string, int>> GetAllLoginCountsAsync()
         {
-            var con = new SqlConnection(Database.cs_Protocol);
-            try
+            var result = new Dictionary<string, int>();
+
+            await using var con = new SqlConnection(Database.cs_Protocol);
+            await using var cmd = new SqlCommand(@"
+        SELECT p.Name, COUNT(*) AS Cnt
+        FROM Log.ActivityLog a
+        JOIN [User].Person p ON p.UserID = a.UserID
+        WHERE a.Info LIKE 'Loggar in%'
+        GROUP BY p.Name
+    ", con);
+
+            ServerStatus.Add_Sql_Counter();
+            await con.OpenAsync();
+
+            using var reader = await cmd.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
             {
-                var query = "SELECT COUNT(*) FROM Log.ActivityLog WHERE Program = 'Körprotokoll' AND UserID = (SELECT UserID FROM [User].Person WHERE Name = @name) AND Info LIKE 'Loggar in%'";
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@name", name);
-                await con.OpenAsync();
-                return (int)await cmd.ExecuteScalarAsync();
+                var name = reader.GetString(0);
+                var count = reader.GetInt32(1);
+                result[name] = count;
             }
-            finally
-            {
-                con.Close();
-            }
+
+            return result;
         }
 
-        public static int TotalLogInsAsync()
-        {
-            var con = new SqlConnection(Database.cs_Protocol);
-            try
-            {
-                const string query = "SELECT COUNT(*) FROM Log.ActivityLog WHERE Program = 'Körprotokoll' AND UserID IS NOT NULL AND Info LIKE 'Loggar in%'";
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                con.Open();
-                return (int)cmd.ExecuteScalar();
-            }
-            finally
-            {
-                con.Close();
-            }
-        }
+
 
         private class Users
         {

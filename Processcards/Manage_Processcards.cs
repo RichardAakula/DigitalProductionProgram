@@ -344,7 +344,9 @@ namespace DigitalProductionProgram.Processcards
 
             Fill_cb_ProtocolTemplateRevision(cb_ProtocolTemplateName.SelectedItem?.ToString());
             Templates_Protocol.MainTemplate.Load_MainTemplateID(cb_ProtocolTemplateName.SelectedItem?.ToString(), cb_TemplateRevision.SelectedItem?.ToString());
-            LoadTemplate();
+            
+            
+            LoadTemplate(false);
         }
 
 
@@ -414,6 +416,8 @@ namespace DigitalProductionProgram.Processcards
 
         private void Fill_cb_ProtocolTemplateRevision(string name)
         {
+            if (string.IsNullOrEmpty(name))
+                return;
             var query = @"SELECT DISTINCT Revision FROM Protocol.MainTemplate WHERE Name = @name";
             var parameters = new Dictionary<string, object>
             {
@@ -487,7 +491,7 @@ namespace DigitalProductionProgram.Processcards
         {
             tab_Main.SelectedTab = tp_Kragning;
             tlp_Main.ColumnStyles[0].Width = 744;
-            tlp_Main_Processkort.Width = 462;
+            tlp_Main_Processkort.Width = 650;
             tlp_Main_Processkort.Height = 240;
 
             panel_ProductionLine.Visible = false;
@@ -515,8 +519,8 @@ namespace DigitalProductionProgram.Processcards
         private void Change_UI_Slipning()
         {
             tab_Main.SelectedTab = tp_Slipning;
-            tlp_Main.ColumnStyles[0].Width = 447;
-            tlp_Main_Processkort.Width = 430;
+            tlp_Main.ColumnStyles[0].Width = 550;
+            tlp_Main_Processkort.Width = 550;
             tlp_Main_Processkort.Height = 210;
 
             panel_ProductionLine.Visible = false;
@@ -578,9 +582,9 @@ namespace DigitalProductionProgram.Processcards
                 Part.Load_PartGroup_ID(Order.PartNumber, cb_ProtocolTemplateName.Text, Order.WorkOperation);
             }
 
-            Load_Data_Processcard(true);
+            Load_Data_Processcard(true, true);
         }
-        private void Load_Data_Processcard(bool is_HämtaInfo_dgv_Rev, bool IsTemplateAlreadySet = false)
+        private void Load_Data_Processcard(bool is_HämtaInfo_dgv_Rev, bool IsOkCopyData, bool IsTemplateAlreadySet = false)
         {
             var org_artikelNr = Order.PartNumber;
             Order.PartNumber = tb_PartNr.Text;
@@ -603,7 +607,7 @@ namespace DigitalProductionProgram.Processcards
             switch (Order.WorkOperation)
             {
                 default:
-                    LoadTemplate();
+                    LoadTemplate(IsOkCopyData);
                     break;
                 case Manage_WorkOperation.WorkOperations.Kragning_TEF:
                     Processkort_Kragning.Load_Info();
@@ -756,8 +760,15 @@ namespace DigitalProductionProgram.Processcards
         }
 
         private bool IsOkAskQuestionCopyData = true;
-        private void LoadTemplate()
+        private void LoadTemplate(bool IsOkCopyData)
         {
+            //Dessa workoperations använder inte samma mallar som övriga.
+            if (Order.WorkOperation == Manage_WorkOperation.WorkOperations.Kragning_TEF ||
+                Order.WorkOperation == Manage_WorkOperation.WorkOperations.Skärmning ||
+                Order.WorkOperation == Manage_WorkOperation.WorkOperations.Slipning)
+                return;
+
+
             panel_ProductionLine.Visible = Templates_Protocol.MainTemplate.IsProcesscardUsingProdline;
             bool IsOkCopyDataFromTemplate = false;
             bool IsProcesscardHasData = false;
@@ -777,15 +788,16 @@ namespace DigitalProductionProgram.Processcards
                     }
             }
 
-           
 
-            if (Templates_Protocol.MainTemplate.ID != ActiveMainTemplateID && ActiveMainTemplateID > 0 && IsOkAskQuestionCopyData && IsProcesscardHasData)
+            if (IsOkCopyData)
             {
-                InfoText.Question("Vill du kopiera datan från den gamla mallen till den nya aktiva mallen?", CustomColors.InfoText_Color.Info, "Kopiera Data?", this);
-                if (InfoText.answer == InfoText.Answer.Yes)
-                    IsOkCopyDataFromTemplate = true;
+                if (Templates_Protocol.MainTemplate.ID != ActiveMainTemplateID && ActiveMainTemplateID > 0 && IsOkAskQuestionCopyData && IsProcesscardHasData)
+                {
+                    InfoText.Question("Vill du kopiera datan från den gamla mallen till den nya aktiva mallen?", CustomColors.InfoText_Color.Info, "Kopiera Data?", this);
+                    if (InfoText.answer == InfoText.Answer.Yes)
+                        IsOkCopyDataFromTemplate = true;
+                }
             }
-
 
             if (Templates_Protocol.MainTemplate.ID == ActiveMainTemplateID && Templates_Protocol.MainTemplate.Revision == ActiveTemplateRevision && IsOkCopyDataFromTemplate == false)
             {
@@ -1144,7 +1156,7 @@ namespace DigitalProductionProgram.Processcards
                 Order.PartID = 0;
 
             if (Order.PartID != 0)
-                Load_Data_Processcard(false);
+                Load_Data_Processcard(false, false);
 
             IsLoadingData = false;
         }
@@ -1246,14 +1258,14 @@ namespace DigitalProductionProgram.Processcards
         {
             Fill_cb_ProtocolTemplateRevision(cb_ProtocolTemplateName.SelectedItem?.ToString());
         }
-        private void TemplateName_SelectionChangeCommitted(object sender, EventArgs e)
+        private void TemplateName_SelectionChangeCommitted(object sender, EventArgs e) 
         {
             Fill_cb_ProtocolTemplateRevision(cb_ProtocolTemplateName.SelectedItem?.ToString());
 
             Templates_Protocol.MainTemplate.Load_MainTemplateID(cb_ProtocolTemplateName.SelectedItem?.ToString(), cb_TemplateRevision.SelectedItem?.ToString());
             Templates_Protocol.MainTemplate.Revision = cb_TemplateRevision.SelectedItem?.ToString();
             CopyProcessDataToNewTemplateRevision();
-            LoadTemplate();
+            LoadTemplate(true);
             ProcesscardBasedOn.Reset_ProcesscardStatus();
             IsUpdateProcesscard = false;
         }
@@ -1271,7 +1283,7 @@ namespace DigitalProductionProgram.Processcards
                 CopyProcessDataToNewTemplateRevision();
                 Templates_Protocol.MainTemplate.Revision = cb_TemplateRevision.Text;
                 Templates_Protocol.MainTemplate.Set_MainTemplateID(cb_ProtocolTemplateName.Text, cb_TemplateRevision.Text);
-                LoadTemplate();
+                LoadTemplate(false);
                 suppressTemplateRevisionSelectionChanged = false; // Allow event firing again
             }
 
@@ -1323,10 +1335,10 @@ HS-Machine = {Equipment.Equipment.HS_Machine}", CustomColors.InfoText_Color.Info
         }
 
 
-        private void Aktivera_Inaktivera_ArtikelNr_Click(object sender, EventArgs e)
+        private void ActivateDeactivateProcesscard_Click(object sender, EventArgs e)
         {
             Processcard.Update_Status_Processcard(tb_NewPartNr, btn_DeActivate_PartNr);
-            Load_Data_Processcard(false);
+            Load_Data_Processcard(false, false);
         }
         private void Delete_Processcard_Click(object sender, EventArgs e)
         {

@@ -31,187 +31,188 @@ namespace DigitalProductionProgram.Measure
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MeasureInstrument));
-            this.dgv_Mätdon = new System.Windows.Forms.DataGridView();
-            this.tlp_Main = new System.Windows.Forms.TableLayoutPanel();
-            this.pb_Info = new System.Windows.Forms.PictureBox();
-            this.btn_Add_Startup = new System.Windows.Forms.Button();
-            this.btn_Discard_Startup = new System.Windows.Forms.Button();
-            this.label_MeasureInstrument_Header = new System.Windows.Forms.Label();
-            this.col_MätDonNr = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.col_Row = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            ((System.ComponentModel.ISupportInitialize)(this.dgv_Mätdon)).BeginInit();
-            this.tlp_Main.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pb_Info)).BeginInit();
-            this.SuspendLayout();
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
+            ComponentResourceManager resources = new ComponentResourceManager(typeof(MeasureInstrument));
+            dgv_Mätdon = new DataGridView();
+            col_MätDonNr = new DataGridViewTextBoxColumn();
+            col_Row = new DataGridViewTextBoxColumn();
+            tlp_Main = new TableLayoutPanel();
+            pb_Info = new PictureBox();
+            btn_Add_Startup = new Button();
+            btn_Discard_Startup = new Button();
+            label_MeasureInstrument_Header = new Label();
+            ((ISupportInitialize)dgv_Mätdon).BeginInit();
+            tlp_Main.SuspendLayout();
+            ((ISupportInitialize)pb_Info).BeginInit();
+            SuspendLayout();
             // 
             // dgv_Mätdon
             // 
-            this.dgv_Mätdon.AllowUserToAddRows = false;
-            this.dgv_Mätdon.AllowUserToDeleteRows = false;
-            this.dgv_Mätdon.AllowUserToResizeColumns = false;
-            this.dgv_Mätdon.AllowUserToResizeRows = false;
-            this.dgv_Mätdon.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(15)))), ((int)(((byte)(15)))));
-            this.dgv_Mätdon.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.dgv_Mätdon.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgv_Mätdon.ColumnHeadersVisible = false;
-            this.dgv_Mätdon.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.col_MätDonNr,
-            this.col_Row});
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Consolas", 9F);
-            dataGridViewCellStyle1.ForeColor = System.Drawing.Color.DarkSlateGray;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgv_Mätdon.DefaultCellStyle = dataGridViewCellStyle1;
-            this.dgv_Mätdon.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgv_Mätdon.Location = new System.Drawing.Point(33, 20);
-            this.dgv_Mätdon.Margin = new System.Windows.Forms.Padding(0);
-            this.dgv_Mätdon.MultiSelect = false;
-            this.dgv_Mätdon.Name = "dgv_Mätdon";
-            this.dgv_Mätdon.RowHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Info;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Arial", 9F);
-            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.DimGray;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Info;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.Info;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgv_Mätdon.RowHeadersDefaultCellStyle = dataGridViewCellStyle2;
-            this.dgv_Mätdon.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.AutoSizeToDisplayedHeaders;
-            this.dgv_Mätdon.RowTemplate.Height = 18;
-            this.dgv_Mätdon.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.dgv_Mätdon.ShowCellErrors = false;
-            this.dgv_Mätdon.ShowCellToolTips = false;
-            this.dgv_Mätdon.ShowEditingIcon = false;
-            this.dgv_Mätdon.ShowRowErrors = false;
-            this.dgv_Mätdon.Size = new System.Drawing.Size(279, 112);
-            this.dgv_Mätdon.TabIndex = 960;
-            this.dgv_Mätdon.CellMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.Mätdon_CellMouseDoubleClick);
-            // 
-            // tlp_Main
-            // 
-            this.tlp_Main.BackColor = System.Drawing.Color.Transparent;
-            this.tlp_Main.ColumnCount = 1;
-            this.tlp_Main.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 33F));
-            this.tlp_Main.Controls.Add(this.pb_Info, 0, 0);
-            this.tlp_Main.Controls.Add(this.btn_Add_Startup, 0, 1);
-            this.tlp_Main.Controls.Add(this.btn_Discard_Startup, 0, 2);
-            this.tlp_Main.Dock = System.Windows.Forms.DockStyle.Left;
-            this.tlp_Main.Location = new System.Drawing.Point(0, 20);
-            this.tlp_Main.Margin = new System.Windows.Forms.Padding(0);
-            this.tlp_Main.Name = "tlp_Main";
-            this.tlp_Main.RowCount = 4;
-            this.tlp_Main.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 36F));
-            this.tlp_Main.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
-            this.tlp_Main.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
-            this.tlp_Main.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tlp_Main.Size = new System.Drawing.Size(33, 112);
-            this.tlp_Main.TabIndex = 961;
-            // 
-            // pb_Info
-            // 
-            this.pb_Info.BackColor = System.Drawing.Color.Transparent;
-            this.pb_Info.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("pb_Info.BackgroundImage")));
-            this.pb_Info.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.pb_Info.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.pb_Info.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pb_Info.Location = new System.Drawing.Point(3, 3);
-            this.pb_Info.Name = "pb_Info";
-            this.pb_Info.Size = new System.Drawing.Size(27, 30);
-            this.pb_Info.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pb_Info.TabIndex = 1075;
-            this.pb_Info.TabStop = false;
-            this.pb_Info.Click += new System.EventHandler(this.Info_Click);
-            // 
-            // btn_Add_Startup
-            // 
-            this.btn_Add_Startup.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(198)))), ((int)(((byte)(239)))), ((int)(((byte)(206)))));
-            this.btn_Add_Startup.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btn_Add_Startup.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btn_Add_Startup.FlatAppearance.BorderSize = 0;
-            this.btn_Add_Startup.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(148)))), ((int)(((byte)(189)))), ((int)(((byte)(156)))));
-            this.btn_Add_Startup.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btn_Add_Startup.Font = new System.Drawing.Font("Segoe UI", 11.75F, System.Drawing.FontStyle.Bold);
-            this.btn_Add_Startup.ForeColor = System.Drawing.Color.DarkSlateGray;
-            this.btn_Add_Startup.Location = new System.Drawing.Point(1, 37);
-            this.btn_Add_Startup.Margin = new System.Windows.Forms.Padding(1, 1, 1, 0);
-            this.btn_Add_Startup.Name = "btn_Add_Startup";
-            this.btn_Add_Startup.Size = new System.Drawing.Size(31, 29);
-            this.btn_Add_Startup.TabIndex = 1073;
-            this.btn_Add_Startup.Text = "+";
-            this.btn_Add_Startup.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.btn_Add_Startup.UseCompatibleTextRendering = true;
-            this.btn_Add_Startup.UseVisualStyleBackColor = false;
-            this.btn_Add_Startup.Click += new System.EventHandler(this.Add_NewMeasureInstrument_Click);
-            // 
-            // btn_Discard_Startup
-            // 
-            this.btn_Discard_Startup.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(199)))), ((int)(((byte)(206)))));
-            this.btn_Discard_Startup.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btn_Discard_Startup.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btn_Discard_Startup.FlatAppearance.BorderSize = 0;
-            this.btn_Discard_Startup.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(205)))), ((int)(((byte)(149)))), ((int)(((byte)(156)))));
-            this.btn_Discard_Startup.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btn_Discard_Startup.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn_Discard_Startup.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(156)))), ((int)(((byte)(0)))), ((int)(((byte)(6)))));
-            this.btn_Discard_Startup.Location = new System.Drawing.Point(1, 67);
-            this.btn_Discard_Startup.Margin = new System.Windows.Forms.Padding(1, 1, 1, 0);
-            this.btn_Discard_Startup.Name = "btn_Discard_Startup";
-            this.btn_Discard_Startup.Size = new System.Drawing.Size(31, 29);
-            this.btn_Discard_Startup.TabIndex = 1074;
-            this.btn_Discard_Startup.Text = "-";
-            this.btn_Discard_Startup.UseCompatibleTextRendering = true;
-            this.btn_Discard_Startup.UseVisualStyleBackColor = false;
-            this.btn_Discard_Startup.Click += new System.EventHandler(this.Discard_Startup_Click);
-            // 
-            // label_MeasureInstrument_Header
-            // 
-            this.label_MeasureInstrument_Header.BackColor = System.Drawing.Color.Transparent;
-            this.label_MeasureInstrument_Header.Dock = System.Windows.Forms.DockStyle.Top;
-            this.label_MeasureInstrument_Header.Font = new System.Drawing.Font("Lucida Sans", 12.25F);
-            this.label_MeasureInstrument_Header.ForeColor = System.Drawing.SystemColors.Info;
-            this.label_MeasureInstrument_Header.Location = new System.Drawing.Point(0, 0);
-            this.label_MeasureInstrument_Header.Name = "label_MeasureInstrument_Header";
-            this.label_MeasureInstrument_Header.Size = new System.Drawing.Size(312, 20);
-            this.label_MeasureInstrument_Header.TabIndex = 962;
-            this.label_MeasureInstrument_Header.Text = "Mätdon";
-            this.label_MeasureInstrument_Header.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            dgv_Mätdon.AllowUserToAddRows = false;
+            dgv_Mätdon.AllowUserToDeleteRows = false;
+            dgv_Mätdon.AllowUserToResizeColumns = false;
+            dgv_Mätdon.AllowUserToResizeRows = false;
+            dgv_Mätdon.BackgroundColor = Color.FromArgb(45, 113, 122);
+            dgv_Mätdon.BorderStyle = BorderStyle.None;
+            dgv_Mätdon.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgv_Mätdon.ColumnHeadersVisible = false;
+            dgv_Mätdon.Columns.AddRange(new DataGridViewColumn[] { col_MätDonNr, col_Row });
+            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = Color.FromArgb(35, 103, 112);
+            dataGridViewCellStyle1.Font = new Font("Consolas", 9F);
+            dataGridViewCellStyle1.ForeColor = Color.FromArgb(187, 215, 228);
+            dataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.False;
+            dgv_Mätdon.DefaultCellStyle = dataGridViewCellStyle1;
+            dgv_Mätdon.Dock = DockStyle.Fill;
+            dgv_Mätdon.Location = new Point(38, 23);
+            dgv_Mätdon.Margin = new Padding(0);
+            dgv_Mätdon.MultiSelect = false;
+            dgv_Mätdon.Name = "dgv_Mätdon";
+            dgv_Mätdon.RowHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
+            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = SystemColors.Info;
+            dataGridViewCellStyle2.Font = new Font("Arial", 9F);
+            dataGridViewCellStyle2.ForeColor = Color.DimGray;
+            dataGridViewCellStyle2.SelectionBackColor = SystemColors.Info;
+            dataGridViewCellStyle2.SelectionForeColor = SystemColors.Info;
+            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.True;
+            dgv_Mätdon.RowHeadersDefaultCellStyle = dataGridViewCellStyle2;
+            dgv_Mätdon.RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.AutoSizeToDisplayedHeaders;
+            dgv_Mätdon.RowTemplate.Height = 18;
+            dgv_Mätdon.ScrollBars = ScrollBars.Vertical;
+            dgv_Mätdon.ShowCellErrors = false;
+            dgv_Mätdon.ShowCellToolTips = false;
+            dgv_Mätdon.ShowEditingIcon = false;
+            dgv_Mätdon.ShowRowErrors = false;
+            dgv_Mätdon.Size = new Size(326, 129);
+            dgv_Mätdon.TabIndex = 960;
+            dgv_Mätdon.CellMouseDoubleClick += Mätdon_CellMouseDoubleClick;
             // 
             // col_MätDonNr
             // 
-            this.col_MätDonNr.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.col_MätDonNr.HeaderText = "Nr";
-            this.col_MätDonNr.MinimumWidth = 70;
-            this.col_MätDonNr.Name = "col_MätDonNr";
-            this.col_MätDonNr.Width = 70;
+            col_MätDonNr.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            col_MätDonNr.HeaderText = "Nr";
+            col_MätDonNr.MinimumWidth = 70;
+            col_MätDonNr.Name = "col_MätDonNr";
+            col_MätDonNr.Width = 70;
             // 
             // col_Row
             // 
-            this.col_Row.HeaderText = "Row";
-            this.col_Row.Name = "col_Row";
-            this.col_Row.Visible = false;
-            this.col_Row.Width = 5;
+            col_Row.HeaderText = "Row";
+            col_Row.Name = "col_Row";
+            col_Row.Visible = false;
+            col_Row.Width = 5;
+            // 
+            // tlp_Main
+            // 
+            tlp_Main.BackColor = Color.Transparent;
+            tlp_Main.ColumnCount = 1;
+            tlp_Main.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 38F));
+            tlp_Main.Controls.Add(pb_Info, 0, 0);
+            tlp_Main.Controls.Add(btn_Add_Startup, 0, 1);
+            tlp_Main.Controls.Add(btn_Discard_Startup, 0, 2);
+            tlp_Main.Dock = DockStyle.Left;
+            tlp_Main.Location = new Point(0, 23);
+            tlp_Main.Margin = new Padding(0);
+            tlp_Main.Name = "tlp_Main";
+            tlp_Main.RowCount = 4;
+            tlp_Main.RowStyles.Add(new RowStyle(SizeType.Absolute, 42F));
+            tlp_Main.RowStyles.Add(new RowStyle(SizeType.Absolute, 35F));
+            tlp_Main.RowStyles.Add(new RowStyle(SizeType.Absolute, 35F));
+            tlp_Main.RowStyles.Add(new RowStyle(SizeType.Absolute, 23F));
+            tlp_Main.Size = new Size(38, 129);
+            tlp_Main.TabIndex = 961;
+            // 
+            // pb_Info
+            // 
+            pb_Info.BackColor = Color.Transparent;
+            pb_Info.BackgroundImage = (Image)resources.GetObject("pb_Info.BackgroundImage");
+            pb_Info.BackgroundImageLayout = ImageLayout.Stretch;
+            pb_Info.Cursor = Cursors.Hand;
+            pb_Info.Dock = DockStyle.Top;
+            pb_Info.Location = new Point(4, 3);
+            pb_Info.Margin = new Padding(4, 3, 4, 3);
+            pb_Info.Name = "pb_Info";
+            pb_Info.Size = new Size(30, 35);
+            pb_Info.SizeMode = PictureBoxSizeMode.Zoom;
+            pb_Info.TabIndex = 1075;
+            pb_Info.TabStop = false;
+            pb_Info.Click += Info_Click;
+            // 
+            // btn_Add_Startup
+            // 
+            btn_Add_Startup.BackColor = Color.FromArgb(198, 239, 206);
+            btn_Add_Startup.Cursor = Cursors.Hand;
+            btn_Add_Startup.Dock = DockStyle.Fill;
+            btn_Add_Startup.FlatAppearance.BorderSize = 0;
+            btn_Add_Startup.FlatAppearance.MouseOverBackColor = Color.FromArgb(148, 189, 156);
+            btn_Add_Startup.FlatStyle = FlatStyle.Flat;
+            btn_Add_Startup.Font = new Font("Segoe UI", 11.75F, FontStyle.Bold);
+            btn_Add_Startup.ForeColor = Color.DarkSlateGray;
+            btn_Add_Startup.Location = new Point(1, 43);
+            btn_Add_Startup.Margin = new Padding(1, 1, 1, 0);
+            btn_Add_Startup.Name = "btn_Add_Startup";
+            btn_Add_Startup.Size = new Size(36, 34);
+            btn_Add_Startup.TabIndex = 1073;
+            btn_Add_Startup.Text = "+";
+            btn_Add_Startup.TextAlign = ContentAlignment.TopCenter;
+            btn_Add_Startup.UseCompatibleTextRendering = true;
+            btn_Add_Startup.UseVisualStyleBackColor = false;
+            btn_Add_Startup.Click += Add_NewMeasureInstrument_Click;
+            // 
+            // btn_Discard_Startup
+            // 
+            btn_Discard_Startup.BackColor = Color.FromArgb(255, 199, 206);
+            btn_Discard_Startup.Cursor = Cursors.Hand;
+            btn_Discard_Startup.Dock = DockStyle.Fill;
+            btn_Discard_Startup.FlatAppearance.BorderSize = 0;
+            btn_Discard_Startup.FlatAppearance.MouseOverBackColor = Color.FromArgb(205, 149, 156);
+            btn_Discard_Startup.FlatStyle = FlatStyle.Flat;
+            btn_Discard_Startup.Font = new Font("Segoe UI", 14.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btn_Discard_Startup.ForeColor = Color.FromArgb(156, 0, 6);
+            btn_Discard_Startup.Location = new Point(1, 78);
+            btn_Discard_Startup.Margin = new Padding(1, 1, 1, 0);
+            btn_Discard_Startup.Name = "btn_Discard_Startup";
+            btn_Discard_Startup.Size = new Size(36, 34);
+            btn_Discard_Startup.TabIndex = 1074;
+            btn_Discard_Startup.Text = "-";
+            btn_Discard_Startup.UseCompatibleTextRendering = true;
+            btn_Discard_Startup.UseVisualStyleBackColor = false;
+            btn_Discard_Startup.Click += Discard_Startup_Click;
+            // 
+            // label_MeasureInstrument_Header
+            // 
+            label_MeasureInstrument_Header.BackColor = Color.Transparent;
+            label_MeasureInstrument_Header.Dock = DockStyle.Top;
+            label_MeasureInstrument_Header.Font = new Font("Lucida Sans", 12.25F);
+            label_MeasureInstrument_Header.ForeColor = SystemColors.Info;
+            label_MeasureInstrument_Header.Location = new Point(0, 0);
+            label_MeasureInstrument_Header.Margin = new Padding(4, 0, 4, 0);
+            label_MeasureInstrument_Header.Name = "label_MeasureInstrument_Header";
+            label_MeasureInstrument_Header.Size = new Size(364, 23);
+            label_MeasureInstrument_Header.TabIndex = 962;
+            label_MeasureInstrument_Header.Text = "Mätdon";
+            label_MeasureInstrument_Header.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // MeasureInstrument
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.AutoSize = true;
-            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(15)))), ((int)(((byte)(15)))));
-            this.Controls.Add(this.dgv_Mätdon);
-            this.Controls.Add(this.tlp_Main);
-            this.Controls.Add(this.label_MeasureInstrument_Header);
-            this.Name = "MeasureInstrument";
-            this.Size = new System.Drawing.Size(312, 132);
-            ((System.ComponentModel.ISupportInitialize)(this.dgv_Mätdon)).EndInit();
-            this.tlp_Main.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.pb_Info)).EndInit();
-            this.ResumeLayout(false);
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            AutoSize = true;
+            BackColor = Color.FromArgb(35, 103, 112);
+            Controls.Add(dgv_Mätdon);
+            Controls.Add(tlp_Main);
+            Controls.Add(label_MeasureInstrument_Header);
+            Margin = new Padding(4, 3, 4, 3);
+            Name = "MeasureInstrument";
+            Size = new Size(364, 152);
+            ((ISupportInitialize)dgv_Mätdon).EndInit();
+            tlp_Main.ResumeLayout(false);
+            ((ISupportInitialize)pb_Info).EndInit();
+            ResumeLayout(false);
 
         }
 

@@ -107,12 +107,12 @@ namespace DigitalProductionProgram.MainWindow
                 TableLayoutPanel tlp = new TableLayoutPanel()
                 {
                     Name = $"{user.FirstName} {user.LastName} - {user.EmployeeNumber}",
-                    RowCount = 3,
+                    RowCount = 2,
                     ColumnCount = 3,
                     CellBorderStyle = TableLayoutPanelCellBorderStyle.Single,
                     BorderStyle = BorderStyle.FixedSingle,
                     Width = flp_List.Width - 23,
-                    Height = 75,
+                    Height = 50,
                 };
                 tlp.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 200)); // Kolumn 1
                 tlp.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));       // Kolumn 2
@@ -121,7 +121,7 @@ namespace DigitalProductionProgram.MainWindow
                 // Raddefinitioner (du kan justera höjder om du vill)
                 tlp.RowStyles.Add(new RowStyle(SizeType.AutoSize)); // Rad 1
                 tlp.RowStyles.Add(new RowStyle(SizeType.AutoSize)); // Rad 2
-                tlp.RowStyles.Add(new RowStyle(SizeType.AutoSize)); // Rad 3
+                //tlp.RowStyles.Add(new RowStyle(SizeType.AutoSize)); // Rad 3
                 if (user.IsClosedInterval || user.AbsenceDescription != null)
                 {
                     tlp.BackColor = CustomColors.Bad_Back;
@@ -211,14 +211,14 @@ namespace DigitalProductionProgram.MainWindow
                     Font = new Font("Palatino LineType", 9)
                 };
 
-                tlp.Controls.Add(lbl_Name, 0, 0);
-                tlp.SetColumnSpan(lbl_Name, 3);
+                tlp.Controls.Add(lbl_Name, 1, 0);
+                //tlp.SetColumnSpan(lbl_Name, 3);
                 
-                tlp.Controls.Add(lbl_Start, 0, 1);
-                tlp.Controls.Add(lbl_End, 2, 1);
+                tlp.Controls.Add(lbl_Start, 0, 0);
+                tlp.Controls.Add(lbl_End, 2, 0);
 
-                tlp.Controls.Add(lbl_Absence, 1,1);
-                tlp.Controls.Add(lbl_LoggedIn, 0, 2);
+                tlp.Controls.Add(lbl_Absence, 2,0);
+                tlp.Controls.Add(lbl_LoggedIn, 0, 1);
 
                 flp_List.Controls.Add(tlp);
             }

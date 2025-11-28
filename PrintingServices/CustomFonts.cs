@@ -116,6 +116,8 @@ namespace DigitalProductionProgram.PrintingServices
         public static Color Aqua_Font = Color.FromArgb(57, 108, 121);
         public static Color Load_BackColor_WorkOperation(string workoperation)
         {
+            if (string.IsNullOrEmpty(workoperation))
+                return Color.White;
             using var con = new SqlConnection(Database.cs_Protocol);
             var query = "SELECT Back_Red, Back_Green, Back_Blue FROM Settings.QuickStart_Color WHERE WorkOperationID = (SELECT ID FROM Workoperation.Names WHERE Name = @workoperation AND ID IS NOT NULL)";
             con.Open();
@@ -137,6 +139,8 @@ namespace DigitalProductionProgram.PrintingServices
         }
         public static Color Load_ForeColor_Workoperation(string workoperation)
         {
+            if (string.IsNullOrEmpty(workoperation))
+                return Color.Black;
             using var con = new SqlConnection(Database.cs_Protocol);
             var query = "SELECT Fore_Red, Fore_Green, Fore_Blue FROM Settings.QuickStart_Color WHERE WorkOperationID = (SELECT ID FROM Workoperation.Names WHERE Name = @workoperation AND ID IS NOT NULL)";
             con.Open();

@@ -2,6 +2,7 @@
 using System;
 using System.Diagnostics;
 using System.Windows.Forms;
+using DigitalProductionProgram.ControlsManagement;
 
 namespace DigitalProductionProgram.Övrigt
 {
@@ -20,6 +21,11 @@ namespace DigitalProductionProgram.Övrigt
             if (IsIconVisible)
             {
                 pb_Icon.Visible = true;
+               
+
+
+                //tlp_Main.Controls.Add(load, 0, 1);
+
             }
                 
             Refresh();

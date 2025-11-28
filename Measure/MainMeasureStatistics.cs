@@ -114,9 +114,10 @@ namespace DigitalProductionProgram.Measure
             if (Order.OrderID is null || Templates_MeasureProtocol.MainTemplate.ID == 0 || Templates_MeasureProtocol.MainTemplate.ID is null)
                 return;
 
-            var hasSameValues = MeasurementChart.TotalValuesInChart == MeasurementChart.TotalValuesInMeasureProtocol;
+            var totalValuesInMeasureProtocol = MeasurementChart.TotalValuesInMeasureProtocol;
+            var hasSameValues = MeasurementChart.TotalValuesInChart == totalValuesInMeasureProtocol;
             var hasSameCodeText = MeasurementChart.ActiveCodeText == axisName;
-            var hasNoValues = MeasurementChart.TotalValuesInMeasureProtocol == 0;
+            var hasNoValues = totalValuesInMeasureProtocol == 0;
 
             if (!hasSameCodeText)
                 goto ExecuteMeasureStats;

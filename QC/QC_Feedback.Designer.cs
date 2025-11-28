@@ -28,557 +28,576 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.tlp_Main = new System.Windows.Forms.TableLayoutPanel();
-            this.panel_Bottom = new System.Windows.Forms.Panel();
-            this.num_RemainingViews = new System.Windows.Forms.NumericUpDown();
-            this.label_RemainingView = new System.Windows.Forms.Label();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.btn_UploadImage = new System.Windows.Forms.Button();
-            this.btn_Screenshot = new System.Windows.Forms.Button();
-            this.panel_Right = new System.Windows.Forms.Panel();
-            this.tb_ppkHistory = new System.Windows.Forms.TextBox();
-            this.tb_ppkOrder = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.panel_OrderInfo = new System.Windows.Forms.Panel();
-            this.tb_WorkOperation = new System.Windows.Forms.TextBox();
-            this.tb_Date = new System.Windows.Forms.TextBox();
-            this.tb_ProdType = new System.Windows.Forms.TextBox();
-            this.tb_Operation = new System.Windows.Forms.TextBox();
-            this.tb_ProdLine = new System.Windows.Forms.TextBox();
-            this.tb_PartNr = new System.Windows.Forms.TextBox();
-            this.tb_OrderNr = new System.Windows.Forms.TextBox();
-            this.label_Workoperation = new System.Windows.Forms.Label();
-            this.label_Date = new System.Windows.Forms.Label();
-            this.label_ProdType = new System.Windows.Forms.Label();
-            this.label__Operation = new System.Windows.Forms.Label();
-            this.label_ProdLine = new System.Windows.Forms.Label();
-            this.label_PartNumber = new System.Windows.Forms.Label();
-            this.label_OrderNr = new System.Windows.Forms.Label();
-            this.label_Header = new System.Windows.Forms.Label();
-            this.panel_Left = new System.Windows.Forms.Panel();
-            this.tb_Comments = new System.Windows.Forms.TextBox();
-            this.label_Comments = new System.Windows.Forms.Label();
-            this.panel_Buttons = new System.Windows.Forms.Panel();
-            this.btn_Exit = new System.Windows.Forms.Button();
-            this.btn_Save_Exit = new System.Windows.Forms.Button();
-            this.pb_Image = new System.Windows.Forms.PictureBox();
-            this.tlp_Main.SuspendLayout();
-            this.panel_Bottom.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.num_RemainingViews)).BeginInit();
-            this.panel1.SuspendLayout();
-            this.panel_Right.SuspendLayout();
-            this.panel_OrderInfo.SuspendLayout();
-            this.panel_Left.SuspendLayout();
-            this.panel_Buttons.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pb_Image)).BeginInit();
-            this.SuspendLayout();
+            tlp_Main = new TableLayoutPanel();
+            panel_Bottom = new Panel();
+            num_RemainingViews = new NumericUpDown();
+            label_RemainingView = new Label();
+            panel1 = new Panel();
+            btn_UploadImage = new Button();
+            btn_Screenshot = new Button();
+            panel_Right = new Panel();
+            tb_ppkHistory = new TextBox();
+            tb_ppkOrder = new TextBox();
+            label1 = new Label();
+            label2 = new Label();
+            panel_OrderInfo = new Panel();
+            tb_WorkOperation = new TextBox();
+            tb_Date = new TextBox();
+            tb_ProdType = new TextBox();
+            tb_Operation = new TextBox();
+            tb_ProdLine = new TextBox();
+            tb_PartNr = new TextBox();
+            tb_OrderNr = new TextBox();
+            label_Workoperation = new Label();
+            label_Date = new Label();
+            label_ProdType = new Label();
+            label__Operation = new Label();
+            label_ProdLine = new Label();
+            label_PartNumber = new Label();
+            label_OrderNr = new Label();
+            label_Header = new Label();
+            panel_Left = new Panel();
+            tb_Comments = new TextBox();
+            label_Comments = new Label();
+            panel_Buttons = new Panel();
+            btn_Exit = new Button();
+            btn_Save_Exit = new Button();
+            pb_Image = new PictureBox();
+            tlp_Main.SuspendLayout();
+            panel_Bottom.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)num_RemainingViews).BeginInit();
+            panel1.SuspendLayout();
+            panel_Right.SuspendLayout();
+            panel_OrderInfo.SuspendLayout();
+            panel_Left.SuspendLayout();
+            panel_Buttons.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pb_Image).BeginInit();
+            SuspendLayout();
             // 
             // tlp_Main
             // 
-            this.tlp_Main.BackColor = System.Drawing.Color.Transparent;
-            this.tlp_Main.ColumnCount = 2;
-            this.tlp_Main.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tlp_Main.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tlp_Main.Controls.Add(this.panel_Bottom, 0, 3);
-            this.tlp_Main.Controls.Add(this.panel1, 0, 5);
-            this.tlp_Main.Controls.Add(this.panel_Right, 0, 2);
-            this.tlp_Main.Controls.Add(this.panel_OrderInfo, 0, 1);
-            this.tlp_Main.Controls.Add(this.label_Header, 0, 0);
-            this.tlp_Main.Controls.Add(this.panel_Left, 0, 2);
-            this.tlp_Main.Controls.Add(this.panel_Buttons, 1, 5);
-            this.tlp_Main.Controls.Add(this.pb_Image, 0, 4);
-            this.tlp_Main.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tlp_Main.Location = new System.Drawing.Point(0, 0);
-            this.tlp_Main.Name = "tlp_Main";
-            this.tlp_Main.RowCount = 6;
-            this.tlp_Main.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 71F));
-            this.tlp_Main.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 120F));
-            this.tlp_Main.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 119F));
-            this.tlp_Main.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 62F));
-            this.tlp_Main.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlp_Main.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 54F));
-            this.tlp_Main.Size = new System.Drawing.Size(944, 874);
-            this.tlp_Main.TabIndex = 0;
+            tlp_Main.BackColor = Color.Transparent;
+            tlp_Main.ColumnCount = 2;
+            tlp_Main.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            tlp_Main.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            tlp_Main.Controls.Add(panel_Bottom, 0, 3);
+            tlp_Main.Controls.Add(panel1, 0, 5);
+            tlp_Main.Controls.Add(panel_Right, 0, 2);
+            tlp_Main.Controls.Add(panel_OrderInfo, 0, 1);
+            tlp_Main.Controls.Add(label_Header, 0, 0);
+            tlp_Main.Controls.Add(panel_Left, 0, 2);
+            tlp_Main.Controls.Add(panel_Buttons, 1, 5);
+            tlp_Main.Controls.Add(pb_Image, 0, 4);
+            tlp_Main.Dock = DockStyle.Fill;
+            tlp_Main.Location = new Point(0, 0);
+            tlp_Main.Margin = new Padding(4, 3, 4, 3);
+            tlp_Main.Name = "tlp_Main";
+            tlp_Main.RowCount = 6;
+            tlp_Main.RowStyles.Add(new RowStyle(SizeType.Absolute, 68F));
+            tlp_Main.RowStyles.Add(new RowStyle(SizeType.Absolute, 152F));
+            tlp_Main.RowStyles.Add(new RowStyle(SizeType.Absolute, 137F));
+            tlp_Main.RowStyles.Add(new RowStyle(SizeType.Absolute, 72F));
+            tlp_Main.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            tlp_Main.RowStyles.Add(new RowStyle(SizeType.Absolute, 62F));
+            tlp_Main.Size = new Size(1101, 1008);
+            tlp_Main.TabIndex = 0;
             // 
             // panel_Bottom
             // 
-            this.panel_Bottom.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.tlp_Main.SetColumnSpan(this.panel_Bottom, 2);
-            this.panel_Bottom.Controls.Add(this.num_RemainingViews);
-            this.panel_Bottom.Controls.Add(this.label_RemainingView);
-            this.panel_Bottom.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel_Bottom.Location = new System.Drawing.Point(3, 313);
-            this.panel_Bottom.Name = "panel_Bottom";
-            this.panel_Bottom.Size = new System.Drawing.Size(938, 56);
-            this.panel_Bottom.TabIndex = 7;
+            panel_Bottom.BorderStyle = BorderStyle.Fixed3D;
+            tlp_Main.SetColumnSpan(panel_Bottom, 2);
+            panel_Bottom.Controls.Add(num_RemainingViews);
+            panel_Bottom.Controls.Add(label_RemainingView);
+            panel_Bottom.Dock = DockStyle.Fill;
+            panel_Bottom.Location = new Point(4, 360);
+            panel_Bottom.Margin = new Padding(4, 3, 4, 3);
+            panel_Bottom.Name = "panel_Bottom";
+            panel_Bottom.Size = new Size(1093, 66);
+            panel_Bottom.TabIndex = 7;
             // 
             // num_RemainingViews
             // 
-            this.num_RemainingViews.Font = new System.Drawing.Font("Courier New", 15.75F);
-            this.num_RemainingViews.ForeColor = System.Drawing.SystemColors.WindowFrame;
-            this.num_RemainingViews.Location = new System.Drawing.Point(563, 11);
-            this.num_RemainingViews.Maximum = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
-            this.num_RemainingViews.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.num_RemainingViews.Name = "num_RemainingViews";
-            this.num_RemainingViews.Size = new System.Drawing.Size(56, 31);
-            this.num_RemainingViews.TabIndex = 1;
-            this.num_RemainingViews.Value = new decimal(new int[] {
-            3,
-            0,
-            0,
-            0});
+            num_RemainingViews.Font = new Font("Courier New", 15.75F);
+            num_RemainingViews.ForeColor = SystemColors.WindowFrame;
+            num_RemainingViews.Location = new Point(657, 13);
+            num_RemainingViews.Margin = new Padding(4, 3, 4, 3);
+            num_RemainingViews.Maximum = new decimal(new int[] { 10, 0, 0, 0 });
+            num_RemainingViews.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
+            num_RemainingViews.Name = "num_RemainingViews";
+            num_RemainingViews.Size = new Size(65, 31);
+            num_RemainingViews.TabIndex = 1;
+            num_RemainingViews.Value = new decimal(new int[] { 3, 0, 0, 0 });
             // 
             // label_RemainingView
             // 
-            this.label_RemainingView.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label_RemainingView.Font = new System.Drawing.Font("Palatino Linotype", 12.75F, System.Drawing.FontStyle.Bold);
-            this.label_RemainingView.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(147)))), ((int)(((byte)(150)))), ((int)(((byte)(149)))));
-            this.label_RemainingView.Location = new System.Drawing.Point(28, 15);
-            this.label_RemainingView.Name = "label_RemainingView";
-            this.label_RemainingView.Size = new System.Drawing.Size(525, 23);
-            this.label_RemainingView.TabIndex = 0;
-            this.label_RemainingView.Text = "Välj här hur många gånger denna notis skall visas för operatörerna.";
-            this.label_RemainingView.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            label_RemainingView.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            label_RemainingView.Font = new Font("Palatino Linotype", 12.75F, FontStyle.Bold);
+            label_RemainingView.ForeColor = Color.FromArgb(147, 150, 149);
+            label_RemainingView.Location = new Point(32, 17);
+            label_RemainingView.Margin = new Padding(4, 0, 4, 0);
+            label_RemainingView.Name = "label_RemainingView";
+            label_RemainingView.Size = new Size(612, 27);
+            label_RemainingView.TabIndex = 0;
+            label_RemainingView.Text = "Välj här hur många gånger denna notis skall visas för operatörerna.";
+            label_RemainingView.TextAlign = ContentAlignment.MiddleRight;
             // 
             // panel1
             // 
-            this.panel1.Controls.Add(this.btn_UploadImage);
-            this.panel1.Controls.Add(this.btn_Screenshot);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel1.Location = new System.Drawing.Point(0, 820);
-            this.panel1.Margin = new System.Windows.Forms.Padding(0);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(472, 54);
-            this.panel1.TabIndex = 6;
+            panel1.Controls.Add(btn_UploadImage);
+            panel1.Controls.Add(btn_Screenshot);
+            panel1.Dock = DockStyle.Fill;
+            panel1.Location = new Point(0, 946);
+            panel1.Margin = new Padding(0);
+            panel1.Name = "panel1";
+            panel1.Size = new Size(550, 62);
+            panel1.TabIndex = 6;
             // 
             // btn_UploadImage
             // 
-            this.btn_UploadImage.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(230)))), ((int)(((byte)(182)))));
-            this.btn_UploadImage.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btn_UploadImage.Dock = System.Windows.Forms.DockStyle.Right;
-            this.btn_UploadImage.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
-            this.btn_UploadImage.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(111)))), ((int)(((byte)(90)))), ((int)(((byte)(25)))));
-            this.btn_UploadImage.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btn_UploadImage.Font = new System.Drawing.Font("Palatino Linotype", 10.25F);
-            this.btn_UploadImage.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(120)))), ((int)(((byte)(55)))));
-            this.btn_UploadImage.Location = new System.Drawing.Point(308, 0);
-            this.btn_UploadImage.Margin = new System.Windows.Forms.Padding(3, 3, 10, 3);
-            this.btn_UploadImage.Name = "btn_UploadImage";
-            this.btn_UploadImage.Size = new System.Drawing.Size(164, 54);
-            this.btn_UploadImage.TabIndex = 1011;
-            this.btn_UploadImage.Text = "Ladda upp bild";
-            this.btn_UploadImage.UseVisualStyleBackColor = false;
-            this.btn_UploadImage.Click += new System.EventHandler(this.UploadImage_Click);
+            btn_UploadImage.BackColor = Color.FromArgb(238, 230, 182);
+            btn_UploadImage.Cursor = Cursors.Hand;
+            btn_UploadImage.Dock = DockStyle.Right;
+            btn_UploadImage.FlatAppearance.BorderColor = Color.FromArgb(25, 25, 25);
+            btn_UploadImage.FlatAppearance.MouseOverBackColor = Color.FromArgb(111, 90, 25);
+            btn_UploadImage.FlatStyle = FlatStyle.Flat;
+            btn_UploadImage.Font = new Font("Palatino Linotype", 10.25F);
+            btn_UploadImage.ForeColor = Color.FromArgb(141, 120, 55);
+            btn_UploadImage.Location = new Point(359, 0);
+            btn_UploadImage.Margin = new Padding(4, 3, 12, 3);
+            btn_UploadImage.Name = "btn_UploadImage";
+            btn_UploadImage.Size = new Size(191, 62);
+            btn_UploadImage.TabIndex = 1011;
+            btn_UploadImage.Text = "Ladda upp bild";
+            btn_UploadImage.UseVisualStyleBackColor = false;
+            btn_UploadImage.Click += UploadImage_Click;
             // 
             // btn_Screenshot
             // 
-            this.btn_Screenshot.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(230)))), ((int)(((byte)(182)))));
-            this.btn_Screenshot.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btn_Screenshot.Dock = System.Windows.Forms.DockStyle.Left;
-            this.btn_Screenshot.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
-            this.btn_Screenshot.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(111)))), ((int)(((byte)(90)))), ((int)(((byte)(25)))));
-            this.btn_Screenshot.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btn_Screenshot.Font = new System.Drawing.Font("Palatino Linotype", 10.25F);
-            this.btn_Screenshot.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(120)))), ((int)(((byte)(55)))));
-            this.btn_Screenshot.Location = new System.Drawing.Point(0, 0);
-            this.btn_Screenshot.Name = "btn_Screenshot";
-            this.btn_Screenshot.Size = new System.Drawing.Size(118, 54);
-            this.btn_Screenshot.TabIndex = 1010;
-            this.btn_Screenshot.Text = "Ta en screenshot";
-            this.btn_Screenshot.UseVisualStyleBackColor = false;
-            this.btn_Screenshot.Click += new System.EventHandler(this.Screenshot_Click);
+            btn_Screenshot.BackColor = Color.FromArgb(238, 230, 182);
+            btn_Screenshot.Cursor = Cursors.Hand;
+            btn_Screenshot.Dock = DockStyle.Left;
+            btn_Screenshot.FlatAppearance.BorderColor = Color.FromArgb(25, 25, 25);
+            btn_Screenshot.FlatAppearance.MouseOverBackColor = Color.FromArgb(111, 90, 25);
+            btn_Screenshot.FlatStyle = FlatStyle.Flat;
+            btn_Screenshot.Font = new Font("Palatino Linotype", 10.25F);
+            btn_Screenshot.ForeColor = Color.FromArgb(141, 120, 55);
+            btn_Screenshot.Location = new Point(0, 0);
+            btn_Screenshot.Margin = new Padding(4, 3, 4, 3);
+            btn_Screenshot.Name = "btn_Screenshot";
+            btn_Screenshot.Size = new Size(138, 62);
+            btn_Screenshot.TabIndex = 1010;
+            btn_Screenshot.Text = "Ta en screenshot";
+            btn_Screenshot.UseVisualStyleBackColor = false;
+            btn_Screenshot.Click += Screenshot_Click;
             // 
             // panel_Right
             // 
-            this.panel_Right.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.panel_Right.Controls.Add(this.tb_ppkHistory);
-            this.panel_Right.Controls.Add(this.tb_ppkOrder);
-            this.panel_Right.Controls.Add(this.label1);
-            this.panel_Right.Controls.Add(this.label2);
-            this.panel_Right.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel_Right.Location = new System.Drawing.Point(475, 194);
-            this.panel_Right.Name = "panel_Right";
-            this.panel_Right.Size = new System.Drawing.Size(466, 113);
-            this.panel_Right.TabIndex = 3;
+            panel_Right.BorderStyle = BorderStyle.Fixed3D;
+            panel_Right.Controls.Add(tb_ppkHistory);
+            panel_Right.Controls.Add(tb_ppkOrder);
+            panel_Right.Controls.Add(label1);
+            panel_Right.Controls.Add(label2);
+            panel_Right.Dock = DockStyle.Fill;
+            panel_Right.Location = new Point(554, 223);
+            panel_Right.Margin = new Padding(4, 3, 4, 3);
+            panel_Right.Name = "panel_Right";
+            panel_Right.Size = new Size(543, 131);
+            panel_Right.TabIndex = 3;
             // 
             // tb_ppkHistory
             // 
-            this.tb_ppkHistory.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.tb_ppkHistory.Font = new System.Drawing.Font("Courier New", 9.75F);
-            this.tb_ppkHistory.ForeColor = System.Drawing.SystemColors.WindowFrame;
-            this.tb_ppkHistory.Location = new System.Drawing.Point(149, 62);
-            this.tb_ppkHistory.Name = "tb_ppkHistory";
-            this.tb_ppkHistory.Size = new System.Drawing.Size(69, 22);
-            this.tb_ppkHistory.TabIndex = 1;
-            this.tb_ppkHistory.WordWrap = false;
+            tb_ppkHistory.BorderStyle = BorderStyle.FixedSingle;
+            tb_ppkHistory.Font = new Font("Courier New", 9.75F);
+            tb_ppkHistory.ForeColor = SystemColors.WindowFrame;
+            tb_ppkHistory.Location = new Point(174, 72);
+            tb_ppkHistory.Margin = new Padding(4, 3, 4, 3);
+            tb_ppkHistory.Name = "tb_ppkHistory";
+            tb_ppkHistory.Size = new Size(80, 22);
+            tb_ppkHistory.TabIndex = 1;
+            tb_ppkHistory.WordWrap = false;
             // 
             // tb_ppkOrder
             // 
-            this.tb_ppkOrder.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.tb_ppkOrder.Font = new System.Drawing.Font("Courier New", 9.75F);
-            this.tb_ppkOrder.ForeColor = System.Drawing.SystemColors.WindowFrame;
-            this.tb_ppkOrder.Location = new System.Drawing.Point(149, 18);
-            this.tb_ppkOrder.Name = "tb_ppkOrder";
-            this.tb_ppkOrder.Size = new System.Drawing.Size(69, 22);
-            this.tb_ppkOrder.TabIndex = 1;
-            this.tb_ppkOrder.WordWrap = false;
+            tb_ppkOrder.BorderStyle = BorderStyle.FixedSingle;
+            tb_ppkOrder.Font = new Font("Courier New", 9.75F);
+            tb_ppkOrder.ForeColor = SystemColors.WindowFrame;
+            tb_ppkOrder.Location = new Point(174, 21);
+            tb_ppkOrder.Margin = new Padding(4, 3, 4, 3);
+            tb_ppkOrder.Name = "tb_ppkOrder";
+            tb_ppkOrder.Size = new Size(80, 22);
+            tb_ppkOrder.TabIndex = 1;
+            tb_ppkOrder.WordWrap = false;
             // 
             // label1
             // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Palatino Linotype", 12.75F, System.Drawing.FontStyle.Bold);
-            this.label1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(147)))), ((int)(((byte)(150)))), ((int)(((byte)(149)))));
-            this.label1.Location = new System.Drawing.Point(26, 57);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(121, 23);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "PPK - Historik";
+            label1.AutoSize = true;
+            label1.Font = new Font("Palatino Linotype", 12.75F, FontStyle.Bold);
+            label1.ForeColor = Color.FromArgb(147, 150, 149);
+            label1.Location = new Point(47, 70);
+            label1.Margin = new Padding(4, 0, 4, 0);
+            label1.Name = "label1";
+            label1.Size = new Size(125, 23);
+            label1.TabIndex = 0;
+            label1.Text = "PPK - Historik:";
             // 
             // label2
             // 
-            this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Palatino Linotype", 12.75F, System.Drawing.FontStyle.Bold);
-            this.label2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(147)))), ((int)(((byte)(150)))), ((int)(((byte)(149)))));
-            this.label2.Location = new System.Drawing.Point(26, 13);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(103, 23);
-            this.label2.TabIndex = 0;
-            this.label2.Text = "PPK - Order";
+            label2.AutoSize = true;
+            label2.Font = new Font("Palatino Linotype", 12.75F, FontStyle.Bold);
+            label2.ForeColor = Color.FromArgb(147, 150, 149);
+            label2.Location = new Point(65, 19);
+            label2.Margin = new Padding(4, 0, 4, 0);
+            label2.Name = "label2";
+            label2.Size = new Size(107, 23);
+            label2.TabIndex = 0;
+            label2.Text = "PPK - Order:";
             // 
             // panel_OrderInfo
             // 
-            this.panel_OrderInfo.BackColor = System.Drawing.Color.Transparent;
-            this.panel_OrderInfo.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.tlp_Main.SetColumnSpan(this.panel_OrderInfo, 2);
-            this.panel_OrderInfo.Controls.Add(this.tb_WorkOperation);
-            this.panel_OrderInfo.Controls.Add(this.tb_Date);
-            this.panel_OrderInfo.Controls.Add(this.tb_ProdType);
-            this.panel_OrderInfo.Controls.Add(this.tb_Operation);
-            this.panel_OrderInfo.Controls.Add(this.tb_ProdLine);
-            this.panel_OrderInfo.Controls.Add(this.tb_PartNr);
-            this.panel_OrderInfo.Controls.Add(this.tb_OrderNr);
-            this.panel_OrderInfo.Controls.Add(this.label_Workoperation);
-            this.panel_OrderInfo.Controls.Add(this.label_Date);
-            this.panel_OrderInfo.Controls.Add(this.label_ProdType);
-            this.panel_OrderInfo.Controls.Add(this.label__Operation);
-            this.panel_OrderInfo.Controls.Add(this.label_ProdLine);
-            this.panel_OrderInfo.Controls.Add(this.label_PartNumber);
-            this.panel_OrderInfo.Controls.Add(this.label_OrderNr);
-            this.panel_OrderInfo.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel_OrderInfo.Location = new System.Drawing.Point(3, 74);
-            this.panel_OrderInfo.Name = "panel_OrderInfo";
-            this.panel_OrderInfo.Size = new System.Drawing.Size(938, 114);
-            this.panel_OrderInfo.TabIndex = 2;
+            panel_OrderInfo.BackColor = Color.Transparent;
+            panel_OrderInfo.BorderStyle = BorderStyle.Fixed3D;
+            tlp_Main.SetColumnSpan(panel_OrderInfo, 2);
+            panel_OrderInfo.Controls.Add(tb_WorkOperation);
+            panel_OrderInfo.Controls.Add(tb_Date);
+            panel_OrderInfo.Controls.Add(tb_ProdType);
+            panel_OrderInfo.Controls.Add(tb_Operation);
+            panel_OrderInfo.Controls.Add(tb_ProdLine);
+            panel_OrderInfo.Controls.Add(tb_PartNr);
+            panel_OrderInfo.Controls.Add(tb_OrderNr);
+            panel_OrderInfo.Controls.Add(label_Workoperation);
+            panel_OrderInfo.Controls.Add(label_Date);
+            panel_OrderInfo.Controls.Add(label_ProdType);
+            panel_OrderInfo.Controls.Add(label__Operation);
+            panel_OrderInfo.Controls.Add(label_ProdLine);
+            panel_OrderInfo.Controls.Add(label_PartNumber);
+            panel_OrderInfo.Controls.Add(label_OrderNr);
+            panel_OrderInfo.Dock = DockStyle.Fill;
+            panel_OrderInfo.Location = new Point(4, 71);
+            panel_OrderInfo.Margin = new Padding(4, 3, 4, 3);
+            panel_OrderInfo.Name = "panel_OrderInfo";
+            panel_OrderInfo.Size = new Size(1093, 146);
+            panel_OrderInfo.TabIndex = 2;
             // 
             // tb_WorkOperation
             // 
-            this.tb_WorkOperation.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.tb_WorkOperation.Font = new System.Drawing.Font("Courier New", 9.75F);
-            this.tb_WorkOperation.ForeColor = System.Drawing.SystemColors.WindowFrame;
-            this.tb_WorkOperation.Location = new System.Drawing.Point(356, 47);
-            this.tb_WorkOperation.Name = "tb_WorkOperation";
-            this.tb_WorkOperation.ReadOnly = true;
-            this.tb_WorkOperation.Size = new System.Drawing.Size(166, 22);
-            this.tb_WorkOperation.TabIndex = 1;
-            this.tb_WorkOperation.WordWrap = false;
+            tb_WorkOperation.BorderStyle = BorderStyle.FixedSingle;
+            tb_WorkOperation.Font = new Font("Courier New", 9.75F);
+            tb_WorkOperation.ForeColor = SystemColors.WindowFrame;
+            tb_WorkOperation.Location = new Point(415, 54);
+            tb_WorkOperation.Margin = new Padding(4, 3, 4, 3);
+            tb_WorkOperation.Name = "tb_WorkOperation";
+            tb_WorkOperation.ReadOnly = true;
+            tb_WorkOperation.Size = new Size(193, 22);
+            tb_WorkOperation.TabIndex = 1;
+            tb_WorkOperation.WordWrap = false;
             // 
             // tb_Date
             // 
-            this.tb_Date.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.tb_Date.Font = new System.Drawing.Font("Courier New", 9.75F);
-            this.tb_Date.ForeColor = System.Drawing.SystemColors.WindowFrame;
-            this.tb_Date.Location = new System.Drawing.Point(708, 83);
-            this.tb_Date.Name = "tb_Date";
-            this.tb_Date.ReadOnly = true;
-            this.tb_Date.Size = new System.Drawing.Size(192, 22);
-            this.tb_Date.TabIndex = 1;
-            this.tb_Date.WordWrap = false;
+            tb_Date.BorderStyle = BorderStyle.FixedSingle;
+            tb_Date.Font = new Font("Courier New", 9.75F);
+            tb_Date.ForeColor = SystemColors.WindowFrame;
+            tb_Date.Location = new Point(826, 96);
+            tb_Date.Margin = new Padding(4, 3, 4, 3);
+            tb_Date.Name = "tb_Date";
+            tb_Date.ReadOnly = true;
+            tb_Date.Size = new Size(224, 22);
+            tb_Date.TabIndex = 1;
+            tb_Date.WordWrap = false;
             // 
             // tb_ProdType
             // 
-            this.tb_ProdType.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.tb_ProdType.Font = new System.Drawing.Font("Courier New", 9.75F);
-            this.tb_ProdType.ForeColor = System.Drawing.SystemColors.WindowFrame;
-            this.tb_ProdType.Location = new System.Drawing.Point(708, 47);
-            this.tb_ProdType.Name = "tb_ProdType";
-            this.tb_ProdType.ReadOnly = true;
-            this.tb_ProdType.Size = new System.Drawing.Size(192, 22);
-            this.tb_ProdType.TabIndex = 1;
-            this.tb_ProdType.WordWrap = false;
+            tb_ProdType.BorderStyle = BorderStyle.FixedSingle;
+            tb_ProdType.Font = new Font("Courier New", 9.75F);
+            tb_ProdType.ForeColor = SystemColors.WindowFrame;
+            tb_ProdType.Location = new Point(826, 54);
+            tb_ProdType.Margin = new Padding(4, 3, 4, 3);
+            tb_ProdType.Name = "tb_ProdType";
+            tb_ProdType.ReadOnly = true;
+            tb_ProdType.Size = new Size(224, 22);
+            tb_ProdType.TabIndex = 1;
+            tb_ProdType.WordWrap = false;
             // 
             // tb_Operation
             // 
-            this.tb_Operation.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.tb_Operation.Font = new System.Drawing.Font("Courier New", 9.75F);
-            this.tb_Operation.ForeColor = System.Drawing.SystemColors.WindowFrame;
-            this.tb_Operation.Location = new System.Drawing.Point(119, 47);
-            this.tb_Operation.Name = "tb_Operation";
-            this.tb_Operation.ReadOnly = true;
-            this.tb_Operation.Size = new System.Drawing.Size(70, 22);
-            this.tb_Operation.TabIndex = 1;
-            this.tb_Operation.WordWrap = false;
+            tb_Operation.BorderStyle = BorderStyle.FixedSingle;
+            tb_Operation.Font = new Font("Courier New", 9.75F);
+            tb_Operation.ForeColor = SystemColors.WindowFrame;
+            tb_Operation.Location = new Point(139, 54);
+            tb_Operation.Margin = new Padding(4, 3, 4, 3);
+            tb_Operation.Name = "tb_Operation";
+            tb_Operation.ReadOnly = true;
+            tb_Operation.Size = new Size(81, 22);
+            tb_Operation.TabIndex = 1;
+            tb_Operation.WordWrap = false;
             // 
             // tb_ProdLine
             // 
-            this.tb_ProdLine.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.tb_ProdLine.Font = new System.Drawing.Font("Courier New", 9.75F);
-            this.tb_ProdLine.ForeColor = System.Drawing.SystemColors.WindowFrame;
-            this.tb_ProdLine.Location = new System.Drawing.Point(708, 11);
-            this.tb_ProdLine.Name = "tb_ProdLine";
-            this.tb_ProdLine.ReadOnly = true;
-            this.tb_ProdLine.Size = new System.Drawing.Size(192, 22);
-            this.tb_ProdLine.TabIndex = 1;
-            this.tb_ProdLine.WordWrap = false;
+            tb_ProdLine.BorderStyle = BorderStyle.FixedSingle;
+            tb_ProdLine.Font = new Font("Courier New", 9.75F);
+            tb_ProdLine.ForeColor = SystemColors.WindowFrame;
+            tb_ProdLine.Location = new Point(826, 13);
+            tb_ProdLine.Margin = new Padding(4, 3, 4, 3);
+            tb_ProdLine.Name = "tb_ProdLine";
+            tb_ProdLine.ReadOnly = true;
+            tb_ProdLine.Size = new Size(224, 22);
+            tb_ProdLine.TabIndex = 1;
+            tb_ProdLine.WordWrap = false;
             // 
             // tb_PartNr
             // 
-            this.tb_PartNr.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.tb_PartNr.Font = new System.Drawing.Font("Courier New", 9.75F);
-            this.tb_PartNr.ForeColor = System.Drawing.SystemColors.WindowFrame;
-            this.tb_PartNr.Location = new System.Drawing.Point(356, 11);
-            this.tb_PartNr.Name = "tb_PartNr";
-            this.tb_PartNr.ReadOnly = true;
-            this.tb_PartNr.Size = new System.Drawing.Size(166, 22);
-            this.tb_PartNr.TabIndex = 1;
-            this.tb_PartNr.WordWrap = false;
-            this.tb_PartNr.Click += new System.EventHandler(this.PartNr_LoadHistory_Click);
+            tb_PartNr.BorderStyle = BorderStyle.FixedSingle;
+            tb_PartNr.Font = new Font("Courier New", 9.75F);
+            tb_PartNr.ForeColor = SystemColors.WindowFrame;
+            tb_PartNr.Location = new Point(415, 13);
+            tb_PartNr.Margin = new Padding(4, 3, 4, 3);
+            tb_PartNr.Name = "tb_PartNr";
+            tb_PartNr.ReadOnly = true;
+            tb_PartNr.Size = new Size(193, 22);
+            tb_PartNr.TabIndex = 1;
+            tb_PartNr.WordWrap = false;
+            tb_PartNr.Click += PartNr_LoadHistory_Click;
             // 
             // tb_OrderNr
             // 
-            this.tb_OrderNr.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.tb_OrderNr.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tb_OrderNr.ForeColor = System.Drawing.SystemColors.WindowFrame;
-            this.tb_OrderNr.Location = new System.Drawing.Point(119, 11);
-            this.tb_OrderNr.Name = "tb_OrderNr";
-            this.tb_OrderNr.ReadOnly = true;
-            this.tb_OrderNr.Size = new System.Drawing.Size(70, 22);
-            this.tb_OrderNr.TabIndex = 1;
-            this.tb_OrderNr.WordWrap = false;
+            tb_OrderNr.BorderStyle = BorderStyle.FixedSingle;
+            tb_OrderNr.Font = new Font("Courier New", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            tb_OrderNr.ForeColor = SystemColors.WindowFrame;
+            tb_OrderNr.Location = new Point(139, 13);
+            tb_OrderNr.Margin = new Padding(4, 3, 4, 3);
+            tb_OrderNr.Name = "tb_OrderNr";
+            tb_OrderNr.ReadOnly = true;
+            tb_OrderNr.Size = new Size(81, 22);
+            tb_OrderNr.TabIndex = 1;
+            tb_OrderNr.WordWrap = false;
             // 
             // label_Workoperation
             // 
-            this.label_Workoperation.AutoSize = true;
-            this.label_Workoperation.Font = new System.Drawing.Font("Palatino Linotype", 12.75F, System.Drawing.FontStyle.Bold);
-            this.label_Workoperation.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(147)))), ((int)(((byte)(150)))), ((int)(((byte)(149)))));
-            this.label_Workoperation.Location = new System.Drawing.Point(215, 42);
-            this.label_Workoperation.Name = "label_Workoperation";
-            this.label_Workoperation.Size = new System.Drawing.Size(135, 23);
-            this.label_Workoperation.TabIndex = 0;
-            this.label_Workoperation.Text = "Arbetsoperation";
+            label_Workoperation.AutoSize = true;
+            label_Workoperation.Font = new Font("Palatino Linotype", 12.75F, FontStyle.Bold);
+            label_Workoperation.ForeColor = Color.FromArgb(147, 150, 149);
+            label_Workoperation.Location = new Point(274, 52);
+            label_Workoperation.Margin = new Padding(4, 0, 4, 0);
+            label_Workoperation.Name = "label_Workoperation";
+            label_Workoperation.Size = new Size(139, 23);
+            label_Workoperation.TabIndex = 0;
+            label_Workoperation.Text = "Arbetsoperation:";
             // 
             // label_Date
             // 
-            this.label_Date.AutoSize = true;
-            this.label_Date.Font = new System.Drawing.Font("Palatino Linotype", 12.75F, System.Drawing.FontStyle.Bold);
-            this.label_Date.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(147)))), ((int)(((byte)(150)))), ((int)(((byte)(149)))));
-            this.label_Date.Location = new System.Drawing.Point(600, 78);
-            this.label_Date.Name = "label_Date";
-            this.label_Date.Size = new System.Drawing.Size(64, 23);
-            this.label_Date.TabIndex = 0;
-            this.label_Date.Text = "Datum";
+            label_Date.AutoSize = true;
+            label_Date.Font = new Font("Palatino Linotype", 12.75F, FontStyle.Bold);
+            label_Date.ForeColor = Color.FromArgb(147, 150, 149);
+            label_Date.Location = new Point(580, 94);
+            label_Date.Margin = new Padding(4, 0, 4, 0);
+            label_Date.Name = "label_Date";
+            label_Date.Size = new Size(244, 23);
+            label_Date.TabIndex = 0;
+            label_Date.Text = "Datum för inlämnad feedback:";
             // 
             // label_ProdType
             // 
-            this.label_ProdType.AutoSize = true;
-            this.label_ProdType.Font = new System.Drawing.Font("Palatino Linotype", 12.75F, System.Drawing.FontStyle.Bold);
-            this.label_ProdType.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(147)))), ((int)(((byte)(150)))), ((int)(((byte)(149)))));
-            this.label_ProdType.Location = new System.Drawing.Point(600, 42);
-            this.label_ProdType.Name = "label_ProdType";
-            this.label_ProdType.Size = new System.Drawing.Size(102, 23);
-            this.label_ProdType.TabIndex = 0;
-            this.label_ProdType.Text = "ProduktTyp";
+            label_ProdType.AutoSize = true;
+            label_ProdType.Font = new Font("Palatino Linotype", 12.75F, FontStyle.Bold);
+            label_ProdType.ForeColor = Color.FromArgb(147, 150, 149);
+            label_ProdType.Location = new Point(718, 52);
+            label_ProdType.Margin = new Padding(4, 0, 4, 0);
+            label_ProdType.Name = "label_ProdType";
+            label_ProdType.Size = new Size(106, 23);
+            label_ProdType.TabIndex = 0;
+            label_ProdType.Text = "ProduktTyp:";
             // 
             // label__Operation
             // 
-            this.label__Operation.AutoSize = true;
-            this.label__Operation.Font = new System.Drawing.Font("Palatino Linotype", 12.75F, System.Drawing.FontStyle.Bold);
-            this.label__Operation.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(147)))), ((int)(((byte)(150)))), ((int)(((byte)(149)))));
-            this.label__Operation.Location = new System.Drawing.Point(25, 42);
-            this.label__Operation.Name = "label__Operation";
-            this.label__Operation.Size = new System.Drawing.Size(88, 23);
-            this.label__Operation.TabIndex = 0;
-            this.label__Operation.Text = "Operation";
+            label__Operation.AutoSize = true;
+            label__Operation.Font = new Font("Palatino Linotype", 12.75F, FontStyle.Bold);
+            label__Operation.ForeColor = Color.FromArgb(147, 150, 149);
+            label__Operation.Location = new Point(45, 52);
+            label__Operation.Margin = new Padding(4, 0, 4, 0);
+            label__Operation.Name = "label__Operation";
+            label__Operation.Size = new Size(92, 23);
+            label__Operation.TabIndex = 0;
+            label__Operation.Text = "Operation:";
             // 
             // label_ProdLine
             // 
-            this.label_ProdLine.AutoSize = true;
-            this.label_ProdLine.Font = new System.Drawing.Font("Palatino Linotype", 12.75F, System.Drawing.FontStyle.Bold);
-            this.label_ProdLine.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(147)))), ((int)(((byte)(150)))), ((int)(((byte)(149)))));
-            this.label_ProdLine.Location = new System.Drawing.Point(565, 6);
-            this.label_ProdLine.Name = "label_ProdLine";
-            this.label_ProdLine.Size = new System.Drawing.Size(137, 23);
-            this.label_ProdLine.TabIndex = 0;
-            this.label_ProdLine.Text = "Produktionslinje";
+            label_ProdLine.AutoSize = true;
+            label_ProdLine.Font = new Font("Palatino Linotype", 12.75F, FontStyle.Bold);
+            label_ProdLine.ForeColor = Color.FromArgb(147, 150, 149);
+            label_ProdLine.Location = new Point(683, 11);
+            label_ProdLine.Margin = new Padding(4, 0, 4, 0);
+            label_ProdLine.Name = "label_ProdLine";
+            label_ProdLine.Size = new Size(141, 23);
+            label_ProdLine.TabIndex = 0;
+            label_ProdLine.Text = "Produktionslinje:";
             // 
             // label_PartNumber
             // 
-            this.label_PartNumber.AutoSize = true;
-            this.label_PartNumber.Font = new System.Drawing.Font("Palatino Linotype", 12.75F, System.Drawing.FontStyle.Bold);
-            this.label_PartNumber.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(147)))), ((int)(((byte)(150)))), ((int)(((byte)(149)))));
-            this.label_PartNumber.Location = new System.Drawing.Point(265, 6);
-            this.label_PartNumber.Name = "label_PartNumber";
-            this.label_PartNumber.Size = new System.Drawing.Size(85, 23);
-            this.label_PartNumber.TabIndex = 0;
-            this.label_PartNumber.Text = "ArtikelNr";
+            label_PartNumber.AutoSize = true;
+            label_PartNumber.Font = new Font("Palatino Linotype", 12.75F, FontStyle.Bold);
+            label_PartNumber.ForeColor = Color.FromArgb(147, 150, 149);
+            label_PartNumber.Location = new Point(324, 11);
+            label_PartNumber.Margin = new Padding(4, 0, 4, 0);
+            label_PartNumber.Name = "label_PartNumber";
+            label_PartNumber.Size = new Size(89, 23);
+            label_PartNumber.TabIndex = 0;
+            label_PartNumber.Text = "ArtikelNr:";
             // 
             // label_OrderNr
             // 
-            this.label_OrderNr.AutoSize = true;
-            this.label_OrderNr.Font = new System.Drawing.Font("Palatino Linotype", 12.75F, System.Drawing.FontStyle.Bold);
-            this.label_OrderNr.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(147)))), ((int)(((byte)(150)))), ((int)(((byte)(149)))));
-            this.label_OrderNr.Location = new System.Drawing.Point(36, 6);
-            this.label_OrderNr.Name = "label_OrderNr";
-            this.label_OrderNr.Size = new System.Drawing.Size(77, 23);
-            this.label_OrderNr.TabIndex = 0;
-            this.label_OrderNr.Text = "OrderNr";
+            label_OrderNr.AutoSize = true;
+            label_OrderNr.Font = new Font("Palatino Linotype", 12.75F, FontStyle.Bold);
+            label_OrderNr.ForeColor = Color.FromArgb(147, 150, 149);
+            label_OrderNr.Location = new Point(56, 11);
+            label_OrderNr.Margin = new Padding(4, 0, 4, 0);
+            label_OrderNr.Name = "label_OrderNr";
+            label_OrderNr.Size = new Size(81, 23);
+            label_OrderNr.TabIndex = 0;
+            label_OrderNr.Text = "OrderNr:";
             // 
             // label_Header
             // 
-            this.label_Header.AutoSize = true;
-            this.label_Header.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(66)))), ((int)(((byte)(113)))), ((int)(((byte)(139)))));
-            this.tlp_Main.SetColumnSpan(this.label_Header, 2);
-            this.label_Header.Cursor = System.Windows.Forms.Cursors.SizeAll;
-            this.label_Header.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label_Header.Font = new System.Drawing.Font("Lucida Sans", 27.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label_Header.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(187)))), ((int)(((byte)(215)))), ((int)(((byte)(228)))));
-            this.label_Header.Location = new System.Drawing.Point(0, 0);
-            this.label_Header.Margin = new System.Windows.Forms.Padding(0);
-            this.label_Header.Name = "label_Header";
-            this.label_Header.Padding = new System.Windows.Forms.Padding(50, 0, 0, 0);
-            this.label_Header.Size = new System.Drawing.Size(944, 71);
-            this.label_Header.TabIndex = 0;
-            this.label_Header.Text = "QC Feedback";
-            this.label_Header.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.label_Header.MouseDown += new System.Windows.Forms.MouseEventHandler(this.MouseDown);
-            this.label_Header.MouseMove += new System.Windows.Forms.MouseEventHandler(this.MouseMove);
-            this.label_Header.MouseUp += new System.Windows.Forms.MouseEventHandler(this.MouseUp);
+            label_Header.AutoSize = true;
+            label_Header.BackColor = Color.FromArgb(66, 113, 139);
+            tlp_Main.SetColumnSpan(label_Header, 2);
+            label_Header.Cursor = Cursors.SizeAll;
+            label_Header.Dock = DockStyle.Fill;
+            label_Header.Font = new Font("Lucida Sans", 27.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label_Header.ForeColor = Color.FromArgb(187, 215, 228);
+            label_Header.Location = new Point(0, 0);
+            label_Header.Margin = new Padding(0);
+            label_Header.Name = "label_Header";
+            label_Header.Padding = new Padding(58, 0, 0, 0);
+            label_Header.Size = new Size(1101, 68);
+            label_Header.TabIndex = 0;
+            label_Header.Text = "QC Feedback";
+            label_Header.TextAlign = ContentAlignment.MiddleLeft;
+            label_Header.MouseDown += MouseDown;
+            label_Header.MouseMove += MouseMove;
+            label_Header.MouseUp += MouseUp;
             // 
             // panel_Left
             // 
-            this.panel_Left.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.panel_Left.Controls.Add(this.tb_Comments);
-            this.panel_Left.Controls.Add(this.label_Comments);
-            this.panel_Left.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel_Left.Location = new System.Drawing.Point(3, 194);
-            this.panel_Left.Name = "panel_Left";
-            this.panel_Left.Size = new System.Drawing.Size(466, 113);
-            this.panel_Left.TabIndex = 1;
+            panel_Left.BorderStyle = BorderStyle.Fixed3D;
+            panel_Left.Controls.Add(tb_Comments);
+            panel_Left.Controls.Add(label_Comments);
+            panel_Left.Dock = DockStyle.Fill;
+            panel_Left.Location = new Point(4, 223);
+            panel_Left.Margin = new Padding(4, 3, 4, 3);
+            panel_Left.Name = "panel_Left";
+            panel_Left.Size = new Size(542, 131);
+            panel_Left.TabIndex = 1;
             // 
             // tb_Comments
             // 
-            this.tb_Comments.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.tb_Comments.Font = new System.Drawing.Font("Courier New", 9.75F);
-            this.tb_Comments.ForeColor = System.Drawing.SystemColors.WindowFrame;
-            this.tb_Comments.Location = new System.Drawing.Point(30, 32);
-            this.tb_Comments.Multiline = true;
-            this.tb_Comments.Name = "tb_Comments";
-            this.tb_Comments.Size = new System.Drawing.Size(402, 65);
-            this.tb_Comments.TabIndex = 1;
-            this.tb_Comments.WordWrap = false;
+            tb_Comments.BorderStyle = BorderStyle.FixedSingle;
+            tb_Comments.Font = new Font("Courier New", 9.75F);
+            tb_Comments.ForeColor = SystemColors.WindowFrame;
+            tb_Comments.Location = new Point(35, 37);
+            tb_Comments.Margin = new Padding(4, 3, 4, 3);
+            tb_Comments.Multiline = true;
+            tb_Comments.Name = "tb_Comments";
+            tb_Comments.Size = new Size(469, 75);
+            tb_Comments.TabIndex = 1;
+            tb_Comments.WordWrap = false;
             // 
             // label_Comments
             // 
-            this.label_Comments.AutoSize = true;
-            this.label_Comments.Font = new System.Drawing.Font("Palatino Linotype", 12.75F, System.Drawing.FontStyle.Bold);
-            this.label_Comments.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(147)))), ((int)(((byte)(150)))), ((int)(((byte)(149)))));
-            this.label_Comments.Location = new System.Drawing.Point(26, 4);
-            this.label_Comments.Name = "label_Comments";
-            this.label_Comments.Size = new System.Drawing.Size(102, 23);
-            this.label_Comments.TabIndex = 0;
-            this.label_Comments.Text = "Kommentar";
+            label_Comments.AutoSize = true;
+            label_Comments.Font = new Font("Palatino Linotype", 12.75F, FontStyle.Bold);
+            label_Comments.ForeColor = Color.FromArgb(147, 150, 149);
+            label_Comments.Location = new Point(30, 5);
+            label_Comments.Margin = new Padding(4, 0, 4, 0);
+            label_Comments.Name = "label_Comments";
+            label_Comments.Size = new Size(102, 23);
+            label_Comments.TabIndex = 0;
+            label_Comments.Text = "Kommentar";
             // 
             // panel_Buttons
             // 
-            this.panel_Buttons.Controls.Add(this.btn_Exit);
-            this.panel_Buttons.Controls.Add(this.btn_Save_Exit);
-            this.panel_Buttons.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel_Buttons.Location = new System.Drawing.Point(472, 820);
-            this.panel_Buttons.Margin = new System.Windows.Forms.Padding(0);
-            this.panel_Buttons.Name = "panel_Buttons";
-            this.panel_Buttons.Size = new System.Drawing.Size(472, 54);
-            this.panel_Buttons.TabIndex = 4;
+            panel_Buttons.Controls.Add(btn_Exit);
+            panel_Buttons.Controls.Add(btn_Save_Exit);
+            panel_Buttons.Dock = DockStyle.Fill;
+            panel_Buttons.Location = new Point(550, 946);
+            panel_Buttons.Margin = new Padding(0);
+            panel_Buttons.Name = "panel_Buttons";
+            panel_Buttons.Size = new Size(551, 62);
+            panel_Buttons.TabIndex = 4;
             // 
             // btn_Exit
             // 
-            this.btn_Exit.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(199)))), ((int)(((byte)(206)))));
-            this.btn_Exit.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btn_Exit.Dock = System.Windows.Forms.DockStyle.Right;
-            this.btn_Exit.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
-            this.btn_Exit.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(126)))), ((int)(((byte)(0)))), ((int)(((byte)(6)))));
-            this.btn_Exit.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btn_Exit.Font = new System.Drawing.Font("Palatino Linotype", 10.25F);
-            this.btn_Exit.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(156)))), ((int)(((byte)(0)))), ((int)(((byte)(6)))));
-            this.btn_Exit.Location = new System.Drawing.Point(308, 0);
-            this.btn_Exit.Name = "btn_Exit";
-            this.btn_Exit.Size = new System.Drawing.Size(164, 54);
-            this.btn_Exit.TabIndex = 1011;
-            this.btn_Exit.Text = "Avsluta";
-            this.btn_Exit.UseVisualStyleBackColor = false;
-            this.btn_Exit.Click += new System.EventHandler(this.Exit_Click);
+            btn_Exit.BackColor = Color.FromArgb(255, 199, 206);
+            btn_Exit.Cursor = Cursors.Hand;
+            btn_Exit.Dock = DockStyle.Right;
+            btn_Exit.FlatAppearance.BorderColor = Color.FromArgb(25, 25, 25);
+            btn_Exit.FlatAppearance.MouseOverBackColor = Color.FromArgb(126, 0, 6);
+            btn_Exit.FlatStyle = FlatStyle.Flat;
+            btn_Exit.Font = new Font("Palatino Linotype", 10.25F);
+            btn_Exit.ForeColor = Color.FromArgb(156, 0, 6);
+            btn_Exit.Location = new Point(360, 0);
+            btn_Exit.Margin = new Padding(4, 3, 4, 3);
+            btn_Exit.Name = "btn_Exit";
+            btn_Exit.Size = new Size(191, 62);
+            btn_Exit.TabIndex = 1011;
+            btn_Exit.Text = "Avsluta";
+            btn_Exit.UseVisualStyleBackColor = false;
+            btn_Exit.Click += Exit_Click;
             // 
             // btn_Save_Exit
             // 
-            this.btn_Save_Exit.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(198)))), ((int)(((byte)(239)))), ((int)(((byte)(206)))));
-            this.btn_Save_Exit.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btn_Save_Exit.Dock = System.Windows.Forms.DockStyle.Left;
-            this.btn_Save_Exit.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
-            this.btn_Save_Exit.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(67)))), ((int)(((byte)(0)))));
-            this.btn_Save_Exit.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btn_Save_Exit.Font = new System.Drawing.Font("Palatino Linotype", 10.25F);
-            this.btn_Save_Exit.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(97)))), ((int)(((byte)(0)))));
-            this.btn_Save_Exit.Location = new System.Drawing.Point(0, 0);
-            this.btn_Save_Exit.Margin = new System.Windows.Forms.Padding(10, 3, 3, 3);
-            this.btn_Save_Exit.Name = "btn_Save_Exit";
-            this.btn_Save_Exit.Size = new System.Drawing.Size(164, 54);
-            this.btn_Save_Exit.TabIndex = 1010;
-            this.btn_Save_Exit.Text = "Spara och Avsluta";
-            this.btn_Save_Exit.UseVisualStyleBackColor = false;
-            this.btn_Save_Exit.Click += new System.EventHandler(this.Save_Exit_Click);
+            btn_Save_Exit.BackColor = Color.FromArgb(198, 239, 206);
+            btn_Save_Exit.Cursor = Cursors.Hand;
+            btn_Save_Exit.Dock = DockStyle.Left;
+            btn_Save_Exit.FlatAppearance.BorderColor = Color.FromArgb(25, 25, 25);
+            btn_Save_Exit.FlatAppearance.MouseOverBackColor = Color.FromArgb(0, 67, 0);
+            btn_Save_Exit.FlatStyle = FlatStyle.Flat;
+            btn_Save_Exit.Font = new Font("Palatino Linotype", 10.25F);
+            btn_Save_Exit.ForeColor = Color.FromArgb(0, 97, 0);
+            btn_Save_Exit.Location = new Point(0, 0);
+            btn_Save_Exit.Margin = new Padding(12, 3, 4, 3);
+            btn_Save_Exit.Name = "btn_Save_Exit";
+            btn_Save_Exit.Size = new Size(191, 62);
+            btn_Save_Exit.TabIndex = 1010;
+            btn_Save_Exit.Text = "Spara och Avsluta";
+            btn_Save_Exit.UseVisualStyleBackColor = false;
+            btn_Save_Exit.Click += Save_Exit_Click;
             // 
             // pb_Image
             // 
-            this.pb_Image.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.tlp_Main.SetColumnSpan(this.pb_Image, 2);
-            this.pb_Image.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pb_Image.Location = new System.Drawing.Point(3, 375);
-            this.pb_Image.Name = "pb_Image";
-            this.pb_Image.Size = new System.Drawing.Size(938, 442);
-            this.pb_Image.TabIndex = 5;
-            this.pb_Image.TabStop = false;
+            pb_Image.BackgroundImageLayout = ImageLayout.Stretch;
+            tlp_Main.SetColumnSpan(pb_Image, 2);
+            pb_Image.Dock = DockStyle.Fill;
+            pb_Image.Location = new Point(4, 432);
+            pb_Image.Margin = new Padding(4, 3, 4, 3);
+            pb_Image.Name = "pb_Image";
+            pb_Image.Size = new Size(1093, 511);
+            pb_Image.TabIndex = 5;
+            pb_Image.TabStop = false;
             // 
             // QC_Feedback
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(185)))), ((int)(((byte)(188)))), ((int)(((byte)(189)))));
-            this.ClientSize = new System.Drawing.Size(944, 874);
-            this.Controls.Add(this.tlp_Main);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-            this.Name = "QC_Feedback";
-            this.Text = "QC_Feedback";
-            this.tlp_Main.ResumeLayout(false);
-            this.tlp_Main.PerformLayout();
-            this.panel_Bottom.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.num_RemainingViews)).EndInit();
-            this.panel1.ResumeLayout(false);
-            this.panel_Right.ResumeLayout(false);
-            this.panel_Right.PerformLayout();
-            this.panel_OrderInfo.ResumeLayout(false);
-            this.panel_OrderInfo.PerformLayout();
-            this.panel_Left.ResumeLayout(false);
-            this.panel_Left.PerformLayout();
-            this.panel_Buttons.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.pb_Image)).EndInit();
-            this.ResumeLayout(false);
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            BackColor = Color.FromArgb(185, 188, 189);
+            ClientSize = new Size(1101, 1008);
+            Controls.Add(tlp_Main);
+            FormBorderStyle = FormBorderStyle.None;
+            Margin = new Padding(4, 3, 4, 3);
+            Name = "QC_Feedback";
+            Text = "QC_Feedback";
+            tlp_Main.ResumeLayout(false);
+            tlp_Main.PerformLayout();
+            panel_Bottom.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)num_RemainingViews).EndInit();
+            panel1.ResumeLayout(false);
+            panel_Right.ResumeLayout(false);
+            panel_Right.PerformLayout();
+            panel_OrderInfo.ResumeLayout(false);
+            panel_OrderInfo.PerformLayout();
+            panel_Left.ResumeLayout(false);
+            panel_Left.PerformLayout();
+            panel_Buttons.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)pb_Image).EndInit();
+            ResumeLayout(false);
 
         }
 

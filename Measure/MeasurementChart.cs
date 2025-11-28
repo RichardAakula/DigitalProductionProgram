@@ -351,8 +351,8 @@ namespace DigitalProductionProgram.Measure
                         Stroke = dashedStroke(SKColors.DeepSkyBlue),
                     }
                 },
-                XAxes = new[] 
-                {
+                XAxes =
+                [
                     new Axis
                     {
                         Name = "Measurement",
@@ -363,9 +363,9 @@ namespace DigitalProductionProgram.Measure
                         MinLimit = 1,
                         MinStep = 1
                     }
-                },
-                YAxes = new[]
-                {
+                ],
+                YAxes =
+                [
                     new Axis
                     {
                         Name = codetext,
@@ -377,7 +377,7 @@ namespace DigitalProductionProgram.Measure
                         MaxLimit = Y_Axis_MaxValue(codename, 0) ?? 10, // Sätt ett rimligt maxvärde om inget annat finns
                         MinStep = 0.001, // Stegstorlek för y-axeln
                     }
-                },
+                ],
                 LegendPosition = LiveChartsCore.Measure.LegendPosition.Right,
                 LegendTextPaint = new SolidColorPaint
                 {
@@ -388,9 +388,9 @@ namespace DigitalProductionProgram.Measure
                 ZoomMode = LiveChartsCore.Measure.ZoomAndPanMode.X, // Aktivera zoomning och panorering på både X- och Y-axlar
             };
           
-            cartesianChart.Series = new ISeries[] { serie_USL(codename), serie_UCL(codename), serie_Values(codetext), serie_AvgLatestOrder(codename), serie_AvgPart(codename), serie_LCL(codename),  serie_LSL(codename)  };
+            cartesianChart.Series = [serie_USL(codename), serie_UCL(codename), serie_Values(codetext), serie_AvgLatestOrder(codename), serie_AvgPart(codename), serie_LCL(codename),  serie_LSL(codename)];
 
-            this.Invoke(() => Controls.Add(cartesianChart));
+           // this.Invoke(() => Controls.Add(cartesianChart));
         }
 
         public static string? ActiveCodeName;
@@ -402,7 +402,7 @@ namespace DigitalProductionProgram.Measure
             await RemoveChart();
 
             this.Invoke(() => Initialize_Chart_MainForm(ActiveCodeName, ActiveCodeText));
-
+            this.Invoke(Refresh);
 
             await using var con = new SqlConnection(Database.cs_Protocol);
             

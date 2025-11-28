@@ -9,19 +9,11 @@ using DigitalProductionProgram.PrintingServices;
 using DigitalProductionProgram.Protocols;
 using DigitalProductionProgram.Protocols.ExtraProtocols;
 using DigitalProductionProgram.Protocols.Protocol;
-using DigitalProductionProgram.Protocols.Template_Management;
 using DigitalProductionProgram.Templates;
 using DigitalProductionProgram.User;
 using Microsoft.Data.SqlClient;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Data;
-using System.Drawing;
 using System.Globalization;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using DigitalProductionProgram.Protocols.LineClearance;
 using static DigitalProductionProgram.Measure.Measure_ControlManagement;
 
@@ -29,7 +21,6 @@ namespace DigitalProductionProgram.Measure
 {
     public partial class Measurement_Protocol : Form
     {
-        
 
 
         private readonly Measure_ControlManagement controls;
@@ -224,7 +215,7 @@ namespace DigitalProductionProgram.Measure
             LanguageManager.TranslationHelper.TranslateControls(new Control[]
             {
                 label_Customer, label_Description, label_OrderNr, label_PartNumber, label_Ok, label_Fail, label_Warning, label_Felskrivning, label_Discarded, btn_Clear_HelpInput_1,
-                btn_Clear_HelpInput_2, btn_TransferLengthMeasure, btn_TransferMeasurement, btn_EditBag, btn_EditAmount, btn_Discard, btn_TransferToExcel
+                btn_Clear_HelpInput_2, btn_TransferLengthMeasure, btn_TransferMeasurement, btn_EditBag, btn_EditAmount, btn_Discard, btn_TransferToExcel, label_TotalMeasureMents, label_DiscardedMeasurements
             });
             measureInstrument.Translate_Form();
         }
@@ -334,24 +325,23 @@ namespace DigitalProductionProgram.Measure
                 {
                     while (reader.Read())
                     {
-                        rowsBuffer.Add(new object[]
-                        {
-                    reader["Parameter_UserText"],
-                    reader["Parameter_Monitor"],
-                    reader["Value"],
-                    reader["TextValue"],
-                    reader["BoolValue"],
-                    reader["Date"],
-                    reader["Discarded"],
-                    reader["ErrorCode"],
-                    reader["AnstNr"],
-                    reader["Sign"],
-                    reader["TempID"],
-                    reader["ColumnIndex"],
-                    reader["Decimals"],
-                    reader["DataType"],
-                    reader["ControlType"]
-                        });
+                        rowsBuffer.Add([
+                            reader["Parameter_UserText"],
+                            reader["Parameter_Monitor"],
+                            reader["Value"],
+                            reader["TextValue"],
+                            reader["BoolValue"],
+                            reader["Date"],
+                            reader["Discarded"],
+                            reader["ErrorCode"],
+                            reader["AnstNr"],
+                            reader["Sign"],
+                            reader["TempID"],
+                            reader["ColumnIndex"],
+                            reader["Decimals"],
+                            reader["DataType"],
+                            reader["ControlType"]
+                        ]);
                     }
                 }
             }
@@ -423,8 +413,30 @@ namespace DigitalProductionProgram.Measure
             if (dgv_Measurements.Rows.Count > 0)
                 dgv_Measurements.FirstDisplayedScrollingRowIndex = dgv_Measurements.Rows.Count - 1;
 
+            Count_Measurements();
             dgv_Measurements.Visible = true;
             dgv_Measurements.ResumeLayout();
+        }
+
+        private void Count_Measurements()
+        {
+            var total = 0;
+            var discarded = 0;
+
+            foreach (DataGridViewRow row in dgv_Measurements.Rows)
+            {
+                if (row.IsNewRow)
+                    continue;
+
+                total++;
+
+                var cell = row.Cells["Discarded"];
+                if (cell?.Value != null && cell.Value.ToString().Equals("True", StringComparison.OrdinalIgnoreCase))
+                    discarded++;
+            }
+
+            lbl_TotalMeasurements.Text = total.ToString();
+            lbl_DiscardedMeasurements.Text = discarded.ToString();
         }
 
         private void Lock_Protocol()

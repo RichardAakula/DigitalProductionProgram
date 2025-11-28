@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Help;
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.PrintingServices;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -32,66 +33,64 @@ namespace DigitalProductionProgram.Monitor
         //[DebuggerStepThrough]
         public static void Login_API(string? company = null)
         {
-           try
-           {
-               Log.Activity.Start();
-               var sw = Stopwatch.StartNew();
-               company ??= Database.MonitorCompany;
+            try
+            {
+                var sw = Stopwatch.StartNew();
+                company ??= Database.MonitorCompany;
 
-               BaseAddress = $"https://{Database.MonitorHost}:8001/{LanguageCode}/{company}/";
+                BaseAddress = $"https://{Database.MonitorHost}:8001/{LanguageCode}/{company}/";
 
-               var handler = new HttpClientHandler
-               {
-                   ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true
-               };
+                var handler = new HttpClientHandler
+                {
+                    ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true
+                };
 
-               httpClient = new HttpClient(handler)
-               {
-                   BaseAddress = new Uri(BaseAddress)
-               };
+                httpClient = new HttpClient(handler)
+                {
+                    BaseAddress = new Uri(BaseAddress)
+                };
 
-               httpClient.DefaultRequestHeaders.Accept.Clear();
-               httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                httpClient.DefaultRequestHeaders.Accept.Clear();
+                httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+    
 
-               // Load from config
-               var credentials = Database.LoadCredentials();
-               //var decryptedPassword = Database.AesEncryption.Decrypt(credentials.Password);
+                var credentials = Database.LoadCredentials();
+                var authenticationData = new
+                {
+                    Username = credentials.Username,
+                    Password = credentials.Password,
+                    ForceRelogin = true
+                };
 
-               var authenticationData = new
-               {
-                   Username = credentials.Username,
-                   Password = credentials.Password,
-                   ForceRelogin = true
-               };
-               var authentication = httpClient.PostAsJsonAsync("login", authenticationData).Result;
+               
+                var authentication = httpClient.PostAsJsonAsync("login", authenticationData).Result;
+                if (authentication.IsSuccessStatusCode)
+                {
+                    var sessionId = authentication.Headers.ToList()
+                        .FirstOrDefault(x => x.Key.Contains("SessionId")).Value.FirstOrDefault();
+                    httpClient.DefaultRequestHeaders.Add("X-Monitor-SessionId", sessionId);
+                   
 
-               if (authentication.IsSuccessStatusCode)
-               {
-                   var sessionId = authentication.Headers.ToList()
-                       .FirstOrDefault(x => x.Key.Contains("SessionId")).Value.FirstOrDefault();
-                   httpClient.DefaultRequestHeaders.Add("X-Monitor-SessionId", sessionId);
+                    var cookieContainer = new CookieContainer();
+                    cookieContainer.Add(httpClient.BaseAddress, new Cookie("SessionId", sessionId));
+                    sw.Stop();
 
-                   var cookieContainer = new CookieContainer();
-                   cookieContainer.Add(httpClient.BaseAddress, new Cookie("SessionId", sessionId));
+                    if (sw.ElapsedMilliseconds < 1000)
+                        Monitor.Set_Monitorstatus(Monitor.Status.Ok, sw.ElapsedMilliseconds.ToString());
+                    else
+                        Monitor.Set_Monitorstatus(Monitor.Status.Warning, sw.ElapsedMilliseconds.ToString());
 
-                   sw.Stop();
-                   if (sw.ElapsedMilliseconds < 1000)
-                       Monitor.Set_Monitorstatus(Monitor.Status.Ok, sw.ElapsedMilliseconds.ToString());
-                   else
-                       Monitor.Set_Monitorstatus(Monitor.Status.Warning, sw.ElapsedMilliseconds.ToString());
-               }
-               else
-               {
+                }
+                else
                    Monitor.Set_Monitorstatus(Monitor.Status.Bad, "Failed to authenticate with API.");
-               }
 
-               Log.Activity.Stop("Login_Monitor");
-           }
-           catch (Exception exc)
-           {
-                     Monitor.Set_Monitorstatus(Monitor.Status.Bad, exc.Message);
+            }
+            catch (Exception exc)
+            {
+                Monitor.Set_Monitorstatus(Monitor.Status.Bad, exc.Message);
                 InfoText.Show(exc.Message, CustomColors.InfoText_Color.Bad, "Problem with Monitor.");
-           }
+            }
+
         }
 
     }

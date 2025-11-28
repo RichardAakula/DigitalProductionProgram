@@ -104,7 +104,7 @@ namespace DigitalProductionProgram.Statistics
                     con.Open();
                     using (var reader = cmd.ExecuteReader())
                     {
-                        int ctr = 0;
+                        var ctr = 0;
                         while (reader.Read())
                         {
                             bool.TryParse(reader["IsOrderDone"].ToString(), out var isOrderDone);
@@ -144,7 +144,7 @@ namespace DigitalProductionProgram.Statistics
                 return;
 
             var x = 20;
-            var y = 60;
+            var y = 100;
             var total = productionLines.Count;
 
             double startProgress = ctr_pBar;
@@ -180,7 +180,7 @@ namespace DigitalProductionProgram.Statistics
         }
 
 
-        private void AddLabel(string titleKey, string value, int y, bool isOrderDone)
+        private void AddLabel(string? titleKey, string? value, int y, bool isOrderDone)
         {
             var title = LanguageManager.GetString(titleKey);
 
@@ -204,7 +204,20 @@ namespace DigitalProductionProgram.Statistics
             panels[ctr].Controls.Add(valueLabel);
             panels[ctr].Controls.Add(titleLabel);
         }
-
+        private void Print_Panel(int x, int y)
+        {
+            var panel = new Panel
+            {
+                Size = new Size(panelWidth, panelHeight),
+                BorderStyle = BorderStyle.FixedSingle,
+                Name = ctr.ToString(),
+                Location = new Point(x, y),
+                Cursor = Cursors.Hand
+            };
+            panel.Click += Panel_Click;
+            panel_Main.Controls.Add(panel);
+            panels.Add(panel);
+        }
         private void PrintPanelContent()
         {
             var line = productionLines[ctr];
@@ -226,15 +239,16 @@ namespace DigitalProductionProgram.Statistics
             AddLabel("label_Customer", line.Customer, 85, isDone);
             AddLabel("label_Description", line.Description, 120, isDone);
             AddLabel("label_Amount", $"{line.Amount} {line.Pcs}", 155, isDone);
-            AddLabel("dateStart", line.Start, 225, isDone);
+
+            AddLabel("dateStart", line.Start, 245, isDone);
 
             // Rad 7: Runtime
-            AddOrderRuntimeLabel(line.Start, isDone);
+            AddOrderRuntimeLabel(line.Start, isDone, 280);
 
             // Rad 8: Produktionstid
-            AddTotalProductionTimeLabel(line.ProdLine, isDone);
+            AddTotalProductionTimeLabel(line.ProdLine, isDone, 305);
         }
-        private void AddOrderRuntimeLabel(string start, bool isDone)
+        private void AddOrderRuntimeLabel(string? start, bool isDone, int y)
         {
             DateTime.TryParse(start, out var birth);
             var ts = DateTime.Now - birth;
@@ -248,24 +262,24 @@ namespace DigitalProductionProgram.Statistics
                 Text = text,
                 AutoSize = true,
                 ForeColor = isDone ? Color.Red : (ts.Days > 100 ? Color.Red : Color.White),
-                Location = new Point(lbl_x, 260)
+                Location = new Point(lbl_x, y)
             };
 
             var lbl2 = new Label
             {
                 Text = LanguageManager.GetString("orderRuntime"),
                 ForeColor = Color.DodgerBlue,
-                Location = new Point(10, 260)
+                Location = new Point(10, y)
             };
 
             panels[ctr].Controls.Add(lbl);
             panels[ctr].Controls.Add(lbl2);
         }
-        private void AddTotalProductionTimeLabel(string prodLine, bool isDone)
+        private void AddTotalProductionTimeLabel(string? prodLine, bool isDone, int y)
         {
             if (isDone)
             {
-                AddLabel("orderProdtime", "N/A", 295, true);
+                AddLabel("orderProdtime", "N/A", y, true);
                 return;
             }
 
@@ -294,7 +308,7 @@ namespace DigitalProductionProgram.Statistics
 
             var ts = TimeSpan.FromMinutes(minutes);
             var text = $"{ts.Days} days, {ts.Hours} hours, {ts.Minutes} minutes";
-            AddLabel("orderProdtime", text, 295, false);
+            AddLabel("orderProdtime", text, y, false);
         }
         private void Copy_TextClick(object? sender, EventArgs e)
         {
@@ -302,20 +316,7 @@ namespace DigitalProductionProgram.Statistics
                 Clipboard.SetText(lbl.Text);
         }
 
-        private void Print_Panel(int x, int y)
-        {
-            var panel = new Panel
-            {
-                Size = new Size(panelWidth, panelHeight),
-                BorderStyle = BorderStyle.FixedSingle,
-                Name = ctr.ToString(),
-                Location = new Point(x, y),
-                Cursor = Cursors.Hand
-            };
-            panel.Click += Panel_Click;
-            panel_Main.Controls.Add(panel);
-            panels.Add(panel);
-        }
+       
        
 
 
@@ -348,14 +349,14 @@ namespace DigitalProductionProgram.Statistics
         private class ProductionLines
         {
             public string? ProdLine { get; set; }
-            public string PartNr { get; set; }
+            public string? PartNr { get; set; }
             public string? OrderNr { get; set; }
             public string? Operation { get; set; }
-            public string Customer { get; set; }
-            public string Description { get; set; }
-            public string Amount { get; set; }
-            public string Pcs { get; set; }
-            public string Start { get; set; }
+            public string? Customer { get; set; }
+            public string? Description { get; set; }
+            public string? Amount { get; set; }
+            public string? Pcs { get; set; }
+            public string? Start { get; set; }
             public bool IsOrderDone { get; set; }
         }
 

@@ -611,20 +611,6 @@ namespace DigitalProductionProgram.Browse_Protocols
                     listMaintemplateid.Add(maintemplateid);
             }
 
-            //var listFormtemplateid = new List<int>();
-            //using (var con = new SqlConnection(Database.cs_Protocol))
-            //{
-            //    const string query = @"SELECT FormTemplateID FROM Protocol.FormTemplate WHERE MainTemplateID = @maintemplateid";
-            //    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-            //    cmd.Parameters.AddWithValue("@maintemplateid", Templates_Protocol.MainTemplate.ID);
-            //    con.Open();
-            //    var reader = cmd.ExecuteReader();
-            //    while (reader.Read())
-            //    {
-            //        int.TryParse(reader[0].ToString(), out var formtemplateid);
-            //        listFormtemplateid.Add(formtemplateid);
-            //    }
-            //}
 
             //Get_Protocol_Data.TransferDataToExcel.TransferData(listOrderID, listFormtemplateid, listMaintemplateid, dgv_OrderList.Rows[0].Cells["orderlist_PartNr"].Value.ToString() ?? string.Empty);
             Get_Protocol_Data.TransferDataToExcel.TransferData(listOrderID, dgv_OrderList.Rows[0].Cells["orderlist_PartNr"].Value.ToString() ?? string.Empty);

@@ -2373,4 +2373,13 @@ Please contact IT support if the issue persists.</value>
   <data name="processcard_ChangeProdType" xml:space="preserve">
     <value>When you change the Product Type, the process card is saved as a completely new process card, and the revision restarts from A. The operators can then choose which of the process cards they want to use during production.</value>
   </data>
+  <data name="label_TotalMeasureMents" xml:space="preserve">
+    <value>Total Measurements</value>
+  </data>
+  <data name="label_DiscardedMeasurements" xml:space="preserve">
+    <value>Total Discarded Measurements:</value>
+  </data>
+  <data name="top10LatestOrders" xml:space="preserve">
+    <value>10 latest started orders</value>
+  </data>
 </root>

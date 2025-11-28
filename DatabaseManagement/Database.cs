@@ -393,13 +393,13 @@ namespace DigitalProductionProgram.DatabaseManagement
             public string Name { get; set; }
             public int ID { get; set; }
         }
-        public static readonly List<DataBaseType> datatype = new List<DataBaseType>
-        {
+        public static readonly List<DataBaseType> datatype =
+        [
             new DataBaseType { Name = "Numeric", ID = 0 },
             new DataBaseType { Name = "Text", ID = 1 },
             new DataBaseType { Name = "Bool", ID = 2 },
             new DataBaseType { Name = "DateTime", ID = 3 }
-        };
+        ];
         public static Monitor_API_Credentials LoadCredentials()
         {
             string settingsPath = Path.Combine(

@@ -32,7 +32,7 @@ namespace DigitalProductionProgram.MainWindow
 
     public partial class Main_Form : Form
     {
-        public static Timer Timer_UpdateSQL_Counter = new Timer();
+        private static readonly Timer Timer_UpdateSQL_Counter = new Timer();
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
@@ -100,20 +100,20 @@ namespace DigitalProductionProgram.MainWindow
         }
 
         public static bool IsZumbachÖppet = false;
-        public static bool IsBetaMode;
+        private static bool IsBetaMode;
 
         //UPPSNABBNING AV PROGRAMMET VID UTVECKLING
         public static bool IsLoadingPriorityPlan;
-        public static bool IsLoadingMeasurePoints = true;
-        public static bool IsOpenRandomOrder = false;
-        public static bool IsAutoOpenOrder = false;
-        public static bool IsAutoLoginSuperAdmin = true;
+        private static bool IsLoadingMeasurePoints = true;
+        private static bool IsOpenRandomOrder = false;
+        private static bool IsAutoOpenOrder = false;
+        private static bool IsAutoLoginSuperAdmin = true;
         public static string adminHostName = "OH-ID61";
 
         private DateTime startTime;
         private const string? develop_OrderNr = "H67876";
         private const string? develop_Operation = "10";
-        private const int develop_MainTimer = 10000; // 10 sekunder
+        private const int develop_MainTimer = 30000; // 10 sekunder
 
 
 
@@ -121,22 +121,36 @@ namespace DigitalProductionProgram.MainWindow
         private readonly Manage_PrintOuts? print;
         private readonly BlackBackground black;
 
-        public Main_Form(BlackBackground back)
+        //public Main_Form(BlackBackground back)
+        public Main_Form()
         {
+            var blackback = new BlackBackground("Initialising Digital Production Program.\nConnecting to Monitor and loading data from server, please wait.", 98, true)
+            {
+                TopMost = true,
+                WindowState = FormWindowState.Maximized,
+                
+                KeyPreview = true,
+
+            };
+            blackback.Show();
             this.Visible = false;
-            black = back; 
+            black = blackback;
+            
             Settings.Settings.LoadData.Load_Settings();
+
             Activity.Start();
+
             InitializeComponent();
-
+            
             Translate_MainForm();
-
+            
             MainMenu.mainForm = this;
             OrderInformation.mainForm = this;
 
             print = new Manage_PrintOuts();
             Monitor.Monitor.lbl_Monitorstatus = Serverstatus.lbl_MonitorStatus;
             Monitor.Monitor.panel_Monitorstatus = Serverstatus.panel_MonitorStatus;
+
             Login_Monitor.Login_API();
 
             if ((Environment.MachineName == "THAI-DPP-TEST01" || Environment.MachineName == "OH-ID61") && IsAutoLoginSuperAdmin)
@@ -151,11 +165,11 @@ namespace DigitalProductionProgram.MainWindow
             Serverstatus.SetMainForm(this);
 
 
-            //Login_Monitor.Login_API();
             PriorityPlanning.dgv_PriorityPlanning.CellClick += PriorityPlanning_OrderNr_CellClick;
             OrderInformation.cb_Operation.SelectedIndexChanged += Operation_SelectedIndexChanged;
 
             lbl_Company.Text = Monitor.Monitor.factory.ToString();
+
             if (IsAutoOpenOrder == false)
             {
                 Enum.TryParse(Settings.Settings.Tema, out Teman.Theme);
@@ -166,6 +180,7 @@ namespace DigitalProductionProgram.MainWindow
                     OrderInformation.tb_OrderNr.AutoCompleteCustomSource = Monitor.Monitor.AutoFillOrdernr;
 
                 _ = Main_FilterQuickOpen.Load_ListAsync(dgv_QuickOpen);
+
             }
             OrderInformation.tb_OrderNr.Focus();
             dgv_QuickOpen.ClearSelection();
@@ -185,28 +200,35 @@ namespace DigitalProductionProgram.MainWindow
             if (IsAutoOpenOrder == false)
             {
                 Monitor.Monitor.Load_WorkCenters();
+                
                 PriorityPlanning.Load_ProdGrupp();
 
                 if (Settings.Settings.MeasuringComputerOnly)
                     Change_GUI_Mätdator();
 
-                await Main_FilterQuickOpen.Load_ListAsync(dgv_QuickOpen);
+                //Nedanstående kod finns redan i public Main_Form
+                //await Main_FilterQuickOpen.Load_ListAsync(dgv_QuickOpen);
                 await Task.Run(() => RollingInformation.Change_Tips());
+
             }
 
-            if (black != null)
-            {
-                if (black.InvokeRequired)
-                    black.Invoke(new Action(() => black.Close()));
-                else
-                    black.Close();
-            }
+            
            
             var processes = Process.GetProcessesByName("DigitalProductionProgram");
             await Activity.Stop($"Uppstart av program # {processes.Length}");
             startTime = DateTime.Now;
             Initialize_Timers();
             Change_GUI_StandardColor();
+
+
+            if (black != null)
+            {
+                if (black.InvokeRequired)
+                    black.Invoke(() => black.Close());
+                else
+                    black.Close();
+            }
+            this.BringToFront();
         }
 
         protected override void SetVisibleCore(bool value)
@@ -321,7 +343,7 @@ namespace DigitalProductionProgram.MainWindow
                 Task.Factory.StartNew(RollingInformation.Load_list_Tips);
             }
         }
-        public void Change_GUI_Form()
+        private void Change_GUI_Form()
         {
             if (InvokeRequired)
                 Invoke(Change_GUI_Form);
@@ -625,7 +647,7 @@ namespace DigitalProductionProgram.MainWindow
 
 
         //---------------------------------------------LADDA SPARA---------------------------------------------
-        public void Open()
+        private void Open()
         {
             Activity.Start();
             Order.Set_IsOrderDone();
@@ -661,7 +683,8 @@ namespace DigitalProductionProgram.MainWindow
             TipsAndTrix.LoadData();
             AQL.Initialize_QC_ProvuttagInfo();
         }
-        public void Öppna_Gallup()
+
+        private void Öppna_Gallup()
         {
             
             var bg = new BlackBackground("", 80);
@@ -721,7 +744,7 @@ namespace DigitalProductionProgram.MainWindow
 
         //   // timer_Update_Körplanering.Start();
         //}
-        public void PriorityPlanning_OrderNr_CellClick(object? sender, DataGridViewCellEventArgs e)
+        private void PriorityPlanning_OrderNr_CellClick(object? sender, DataGridViewCellEventArgs e)
         {
             if (PriorityPlanning.dgv_PriorityPlanning.Columns[0].Name != "OrderNr" || e.RowIndex < 0)
                 return;
@@ -1068,8 +1091,9 @@ namespace DigitalProductionProgram.MainWindow
             if (counter_UpdateChart >= 1 && IsZumbachÖppet == false)
             {
                 counter_UpdateChart = 0;
-                if (!string.IsNullOrEmpty(Order.OrderNumber)) 
-                    _ = Task.Run(() => measureStats.Add_MeasureInformation_MainForm(measurementChart, tlp_MainWindow));
+                if (!string.IsNullOrEmpty(Order.OrderNumber))
+                    await measureStats.Add_MeasureInformation_MainForm(measurementChart, tlp_MainWindow);
+                //_ = Task.Run(() => measureStats.Add_MeasureInformation_MainForm(measurementChart, tlp_MainWindow));
 
                 await Statistics_DPP.Load_StatisticsAsync();
             }

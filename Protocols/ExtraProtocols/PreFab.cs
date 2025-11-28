@@ -165,7 +165,7 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
 
         }
 
-        public static List<string?> List_BatchNr(string? partNr)
+        private static List<string?> List_BatchNr(string? partNr)
         {
             var list = Monitor.Monitor.PreFab_BatchNr(partNr);
             if (list != null)
@@ -248,8 +248,8 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
             LanguageManager.TranslationHelper.TranslateControls(new Control[] { btn_AddPreFab, btn_RemovePreFab, btn_PreFab });
         }
 
-        
-        public static void UPDATE_PreFab(string? batchNr, string? typ, double? id, double? od, double? wall, int tempID, string? dateBestBefore)
+
+        private static void UPDATE_PreFab(string? batchNr, string? typ, double? id, double? od, double? wall, int tempID, string? dateBestBefore)
         {
             if (Module.IsOkToSave)
             {
@@ -278,7 +278,7 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
             }
             
         }
-        public static void UPDATE_PreFab_Extruder(string extruder, int tempID)
+        private static void UPDATE_PreFab_Extruder(string extruder, int tempID)
         {
             if (Module.IsOkToSave)
             {
@@ -587,9 +587,10 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
 
                         if (CheckAuthority.IsWorkoperationAuthorized(CheckAuthority.TemplateWorkoperation.SaveMeasurepointsWithPrefab))
                         {
-                            var id = Monitor.Monitor.MeasurePoint(part.PartNumber, "ID");
-                            var od = Monitor.Monitor.MeasurePoint(part.PartNumber,  "OD");
-                            var w = Monitor.Monitor.MeasurePoint(part.PartNumber,  "Wall");
+                           // int.TryParse(Order.Operation, out var operation);
+                            var id = Monitor.Monitor.MeasurePoint(part.PartNumber, "ID", 10);
+                            var od = Monitor.Monitor.MeasurePoint(part.PartNumber,  "OD", 10);
+                            var w = Monitor.Monitor.MeasurePoint(part.PartNumber,  "Wall", 10);
                             if (id > od)    //Blir ibland fel att ID och OD mixas
                             {
                                 Activity.Start();

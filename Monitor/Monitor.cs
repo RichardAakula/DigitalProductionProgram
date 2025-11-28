@@ -154,7 +154,7 @@ namespace DigitalProductionProgram.Monitor
             {
                 var table = new DataTable();
                 table.Columns.Add("Description", typeof(string));
-                table.Columns.Add("FormTemplateId", typeof(long));
+                table.Columns.Add("FormTemplateId", typeof(string));
                 
                 var parameters = Utilities.GetFromMonitor<Common.MeasuringTemplates>("select=FormTemplateId,Description");
 
@@ -167,7 +167,7 @@ namespace DigitalProductionProgram.Monitor
                         // Add the row to the DataTable only if the description is distinct
                         var row = table.NewRow();
                         row["Description"] = parameter.Description;
-                        row["FormTemplateId"] = parameter.FormTemplateId;
+                        row["FormTemplateId"] = parameter.FormTemplateId.ToString();
                         table.Rows.Add(row);
                     }
                 }
@@ -175,10 +175,12 @@ namespace DigitalProductionProgram.Monitor
                 return table;
             }
         }
-        public static List<string> List_MonitorParameters(int formtemplateid)
+        public static List<string> List_MonitorParameters(string formtemplateid)
         {
             var list = new List<string> { "Bag", "StripesAvg", "PreFab" };
             var FormTemplateSelectionRows = Utilities.GetOneFromMonitor<Common.FormTemplateSelectionRows>($"filter=FormTemplateId Eq'{formtemplateid}'");
+            if (FormTemplateSelectionRows is null)
+                return list;
             var parameters = Utilities.GetFromMonitor<Common.FormTemplateRows>("select=Description", $"filter=FormTemplateSelectionRowId Eq'{FormTemplateSelectionRows.Id}'");
 
             foreach (var parameter in parameters.Where(parameter => list.Contains(parameter.Description) == false))
@@ -316,34 +318,35 @@ namespace DigitalProductionProgram.Monitor
 
         public static void Set_Monitorstatus(Status Status, string text)
         {
-            Log.Activity.Start();
+
+           // Log.Activity.Start();
             switch(Status)
             {
                 case Status.Ok:
                 {
                     status = Status.Ok;
                     MonitorStatus = $"Connection to Monitor ok: Responsetime = {text} ms";
-                    if (lbl_Monitorstatus != null) lbl_Monitorstatus.ForeColor = Color.FromArgb(198, 239, 206);
-                    if (panel_Monitorstatus != null) ServerStatus.DrawPanelMonitorStatus(panel_Monitorstatus, Color.FromArgb(198, 239, 206));
+                    if (lbl_Monitorstatus != null) 
+                        lbl_Monitorstatus.ForeColor = Color.FromArgb(198, 239, 206);
                     break;
                 }
                 case Status.Warning:
                     status = Status.Warning;
                     MonitorStatus = $"Connection to Monitor is bad, but working: Responsetime = {text} ms";
                     if (lbl_Monitorstatus != null) lbl_Monitorstatus.ForeColor = Color.FromArgb(156, 101, 0);
-                    if (panel_Monitorstatus != null) ServerStatus.DrawPanelMonitorStatus(panel_Monitorstatus, Color.FromArgb(255, 235, 156));
                     break;
                 case Status.Bad:
                 {
                     status = Status.Bad;
                     MonitorStatus = $"Connection to Monitor is not working, please contact Admin.\n\n{text}";
-                    if (lbl_Monitorstatus != null) lbl_Monitorstatus.ForeColor = Color.FromArgb(156, 0, 6);
-                    if (panel_Monitorstatus != null) ServerStatus.DrawPanelMonitorStatus(panel_Monitorstatus, Color.FromArgb(255, 199, 206));
+                    if (lbl_Monitorstatus != null) 
+                        lbl_Monitorstatus.ForeColor = Color.FromArgb(156, 0, 6);
                     Main_Form.timer_ReloginMonitor = 10; // Börjar logga in automatiskt efter 10 sekunder om anslutningen till Monitor är dålig
                         break;
                 }
            }
-            _ = Log.Activity.Stop($"ResponseTime to Monitor: {text}");
+           // _ = Log.Activity.Stop($"ResponseTime to Monitor: {text}");
+
         }
 
         public static void Load_OrderInformation()

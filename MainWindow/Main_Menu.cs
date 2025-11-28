@@ -15,10 +15,7 @@ using DigitalProductionProgram.Templates;
 using DigitalProductionProgram.ToolManagement;
 using DigitalProductionProgram.User;
 using Microsoft.Data.SqlClient;
-using Microsoft.VisualBasic.Devices;
 using System.Diagnostics;
-using System.Globalization;
-using System.Runtime.InteropServices;
 using System.Text;
 using Color = System.Drawing.Color;
 using ProgressBar = DigitalProductionProgram.ControlsManagement.CustomProgressBar;
@@ -143,14 +140,15 @@ namespace DigitalProductionProgram.MainWindow
         }
         private void Menu_Arkiv_UpdateDPP_Click(object sender, EventArgs e)
         {
-            var updaterPath = @"\\optifil\dpp\Update\Update DPP.exe"; // Ändra till rätt filnamn
+            //var updaterPath = @"\\optifil\dpp\Update\Update DPP.exe"; // OGO
+            var updaterPath = @"\\\\ovf-s1-file\Digital Production Program\Update\Update DPP.exe"; // Ändra till rätt filnamn
             if (File.Exists(updaterPath))
             {
                 Process.Start(updaterPath);
             }
             else
             {
-                MessageBox.Show("Updatern kunde inte hittas.", "Fel", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Updater could not be found, please contact Admin.", "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             Application.Exit(); // Stänger DPP
 
@@ -619,7 +617,7 @@ namespace DigitalProductionProgram.MainWindow
                 });
         }
         //----------UVECKLING----------
-        public void Menu_Utvecklare_GetOrderInfo(object sender, EventArgs e)
+        private void Menu_Utvecklare_GetOrderInfo(object sender, EventArgs e)
         {
             var workcenterDescription = "N/A";
             var workcenterProdGroup = "N/A";
@@ -659,28 +657,29 @@ Name = {Person.Name} - {Person.EmployeeNr}
 Befattning = {Person.Role}
 MonitorCompany = {Database.MonitorCompany}
 
-------TEMPLATES------
+------MEASUREPROTOCOL TEMPLATE------
 Measureprotocol.MainTemplateID = {Templates_MeasureProtocol.MainTemplate.ID}
 Measureprotocol.Name = {Templates_MeasureProtocol.MainTemplate.Name}
 
+------LINECLEARANCE TEMPLATE------
 LineClearance.MainTemplateID = {Templates_LineClearance.MainTemplate.LineClearance_MainTemplateID}
 
+------MAINPROTOCOL TEMPLATE------
 Protocol.MainTemplate.ID = {Templates_Protocol.MainTemplate.ID}
 Protocol.MainTemplate.Name = {Templates_Protocol.MainTemplate.Name}
 Protocol.MainTemplate.Revision = {Templates_Protocol.MainTemplate.Revision}"
 , CustomColors.InfoText_Color.Info, "Info", this);
         }
-        public void Menu_Utvecklare_Add_Gallup_Click(object sender, EventArgs e)
+        private void Menu_Utvecklare_Add_Gallup_Click(object sender, EventArgs e)
         {
             using var addGallup = new Add_UserPoll();
             addGallup.ShowDialog();
         }
-        public void Menu_Utvecklare_Kolla_Gallup_Click(object sender, EventArgs e)
+        private void Menu_Utvecklare_Kolla_Gallup_Click(object sender, EventArgs e)
         {
             using var gallup = new UserPoll();
             gallup.ShowDialog();
         }
-       
         private void Menu_Developer_Timer_test_Click(object sender, EventArgs e)
         {
             using var pbar = new ProgressBar();

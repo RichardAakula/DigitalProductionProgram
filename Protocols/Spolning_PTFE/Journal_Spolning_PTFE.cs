@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using Microsoft.Data.SqlClient;
-using System.Drawing;
-using System.Linq;
-using System.Windows.Forms;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Equipment;
 using DigitalProductionProgram.Help;
@@ -15,7 +10,6 @@ using DigitalProductionProgram.Övrigt;
 using DigitalProductionProgram.PrintingServices;
 using DigitalProductionProgram.Processcards;
 using DigitalProductionProgram.Protocols.Protocol;
-using DigitalProductionProgram.Protocols.Template_Management;
 using DigitalProductionProgram.Templates;
 using DigitalProductionProgram.User;
 using SortOrder = System.Windows.Forms.SortOrder;
@@ -87,18 +81,16 @@ namespace DigitalProductionProgram.Protocols.Spolning_PTFE
 
         private static int OrderID(string? lotnr)
         {
-            var orderid = new int();
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query = @"
+            var orderid = 0;
+            using var con = new SqlConnection(Database.cs_Protocol);
+            const string query = @"
                         SELECT TOP(1) OrderID FROM [Order].MainData WHERE orderNr = @ordernr ORDER BY Operation";
-                con.Open();
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@ordernr", lotnr);
-                var value = cmd.ExecuteScalar();
-                if (value != null)
-                    orderid = int.Parse(value.ToString());
-            }
+            con.Open();
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            cmd.Parameters.AddWithValue("@ordernr", lotnr);
+            var value = cmd.ExecuteScalar();
+            if (value != null)
+                orderid = int.Parse(value.ToString());
             return orderid;
         }
         private static string Date_Blandning(string? lotnr, int fatnr, DateTime dateTime)
@@ -110,7 +102,7 @@ namespace DigitalProductionProgram.Protocols.Spolning_PTFE
             using (var con = new SqlConnection(Database.cs_Protocol))
             {
                 var query = @"
-                        SELECT textvalue FROM [Order].Data 
+                        SELECT TextValue FROM [Order].Data 
                         WHERE OrderID = @orderid 
                             AND ProtocolDescriptionID = 152 
                             AND uppstart = (SELECT uppstart FROM [Order].Data WHERE OrderID = @orderid AND value = @fatnr AND ProtocolDescriptionID = 149)";
@@ -134,24 +126,22 @@ namespace DigitalProductionProgram.Protocols.Spolning_PTFE
             // Hämtar Datum från Mätprotokollet baserat på vilket PåsNr operatören skriver in
             //Om det inte finns ett matchande PåsNr i Mätprotokollet skickas N/A tillbaka.
 
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query = @"
+            using var con = new SqlConnection(Database.cs_Protocol);
+            var query = @"
                         SELECT Date FROM Measureprotocol.MainData AS main
                         INNER JOIN Measureprotocol.Data AS data
                             ON main.OrderID = data.OrderID
                                 AND main.RowIndex = data.RowIndex
                         WHERE main.OrderID = @orderid 
-                        AND Value = @påse AND DescriptionID = 37 AND Discarded = 'False'";
-                con.Open();
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@orderid", OrderID(lotnr));
-                cmd.Parameters.AddWithValue("@påse", påse);
-                var value = cmd.ExecuteScalar();
-                if (value != null)
-                    if (DateTime.TryParse(value.ToString(), out var date))
-                        return date.ToString("yyyy-MM-dd");
-            }
+                        AND Value = @bag AND DescriptionID = 37 AND (Discarded = 'False' OR Discarded IS NULL)";
+            con.Open();
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            cmd.Parameters.AddWithValue("@orderid", OrderID(lotnr));
+            cmd.Parameters.AddWithValue("@bag", påse);
+            var value = cmd.ExecuteScalar();
+            if (value != null)
+                if (DateTime.TryParse(value.ToString(), out var date))
+                    return date.ToString("yyyy-MM-dd");
 
             return "N/A";
         }
@@ -177,23 +167,26 @@ namespace DigitalProductionProgram.Protocols.Spolning_PTFE
         }
         private static string Measureprotocol_Sign(string? lotnr, int påse)
         {
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query = @"
-                        SELECT Sign FROM Measureprotocol.MainData AS main
-                        INNER JOIN Measureprotocol.Data AS data
-                            ON main.OrderID = data.OrderID
-                                AND main.RowIndex = data.RowIndex
-                        WHERE main.OrderID = @orderid 
-                        AND Value = @påse AND DescriptionID = 37 AND Discarded = 'False'";
-                con.Open();
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@orderid", OrderID(lotnr));
-                cmd.Parameters.AddWithValue("@påse", påse);
-                var value = cmd.ExecuteScalar();
-                if (value != null)
-                    return value.ToString();
-            }
+            using var con = new SqlConnection(Database.cs_Protocol);
+            const string query = @"
+                        SELECT 
+                            main.Sign
+                        FROM MeasureProtocol.MainData AS main
+                        INNER JOIN MeasureProtocol.Data AS data37
+                            ON main.OrderID = data37.OrderID
+                                AND main.RowIndex = data37.RowIndex
+                                AND data37.DescriptionID = 37
+                                AND data37.Value = @bag
+                       
+                        WHERE main.OrderID = @orderid
+                            AND (main.Discarded = 'False' OR main.Discarded IS NULL)";
+            con.Open();
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            cmd.Parameters.AddWithValue("@orderid", OrderID(lotnr));
+            cmd.Parameters.AddWithValue("@bag", påse);
+            var value = cmd.ExecuteScalar();
+            if (value != null)
+                return value.ToString();
 
             return null;
         }
@@ -201,20 +194,18 @@ namespace DigitalProductionProgram.Protocols.Spolning_PTFE
         {
             //Hämtar Extruder från Extrudering_PTFE baserat på vilket ordernr operatören skriver in
             //Om det inte finns extruder i ordern skickas N/A tillbaka.
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query = @"
+            using var con = new SqlConnection(Database.cs_Protocol);
+            var query = @"
                         SELECT TOP(1) textvalue FROM [Order].Data
                         WHERE OrderID = @orderid 
                         AND ProtocolDescriptionID = 80
                         ORDER BY uppstart";
-                con.Open();
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@orderid", OrderID(lotnr));
-                var value = cmd.ExecuteScalar();
-                if (value != null)
-                    return value.ToString();
-            }
+            con.Open();
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            cmd.Parameters.AddWithValue("@orderid", OrderID(lotnr));
+            var value = cmd.ExecuteScalar();
+            if (value != null)
+                return value.ToString();
 
             return "N/A";
         }
@@ -222,31 +213,33 @@ namespace DigitalProductionProgram.Protocols.Spolning_PTFE
         {
             //Hämtar Ugn_Nr från Mätprotokoll baserat på vilket ordernr samt PåsNr operatören skriver in
             //Om det inte finns matchande nr i ordern skickas N/A tillbaka.
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query = @"
-                        SELECT Value FROM Measureprotocol.MainData AS main
-                        INNER JOIN Measureprotocol.Data AS data
-                            ON main.OrderID = data.OrderID
-                                AND main.RowIndex = data.RowIndex
-                        WHERE main.OrderID = @orderid 
-                        AND Value = @påse AND DescriptionID = 56 AND Discarded = 'False'";
-                con.Open();
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@orderid", OrderID(lotnr));
-                cmd.Parameters.AddWithValue("@påse", påse);
-                var value = cmd.ExecuteScalar();
-                if (value != null)
-                    return value.ToString();
-            }
+            using var con = new SqlConnection(Database.cs_Protocol);
+            var query = @"
+                        SELECT 
+                            data56.Value AS Value56
+                        FROM MeasureProtocol.MainData AS main
+                        INNER JOIN MeasureProtocol.Data AS data37
+                            ON main.OrderID = data37.OrderID
+                                AND main.RowIndex = data37.RowIndex
+                                AND data37.DescriptionID = 37
+                                AND data37.Value = @bag
+                        LEFT JOIN MeasureProtocol.Data AS data56
+                            ON main.OrderID = data56.OrderID
+                                AND main.RowIndex = data56.RowIndex
+                                AND data56.DescriptionID = 56
+                        WHERE main.OrderID = @orderid
+                            AND (main.Discarded = 'False' OR main.Discarded IS NULL)";
+            con.Open();
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            cmd.Parameters.AddWithValue("@orderid", OrderID(lotnr));
+            cmd.Parameters.AddWithValue("@bag", påse);
+            var value = cmd.ExecuteScalar();
+            if (value != null)
+                return value.ToString();
 
             return "N/A";
         }
-        //private int Extra_Label_Width(IEnumerable<int> columns)
-        //{
-        //    var width = columns.Where(column => dgv_Journal_Input.Columns[column].Visible).Sum(column => dgv_Journal_Input.Columns[column].Width);
-        //    return width + 1;
-        //}
+        
         private int Extra_Label_Width(IEnumerable<string> columns)
         {
             var width = columns.Where(column => dgv_Journal_Input.Columns[column].Visible).Sum(column => dgv_Journal_Input.Columns[column].Width);
@@ -718,10 +711,16 @@ namespace DigitalProductionProgram.Protocols.Spolning_PTFE
             switch (protocoldescriptionid)
             {
                 case 177: //SpoleNr
-                    dgv_Journal_Input.Rows[0].Cells["182"].Value = Measureprotocol_Date_Sintring(Order.OrderNumber, Påse);
-                    dgv_Journal_Input.Rows[0].Cells["183"].Value = Korprotokoll_Extruder(Order.OrderNumber);
-                    dgv_Journal_Input.Rows[0].Cells["184"].Value = Measureprotocol_Ugn(Order.OrderNumber, Påse);
-                    // dgv_Journal_Input.Rows[0].Cells[Protocol_Description.Codetext(202)].Value = Measureprotocol_Sign(Order.OrderNumber, Påse);
+                case 346: //Halvfabrikat
+                    if (dgv_Journal_Input.Rows[0].Cells["177"].Value != null && dgv_Journal_Input.Rows[0].Cells["346"].Value != null)
+                    {
+                        string prefab = dgv_Journal_Input.Rows[0].Cells["346"].Value.ToString();
+                        dgv_Journal_Input.Rows[0].Cells["182"].Value = Measureprotocol_Date_Sintring(prefab, Påse);
+                        dgv_Journal_Input.Rows[0].Cells["183"].Value = Korprotokoll_Extruder(prefab);
+                        dgv_Journal_Input.Rows[0].Cells["184"].Value = Measureprotocol_Ugn(prefab, Påse);
+                        dgv_Journal_Input.Rows[0].Cells["202"].Value = Measureprotocol_Sign(prefab, Påse);
+                    }
+
                     break;
                 case 147: //BatchNr
                 case 149: //FatNr
@@ -734,7 +733,7 @@ namespace DigitalProductionProgram.Protocols.Spolning_PTFE
                         dgv_Journal_Input.Rows[0].Cells["154"].Value = Nafta_Percent(Lotnr, Fatnr);
                     }
                     break;
-                case 183:     //Extr.Nr
+                case 183:    //Extr.Nr
                 case 184:    //UgnNr
                     if (!string.IsNullOrEmpty(Lotnr) && Fatnr > 0)
                     {

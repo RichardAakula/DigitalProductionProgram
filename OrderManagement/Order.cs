@@ -197,66 +197,6 @@ namespace DigitalProductionProgram.OrderManagement
             }
         }
 
-        private static WorkOperations Temp_Workoperation;
-        private static int? Temp_OrderID;
-        private static int? Temp_PartID;
-        private static int? Temp_PartGroupID;
-        private static int Temp_MainTemplateID;
-        private static string? Temp_Benämning;
-        private static string? Temp_OrderNr;
-        private static string? Temp_Operation;
-        private static string? Temp_PartNr;
-        private static string? Temp_RevNr;
-        private static string? Temp_ProdLine;
-        private static string? Temp_Customer;
-        private static string? Temp_ProdType;
-        private static string Temp_ProdGroup;
-        private static string? Temp_TemplateRevision;
-        private static int? Temp_LineClearanceMainTemplateID;
-        private static int? Temp_MeasureProtocolMainTemplateID;
-
-        public static void Save_TempOrderInfo()
-        {
-            Temp_Benämning = Description;
-            Temp_MainTemplateID = Templates_Protocol.MainTemplate.ID;
-            Temp_LineClearanceMainTemplateID = Templates_LineClearance.MainTemplate.LineClearance_MainTemplateID;
-            Temp_MeasureProtocolMainTemplateID = Templates_MeasureProtocol.MainTemplate.ID;
-            Temp_OrderNr = OrderNumber;
-            Temp_OrderID = OrderID;
-            Temp_Operation = Operation;
-            Temp_PartNr = PartNumber;
-            Temp_PartID = PartID;
-            Temp_PartGroupID = PartGroupID;
-            Temp_RevNr = RevNr;
-            Temp_Workoperation = WorkOperation;
-            Temp_ProdLine = ProdLine;
-            Temp_ProdType = ProdType;
-            Temp_ProdGroup = ProdGroup;
-            Temp_Customer = Customer;
-            Temp_TemplateRevision = Templates_Protocol.MainTemplate.Revision;
-
-        }
-        public static void Restore_TempOrderInfo()
-        {
-            Description = Temp_Benämning;
-            Templates_Protocol.MainTemplate.ID = Temp_MainTemplateID;
-            Templates_LineClearance.MainTemplate.LineClearance_MainTemplateID = Temp_LineClearanceMainTemplateID;
-            Templates_MeasureProtocol.MainTemplate.ID = Temp_MeasureProtocolMainTemplateID;
-            OrderNumber = Temp_OrderNr;
-            OrderID = Temp_OrderID;
-            Operation = Temp_Operation;
-            PartNumber = Temp_PartNr;
-            PartID = Temp_PartID;
-            PartGroupID = Temp_PartGroupID;
-            RevNr = Temp_RevNr;
-            WorkOperation = Temp_Workoperation;
-            ProdLine = Temp_ProdLine;
-            ProdType = Temp_ProdType;
-            ProdGroup = Temp_ProdGroup;
-            Customer = Temp_Customer;
-            Templates_Protocol.MainTemplate.Revision = Temp_TemplateRevision;
-        }
-
         public static void Load_OrderInformation()
         {
             Load_OrderID(OrderNumber, Operation);
@@ -646,6 +586,7 @@ namespace DigitalProductionProgram.OrderManagement
             Templates_Protocol.MainTemplate.Name = null;
             Templates_Protocol.MainTemplate.ID = 0;
             Templates_MeasureProtocol.MainTemplate.ID = null;
+            Templates_MeasureProtocol.MainTemplate.Name = null;
             Templates_LineClearance.MainTemplate.LineClearance_MainTemplateID = null;
             HS_Pipe_1 = null;
             HS_Pipe_2 = null;
@@ -677,6 +618,7 @@ namespace DigitalProductionProgram.OrderManagement
                         DELETE FROM [Order].Läcksökning WHERE OrderID = @id  
                         DELETE FROM Zumbach.Data WHERE OrderID = @id
                         DELETE FROM Zumbach.Measurements WHERE OrderID = @id
+                        DELETE FROM Parts.FeedbackQC WHERE OrderID = @id
                     COMMIT TRANSACTION";
 
             var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
@@ -832,7 +774,7 @@ namespace DigitalProductionProgram.OrderManagement
                     Templates_Protocol.MainTemplate.Set_MainTemplateID(ref IsOkStartOrder);
                     Templates_MeasureProtocol.MainTemplate.Set_MainTemplateID(ref IsOkStartOrder);
                     Templates_LineClearance.MainTemplate.Set_MainTemplateID();
-                    if (IsOkStartOrder == false)
+                    if (!IsOkStartOrder)
                     {
                         InfoText.Show(LanguageManager.GetString("selectTemplateError"), CustomColors.InfoText_Color.Bad, "Warning", main);
                         ResetOrder(main);
@@ -905,9 +847,9 @@ namespace DigitalProductionProgram.OrderManagement
                     RevNr = Processkort_General.LoadRevNr();
                     return true;
                 }
-            }   
+            }
 
-            public static void Save_MainInfo()
+            private static void Save_MainInfo()
             {
                 SaveData.INSERT_Korprotokoll_MainData();
                 Module.IsOkToSave = true;
@@ -1010,7 +952,8 @@ namespace DigitalProductionProgram.OrderManagement
                     return list;
                 }
             }
-            public static bool Is_OkFinishOrder(Main_Form main)
+
+            private static bool Is_OkFinishOrder(Main_Form main)
             {
                 if (IsOrderDone_Before)
                     return true;
@@ -1390,7 +1333,15 @@ namespace DigitalProductionProgram.OrderManagement
                 if (IsOrderDone == false)
                     return;
 
-                //Fortsätter med allt som skall göras om ordern är klar
+                // Check/force a physical printer before starting any preview/print flow.
+                if (ok.utskrift && !Manage_PrintOuts.IsPrinterSelected)
+                {
+                    InfoText.Question("Vill du avsluta ordern och spara ordern som pdf istälelt för att skriva ut den?", CustomColors.InfoText_Color.Warning, "Ingen skrivare vald.");
+                    if (InfoText.answer == InfoText.Answer.No) 
+                        return;
+                }
+
+                // Finishing Order i and set EndDate and Print papers
                 if (!IsOrderDone_Before)
                 {
                     var dateTimeFormat = CultureInfo.CurrentCulture.DateTimeFormat;
@@ -1422,16 +1373,90 @@ namespace DigitalProductionProgram.OrderManagement
                 //Meddelar processtekniker om eventuella uppdateringar av Processkort
                 //Om Artikel är under Framarbetning OCH Antal ordrar körda är 3 så skickas ett mail eller om inget Processkort finns OCH antal körda ordrar = 3
                 //D-ordrar skall heller inte 
-                _ = Activity.Stop("Finish Order: Skickar mail ang. Processkortsuppdateringar");
-                Mail.ProcesscardNeedChanges_FinishOrder();
-                if (TotalOrders == 3 && !Processcard.IsNotUsingProcesscard(WorkOperation)) 
-                    Mail.NotifyOrderFinishedCount_3();
+                // if SuperAdmin close old orders ther is no need to send this mail
+                if (Person.Role != "SuperAdmin")
+                {
+                    _ = Activity.Stop("Finish Order: Skickar mail ang. Processkortsuppdateringar");
+                    Mail.ProcesscardNeedChanges_FinishOrder();
+                    if (TotalOrders == 3 && !Processcard.IsNotUsingProcesscard(WorkOperation))
+                        Mail.NotifyOrderFinishedCount_3();
+                }
 
                 _ = Main_FilterQuickOpen.Load_ListAsync(main.dgv_QuickOpen);
                
             }
         }
+        private static OrderInfoSnapshot? _snapshot;
 
-        
+        private class OrderInfoSnapshot
+        {
+            public WorkOperations? Workoperation { get; set; }
+            public int? OrderID { get; set; }
+            public int? PartID { get; set; }
+            public int? PartGroupID { get; set; }
+            public int MainTemplateID { get; set; }
+            public string? Benamning { get; set; }
+            public string? OrderNr { get; set; }
+            public string? Operation { get; set; }
+            public string? PartNr { get; set; }
+            public string? RevNr { get; set; }
+            public string? ProdLine { get; set; }
+            public string? Customer { get; set; }
+            public string? ProdType { get; set; }
+            public string? ProdGroup { get; set; }
+            public string? TemplateRevision { get; set; }
+            public string? MainTemplateName { get; set; }
+            public int? LineClearanceMainTemplateID { get; set; }
+            public int? MeasureProtocolMainTemplateID { get; set; }
+        }
+        public static void Save_TempOrderInfo()
+        {
+            _snapshot = new OrderInfoSnapshot
+            {
+                Benamning = Description,
+                MainTemplateName = Templates_Protocol.MainTemplate.Name,
+                MainTemplateID = Templates_Protocol.MainTemplate.ID,
+                LineClearanceMainTemplateID = Templates_LineClearance.MainTemplate.LineClearance_MainTemplateID,
+                MeasureProtocolMainTemplateID = Templates_MeasureProtocol.MainTemplate.ID,
+                OrderNr = OrderNumber,
+                OrderID = OrderID,
+                Operation = Operation,
+                PartNr = PartNumber,
+                PartID = PartID,
+                PartGroupID = PartGroupID,
+                RevNr = RevNr,
+                Workoperation = WorkOperation,
+                ProdLine = ProdLine,
+                ProdType = ProdType,
+                ProdGroup = ProdGroup,
+                Customer = Customer,
+                TemplateRevision = Templates_Protocol.MainTemplate.Revision
+            };
+        }
+        public static void Restore_TempOrderInfo()
+        {
+            if (_snapshot is null)
+                return;
+
+            Description = _snapshot.Benamning;
+            Templates_Protocol.MainTemplate.Name = _snapshot.MainTemplateName;
+            Templates_Protocol.MainTemplate.ID = _snapshot.MainTemplateID;
+            Templates_LineClearance.MainTemplate.LineClearance_MainTemplateID = _snapshot.LineClearanceMainTemplateID;
+            Templates_MeasureProtocol.MainTemplate.ID = _snapshot.MeasureProtocolMainTemplateID;
+            OrderNumber = _snapshot.OrderNr;
+            OrderID = _snapshot.OrderID;
+            Operation = _snapshot.Operation;
+            PartNumber = _snapshot.PartNr;
+            PartID = _snapshot.PartID;
+            PartGroupID = _snapshot.PartGroupID;
+            RevNr = _snapshot.RevNr;
+            WorkOperation = (WorkOperations)_snapshot.Workoperation;
+            ProdLine = _snapshot.ProdLine;
+            ProdType = _snapshot.ProdType;
+            ProdGroup = _snapshot.ProdGroup;
+            Customer = _snapshot.Customer;
+            Templates_Protocol.MainTemplate.Revision = _snapshot.TemplateRevision;
+        }
+
     }
 }

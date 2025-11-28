@@ -95,8 +95,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
         }
 
 
-
-        public void Load_Templates(int machineIndex, ref bool isAutheticationNeeded, ref int height, bool isOkChangeProcessdata)
+        private void Load_Templates(int machineIndex, ref bool isAutheticationNeeded, ref int height, bool isOkChangeProcessdata)
         {
             if (Templates_Protocol.MainTemplate.ID is 0)
                 return;

@@ -375,6 +375,9 @@
     <EmbeddedResource Update="Properties\Resources.sv-SE.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Update="SQL_Queries\Processcard.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Update="Zumbach\MeasureWithZumbach.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>

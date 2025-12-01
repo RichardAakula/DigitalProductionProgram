@@ -613,11 +613,11 @@ namespace DigitalProductionProgram.Monitor
             sw.Start();
             Utilities.CounterMonitorRequests = 0;
             // Hämta partCodes i bakgrundstråd
-            var partCodes = Utilities.GetFromMonitor<Inventory.PartCodes>($"filter=Code Eq'KANYLER'");
+            var partCodes = Utilities.GetFromMonitor<Inventory.PartCodes>($"filter=Description Eq'TIPS'");
 
             foreach (var partCode in partCodes)
             {
-                var parts =Utilities.GetFromMonitor<Inventory.Parts>($"filter=PartCodeId eq'{partCode.Id}' AND ExtraDescription eq'Kanyler FEP'", $"select=Id,PartNumber,ExtraDescription", "expand=ExtraFields");
+                var parts = Utilities.GetFromMonitor<Inventory.Parts>($"filter=PartCodeId eq'{partCode.Id}' AND ExtraDescription eq'Kanyler FEP'", $"select=Id,PartNumber,ExtraDescription", "expand=ExtraFields");
                 if (parts is null)
                     continue;
                 sw.Stop();
@@ -626,7 +626,7 @@ namespace DigitalProductionProgram.Monitor
                 {
                     foreach (var field in part.ExtraFields)
                     {
-                        if (field.Identifier == "P119")
+                        if (field.Identifier == "T4")
                         {
                             if (field != null)
                                 list.Add(field.StringValue);

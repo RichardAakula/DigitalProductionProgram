@@ -228,7 +228,7 @@ namespace DigitalProductionProgram.MainWindow
                 else
                     black.Close();
             }
-            this.BringToFront();
+            this.Invoke((MethodInvoker)(this.BringToFront));
         }
 
         protected override void SetVisibleCore(bool value)

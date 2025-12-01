@@ -145,35 +145,25 @@ namespace DigitalProductionProgram.Equipment
         }
 
 
-        public static async Task<List<string?>> List_Tool_Type(string codeName)
+        public static List<string?> List_Tool_Type(string codeName)
         {
-            try
+           
+            var list = new List<string?>();
+
+            var partCodes =  Utilities.GetFromMonitor<Inventory.PartCodes>($"filter=Description eq'{codeName}'");
+
+            foreach (var partCode in partCodes)
             {
-                var list = new List<string?>();
+                //var parts =  Utilities.GetFromMonitor<Inventory.Parts>($"filter=PartCodeId eq'1365775941822409216'");//, "select(ExtraDescription)");// AND IsNull(BlockedById)
+                var parts = Utilities.GetFromMonitor<Inventory.Parts>($"select(ExtraDescription)", "", $"filter=PartCodeId eq'1365775941822409216'");//, "select(ExtraDescription)");// AND IsNull(BlockedById)
 
-                var partCodes =  Utilities.GetFromMonitor<Inventory.PartCodes>(
-                    $"filter=Description Eq '{codeName}'");
-
-                foreach (var partCode in partCodes)
+                foreach (var part in parts)
                 {
-                    var parts =  Utilities.GetFromMonitor<Inventory.Parts>(
-                        $"filter=PartCodeId Eq '{partCode.Id}'",
-                        "select(ExtraDescription)");// AND IsNull(BlockedById)
-
-                    foreach (var part in parts)
-                    {
-                        if (!list.Contains(part.ExtraDescription))
-                            list.Add(part.ExtraDescription);
-                    }
+                    if (!list.Contains(part.ExtraDescription))
+                        list.Add(part.ExtraDescription);
                 }
-
-                return list;
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show("❌ List_Tool_Type ERROR: " + ex);
-                throw; // viktigt – så du ser exakt rad i VS
-            }
+            return list;
         }
 
 

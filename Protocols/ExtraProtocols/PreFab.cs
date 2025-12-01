@@ -114,44 +114,32 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
             }
             return dt;
         }
-        //public static List<string?> List_BatchNr(string? partNr)
-        //{
-        //    var list = Monitor.Monitor.PreFab_BatchNr(partNr);
-        //    if (list != null)
-        //    {
-        //        var list_Parts = Monitor.Monitor.PreFab_BatchNr(partNr).ToList();
-        //        return list_Parts;
-        //    }
-
-        //    return null;
-        //}
-        public static async Task<List<string?>?> List_BatchNr(string? partNr)
+        private static List<string?> List_BatchNr(string? partNr)
         {
-            if (partNr == null)
-                return null;
-
-            var list = await Monitor.Monitor.PreFab_BatchNr(partNr);
+            var list = Monitor.Monitor.PreFab_BatchNr(partNr);
             if (list != null)
-                return list.ToList();
+            {
+                var list_Parts = Monitor.Monitor.PreFab_BatchNr(partNr).ToList();
+                return list_Parts;
+            }
 
             return null;
         }
+       
 
         public static List<string?> ListBatchNr
         {
             get
             {
                 var list = new List<string?>();
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    var query = @"SELECT DISTINCT Halvfabrikat_OrderNr FROM [Order].PreFab ORDER BY Halvfabrikat_OrderNr";
+                using var con = new SqlConnection(Database.cs_Protocol);
+                var query = @"SELECT DISTINCT Halvfabrikat_OrderNr FROM [Order].PreFab ORDER BY Halvfabrikat_OrderNr";
 
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    con.Open();
-                    var reader = cmd.ExecuteReader();
-                    while (reader.Read())
-                        list.Add(reader[0].ToString());
-                }
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                con.Open();
+                var reader = cmd.ExecuteReader();
+                while (reader.Read())
+                    list.Add(reader[0].ToString());
                 return list;
             }
         }
@@ -348,7 +336,7 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
         //        dgv.ClearSelection();
         //    }
         //}
-        private async void PreFab_CellClick(object sender, DataGridViewCellEventArgs e)
+        private void PreFab_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             if (Browse_Protocols.Browse_Protocols.Is_BrowsingProtocols)
                 return;
@@ -365,7 +353,7 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
 
             if (e.ColumnIndex == BatchNrColumn) // BatchNr
             {
-                items = await List_BatchNr(dgv.Rows[e.RowIndex].Cells[0].Value?.ToString());
+                items = List_BatchNr(dgv.Rows[e.RowIndex].Cells[0].Value?.ToString());
 
                 if (!string.IsNullOrEmpty(dgv.Rows[e.RowIndex].Cells["BatchNr:"].Value?.ToString()) && Is_CommentNeededToChangeBatchNr)
                 {

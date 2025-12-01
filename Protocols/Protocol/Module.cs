@@ -976,7 +976,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                             items = Machines.HS_Upptagare;
                             break;
                         case 131:   //RAKBLADSTYP
-                            items = Task.Run( Monitor.Monitor.List_RazorTypes).Result;
+                            items = Monitor.Monitor.List_RazorTypes;
                             break;
                             //case 132:   //HACKRÖRSTYP         Hackning TEF
                             //    items.Add("Vanlig");

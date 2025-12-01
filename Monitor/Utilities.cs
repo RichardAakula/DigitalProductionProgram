@@ -75,67 +75,28 @@ namespace DigitalProductionProgram.Monitor
         }
        
         [DebuggerStepThrough]
-        public static async Task<T?> GetOneFromMonitor<T>(params string[] queryOptions) where T : DTO, new()
+
+        public static T GetOneFromMonitor<T>(params string[] queryOptions) where T : DTO, new()
         {
             var query = BuildQuery<T>(queryOptions);
-
-            // Begränsa till 1 rad om det inte redan finns
             if (!query.Contains("$top="))
                 query += query.Contains("?$") ? "&$top=1" : "?$top=1";
 
-            var response = await Http_responseAsync(query);
+            var response = Http_response(query);
             if (response is null)
-                return default;
-
-            var asString = await response.Content.ReadAsStringAsync();
+                return null;
+            var asString = response.Content.ReadAsStringAsync().Result;
 
             var isIdSelect = queryOptions.Length > 0 && queryOptions[0].StartsWith("/");
-
             try
             {
-                if (isIdSelect)
-                {
-                    // Om det är en /ID-select (typ /1234), returnera direkt som objekt
-                    //return JsonSerializer.Deserialize<T>(asString);
-                    return JsonConvert.DeserializeObject<T>(asString);
-                }
-                else
-                {
-                    // Annars är det en lista – ta första elementet
-                    //var list = JsonSerializer.Deserialize<List<T>>(asString);
-                    var list = JsonConvert.DeserializeObject<List<T>>(asString);
-                    return list?.FirstOrDefault();
-                }
+                return isIdSelect ? JsonConvert.DeserializeObject<T>(asString) : (JsonConvert.DeserializeObject<List<T>>(asString) ?? throw new InvalidOperationException()).FirstOrDefault();
             }
-            catch (Exception ex)
+            catch
             {
-                if (Person.Role == "SuperAdmin")
-                    MessageBox.Show($"Error in GetOneFromMonitorAsync<{typeof(T).Name}>():\n{ex.Message}\n\nQuery:\n{query}");
-                return default;
+                return null;
             }
         }
-
-        //public static T GetOneFromMonitor<T>(params string[] queryOptions) where T : DTO, new()
-        //{
-        //    var query = BuildQuery<T>(queryOptions);
-        //    if (!query.Contains("$top="))
-        //        query += query.Contains("?$") ? "&$top=1" : "?$top=1";
-
-        //    var response = Http_response(query);
-        //    if (response is null)
-        //        return null;
-        //    var asString = response.Content.ReadAsStringAsync().Result;
-
-        //    var isIdSelect = queryOptions.Length > 0 && queryOptions[0].StartsWith("/");
-        //    try
-        //    {
-        //        return isIdSelect ? JsonConvert.DeserializeObject<T>(asString) : (JsonConvert.DeserializeObject<List<T>>(asString) ?? throw new InvalidOperationException()).FirstOrDefault();
-        //    }
-        //    catch
-        //    {
-        //        return null;
-        //    }
-        //}
         // [DebuggerStepThrough]
         [DebuggerStepThrough]
         private static string BuildQuery<T>(string[] queryOptions) where T : DTO, new()

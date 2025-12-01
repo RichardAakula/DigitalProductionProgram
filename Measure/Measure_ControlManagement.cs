@@ -606,7 +606,7 @@ namespace DigitalProductionProgram.Measure
                     var partNr = dt.Rows[0][LanguageManager.GetString("label_PartNumber")].ToString();
 
                     // Hämta batchnummer från Monitor asynkront
-                    items = await Monitor.Monitor.PreFab_BatchNr(partNr);
+                    items = Monitor.Monitor.PreFab_BatchNr(partNr);
                     break;
 
                 // Lägg till fler case här om du vill

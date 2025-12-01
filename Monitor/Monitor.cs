@@ -188,7 +188,7 @@ namespace DigitalProductionProgram.Monitor
                 return new List<string> { "N/A" };
 
             // Hämta delen asynkront
-            var part = await Utilities.GetOneFromMonitor<Inventory.Parts>($"filter=PartNumber Eq'{partnr}'");
+            var part = Utilities.GetOneFromMonitor<Inventory.Parts>($"filter=PartNumber Eq'{partnr}'");
             if (part is null)
                 return new List<string> { "N/A" };
 
@@ -311,147 +311,62 @@ namespace DigitalProductionProgram.Monitor
             return quantity;
         }
 
-        //public static string BestBeforeDate(string partNumber, string serialNumber)
-        //{
-        //    var part = Utilities.GetOneFromMonitor<Inventory.Parts>($"filter=PartNumber Eq'{partNumber}'");
-        //    if (part == null || string.IsNullOrEmpty(serialNumber))
-        //        return null;
-        //    var filter = $"filter=PartId Eq'{part.Id}' AND SerialNumber Eq'{serialNumber}'";
-        //    var productRecords = Utilities.GetOneFromMonitor<Inventory.ProductRecords>(filter);
-        //    if (productRecords is null)
-        //        return null;
-        //    if (DateTime.TryParse(productRecords.BestBeforeDate, out var date) == false)
-        //        return "N/A";
-        //    var dateTimeFormat = CultureInfo.CurrentCulture.DateTimeFormat;
-        //    var formattedDate = date.ToString($"{dateTimeFormat.ShortDatePattern}", CultureInfo.CurrentCulture);
-        //    return formattedDate;
-        //}
-        public static async Task<string?> BestBeforeDate(string partNumber, string serialNumber)
+        public static string BestBeforeDate(string partNumber, string serialNumber)
         {
-            if (string.IsNullOrEmpty(serialNumber))
+            var part = Utilities.GetOneFromMonitor<Inventory.Parts>($"filter=PartNumber Eq'{partNumber}'");
+            if (part == null || string.IsNullOrEmpty(serialNumber))
                 return null;
-
-            // Hämta delen asynkront
-            var part = await Utilities.GetOneFromMonitor<Inventory.Parts>($"filter=PartNumber Eq'{partNumber}'");
-            if (part is null)
+            var filter = $"filter=PartId Eq'{part.Id}' AND SerialNumber Eq'{serialNumber}'";
+            var productRecords = Utilities.GetOneFromMonitor<Inventory.ProductRecords>(filter);
+            if (productRecords is null)
                 return null;
-
-            // Hämta produktposten asynkront
-            var productRecord = await Utilities.GetOneFromMonitor<Inventory.ProductRecords>(
-                $"filter=PartId Eq'{part.Id}' AND SerialNumber Eq'{serialNumber}'"
-            );
-            if (productRecord is null)
-                return null;
-
-            // Konvertera BestBeforeDate
-            if (!DateTime.TryParse(productRecord.BestBeforeDate, out var date))
+            if (DateTime.TryParse(productRecords.BestBeforeDate, out var date) == false)
                 return "N/A";
-
             var dateTimeFormat = CultureInfo.CurrentCulture.DateTimeFormat;
-            return date.ToString(dateTimeFormat.ShortDatePattern, CultureInfo.CurrentCulture);
+            var formattedDate = date.ToString($"{dateTimeFormat.ShortDatePattern}", CultureInfo.CurrentCulture);
+            return formattedDate;
         }
 
-        //public static double? MeasurePoint(string? PartNr, string Description, int Operation = 0)
-        //{
-        //    var part = Utilities.GetOneFromMonitor<Inventory.Parts>($"filter=PartNumber Eq'{PartNr}'");
-        //    if (part == null)
-        //        return null;
-        //    var filter = $"filter=PartId Eq'{part.Id}'";
-        //    if (Operation > 0)
-        //        filter += $" AND OperationNumber Eq'{Operation}'";
-        //    var operations = Utilities.GetOneFromMonitor<Manufacturing.ManufacturingOrderOperations>(filter, "orderby=ActualFinishDate DESC");
-        //    if (operations is null)
-        //        return null;
-        //    var ManufacturingOrderOperationControlDataRows = Utilities.GetOneFromMonitor<Manufacturing.ManufacturingOrderOperationControlDataRows>($"filter=ManufacturingOrderOperationId Eq'{operations.Id}'");
-        //    if (ManufacturingOrderOperationControlDataRows is null)
-        //        return null;
-        //    var FormTemplateSelectionRows = Utilities.GetOneFromMonitor<Common.FormTemplateSelectionRows>($"filter=FormTemplateId Eq'{ManufacturingOrderOperationControlDataRows.OverridenFormTemplateId}'");
-        //    var MeasurePoint = Utilities.GetOneFromMonitor<Common.FormTemplateRows>($"filter=FormTemplateSelectionRowId Eq'{FormTemplateSelectionRows.Id}' AND Description Eq'{Description}'");
-        //    if (MeasurePoint is null) 
-        //        return null;
-        //    return MeasurePoint.Value;
 
-        //}
-        public static async Task<double?> MeasurePoint(string? partNr, string description, int operation = 0)
+        public static double? MeasurePoint(string? PartNr, string Description, int Operation = 0)
         {
-            if (string.IsNullOrEmpty(partNr))
+            var part = Utilities.GetOneFromMonitor<Inventory.Parts>($"filter=PartNumber Eq'{PartNr}'");
+            if (part == null)
                 return null;
-
-            // Hämta delen asynkront
-            var part = await Utilities.GetOneFromMonitor<Inventory.Parts>($"filter=PartNumber Eq'{partNr}'");
-            if (part is null)
-                return null;
-
-            // Hämta operationen asynkront
-            var filterOperation = $"filter=PartId Eq'{part.Id}'";
-            if (operation > 0)
-                filterOperation += $" AND OperationNumber Eq'{operation}'";
-
-            var operations = await Utilities.GetOneFromMonitor<Manufacturing.ManufacturingOrderOperations>(
-                filterOperation,
-                "orderby=ActualFinishDate DESC"
-            );
+            var filter = $"filter=PartId Eq'{part.Id}'";
+            if (Operation > 0)
+                filter += $" AND OperationNumber Eq'{Operation}'";
+            var operations = Utilities.GetOneFromMonitor<Manufacturing.ManufacturingOrderOperations>(filter, "orderby=ActualFinishDate DESC");
             if (operations is null)
                 return null;
-
-            // Hämta kontrollrader asynkront
-            var controlDataRows = await Utilities.GetOneFromMonitor<Manufacturing.ManufacturingOrderOperationControlDataRows>(
-                $"filter=ManufacturingOrderOperationId Eq'{operations.Id}'"
-            );
-            if (controlDataRows is null)
+            var ManufacturingOrderOperationControlDataRows = Utilities.GetOneFromMonitor<Manufacturing.ManufacturingOrderOperationControlDataRows>($"filter=ManufacturingOrderOperationId Eq'{operations.Id}'");
+            if (ManufacturingOrderOperationControlDataRows is null)
                 return null;
-
-            // Hämta FormTemplateSelectionRows asynkront
-            var formTemplateSelectionRow = await Utilities.GetOneFromMonitor<Common.FormTemplateSelectionRows>(
-                $"filter=FormTemplateId Eq'{controlDataRows.OverridenFormTemplateId}'"
-            );
-            if (formTemplateSelectionRow is null)
+            var FormTemplateSelectionRows = Utilities.GetOneFromMonitor<Common.FormTemplateSelectionRows>($"filter=FormTemplateId Eq'{ManufacturingOrderOperationControlDataRows.OverridenFormTemplateId}'");
+            var MeasurePoint = Utilities.GetOneFromMonitor<Common.FormTemplateRows>($"filter=FormTemplateSelectionRowId Eq'{FormTemplateSelectionRows.Id}' AND Description Eq'{Description}'");
+            if (MeasurePoint is null)
                 return null;
+            return MeasurePoint.Value;
 
-            // Hämta MeasurePoint asynkront
-            var measurePoint = await Utilities.GetOneFromMonitor<Common.FormTemplateRows>(
-                $"filter=FormTemplateSelectionRowId Eq'{formTemplateSelectionRow.Id}' AND Description Eq'{description}'"
-            );
-
-            if (measurePoint is null)
-                return null;
-
-            return measurePoint.Value;
         }
 
-        //public static string Units(string artikelNr)
-        //{
-        //    var part = Utilities.GetOneFromMonitor<Inventory.Parts>($"filter=PartNumber Eq'{artikelNr}'");
-        //    if (part is null)
-        //        return "N/A";
-        //    var enhet = Utilities.GetOneFromMonitor<Common.Units>($"filter=Id Eq'{part.StandardUnitId}'");
-
-        //    return enhet.Code;
-        //}
-        public static async Task<string> Units(string artikelNr)
+        public static string Units(string artikelNr)
         {
-            // Hämta delen i en bakgrundstråd
-            var part = await Task.Run(() => Utilities.GetOneFromMonitor<Inventory.Parts>($"filter=PartNumber Eq'{artikelNr}'"));
+            var part = Utilities.GetOneFromMonitor<Inventory.Parts>($"filter=PartNumber Eq'{artikelNr}'");
             if (part is null)
                 return "N/A";
+            var enhet = Utilities.GetOneFromMonitor<Common.Units>($"filter=Id Eq'{part.StandardUnitId}'");
 
-            // Hämta enhet i en bakgrundstråd
-            var enhet = await Task.Run(() => Utilities.GetOneFromMonitor<Common.Units>($"filter=Id Eq'{part.StandardUnitId}'"));
-
-            return enhet?.Code ?? "N/A";
+            return enhet.Code;
         }
 
 
-        //public static Common.Persons User(int EmployeeNumber)
-        //{
-        //    var person = Utilities.GetOneFromMonitor<Common.Persons>($"filter=EmployeeNumber Eq'{EmployeeNumber}'");
-        //    return person;
-        //}
-        public static async Task<Common.Persons?> User(int employeeNumber)
+        public static Common.Persons User(int EmployeeNumber)
         {
-            var person = await Task.Run(() => Utilities.GetOneFromMonitor<Common.Persons>($"filter=EmployeeNumber Eq'{employeeNumber}'"));
+            var person = Utilities.GetOneFromMonitor<Common.Persons>($"filter=EmployeeNumber Eq'{EmployeeNumber}'");
             return person;
         }
+        
 
         //public static Common.Persons User(string FirstName, string LastName)
         //{
@@ -1064,7 +979,7 @@ namespace DigitalProductionProgram.Monitor
 
         public static async Task Fill_ComboBox_PartCodes(ComboBox cb)
         {
-            var partCodes = await Utilities.GetFromMonitor<Inventory.PartCodes>("select=Code,Description", "filter=Alias Eq 'TOOLS'");
+            var partCodes = Utilities.GetFromMonitor<Inventory.PartCodes>("select=Code,Description", "filter=Alias Eq 'TOOLS'");
 
             var list = partCodes?.ToList() ?? new List<Inventory.PartCodes>();
 
@@ -1075,8 +990,8 @@ namespace DigitalProductionProgram.Monitor
 
         public static async Task<List<Common.ExtraFieldTemplates>> Get_PropertyList(bool clone = false)
         {
-            var fieldGroup = await Utilities.GetOneFromMonitor<Common.ExtraFieldGroups>("filter=Name eq'Variables'");
-            var properties = await Utilities.GetFromMonitor<Common.ExtraFieldTemplates>(
+            var fieldGroup = Utilities.GetOneFromMonitor<Common.ExtraFieldGroups>("filter=Name eq'Variables'");
+            var properties = Utilities.GetFromMonitor<Common.ExtraFieldTemplates>(
                 "select=Name",
                 $"filter=ParentId Eq'{fieldGroup?.Id}'",
                 "orderby=Name");
@@ -1187,7 +1102,7 @@ namespace DigitalProductionProgram.Monitor
             Utilities.CounterMonitorRequests = 0;
 
             // Hämta partCodes asynkront
-            var partCodes = await Utilities.GetFromMonitor<Inventory.PartCodes>(
+            var partCodes = Utilities.GetFromMonitor<Inventory.PartCodes>(
                 "filter=Description  Eq'TIPS'"
             );
 
@@ -1204,7 +1119,7 @@ namespace DigitalProductionProgram.Monitor
                 await throttler.WaitAsync();
                 try
                 {
-                    var parts = await Utilities.GetFromMonitor<Inventory.Parts>(
+                    var parts = Utilities.GetFromMonitor<Inventory.Parts>(
                         $"filter=PartCodeId eq'{partCode.Id}' AND ExtraDescription eq'Kanyler FEP'",
                         "select=Id,PartNumber,ExtraDescription",
                         "expand=ExtraFields"

@@ -226,14 +226,14 @@ namespace DigitalProductionProgram.Monitor.Services
             Login_Monitor.TotalLoginAttemps = 0;
             Utilities.CounterMonitorRequests = 0;
             // Hämta PartCodeId asynkront
-            var partCodeObj = await Utilities.GetOneFromMonitor<Inventory.PartCodes>($"filter=Description Eq'{partCode}'");
+            var partCodeObj = Utilities.GetOneFromMonitor<Inventory.PartCodes>($"filter=Description Eq'{partCode}'");
             var partCodeId = partCodeObj?.Id ?? 0;
 
             // Hämta parts asynkront
             string filter = $"filter= IsNull(BlockedById)";
             filter += string.IsNullOrEmpty(filterCodeText) ? $"AND PartCodeId Eq'{partCodeId}'" : $"AND PartCodeId Eq'{partCodeId}' AND ExtraDescription Eq'{filterCodeText}'";
 
-            var parts = await Utilities.GetFromMonitor<Inventory.Parts>("select=Id,PartNumber,ExtraDescription", filter);
+            var parts = Utilities.GetFromMonitor<Inventory.Parts>("select=Id,PartNumber,ExtraDescription", filter);
 
             if (string.IsNullOrEmpty(name))
             {
@@ -260,9 +260,9 @@ namespace DigitalProductionProgram.Monitor.Services
             {
                 // Hämta ExtraFields asynkront
                 var value = string.Empty;
-                var identifier = await Utilities.GetOneFromMonitor<Common.ExtraFieldTemplates>($"filter=Name Eq'{name}'");
+                var identifier = Utilities.GetOneFromMonitor<Common.ExtraFieldTemplates>($"filter=Name Eq'{name}'");
 
-                var idNr = await Utilities.GetOneFromMonitor<Common.ExtraFields>("select=StringValue,DecimalValue,IntegerValue", $"filter=ParentId eq'{part.Id}' AND Identifier eq'{identifier.Identifier}'");
+                var idNr = Utilities.GetOneFromMonitor<Common.ExtraFields>("select=StringValue,DecimalValue,IntegerValue", $"filter=ParentId eq'{part.Id}' AND Identifier eq'{identifier.Identifier}'");
 
                 if (idNr == null)
                     continue;
@@ -281,8 +281,8 @@ namespace DigitalProductionProgram.Monitor.Services
 
                 if (secondaryName != null && IsItemsMultipleColumns)
                 {
-                    var secondaryIdentifier = await Utilities.GetOneFromMonitor<Common.ExtraFieldTemplates>($"filter=Name Eq'{secondaryName}'");
-                    var secondaryIdNr = await Utilities.GetOneFromMonitor<Common.ExtraFields>("select=StringValue,DecimalValue,IntegerValue", $"filter=ParentId eq'{part.Id}' AND Identifier eq'{secondaryIdentifier.Identifier}'");
+                    var secondaryIdentifier = Utilities.GetOneFromMonitor<Common.ExtraFieldTemplates>($"filter=Name Eq'{secondaryName}'");
+                    var secondaryIdNr = Utilities.GetOneFromMonitor<Common.ExtraFields>("select=StringValue,DecimalValue,IntegerValue", $"filter=ParentId eq'{part.Id}' AND Identifier eq'{secondaryIdentifier.Identifier}'");
                     if (secondaryIdNr != null)
                     {
                         stringValue = secondaryIdNr.StringValue;

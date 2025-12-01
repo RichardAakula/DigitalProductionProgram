@@ -51,8 +51,8 @@ namespace DigitalProductionProgram.ToolManagement
         private void ToolCalculator_Load(object sender, EventArgs e)
         {
             // Synkront anrop av async-metoder
-            List_DieType = Equipment.Equipment.List_Tool_Type("DIES").GetAwaiter().GetResult();
-            List_PinType = Equipment.Equipment.List_Tool_Type("TIPS").GetAwaiter().GetResult();
+            List_DieType = Equipment.Equipment.List_Tool_Type("DIES");
+            List_PinType = Equipment.Equipment.List_Tool_Type("TIPS");
         }
 
         private void Fill_MainOrderInformation()

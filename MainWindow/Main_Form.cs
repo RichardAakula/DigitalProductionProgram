@@ -203,7 +203,7 @@ namespace DigitalProductionProgram.MainWindow
 
             if (!Program.IsComputerOnlyForMeasurements && IsAutoOpenOrder == false)
             {
-                var result = await Monitor.Monitor.AutoFillOrdernr();
+                var result = Monitor.Monitor.AutoFillOrdernr();
 
                 if (OrderInformation.tb_OrderNr.InvokeRequired)
                 {

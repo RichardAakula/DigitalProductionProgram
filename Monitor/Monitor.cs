@@ -276,82 +276,37 @@ namespace DigitalProductionProgram.Monitor
         }
 
 
-
-        //public static AutoCompleteStringCollection AutoFillOrdernr
-        //{
-        //    get
-        //    {
-        //        var list = new AutoCompleteStringCollection();
-
-        //        var ordernr = Utilities.GetFromMonitor<Manufacturing.ManufacturingOrders>("select=OrderNumber");
-        //        if (ordernr is null)
-        //            return list;
-        //        foreach (var order in ordernr)
-        //            list.Add(order.OrderNumber);
-
-        //        return list;
-        //    }
-        //}
-        public static async Task<AutoCompleteStringCollection> AutoFillOrdernr()
+        public static AutoCompleteStringCollection AutoFillOrdernr
         {
-            var list = new AutoCompleteStringCollection();
+            get
+            {
+                var list = new AutoCompleteStringCollection();
 
-            // Hämta ordernummer asynkront
-            var ordernr = Utilities.GetFromMonitor<Manufacturing.ManufacturingOrders>("select=OrderNumber");
+                var ordernr = Utilities.GetFromMonitor<Manufacturing.ManufacturingOrders>("select=OrderNumber");
+                if (ordernr is null)
+                    return list;
+                foreach (var order in ordernr)
+                    list.Add(order.OrderNumber);
 
-            // Om det inte finns några order, returnera tom lista
-            if (ordernr is null)
                 return list;
-
-            foreach (var order in ordernr)
-                list.Add(order.OrderNumber);
-
-            return list;
+            }
         }
 
-
-        //public static decimal Balance(string partNumber, string serialNumber = null)
-        //{
-        //    var part = Utilities.GetOneFromMonitor<Inventory.Parts>($"filter=PartNumber Eq'{partNumber}'");
-        //    if (part == null)
-        //        return 0;
-        //    var filter = $"filter=PartId Eq'{part.Id}'";
-        //    if (string.IsNullOrEmpty(serialNumber) == false)
-        //        filter += $" AND SerialNumber Eq'{serialNumber}'";
-        //    var productRecordsId = Utilities.GetOneFromMonitor<Inventory.ProductRecords>(filter);
-        //    if (productRecordsId is null)
-        //        return 0;
-        //    var partLocationProductRecords = Utilities.GetFromMonitor<Inventory.PartLocationProductRecords>($"filter=ProductRecordId Eq'{productRecordsId.Id}' AND Quantity gt'0'");
-        //    decimal quantity = 0;
-        //    foreach (var id in partLocationProductRecords)
-        //        quantity += id.Quantity;
-
-        //    return quantity;
-        //}
-        public static async Task<decimal> Balance(string partNumber, string? serialNumber = null)
+        public static decimal Balance(string partNumber, string serialNumber = null)
         {
-            // Hämta delen asynkront
-            var part = await Utilities.GetOneFromMonitor<Inventory.Parts>($"filter=PartNumber Eq'{partNumber}'");
-            if (part is null)
+            var part = Utilities.GetOneFromMonitor<Inventory.Parts>($"filter=PartNumber Eq'{partNumber}'");
+            if (part == null)
                 return 0;
-
             var filter = $"filter=PartId Eq'{part.Id}'";
-            if (!string.IsNullOrEmpty(serialNumber))
+            if (string.IsNullOrEmpty(serialNumber) == false)
                 filter += $" AND SerialNumber Eq'{serialNumber}'";
-
-            // Hämta ProductRecord asynkront
-            var productRecord = await Utilities.GetOneFromMonitor<Inventory.ProductRecords>(filter);
-            if (productRecord is null)
+            var productRecordsId = Utilities.GetOneFromMonitor<Inventory.ProductRecords>(filter);
+            if (productRecordsId is null)
                 return 0;
-
-            // Hämta PartLocationProductRecords asynkront
-            var partLocationProductRecords = await Utilities.GetFromMonitor<Inventory.PartLocationProductRecords>(
-                $"filter=ProductRecordId Eq'{productRecord.Id}' AND Quantity gt'0'"
-            );
-
+            var partLocationProductRecords = Utilities.GetFromMonitor<Inventory.PartLocationProductRecords>($"filter=ProductRecordId Eq'{productRecordsId.Id}' AND Quantity gt'0'");
             decimal quantity = 0;
-            foreach (var record in partLocationProductRecords)
-                quantity += record.Quantity;
+            foreach (var id in partLocationProductRecords)
+                quantity += id.Quantity;
 
             return quantity;
         }

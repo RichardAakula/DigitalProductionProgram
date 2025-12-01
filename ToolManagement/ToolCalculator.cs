@@ -16,8 +16,8 @@ namespace DigitalProductionProgram.ToolManagement
 {
     public partial class ToolCalculator : Form
     {
-        private List<string?> List_DieType;
-        private List<string?> List_PinType;
+        private readonly List<string?> List_DieType;
+        private readonly List<string?> List_PinType;
         private bool IsOpening = true;
         private bool IsToManyCalculations(int totalSteps, bool isOkToOverrideCalculation)
         {
@@ -45,14 +45,15 @@ namespace DigitalProductionProgram.ToolManagement
             tb_OrderNr.AutoCompleteCustomSource = collection;
             Fill_MainOrderInformation();
             Load_RegularSettings();
-            
+            List_DieType = Equipment.Equipment.List_Tool_Type("DIES");
+            List_PinType = Equipment.Equipment.List_Tool_Type("TIPS");
+            IsOpening = false;
 
         }
         private void ToolCalculator_Load(object sender, EventArgs e)
         {
             // Synkront anrop av async-metoder
-            List_DieType = Equipment.Equipment.List_Tool_Type("DIES");
-            List_PinType = Equipment.Equipment.List_Tool_Type("TIPS");
+            CalculateTools(true, false);
         }
 
         private void Fill_MainOrderInformation()
@@ -580,16 +581,11 @@ namespace DigitalProductionProgram.ToolManagement
                 return Dimension.ToString("F2"); // Show this in the ComboBox
             }
         }
-        public class Pin
+        public class Pin(double? dimension, double? landLength)
         {
-            public double Dimension { get; set; }
-            public double LandLength { get; set; }
+            public double Dimension { get; } = dimension ?? 0;
+            public double LandLength { get; } = landLength ?? 0;
 
-            public Pin(string dimension, string landLength)
-            {
-                Dimension = Calculation.ParseValue(dimension);
-                LandLength = Calculation.ParseValue(landLength);
-            }
 
             public override string ToString()
             {

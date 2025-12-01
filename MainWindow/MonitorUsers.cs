@@ -278,7 +278,7 @@ namespace DigitalProductionProgram.MainWindow
         public async Task Fill_OnlineMonitorUsers()
         {
             // Hämta användare asynkront
-            var users = await Monitor.Monitor.List_Users();
+            var users = Monitor.Monitor.List_Users();
             if (users is null)
                 return;
 

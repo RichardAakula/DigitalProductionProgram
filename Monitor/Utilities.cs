@@ -18,153 +18,62 @@ namespace DigitalProductionProgram.Monitor
         #region GET
         // public static string MonitorStatus;
         // [DebuggerStepThrough]
-        //private static HttpResponseMessage Http_response(string query)
-        //{
-        //    var ctr_ErrorLogin = 0;
-        //Start:
-        //    var response = Login_Monitor.httpClient.GetAsync(query).Result;
-
-        //    if (response.StatusCode != HttpStatusCode.OK)
-        //    {
-        //        if (ctr_ErrorLogin > 10)
-        //        {
-        //            _ = Activity.Stop($"Error:Monitor - Failat inloggning 10 ggr: Query = {query}. Response = {response.ReasonPhrase}. StatusCode = {response.StatusCode}");
-        //            Monitor.Set_Monitorstatus(Monitor.Status.Bad, $"StatusCode: {response.StatusCode}. Response: {response.ReasonPhrase}");
-        //        }
-
-        //        if (Monitor.status == Monitor.Status.Bad && ctr_ErrorLogin > 10)
-        //            return null;
-        //        Login_Monitor.Login_API();
-        //        ctr_ErrorLogin++;
-        //        goto Start;
-        //    }
-        //    return response;
-        //}
-        public static int CounterMonitorRequests;
-        private static async Task<HttpResponseMessage?> Http_responseAsync(string query, int maxRetries = 5, TimeSpan? initialDelay = null, CancellationToken cancellationToken = default)
+        private static HttpResponseMessage Http_response(string query)
         {
-             CounterMonitorRequests++;
-            initialDelay ??= TimeSpan.FromMilliseconds(200);
-            var delay = initialDelay.Value;
-            var rnd = new Random();
+            var ctr_ErrorLogin = 0;
+        Start:
+            var response = Login_Monitor.httpClient.GetAsync(query).Result;
 
-            for (int attempt = 0; attempt <= maxRetries; attempt++)
+            if (response.StatusCode != HttpStatusCode.OK)
             {
-                try
+                if (ctr_ErrorLogin > 10)
                 {
-                    // Respektera cancellation
-                    cancellationToken.ThrowIfCancellationRequested();
-
-                    var response = await Login_Monitor.httpClient.GetAsync(query, cancellationToken).ConfigureAwait(false);
-
-                    // Om OK -> returnera
-                    if (response.StatusCode == HttpStatusCode.OK)
-                        return response;
-
-                    // Hantera 401/403 explicit: försök login en gång direkt
-                    if (response.StatusCode == HttpStatusCode.Unauthorized || response.StatusCode == HttpStatusCode.Forbidden)
-                    {
-                        // Försök att logga in (synkront eller async beroende på din implementation)
-                        // Om Login_API är sync, kör den i en Task.Run så vi inte blockerar.
-                        try
-                        {
-                            await Task.Run(() => Login_Monitor.Login_API()).ConfigureAwait(false);
-                        }
-                        catch
-                        {
-                            // login misslyckades — låt retry-logiken ta hand om nästa försök
-                        }
-
-                        // Vänta lite och fortsätt retry-loop
-                    }
-
-                    // Om vi nått maxRetry, logga och returnera null
-                    if (attempt == maxRetries)
-                    {
-                        // Logga felstatus (ersätt med din logging)
-                        _ = Activity.Stop($"Error:Monitor - Max retries reached for query: {query}. Last StatusCode = {response.StatusCode}");
-                        Monitor.Set_Monitorstatus(Monitor.Status.Bad, $"StatusCode: {response.StatusCode}. Response: {response.ReasonPhrase}");
-                        return null;
-                    }
-
-                    // Annars vänta innan nästa försök (exponential backoff + jitter)
-                    var jitter = TimeSpan.FromMilliseconds(rnd.Next(0, 100));
-                    await Task.Delay(delay + jitter, cancellationToken).ConfigureAwait(false);
-                    // öka delay (exponential)
-                    delay = TimeSpan.FromMilliseconds(Math.Min(5000, delay.TotalMilliseconds * 2));
+                    _ = Activity.Stop($"Error:Monitor - Failat inloggning 10 ggr: Query = {query}. Response = {response.ReasonPhrase}. StatusCode = {response.StatusCode}");
+                    Monitor.Set_Monitorstatus(Monitor.Status.Bad, $"StatusCode: {response.StatusCode}. Response: {response.ReasonPhrase}");
                 }
-                catch (OperationCanceledException)
-                {
-                    // Avbrutet av caller — bubbla upp eller returnera null
+
+                if (Monitor.status == Monitor.Status.Bad && ctr_ErrorLogin > 10)
                     return null;
-                }
-                catch (HttpRequestException ex)
-                {
-                    // Nätverksfel — logga och retrya om möjligt
-                    if (attempt == maxRetries)
-                    {
-                        _ = Activity.Stop($"Error:Monitor - HttpRequestException for query: {query}. Exception: {ex}");
-                        Monitor.Set_Monitorstatus(Monitor.Status.Bad, $"HttpRequestException: {ex.Message}");
-                        return null;
-                    }
-
-                    // vänta och försök igen
-                    var jitter = TimeSpan.FromMilliseconds(rnd.Next(0, 200));
-                    await Task.Delay(delay + jitter, cancellationToken).ConfigureAwait(false);
-                    delay = TimeSpan.FromMilliseconds(Math.Min(5000, delay.TotalMilliseconds * 2));
-                }
-                catch (Exception ex)
-                {
-                    // Oförutsedd fel — logga och avbryt för att undvika tyst fel
-                    _ = Activity.Stop($"Error:Monitor - Unexpected exception for query: {query}. Exception: {ex}");
-                    Monitor.Set_Monitorstatus(Monitor.Status.Bad, $"Exception: {ex.Message}");
-                    return null;
-                }
+                Login_Monitor.Login_API();
+                ctr_ErrorLogin++;
+                goto Start;
             }
-
-            return null;
+            return response;
         }
+        public static int CounterMonitorRequests;
+        
         //[DebuggerStepThrough]
-        public static async Task<List<T>> GetFromMonitor<T>(params string[] queryOptions) where T : DTO, new()
+        
+        public static List<T> GetFromMonitor<T>(params string[] queryOptions) where T : DTO, new()
         {
             var query = BuildQuery<T>(queryOptions);
-            var response = await Http_responseAsync(query);
-            if (response is null) return null;
+            var response = Http_response(query);
+            if (response is null)
+                return null;
+            var asString = response.Content.ReadAsStringAsync().Result;
+            // try
+            {
+                var list = JsonConvert.DeserializeObject<List<T>>(asString);
 
-            var asString = await response.Content.ReadAsStringAsync();
-            //return JsonSerializer.Deserialize<List<T>>(asString);
-            return JsonConvert.DeserializeObject<List<T>>(asString);
+                if (list is null)
+                {
+                    if (Person.Role == "SuperAdmin")
+                        MessageBox.Show($"StatusCode = {response.StatusCode}\n" +
+                                        $"Content = {response.Content}\n" +
+                                        $"IsSuccessStatusCode = {response.IsSuccessStatusCode}");
+                }
+
+                return list;
+            }
+            //catch (Exception e)
+            {
+                //if (Person.Role == "SuperAdmin")
+                //    MessageBox.Show(e.ToString());
+            }
+            return null;
+
         }
-
-        //public static List<T> GetFromMonitor<T>(params string[] queryOptions) where T : DTO, new()
-        //{
-        //    var query = BuildQuery<T>(queryOptions);
-        //    var response = Http_response(query);
-        //    if (response is null)
-        //        return null;
-        //    var asString = response.Content.ReadAsStringAsync().Result;
-        //   // try
-        //    {
-        //        var list = JsonConvert.DeserializeObject<List<T>>(asString);
-                
-        //        if (list is null)
-        //        {
-        //            if (Person.Role =="SuperAdmin")
-        //                MessageBox.Show($"StatusCode = {response.StatusCode}\n" +
-        //                                $"Content = {response.Content}\n" +
-        //                                $"IsSuccessStatusCode = {response.IsSuccessStatusCode}");
-        //        }
-
-        //        return list;
-        //    }
-        //    //catch (Exception e)
-        //    {
-        //        //if (Person.Role == "SuperAdmin")
-        //        //    MessageBox.Show(e.ToString());
-        //    }
-        //    return null;
-
-        //}
+       
         [DebuggerStepThrough]
         public static async Task<T?> GetOneFromMonitor<T>(params string[] queryOptions) where T : DTO, new()
         {

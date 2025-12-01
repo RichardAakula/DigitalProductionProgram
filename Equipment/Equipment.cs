@@ -151,12 +151,12 @@ namespace DigitalProductionProgram.Equipment
             {
                 var list = new List<string?>();
 
-                var partCodes = await Utilities.GetFromMonitor<Inventory.PartCodes>(
+                var partCodes =  Utilities.GetFromMonitor<Inventory.PartCodes>(
                     $"filter=Description Eq '{codeName}'");
 
                 foreach (var partCode in partCodes)
                 {
-                    var parts = await Utilities.GetFromMonitor<Inventory.Parts>(
+                    var parts =  Utilities.GetFromMonitor<Inventory.Parts>(
                         $"filter=PartCodeId Eq '{partCode.Id}'",
                         "select(ExtraDescription)");// AND IsNull(BlockedById)
 

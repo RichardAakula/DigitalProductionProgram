@@ -70,7 +70,7 @@ namespace DigitalProductionProgram.Monitor
             var dt = new DataTable(); 
             dt.Columns.Add("Item1", typeof(string));
             dt.Columns.Add("Item2", typeof(string));
-            var parts = await Utilities.GetFromMonitor<Inventory.Parts>("filter=startswith(Description, 'Candle')");
+            var parts = Utilities.GetFromMonitor<Inventory.Parts>("filter=startswith(Description, 'Candle')");
             foreach (var part in parts)
                 dt.Rows.Add($"{part.PartNumber}", $"{part.Description}");
             return dt;
@@ -131,7 +131,7 @@ namespace DigitalProductionProgram.Monitor
                 return list;
 
             // Hämta PartLocations med saldo
-            var partLocations = await Utilities.GetFromMonitor<Inventory.PartLocations>(
+            var partLocations =  Utilities.GetFromMonitor<Inventory.PartLocations>(
                 $"filter=PartId Eq'{part.Id}' AND Balance gt 0 AND (WarehouseId Eq 1 OR WarehouseId Eq 5) AND LifeCycleState Eq 10"
             );
 
@@ -141,7 +141,7 @@ namespace DigitalProductionProgram.Monitor
             foreach (var location in partLocations)
             {
                 // Hämta PartLocationProductRecords
-                var records = await Utilities.GetFromMonitor<Inventory.PartLocationProductRecords>(
+                var records = Utilities.GetFromMonitor<Inventory.PartLocationProductRecords>(
                     $"filter=PartLocationId Eq'{location.Id}' AND Quantity gt 0"
                 );
 
@@ -151,7 +151,7 @@ namespace DigitalProductionProgram.Monitor
                 foreach (var record in records)
                 {
                     // Hämta motsvarande ProductRecord
-                    var productRecords = await Utilities.GetFromMonitor<Inventory.ProductRecords>(
+                    var productRecords = Utilities.GetFromMonitor<Inventory.ProductRecords>(
                         $"filter=Id Eq'{record.ProductRecordId}'"
                     );
 

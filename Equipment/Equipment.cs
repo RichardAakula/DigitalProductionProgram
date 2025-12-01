@@ -155,7 +155,7 @@ namespace DigitalProductionProgram.Equipment
             foreach (var partCode in partCodes)
             {
                 //var parts =  Utilities.GetFromMonitor<Inventory.Parts>($"filter=PartCodeId eq'1365775941822409216'");//, "select(ExtraDescription)");// AND IsNull(BlockedById)
-                var parts = Utilities.GetFromMonitor<Inventory.Parts>($"select(ExtraDescription)", "", $"filter=PartCodeId eq'1365775941822409216'");//, "select(ExtraDescription)");// AND IsNull(BlockedById)
+                var parts = Utilities.GetFromMonitor<Inventory.Parts>($"select=ExtraDescription", $"filter=PartCodeId eq'{partCode.Id}'");//, "select(ExtraDescription)");// AND IsNull(BlockedById)
 
                 foreach (var part in parts)
                 {

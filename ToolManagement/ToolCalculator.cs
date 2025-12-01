@@ -174,7 +174,7 @@ namespace DigitalProductionProgram.ToolManagement
             var chooseDieType = new Choose_Item(List_PinType, new Control[] { tb_PinType }, false);
             chooseDieType.ShowDialog();
         }
-        private void ID_OD_TextChanged(object sender, EventArgs e)
+        private void CalculateWalls_TextChanged(object sender, EventArgs e)
         {
             var ID = Calculation.ParseValue(tb_ID.Text);
             var OD = Calculation.ParseValue(tb_OD.Text);
@@ -225,7 +225,7 @@ namespace DigitalProductionProgram.ToolManagement
             var tools = new List<Die>();
 
             var partCodes = Task.Run(() =>
-                Utilities.GetFromMonitor<Inventory.PartCodes>($"filter=Description  Eq'DIES'")).Result;
+                Utilities.GetFromMonitor<Inventory.PartCodes>($"filter=Description  Eq'TIPS'")).Result;
             foreach (var partCode in partCodes)
             {
                 var parts = Task.Run(() =>

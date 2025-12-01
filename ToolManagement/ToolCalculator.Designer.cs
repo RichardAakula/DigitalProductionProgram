@@ -850,7 +850,7 @@
             tb_ID.Name = "tb_ID";
             tb_ID.Size = new Size(57, 19);
             tb_ID.TabIndex = 197;
-            tb_ID.TextChanged += ID_OD_TextChanged;
+            tb_ID.TextChanged += CalculateWalls_TextChanged;
             // 
             // label_Customer
             // 
@@ -1013,6 +1013,7 @@
             tb_OD.Name = "tb_OD";
             tb_OD.Size = new Size(57, 19);
             tb_OD.TabIndex = 197;
+            tb_OD.TextChanged += CalculateWalls_TextChanged;
             // 
             // tb_Wall
             // 

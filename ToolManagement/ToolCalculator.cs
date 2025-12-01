@@ -206,7 +206,7 @@ namespace DigitalProductionProgram.ToolManagement
                     var landlength = Task.Run(() =>
                         Utilities.GetOneFromMonitor<Common.ExtraFields>("select=DecimalValue", $"filter=ParentId Eq'{part.Id}' AND Identifier Eq'T9'")).Result;
 
-                    tools.Add(new Die(dimension.DecimalValue, landlength.DecimalValue));
+                    tools.Add(new Die(dimension.DecimalValue.ToString(), landlength.DecimalValue.ToString()));
                 }
             }
 
@@ -239,7 +239,7 @@ namespace DigitalProductionProgram.ToolManagement
                     var landlength = Task.Run(() =>
                         Utilities.GetOneFromMonitor<Common.ExtraFields>("select=DecimalValue", $"filter=ParentId Eq'{part.Id}' AND Identifier Eq'T9'")).Result;
 
-                    tools.Add(new Die(dimension.DecimalValue, landlength.DecimalValue));
+                    tools.Add(new Die(dimension.DecimalValue.ToString(), landlength.DecimalValue.ToString()));
                 }
             }
 
@@ -517,18 +517,17 @@ namespace DigitalProductionProgram.ToolManagement
 
 
 
-
-        public class Calculation(string id, string od, string wall, string ddr_min, string ddr_max, string balance_min, string balance_max, string pullerspeed, string density)
+        public class Calculation
         {
-            private double ID { get; set; } = ParseValue(id);
-            private double OD { get; set; } = ParseValue(od);
-            public double Wall { get; set; } = ParseValue(wall);
-            private double DDR_min { get; set; } = ParseValue(ddr_min);
-            private double DDR_max { get; set; } = ParseValue(ddr_max);
-            private double PullerSpeed { get; set; } = ParseValue(pullerspeed);
-            private double Density { get; set; } = ParseValue(density);
-            private double Balance_min { get; set; } = ParseValue(balance_min);
-            private double Balance_max { get; set; } = ParseValue(balance_max);
+            public double ID { get; set; }
+            public double OD { get; set; }
+            public double Wall { get; set; }
+            public double DDR_min { get; set; }
+            public double DDR_max { get; set; }
+            public double PullerSpeed { get; set; }
+            public double Density { get; set; }
+            public double Balance_min { get; set; }
+            public double Balance_max { get; set; }
             public double Die { get; set; }
             public double Pin { get; set; }
 
@@ -563,6 +562,19 @@ namespace DigitalProductionProgram.ToolManagement
                 }
             }
 
+
+            public Calculation(string id, string od, string wall, string ddr_min, string ddr_max, string balance_min, string balance_max, string pullerspeed, string density)
+            {
+                ID = ParseValue(id);
+                OD = ParseValue(od);
+                Wall = ParseValue(wall);
+                DDR_min = ParseValue(ddr_min);
+                DDR_max = ParseValue(ddr_max);
+                Balance_min = ParseValue(balance_min);
+                Balance_max = ParseValue(balance_max);
+                PullerSpeed = ParseValue(pullerspeed);
+                Density = ParseValue(density);
+            }
             public static double ParseValue(string value)
             {
                 return double.TryParse(value, out double result) ? result : 0.0;

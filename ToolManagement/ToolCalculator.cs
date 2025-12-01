@@ -570,22 +570,32 @@ namespace DigitalProductionProgram.ToolManagement
 
         }
 
-        public class Die(double? dimension, double? landLength)
+        public class Die
         {
-            public double Dimension { get; } = dimension ?? 0; 
-            public double LandLength { get; } = landLength ?? 0;
+            public double Dimension { get; set; }
+            public double LandLength { get; set; }
 
+            public Die(string dimension, string landLength)
+            {
+                Dimension = Calculation.ParseValue(dimension);
+                LandLength = Calculation.ParseValue(landLength);
+            }
 
             public override string ToString()
             {
                 return Dimension.ToString("F2"); // Show this in the ComboBox
             }
         }
-        public class Pin(double? dimension, double? landLength)
+        public class Pin
         {
-            public double Dimension { get; } = dimension ?? 0;
-            public double LandLength { get; } = landLength ?? 0;
+            public double Dimension { get; set; }
+            public double LandLength { get; set; }
 
+            public Pin(string dimension, string landLength)
+            {
+                Dimension = Calculation.ParseValue(dimension);
+                LandLength = Calculation.ParseValue(landLength);
+            }
 
             public override string ToString()
             {

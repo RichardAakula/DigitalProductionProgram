@@ -81,123 +81,54 @@ namespace DigitalProductionProgram.Monitor
             var partNr = Utilities.GetOneFromMonitor<Inventory.Parts>("select=PartNumber", $"filter=PartNumber Eq'{partNumber}'");
             return partNr != null;
         }
-        //public static List<string?> PreFab_BatchNr(string? partNumber)
-        //{
-        //    var list = new List<string?>
-        //    {
-        //        "N/A",
-        //        string.Empty
-        //    };
-        //    // Monitor_Login.Login_Monitor();
-        //    var partId = Utilities.GetOneFromMonitor<Inventory.Parts>("select=Id", $"filter=PartNumber Eq'{partNumber}'");
-        //    if (partId is null)
-        //        return null;
-        //    var PartLocationsId = Utilities.GetFromMonitor<Inventory.PartLocations>($"filter=PartId Eq'{partId.Id}' AND Balance gt'0' AND (WarehouseId Eq 1 OR WarehouseId Eq 5) AND LifeCycleState Eq 10");
-        //    foreach (var id in PartLocationsId)
-        //    {
-        //        var partLocationProductRecords = Utilities.GetFromMonitor<Inventory.PartLocationProductRecords>($"filter=PartLocationId Eq'{id.Id}' AND Quantity gt '0'");
-        //        if (partLocationProductRecords != null)
-        //        {
-        //            foreach (var partLocationId in partLocationProductRecords)
-        //            {
-        //                var productRecordId = Utilities.GetFromMonitor<Inventory.ProductRecords>($"filter=Id Eq'{partLocationId.ProductRecordId}'");
-        //                if (productRecordId == null) 
-        //                    continue;
-        //                foreach (var lotNr in productRecordId.Where(lotNr => lotNr != null && !list.Contains(lotNr.SerialNumber)))
-        //                    list.Add(lotNr.SerialNumber);
-        //            }
-        //        }
-        //    }
-        //    return list;
-        //}
-        public static async Task<List<string?>> PreFab_BatchNr(string? partNumber)
+        public static List<string?> PreFab_BatchNr(string? partNumber)
         {
             var list = new List<string?>
             {
                 "N/A",
                 string.Empty
             };
-
-            if (string.IsNullOrWhiteSpace(partNumber))
-                return list;
-
-            // Hämta partId
-            var part = await Utilities.GetOneFromMonitor<Inventory.Parts>(
-                "select=Id",
-                $"filter=PartNumber Eq'{partNumber}'"
-            );
-
-            if (part is null)
-                return list;
-
-            // Hämta PartLocations med saldo
-            var partLocations =  Utilities.GetFromMonitor<Inventory.PartLocations>(
-                $"filter=PartId Eq'{part.Id}' AND Balance gt 0 AND (WarehouseId Eq 1 OR WarehouseId Eq 5) AND LifeCycleState Eq 10"
-            );
-
-            if (partLocations == null || partLocations.Count == 0)
-                return list;
-
-            foreach (var location in partLocations)
+            // Monitor_Login.Login_Monitor();
+            var partId = Utilities.GetOneFromMonitor<Inventory.Parts>("select=Id", $"filter=PartNumber Eq'{partNumber}'");
+            if (partId is null)
+                return null;
+            var PartLocationsId = Utilities.GetFromMonitor<Inventory.PartLocations>($"filter=PartId Eq'{partId.Id}' AND Balance gt'0' AND (WarehouseId Eq 1 OR WarehouseId Eq 5) AND LifeCycleState Eq 10");
+            foreach (var id in PartLocationsId)
             {
-                // Hämta PartLocationProductRecords
-                var records = Utilities.GetFromMonitor<Inventory.PartLocationProductRecords>(
-                    $"filter=PartLocationId Eq'{location.Id}' AND Quantity gt 0"
-                );
-
-                if (records == null || records.Count == 0)
-                    continue;
-
-                foreach (var record in records)
+                var partLocationProductRecords = Utilities.GetFromMonitor<Inventory.PartLocationProductRecords>($"filter=PartLocationId Eq'{id.Id}' AND Quantity gt '0'");
+                if (partLocationProductRecords != null)
                 {
-                    // Hämta motsvarande ProductRecord
-                    var productRecords = Utilities.GetFromMonitor<Inventory.ProductRecords>(
-                        $"filter=Id Eq'{record.ProductRecordId}'"
-                    );
-
-                    if (productRecords == null)
-                        continue;
-
-                    foreach (var product in productRecords)
+                    foreach (var partLocationId in partLocationProductRecords)
                     {
-                        if (!string.IsNullOrWhiteSpace(product.SerialNumber) && !list.Contains(product.SerialNumber))
-                            list.Add(product.SerialNumber);
+                        var productRecordId = Utilities.GetFromMonitor<Inventory.ProductRecords>($"filter=Id Eq'{partLocationId.ProductRecordId}'");
+                        if (productRecordId == null)
+                            continue;
+                        foreach (var lotNr in productRecordId.Where(lotNr => lotNr != null && !list.Contains(lotNr.SerialNumber)))
+                            list.Add(lotNr.SerialNumber);
                     }
                 }
             }
-
             return list;
         }
 
-        //public static List<string?> List_RazorTypes
-        //{
-        //    get
-        //    {
-        //        var parts = Utilities.GetFromMonitor<Inventory.Parts>("filter=startswith(Description, 'Rakblad')");
 
-        //        return parts.Select(part => part.ExtraDescription).ToList();
-        //    }
-        //}
-        public static async Task<List<string?>> List_RazorTypes()
+        public static List<string?> List_RazorTypes
         {
-            var parts = await Utilities.GetFromMonitor<Inventory.Parts>("filter=startswith(Description, 'Rakblad')");
+            get
+            {
+                var parts = Utilities.GetFromMonitor<Inventory.Parts>("filter=startswith(Description, 'Rakblad')");
 
-            // Om inget hittas, returnera tom lista
-            if (parts == null)
-                return new List<string?>();
-
-            return parts
-                .Where(p => !string.IsNullOrEmpty(p.ExtraDescription))
-                .Select(p => p.ExtraDescription)
-                .ToList();
+                return parts.Select(part => part.ExtraDescription).ToList();
+            }
         }
+
 
         public static async Task<List<string>> List_CandleFilter_PartNr(string description)
         {
             var list = new List<string>();
 
             // Hämta alla delar vars Description börjar med t.ex. "Candle"
-            var parts = await Utilities.GetFromMonitor<Inventory.Parts>($"filter=startswith(Description, '{description}')");
+            var parts = Utilities.GetFromMonitor<Inventory.Parts>($"filter=startswith(Description, '{description}')");
 
             if (parts == null || parts.Count == 0)
                 return list;
@@ -239,7 +170,7 @@ namespace DigitalProductionProgram.Monitor
             var list = new List<string?>();
 
             // Om GetFromMonitor har en async-version:
-            var parts = await Utilities.GetFromMonitor<Inventory.Parts>("filter=startswith(PartNumber, 'Filter')");
+            var parts = Utilities.GetFromMonitor<Inventory.Parts>("filter=startswith(PartNumber, 'Filter')");
 
             // Om inte, kan du göra:
             // var parts = await Task.Run(() => Utilities.GetFromMonitor<Inventory.Parts>("filter=startswith(PartNumber, 'Filter')"));
@@ -250,17 +181,7 @@ namespace DigitalProductionProgram.Monitor
             return list;
         }
 
-        //public static List<string> List_Serialnumber_Extrusion_Filter(string? partnr)
-        //{
-        //    if (string.IsNullOrEmpty(partnr))
-        //        return new List<string> { "N/A" };
-        //    var parts = Utilities.GetOneFromMonitor<Inventory.Parts>($"filter=PartNumber Eq'{partnr}'");
-        //    if (parts is null)
-        //        return new List<string> { "N/A" };
-        //    var partId = parts.Id;
-        //    var partLocations = Utilities.GetFromMonitor<Inventory.ProductRecords>($"filter=PartId Eq'{partId}' AND LifeCycleState Eq 0");
-        //    return (from part in partLocations where part.SerialNumber != null select part.SerialNumber).ToList();
-        //}
+       
         public static async Task<List<string>> List_Serialnumber_Extrusion_Filter(string? partnr)
         {
             if (string.IsNullOrEmpty(partnr))
@@ -274,7 +195,7 @@ namespace DigitalProductionProgram.Monitor
             var partId = part.Id;
 
             // Hämta produktposter asynkront
-            var partLocations = await Utilities.GetFromMonitor<Inventory.ProductRecords>($"filter=PartId Eq'{partId}' AND LifeCycleState Eq 0");
+            var partLocations = Utilities.GetFromMonitor<Inventory.ProductRecords>($"filter=PartId Eq'{partId}' AND LifeCycleState Eq 0");
 
             return partLocations
                 .Where(p => p.SerialNumber != null)
@@ -317,7 +238,7 @@ namespace DigitalProductionProgram.Monitor
             table.Columns.Add("FormTemplateId", typeof(long));
 
             // Hämta mallarna asynkront
-            var parameters = await Utilities.GetFromMonitor<Common.MeasuringTemplates>("select=FormTemplateId,Description");
+            var parameters = Utilities.GetFromMonitor<Common.MeasuringTemplates>("select=FormTemplateId,Description");
             // Om Utilities inte har async-version, använd:
             // var parameters = await Task.Run(() => Utilities.GetFromMonitor<Common.MeasuringTemplates>("select=FormTemplateId,Description"));
 

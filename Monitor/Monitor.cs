@@ -292,29 +292,23 @@ namespace DigitalProductionProgram.Monitor
         //        return list;
         //    }
         //}
-        //public static async Task<AutoCompleteStringCollection> AutoFillOrdernr()
-        //{
-        //    var list = new AutoCompleteStringCollection();
-
-        //    // Hämta ordernummer asynkront
-        //    var ordernr = await Utilities.GetFromMonitor<Manufacturing.ManufacturingOrders>("select=OrderNumber");
-
-        //    // Om det inte finns några order, returnera tom lista
-        //    if (ordernr is null)
-        //        return list;
-
-        //    foreach (var order in ordernr)
-        //        list.Add(order.OrderNumber);
-
-        //    return list;
-        //}
         public static async Task<AutoCompleteStringCollection> AutoFillOrdernr()
         {
-            var list = await Utilities.GetFromMonitor<Manufacturing.ManufacturingOrders>("select=OrderNumber");
-            var col = new AutoCompleteStringCollection();
-            col.AddRange(list.Select(x => x.OrderNumber).ToArray());
-            return col;
+            var list = new AutoCompleteStringCollection();
+
+            // Hämta ordernummer asynkront
+            var ordernr = Utilities.GetFromMonitor<Manufacturing.ManufacturingOrders>("select=OrderNumber");
+
+            // Om det inte finns några order, returnera tom lista
+            if (ordernr is null)
+                return list;
+
+            foreach (var order in ordernr)
+                list.Add(order.OrderNumber);
+
+            return list;
         }
+
 
         //public static decimal Balance(string partNumber, string serialNumber = null)
         //{

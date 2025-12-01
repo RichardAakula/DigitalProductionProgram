@@ -628,7 +628,7 @@ namespace DigitalProductionProgram.Templates
             tlp_ExtraInfo.Controls.Add(label_CreatedBy, 0, 0);
             tlp_ExtraInfo.Controls.Add(label_TotalConnectedProcesscards, 0, 3);
             tlp_ExtraInfo.Dock = DockStyle.Right;
-            tlp_ExtraInfo.Location = new Point(1633, 6);
+            tlp_ExtraInfo.Location = new Point(1562, 6);
             tlp_ExtraInfo.Margin = new Padding(0);
             tlp_ExtraInfo.Name = "tlp_ExtraInfo";
             tlp_ExtraInfo.Padding = new Padding(0, 0, 6, 0);
@@ -726,7 +726,7 @@ namespace DigitalProductionProgram.Templates
             tlp_Bottom.RowStyles.Add(new RowStyle(SizeType.Absolute, 119F));
             tlp_Bottom.RowStyles.Add(new RowStyle(SizeType.Absolute, 70F));
             tlp_Bottom.RowStyles.Add(new RowStyle(SizeType.Absolute, 25F));
-            tlp_Bottom.Size = new Size(2169, 1109);
+            tlp_Bottom.Size = new Size(2098, 1109);
             tlp_Bottom.TabIndex = 875;
             // 
             // flp_ObjectManagement
@@ -901,7 +901,7 @@ namespace DigitalProductionProgram.Templates
             tlp_Top.RowStyles.Add(new RowStyle(SizeType.Percent, 33.33333F));
             tlp_Top.RowStyles.Add(new RowStyle(SizeType.Percent, 33.33333F));
             tlp_Top.RowStyles.Add(new RowStyle(SizeType.Percent, 33.33333F));
-            tlp_Top.Size = new Size(2169, 115);
+            tlp_Top.Size = new Size(2098, 115);
             tlp_Top.TabIndex = 877;
             // 
             // Templates_Protocol
@@ -910,7 +910,7 @@ namespace DigitalProductionProgram.Templates
             AutoScaleMode = AutoScaleMode.Font;
             AutoScroll = true;
             BackColor = Color.FromArgb(6, 81, 87);
-            ClientSize = new Size(2169, 1224);
+            ClientSize = new Size(2098, 1224);
             Controls.Add(tlp_Bottom);
             Controls.Add(tlp_Top);
             Margin = new Padding(4, 3, 4, 3);

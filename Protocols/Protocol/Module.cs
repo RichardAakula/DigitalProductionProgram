@@ -150,7 +150,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
 
         }
 
-        public static bool IsOk_CellValueChanged;
+        private static bool IsOk_CellValueChanged;
         public static bool IsOkShowList;
         public Equipment equipment;
         public Processcard.Save save_processcard;
@@ -192,7 +192,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
 
             dgv_Module.ClearSelection();
         }
-        public static void Print_LeftLabel(PaintEventArgs e, string? text, int y, Font? font = null)
+        private static void Print_LeftLabel(PaintEventArgs e, string? text, int y, Font? font = null)
         {
             font ??= new Font("Arial", 8);
             var g = e.Graphics;
@@ -775,7 +775,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
             return cells.ToArray();
         }
 
-        public async void Module_ShowSpecialItems_CellRightMouseDown(object sender, DataGridViewCellMouseEventArgs e)
+        private async void Module_ShowSpecialItems_CellRightMouseDown(object sender, DataGridViewCellMouseEventArgs e)
         {
             if (Browse_Protocols.Browse_Protocols.Is_BrowsingProtocols)
                 return;
@@ -799,15 +799,15 @@ namespace DigitalProductionProgram.Protocols.Protocol
             var dgv_Row = dgv_Module.Rows[row];
             List<string?>? items = new List<string?>();
             dgv_Module.Rows[e.RowIndex].Cells[e.ColumnIndex].Selected = true;
-            int.TryParse(dgv_Module.Rows[row].Cells["col_ProtocolDescriptionID"].Value.ToString(), out var protocolDescriptionID);
-            int.TryParse(dgv_Module.Rows[row].Cells["col_TemplateID"].Value.ToString(), out var templateID);
-            int.TryParse(dgv_Module.Rows[row].Cells["col_DataType"].Value.ToString(), out var dataType);
+            _ = int.TryParse(dgv_Module.Rows[row].Cells["col_ProtocolDescriptionID"].Value.ToString(), out var protocolDescriptionID);
+            _ =int.TryParse(dgv_Module.Rows[row].Cells["col_TemplateID"].Value.ToString(), out var templateID);
+            _ =int.TryParse(dgv_Module.Rows[row].Cells["col_DataType"].Value.ToString(), out var dataType);
 
             if (e.Button == MouseButtons.Right)
             {
-                bool.TryParse(dgv_Module.Rows[row].Cells["col_IsOkWriteText"].Value.ToString(), out var isOkWriteText);
-                bool.TryParse(dgv_Module.Rows[e.RowIndex].Cells["col_IsList_Protocol"].Value.ToString(), out var IsListProtocol);
-                int.TryParse(dgv_Module.Columns[e.ColumnIndex].HeaderText, out var startup);
+                _ = bool.TryParse(dgv_Module.Rows[row].Cells["col_IsOkWriteText"].Value.ToString(), out var isOkWriteText);
+                _ = bool.TryParse(dgv_Module.Rows[e.RowIndex].Cells["col_IsList_Protocol"].Value.ToString(), out var IsListProtocol);
+                _ = int.TryParse(dgv_Module.Columns[e.ColumnIndex].HeaderText, out var startup);
                 var result = await ItemsBuilder.GetListItems(templateID, isProcesscardUnderManagement ? "Processcard" : "Protocol", dataType, Filter_Variable);
                 items = result.Items;
 

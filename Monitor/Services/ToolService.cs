@@ -226,12 +226,12 @@ namespace DigitalProductionProgram.Monitor.Services
             Login_Monitor.TotalLoginAttemps = 0;
             Utilities.CounterMonitorRequests = 0;
             // Hämta PartCodeId asynkront
-            var partCodeObj = await Utilities.GetOneFromMonitor<Inventory.PartCodes>($"filter=Code Eq'{partCode}'");
+            var partCodeObj = await Utilities.GetOneFromMonitor<Inventory.PartCodes>($"filter=Description Eq'{partCode}'");
             var partCodeId = partCodeObj?.Id ?? 0;
 
             // Hämta parts asynkront
-            string filter = string.Empty;
-            filter = string.IsNullOrEmpty(filterCodeText) ? $"filter=PartCodeId eq'{partCodeId}'" : $"filter=PartCodeId eq'{partCodeId}' AND ExtraDescription Eq'{filterCodeText}'";
+            string filter = $"filter= IsNull(BlockedById)";
+            filter += string.IsNullOrEmpty(filterCodeText) ? $"AND PartCodeId Eq'{partCodeId}'" : $"AND PartCodeId Eq'{partCodeId}' AND ExtraDescription Eq'{filterCodeText}'";
 
             var parts = await Utilities.GetFromMonitor<Inventory.Parts>("select=Id,PartNumber,ExtraDescription", filter);
 
@@ -254,6 +254,8 @@ namespace DigitalProductionProgram.Monitor.Services
             if (parts == null)
                 return;
 
+            var tempList = new List<(decimal? SortValue, string DisplayValue)>();
+            var addedSet = new HashSet<string>(); // För att undvika dubbletter
             foreach (var part in parts)
             {
                 // Hämta ExtraFields asynkront
@@ -265,13 +267,13 @@ namespace DigitalProductionProgram.Monitor.Services
                 if (idNr == null)
                     continue;
 
+                
                 var stringValue = idNr.StringValue;
                 if (!string.IsNullOrEmpty(stringValue))
                     value = stringValue;
 
-                var decimalValue = idNr.DecimalValue?.ToString();
-                if (!string.IsNullOrEmpty(decimalValue))
-                    value = decimalValue;
+                if (idNr.DecimalValue.HasValue)
+                    value = idNr.DecimalValue.Value.ToString("0.00");
 
                 var intValue = idNr.IntegerValue?.ToString();
                 if (!string.IsNullOrEmpty(intValue))
@@ -287,20 +289,34 @@ namespace DigitalProductionProgram.Monitor.Services
                         if (!string.IsNullOrEmpty(stringValue))
                             value = value + " : " + stringValue;
 
-                        decimalValue = secondaryIdNr.DecimalValue?.ToString();
-                        if (!string.IsNullOrEmpty(decimalValue))
-                            value = value + " : " + decimalValue;
+                        if (secondaryIdNr.DecimalValue.HasValue)
+                            value = value + " : " + secondaryIdNr.DecimalValue.Value.ToString("0.0");
 
                         intValue = secondaryIdNr.IntegerValue?.ToString();
                         if (!string.IsNullOrEmpty(intValue))
                             value = value + " : " + intValue;
                     }
                 }
-                if (!string.IsNullOrEmpty(value) && !items.Contains(value))
-                    items.Add(value);
+                if (!string.IsNullOrEmpty(value) && addedSet.Add(value))
+                {
+                    var firstPart = value.Split(':')[0].Trim();
+
+                    if (!decimal.TryParse(firstPart, out var parsed))
+                        parsed = decimal.MaxValue;
+
+                    tempList.Add((parsed, value));
+                }
+
             }
+            items.Clear();
 
+            // Om du vill att N/A alltid ska vara först
+            items.Add("N/A");
 
+            foreach (var entry in tempList.OrderBy(x => x.SortValue))
+            {
+                items.Add(entry.DisplayValue);
+            }
             sw.Stop();
             MessageBox.Show($"Tid = {sw.ElapsedMilliseconds} \n" +
                             $"Antal MonitorFrågor = {Utilities.CounterMonitorRequests}. \n" +

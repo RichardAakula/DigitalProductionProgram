@@ -20,7 +20,7 @@ namespace DigitalProductionProgram.Monitor
     {
         public static string LanguageCode = "sv";
         //public static string Company { get; set; }
-        public static string BaseAddress { get; set; } = string.Empty;
+        private static string BaseAddress { get; set; } = string.Empty;
 
         public static HttpClient? httpClient;
 
@@ -109,6 +109,7 @@ namespace DigitalProductionProgram.Monitor
 
                 var handler = new HttpClientHandler
                 {
+                    AllowAutoRedirect = false,
                     ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true
                 };
 
@@ -120,6 +121,7 @@ namespace DigitalProductionProgram.Monitor
                 httpClient.DefaultRequestHeaders.Accept.Clear();
                 httpClient.DefaultRequestHeaders.Accept.Add(
                     new MediaTypeWithQualityHeaderValue("application/json"));
+                httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("PostmanRuntime/7.32.2");
 
                 // Load credentials
                 var credentials = Database.LoadCredentials();

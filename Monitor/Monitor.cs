@@ -1319,17 +1319,17 @@ namespace DigitalProductionProgram.Monitor
             Utilities.CounterMonitorRequests = 0;
             // Hämta partCodes i bakgrundstråd
             var partCodes = Task.Run(() =>
-                Utilities.GetFromMonitor<Inventory.PartCodes>($"filter=Code Eq'KANYLER'")).Result;
+                Utilities.GetFromMonitor<Inventory.PartCodes>($"filter=Description  Eq'EXTRUSION HEAD'")).Result;
 
             foreach (var partCode in partCodes)
             {
                 var parts = Task.Run(() =>
-                    Utilities.GetFromMonitor<Inventory.Parts>($"filter=PartCodeId Eq'{partCode.Id}' AND ExtraDescription eq'Kanyler FEP'")).Result;
+                    Utilities.GetFromMonitor<Inventory.Parts>($"filter=PartCodeId Eq'{partCode.Id}'")).Result; //AND ExtraDescription eq'Kanyler FEP' används om vi testar med Kanyler
 
                 foreach (var part in parts)
                 {
                     var idNr = Task.Run(() =>
-                        Utilities.GetOneFromMonitor<Common.ExtraFields>("select=StringValue,DecimalValue,IntegerValue", $"filter=ParentId Eq'{part.Id}' AND Identifier Eq'P119'")).Result;
+                        Utilities.GetOneFromMonitor<Common.ExtraFields>("select=StringValue,DecimalValue,IntegerValue", $"filter=ParentId Eq'{part.Id}' AND Identifier Eq'T47'")).Result;
 
                     if (idNr != null)
                         list.Add(idNr.StringValue);
@@ -1342,6 +1342,40 @@ namespace DigitalProductionProgram.Monitor
             return list;
         }
 
+        public static void List_All_WithExpand()
+        {
+            var list = new List<string>();
+            var sw = new Stopwatch();
+            sw.Start();
+            Utilities.CounterMonitorRequests = 0;
+            // Hämta partCodes i bakgrundstråd
+            var partCodes = Task.Run(() =>
+                Utilities.GetFromMonitor<Inventory.PartCodes>($"filter=Description  eq'EXTRUSION HEAD'")).Result;
+
+            foreach (var partCode in partCodes)
+            {
+                var parts = Task.Run(() =>
+                    Utilities.GetFromMonitor<Inventory.Parts>($"filter=PartCodeId eq'{partCode.Id}'", "select=Id,PartNumber,Description,Alias,ExtraDescription", "expand=ExtraFields")).Result; // AND ExtraDescription eq'Kanyler FEP' används om vi testar med Kanyler
+
+                foreach (var part in parts)
+                {
+                    foreach (var field in part.ExtraFields)
+                    {
+                        if (field?.Identifier == "T47" && !string.IsNullOrEmpty(field.StringValue))
+                            list.Add(field.StringValue);
+                    }
+
+                }
+            }
+
+            sw.Stop();
+                MessageBox.Show($"Med Expand: Antal verktyg: {list.Count}\nTid för hämtning: {sw.ElapsedMilliseconds} ms. MonitorRequests = {Utilities.CounterMonitorRequests}");
+
+        }
+
+
+
+
         public static async Task<List<string>> List_All_WithExpandAsync()
         {
             var list = new List<string>();
@@ -1351,7 +1385,7 @@ namespace DigitalProductionProgram.Monitor
 
             // Hämta partCodes asynkront
             var partCodes = await Utilities.GetFromMonitor<Inventory.PartCodes>(
-                "filter=Code Eq'KANYLER'"
+                "filter=Description  Eq'TIPS'"
             );
 
             if (partCodes == null || partCodes.Count == 0)

@@ -1,12 +1,15 @@
-﻿using System.Collections.Generic;
-using System.Data;
-using Microsoft.Data.SqlClient;
-using System.Linq;
-using DigitalProductionProgram.ControlsManagement;
+﻿using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.MainWindow;
+using DigitalProductionProgram.Monitor;
+using DigitalProductionProgram.Monitor.GET;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.User;
+using Microsoft.Data.SqlClient;
+using System.Collections.Generic;
+using System.Data;
+using System.Diagnostics;
+using System.Linq;
 
 namespace DigitalProductionProgram.Equipment
 {
@@ -140,97 +143,40 @@ namespace DigitalProductionProgram.Equipment
                 return list;
             }
         }
-        
-        public static List<string?> List_Intag
+
+
+        public static async Task<List<string?>> List_Tool_Type(string codeName)
         {
-            get
+            try
             {
-                var list = new List<string?>
+                var list = new List<string?>();
+
+                var partCodes = await Utilities.GetFromMonitor<Inventory.PartCodes>(
+                    $"filter=Description Eq '{codeName}'");
+
+                foreach (var partCode in partCodes)
                 {
-                    LanguageManager.GetString("slätt"),
-                    LanguageManager.GetString("rillat"),
-                    "N/A"
-                };
-                return list;
-            }
-        }
-        public static List<string?> List_Tool_Type(string CodeName)
-        {
-            var list = new List<string?>();
-            using var con = new SqlConnection(Database.cs_ToolRegister);
-            var query = "SELECT DISTINCT Typ FROM Register_Verktyg WHERE Sort = @codeName AND (Kasserad IS NULL OR Kasserad = '') ORDER BY Typ";
+                    var parts = await Utilities.GetFromMonitor<Inventory.Parts>(
+                        $"filter=PartCodeId Eq '{partCode.Id}'",
+                        "select(ExtraDescription)");// AND IsNull(BlockedById)
 
-            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-            cmd.Parameters.AddWithValue("@codeName", CodeName);
-            con.Open();
-            var reader = cmd.ExecuteReader();
-            while (reader.Read())
-                list.Add(reader[0].ToString());
-            return list;
-        }
-        public static List<string?> List_Tool(string? typ, string? min = null, string? max = null)
-        {
-            var list = new List<string?>();
-            double.TryParse(min, out var MIN);
-            double.TryParse(max, out var MAX);
-            using var con = new SqlConnection(Database.cs_ToolRegister);
-            var query = $@"
-                    SELECT DISTINCT ID_Nummer, Landlängd_nom, Dimension_nom 
-                    FROM Register_Verktyg 
-                    WHERE (Typ = @typ OR @typ IS NULL)
-                        AND (Kasserad IS NULL OR Kasserad = '') ";
-            if (!string.IsNullOrEmpty(min) && !string.IsNullOrEmpty(max))
-                query += "AND Dimension_nom >= @min AND Dimension_nom <= @max ";
-            query += "ORDER BY Dimension_nom";
-            con.Open();
-            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-            cmd.Parameters.AddWithValue("@min", MIN);
-            cmd.Parameters.AddWithValue("@max", MAX);
-            SQL_Parameter.String(cmd.Parameters, "@typ", typ);
-            var reader = cmd.ExecuteReader();
-            while (reader.Read())
-                list.Add($"{reader[0]}:{reader[1]}");
-            return list;
-        }
-        public static List<string?> List_From_Register(string kolumn, string register, bool is_Show_Typ = false, string nom_Typ = null, string? sort = null)
-        {
-            var list = new List<string?>();
-
-            using var con = new SqlConnection(Database.cs_ToolRegister);
-            string query;
-            if (is_Show_Typ == false || !string.IsNullOrEmpty(sort))
-                query = $"SELECT DISTINCT {kolumn} ";
-            else
-                query = $"SELECT DISTINCT {kolumn}, Typ ";
-
-            query += $"FROM {register} ";
-
-            if (string.IsNullOrEmpty(nom_Typ) == false && nom_Typ != "N/A" && string.IsNullOrEmpty(sort))
-                query += $"WHERE Typ = '{nom_Typ}' ";
-            if (!string.IsNullOrEmpty(sort))
-                query += "WHERE Sort = @sort AND (Kasserad IS NULL OR Kasserad = '')";
-
-
-            con.Open();
-            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-            SQL_Parameter.String(cmd.Parameters, "@sort", sort);
-            var reader = cmd.ExecuteReader();
-            while (reader.Read())
-            {
-                if (!Blacklist_Utrustning.Contains(reader[0].ToString()))
-                {
-                    if (is_Show_Typ == false || !string.IsNullOrEmpty(sort))
-                        list.Add(reader[0].ToString());
-                    else
-                        list.Add($"{reader[0]} : ({reader[1]})");
-
+                    foreach (var part in parts)
+                    {
+                        if (!list.Contains(part.ExtraDescription))
+                            list.Add(part.ExtraDescription);
+                    }
                 }
 
+                return list;
             }
-            list.Add("N/A");
-            return list;
-
+            catch (Exception ex)
+            {
+                MessageBox.Show("❌ List_Tool_Type ERROR: " + ex);
+                throw; // viktigt – så du ser exakt rad i VS
+            }
         }
+
+
         public static List<string?> List_Equipment_Protocol(string codetext)
         {
             var list = new List<string?>();

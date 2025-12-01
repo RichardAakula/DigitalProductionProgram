@@ -203,95 +203,46 @@ namespace DigitalProductionProgram.Monitor
                 .ToList();
         }
 
-
-        //public static DataTable DataTable_MeasuringTemplates
-        //{
-        //    get
-        //    {
-        //        var table = new DataTable();
-        //        table.Columns.Add("Description", typeof(string));
-        //        table.Columns.Add("FormTemplateId", typeof(long));
-
-        //        var parameters = Utilities.GetFromMonitor<Common.MeasuringTemplates>("select=FormTemplateId,Description");
-
-        //        var distinctDescriptions = new HashSet<string>();
-
-        //        foreach (var parameter in parameters)
-        //        {
-        //            if (distinctDescriptions.Add(parameter.Description))
-        //            {
-        //                // Add the row to the DataTable only if the description is distinct
-        //                var row = table.NewRow();
-        //                row["Description"] = parameter.Description;
-        //                row["FormTemplateId"] = parameter.FormTemplateId;
-        //                table.Rows.Add(row);
-        //            }
-        //        }
-
-        //        return table;
-        //    }
-        //}
-        public static async Task<DataTable> DataTable_MeasuringTemplates()
+        public static DataTable DataTable_MeasuringTemplates
         {
-            var table = new DataTable();
-            table.Columns.Add("Description", typeof(string));
-            table.Columns.Add("FormTemplateId", typeof(long));
-
-            // Hämta mallarna asynkront
-            var parameters = Utilities.GetFromMonitor<Common.MeasuringTemplates>("select=FormTemplateId,Description");
-            // Om Utilities inte har async-version, använd:
-            // var parameters = await Task.Run(() => Utilities.GetFromMonitor<Common.MeasuringTemplates>("select=FormTemplateId,Description"));
-
-            var distinctDescriptions = new HashSet<string>();
-
-            foreach (var parameter in parameters)
+            get
             {
-                if (distinctDescriptions.Add(parameter.Description))
-                {
-                    var row = table.NewRow();
-                    row["Description"] = parameter.Description;
-                    row["FormTemplateId"] = parameter.FormTemplateId;
-                    table.Rows.Add(row);
-                }
-            }
+                var table = new DataTable();
+                table.Columns.Add("Description", typeof(string));
+                table.Columns.Add("FormTemplateId", typeof(string));
 
-            return table;
+                var parameters = Utilities.GetFromMonitor<Common.MeasuringTemplates>("select=FormTemplateId,Description");
+
+                var distinctDescriptions = new HashSet<string>();
+
+                foreach (var parameter in parameters)
+                {
+                    if (distinctDescriptions.Add(parameter.Description))
+                    {
+                        // Add the row to the DataTable only if the description is distinct
+                        var row = table.NewRow();
+                        row["Description"] = parameter.Description;
+                        row["FormTemplateId"] = parameter.FormTemplateId.ToString();
+                        table.Rows.Add(row);
+                    }
+                }
+
+                return table;
+            }
         }
 
-        //public static List<string> List_MonitorParameters(int formtemplateid)
-        //{
-        //    var list = new List<string> { "Bag", "StripesAvg", "PreFab" };
-        //    var FormTemplateSelectionRows = Utilities.GetOneFromMonitor<Common.FormTemplateSelectionRows>($"filter=FormTemplateId Eq'{formtemplateid}'");
-        //    var parameters = Utilities.GetFromMonitor<Common.FormTemplateRows>("select=Description", $"filter=FormTemplateSelectionRowId Eq'{FormTemplateSelectionRows.Id}'");
-
-        //    foreach (var parameter in parameters.Where(parameter => list.Contains(parameter.Description) == false))
-        //        list.Add(parameter.Description);
-
-        //    return list;
-        //}
-        public static async Task<List<string>> List_MonitorParameters(int formTemplateId)
+        public static List<string> List_MonitorParameters(int formtemplateid)
         {
             var list = new List<string> { "Bag", "StripesAvg", "PreFab" };
+            var FormTemplateSelectionRows = Utilities.GetOneFromMonitor<Common.FormTemplateSelectionRows>($"filter=FormTemplateId Eq'{formtemplateid}'");
+            var parameters = Utilities.GetFromMonitor<Common.FormTemplateRows>("select=Description", $"filter=FormTemplateSelectionRowId Eq'{FormTemplateSelectionRows.Id}'");
 
-            // Hämta FormTemplateSelectionRows asynkront
-            var formTemplateSelectionRow = await Utilities.GetOneFromMonitor<Common.FormTemplateSelectionRows>(
-                $"filter=FormTemplateId Eq'{formTemplateId}'"
-            );
-
-            if (formTemplateSelectionRow is null)
-                return list; // Om inget hittas, returnera standardlistan
-
-            // Hämta FormTemplateRows asynkront
-            var parameters = await Utilities.GetFromMonitor<Common.FormTemplateRows>(
-                $"select=Description",
-                $"filter=FormTemplateSelectionRowId Eq'{formTemplateSelectionRow.Id}'"
-            );
-
-            foreach (var parameter in parameters.Where(p => !list.Contains(p.Description)))
+            foreach (var parameter in parameters.Where(parameter => list.Contains(parameter.Description) == false))
                 list.Add(parameter.Description);
 
             return list;
         }
+
 
         public static List<string> List_ProdGroup
         {
@@ -311,37 +262,19 @@ namespace DigitalProductionProgram.Monitor
 
 
 
-        //public static List<TimeRecording.AttendanceChart> List_Users
-        //{
-        //    get
-        //    {
-        //        Login_Monitor.Login_API("003.1");
-
-        //        var date = DateTime.Now.ToString("yyyy-MM-dd");
-        //        var users = Utilities.GetFromMonitor<TimeRecording.AttendanceChart>($"select=FirstName,LastName,IsClosedInterval,AbsenceDescription,IntervalStart,IntervalEnd&$filter=startswith(IntervalStart, '{date}')&$orderby=IntervalStart");
-
-        //        return users;
-        //    }
-        //}
-        public static async Task<List<TimeRecording.AttendanceChart>> List_Users()
+        public static List<TimeRecording.AttendanceChart> List_Users
         {
-            // Logga in innan hämtning
-            await Task.Run(() => Login_Monitor.Login_API("003.1"));
+            get
+            {
+                Login_Monitor.Login_API("003.1");
 
-            var date = DateTime.Now.ToString("yyyy-MM-dd");
+                var date = DateTime.Now.ToString("yyyy-MM-dd");
+                var users = Utilities.GetFromMonitor<TimeRecording.AttendanceChart>($"select=FirstName,LastName,IsClosedInterval,AbsenceDescription,IntervalStart,IntervalEnd&$filter=startswith(IntervalStart, '{date}')&$orderby=IntervalStart");
 
-            // Hämta användare asynkront
-            var users = await Utilities.GetFromMonitor<TimeRecording.AttendanceChart>(
-                $"select=FirstName,LastName,IsClosedInterval,AbsenceDescription,IntervalStart,IntervalEnd&$filter=startswith(IntervalStart, '{date}')&$orderby=IntervalStart"
-            );
-
-            // Om Utilities inte har async-version, använd Task.Run:
-            // var users = await Task.Run(() => Utilities.GetFromMonitor<TimeRecording.AttendanceChart>(
-            //     $"select=FirstName,LastName,IsClosedInterval,AbsenceDescription,IntervalStart,IntervalEnd&$filter=startswith(IntervalStart, '{date}')&$orderby=IntervalStart"
-            // ));
-
-            return users;
+                return users;
+            }
         }
+
 
 
         //public static AutoCompleteStringCollection AutoFillOrdernr

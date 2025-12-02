@@ -192,24 +192,19 @@ namespace DigitalProductionProgram.ToolManagement
         {
             var tools = new List<Die>();
 
-            var partCodes = Task.Run(() =>
-                Utilities.GetFromMonitor<Inventory.PartCodes>($"filter=Description  Eq'DIES'")).Result;
+            var partCodes = Utilities.GetFromMonitor<Inventory.PartCodes>($"filter=Description  Eq'DIES'");
             foreach (var partCode in partCodes)
             {
-                var parts = Task.Run(() =>
-                    Utilities.GetFromMonitor<Inventory.Parts>($"filter=PartCodeId Eq'{partCode.Id}' AND ExtraDescription eq'{tb_DieType.Text}' AND IsNull(BlockedById)")).Result; 
+                var parts = Utilities.GetFromMonitor<Inventory.Parts>($"filter=PartCodeId Eq'{partCode.Id}' AND ExtraDescription eq'{tb_DieType.Text}' AND IsNull(BlockedById)");
 
                 foreach (var part in parts)
                 {
-                    var dimension = Task.Run(() =>
-                        Utilities.GetOneFromMonitor<Common.ExtraFields>("select=DecimalValue", $"filter=ParentId Eq'{part.Id}' AND Identifier Eq'T4'")).Result;
-                    var landlength = Task.Run(() =>
-                        Utilities.GetOneFromMonitor<Common.ExtraFields>("select=DecimalValue", $"filter=ParentId Eq'{part.Id}' AND Identifier Eq'T9'")).Result;
+                    var dimension = Utilities.GetOneFromMonitor<Common.ExtraFields>("select=DecimalValue", $"filter=ParentId Eq'{part.Id}' AND Identifier Eq'T4'");
+                    var landlength =  Utilities.GetOneFromMonitor<Common.ExtraFields>("select=DecimalValue", $"filter=ParentId Eq'{part.Id}' AND Identifier Eq'T9'");
 
                     tools.Add(new Die(dimension.DecimalValue.ToString(), landlength.DecimalValue.ToString()));
                 }
             }
-
 
             cb_Die.DataSource = null;  //Reset before binding
             cb_Die.DataSource = tools;
@@ -225,23 +220,46 @@ namespace DigitalProductionProgram.ToolManagement
         {
             var tools = new List<Die>();
 
-            var partCodes = Task.Run(() =>
-                Utilities.GetFromMonitor<Inventory.PartCodes>($"filter=Description  Eq'TIPS'")).Result;
+            var partCodes = Utilities.GetFromMonitor<Inventory.PartCodes>($"filter=Description  Eq'TIPS'");
             foreach (var partCode in partCodes)
             {
-                var parts = Task.Run(() =>
-                    Utilities.GetFromMonitor<Inventory.Parts>($"filter=PartCodeId Eq'{partCode.Id}' AND ExtraDescription eq'{tb_PinType.Text}' AND IsNull(BlockedById)")).Result;
+                var parts =  Utilities.GetFromMonitor<Inventory.Parts>($"filter=PartCodeId Eq'{partCode.Id}' AND ExtraDescription eq'{tb_PinType.Text}' AND IsNull(BlockedById)");
 
                 foreach (var part in parts)
                 {
-                    var dimension = Task.Run(() =>
-                        Utilities.GetOneFromMonitor<Common.ExtraFields>("select=DecimalValue", $"filter=ParentId Eq'{part.Id}' AND Identifier Eq'T4'")).Result;
-                    var landlength = Task.Run(() =>
-                        Utilities.GetOneFromMonitor<Common.ExtraFields>("select=DecimalValue", $"filter=ParentId Eq'{part.Id}' AND Identifier Eq'T9'")).Result;
+                    var dimension = Utilities.GetOneFromMonitor<Common.ExtraFields>("select=DecimalValue", $"filter=ParentId Eq'{part.Id}' AND Identifier Eq'T4'");
+                    var landlength = Utilities.GetOneFromMonitor<Common.ExtraFields>("select=DecimalValue", $"filter=ParentId Eq'{part.Id}' AND Identifier Eq'T9'");
 
                     tools.Add(new Die(dimension.DecimalValue.ToString(), landlength.DecimalValue.ToString()));
                 }
             }
+
+            //var tools = new List<Pin>();
+            //using (var con = new SqlConnection(Database.cs_ToolRegister))
+            //{
+            //    var query = "SELECT DISTINCT Dimension_nom, LandLängd_nom FROM Register_Verktyg WHERE Typ = @typ AND Sort = 'Kanyl' ";
+
+            //    if (chb_DöljKasseradeVerktyg.Checked)
+            //        query += " AND (Kasserad IS NULL OR Kasserad = '') ";
+
+            //    query += " ORDER BY Dimension_nom";
+
+            //    con.Open();
+            //    using (var cmd = new SqlCommand(query, con))
+            //    {
+            //        cmd.Parameters.AddWithValue("@typ", tb_PinType.Text);
+
+            //        using (var reader = cmd.ExecuteReader())
+            //        {
+            //            while (reader.Read())
+            //            {
+            //                var dimension = reader["Dimension_nom"].ToString();
+            //                var landLength = reader["LandLängd_nom"].ToString();
+            //                tools.Add(new Pin(dimension, landLength));
+            //            }
+            //        }
+            //    }
+            //}
 
             cb_Pin.DataSource = null;  //Reset before binding
             cb_Pin.DataSource = tools;

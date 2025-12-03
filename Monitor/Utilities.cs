@@ -17,7 +17,7 @@ namespace DigitalProductionProgram.Monitor
     {
         #region GET
         // public static string MonitorStatus;
-        // [DebuggerStepThrough]
+        [DebuggerStepThrough]
         private static HttpResponseMessage Http_response(string query)
         {
             var ctr_ErrorLogin = 0;
@@ -42,10 +42,10 @@ namespace DigitalProductionProgram.Monitor
         }
         public static int CounterMonitorRequests;
         
-        //[DebuggerStepThrough]
-        
+        [DebuggerStepThrough]
         public static List<T> GetFromMonitor<T>(params string[] queryOptions) where T : DTO, new()
         {
+            Utilities.CounterMonitorRequests++;
             var query = BuildQuery<T>(queryOptions);
             var response = Http_response(query);
             if (response is null)
@@ -78,6 +78,7 @@ namespace DigitalProductionProgram.Monitor
 
         public static T GetOneFromMonitor<T>(params string[] queryOptions) where T : DTO, new()
         {
+            Utilities.CounterMonitorRequests++;
             var query = BuildQuery<T>(queryOptions);
             if (!query.Contains("$top="))
                 query += query.Contains("?$") ? "&$top=1" : "?$top=1";
@@ -97,7 +98,6 @@ namespace DigitalProductionProgram.Monitor
                 return null;
             }
         }
-        // [DebuggerStepThrough]
         [DebuggerStepThrough]
         private static string BuildQuery<T>(string[] queryOptions) where T : DTO, new()
         {

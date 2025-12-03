@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Windows.Forms;
 using DigitalProductionProgram.Monitor.Services;
 
@@ -18,8 +19,8 @@ namespace DigitalProductionProgram.Monitor.GET
             public decimal Balance { get; set; } //Saldo
             public string? Name { get; set; }
         }
-
-        internal class Parts : DTO, ToolService.IHasId
+        [DebuggerStepThrough]
+        public class Parts : DTO, ToolService.IHasId
         {
             public override string URL => "Inventory/Parts";
 
@@ -35,7 +36,7 @@ namespace DigitalProductionProgram.Monitor.GET
 
            public List<Common.ExtraFields>? ExtraFields { get; set; }
         }
-        internal class PartCodes : DTO, ToolService.IHasId
+        public class PartCodes : DTO, ToolService.IHasId
         {
             public override string URL => "Inventory/PartCodes";
 

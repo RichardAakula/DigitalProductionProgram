@@ -23,7 +23,7 @@ namespace DigitalProductionProgram.Monitor.GET
 
             public string Description { get; set; }     //Avdelning
         }
-        internal class ExtraFields : DTO
+        public class ExtraFields : DTO
         {
             public override string URL => "Common/ExtraFields";
 
@@ -32,7 +32,7 @@ namespace DigitalProductionProgram.Monitor.GET
             public long? ParentId { get; set; }
             public string StringValue { get; set; }
             public int? IntegerValue { get; set; }
-            public double? DecimalValue { get; set; }
+            public decimal? DecimalValue { get; set; }
             public string? Identifier { get; set; }
         }
         internal class ExtraFieldGroups : DTO

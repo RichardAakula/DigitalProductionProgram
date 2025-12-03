@@ -1,6 +1,5 @@
 ﻿using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Equipment;
-using DigitalProductionProgram.Log;
 using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.Measure;
 using DigitalProductionProgram.Monitor;
@@ -9,7 +8,11 @@ using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.PrintingServices;
 using DigitalProductionProgram.User;
 using Microsoft.Data.SqlClient;
-using System.Collections.Generic;
+using System;
+using System.Diagnostics;
+using System.Globalization;
+using System.Runtime.ConstrainedExecution;
+using Activity = DigitalProductionProgram.Log.Activity;
 using Control = System.Windows.Forms.Control;
 
 namespace DigitalProductionProgram.ToolManagement
@@ -38,6 +41,7 @@ namespace DigitalProductionProgram.ToolManagement
 
         public ToolCalculator(AutoCompleteStringCollection collection)
         {
+            IsOpening = true;
             Activity.Start();
             InitializeComponent();
             tb_OrderNr.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
@@ -53,7 +57,7 @@ namespace DigitalProductionProgram.ToolManagement
         private void ToolCalculator_Load(object sender, EventArgs e)
         {
             // Synkront anrop av async-metoder
-            CalculateTools(true, false);
+            //CalculateTools(true, false);
         }
 
         private void Fill_MainOrderInformation()
@@ -74,14 +78,13 @@ namespace DigitalProductionProgram.ToolManagement
 
             // tb_DieType.Text = Tools.RegularUsedToolType("Munstycke");
             // tb_PinType.Text = Tools.RegularUsedToolType("Kanyler");
-            IsOpening = false;
+           // IsOpening = false;
            
         }
         private void Load_RegularSettings()
         {
-            using (var con = new SqlConnection(Database.cs_ToolRegister))
-            {
-                const string query = @"
+            using var con = new SqlConnection(Database.cs_ToolRegister);
+            const string query = @"
         WITH MostCommonValues AS (
             SELECT TOP 1 WITH TIES DDR_min AS value, 'Most_Common_DDR_min' AS column_name FROM RegularUsedCalculations WHERE UserID = @userid GROUP BY DDR_min ORDER BY COUNT(*) DESC
             UNION ALL
@@ -105,35 +108,32 @@ namespace DigitalProductionProgram.ToolManagement
         )
         SELECT column_name, value FROM MostCommonValues;";
 
-                using (var cmd = new SqlCommand(query, con))
+            using var cmd = new SqlCommand(query, con);
+            cmd.Parameters.AddWithValue("@userid", Person.UserID);
+            con.Open();
+
+            using (var reader = cmd.ExecuteReader())
+            {
+                var values = new Dictionary<string, decimal>();
+
+                while (reader.Read())
                 {
-                    cmd.Parameters.AddWithValue("@userid", Person.UserID);
-                    con.Open();
-
-                    using (var reader = cmd.ExecuteReader())
-                    {
-                        var values = new Dictionary<string, decimal>();
-
-                        while (reader.Read())
-                        {
-                            string columnName = reader.GetString(0);
-                            decimal value = reader.IsDBNull(1) ? 0 : reader.GetDecimal(1);
-                            values[columnName] = value;
-                        }
-
-                        num_DDR_min.Value = values.TryGetValue("Most_Common_DDR_min", out var value1) ? value1 : 0;
-                        num_DDR_max.Value = values.TryGetValue("Most_Common_DDR_max", out var value2) ? value2 : 0;
-                        num_Balance_min.Value = values.TryGetValue("Most_Common_Balance_min", out var value3) ? value3 : 0;
-                        num_Balance_max.Value = values.TryGetValue("Most_Common_Balance_max", out var value4) ? value4 : 0;
-                        num_Die_min.Value = values.TryGetValue("Most_Common_Die_min", out var value5) ? value5 : 0;
-                        num_Die_max.Value = values.TryGetValue("Most_Common_Die_max", out var value6) ? value6 : 0;
-                        num_Die_step.Value = values.TryGetValue("Most_Common_Die_step", out var value7) ? value7 : 0;
-                        num_Pin_min.Value = values.TryGetValue("Most_Common_Pin_min", out var value8) ? value8 : 0;
-                        num_Pin_max.Value = values.TryGetValue("Most_Common_Pin_max", out var value9) ? value9 : 0;
-                        num_Pin_step.Value = values.TryGetValue("Most_Common_Pin_step", out var value10) ? value10 : 0;
-
-                    }
+                    string columnName = reader.GetString(0);
+                    decimal value = reader.IsDBNull(1) ? 0 : reader.GetDecimal(1);
+                    values[columnName] = value;
                 }
+
+                num_DDR_min.Value = values.TryGetValue("Most_Common_DDR_min", out var value1) ? value1 : 0;
+                num_DDR_max.Value = values.TryGetValue("Most_Common_DDR_max", out var value2) ? value2 : 0;
+                num_Balance_min.Value = values.TryGetValue("Most_Common_Balance_min", out var value3) ? value3 : 1;
+                num_Balance_max.Value = values.TryGetValue("Most_Common_Balance_max", out var value4) ? value4 : 0;
+                num_Die_min.Value = values.TryGetValue("Most_Common_Die_min", out var value5) ? value5 : 0;
+                num_Die_max.Value = values.TryGetValue("Most_Common_Die_max", out var value6) ? value6 : 0;
+                num_Die_step.Value = values.TryGetValue("Most_Common_Die_step", out var value7) ? value7 : 0;
+                num_Pin_min.Value = values.TryGetValue("Most_Common_Pin_min", out var value8) ? value8 : 0;
+                num_Pin_max.Value = values.TryGetValue("Most_Common_Pin_max", out var value9) ? value9 : 0;
+                num_Pin_step.Value = values.TryGetValue("Most_Common_Pin_step", out var value10) ? value10 : 0;
+
             }
         }
         private void timer_OkSaveCalculation_Tick(object sender, EventArgs e)
@@ -191,23 +191,30 @@ namespace DigitalProductionProgram.ToolManagement
         private void DieType_TextChanged(object sender, EventArgs e)
         {
             var tools = new List<Die>();
-
+            pbar_Calculate.Visible = true;
             var partCodes = Utilities.GetFromMonitor<Inventory.PartCodes>($"filter=Description  Eq'DIES'");
             foreach (var partCode in partCodes)
             {
-                var parts = Utilities.GetFromMonitor<Inventory.Parts>($"filter=PartCodeId Eq'{partCode.Id}' AND ExtraDescription eq'{tb_DieType.Text}' AND IsNull(BlockedById)");
-
+                var ctr = 0;
+                var parts = Utilities.GetFromMonitor<Inventory.Parts>($"filter=PartCodeId Eq'{partCode.Id}' AND ExtraDescription eq'{tb_DieType.Text}' AND IsNull(BlockedById)", "orderby(Description)");
+                pbar_Calculate.Invoke((MethodInvoker)(() => pbar_Calculate.Maximum = parts.Count));
                 foreach (var part in parts)
                 {
                     var dimension = Utilities.GetOneFromMonitor<Common.ExtraFields>("select=DecimalValue", $"filter=ParentId Eq'{part.Id}' AND Identifier Eq'T4'");
                     var landlength =  Utilities.GetOneFromMonitor<Common.ExtraFields>("select=DecimalValue", $"filter=ParentId Eq'{part.Id}' AND Identifier Eq'T9'");
-
-                    tools.Add(new Die(dimension.DecimalValue.ToString(), landlength.DecimalValue.ToString()));
+                    pbar_Calculate.Invoke((MethodInvoker)(() =>
+                    {
+                        pbar_Calculate.Value = ctr;
+                    }));
+                    tools.Add(new Die (dimension.DecimalValue, landlength.DecimalValue));
+                    ctr++;
                 }
             }
-
+            pbar_Calculate.Visible = false;
             cb_Die.DataSource = null;  //Reset before binding
-            cb_Die.DataSource = tools;
+            var sortedTools = tools.OrderBy(t => t.Dimension).ToList();
+            cb_Die.DataSource = sortedTools;
+           
             cb_Die.DisplayMember = "Dimension";  //Matches property in `Die`
             cb_Die.ValueMember = "LandLength";   //Matches property in `Die`
             lbl_AntalMunstycken.Text = cb_Die.Items.Count.ToString();
@@ -218,51 +225,30 @@ namespace DigitalProductionProgram.ToolManagement
         }
         private void PinType_TextChanged(object sender, EventArgs e)
         {
-            var tools = new List<Die>();
-
+            var tools = new List<Pin>();
+            pbar_Calculate.Visible = true;
             var partCodes = Utilities.GetFromMonitor<Inventory.PartCodes>($"filter=Description  Eq'TIPS'");
             foreach (var partCode in partCodes)
             {
-                var parts =  Utilities.GetFromMonitor<Inventory.Parts>($"filter=PartCodeId Eq'{partCode.Id}' AND ExtraDescription eq'{tb_PinType.Text}' AND IsNull(BlockedById)");
-
+                var ctr = 0;
+                var parts =  Utilities.GetFromMonitor<Inventory.Parts>($"filter=PartCodeId Eq'{partCode.Id}' AND ExtraDescription eq'{tb_PinType.Text}' AND IsNull(BlockedById)", "orderby(Description)");
+                pbar_Calculate.Invoke((MethodInvoker)(() => pbar_Calculate.Maximum = parts.Count));
                 foreach (var part in parts)
                 {
                     var dimension = Utilities.GetOneFromMonitor<Common.ExtraFields>("select=DecimalValue", $"filter=ParentId Eq'{part.Id}' AND Identifier Eq'T4'");
                     var landlength = Utilities.GetOneFromMonitor<Common.ExtraFields>("select=DecimalValue", $"filter=ParentId Eq'{part.Id}' AND Identifier Eq'T9'");
-
-                    tools.Add(new Die(dimension.DecimalValue.ToString(), landlength.DecimalValue.ToString()));
+                    pbar_Calculate.Invoke((MethodInvoker)(() =>
+                    {
+                        pbar_Calculate.Value = ctr;
+                    }));
+                    tools.Add(new Pin (dimension.DecimalValue, landlength.DecimalValue));
+                    ctr++;
                 }
             }
-
-            //var tools = new List<Pin>();
-            //using (var con = new SqlConnection(Database.cs_ToolRegister))
-            //{
-            //    var query = "SELECT DISTINCT Dimension_nom, LandLängd_nom FROM Register_Verktyg WHERE Typ = @typ AND Sort = 'Kanyl' ";
-
-            //    if (chb_DöljKasseradeVerktyg.Checked)
-            //        query += " AND (Kasserad IS NULL OR Kasserad = '') ";
-
-            //    query += " ORDER BY Dimension_nom";
-
-            //    con.Open();
-            //    using (var cmd = new SqlCommand(query, con))
-            //    {
-            //        cmd.Parameters.AddWithValue("@typ", tb_PinType.Text);
-
-            //        using (var reader = cmd.ExecuteReader())
-            //        {
-            //            while (reader.Read())
-            //            {
-            //                var dimension = reader["Dimension_nom"].ToString();
-            //                var landLength = reader["LandLängd_nom"].ToString();
-            //                tools.Add(new Pin(dimension, landLength));
-            //            }
-            //        }
-            //    }
-            //}
-
+            pbar_Calculate.Visible = false;
             cb_Pin.DataSource = null;  //Reset before binding
-            cb_Pin.DataSource = tools;
+            var sortedTools = tools.OrderBy(t => t.Dimension).ToList();
+            cb_Pin.DataSource = sortedTools;
             cb_Pin.DisplayMember = "Dimension"; 
             cb_Pin.ValueMember = "LandLength";   
             lbl_AntalKanyl.Text = cb_Pin.Items.Count.ToString();
@@ -282,7 +268,6 @@ namespace DigitalProductionProgram.ToolManagement
 
                 // Disable the button and show the progress bar on the main thread
                 btn_StartCalculation.Invoke((MethodInvoker)(() => btn_StartCalculation.Enabled = false));
-                //pbar_Calculate.Invoke((MethodInvoker)(() => pbar_Calculate.Visible = true));
 
                 dgv_Combinations.Invoke((MethodInvoker)(() => dgv_Combinations.Rows.Clear()));
 
@@ -367,32 +352,36 @@ namespace DigitalProductionProgram.ToolManagement
             btn_StartCalculation.Invoke((MethodInvoker)(() => btn_StartCalculation.Enabled = false));
         }
 
-        private (List<(double Dimension, double LandLength)>, List<(double Dimension, double LandLength)>) GetDieAndPinValues(bool useTheoretical)
+        private (List<(decimal Dimension, decimal LandLength)>, List<(decimal Dimension, decimal LandLength)>) GetDieAndPinValues(bool useTheoretical)
         {
-            double selectedDieDim = 0;
-            double selectedPinDim = 0;
-            cb_Die.Invoke((MethodInvoker)(() => double.TryParse(cb_Die.Text, out selectedDieDim)));
-            cb_Pin.Invoke((MethodInvoker)(() => double.TryParse(cb_Pin.Text, out selectedPinDim)));
+            decimal selectedDieDim = 0;
+            decimal selectedPinDim = 0;
+
+            cb_Die.Invoke((MethodInvoker)(() => decimal.TryParse(cb_Die.Text, out selectedDieDim)));
+            cb_Pin.Invoke((MethodInvoker)(() => decimal.TryParse(cb_Pin.Text, out selectedPinDim)));
 
             var isDieSelected = selectedDieDim > 0;
             var isPinSelected = selectedPinDim > 0;
 
-            List<(double Dimension, double LandLength)> dieValues, pinValues;
+            List<(decimal Dimension, decimal LandLength)> dieValues;
+            List<(decimal Dimension, decimal LandLength)> pinValues;
 
             if (useTheoretical)
             {
-                var dieMin = double.Parse(num_Die_min.Text);
-                var dieMax = double.Parse(num_Die_max.Text);
-                var dieStepper = double.Parse(num_Die_step.Text);
+                var dieMin = decimal.Parse(num_Die_min.Text);
+                var dieMax = decimal.Parse(num_Die_max.Text);
+                var dieStepper = decimal.Parse(num_Die_step.Text);
+
                 dieValues = Enumerable.Range(0, (int)((dieMax - dieMin) / dieStepper) + 1)
-                                      .Select(i => (dieMin + (i * dieStepper), 0.0))
+                                      .Select(i => (dieMin + (i * dieStepper), 0.0m))
                                       .ToList();
 
-                var pinMin = double.Parse(num_Pin_min.Text);
-                var pinMax = double.Parse(num_Pin_max.Text);
-                var pinStepper = double.Parse(num_Pin_step.Text);
+                var pinMin = decimal.Parse(num_Pin_min.Text);
+                var pinMax = decimal.Parse(num_Pin_max.Text);
+                var pinStepper = decimal.Parse(num_Pin_step.Text);
+
                 pinValues = Enumerable.Range(0, (int)((pinMax - pinMin) / pinStepper) + 1)
-                                      .Select(i => (pinMin + (i * pinStepper), 0.0))
+                                      .Select(i => (pinMin + (i * pinStepper), 0.0m))
                                       .ToList();
             }
             else
@@ -400,20 +389,28 @@ namespace DigitalProductionProgram.ToolManagement
                 var dieItems = isDieSelected ? new List<object> { cb_Die.SelectedItem } : cb_Die.Items.Cast<object>().ToList();
                 var pinItems = isPinSelected ? new List<object> { cb_Pin.SelectedItem } : cb_Pin.Items.Cast<object>().ToList();
 
-                dieValues = dieItems.Select(d => ((d as Die)?.Dimension ?? 0.00, (d as Die)?.LandLength ?? 0.0)).ToList();
-                pinValues = pinItems.Select(p => ((p as Pin)?.Dimension ?? 0.00, (p as Pin)?.LandLength ?? 0.0)).ToList();
+                dieValues = dieItems
+                    .Select(d => ((d as Die)?.Dimension ?? 0.00m,
+                                  (d as Die)?.LandLength ?? 0.00m))
+                    .ToList();
+
+                pinValues = pinItems
+                    .Select(p => ((p as Pin)?.Dimension ?? 0.00m,
+                                  (p as Pin)?.LandLength ?? 0.00m))
+                    .ToList();
             }
 
             return (dieValues, pinValues);
         }
 
-        
 
-        private async Task PerformCalculationAsync(Calculation calc, List<(double Dimension, double LandLength)> dieValues, List<(double Dimension, double LandLength)> pinValues, bool useTheoretical, CancellationToken cancellationToken)
+
+
+        private async Task PerformCalculationAsync(Calculation calc, List<(decimal Dimension, decimal LandLength)> dieValues, List<(decimal Dimension, decimal LandLength)> pinValues, bool useTheoretical, CancellationToken cancellationToken)
         {
             int progress = 0;
             var newRows = new List<DataGridViewRow>();
-
+           
             await Task.Run(async () =>
             {
                 foreach (var (pin_Dimension, pin_LL) in pinValues)
@@ -430,10 +427,18 @@ namespace DigitalProductionProgram.ToolManagement
                             dgv_Combinations.Invoke((MethodInvoker)(() =>
                             {
                                 exists = dgv_Combinations.Rows.Cast<DataGridViewRow>().Any(row =>
-                                    row.Cells[0].Value != null && row.Cells[2].Value != null &&
-                                    double.TryParse(row.Cells[0].Value.ToString(), out var existingDie) &&
-                                    double.TryParse(row.Cells[2].Value.ToString(), out var existingPin) &&
-                                    existingDie == die_Dimension && existingPin == pin_Dimension);
+                                {
+                                    if (row.Cells[0].Value == null || row.Cells[2].Value == null)
+                                        return false;
+
+                                    if (!decimal.TryParse(row.Cells[0].Value.ToString(), out var existingDie))
+                                        return false;
+
+                                    if (!decimal.TryParse(row.Cells[2].Value.ToString(), out var existingPin))
+                                        return false;
+
+                                    return existingDie == die_Dimension && existingPin == pin_Dimension;
+                                });
                             }));
                         }
 
@@ -443,9 +448,10 @@ namespace DigitalProductionProgram.ToolManagement
                             continue;
                         }
 
+                        // Sätt in decimal-värdena i din Calculation-klassen
                         calc.Pin = pin_Dimension;
                         calc.Die = die_Dimension;
-
+                       
                         if (calc.IsCombinationOk)
                         {
                             var row = new DataGridViewRow();
@@ -458,6 +464,7 @@ namespace DigitalProductionProgram.ToolManagement
                                 $"{calc.DDR:0.00}",
                                 $"{calc.Balance:0.000}",
                                 $"{calc.ShearRate:0}");
+
                             newRows.Add(row);
                         }
 
@@ -471,15 +478,19 @@ namespace DigitalProductionProgram.ToolManagement
                             }));
                         }
 
+                        // liten yield för UI
                         if (progress % 500 == 0)
                             await Task.Delay(1, cancellationToken);
                     }
                 }
             }, cancellationToken);
 
+            // Lägg till rader efter Task.Run
             if (dgv_Combinations.IsHandleCreated)
-                dgv_Combinations.Invoke((MethodInvoker)(() => dgv_Combinations.Rows.AddRange(newRows.ToArray())));
+                dgv_Combinations.Invoke((MethodInvoker)(() =>
+                    dgv_Combinations.Rows.AddRange(newRows.ToArray())));
         }
+
 
         private void FinalizeCalculation()
         {
@@ -537,23 +548,32 @@ namespace DigitalProductionProgram.ToolManagement
 
         public class Calculation
         {
-            public double ID { get; set; }
-            public double OD { get; set; }
-            public double Wall { get; set; }
-            public double DDR_min { get; set; }
-            public double DDR_max { get; set; }
-            public double PullerSpeed { get; set; }
-            public double Density { get; set; }
-            public double Balance_min { get; set; }
-            public double Balance_max { get; set; }
-            public double Die { get; set; }
-            public double Pin { get; set; }
+            private decimal ID { get; set; }
+            private decimal OD { get; set; }
+            public decimal Wall { get; set; }
+            private decimal DDR_min { get; set; }
+            private decimal DDR_max { get; set; }
+            private decimal PullerSpeed { get; set; }
+            private decimal Density { get; set; }
+            private decimal Balance_min { get; set; }
+            private decimal Balance_max { get; set; }
+            public decimal Die { get; set; }
+            public decimal Pin { get; set; }
 
             public bool IsCombinationOk => DDR < DDR_max & DDR > DDR_min & Balance < Balance_max & Balance > Balance_min & ToolGap > 0;
-            public double DDR => Math.Round((Die * Die - Pin * Pin) / (OD * OD - ID * ID), 2);
-            public double ToolGap => Math.Round((Die - Pin) / 2, 3);
-            public double Balance => Math.Round(Die / OD / (Pin / ID), 4);
-            public double ShearRate
+            public decimal DDR => Math.Round((Die * Die - Pin * Pin) / (OD * OD - ID * ID), 2);
+            public decimal ToolGap => Math.Round((Die - Pin) / 2, 3);
+            public decimal Balance
+            {
+                get
+                {
+                    if (Pin == 0 || ID == 0 || OD == 0)
+                        return 0m; // eller annan standardvärde, t.ex. decimal.MinValue
+
+                    return Math.Round(Die / OD / (Pin / ID), 4);
+                }
+            }
+            public decimal ShearRate
             {
                 get
                 {
@@ -564,17 +584,18 @@ namespace DigitalProductionProgram.ToolManagement
                     var innerRadius = ID / 2;
 
                     // Calculate channel width (W) and height (H)
-                    var channelWidth = Math.PI * ((Die + Pin) / 2);
+                    var channelWidth = (decimal)(Math.PI * (double)((Die + Pin) / 2));
                     var channelHeight = (Die - Pin) / 2;
 
                     // Calculate flow area (A)
-                    var flowArea = Math.PI * (Math.Pow(outerRadius, 2) - Math.Pow(innerRadius, 2));
+                    var flowArea = (decimal)(Math.PI * (Math.Pow((double)outerRadius, 2) - Math.Pow((double)innerRadius, 2)));
+
 
                     // Calculate extrusion rate (Q)
                     var extrusionRate = flowArea * PullerSpeed * 60 * Density / 1000;
 
                     // Compute shear rate (γ̇)
-                    var shearRate = extrusionRate / (600 * MeltDensity * (channelWidth * (channelHeight * channelHeight))) * 1_000_000;
+                    var shearRate = extrusionRate / (600 * (decimal)MeltDensity * channelWidth * channelHeight * channelHeight) * 1_000_000;
 
                     return Math.Round(shearRate, 0);
                 }
@@ -593,43 +614,43 @@ namespace DigitalProductionProgram.ToolManagement
                 PullerSpeed = ParseValue(pullerspeed);
                 Density = ParseValue(density);
             }
-            public static double ParseValue(string value)
+            public static decimal ParseValue(string value)
             {
-                return double.TryParse(value, out double result) ? result : 0.0;
+                return decimal.TryParse(value, out decimal result) ? result : 0;
             }
 
         }
 
         public class Die
         {
-            public double Dimension { get; set; }
-            public double LandLength { get; set; }
+            public decimal? Dimension { get; set; }
+            public decimal? LandLength { get; set; }
 
-            public Die(string dimension, string landLength)
+            public Die(decimal? dimension, decimal? landLength)
             {
-                Dimension = Calculation.ParseValue(dimension);
-                LandLength = Calculation.ParseValue(landLength);
+                Dimension = dimension;//Calculation.ParseValue(dimension);
+                LandLength = landLength;//.ParseValue(landLength);
             }
 
             public override string ToString()
             {
-                return Dimension.ToString("F2"); // Show this in the ComboBox
+                return Dimension.HasValue ? Dimension.Value.ToString("F2") : "";
             }
         }
         public class Pin
         {
-            public double Dimension { get; set; }
-            public double LandLength { get; set; }
+            public decimal? Dimension { get; set; }
+            public decimal? LandLength { get; set; }
 
-            public Pin(string dimension, string landLength)
+            public Pin(decimal? dimension, decimal? landLength)
             {
-                Dimension = Calculation.ParseValue(dimension);
-                LandLength = Calculation.ParseValue(landLength);
+                Dimension = dimension; //.ParseValue(dimension);
+                LandLength = landLength;// Calculation.ParseValue(landLength);
             }
 
             public override string ToString()
             {
-                return Dimension.ToString("F2"); // Show this in the ComboBox
+                return Dimension.HasValue ? Dimension.Value.ToString("F2") : "";
             }
         }
 

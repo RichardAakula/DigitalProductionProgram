@@ -140,6 +140,8 @@ namespace DigitalProductionProgram.MainWindow
             testaChartToolStripMenuItem = new ToolStripMenuItem();
             testaLaddaAllaVerktygFrånMonitorToolStripMenuItem = new ToolStripMenuItem();
             laddaAlalVerktyMedExpandAPIToolStripMenuItem = new ToolStripMenuItem();
+            laddaVerktygMedExpandNyaAPIToolStripMenuItem = new ToolStripMenuItem();
+            laddaVerktygUtanExpandNyaAPIToolStripMenuItem = new ToolStripMenuItem();
             menuStrip = new MenuStrip();
             Menu_Equipment = new ToolStripMenuItem();
             Menu_Equipment_UseFilter = new ToolStripMenuItem();
@@ -697,7 +699,7 @@ namespace DigitalProductionProgram.MainWindow
             // 
             // Menu_Developer
             // 
-            Menu_Developer.DropDownItems.AddRange(new ToolStripItem[] { Menu_Developer_GetOrderInfo, Menu_Developer_SendMailToAllUsers, Menu_Developer_AddGallup, Menu_Developer_CheckGallup, Menu_Developer_OpenRandomOrder, Menu_Developer_InsertHalvfabrikat, Menu_Developer_NewProtocol_Extrudering_TEF, Menu_Developer_Test_RGB, Menu_Developer_NewMeasureProtocol, Menu_Developer_MoveDataKorprotokollValues, Menu_Utvecklare_MoveDataFEP, Menu_Developer_Timer_test, moveProcesskortExtruderingTEFTillProcesscardDataToolStripMenuItem, raderaExtruderingTEFFrånProcesscardDataToolStripMenuItem, Menu_Developer_ExportHS_Data, kontrolleraFEPDataSomÄrFelPåExtruderToolStripMenuItem, Menu_Developer_GetDataForQuoting, Menu_Developer_INSERT_Rengjort, Menu_Developer_INSERT_Verktyg_Typ, testaNAntalKörningarPåArtikelNrToolStripMenuItem, Menu_Developer_AddThemePicture, Menu_Developer_TestNewProtocol, testCalendarToolStripMenuItem, Developer_AddLineClearance_Table, påskäggToolStripMenuItem, Developer_CountSql_Queries, Developer_Clear_Sql_Queries, testaChartToolStripMenuItem, testaLaddaAllaVerktygFrånMonitorToolStripMenuItem, laddaAlalVerktyMedExpandAPIToolStripMenuItem });
+            Menu_Developer.DropDownItems.AddRange(new ToolStripItem[] { Menu_Developer_GetOrderInfo, Menu_Developer_SendMailToAllUsers, Menu_Developer_AddGallup, Menu_Developer_CheckGallup, Menu_Developer_OpenRandomOrder, Menu_Developer_InsertHalvfabrikat, Menu_Developer_NewProtocol_Extrudering_TEF, Menu_Developer_Test_RGB, Menu_Developer_NewMeasureProtocol, Menu_Developer_MoveDataKorprotokollValues, Menu_Utvecklare_MoveDataFEP, Menu_Developer_Timer_test, moveProcesskortExtruderingTEFTillProcesscardDataToolStripMenuItem, raderaExtruderingTEFFrånProcesscardDataToolStripMenuItem, Menu_Developer_ExportHS_Data, kontrolleraFEPDataSomÄrFelPåExtruderToolStripMenuItem, Menu_Developer_GetDataForQuoting, Menu_Developer_INSERT_Rengjort, Menu_Developer_INSERT_Verktyg_Typ, testaNAntalKörningarPåArtikelNrToolStripMenuItem, Menu_Developer_AddThemePicture, Menu_Developer_TestNewProtocol, testCalendarToolStripMenuItem, Developer_AddLineClearance_Table, påskäggToolStripMenuItem, Developer_CountSql_Queries, Developer_Clear_Sql_Queries, testaChartToolStripMenuItem, testaLaddaAllaVerktygFrånMonitorToolStripMenuItem, laddaAlalVerktyMedExpandAPIToolStripMenuItem, laddaVerktygMedExpandNyaAPIToolStripMenuItem, laddaVerktygUtanExpandNyaAPIToolStripMenuItem });
             Menu_Developer.ForeColor = Color.DeepSkyBlue;
             Menu_Developer.Name = "Menu_Developer";
             Menu_Developer.Size = new Size(81, 32);
@@ -933,15 +935,29 @@ namespace DigitalProductionProgram.MainWindow
             // 
             testaLaddaAllaVerktygFrånMonitorToolStripMenuItem.Name = "testaLaddaAllaVerktygFrånMonitorToolStripMenuItem";
             testaLaddaAllaVerktygFrånMonitorToolStripMenuItem.Size = new Size(401, 22);
-            testaLaddaAllaVerktygFrånMonitorToolStripMenuItem.Text = "Ladda verktyg Med Expand";
-            testaLaddaAllaVerktygFrånMonitorToolStripMenuItem.Click += menu_LoadToolsWithExpand_Click;
+            testaLaddaAllaVerktygFrånMonitorToolStripMenuItem.Text = "Old API With Expand";
+            testaLaddaAllaVerktygFrånMonitorToolStripMenuItem.Click += OldAPI_WithExpand_Click;
             // 
             // laddaAlalVerktyMedExpandAPIToolStripMenuItem
             // 
             laddaAlalVerktyMedExpandAPIToolStripMenuItem.Name = "laddaAlalVerktyMedExpandAPIToolStripMenuItem";
             laddaAlalVerktyMedExpandAPIToolStripMenuItem.Size = new Size(401, 22);
-            laddaAlalVerktyMedExpandAPIToolStripMenuItem.Text = "Ladda verktyg Utan Expand";
-            laddaAlalVerktyMedExpandAPIToolStripMenuItem.Click += menu_LoadToolsWithOutExpand_Click;
+            laddaAlalVerktyMedExpandAPIToolStripMenuItem.Text = "Old API WithOut Expand";
+            laddaAlalVerktyMedExpandAPIToolStripMenuItem.Click += OldAPI_WithOutExpand_Click;
+            // 
+            // laddaVerktygMedExpandNyaAPIToolStripMenuItem
+            // 
+            laddaVerktygMedExpandNyaAPIToolStripMenuItem.Name = "laddaVerktygMedExpandNyaAPIToolStripMenuItem";
+            laddaVerktygMedExpandNyaAPIToolStripMenuItem.Size = new Size(401, 22);
+            laddaVerktygMedExpandNyaAPIToolStripMenuItem.Text = "New API With Expand";
+            laddaVerktygMedExpandNyaAPIToolStripMenuItem.Click += NewAPI_WithExpand_Click;
+            // 
+            // laddaVerktygUtanExpandNyaAPIToolStripMenuItem
+            // 
+            laddaVerktygUtanExpandNyaAPIToolStripMenuItem.Name = "laddaVerktygUtanExpandNyaAPIToolStripMenuItem";
+            laddaVerktygUtanExpandNyaAPIToolStripMenuItem.Size = new Size(401, 22);
+            laddaVerktygUtanExpandNyaAPIToolStripMenuItem.Text = "New API WithOut Expand";
+            laddaVerktygUtanExpandNyaAPIToolStripMenuItem.Click += NewAPI_WithOutExpand_Click;
             // 
             // menuStrip
             // 
@@ -1124,5 +1140,7 @@ namespace DigitalProductionProgram.MainWindow
         private ToolStripMenuItem Menu_Arkiv_UpdateDPP;
         private ToolStripMenuItem testaLaddaAllaVerktygFrånMonitorToolStripMenuItem;
         private ToolStripMenuItem laddaAlalVerktyMedExpandAPIToolStripMenuItem;
+        private ToolStripMenuItem laddaVerktygMedExpandNyaAPIToolStripMenuItem;
+        private ToolStripMenuItem laddaVerktygUtanExpandNyaAPIToolStripMenuItem;
     }
 }

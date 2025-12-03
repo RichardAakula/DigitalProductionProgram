@@ -1,9 +1,12 @@
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Help;
 using DigitalProductionProgram.Log;
+using DigitalProductionProgram.Monitor;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.Övrigt;
 using DigitalProductionProgram.Processcards;
+using DigitalProductionProgram.ToolManagement;
+using DigitalProductionProgram.User;
 using Microsoft.Data.SqlClient;
 using System.ComponentModel;
 using System.Data.Odbc;
@@ -99,6 +102,14 @@ namespace DigitalProductionProgram.MainWindow
 
             //Kontrollerar att alla databaskopplingar är ok, annars får användaren välja  
             Load_DatabaseSettings();
+
+            //Person.Name = "Richard Aakula";
+            //Person.Role = "SuperAdmin";
+            //Person.UserID = 24;
+            //Login_Monitor.Login_API();
+            //ToolCalculator tool = new ToolCalculator(null);
+            //tool.ShowDialog();
+            //return;
 
 
             //Test test = new Test("Test", "Testar att ladda en testform med en graf");

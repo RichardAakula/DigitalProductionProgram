@@ -850,6 +850,7 @@
             tb_ID.Name = "tb_ID";
             tb_ID.Size = new Size(57, 19);
             tb_ID.TabIndex = 197;
+            tb_ID.Text = "0,8";
             tb_ID.TextChanged += CalculateWalls_TextChanged;
             // 
             // label_Customer
@@ -1013,6 +1014,7 @@
             tb_OD.Name = "tb_OD";
             tb_OD.Size = new Size(57, 19);
             tb_OD.TabIndex = 197;
+            tb_OD.Text = "1,1";
             tb_OD.TextChanged += CalculateWalls_TextChanged;
             // 
             // tb_Wall
@@ -1031,6 +1033,7 @@
             tb_Wall.Name = "tb_Wall";
             tb_Wall.Size = new Size(57, 19);
             tb_Wall.TabIndex = 197;
+            tb_Wall.Text = "0,15";
             // 
             // label_Length
             // 

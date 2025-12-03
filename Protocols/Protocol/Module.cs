@@ -1018,6 +1018,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
             }
             if (IsOkToSave || isProcesscardUnderManagement)
                 SpecialItems(row, col, protocolDescriptionID, isProcesscardUnderManagement);
+           
         }
         private void Module_RowEnter(object sender, DataGridViewCellEventArgs e)
         {

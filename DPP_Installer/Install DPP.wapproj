@@ -63,9 +63,9 @@
     <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
     <GenerateTestArtifacts>True</GenerateTestArtifacts>
     <AppxBundlePlatforms>x86</AppxBundlePlatforms>
-    <AppInstallerUri>\\ovf-s1-file\Digital Production Program</AppInstallerUri>
+    <AppInstallerUri>\\optifil\dpp</AppInstallerUri>
     <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
-    <AppxPackageDir>\\ovf-s1-file\Digital Production Program</AppxPackageDir>
+    <AppxPackageDir>\\optifil\dpp</AppxPackageDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <AppxBundle>Always</AppxBundle>

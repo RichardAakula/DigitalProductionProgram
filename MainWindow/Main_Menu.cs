@@ -140,8 +140,8 @@ namespace DigitalProductionProgram.MainWindow
         }
         private void Menu_Arkiv_UpdateDPP_Click(object sender, EventArgs e)
         {
-            //var updaterPath = @"\\optifil\dpp\Update\Update DPP.exe"; // OGO
-            var updaterPath = @"\\\\ovf-s1-file\Digital Production Program\Update\Update DPP.exe"; // Ändra till rätt filnamn
+            var updaterPath = @"\\optifil\dpp\Update\Update DPP.exe"; // OGO
+            //var updaterPath = @"\\\\ovf-s1-file\Digital Production Program\Update\Update DPP.exe"; // Ändra till rätt filnamn
             if (File.Exists(updaterPath))
             {
                 Process.Start(updaterPath);

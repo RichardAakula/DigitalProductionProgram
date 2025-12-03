@@ -25,23 +25,23 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
 {
     internal class Print_Protocol
     {
-        public static PrintPreviewDialog Preview_MainProtocol = new();
-        public static PrintPreviewDialog Preview_RunProtocol = new();
-        public static PrintPreviewDialog Preview_Comments = new();
-        public static PrintPreviewDialog Preview_MeasureInstruments = new();
-        public static PrintPreviewDialog Preview_ExtraComments = new();
-        public static PrintPreviewDialog Preview_LineClearance = new();
-        public static PrintPreviewDialog Preview_FrequencyMarking = new();
-        public static PrintPreviewDialog Preview_Compound_Protocol = new();
+        private static readonly PrintPreviewDialog Preview_MainProtocol = new();
+        private static readonly PrintPreviewDialog Preview_RunProtocol = new();
+        private static readonly PrintPreviewDialog Preview_Comments = new();
+        private static readonly PrintPreviewDialog Preview_MeasureInstruments = new();
+        private static readonly PrintPreviewDialog Preview_ExtraComments = new();
+        private static readonly PrintPreviewDialog Preview_LineClearance = new();
+        private static readonly PrintPreviewDialog Preview_FrequencyMarking = new();
+        private static readonly PrintPreviewDialog Preview_Compound_Protocol = new();
 
-        public static PrintDocument Print_MainProtocol = new();
-        public static PrintDocument Print_RunProtocol = new();
-        public static PrintDocument Print_Comments = new();
-        public static PrintDocument Print_MeasureInstruments = new();
-        public static PrintDocument Print_ExtraComments = new();
-        public static PrintDocument Print_LineClearance = new();
-        public static PrintDocument Print_Compund_Protocol = new();
-        public static PrintDocument Print_FrequencyMarking = new();
+        private static readonly PrintDocument Print_MainProtocol = new();
+        private static readonly PrintDocument Print_RunProtocol = new();
+        private static readonly PrintDocument Print_Comments = new();
+        private static readonly PrintDocument Print_MeasureInstruments = new();
+        private static readonly PrintDocument Print_ExtraComments = new();
+        private static readonly PrintDocument Print_LineClearance = new();
+        private static readonly PrintDocument Print_Compund_Protocol = new();
+        private static readonly PrintDocument Print_FrequencyMarking = new();
         public static TotalPrintOuts? totalPrintOuts;
 
         public Print_Protocol()
@@ -147,7 +147,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                 return list;
             }
         }
-        public static List<int> Active_FormTemplates = new List<int>();
+        private static List<int> Active_FormTemplates = new List<int>();
 
         public static int TotalRows_FormTemplateID(int formtemplateid)
         {
@@ -234,7 +234,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
             var maxStartupsPerPage = max_Width / max_RunProtocolWidth;
             return (int)Math.Ceiling(totalStartUps / (double)maxStartupsPerPage);
         }
-        public static int MaxStartUpPerPrintOut(List<int> List_FormTemplates)
+        private static int MaxStartUpPerPrintOut(List<int> List_FormTemplates)
         {
             var max_Width = PrintVariables.MaxWidthProcesscardRunProtocol;
             var processcard_MinWidth = 0;
@@ -301,19 +301,23 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
             return maxStartups;
         }
 
-        public static int Height_ProcesscardBasedOn(PrintPageEventArgs e)
+        private static int Height_ProcesscardBasedOn(PrintPageEventArgs e)
         {
             int top = 115;
             int revInfo = Print.ProcessCardBasedOn.Height_RevInfoText(e);
             return (top + revInfo + 4);
         }
-        public static int Height_PreFab(PrintPageEventArgs e)
+        private static int Height_PreFab(PrintPageEventArgs e)
         {
             var header = 44;
             var fabRows = PreFab.TotalRows_PreFab * 18;
             return (header + fabRows);
         }
 
+        
+        
+        
+        
         public static async Task Print_Preview_Order(bool IsPrinting)
         {
             totalPrintOuts = new TotalPrintOuts();
@@ -370,16 +374,17 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
         private static Task PrintMainProtocolAsync(bool isPrinting)
         {
             Set_DefaultPaperSize(Print_MainProtocol, false);
-
             if (isPrinting)
                 Print_MainProtocol.Print();
             else
                 Preview_MainProtocol.ShowDialog();
+            _ = Activity.Stop($"Skriver ut MainProtocol - Sida {Active_PrintOut}");
             return Task.CompletedTask;
         }
         private static Task PrintCommentsAsync(bool isPrinting)
         {
-            if (IsCommentsPrintedOut) return Task.FromResult(Task.CompletedTask);
+            if (IsCommentsPrintedOut) 
+                return Task.CompletedTask;
 
             var commentLines = Regex.Split(Print.utskrift_Korprotokoll?["Comments"] ?? string.Empty, @"\r\n|\r|\n");
 
@@ -391,11 +396,13 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                     Preview_Comments.ShowDialog();
             }
 
-            return Task.FromResult(Task.CompletedTask);
+            _ = Activity.Stop($"Skriver ut Comments - Sida {Active_PrintOut}");
+            return Task.CompletedTask;
         }
         private static Task PrintExtraCommentsAsync(bool isPrinting)
         {
-            if (totalPrintOuts == null) return Task.CompletedTask;
+            if (totalPrintOuts == null) 
+                return Task.CompletedTask;
             for (var i = 0; i < totalPrintOuts.PagesExtraComments; i++)
             {
                 ExtraCommentRow_To += (MaxPaperHeight - 221) / RowHeight;
@@ -408,7 +415,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
 
                 ExtraCommentRow_From = ExtraCommentRow_To + 1;
             }
-
+            _ = Activity.Stop($"Skriver ut Extra Comments - Sida {Active_PrintOut}");
             return Task.CompletedTask;
         }
         public static Task PrintMeasureInstruments(bool isPrinting)
@@ -419,6 +426,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                 Print_MeasureInstruments.Print();
             else
                 Preview_MeasureInstruments.ShowDialog();
+            _ = Activity.Stop($"Skriver ut Mätdon - Sida {Active_PrintOut}");
             return Task.CompletedTask;
         }
         private static Task PrintLineClearanceAsync(bool isPrinting)
@@ -433,11 +441,11 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
             else
                 Preview_LineClearance.ShowDialog();
 
+            _ = Activity.Stop($"Skriver ut Extra LineClearance - Sida {Active_PrintOut}");
             return Task.CompletedTask;
         }
         private static async Task PrintRunProtocolsAsync(bool isPrinting, double totalPrintOutsForModules, int maxRowsRunProtocol)
         {
-
             for (var machineIndex = 1; machineIndex <= Korprotokoll.Total_Machines; machineIndex++)
             {
                 MachineIndex = machineIndex;
@@ -493,9 +501,8 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                 }
             }
 
-            return;
         }
-        private static async Task PrintMeasureProtocolsAsync(bool isPrinting)
+        public static async Task PrintMeasureProtocolsAsync(bool isPrinting)
         {
             try
             {
@@ -738,7 +745,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
 
         internal class PrintOut
         {
-            public static Dictionary<(int row, int formtemplateid), List<int>> UsedColumns { get; } = new();
+            private static Dictionary<(int row, int formtemplateid), List<int>> UsedColumns { get; } = new();
             public static void LoadUsedColumns()
             {
                 UsedColumns.Clear();
@@ -1248,7 +1255,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
 
                 Print.RunProtocol.StartUps(e, x, y, totalrows, runProtocol_ColWidth, formtemplateid, StartUp_From, StartUp_To, MachineIndex, isHeaderVisible, isModuleUsingOven);
             }
-            public static void PrintHeader(PrintPageEventArgs e, int y, int formtemplateid, int[] colWidth)
+            private static void PrintHeader(PrintPageEventArgs e, int y, int formtemplateid, int[] colWidth)
             {
                 Print.Filled_Rectangle(e, CustomFonts.empty_Space, PrintVariables.LeftMargin, y, 172, PrintVariables.RowHeight);
                 Print.Thin_Rectangle(e, 196, y, 46, PrintVariables.RowHeight);
@@ -1274,7 +1281,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                     }
                 }
             }
-            public static void Protocol_Template(PrintPageEventArgs e, int y, string leftHeader, int formtemplateid, int minWidth, int nomWidth, int maxWidth, ref int totalrows, bool isHeaderVisible)
+            private static void Protocol_Template(PrintPageEventArgs e, int y, string leftHeader, int formtemplateid, int minWidth, int nomWidth, int maxWidth, ref int totalrows, bool isHeaderVisible)
             {
                 totalrows = 0;
                 if (isHeaderVisible)
@@ -1378,7 +1385,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                 }
                 Print.Processcard.LEFT_Header(e, new[] { leftHeader }, totalrows * RowHeight, y);
             }
-            public static void Processcard_Parameters(PrintPageEventArgs e, int y, int formtemplateid, int machineindex, bool isHeaderVisible)
+            private static void Processcard_Parameters(PrintPageEventArgs e, int y, int formtemplateid, int machineindex, bool isHeaderVisible)
             {
                 var isModuleOnlyNomValues = IsModuleOnlyNomValues(formtemplateid);
                 if (isHeaderVisible)

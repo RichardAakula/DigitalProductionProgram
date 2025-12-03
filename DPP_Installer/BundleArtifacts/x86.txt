@@ -1,24 +1,6 @@
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-MainPackage=C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram 4.3.12.6\DPP_Installer\bin\x86\Release\Install DPP_4.3.12.13_x86.msix
-SymbolPackage=C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram 4.3.12.6\DPP_Installer\obj\x86\Release\Symbols\Install DPP_4.3.12.13_x86.appxsym
-ResourcePack=C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram 4.3.12.6\DPP_Installer\bin\x86\Release\Install DPP_4.3.12.13_scale-100.msix
-ResourcePack=C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram 4.3.12.6\DPP_Installer\bin\x86\Release\Install DPP_4.3.12.13_scale-125.msix
-ResourcePack=C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram 4.3.12.6\DPP_Installer\bin\x86\Release\Install DPP_4.3.12.13_scale-150.msix
-ResourcePack=C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram 4.3.12.6\DPP_Installer\bin\x86\Release\Install DPP_4.3.12.13_scale-400.msix
-=======
-MainPackage=C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram 4.3.12.14\DPP_Installer\bin\x86\Release\Install DPP_4.3.12.19_x86.msix
-SymbolPackage=C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram 4.3.12.14\DPP_Installer\obj\x86\Release\Symbols\Install DPP_4.3.12.19_x86.appxsym
-ResourcePack=C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram 4.3.12.14\DPP_Installer\bin\x86\Release\Install DPP_4.3.12.19_scale-100.msix
-ResourcePack=C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram 4.3.12.14\DPP_Installer\bin\x86\Release\Install DPP_4.3.12.19_scale-125.msix
-ResourcePack=C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram 4.3.12.14\DPP_Installer\bin\x86\Release\Install DPP_4.3.12.19_scale-150.msix
-ResourcePack=C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram 4.3.12.14\DPP_Installer\bin\x86\Release\Install DPP_4.3.12.19_scale-400.msix
->>>>>>> Stashed changes
-=======
-MainPackage=C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram 4.3.12.14\DPP_Installer\bin\x86\Release\Install DPP_4.3.12.20_x86.msix
-SymbolPackage=C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram 4.3.12.14\DPP_Installer\obj\x86\Release\Symbols\Install DPP_4.3.12.20_x86.appxsym
-ResourcePack=C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram 4.3.12.14\DPP_Installer\bin\x86\Release\Install DPP_4.3.12.20_scale-100.msix
-ResourcePack=C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram 4.3.12.14\DPP_Installer\bin\x86\Release\Install DPP_4.3.12.20_scale-125.msix
-ResourcePack=C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram 4.3.12.14\DPP_Installer\bin\x86\Release\Install DPP_4.3.12.20_scale-150.msix
-ResourcePack=C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram 4.3.12.14\DPP_Installer\bin\x86\Release\Install DPP_4.3.12.20_scale-400.msix
->>>>>>> Stashed changes
+MainPackage=C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram 4.3.14.xx\DPP_Installer\bin\x86\Release\Install DPP_4.3.14.15_x86.msix
+SymbolPackage=C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram 4.3.14.xx\DPP_Installer\obj\x86\Release\Symbols\Install DPP_4.3.14.15_x86.appxsym
+ResourcePack=C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram 4.3.14.xx\DPP_Installer\bin\x86\Release\Install DPP_4.3.14.15_scale-100.msix
+ResourcePack=C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram 4.3.14.xx\DPP_Installer\bin\x86\Release\Install DPP_4.3.14.15_scale-125.msix
+ResourcePack=C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram 4.3.14.xx\DPP_Installer\bin\x86\Release\Install DPP_4.3.14.15_scale-150.msix
+ResourcePack=C:\Users\RICHARDA\Documents\Visual Studio 2022\Projects\DigitalProductionProgram 4.3.14.xx\DPP_Installer\bin\x86\Release\Install DPP_4.3.14.15_scale-400.msix

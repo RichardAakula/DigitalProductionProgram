@@ -42,7 +42,7 @@ namespace DigitalProductionProgram.MainWindow
 
         public void Unlock_Menu()
         {
-            Menu_Arkiv_ManageDatabase.Enabled = CheckAuthority.IsRoleAuthorized(CheckAuthority.TemplateAuthorities.ChangeDatabaseSettings, false);
+           // Menu_Arkiv_ManageDatabase.Enabled = CheckAuthority.IsRoleAuthorized(CheckAuthority.TemplateAuthorities.ChangeDatabaseSettings, false);
             Menu_Order_EditOrder.Enabled = CheckAuthority.IsRoleAuthorized(CheckAuthority.TemplateAuthorities.EditOrder, false);
             Menu_Order_DeleteOrder.Enabled = CheckAuthority.IsRoleAuthorized(CheckAuthority.TemplateAuthorities.DeleteOrder, false);
             Menu_Order_ReportProblemProductionSupport.Enabled = CheckAuthority.IsRoleAuthorized(CheckAuthority.TemplateAuthorities.ReportToProductionSupport, false);
@@ -194,8 +194,8 @@ namespace DigitalProductionProgram.MainWindow
 
         private void Menu_Arkiv_ManageDatabase_Click(object sender, EventArgs e)
         {
-            if (CheckAuthority.IsRoleAuthorized(CheckAuthority.TemplateAuthorities.ChangeDatabaseSettings) == false)
-                return;
+            //if (CheckAuthority.IsRoleAuthorized(CheckAuthority.TemplateAuthorities.ChangeDatabaseSettings) == false)
+            //    return;
             using var database = new Database();
             database.ShowDialog();
             Application.Restart();

@@ -712,7 +712,10 @@ namespace DigitalProductionProgram.Protocols.Protocol
                         IsValidated = true;
                         break;
                     case 80:    //EXTRUDER
-                        Validate_Data.IsMachine_Ok(cell.Value.ToString(), "EXTRUDER", protocolDescriptionID, dgv_Module.CurrentCell, startUp, NOM_Value(dgv_Row), IsValueCritical, true);
+                        if (Monitor.Monitor.factory == Monitor.Monitor.Factory.ValleyForge) //Detta behöver göras annorlunda, isMachineInRange behöver flyttas in i Template
+                            Validate_Data.IsMachine_Ok(cell.Value.ToString(), "EXTRUDER", protocolDescriptionID, dgv_Module.CurrentCell, startUp, NOM_Value(dgv_Row), IsValueCritical, false);
+                        else
+                            Validate_Data.IsMachine_Ok(cell.Value.ToString(), "EXTRUDER", protocolDescriptionID, dgv_Module.CurrentCell, startUp, NOM_Value(dgv_Row), IsValueCritical, true);
                         IsValidated = true;
                         break;
                     case 83:    //MUNSTYCKE

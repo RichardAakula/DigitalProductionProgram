@@ -24,9 +24,9 @@ using CustomProgressBar = DigitalProductionProgram.ControlsManagement.CustomProg
 
 namespace DigitalProductionProgram.OrderManagement
 {
-    public class Order
+    public abstract class Order
     {
-        public static int TotalOrders
+        private static int TotalOrders
         {
             get
             {

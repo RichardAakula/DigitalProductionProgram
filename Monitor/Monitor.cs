@@ -20,7 +20,7 @@ using DigitalProductionProgram.User;
 
 namespace DigitalProductionProgram.Monitor
 {
-    internal class Monitor
+    internal abstract class Monitor
     {
         public static Factory factory;
         public enum Factory

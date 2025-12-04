@@ -140,7 +140,7 @@ namespace DigitalProductionProgram.Monitor
 
         #endregion
 
-        public class FlexibleLongConverter : JsonConverter<long>
+        private class FlexibleLongConverter : JsonConverter<long>
         {
             public override long Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
             {

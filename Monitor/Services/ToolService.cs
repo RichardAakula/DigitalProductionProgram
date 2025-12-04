@@ -324,17 +324,7 @@ namespace DigitalProductionProgram.Monitor.Services
         //                    $"Antal MonitorFrågor = {Utilities.CounterMonitorRequests}. \n" +
         //                    $"Antal inloggning Monitor = {Login_Monitor.TotalLoginAttemps}");
         //}
-        public static async Task Add_Equipment(
-    List<string> items,
-    Type tableType,
-    string partCode,
-    string? name,
-    string? property,
-    string? filterCodeText,
-    int dataType,
-    bool IsItemsMultipleColumns,
-    string? secondaryName = null,
-    string? secondaryCodeText = null)
+        public static async Task Add_Equipment(List<string> items, Type tableType, string partCode, string? name, string? property, string? filterCodeText, int dataType, bool IsItemsMultipleColumns, string? secondaryName = null, string? secondaryCodeText = null)
         {
             // MED EXPAND
             Stopwatch sw = new Stopwatch();
@@ -357,7 +347,7 @@ namespace DigitalProductionProgram.Monitor.Services
             // --------------------------------------
             if (string.IsNullOrEmpty(name))
             {
-                var parts = Utilities.GetFromMonitor<Inventory.Parts>("select=Id,PartNumber,ExtraDescription", filter,                    "orderby=ExtraDescription");
+                var parts = Utilities.GetFromMonitor<Inventory.Parts>("select=Id,PartNumber,ExtraDescription", filter,"orderby=ExtraDescription");
 
                 var properties = typeof(Inventory.Parts).GetProperty(property);
 
@@ -478,8 +468,6 @@ namespace DigitalProductionProgram.Monitor.Services
                 }
             }
 
-            // Lägg till "N/A" sist
-            items.Add("N/A");
 
             sw.Stop();
             if (sw.ElapsedMilliseconds > 5000)

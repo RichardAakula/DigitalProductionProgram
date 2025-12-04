@@ -324,150 +324,173 @@ namespace DigitalProductionProgram.Monitor.Services
         //                    $"Antal MonitorFrågor = {Utilities.CounterMonitorRequests}. \n" +
         //                    $"Antal inloggning Monitor = {Login_Monitor.TotalLoginAttemps}");
         //}
-        public static async Task Add_Equipment(List<string> items, Type tableType, string partCode, string? name, string? property, string? filterCodeText, int dataType, bool IsItemsMultipleColumns, string? secondaryName = null, string? secondaryCodeText = null)
+        public static async Task Add_Equipment(
+    List<string> items,
+    Type tableType,
+    string partCode,
+    string? name,
+    string? property,
+    string? filterCodeText,
+    int dataType,
+    bool IsItemsMultipleColumns,
+    string? secondaryName = null,
+    string? secondaryCodeText = null)
         {
-            //MED EXPAND
+            // MED EXPAND
             Stopwatch sw = new Stopwatch();
             sw.Start();
             Login_Monitor.TotalLoginAttemps = 0;
             Utilities.CounterMonitorRequests = 0;
-            // Hämta PartCodeId asynkront
+
+            // Hämta PartCodeId
             var partCodeObj = Utilities.GetOneFromMonitor<Inventory.PartCodes>($"filter=Description Eq'{partCode}'");
             var partCodeId = partCodeObj?.Id ?? 0;
 
-            // Hämta parts asynkront
-            string filter = $"filter= IsNull(BlockedById)";
-            filter += string.IsNullOrEmpty(filterCodeText) ? $"AND PartCodeId Eq'{partCodeId}'" : $"AND PartCodeId Eq'{partCodeId}' AND ExtraDescription Eq'{filterCodeText}'";
+            // Hämta parts
+            string filter = "filter= IsNull(BlockedById)";
+            filter += string.IsNullOrEmpty(filterCodeText)
+                ? $"AND PartCodeId Eq'{partCodeId}'"
+                : $"AND PartCodeId Eq'{partCodeId}' AND ExtraDescription Eq'{filterCodeText}'";
 
-
+            // --------------------------------------
+            // FALL 1: ingen ExtraField – ren property
+            // --------------------------------------
             if (string.IsNullOrEmpty(name))
             {
-                var parts = Utilities.GetFromMonitor<Inventory.Parts>("select=Id,PartNumber,ExtraDescription", filter);
+                var parts = Utilities.GetFromMonitor<Inventory.Parts>("select=Id,PartNumber,ExtraDescription", filter,                    "orderby=ExtraDescription");
+
                 var properties = typeof(Inventory.Parts).GetProperty(property);
+
                 foreach (var part in parts)
                 {
                     var value = properties?.GetValue(part)?.ToString();
                     if (!string.IsNullOrEmpty(value) && !items.Contains(value))
                         items.Add(value);
                 }
-                sw.Stop();
-                MessageBox.Show($"Tid = {sw.ElapsedMilliseconds} \n" +
-                                $"Antal MonitorFrågor = {Utilities.CounterMonitorRequests}. \n" +
-                                $"Antal inloggning Monitor = {Login_Monitor.TotalLoginAttemps}");
-                return;
             }
+
+            // --------------------------------------
+            // FALL 2: ExtraFields används
+            // --------------------------------------
             else
             {
-                var parts = Utilities.GetFromMonitor<Inventory.Parts>("select=Id,PartNumber,ExtraDescription,ExtraFields.Identifier,ExtraFields.StringValue,ExtraFields.IntegerValue,ExtraFields.DecimalValue", "expand=ExtraFields", filter);
+                var parts = Utilities.GetFromMonitor<Inventory.Parts>(
+                    "select=Id,PartNumber,ExtraDescription,ExtraFields.Identifier,ExtraFields.StringValue,ExtraFields.IntegerValue,ExtraFields.DecimalValue",
+                    "expand=ExtraFields",
+                    filter);
+
                 var identifier = Utilities.GetOneFromMonitor<Common.ExtraFieldTemplates>($"filter=Name Eq'{name}'");
                 var secondaryIdentifier = Utilities.GetOneFromMonitor<Common.ExtraFieldTemplates>($"filter=Name Eq'{secondaryName}'");
-                var value = string.Empty;
+
+                var tempList = new List<(string PrimaryText, decimal? PrimaryNumber, string SecondaryText)>();
+
                 foreach (var part in parts)
                 {
+                    string primaryText = "";
+                    decimal? primaryNumber = null;
+                    string secondaryText = "";
+
+                    // ----- PRIMARY FIELD -----
                     foreach (var field in part.ExtraFields)
                     {
                         if (field.Identifier != identifier.Identifier)
                             continue;
-                        var stringValue = field.StringValue;
-                        if (!string.IsNullOrEmpty(stringValue))
-                            value = stringValue;
 
+                        // Decimal
                         if (field.DecimalValue.HasValue)
-                            value = field.DecimalValue.Value.ToString("0.00");
+                        {
+                            primaryNumber = field.DecimalValue.Value;
+                            primaryText = field.DecimalValue.Value.ToString("0.00");
+                            break;
+                        }
 
-                        var intValue = field.IntegerValue?.ToString();
-                        if (!string.IsNullOrEmpty(intValue))
-                            value = intValue;
+                        // Integer
+                        if (field.IntegerValue.HasValue)
+                        {
+                            primaryNumber = field.IntegerValue.Value;
+                            primaryText = field.IntegerValue.Value.ToString();
+                            break;
+                        }
 
-                        
+                        // String
+                        if (!string.IsNullOrEmpty(field.StringValue))
+                        {
+                            primaryText = field.StringValue;
+
+                            // Försök hitta tal i stringen
+                            var m = System.Text.RegularExpressions.Regex.Match(primaryText, @"-?\d+([.,]\d+)?");
+                            if (m.Success)
+                            {
+                                var numStr = m.Value.Replace('.', ',');
+                                if (decimal.TryParse(numStr, out var parsed))
+                                    primaryNumber = parsed;
+                            }
+                        }
                     }
 
+                    // ----- SECONDARY FIELD -----
                     if (secondaryIdentifier != null)
                     {
                         foreach (var field in part.ExtraFields)
                         {
                             if (field.Identifier != secondaryIdentifier.Identifier)
                                 continue;
-                            var stringValue = field.StringValue;
-                            if (!string.IsNullOrEmpty(stringValue))
-                                value = value + " : " + stringValue;
+
+                            if (!string.IsNullOrEmpty(field.StringValue))
+                            {
+                                secondaryText = field.StringValue;
+                                break;
+                            }
 
                             if (field.DecimalValue.HasValue)
-                                value = value + " : " + field.DecimalValue.Value.ToString("0.0");
+                            {
+                                secondaryText = field.DecimalValue.Value.ToString("0.0");
+                                break;
+                            }
 
-                            var intValue = field.IntegerValue?.ToString();
-                            if (!string.IsNullOrEmpty(intValue))
-                                value = value + " : " + intValue;
-
+                            if (field.IntegerValue.HasValue)
+                            {
+                                secondaryText = field.IntegerValue.Value.ToString();
+                                break;
+                            }
                         }
                     }
-                    items.Add(value);
+
+                    tempList.Add((primaryText, primaryNumber, secondaryText));
+                }
+
+                // --------- SORTERING ---------
+                var ordered = tempList
+                    .OrderBy(x => x.PrimaryNumber.HasValue ? 0 : 1) // först där PrimaryNumber finns
+                    .ThenBy(x => x.PrimaryNumber)                  // sortera numeriskt
+                    .ThenBy(x => x.PrimaryText, StringComparer.CurrentCulture) // sedan alfabetiskt
+                    .ToList();
+
+                // Bygg resultat
+                foreach (var entry in ordered)
+                {
+                    string finalText = entry.SecondaryText == ""
+                        ? entry.PrimaryText
+                        : $"{entry.PrimaryText} : {entry.SecondaryText}";
+
+                    if (!string.IsNullOrEmpty(finalText) && !items.Contains(finalText))
+                        items.Add(finalText);
                 }
             }
 
-            ////foreach (var part in parts)
-            ////{
-            ////    // Hämta ExtraFields asynkront
-            ////    var value = string.Empty;
+            // Lägg till "N/A" sist
+            items.Add("N/A");
 
-
-            ////    var idNr = Utilities.GetOneFromMonitor<Common.ExtraFields>("select=StringValue,DecimalValue,IntegerValue", $"filter=ParentId eq'{part.Id}' AND Identifier eq'{identifier.Identifier}'");
-
-            ////    if (idNr == null)
-            ////        continue;
-
-
-            ////    var stringValue = idNr.StringValue;
-            ////    if (!string.IsNullOrEmpty(stringValue))
-            ////        value = stringValue;
-
-            ////    if (idNr.DecimalValue.HasValue)
-            ////        value = idNr.DecimalValue.Value.ToString("0.00");
-
-            ////    var intValue = idNr.IntegerValue?.ToString();
-            ////    if (!string.IsNullOrEmpty(intValue))
-            ////        value = intValue;
-
-            ////    if (secondaryName != null && IsItemsMultipleColumns)
-            ////    {
-            ////        var secondaryIdentifier = Utilities.GetOneFromMonitor<Common.ExtraFieldTemplates>($"filter=Name Eq'{secondaryName}'");
-            ////        var secondaryIdNr = Utilities.GetOneFromMonitor<Common.ExtraFields>("select=StringValue,DecimalValue,IntegerValue", $"filter=ParentId eq'{part.Id}' AND Identifier eq'{secondaryIdentifier.Identifier}'");
-            ////        if (secondaryIdNr != null)
-            ////        {
-            ////            stringValue = secondaryIdNr.StringValue;
-            ////            if (!string.IsNullOrEmpty(stringValue))
-            ////                value = value + " : " + stringValue;
-
-            ////            if (secondaryIdNr.DecimalValue.HasValue)
-            ////                value = value + " : " + secondaryIdNr.DecimalValue.Value.ToString("0.0");
-
-            ////            intValue = secondaryIdNr.IntegerValue?.ToString();
-            ////            if (!string.IsNullOrEmpty(intValue))
-            ////                value = value + " : " + intValue;
-            ////        }
-            ////    }
-            ////    if (!string.IsNullOrEmpty(value) && addedSet.Add(value))
-            ////    {
-            ////        var firstPart = value.Split(':')[0].Trim();
-
-            ////        if (!decimal.TryParse(firstPart, out var parsed))
-            ////            parsed = decimal.MaxValue;
-
-            ////        tempList.Add((parsed, value));
-            ////    }
-
-            ////}
-            ////items.Clear();
-
-           
-        items.Add("N/A");
-
-           
             sw.Stop();
-            MessageBox.Show($"Tid = {sw.ElapsedMilliseconds} \n" +
-                            $"Antal MonitorFrågor = {Utilities.CounterMonitorRequests}. \n" +
-                            $"Antal inloggning Monitor = {Login_Monitor.TotalLoginAttemps}");
+            if (sw.ElapsedMilliseconds > 5000)
+            {
+                MessageBox.Show(
+                    $"Tid = {sw.ElapsedMilliseconds} \n" +
+                    $"Antal MonitorFrågor = {Utilities.CounterMonitorRequests}. \n" +
+                    $"Antal inloggning Monitor = {Login_Monitor.TotalLoginAttemps}");
+            }
         }
+
 
 
 

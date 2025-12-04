@@ -1,5 +1,6 @@
-﻿using System.Diagnostics;
-using DigitalProductionProgram.Monitor.GET;
+﻿using DigitalProductionProgram.Monitor.GET;
+using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace DigitalProductionProgram.Monitor.Services
 {
@@ -219,8 +220,113 @@ namespace DigitalProductionProgram.Monitor.Services
         //    //}
         //}
 
+        //public static async Task Add_Equipment(List<string> items, Type tableType, string partCode, string? name, string? property, string? filterCodeText, int dataType, bool IsItemsMultipleColumns, string? secondaryName = null, string? secondaryCodeText = null)
+        //{
+        //    //UTAN EXPAND
+        //    Stopwatch sw = new Stopwatch();
+        //    sw.Start();
+        //    Login_Monitor.TotalLoginAttemps = 0;
+        //    Utilities.CounterMonitorRequests = 0;
+        //    // Hämta PartCodeId asynkront
+        //    var partCodeObj = Utilities.GetOneFromMonitor<Inventory.PartCodes>($"filter=Description Eq'{partCode}'");
+        //    var partCodeId = partCodeObj?.Id ?? 0;
+
+        //    // Hämta parts asynkront
+        //    string filter = $"filter= IsNull(BlockedById)";
+        //    filter += string.IsNullOrEmpty(filterCodeText) ? $"AND PartCodeId Eq'{partCodeId}'" : $"AND PartCodeId Eq'{partCodeId}' AND ExtraDescription Eq'{filterCodeText}'";
+
+        //    var parts = Utilities.GetFromMonitor<Inventory.Parts>("select=Id,PartNumber,ExtraDescription,ExtraFields.StringValue,ExtraFields.IntegerValue,ExtraFields.DecimalValue", filter);
+
+        //    if (string.IsNullOrEmpty(name))
+        //    {
+        //        var properties = typeof(Inventory.Parts).GetProperty(property);
+        //        foreach (var part in parts)
+        //        {
+        //            var value = properties?.GetValue(part)?.ToString();
+        //            if (!string.IsNullOrEmpty(value) && !items.Contains(value))
+        //                items.Add(value);
+        //        }
+        //        sw.Stop();
+        //        MessageBox.Show($"Tid = {sw.ElapsedMilliseconds} \n" +
+        //                        $"Antal MonitorFrågor = {Utilities.CounterMonitorRequests}. \n" +
+        //                        $"Antal inloggning Monitor = {Login_Monitor.TotalLoginAttemps}");
+        //        return;
+        //    }
+
+        //    if (parts == null)
+        //        return;
+
+        //    var tempList = new List<(decimal? SortValue, string DisplayValue)>();
+        //    var addedSet = new HashSet<string>(); // För att undvika dubbletter
+        //    foreach (var part in parts)
+        //    {
+        //        // Hämta ExtraFields asynkront
+        //        var value = string.Empty;
+        //        var identifier = Utilities.GetOneFromMonitor<Common.ExtraFieldTemplates>($"filter=Name Eq'{name}'");
+
+        //        var idNr = Utilities.GetOneFromMonitor<Common.ExtraFields>("select=StringValue,DecimalValue,IntegerValue", $"filter=ParentId eq'{part.Id}' AND Identifier eq'{identifier.Identifier}'");
+
+        //        if (idNr == null)
+        //            continue;
+
+
+        //        var stringValue = idNr.StringValue;
+        //        if (!string.IsNullOrEmpty(stringValue))
+        //            value = stringValue;
+
+        //        if (idNr.DecimalValue.HasValue)
+        //            value = idNr.DecimalValue.Value.ToString("0.00");
+
+        //        var intValue = idNr.IntegerValue?.ToString();
+        //        if (!string.IsNullOrEmpty(intValue))
+        //            value = intValue;
+
+        //        if (secondaryName != null && IsItemsMultipleColumns)
+        //        {
+        //            var secondaryIdentifier = Utilities.GetOneFromMonitor<Common.ExtraFieldTemplates>($"filter=Name Eq'{secondaryName}'");
+        //            var secondaryIdNr = Utilities.GetOneFromMonitor<Common.ExtraFields>("select=StringValue,DecimalValue,IntegerValue", $"filter=ParentId eq'{part.Id}' AND Identifier eq'{secondaryIdentifier.Identifier}'");
+        //            if (secondaryIdNr != null)
+        //            {
+        //                stringValue = secondaryIdNr.StringValue;
+        //                if (!string.IsNullOrEmpty(stringValue))
+        //                    value = value + " : " + stringValue;
+
+        //                if (secondaryIdNr.DecimalValue.HasValue)
+        //                    value = value + " : " + secondaryIdNr.DecimalValue.Value.ToString("0.0");
+
+        //                intValue = secondaryIdNr.IntegerValue?.ToString();
+        //                if (!string.IsNullOrEmpty(intValue))
+        //                    value = value + " : " + intValue;
+        //            }
+        //        }
+        //        if (!string.IsNullOrEmpty(value) && addedSet.Add(value))
+        //        {
+        //            var firstPart = value.Split(':')[0].Trim();
+
+        //            if (!decimal.TryParse(firstPart, out var parsed))
+        //                parsed = decimal.MaxValue;
+
+        //            tempList.Add((parsed, value));
+        //        }
+
+        //    }
+        //    items.Clear();
+
+        //    // Om du vill att N/A alltid ska vara först
+        //    items.Add("N/A");
+
+        //    foreach (var entry in tempList.OrderBy(x => x.SortValue))
+        //    {
+        //        items.Add(entry.DisplayValue);
+        //    }
+        //    sw.Stop();
+        //    MessageBox.Show($"Tid = {sw.ElapsedMilliseconds} \n" +
+        //                    $"Antal MonitorFrågor = {Utilities.CounterMonitorRequests}. \n" +
+        //                    $"Antal inloggning Monitor = {Login_Monitor.TotalLoginAttemps}");
+        //}
         public static async Task Add_Equipment(List<string> items, Type tableType, string partCode, string? name, string? property, string? filterCodeText, int dataType, bool IsItemsMultipleColumns, string? secondaryName = null, string? secondaryCodeText = null)
         {
+            //MED EXPAND
             Stopwatch sw = new Stopwatch();
             sw.Start();
             Login_Monitor.TotalLoginAttemps = 0;
@@ -233,10 +339,10 @@ namespace DigitalProductionProgram.Monitor.Services
             string filter = $"filter= IsNull(BlockedById)";
             filter += string.IsNullOrEmpty(filterCodeText) ? $"AND PartCodeId Eq'{partCodeId}'" : $"AND PartCodeId Eq'{partCodeId}' AND ExtraDescription Eq'{filterCodeText}'";
 
-            var parts = Utilities.GetFromMonitor<Inventory.Parts>("select=Id,PartNumber,ExtraDescription", filter);
 
             if (string.IsNullOrEmpty(name))
             {
+                var parts = Utilities.GetFromMonitor<Inventory.Parts>("select=Id,PartNumber,ExtraDescription", filter);
                 var properties = typeof(Inventory.Parts).GetProperty(property);
                 foreach (var part in parts)
                 {
@@ -250,79 +356,118 @@ namespace DigitalProductionProgram.Monitor.Services
                                 $"Antal inloggning Monitor = {Login_Monitor.TotalLoginAttemps}");
                 return;
             }
-
-            if (parts == null)
-                return;
-
-            var tempList = new List<(decimal? SortValue, string DisplayValue)>();
-            var addedSet = new HashSet<string>(); // För att undvika dubbletter
-            foreach (var part in parts)
+            else
             {
-                // Hämta ExtraFields asynkront
-                var value = string.Empty;
+                var parts = Utilities.GetFromMonitor<Inventory.Parts>("select=Id,PartNumber,ExtraDescription,ExtraFields.Identifier,ExtraFields.StringValue,ExtraFields.IntegerValue,ExtraFields.DecimalValue", "expand=ExtraFields", filter);
                 var identifier = Utilities.GetOneFromMonitor<Common.ExtraFieldTemplates>($"filter=Name Eq'{name}'");
-
-                var idNr = Utilities.GetOneFromMonitor<Common.ExtraFields>("select=StringValue,DecimalValue,IntegerValue", $"filter=ParentId eq'{part.Id}' AND Identifier eq'{identifier.Identifier}'");
-
-                if (idNr == null)
-                    continue;
-
-                
-                var stringValue = idNr.StringValue;
-                if (!string.IsNullOrEmpty(stringValue))
-                    value = stringValue;
-
-                if (idNr.DecimalValue.HasValue)
-                    value = idNr.DecimalValue.Value.ToString("0.00");
-
-                var intValue = idNr.IntegerValue?.ToString();
-                if (!string.IsNullOrEmpty(intValue))
-                    value = intValue;
-
-                if (secondaryName != null && IsItemsMultipleColumns)
+                var secondaryIdentifier = Utilities.GetOneFromMonitor<Common.ExtraFieldTemplates>($"filter=Name Eq'{secondaryName}'");
+                var value = string.Empty;
+                foreach (var part in parts)
                 {
-                    var secondaryIdentifier = Utilities.GetOneFromMonitor<Common.ExtraFieldTemplates>($"filter=Name Eq'{secondaryName}'");
-                    var secondaryIdNr = Utilities.GetOneFromMonitor<Common.ExtraFields>("select=StringValue,DecimalValue,IntegerValue", $"filter=ParentId eq'{part.Id}' AND Identifier eq'{secondaryIdentifier.Identifier}'");
-                    if (secondaryIdNr != null)
+                    foreach (var field in part.ExtraFields)
                     {
-                        stringValue = secondaryIdNr.StringValue;
+                        if (field.Identifier != identifier.Identifier)
+                            continue;
+                        var stringValue = field.StringValue;
                         if (!string.IsNullOrEmpty(stringValue))
-                            value = value + " : " + stringValue;
+                            value = stringValue;
 
-                        if (secondaryIdNr.DecimalValue.HasValue)
-                            value = value + " : " + secondaryIdNr.DecimalValue.Value.ToString("0.0");
+                        if (field.DecimalValue.HasValue)
+                            value = field.DecimalValue.Value.ToString("0.00");
 
-                        intValue = secondaryIdNr.IntegerValue?.ToString();
+                        var intValue = field.IntegerValue?.ToString();
                         if (!string.IsNullOrEmpty(intValue))
-                            value = value + " : " + intValue;
+                            value = intValue;
+
+                        
                     }
+
+                    if (secondaryIdentifier != null)
+                    {
+                        foreach (var field in part.ExtraFields)
+                        {
+                            if (field.Identifier != secondaryIdentifier.Identifier)
+                                continue;
+                            var stringValue = field.StringValue;
+                            if (!string.IsNullOrEmpty(stringValue))
+                                value = value + " : " + stringValue;
+
+                            if (field.DecimalValue.HasValue)
+                                value = value + " : " + field.DecimalValue.Value.ToString("0.0");
+
+                            var intValue = field.IntegerValue?.ToString();
+                            if (!string.IsNullOrEmpty(intValue))
+                                value = value + " : " + intValue;
+
+                        }
+                    }
+                    items.Add(value);
                 }
-                if (!string.IsNullOrEmpty(value) && addedSet.Add(value))
-                {
-                    var firstPart = value.Split(':')[0].Trim();
-
-                    if (!decimal.TryParse(firstPart, out var parsed))
-                        parsed = decimal.MaxValue;
-
-                    tempList.Add((parsed, value));
-                }
-
             }
-            items.Clear();
 
-            // Om du vill att N/A alltid ska vara först
-            items.Add("N/A");
+            ////foreach (var part in parts)
+            ////{
+            ////    // Hämta ExtraFields asynkront
+            ////    var value = string.Empty;
 
-            foreach (var entry in tempList.OrderBy(x => x.SortValue))
-            {
-                items.Add(entry.DisplayValue);
-            }
+
+            ////    var idNr = Utilities.GetOneFromMonitor<Common.ExtraFields>("select=StringValue,DecimalValue,IntegerValue", $"filter=ParentId eq'{part.Id}' AND Identifier eq'{identifier.Identifier}'");
+
+            ////    if (idNr == null)
+            ////        continue;
+
+
+            ////    var stringValue = idNr.StringValue;
+            ////    if (!string.IsNullOrEmpty(stringValue))
+            ////        value = stringValue;
+
+            ////    if (idNr.DecimalValue.HasValue)
+            ////        value = idNr.DecimalValue.Value.ToString("0.00");
+
+            ////    var intValue = idNr.IntegerValue?.ToString();
+            ////    if (!string.IsNullOrEmpty(intValue))
+            ////        value = intValue;
+
+            ////    if (secondaryName != null && IsItemsMultipleColumns)
+            ////    {
+            ////        var secondaryIdentifier = Utilities.GetOneFromMonitor<Common.ExtraFieldTemplates>($"filter=Name Eq'{secondaryName}'");
+            ////        var secondaryIdNr = Utilities.GetOneFromMonitor<Common.ExtraFields>("select=StringValue,DecimalValue,IntegerValue", $"filter=ParentId eq'{part.Id}' AND Identifier eq'{secondaryIdentifier.Identifier}'");
+            ////        if (secondaryIdNr != null)
+            ////        {
+            ////            stringValue = secondaryIdNr.StringValue;
+            ////            if (!string.IsNullOrEmpty(stringValue))
+            ////                value = value + " : " + stringValue;
+
+            ////            if (secondaryIdNr.DecimalValue.HasValue)
+            ////                value = value + " : " + secondaryIdNr.DecimalValue.Value.ToString("0.0");
+
+            ////            intValue = secondaryIdNr.IntegerValue?.ToString();
+            ////            if (!string.IsNullOrEmpty(intValue))
+            ////                value = value + " : " + intValue;
+            ////        }
+            ////    }
+            ////    if (!string.IsNullOrEmpty(value) && addedSet.Add(value))
+            ////    {
+            ////        var firstPart = value.Split(':')[0].Trim();
+
+            ////        if (!decimal.TryParse(firstPart, out var parsed))
+            ////            parsed = decimal.MaxValue;
+
+            ////        tempList.Add((parsed, value));
+            ////    }
+
+            ////}
+            ////items.Clear();
+
+           
+        items.Add("N/A");
+
+           
             sw.Stop();
             MessageBox.Show($"Tid = {sw.ElapsedMilliseconds} \n" +
                             $"Antal MonitorFrågor = {Utilities.CounterMonitorRequests}. \n" +
                             $"Antal inloggning Monitor = {Login_Monitor.TotalLoginAttemps}");
         }
-
 
 
 

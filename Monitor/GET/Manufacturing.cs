@@ -21,7 +21,7 @@ namespace DigitalProductionProgram.Monitor.GET
             public long Id { get; set; }
             public string? OrderNumber { get; set; }
             public long? CustomerId { get; set; }
-            public string Status { get; set; }
+            public int Status { get; set; }
             public string PartId { get; set; }
             public string Part { get; set; }
             public string StartDate { get; set; }
@@ -63,10 +63,11 @@ namespace DigitalProductionProgram.Monitor.GET
         internal class WorkCenters : DTO, ToolService.IHasId
         {
             public override string URL => "Manufacturing/WorkCenters";
+
             public long Id { get; set; }
             public string Number { get; set; }
             public string Description { get; set; }
-            public string DepartmentId { get; set; }
+            public long DepartmentId { get; set; }
         }
 
         internal class OperationRows : DTO

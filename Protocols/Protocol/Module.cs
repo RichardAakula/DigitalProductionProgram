@@ -797,11 +797,11 @@ namespace DigitalProductionProgram.Protocols.Protocol
 
             //DataGridViewCell[] cells = { dgv_Module.Rows[row].Cells[e.ColumnIndex] };
             var dgv_Row = dgv_Module.Rows[row];
-            List<string?>? items = new List<string?>();
+            List<string?>? items = [];
             dgv_Module.Rows[e.RowIndex].Cells[e.ColumnIndex].Selected = true;
             _ = int.TryParse(dgv_Module.Rows[row].Cells["col_ProtocolDescriptionID"].Value.ToString(), out var protocolDescriptionID);
-            _ =int.TryParse(dgv_Module.Rows[row].Cells["col_TemplateID"].Value.ToString(), out var templateID);
-            _ =int.TryParse(dgv_Module.Rows[row].Cells["col_DataType"].Value.ToString(), out var dataType);
+            _ = int.TryParse(dgv_Module.Rows[row].Cells["col_TemplateID"].Value.ToString(), out var templateID);
+            _ = int.TryParse(dgv_Module.Rows[row].Cells["col_DataType"].Value.ToString(), out var dataType);
 
             if (e.Button == MouseButtons.Right)
             {

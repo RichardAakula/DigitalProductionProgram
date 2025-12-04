@@ -198,6 +198,29 @@ namespace DigitalProductionProgram.Monitor
             string endpoint = $"api/v1/Common/ExtraFields?$filter=ParentId eq'{parentId}' AND Identifier eq'{identifier}'&$select=StringValue";
             return _client.GetOneFromMonitor<ExtraFields>(endpoint);
         }
+        public List<ExtraFields> GetExtraFields(string identifier, List<long> parentIds)
+        {
+            Utilities.CounterMonitorRequests++;
+
+            var allExtraFields = new List<ExtraFields>();
+            const int chunkSize = 200; // undvik för långa URL:er
+
+            for (int i = 0; i < parentIds.Count; i += chunkSize)
+            {
+                var chunk = parentIds.Skip(i).Take(chunkSize).ToList();
+                var filterParts = string.Join(" or ", chunk.Select(id => $"ParentId eq '{id}'"));
+                var filter = $"({filterParts}) and Identifier eq '{identifier}'";
+                var endpoint = $"api/v1/Inventory/ExtraFields?$filter={filter}";
+
+                var extraFieldsChunk = _client.GetListFromMonitor<List<ExtraFields>>(endpoint);
+                if (extraFieldsChunk != null)
+                    allExtraFields.AddRange(extraFieldsChunk);
+            }
+
+            return allExtraFields;
+        }
+
+
     }
 
 }

@@ -42,7 +42,7 @@ namespace DigitalProductionProgram.MainWindow
 
         public void Unlock_Menu()
         {
-           // Menu_Arkiv_ManageDatabase.Enabled = CheckAuthority.IsRoleAuthorized(CheckAuthority.TemplateAuthorities.ChangeDatabaseSettings, false);
+            // Menu_Arkiv_ManageDatabase.Enabled = CheckAuthority.IsRoleAuthorized(CheckAuthority.TemplateAuthorities.ChangeDatabaseSettings, false);
             Menu_Order_EditOrder.Enabled = CheckAuthority.IsRoleAuthorized(CheckAuthority.TemplateAuthorities.EditOrder, false);
             Menu_Order_DeleteOrder.Enabled = CheckAuthority.IsRoleAuthorized(CheckAuthority.TemplateAuthorities.DeleteOrder, false);
             Menu_Order_ReportProblemProductionSupport.Enabled = CheckAuthority.IsRoleAuthorized(CheckAuthority.TemplateAuthorities.ReportToProductionSupport, false);
@@ -1520,8 +1520,9 @@ ORDER BY OrderID DESC ";
 
         private void OldAPI_WithExpand_Click(object sender, EventArgs e)
         {
-
-            Monitor.Monitor.List_All_WithExpand();
+            List<string> list = Monitor.Monitor.List_All_WithExpand_OLDAPI();
+            foreach (var id in list)
+                Debug.WriteLine(id);
         }
 
         private void OldAPI_WithOutExpand_Click(object sender, EventArgs e)
@@ -1541,6 +1542,13 @@ ORDER BY OrderID DESC ";
         private void NewAPI_WithExpand_Click(object sender, EventArgs e)
         {
             List<string> list = Monitor.Monitor.List_All_WithExpand_NEWAPI();
+            foreach (var id in list)
+                Debug.WriteLine(id);
+        }
+
+        private void NewAPIOptimized_Click(object sender, EventArgs e)
+        {
+            List<string> list = Monitor.Monitor.List_All_Tools_Optimized();
             foreach (var id in list)
                 Debug.WriteLine(id);
         }

@@ -1002,34 +1002,13 @@ namespace DigitalProductionProgram.Monitor
         }
 
 
-        //public static List<string> List_All_Tools()
-        //{
-        //    // var list = new List<Equipment.Equipment.Tool>();
-        //    var list = new List<string>();
-        //    var sw = new Stopwatch();
-        //    sw.Start();
+      
 
-        //    var partCodes = Utilities.GetFromMonitor<Inventory.PartCodes>($"filter=Alias Eq'TOOLS'");
 
-        //    foreach (var partCode in partCodes)
-        //    {
-        //        var test = partCode.Alias;
-        //        var test2 = partCode.Description;
-        //        var parts = Utilities.GetFromMonitor<Inventory.Parts>($"filter=PartCodeId Eq'{partCode.Id}'");
 
-        //        foreach (var part in parts)
-        //        {
-        //            var idNr = Utilities.GetOneFromMonitor<Common.ExtraFields>($"filter=ParentId Eq'{part.Id}' AND Identifier Eq'P119'");
-        //            if (idNr != null)
-        //                list.Add(idNr.StringValue);
 
-        //        }
-        //    }
-        //    sw.Stop();
-        //    MessageBox.Show($"Antal verktyg: {list.Count}\nTid för hämtning: {sw.ElapsedMilliseconds} ms");
 
-        //    return list;
-        //}
+
         public static List<string> List_All_Tools_WithOutExpand_OLDAPI()
         {
             var list = new List<string>();
@@ -1060,7 +1039,36 @@ namespace DigitalProductionProgram.Monitor
 
             return list;
         }
+        public static List<string> List_All_WithExpand_OLDAPI()
+        {
+            var list = new List<string>();
+            var sw = new Stopwatch();
+            sw.Start();
+            Utilities.CounterMonitorRequests = 0;
+            // Hämta partCodes i bakgrundstråd
+            var partCodes = Task.Run(() =>
+                Utilities.GetFromMonitor<Inventory.PartCodes>($"filter=Description  eq'DIES'")).Result;
 
+            foreach (var partCode in partCodes)
+            {
+                var parts = Task.Run(() =>
+                    Utilities.GetFromMonitor<Inventory.Parts>($"filter=PartCodeId eq'{partCode.Id}' AND ExtraDescription eq'Munstycken TERMO'", "select=Id,PartNumber,Description,Alias,ExtraDescription,ExtraFields.Identifier,ExtraFields.StringValue", "expand=ExtraFields")).Result; // AND ExtraDescription eq'Kanyler FEP' används om vi testar med Kanyler
+
+                foreach (var part in parts)
+                {
+                    foreach (var field in part.ExtraFields)
+                    {
+                        if (field?.Identifier == "T2" && !string.IsNullOrEmpty(field.StringValue))
+                            list.Add(field.StringValue);
+                    }
+
+                }
+            }
+
+            sw.Stop();
+            MessageBox.Show($"Med Expand: Antal verktyg: {list.Count}\nTid för hämtning: {sw.ElapsedMilliseconds} ms. MonitorRequests = {Utilities.CounterMonitorRequests}");
+            return list;
+        }
         public static List<string> List_All_Tools_WithOutExpand_NEWAPI()
         {
             var list = new List<string>();
@@ -1110,36 +1118,71 @@ namespace DigitalProductionProgram.Monitor
             return list;
         }
 
-        public static void List_All_WithExpand()
+        public static List<string> List_All_Tools_Optimized()
         {
             var list = new List<string>();
             var sw = new Stopwatch();
             sw.Start();
             Utilities.CounterMonitorRequests = 0;
-            // Hämta partCodes i bakgrundstråd
-            var partCodes = Task.Run(() =>
-                Utilities.GetFromMonitor<Inventory.PartCodes>($"filter=Description  eq'DIES'")).Result;
+
+            // Skapa klient och ignorera SSL-fel i testmiljö
+            var client = new MonitorApiClient(
+                $"https://{Database.MonitorHost}:8001/sv/{Database.MonitorCompany}/",
+                ignoreSslErrors: true
+            );
+
+            // Logga in
+            var credentials = Database.LoadCredentials();
+            bool loginOk = client.Login(credentials.Username, credentials.Password, forceRelogin: true);
+            if (!loginOk)
+            {
+                MessageBox.Show("Inloggning misslyckades!");
+                return list;
+            }
+
+            var inventory = new InventoryService(client);
+
+            // 1️⃣ Hämta PartCodes (DIES)
+            var partCodes = inventory.GetPartCodes("DIES");
+
+            // 2️⃣ Hämta alla Parts för alla PartCodes
+            var allParts = new List<Parts>();
 
             foreach (var partCode in partCodes)
             {
-                var parts = Task.Run(() =>
-                    Utilities.GetFromMonitor<Inventory.Parts>($"filter=PartCodeId eq'{partCode.Id}' AND ExtraDescription eq'Munstycken TERMO'", "select=Id,PartNumber,Description,Alias,ExtraDescription", "expand=ExtraFields")).Result; // AND ExtraDescription eq'Kanyler FEP' används om vi testar med Kanyler
+                var parts = inventory.GetParts(partCode.Id, "Munstycken Termo");
+                allParts.AddRange(parts);
+            }
 
-                foreach (var part in parts)
-                {
-                    foreach (var field in part.ExtraFields)
-                    {
-                        if (field?.Identifier == "T2" && !string.IsNullOrEmpty(field.StringValue))
-                            list.Add(field.StringValue);
-                    }
+            if (allParts.Count == 0)
+            {
+                MessageBox.Show("Inga parts hittades!");
+                return list;
+            }
 
-                }
+            // 3️⃣ Samla ihop alla PartId i en lista
+            var partIds = allParts
+                .Select(p => p.Id)
+                .Distinct()
+                .ToList();
+
+            // 4️⃣ Hämta alla ExtraFields (T2) i ett enda API-call
+            var extraFields = inventory.GetExtraFields("T2", partIds);
+
+            // 5️⃣ Filtrera ut de värden vi vill ha
+            foreach (var xf in extraFields)
+            {
+                if (!string.IsNullOrEmpty(xf.StringValue))
+                    list.Add(xf.StringValue);
             }
 
             sw.Stop();
-                MessageBox.Show($"Med Expand: Antal verktyg: {list.Count}\nTid för hämtning: {sw.ElapsedMilliseconds} ms. MonitorRequests = {Utilities.CounterMonitorRequests}");
-
+            MessageBox.Show($"Optimerat:\nAntal verktyg: {list.Count}\nTid: {sw.ElapsedMilliseconds} ms\nMonitorRequests = {Utilities.CounterMonitorRequests}");
+            return list;
         }
+
+
+        
 
         public static List<string> List_All_WithExpand_NEWAPI()
         {

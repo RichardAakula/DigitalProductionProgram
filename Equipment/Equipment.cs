@@ -10,7 +10,7 @@ using DigitalProductionProgram.User;
 
 namespace DigitalProductionProgram.Equipment
 {
-    internal class Equipment
+    internal abstract class Equipment
     {
         public static string? HS_Machine { get; set; }
 

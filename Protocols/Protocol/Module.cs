@@ -643,6 +643,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                 oven = SinteringOven.Oven(dgv_Module.Columns[e.ColumnIndex].HeaderText);
             int.TryParse(dgv_Module.Rows[row].Cells["col_ProtocolDescriptionID"].Value.ToString(), out var protocolDescriptionID);
 
+
             bool.TryParse(dgv_Row.Cells["col_IsValueCritical"].Value.ToString(), out var IsValueCritical);
 
             var IsValidated = false;

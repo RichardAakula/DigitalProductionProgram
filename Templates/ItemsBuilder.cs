@@ -19,8 +19,8 @@ namespace DigitalProductionProgram.Templates
     public partial class ItemsBuilder : Form
     {
         public enum ListType { None, MeasureProtocol, Protocol, Processcard }
-        private ListType TypeOfList;
-        private readonly string listType;
+        public ListType TypeOfList;
+        private string listType;
         private readonly int TemplateID;
         private static int ItemsFieldId;
         private static List<string> ListCodetext = new();

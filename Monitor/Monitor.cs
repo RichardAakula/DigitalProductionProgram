@@ -991,7 +991,7 @@ namespace DigitalProductionProgram.Monitor
 
         public static async Task<List<Common.ExtraFieldTemplates>> Get_PropertyList(bool clone = false)
         {
-            var fieldGroup = Utilities.GetOneFromMonitor<Common.ExtraFieldGroups>("filter=Name eq'Variables'");
+            var fieldGroup = Utilities.GetOneFromMonitor<Common.ExtraFieldGroups>("filter=Name eq'TOOLS'");
             var properties = Utilities.GetFromMonitor<Common.ExtraFieldTemplates>(
                 "select=Name",
                 $"filter=ParentId Eq'{fieldGroup?.Id}'",

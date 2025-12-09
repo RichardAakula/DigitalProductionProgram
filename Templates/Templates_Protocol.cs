@@ -955,9 +955,10 @@ namespace DigitalProductionProgram.Templates
                 if (col is DataGridViewButtonColumn buttonColumn)
                 {
                     buttonColumn.FlatStyle = FlatStyle.Flat;
-                    buttonColumn.DefaultCellStyle.BackColor = Color.FromArgb(200, 200, 200);
+                    buttonColumn.DefaultCellStyle.BackColor = Color.FromArgb(120, 120, 120);
                     buttonColumn.DefaultCellStyle.ForeColor = Color.Black;
-                    buttonColumn.Text = "Edit Lists";
+                    buttonColumn.Text = "Edit List";
+                    buttonColumn.UseColumnTextForButtonValue = true;
                 }
                 if (isLocked)
                     col.ReadOnly = true;
@@ -1117,9 +1118,7 @@ namespace DigitalProductionProgram.Templates
                         if (IsLoading) // din flagga från tidigare
                             return;
 
-                        var itemsBuilder = new ItemsBuilder(
-                            parameter: cellParameter?.Value?.ToString() ?? string.Empty,
-                            listType: ItemsBuilder.ListType.None, // eller nullable enum om du ändrat
+                        var itemsBuilder = new ItemsBuilder(parameter: cellParameter?.Value?.ToString() ?? string.Empty, listType: ItemsBuilder.ListType.None, // eller nullable enum om du ändrat
                             templateID: templateID,
                             listCodetext: list_CodeText
                         );
@@ -1131,16 +1130,21 @@ namespace DigitalProductionProgram.Templates
                         try
                         {
                             // Om du ska skriva tillbaka något i cellen, t.ex:
-                            dgv.Rows[rowIndex].Cells["col_EditLists"].Value = itemsBuilder.IsListActivated;
+                            switch (itemsBuilder.TypeOfList)
+                            {
+                                case ItemsBuilder.ListType.Processcard:
+                                    dgv.Rows[rowIndex].Cells["col_ProcesscardList"].Value = itemsBuilder.IsListActivated;
+                                    break;
+                                case ItemsBuilder.ListType.Protocol:
+                                    dgv.Rows[rowIndex].Cells["col_ProtocolList"].Value = itemsBuilder.IsListActivated;
+                                    break;
+
+                            }
                         }
                         finally
                         {
                             _suppressCellValueChanged = false;
                         }
-                        break;
-
-                    default:
-                        // andra kolumner - inget speciellt
                         break;
                 }
             }
@@ -1651,7 +1655,7 @@ namespace DigitalProductionProgram.Templates
                 TemplateControls.AddColumn(dgv, new DataGridViewCheckBoxColumn(), "Värde kritiskt?", "col_ValueCritical", 65);
                 TemplateControls.AddColumn(dgv, new DataGridViewCheckBoxColumn(), "Lista Processkort?", "col_ProcesscardList", 90, true, false, true);
                 TemplateControls.AddColumn(dgv, new DataGridViewCheckBoxColumn(), "Lista Körprotokoll?", "col_ProtocolList", 90, true, false, true);
-                TemplateControls.AddColumn(dgv, new DataGridViewButtonColumn(), "Editera Listor", "col_EditList", 45);
+                TemplateControls.AddColumn(dgv, new DataGridViewButtonColumn(), "Editera Listor", "col_EditList", 55);
                 TemplateControls.AddColumn(dgv, new DataGridViewCheckBoxColumn(), "Ok, skriva text?", "col_IsOkWriteOwnText", 70);
                 TemplateControls.AddColumn(dgv, new DataGridViewCheckBoxColumn(), "Obligatoriskt fält?", "col_Required", 85);
 

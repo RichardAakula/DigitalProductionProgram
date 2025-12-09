@@ -119,20 +119,7 @@ namespace DigitalProductionProgram.Monitor.Services
         }
 
 
-        //public static List<string?> List_Equipment<Table>(string columnName, string filter) where Table : DTO, IHasId, new()
-        //{
-        //    var equipment = Utilities.GetFromMonitor<Table>(filter);
-        //    var list = new List<string?>();
-        //    foreach (var item in equipment)
-        //    {
-        //        var prop = typeof(Table).GetProperty(columnName);
-        //        var value = prop?.GetValue(item) as string;
-        //        if (!list.Contains(value))
-        //            list.Add(value);
-        //    }
-
-        //    return list;
-        //}
+       
         public static List<string?> List_Equipment<Table>(string columnName, string filter) where Table : DTO, IHasId, new()
         {
             // Hämta equipment i bakgrundstråd
@@ -324,7 +311,8 @@ namespace DigitalProductionProgram.Monitor.Services
         //                    $"Antal MonitorFrågor = {Utilities.CounterMonitorRequests}. \n" +
         //                    $"Antal inloggning Monitor = {Login_Monitor.TotalLoginAttemps}");
         //}
-        public static async Task Add_Equipment(List<string> items, Type tableType, string partCode, string? name, string? property, string? filterCodeText, int dataType, bool IsItemsMultipleColumns, string? secondaryName = null, string? secondaryCodeText = null)
+
+        public static async Task Add_Equipment(List<string> items, Type tableType, string partCode, string? name, string? property, string? filterCodeText, string sortMode, int dataType, bool IsItemsMultipleColumns, string? secondaryName = null, string? secondaryCodeText = null)
         {
             // MED EXPAND
             Stopwatch sw = new Stopwatch();
@@ -407,14 +395,6 @@ namespace DigitalProductionProgram.Monitor.Services
                         {
                             primaryText = field.StringValue;
 
-                            // Försök hitta tal i stringen
-                            var m = System.Text.RegularExpressions.Regex.Match(primaryText, @"-?\d+([.,]\d+)?");
-                            if (m.Success)
-                            {
-                                var numStr = m.Value.Replace('.', ',');
-                                if (decimal.TryParse(numStr, out var parsed))
-                                    primaryNumber = parsed;
-                            }
                         }
                     }
 
@@ -450,11 +430,26 @@ namespace DigitalProductionProgram.Monitor.Services
                 }
 
                 // --------- SORTERING ---------
-                var ordered = tempList
-                    .OrderBy(x => x.PrimaryNumber.HasValue ? 0 : 1) // först där PrimaryNumber finns
-                    .ThenBy(x => x.PrimaryNumber)                  // sortera numeriskt
-                    .ThenBy(x => x.PrimaryText, StringComparer.CurrentCulture) // sedan alfabetiskt
-                    .ToList();
+                List<(string PrimaryText, decimal? PrimaryNumber, string SecondaryText)> ordered = null;
+
+                switch(sortMode)
+                {
+                    case "numerical":
+                    // Sortera numeriskt när möjligt
+                    ordered = tempList
+                        .OrderBy(x => x.PrimaryNumber.HasValue ? 0 : 1) // tal först
+                        .ThenBy(x => x.PrimaryNumber)                  // sortera tal
+                        .ThenBy(x => x.PrimaryText, StringComparer.CurrentCulture) // fallback text
+                        .ToList();
+                    break;
+                    case "alpha":
+                    // Ren alfabetisk sortering
+                    ordered = tempList
+                        .OrderBy(x => x.PrimaryText, StringComparer.CurrentCulture)
+                        .ToList();
+                    break;
+                }
+
 
                 // Bygg resultat
                 foreach (var entry in ordered)

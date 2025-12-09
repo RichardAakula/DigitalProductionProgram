@@ -389,6 +389,9 @@ namespace DigitalProductionProgram.Övrigt
             }
 
         }
+        
+        
+
         public static class Get_QuoteData
         {
             public static void TransferData()

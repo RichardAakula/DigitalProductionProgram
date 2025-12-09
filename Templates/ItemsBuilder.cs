@@ -18,7 +18,7 @@ namespace DigitalProductionProgram.Templates
 {
     public partial class ItemsBuilder : Form
     {
-        public enum ListType { MeasureProtocol, Protocol, Processcard }
+        public enum ListType { None, MeasureProtocol, Protocol, Processcard }
         private ListType TypeOfList;
         private readonly string listType;
         private readonly int TemplateID;
@@ -28,7 +28,7 @@ namespace DigitalProductionProgram.Templates
         public bool IsListActivated;
         public interface IItemsProvider
         {
-            void Initialize(DataGridView dgvItems, DataGridView dgvListItems, ComboBox cbPartCode, ComboBox cbName, ComboBox cbSecondaryName, ComboBox cbProperties, ComboBox cbFilterCodeText, ComboBox cbSecondaryCodeText, TextBox tbText, int templateID);
+            void Initialize(DataGridView dgvItems, DataGridView dgvListItems, ComboBox cbPartCode, ComboBox cbName, ComboBox cbSecondaryName, ComboBox cbProperties, ComboBox cbFilterCodeText, ComboBox cbSecondaryCodeText, ComboBox cbSortMode, TextBox tbText, int templateID);
             void Load();
             void SaveItem(string item);
         }
@@ -45,25 +45,35 @@ namespace DigitalProductionProgram.Templates
             this.listType = listType.ToString();
             TemplateID = templateID;
             ListCodetext = listCodetext;
-            switch (listType)
+
+            if (listType == ListType.None)
             {
-                case ListType.MeasureProtocol:
-                    this.Text = @"List for Measureprotocol";
-                    itemsProvider = new MeasureProtocolItems();
-                    break;
-                case ListType.Processcard:
-                    this.Text = @"List for Processcards";
-                    itemsProvider = new ProcesscardItems();
-                    break;
-                case ListType.Protocol:
-                    this.Text = @"List for Protocols";
-                    itemsProvider = new ProtocolItems();
-                    break;
+                InfoText.Question("Vill du editera listor för Processkort eller Körprotokoll?", CustomColors.InfoText_Color.Info, "Edit Lists", this, false, ["Processcard", "Protocol"]);
+                if (InfoText.answer == InfoText.Answer.Yes)
+                    listType = ListType.Processcard;
+                else
+                    listType = ListType.Protocol;
             }
+
+            switch (listType)
+                {
+                    case ListType.MeasureProtocol:
+                        this.Text = @"List for Measureprotocol";
+                        itemsProvider = new MeasureProtocolItems();
+                        break;
+                    case ListType.Processcard:
+                        this.Text = @"List for Processcards";
+                        itemsProvider = new ProcesscardItems();
+                        break;
+                    case ListType.Protocol:
+                        this.Text = @"List for Protocols";
+                        itemsProvider = new ProtocolItems();
+                        break;
+                }
 
 
             label_CodeText.Text = parameter;
-            itemsProvider?.Initialize(dgv_Items, dgv_ListItems, cb_PartCode, cb_Name,  cb_SecondaryName, cb_Properties, cb_FilterCodeText, cb_SecondaryCodeText, tb_AddNewItem,  templateID);
+            itemsProvider?.Initialize(dgv_Items, dgv_ListItems, cb_PartCode, cb_Name,  cb_SecondaryName, cb_Properties, cb_FilterCodeText, cb_SecondaryCodeText, cb_SortMode, tb_AddNewItem,  templateID);
             
             if (dgv_Items.Rows.Count > 0)
                 tab_Main.SelectedTab = tab_Main.TabPages[0];
@@ -156,7 +166,7 @@ namespace DigitalProductionProgram.Templates
             private TextBox? tb_Text;
             private int DescriptionID;
 
-            public void Initialize(DataGridView dgvItems, DataGridView dgvListItems, ComboBox cbPartCode, ComboBox cbName, ComboBox cbSecondaryName, ComboBox cbProperties, ComboBox cbFilterCodeText, ComboBox cbSecondaryCodeText, TextBox tbText, int templateID)
+            public void Initialize(DataGridView dgvItems, DataGridView dgvListItems, ComboBox cbPartCode, ComboBox cbName, ComboBox cbSecondaryName, ComboBox cbProperties, ComboBox cbFilterCodeText, ComboBox cbSecondaryCodeText, ComboBox cbSortMode, TextBox tbText, int templateID)
             {
                 dgv_Items = dgvItems;
                 dgv_ListItems = dgvListItems;
@@ -219,7 +229,8 @@ namespace DigitalProductionProgram.Templates
                 dgv_Items.Rows[^1].Cells["col_Items"].Value = $"• {item}";
                 Load();
             }
-            public void ListItems_CellMouseDown(object sender, DataGridViewCellMouseEventArgs e)
+
+            private void ListItems_CellMouseDown(object sender, DataGridViewCellMouseEventArgs e)
             {
                 if (e.RowIndex < 0)
                     return;
@@ -231,6 +242,7 @@ namespace DigitalProductionProgram.Templates
                 tb_Text.Text = string.Empty;
             }
         }
+
         public class ProtocolItems : IItemsProvider
         {
             private DataGridView? dgv_Items;
@@ -241,10 +253,11 @@ namespace DigitalProductionProgram.Templates
             private ComboBox? cb_Properties;
             private ComboBox? cb_FilterCodeText;
             private ComboBox? cb_SecondaryCodeText;
+            private ComboBox? cb_SortMode;
             private int TemplateID;
 
 
-            public void Initialize(DataGridView dgvItems, DataGridView dgvListItems, ComboBox cbPartCode, ComboBox cbName, ComboBox cbSecondaryName, ComboBox cbProperties, ComboBox cbFilterCodeText, ComboBox cbSecondaryCodeText, TextBox tbText,  int templateID)
+            public void Initialize(DataGridView dgvItems, DataGridView dgvListItems, ComboBox cbPartCode, ComboBox cbName, ComboBox cbSecondaryName, ComboBox cbProperties, ComboBox cbFilterCodeText, ComboBox cbSecondaryCodeText, ComboBox cbSortMode, TextBox tbText,  int templateID)
             {
                 dgv_Items = dgvItems;
                 dgv_ListItems = dgvListItems;
@@ -254,12 +267,13 @@ namespace DigitalProductionProgram.Templates
                 cb_Properties = cbProperties;
                 cb_FilterCodeText = cbFilterCodeText;
                 cb_SecondaryCodeText = cbSecondaryCodeText;
+                cb_SortMode = cbSortMode;
                 TemplateID = templateID;
             }
 
             public void Load()
             {
-                Load_ListItems(dgv_Items, dgv_ListItems, cb_PartCode, cb_Name, cb_SecondaryName, cb_Properties, cb_FilterCodeText, cb_SecondaryCodeText, "Protocol", TemplateID);
+                Load_ListItems(dgv_Items, dgv_ListItems, cb_PartCode, cb_Name, cb_SecondaryName, cb_Properties, cb_FilterCodeText, cb_SecondaryCodeText, cb_SortMode, "Protocol", TemplateID);
             }
             public void SaveItem(string item)
             {
@@ -276,9 +290,10 @@ namespace DigitalProductionProgram.Templates
             private ComboBox? cb_Properties;
             private ComboBox? cb_FilterCodeText;
             private ComboBox? cb_SecondaryCodeText;
+            private ComboBox? cb_SortMode;
             private int TemplateID;
 
-            public void Initialize(DataGridView dgvItems, DataGridView dgvListItems, ComboBox cbPartCode, ComboBox cbName, ComboBox cbSecondaryName, ComboBox cbProperties, ComboBox cbFilterCodeText, ComboBox cbSecondaryCodeText, TextBox tbText,  int templateID)
+            public void Initialize(DataGridView dgvItems, DataGridView dgvListItems, ComboBox cbPartCode, ComboBox cbName, ComboBox cbSecondaryName, ComboBox cbProperties, ComboBox cbFilterCodeText, ComboBox cbSecondaryCodeText, ComboBox cbSortMode, TextBox tbText,  int templateID)
             {
                 dgv_Items = dgvItems;
                 dgv_ListItems = dgvListItems;
@@ -288,12 +303,13 @@ namespace DigitalProductionProgram.Templates
                 cb_Properties = cbProperties;
                 cb_FilterCodeText = cbFilterCodeText;
                 cb_SecondaryCodeText = cbSecondaryCodeText;
+                cb_SortMode = cbSortMode;
                 TemplateID = templateID;
             }
 
             public void Load()
             {
-                Load_ListItems(dgv_Items, dgv_ListItems, cb_PartCode, cb_Name, cb_SecondaryName , cb_Properties, cb_FilterCodeText, cb_SecondaryCodeText, "Processcard", TemplateID);
+                Load_ListItems(dgv_Items, dgv_ListItems, cb_PartCode, cb_Name, cb_SecondaryName , cb_Properties, cb_FilterCodeText, cb_SecondaryCodeText, cb_SortMode, "Processcard", TemplateID);
             }
             public void SaveItem(string item)
             {
@@ -312,7 +328,7 @@ namespace DigitalProductionProgram.Templates
             var cells_CodeText = new List<string>();
             await using var con = new SqlConnection(Database.cs_Protocol);
             const string query = @"
-                SELECT items.Name as ItemName, PartCode, EndPoint, Property, fields.Name, SecondaryName, FilterCodeText, SecondaryCodeText
+                SELECT items.Name as ItemName, PartCode, EndPoint, Property, fields.Name, SecondaryName, FilterCodeText, SecondaryCodeText, SortMode
                 FROM List.ItemFields as fields
                     LEFT JOIN List.Items as items 
                         ON fields.ItemId = items.Id
@@ -330,6 +346,7 @@ namespace DigitalProductionProgram.Templates
             string? partCode = null;
             string? filterCodeText = null;
             string? secondaryCodeText = null;
+            string? sortmode = null;
 
             while (reader.Read())
             {
@@ -340,6 +357,7 @@ namespace DigitalProductionProgram.Templates
                 partCode = reader["PartCode"] as string ?? reader["PartCode"]?.ToString();
                 endPoint = reader["EndPoint"] as string ?? reader["EndPoint"]?.ToString();
                 property = reader["Property"] as string ?? reader["Property"]?.ToString();
+                sortmode = reader["SortMode"] as string ?? reader["SortMode"]?.ToString();
                 name = reader["Name"] as string ?? reader["Name"]?.ToString();
                 secondaryName = reader["SecondaryName"] as string ?? reader["SecondaryName"]?.ToString();
                 filterCodeText = reader["FilterCodeText"] as string ?? reader["FilterCodeText"]?.ToString();
@@ -357,12 +375,12 @@ namespace DigitalProductionProgram.Templates
             var typeName = endPoint != null ? $"DigitalProductionProgram.Monitor.GET.{endPoint}, DigitalProductionProgram" : null;
             var tableType = typeName != null ? Type.GetType(typeName) : null;
             if (tableType != null && partCode != null)
-                await Monitor.Services.ToolService.Add_Equipment(items, tableType, partCode, name, property, variable, dataType, isMultipleColumns, secondaryName, secondaryCodeText);
+                await Monitor.Services.ToolService.Add_Equipment(items, tableType, partCode, name, property, variable, sortmode, dataType, isMultipleColumns, secondaryName, secondaryCodeText);
 
             return (items, isMultipleColumns, cells_CodeText);
         }
 
-        private static void Load_ListItems(DataGridView dgv_Items, DataGridView dgv_ListItems, ComboBox cb_PartCode, ComboBox cb_Name, ComboBox cb_SecondaryName, ComboBox cb_Properties, ComboBox cb_FilterCodeText, ComboBox cb_SecondaryCodeText, string ListType, int TemplateID)
+        private static void Load_ListItems(DataGridView dgv_Items, DataGridView dgv_ListItems, ComboBox cb_PartCode, ComboBox cb_Name, ComboBox cb_SecondaryName, ComboBox cb_Properties, ComboBox cb_FilterCodeText, ComboBox cb_SecondaryCodeText, ComboBox cb_SortMode, string ListType, int TemplateID)
         {
             dgv_ListItems.Rows.Clear();
             dgv_Items.Rows.Clear();
@@ -395,15 +413,15 @@ namespace DigitalProductionProgram.Templates
 
             }
 
-            Load_MonitorList(cb_PartCode, cb_Name, cb_SecondaryName, cb_Properties, cb_FilterCodeText, cb_SecondaryCodeText, TemplateID, ListType);
+            Load_MonitorList(cb_PartCode, cb_Name, cb_SecondaryName, cb_Properties, cb_FilterCodeText, cb_SecondaryCodeText, cb_SortMode, TemplateID, ListType);
         }
 
-        private static void Load_MonitorList(ComboBox cb_PartCode, ComboBox cb_Name, ComboBox cb_SecondaryName, ComboBox cb_Property, ComboBox cb_FilterCodeText, ComboBox cb_SecondaryCodeText, int templateID, string listType)
+        private static void Load_MonitorList(ComboBox cb_PartCode, ComboBox cb_Name, ComboBox cb_SecondaryName, ComboBox cb_Property, ComboBox cb_FilterCodeText, ComboBox cb_SecondaryCodeText, ComboBox cb_SortMode, int templateID, string listType)
         {
             using var con = new SqlConnection(Database.cs_Protocol);
             const string query =
                 @"
-                SELECT ItemFieldsId, PartCode, Property, Name, SecondaryName, FilterCodeText, SecondaryCodeText
+                SELECT ItemFieldsId, PartCode, Property, Name, SecondaryName, FilterCodeText, SecondaryCodeText, SortMode
                 FROM List.ItemFields 
                 WHERE TemplateID = @templateID AND ListType = @listType
                 ORDER BY TemplateID, ItemOrder";
@@ -421,6 +439,7 @@ namespace DigitalProductionProgram.Templates
                 cb_Property.SelectedItem = reader["Property"].ToString();
                 cb_FilterCodeText.SelectedItem = reader["FilterCodeText"].ToString();
                 cb_SecondaryCodeText.SelectedItem = reader["SecondaryCodeText"].ToString();
+                cb_SortMode.SelectedItem = reader["SortMode"].ToString();
             }
         }
 
@@ -482,7 +501,6 @@ namespace DigitalProductionProgram.Templates
 
         private void Save_MonitorList(int templateID)
         {
-           
 
             if (dgv_Items.Rows.Count > 0)
                 return;
@@ -505,6 +523,7 @@ namespace DigitalProductionProgram.Templates
                         SecondaryName = @secondaryname,
                         FilterCodeText = @filtercodetext,
                         SecondaryCodeText = @secondarycodetext,
+                        SortMode =  @sortmode,
                         ModifiedBy = @username,
                         ModifiedDate = GETDATE()
                     WHERE ItemFieldsId = @id
@@ -512,7 +531,7 @@ namespace DigitalProductionProgram.Templates
                 ELSE
                 BEGIN
                     INSERT INTO List.ItemFields (TemplateID, PartCode, EndPoint, Property, Name, SecondaryName, FilterCodeText, SecondaryCodeText, ListType, CreatedBy)
-                    VALUES (@templateid, @partcode, @endpoint, @property, @name, @secondaryname, @filtercodetext, @secondarycodetext, @listtype, @username)
+                    VALUES (@templateid, @partcode, @endpoint, @property, @name, @secondaryname, @filtercodetext, @secondarycodetext, @sortmode, @listtype, @username)
                  END";
 
             using var cmd = new SqlCommand(query, con);
@@ -525,6 +544,7 @@ namespace DigitalProductionProgram.Templates
             SQL_Parameter.String(cmd.Parameters, "@secondaryname", cb_SecondaryName.SelectedValue?.ToString());
             SQL_Parameter.String(cmd.Parameters, "@filtercodetext", cb_FilterCodeText.SelectedItem?.ToString());
             SQL_Parameter.String(cmd.Parameters, "@secondarycodetext", cb_SecondaryCodeText.SelectedItem?.ToString());
+            SQL_Parameter.String(cmd.Parameters, "@sortmode", cb_SortMode.SelectedItem?.ToString());
             cmd.Parameters.AddWithValue("@listtype", listType);
             cmd.Parameters.AddWithValue("@username", User.Person.Name);
 

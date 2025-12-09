@@ -26,7 +26,7 @@ namespace DigitalProductionProgram.Templates
     {
         private static int totalConnectedProcesscardsToTemplate;
 
-        public static int TotalConnectedProcesscardsToTemplate
+        private static int TotalConnectedProcesscardsToTemplate
         {
             get
             {
@@ -43,7 +43,7 @@ namespace DigitalProductionProgram.Templates
             }
         }
         private static int totalConnectedOrdersToTemplate;
-        public static int TotalConnectedOrdersToTemplate
+        private static int TotalConnectedOrdersToTemplate
         {
             get
             {
@@ -61,11 +61,11 @@ namespace DigitalProductionProgram.Templates
         }
 
 
-        public static DataGridView dgv_ProtocolsActive_Main;
-        public static DataGridView dgv_Active_ModuleInfo;
-        public static Panel panel_Active;
-        public static Label label_Active_ModuleName;
-        public PreviewTemplate preview;
+        private static DataGridView dgv_ProtocolsActive_Main;
+        private static DataGridView dgv_Active_ModuleInfo;
+        private static Panel panel_Active;
+        private static Label label_Active_ModuleName;
+        private PreviewTemplate preview;
 
 
         public static List<string> List_TemplateNames = new List<string>();
@@ -790,7 +790,7 @@ namespace DigitalProductionProgram.Templates
 
 
 
-        public class CodeText
+        public abstract class CodeText
         {
             public static void LoadData(DataGridView dgv)
             {
@@ -858,7 +858,7 @@ namespace DigitalProductionProgram.Templates
             }
         }
 
-        public class TemplateControls
+        public abstract class TemplateControls
         {
             public static bool IsLoading = true;
             private static FlowLayoutPanel? flp;
@@ -875,7 +875,7 @@ namespace DigitalProductionProgram.Templates
                 return false;
             }
 
-            public TemplateControls(FlowLayoutPanel? flp_Main, PreviewTemplate preview)
+            protected TemplateControls(FlowLayoutPanel? flp_Main, PreviewTemplate preview)
             {
                 flp = flp_Main;
                 previewTemplate = preview;
@@ -926,6 +926,7 @@ namespace DigitalProductionProgram.Templates
                     dgv.RowsRemoved += RowsRemoved_dgv;
                     dgv.CurrentCellDirtyStateChanged += CurrentCellDirtyStateChanged;
                     dgv.CellValueChanged += Dgv_CellValueChanged;
+                    dgv.CellContentClick += Dgv_CellContentClick;
                     dgv.ColumnHeaderMouseClick += CopyFirstRow;
                     dgv.AllowDrop = true;
                     dgv.RowEnter += RowEnter_dgv;
@@ -936,7 +937,7 @@ namespace DigitalProductionProgram.Templates
                 dgv.CellValueChanged += Update_PreviewTemplate;
                 return dgv;
             }
-            public static void AddColumn(DataGridView dgv, DataGridViewColumn col, string headerText, string name, int width = 0, bool IsVisible = true, bool IsDataSource = false)
+            public static void AddColumn(DataGridView dgv, DataGridViewColumn col, string headerText, string name, int width = 0, bool IsVisible = true, bool IsDataSource = false, bool isLocked = false)
             {
                 col.HeaderText = headerText;
                 col.HeaderCell.Style.WrapMode = DataGridViewTriState.True;
@@ -951,6 +952,15 @@ namespace DigitalProductionProgram.Templates
                     comboBoxColumn.DisplayMember = "Name";
                     comboBoxColumn.ValueMember = "ID";
                 }
+                if (col is DataGridViewButtonColumn buttonColumn)
+                {
+                    buttonColumn.FlatStyle = FlatStyle.Flat;
+                    buttonColumn.DefaultCellStyle.BackColor = Color.FromArgb(200, 200, 200);
+                    buttonColumn.DefaultCellStyle.ForeColor = Color.Black;
+                    buttonColumn.Text = "Edit Lists";
+                }
+                if (isLocked)
+                    col.ReadOnly = true;
                 dgv.Columns.Add(col);
                 col.Visible = IsVisible;
             }
@@ -958,7 +968,6 @@ namespace DigitalProductionProgram.Templates
             {
                 if (e.ColumnIndex > dgv_ProtocolsActive_Main.Columns.Count - 4)
                     TemplateButtons.IsOkUpdateTemplate = false;
-
             }
 
             private static void RowsAdded_dgv(object? sender, DataGridViewRowsAddedEventArgs e)
@@ -1005,7 +1014,8 @@ namespace DigitalProductionProgram.Templates
                     row.Cells[e.ColumnIndex].Value = value;
 
             }
-            public static void Update_PreviewTemplate(object? sender, DataGridViewCellEventArgs e)
+
+            private static void Update_PreviewTemplate(object? sender, DataGridViewCellEventArgs e)
             {
                 if (flp is null || previewTemplate.IsDisposed)
                     return;
@@ -1022,68 +1032,119 @@ namespace DigitalProductionProgram.Templates
             private static bool _suppressCellValueChanged = false;
             private static void Dgv_CellValueChanged(object? sender, DataGridViewCellEventArgs e)
             {
-                if (_suppressCellValueChanged)
-                    return;
-                var dgv = (DataGridView)sender;
-                if (dgv is null)
-                    return;
-                var cellParameter = dgv.Rows[e.RowIndex].Cells["col_CodeText"];
-                int.TryParse(dgv.Rows[e.RowIndex].Cells["col_ProtocolDescriptionID"].Value.ToString(), out var descriptionID);
-                int.TryParse(dgv.Rows[e.RowIndex].Cells["col_TemplateID"].Value?.ToString(), out var templateID);
+                if (_suppressCellValueChanged) return;
 
-                if (e.RowIndex < 0 || e.ColumnIndex < 0)
-                    return;
-                List<string> list_CodeText = new List<string>();
-                foreach (DataGridViewRow row in dgv.Rows)
-                {
-                    // Hoppa över tomma rader eller new row
-                    if (row.IsNewRow)
-                        continue;
+                var dgv = sender as DataGridView;
+                if (dgv == null) return;
+                if (e.RowIndex < 0 || e.ColumnIndex < 0) return;
 
-                    var codeText = row.Cells["col_CodeText"].Value?.ToString();
-                    if (!string.IsNullOrEmpty(codeText))
-                        list_CodeText.Add(codeText);
-                }
+                _suppressCellValueChanged = true;
                 try
                 {
-                    switch (dgv.Columns[e.ColumnIndex].Name)
-                    {
-                        case "col_DataType":
-                            HandleDataTypeColumn(dgv, e.RowIndex);
-                            break;
-
-                        case "col_MIN":
-                        case "col_NOM":
-                        case "col_MAX":
-                            HandleCheckboxColumn();
-                            break;
-                        case "col_ProcesscardList":
-                            if (IsLoading)
-                                return;
-                            var itemsBuilder = new ItemsBuilder(cellParameter?.Value.ToString() ?? string.Empty, ItemsBuilder.ListType.Processcard, templateID, list_CodeText);
-                            itemsBuilder.ShowDialog();
-                            _suppressCellValueChanged = true;
-                            dgv.Rows[e.RowIndex].Cells["col_ProcesscardList"].Value = itemsBuilder.IsListActivated;
-                            break;
-                        case "col_ProtocolList":
-                            if (IsLoading)
-                                return;
-                            itemsBuilder = new ItemsBuilder(cellParameter?.Value.ToString() ?? string.Empty, ItemsBuilder.ListType.Protocol, templateID, list_CodeText);
-                            itemsBuilder.ShowDialog();
-                            _suppressCellValueChanged = true;
-                            dgv.Rows[e.RowIndex].Cells["col_ProtocolList"].Value = itemsBuilder.IsListActivated;
-                            break;
-                        default:
-                            // Handle other cases if needed
-                            break;
-                    }
+                    HandleCellChanged(dgv, e.RowIndex, e.ColumnIndex);
                 }
                 finally
                 {
                     _suppressCellValueChanged = false;
                 }
-
             }
+            private static void Dgv_CellContentClick(object? sender, DataGridViewCellEventArgs e)
+            {
+                if (_suppressCellValueChanged) return;
+
+                var dgv = sender as DataGridView;
+                if (dgv == null) return;
+                if (e.RowIndex < 0 || e.ColumnIndex < 0) return;
+
+                var colName = dgv.Columns[e.ColumnIndex].Name;
+
+                // Om det är en button-kolumn så triggare vi samma gemensamma handler direkt.
+                if (dgv.Columns[e.ColumnIndex] is DataGridViewButtonColumn)
+                {
+                    // Call general handler (simulate CellValueChanged-like call)
+                    _suppressCellValueChanged = true;
+                    try
+                    {
+                        HandleCellChanged(dgv, e.RowIndex, e.ColumnIndex);
+                    }
+                    finally
+                    {
+                        _suppressCellValueChanged = false;
+                    }
+                }
+                // annars låt övriga events sköta sig (t.ex. checkbox/text -> CellValueChanged)
+            }
+            private static void HandleCellChanged(DataGridView dgv, int rowIndex, int columnIndex)
+            {
+                // Hämta kol-namn tidigt
+                var colName = dgv.Columns[columnIndex].Name;
+
+                // Säkra gränser
+                if (rowIndex < 0 || columnIndex < 0) return;
+                if (rowIndex >= dgv.Rows.Count) return;
+
+                // Ta cellparameter (ex: col_CodeText)
+                var cellParameter = dgv.Rows[rowIndex].Cells["col_CodeText"];
+                // Försök parse description/template (säkert)
+                int.TryParse(dgv.Rows[rowIndex].Cells["col_ProtocolDescriptionID"].Value?.ToString(), out var descriptionID);
+                int.TryParse(dgv.Rows[rowIndex].Cells["col_TemplateID"].Value?.ToString(), out var templateID);
+
+                // Samla alla CodeText från grid (kan optimeras om du vill)
+                var list_CodeText = new List<string>();
+                foreach (DataGridViewRow row in dgv.Rows)
+                {
+                    if (row.IsNewRow) continue;
+                    var codeText = row.Cells["col_CodeText"].Value?.ToString();
+                    if (!string.IsNullOrEmpty(codeText))
+                        list_CodeText.Add(codeText);
+                }
+
+                // Hantera kolumn-switch
+                switch (colName)
+                {
+                    case "col_DataType":
+                        HandleDataTypeColumn(dgv, rowIndex);
+                        break;
+
+                    case "col_MIN":
+                    case "col_NOM":
+                    case "col_MAX":
+                        HandleCheckboxColumn();
+                        break;
+
+                    case "col_EditList":
+                        // col_EditLists är knapp i din grid
+                        if (IsLoading) // din flagga från tidigare
+                            return;
+
+                        var itemsBuilder = new ItemsBuilder(
+                            parameter: cellParameter?.Value?.ToString() ?? string.Empty,
+                            listType: ItemsBuilder.ListType.None, // eller nullable enum om du ändrat
+                            templateID: templateID,
+                            listCodetext: list_CodeText
+                        );
+
+                        itemsBuilder.ShowDialog();
+
+                        // Om ItemsBuilder ändrar en cell i grid så vill vi undertrycka event medan vi uppdaterar
+                        _suppressCellValueChanged = true;
+                        try
+                        {
+                            // Om du ska skriva tillbaka något i cellen, t.ex:
+                            dgv.Rows[rowIndex].Cells["col_EditLists"].Value = itemsBuilder.IsListActivated;
+                        }
+                        finally
+                        {
+                            _suppressCellValueChanged = false;
+                        }
+                        break;
+
+                    default:
+                        // andra kolumner - inget speciellt
+                        break;
+                }
+            }
+
             private static void HandleDataTypeColumn(DataGridView dgv, int rowIndex)
             {
                 var dataTypeID = (int)dgv.Rows[rowIndex].Cells["col_DataType"].Value;
@@ -1588,8 +1649,9 @@ namespace DigitalProductionProgram.Templates
                 TemplateControls.AddColumn(dgv, new DataGridViewTextBoxColumn(), "Decimaler", "col_Decimals", 65);
                 TemplateControls.AddColumn(dgv, new DataGridViewCheckBoxColumn(), "Används i Processkort?", "col_UsedInProcesscard", 90);
                 TemplateControls.AddColumn(dgv, new DataGridViewCheckBoxColumn(), "Värde kritiskt?", "col_ValueCritical", 65);
-                TemplateControls.AddColumn(dgv, new DataGridViewCheckBoxColumn(), "Lista Processkort?", "col_ProcesscardList", 90);
-                TemplateControls.AddColumn(dgv, new DataGridViewCheckBoxColumn(), "Lista Körprotokoll?", "col_ProtocolList", 90);
+                TemplateControls.AddColumn(dgv, new DataGridViewCheckBoxColumn(), "Lista Processkort?", "col_ProcesscardList", 90, true, false, true);
+                TemplateControls.AddColumn(dgv, new DataGridViewCheckBoxColumn(), "Lista Körprotokoll?", "col_ProtocolList", 90, true, false, true);
+                TemplateControls.AddColumn(dgv, new DataGridViewButtonColumn(), "Editera Listor", "col_EditList", 45);
                 TemplateControls.AddColumn(dgv, new DataGridViewCheckBoxColumn(), "Ok, skriva text?", "col_IsOkWriteOwnText", 70);
                 TemplateControls.AddColumn(dgv, new DataGridViewCheckBoxColumn(), "Obligatoriskt fält?", "col_Required", 85);
 

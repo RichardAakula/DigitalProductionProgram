@@ -123,84 +123,74 @@ namespace DigitalProductionProgram.Övrigt
         }
         public static void IsMachine_Ok(string text, string codetext, int protocolDescriptionID, DataGridViewCell cell, int uppstart, string? nomValue,  bool IsValueCritical, bool isMachineInRange)
         {
-            if (Person.Role == "Utveckling")
+            if (Person.Role == "Utveckling" || (cell != null && cell.ReadOnly))
                 return;
 
-            if (cell != null)
-                if (cell.ReadOnly)
-                    return;
+            var IsErrorAndValidated = false;       //Validerat Processkort
+            var IsErrorAndHistoricalData = false;  //Baserat På Historiska Data
+            bool IsReferenceOnly = false;             //Om fältet INTE är kritiskt
+            bool IsOk = true;                       //Om fältet är ok
 
-            var IsErrorAndValidated = false;
-            var IsErrorAndHistoricalData = false;
-            var IsOnlyWarning = false;
-            var IsOk = true;
+            var normNomValue = NormalizeString(nomValue);
+            var normText = NormalizeString(text);
 
-           // var nom = Processcard.Nom_TextValue(codetext, formtemplateid, machine);
-            if (nomValue != null)
+            if (!string.IsNullOrEmpty(normNomValue))
             {
+                bool match = false;
+
                 if (isMachineInRange)
                 {
-                    if (nomValue.Contains('-'))
+                    if (normNomValue.Contains('-'))
                     {
-                        //Om Maskinen kan vara mellan 2 olika tal. t.ex. K6-K9
-                        var NomValue = Regex.Replace(nomValue, "[^0-9.-]", "").Replace(" ", "");
-                        var TextValue = Regex.Replace(text, "[^0-9.-]", "");
-
-                        int.TryParse(NomValue.Substring(0, NomValue.IndexOf('-')), out var NomValue_Min);
-                        var length = NomValue.Length - NomValue.Substring(0, NomValue.IndexOf('-') + 1).Length;
-                        var startIndex = NomValue.IndexOf('-') + 1;
-
-                        int.TryParse(NomValue.Substring(startIndex, length), out var NomValue_Max);
-
-                        int.TryParse(TextValue, out var Value);
-
-                        // Om värdet inte är mellan NomValue_Min och NomValue_Max
-                        if (Enumerable.Range(NomValue_Min, NomValue_Max - NomValue_Min + 1).Contains(Value) == false)
+                        // Ex: K6-K9
+                        var numbers = Regex.Matches(normNomValue, @"\d+")
+                                           .Cast<Match>()
+                                           .Select(m => int.Parse(m.Value))
+                                           .ToList();
+                        if (numbers.Count >= 2 && int.TryParse(Regex.Replace(normText ?? "", @"[^\d]", ""), out int value))
                         {
-                            if (ProcesscardBasedOn.IsHistoricalData)
-                                IsErrorAndHistoricalData = true;
-                            if (ProcesscardBasedOn.IsValidated)
-                                IsErrorAndValidated = true;
-                            
-                            IsOk = false;
+                            match = value >= numbers[0] && value <= numbers[1];
                         }
                     }
-                    else if (nomValue.Contains(','))
+                    else if (normNomValue.Contains(','))
                     {
-                        //Om  Maskinen kan vara antingen ELLER. t.ex. E1, E2
-                        if (nomValue.Contains(text) == false)
-                        {
-                            IsOk = false;
-                            if (ProcesscardBasedOn.IsHistoricalData)
-                                IsErrorAndHistoricalData = true;
-                            if (ProcesscardBasedOn.IsValidated)
-                                IsErrorAndValidated = true;
-                        }
+                        // Ex: E1, E2
+                        var options = normNomValue.Split(',')
+                            .Select(s => s.Trim())
+                            .ToList();
+                        match = options.Any(opt => string.Equals(opt, normText, StringComparison.OrdinalIgnoreCase));
+                    }
+                    else
+                    {
+                        // Exakt match
+                        match = string.Equals(normNomValue, normText, StringComparison.OrdinalIgnoreCase);
                     }
                 }
                 else
                 {
-                    //Om Kragmaskin är exakt. t.ex. K6
-                    if (nomValue != text)
-                    {
-                        IsOk = false;
-                        if (ProcesscardBasedOn.IsHistoricalData)
-                            IsErrorAndHistoricalData = true;
-                        if (ProcesscardBasedOn.IsValidated)
-                            IsErrorAndValidated = true;
-                    }
+                    // Exakt match
+                    match = string.Equals(normNomValue, normText, StringComparison.OrdinalIgnoreCase);
                 }
 
-                if (IsValueCritical == false)
+                if (!match)//Nom och Value matchar INTE
+                {
+                    IsOk = false;
+                    if (ProcesscardBasedOn.IsHistoricalData)
+                        IsErrorAndHistoricalData = true;
+                    if (ProcesscardBasedOn.IsValidated)
+                        IsErrorAndValidated = true;
+                }
+
+                if (!IsValueCritical)//Om fältet INTE är kritiskt
                 {
                     IsErrorAndHistoricalData = false;
                     IsErrorAndValidated = false;
-                    IsOnlyWarning = true;
-                    IsOk = true;
+                    IsReferenceOnly = true;
+                    // IsOk = true;
                 }
             }
 
-            ChangeColor_dgvCell(codetext, protocolDescriptionID, cell, IsErrorAndValidated, IsErrorAndHistoricalData, IsOnlyWarning, IsOk, uppstart);
+            ChangeColor_dgvCell(codetext, protocolDescriptionID, cell, IsErrorAndValidated, IsErrorAndHistoricalData, IsReferenceOnly, IsOk, uppstart);
         }
         public static void IsHSPipe_Ok(string? text, string codetext, int protocolDescriptionID, string? nom, DataGridViewCell cell, int uppstart, bool isNomValueCritical)
         {

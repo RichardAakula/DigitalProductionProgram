@@ -126,7 +126,7 @@ namespace DigitalProductionProgram.MainWindow
         {
             var blackback = new BlackBackground("Initialising Digital Production Program.\nConnecting to Monitor and loading data from server, please wait.", 98, true)
             {
-                TopMost = true,
+                //TopMost = true,
                 WindowState = FormWindowState.Maximized,
                 
                 KeyPreview = true,
@@ -206,12 +206,9 @@ namespace DigitalProductionProgram.MainWindow
                 if (Settings.Settings.MeasuringComputerOnly)
                     Change_GUI_Mätdator();
 
-                //Nedanstående kod finns redan i public Main_Form
-                //await Main_FilterQuickOpen.Load_ListAsync(dgv_QuickOpen);
                 await Task.Run(() => RollingInformation.Change_Tips());
 
             }
-
             
            
             var processes = Process.GetProcessesByName("DigitalProductionProgram");

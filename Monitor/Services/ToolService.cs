@@ -311,7 +311,23 @@ namespace DigitalProductionProgram.Monitor.Services
         //                    $"Antal MonitorFrågor = {Utilities.CounterMonitorRequests}. \n" +
         //                    $"Antal inloggning Monitor = {Login_Monitor.TotalLoginAttemps}");
         //}
+        private static decimal? ExtractDecimal(string text)
+        {
+            if (string.IsNullOrWhiteSpace(text))
+                return null;
 
+            // Matcha tal som 2,50 eller 2.50 eller 2
+            var m = System.Text.RegularExpressions.Regex.Match(text, @"\d+([.,]\d+)?");
+
+            if (!m.Success)
+                return null;
+
+            var numStr = m.Value.Replace('.', ',');
+            if (decimal.TryParse(numStr, out var d))
+                return d;
+
+            return null;
+        }
         public static async Task Add_Equipment(List<string> items, Type tableType, string partCode, string? name, string? property, string? filterCodeText, string sortMode, int dataType, bool IsItemsMultipleColumns, string? secondaryName = null, string? secondaryCodeText = null)
         {
             // MED EXPAND
@@ -321,11 +337,11 @@ namespace DigitalProductionProgram.Monitor.Services
             Utilities.CounterMonitorRequests = 0;
 
             // Hämta PartCodeId
-            var partCodeObj = Utilities.GetOneFromMonitor<Inventory.PartCodes>($"filter=Description Eq'{partCode}'");
+            var partCodeObj = Utilities.GetOneFromMonitor<Inventory.PartCodes>($"filter=Description Eq'{partCode}'"); //10 ms
             var partCodeId = partCodeObj?.Id ?? 0;
 
             // Hämta parts
-            string filter = "filter= IsNull(BlockedById)";
+            string filter = "filter=IsNull(BlockedById) ";
             filter += string.IsNullOrEmpty(filterCodeText)
                 ? $"AND PartCodeId Eq'{partCodeId}'"
                 : $"AND PartCodeId Eq'{partCodeId}' AND ExtraDescription Eq'{filterCodeText}'";
@@ -335,7 +351,7 @@ namespace DigitalProductionProgram.Monitor.Services
             // --------------------------------------
             if (string.IsNullOrEmpty(name))
             {
-                var parts = Utilities.GetFromMonitor<Inventory.Parts>("select=Id,PartNumber,ExtraDescription", filter,"orderby=ExtraDescription");
+                var parts = Utilities.GetFromMonitor<Inventory.Parts>("select=ExtraDescription", filter, "orderby=ExtraDescription");//Id,PartNumber,
 
                 var properties = typeof(Inventory.Parts).GetProperty(property);
 
@@ -345,6 +361,7 @@ namespace DigitalProductionProgram.Monitor.Services
                     if (!string.IsNullOrEmpty(value) && !items.Contains(value))
                         items.Add(value);
                 }
+             
             }
 
             // --------------------------------------
@@ -352,17 +369,15 @@ namespace DigitalProductionProgram.Monitor.Services
             // --------------------------------------
             else
             {
-                var parts = Utilities.GetFromMonitor<Inventory.Parts>(
-                    "select=Id,PartNumber,ExtraDescription,ExtraFields.Identifier,ExtraFields.StringValue,ExtraFields.IntegerValue,ExtraFields.DecimalValue",
-                    "expand=ExtraFields",
-                    filter);
+               
+                var parts = Utilities.GetFromMonitor<Inventory.Parts>("select=ExtraDescription,ExtraFields.Identifier,ExtraFields.StringValue,ExtraFields.IntegerValue,ExtraFields.DecimalValue", "expand=ExtraFields", filter);    //2000-5000 ms
 
-                var identifier = Utilities.GetOneFromMonitor<Common.ExtraFieldTemplates>($"filter=Name Eq'{name}'");
-                var secondaryIdentifier = Utilities.GetOneFromMonitor<Common.ExtraFieldTemplates>($"filter=Name Eq'{secondaryName}'");
+                var identifier = Utilities.GetOneFromMonitor<Common.ExtraFieldTemplates>($"filter=Name Eq'{name}'");    //10ms
+                var secondaryIdentifier = Utilities.GetOneFromMonitor<Common.ExtraFieldTemplates>($"filter=Name Eq'{secondaryName}'");  //10ms
 
                 var tempList = new List<(string PrimaryText, decimal? PrimaryNumber, string SecondaryText)>();
-
-                foreach (var part in parts)
+                
+                foreach (var part in parts) //10ms
                 {
                     string primaryText = "";
                     decimal? primaryNumber = null;
@@ -392,10 +407,7 @@ namespace DigitalProductionProgram.Monitor.Services
 
                         // String
                         if (!string.IsNullOrEmpty(field.StringValue))
-                        {
                             primaryText = field.StringValue;
-
-                        }
                     }
 
                     // ----- SECONDARY FIELD -----
@@ -432,22 +444,23 @@ namespace DigitalProductionProgram.Monitor.Services
                 // --------- SORTERING ---------
                 List<(string PrimaryText, decimal? PrimaryNumber, string SecondaryText)> ordered = null;
 
-                switch(sortMode)
+                switch (sortMode)
                 {
                     case "numerical":
-                    // Sortera numeriskt när möjligt
-                    ordered = tempList
-                        .OrderBy(x => x.PrimaryNumber.HasValue ? 0 : 1) // tal först
-                        .ThenBy(x => x.PrimaryNumber)                  // sortera tal
-                        .ThenBy(x => x.PrimaryText, StringComparer.CurrentCulture) // fallback text
-                        .ToList();
-                    break;
+                        {
+                            ordered = tempList
+                                .OrderBy(x => ExtractDecimal(x.PrimaryText) == null ? 1 : 0)   // poster utan tal sist
+                                .ThenBy(x => ExtractDecimal(x.PrimaryText))                    // sortera på talet
+                                .ThenBy(x => x.PrimaryText, StringComparer.CurrentCulture)     // fallback för lika värden
+                                .ToList();
+                        }
+                        break;
                     case "alpha":
-                    // Ren alfabetisk sortering
-                    ordered = tempList
-                        .OrderBy(x => x.PrimaryText, StringComparer.CurrentCulture)
-                        .ToList();
-                    break;
+                        // Ren alfabetisk sortering
+                        ordered = tempList
+                            .OrderBy(x => x.PrimaryText, StringComparer.CurrentCulture)
+                            .ToList();
+                        break;
                 }
 
 
@@ -463,126 +476,17 @@ namespace DigitalProductionProgram.Monitor.Services
                 }
             }
 
-
-            sw.Stop();
-            if (sw.ElapsedMilliseconds > 5000)
-            {
-                MessageBox.Show(
-                    $"Tid = {sw.ElapsedMilliseconds} \n" +
-                    $"Antal MonitorFrågor = {Utilities.CounterMonitorRequests}. \n" +
-                    $"Antal inloggning Monitor = {Login_Monitor.TotalLoginAttemps}");
-            }
+           // if (sw.ElapsedMilliseconds > 5000)
+            //{
+            //    MessageBox.Show(
+            //        $"Tid = {sw.ElapsedMilliseconds} \n" +
+            //        $"Antal MonitorFrågor = {Utilities.CounterMonitorRequests}. \n" +
+            //        $"Antal inloggning Monitor = {Login_Monitor.TotalLoginAttemps}");
+            //}
         }
 
 
 
-
-
-
-        //public static List<string?> List_Tools<Table1, Table2>(string templateName)
-        //    where Table1 : DTO, IHasId, new()
-        //    where Table2 : DTO, new()
-        //{
-        //    var templateID = Utilities.GetOneFromMonitor<Table1>($"filter=Description Eq'{templateName}'")?.Id ?? 0;
-
-        //    var parts = Utilities.GetFromMonitor<Table2>($"filter=PartTemplateId Eq'{templateID}'");
-        //    var list = new List<string?>();
-        //    foreach (var part in parts)
-        //    {
-        //        var descriptionProp = typeof(Table2).GetProperty("Description");
-        //        var value = descriptionProp?.GetValue(part) as string;
-        //        if (!list.Contains(value))
-        //            list.Add(value);
-        //    }
-
-        //    return list;
-        //}
-
-
-        //public static async Task Add_Equipment(List<string> items, Type tableType, string partCode, string? name, string? property, string? filterCodeText, int dataType, bool IsItemsMultipleColumns, string? secondaryName = null, string? secondaryCodeText = null)
-        //{
-        //    Stopwatch sw = new Stopwatch();
-        //    sw.Start();
-        //    // Hämta PartCodeId asynkront
-        //    var partCodeObj = await Utilities.GetOneFromMonitor<Inventory.PartCodes>($"filter=Code Eq'{partCode}'");
-        //    var partCodeId = partCodeObj?.Id ?? 0;
-
-        //    // Hämta parts asynkront
-        //    string filter = string.Empty;
-        //    filter = string.IsNullOrEmpty(filterCodeText) ? $"filter=PartCodeId eq'{partCodeId}'" : $"filter=PartCodeId eq'{partCodeId}' AND ExtraDescription Eq'{filterCodeText}'";
-
-        //    var parts = await Utilities.GetFromMonitor<Inventory.Parts>("select=Id,PartNumber,ExtraDescription", filter);
-
-        //    if (string.IsNullOrEmpty(name))
-        //    {
-        //        var properties = typeof(Inventory.Parts).GetProperty(property);
-        //        foreach (var part in parts)
-        //        {
-        //            var value = properties?.GetValue(part)?.ToString();
-        //            if (!string.IsNullOrEmpty(value) && !items.Contains(value))
-        //                items.Add(value);
-        //        }
-
-        //        return;
-        //    }
-
-        //    if (parts == null)
-        //        return;
-
-        //    // Bygg ett OData-filter manuellt
-        //    var templateFilter = $"filter=Name eq '{name}'";
-        //    if (!string.IsNullOrEmpty(secondaryName))
-        //        templateFilter += $" or Name eq '{secondaryName}'";
-
-        //    var templates = await Utilities.GetFromMonitor<Common.ExtraFieldTemplates>(templateFilter);
-
-        //    var primaryIdentifier = templates.FirstOrDefault(t => t.Name == name)?.Identifier;
-        //    var secondaryIdentifier = templates.FirstOrDefault(t => t.Name == secondaryName)?.Identifier;
-
-        //    // Bygg lista av ParentIds
-        //    var partIds = string.Join(" or ", parts.Select(p => $"ParentId eq '{p.Id}'"));
-        //    var fieldFilter = $"filter={partIds}";
-
-        //    // Hämta alla ExtraFields för dessa ParentIds
-        //    var allExtraFields = await Utilities.GetFromMonitor<Common.ExtraFields>("select=ParentId,Identifier,StringValue,DecimalValue,IntegerValue", fieldFilter);
-
-        //    // --- Lokalt arbete ---
-        //    foreach (var part in parts)
-        //    {
-        //        var partFields = allExtraFields.Where(f => f.ParentId == part.Id).ToList();
-        //        if (partFields.Count == 0) continue;
-
-        //        var valueField = partFields.FirstOrDefault(f => f.Identifier == primaryIdentifier);
-        //        var value = GetFieldValue(valueField);
-
-        //        if (IsItemsMultipleColumns && secondaryName != null)
-        //        {
-        //            var secField = partFields.FirstOrDefault(f => f.Identifier == secondaryIdentifier);
-        //            var secValue = GetFieldValue(secField);
-        //            if (!string.IsNullOrEmpty(secValue))
-        //                value = $"{value} : {secValue}";
-        //        }
-
-        //        if (!string.IsNullOrEmpty(value) && !items.Contains(value))
-        //            items.Add(value);
-        //    }
-
-        //    // Hjälpmetod
-        //    static string GetFieldValue(Common.ExtraFields? field)
-        //    {
-        //        if (field == null) return string.Empty;
-        //        if (!string.IsNullOrEmpty(field.StringValue)) return field.StringValue;
-        //        if (field.DecimalValue.HasValue) return field.DecimalValue.ToString();
-        //        if (field.IntegerValue.HasValue) return field.IntegerValue.ToString();
-        //        return string.Empty;
-        //    }
-
-
-
-
-        //    sw.Stop();
-        //    MessageBox.Show(sw.ElapsedMilliseconds.ToString());
-        //}
 
 
         public static List<string?> List_Tools<Table1, Table2>(string templateName)

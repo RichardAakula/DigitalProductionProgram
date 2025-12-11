@@ -101,5 +101,32 @@ namespace DigitalProductionProgram.Monitor.GET
             public string LastName { get; set; }
             public string Initials { get; set; }
         }
+        internal class ProductGroups : DTO
+        {
+            public override string URL => "Common/ProductGroups";
+
+            public long Id { get; set; }
+            public string Number { get; set; }
+            public string Description { get; set; }
+            public string Alias { get; set; }
+            
+        }
+
+
+        public class PartMinimal : DTO
+        {
+            public override string URL => "Inventory/Parts";
+
+            public string ExtraDescription { get; set; }
+            public List<ExtraFieldMinimal> ExtraFields { get; set; }
+        }
+
+        public class ExtraFieldMinimal
+        {
+            public string Identifier { get; set; }
+            public string StringValue { get; set; }
+            public int? IntegerValue { get; set; }
+            public decimal? DecimalValue { get; set; }
+        }
     }
 }

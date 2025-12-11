@@ -142,11 +142,12 @@ namespace DigitalProductionProgram.MainWindow
             laddaAlalVerktyMedExpandAPIToolStripMenuItem = new ToolStripMenuItem();
             laddaVerktygMedExpandNyaAPIToolStripMenuItem = new ToolStripMenuItem();
             laddaVerktygUtanExpandNyaAPIToolStripMenuItem = new ToolStripMenuItem();
+            newAPIOptimizedToolStripMenuItem = new ToolStripMenuItem();
             menuStrip = new MenuStrip();
             Menu_Equipment = new ToolStripMenuItem();
             Menu_Equipment_UseFilter = new ToolStripMenuItem();
             Menu_Equipment_UseSilpaket = new ToolStripMenuItem();
-            newAPIOptimizedToolStripMenuItem = new ToolStripMenuItem();
+            testaToolStripMenuItem = new ToolStripMenuItem();
             menuStrip.SuspendLayout();
             SuspendLayout();
             // 
@@ -960,6 +961,14 @@ namespace DigitalProductionProgram.MainWindow
             laddaVerktygUtanExpandNyaAPIToolStripMenuItem.Text = "New API WithOut Expand";
             laddaVerktygUtanExpandNyaAPIToolStripMenuItem.Click += NewAPI_WithOutExpand_Click;
             // 
+            // newAPIOptimizedToolStripMenuItem
+            // 
+            newAPIOptimizedToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { testaToolStripMenuItem });
+            newAPIOptimizedToolStripMenuItem.Name = "newAPIOptimizedToolStripMenuItem";
+            newAPIOptimizedToolStripMenuItem.Size = new Size(401, 22);
+            newAPIOptimizedToolStripMenuItem.Text = "New API Optimized";
+            newAPIOptimizedToolStripMenuItem.Click += NewAPIOptimized_Click;
+            // 
             // menuStrip
             // 
             menuStrip.BackColor = Color.Transparent;
@@ -1010,12 +1019,12 @@ namespace DigitalProductionProgram.MainWindow
             Menu_Equipment_UseSilpaket.Text = "Använd Silpaket";
             Menu_Equipment_UseSilpaket.Click += Menu_Protocol_UseSilpaket_Click;
             // 
-            // newAPIOptimizedToolStripMenuItem
+            // testaToolStripMenuItem
             // 
-            newAPIOptimizedToolStripMenuItem.Name = "newAPIOptimizedToolStripMenuItem";
-            newAPIOptimizedToolStripMenuItem.Size = new Size(401, 22);
-            newAPIOptimizedToolStripMenuItem.Text = "New API Optimized";
-            newAPIOptimizedToolStripMenuItem.Click += NewAPIOptimized_Click;
+            testaToolStripMenuItem.Name = "testaToolStripMenuItem";
+            testaToolStripMenuItem.Size = new Size(180, 22);
+            testaToolStripMenuItem.Text = "Testa";
+            testaToolStripMenuItem.Click += testaToolStripMenuItem_Click;
             // 
             // Main_Menu
             // 
@@ -1151,5 +1160,6 @@ namespace DigitalProductionProgram.MainWindow
         private ToolStripMenuItem laddaVerktygMedExpandNyaAPIToolStripMenuItem;
         private ToolStripMenuItem laddaVerktygUtanExpandNyaAPIToolStripMenuItem;
         private ToolStripMenuItem newAPIOptimizedToolStripMenuItem;
+        private ToolStripMenuItem testaToolStripMenuItem;
     }
 }

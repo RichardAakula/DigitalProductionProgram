@@ -68,12 +68,19 @@ namespace DigitalProductionProgram.Monitor
 
         public static async Task<DataTable> DataTable_CandleFilter()
         {
-            var dt = new DataTable(); 
+            var dt = new DataTable();
             dt.Columns.Add("Item1", typeof(string));
             dt.Columns.Add("Item2", typeof(string));
+
             var parts = Utilities.GetFromMonitor<Inventory.Parts>("filter=startswith(Description, 'Candle')");
+            if (parts == null)
+                return dt;
+
             foreach (var part in parts)
+            {
                 dt.Rows.Add($"{part.PartNumber}", $"{part.Description}");
+            }
+
             return dt;
         }
         public static Dictionary<string, string> WorkCenters = null!;
@@ -111,6 +118,7 @@ namespace DigitalProductionProgram.Monitor
             }
             return list;
         }
+
 
 
         public static List<string?> List_RazorTypes
@@ -267,7 +275,7 @@ namespace DigitalProductionProgram.Monitor
         {
             get
             {
-                Login_Monitor.Login_API("003.1");
+                Login_Monitor.Login_API();
 
                 var date = DateTime.Now.ToString("yyyy-MM-dd");
                 var users = Utilities.GetFromMonitor<TimeRecording.AttendanceChart>($"select=FirstName,LastName,IsClosedInterval,AbsenceDescription,IntervalStart,IntervalEnd&$filter=startswith(IntervalStart, '{date}')&$orderby=IntervalStart");
@@ -283,7 +291,7 @@ namespace DigitalProductionProgram.Monitor
             {
                 var list = new AutoCompleteStringCollection();
 
-                var ordernr = Utilities.GetFromMonitor<Manufacturing.ManufacturingOrders>("select=OrderNumber");
+                var ordernr = Utilities.GetFromMonitor<Manufacturing.ManufacturingOrders>("select=OrderNumber", "top=1000", "orderby=Id DESC");
                 if (ordernr is null)
                     return list;
                 foreach (var order in ordernr)
@@ -980,13 +988,30 @@ namespace DigitalProductionProgram.Monitor
 
         public static async Task Fill_ComboBox_PartCodes(ComboBox cb)
         {
-            var partCodes = Utilities.GetFromMonitor<Inventory.PartCodes>("select=Code,Description", "filter=Alias Eq 'TOOLS'");
+            var productGroup = Utilities.GetOneFromMonitor<Common.ProductGroups>("select=Id", "filter=Description eq'Tools'");
+            var parts = Utilities.GetFromMonitor<Inventory.Parts>("select=PartCodeId", $"filter=ProductGroupId eq'{productGroup.Id}'");
+            var distinctIds = parts
+                .Select(p => p.PartCodeId)
+                .Distinct()
+                .ToList();
 
-            var list = partCodes?.ToList() ?? new List<Inventory.PartCodes>();
+            if (!distinctIds.Any())
+                return;
 
-            cb.DataSource = list;
-            cb.DisplayMember = "Description"; // vad användaren ser
-            cb.ValueMember = "Code";
+            string containsFilter = $"filter=contains(Id,{string.Join(",", distinctIds)})";
+
+            // 4. Hämta alla PartCodes i EN ENDA query
+            var partCodes = Utilities.GetFromMonitor<Inventory.PartCodes>("select=Id,Code,Description", containsFilter);
+
+            // 5. Bind till ComboBox
+            var list = partCodes
+                .OrderBy(pc => pc.Description)
+                .ToList();
+
+            cb.DataSource = list.Select(x => x.Description).ToList();
+            //cb.DataSource = list;
+            //cb.DisplayMember = "Description"; // vad användaren ser
+            //cb.ValueMember = "Code";
         }
 
         public static async Task<List<Common.ExtraFieldTemplates>> Get_PropertyList(bool clone = false)

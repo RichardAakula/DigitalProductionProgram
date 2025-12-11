@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Diagnostics;
 using Microsoft.Data.SqlClient;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using DigitalProductionProgram.ControlsManagement;
@@ -21,6 +23,17 @@ namespace DigitalProductionProgram.Övrigt
 {
     internal class Validate_Data
     {
+        [DebuggerStepThrough]
+        static string? NormalizeString(string? s)
+        {
+            // Normalizer: trim, collapse internal whitespace, normalize unicode
+            if (string.IsNullOrWhiteSpace(s))
+                return null;
+            var trimmed = s.Trim();
+            var collapsed = Regex.Replace(trimmed, @"\s+", " ");
+            return collapsed.Normalize(NormalizationForm.FormC);
+        }
+
         private static string CodeText(string name, int uppstart, int maskin)
         {
             //Hämtar ut ett namn som används för att meddela Processtekniker vilken parameter som behöver uppdateras.

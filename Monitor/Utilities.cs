@@ -1,4 +1,5 @@
 ﻿
+using Azure.Core;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.User;
 using System;
@@ -34,40 +35,58 @@ namespace DigitalProductionProgram.Monitor
 
         private static readonly JsonSerializerOptions JsonOptions;
 
-        #region GET
-
         [DebuggerStepThrough]
         private static HttpResponseMessage Http_response(string query)
         {
-            var ctr_ErrorLogin = 0;
-        Start:
-            var response = Login_Monitor.httpClient.GetAsync(query).Result;
+            Cursor previous = Cursor.Current;
+            Cursor.Current = Cursors.WaitCursor;
 
-            if (response.StatusCode != HttpStatusCode.OK)
+            try
             {
-                if (ctr_ErrorLogin > 10)
+                const int maxRetries = 2;
+
+                for (int attempt = 1; attempt <= maxRetries; attempt++)
                 {
-                    _ = Activity.Stop($"Error:Monitor - Failat inloggning 10 ggr: Query = {query}. Response = {response.ReasonPhrase}. StatusCode = {response.StatusCode}");
-                    Monitor.Set_Monitorstatus(Monitor.Status.Bad, $"StatusCode: {response.StatusCode}. Response: {response.ReasonPhrase}");
+                    // ✔ Säkerställ att vi har sessionId och header
+                    if (Login_Monitor.sessionId == null)
+                        Login_Monitor.Login_API();
+
+                    // ✔ Skicka GET
+                    var response = Login_Monitor.httpClient.GetAsync(query).Result;
+
+                    // ✔ Klart
+                    if (response.IsSuccessStatusCode)
+                        return response;
+
+                    // 🔁 Endast vid 401 → försök logga in igen
+                    if (response.StatusCode == HttpStatusCode.Unauthorized && attempt < maxRetries)
+                    {
+                        Login_Monitor.sessionId = null; // force new login
+                        continue;
+                    }
+
+                    // ❌ Alla andra fel → kasta
+                    throw new Exception($"Monitor API error: {response.StatusCode} - {response.ReasonPhrase}");
                 }
 
-                if (Monitor.status == Monitor.Status.Bad && ctr_ErrorLogin > 10)
-                    return null;
-
-                Login_Monitor.Login_API();
-                ctr_ErrorLogin++;
-                goto Start;
+                throw new Exception("Monitor API: max retries reached.");
             }
-            return response;
+            finally
+            {
+                Cursor.Current = previous;
+            }
         }
 
-        public static int CounterMonitorRequests;
 
+
+        public static int CounterMonitorRequests;
+       // [DebuggerStepThrough]
         public static List<T> GetFromMonitor<T>(params string[] queryOptions) where T : DTO, new()
         {
             CounterMonitorRequests++;
             var query = BuildQuery<T>(queryOptions);
             var response = Http_response(query);
+
             if (response is null)
                 return null;
 
@@ -84,7 +103,7 @@ namespace DigitalProductionProgram.Monitor
                 return null;
             }
         }
-
+        [DebuggerStepThrough]
         public static T GetOneFromMonitor<T>(params string[] queryOptions) where T : DTO, new()
         {
             CounterMonitorRequests++;
@@ -138,7 +157,6 @@ namespace DigitalProductionProgram.Monitor
             return query;
         }
 
-        #endregion
 
         private class FlexibleLongConverter : JsonConverter<long>
         {

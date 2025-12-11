@@ -24,9 +24,9 @@ namespace DigitalProductionProgram.Monitor.GET
         {
             public override string URL => "Inventory/Parts";
 
-
             public long Id { get; set; }
             public string? PartNumber { get; set; }
+            public long PartCodeId { get; set; }
             public string? Description { get; set; }
             public string? ExtraDescription { get; set; }
             public decimal StandardPrice { get; set; }

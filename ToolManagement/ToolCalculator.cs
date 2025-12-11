@@ -193,20 +193,41 @@ namespace DigitalProductionProgram.ToolManagement
             var tools = new List<Die>();
             pbar_Calculate.Visible = true;
             var partCodes = Utilities.GetFromMonitor<Inventory.PartCodes>($"filter=Description  Eq'DIES'");
+            var identifierDimension = Utilities.GetOneFromMonitor<Common.ExtraFieldTemplates>($"filter=Name Eq'DimensionNom'");
+            var identifierLL = Utilities.GetOneFromMonitor<Common.ExtraFieldTemplates>($"filter=Name Eq'LandlengthNom'");
+
             foreach (var partCode in partCodes)
             {
                 var ctr = 0;
-                var parts = Utilities.GetFromMonitor<Inventory.Parts>($"filter=PartCodeId Eq'{partCode.Id}' AND ExtraDescription eq'{tb_DieType.Text}' AND IsNull(BlockedById)", "orderby(Description)");
+                var parts = Utilities.GetFromMonitor<Inventory.Parts>("select=ExtraDescription,ExtraFields.Identifier,ExtraFields.DecimalValue", "expand=ExtraFields", $"filter=PartCodeId eq'{partCode.Id}' AND ExtraDescription eq'{tb_DieType.Text}' AND IsNull(BlockedById)", "orderby=Description");
                 pbar_Calculate.Invoke((MethodInvoker)(() => pbar_Calculate.Maximum = parts.Count));
                 foreach (var part in parts)
                 {
-                    var dimension = Utilities.GetOneFromMonitor<Common.ExtraFields>("select=DecimalValue", $"filter=ParentId Eq'{part.Id}' AND Identifier Eq'T4'");
-                    var landlength =  Utilities.GetOneFromMonitor<Common.ExtraFields>("select=DecimalValue", $"filter=ParentId Eq'{part.Id}' AND Identifier Eq'T9'");
+                    decimal? dimension = null;
+                    decimal? landlength = null;
+                    foreach (var field in part.ExtraFields)
+                    {
+                        if (dimension.HasValue && landlength.HasValue)
+                            break; // nu kan vi bryta, båda klara
+
+                        if (field.Identifier == identifierDimension.Identifier && field.DecimalValue.HasValue)
+                        {
+                            dimension = field.DecimalValue.Value;
+                            continue;
+                        }
+
+                        if (field.Identifier == identifierLL.Identifier && field.DecimalValue.HasValue)
+                        {
+                            landlength = field.DecimalValue.Value;
+                            continue;
+                        }
+                    }
+
                     pbar_Calculate.Invoke((MethodInvoker)(() =>
                     {
                         pbar_Calculate.Value = ctr;
                     }));
-                    tools.Add(new Die (dimension.DecimalValue, landlength.DecimalValue));
+                    tools.Add(new Die (dimension, landlength));
                     ctr++;
                 }
             }
@@ -215,7 +236,7 @@ namespace DigitalProductionProgram.ToolManagement
             var sortedTools = tools.OrderBy(t => t.Dimension).ToList();
             cb_Die.DataSource = sortedTools;
            
-            cb_Die.DisplayMember = "Dimension";  //Matches property in `Die`
+            cb_Die.DisplayMember = "DisplayText";  //Matches property in `Die`
             cb_Die.ValueMember = "LandLength";   //Matches property in `Die`
             lbl_AntalMunstycken.Text = cb_Die.Items.Count.ToString();
             cb_Die.SelectedIndex = -1;
@@ -228,28 +249,49 @@ namespace DigitalProductionProgram.ToolManagement
             var tools = new List<Pin>();
             pbar_Calculate.Visible = true;
             var partCodes = Utilities.GetFromMonitor<Inventory.PartCodes>($"filter=Description  Eq'TIPS'");
+            var identifierDimension = Utilities.GetOneFromMonitor<Common.ExtraFieldTemplates>($"filter=Name Eq'DimensionNom'");
+            var identifierLL = Utilities.GetOneFromMonitor<Common.ExtraFieldTemplates>($"filter=Name Eq'LandlengthNom'");
             foreach (var partCode in partCodes)
             {
                 var ctr = 0;
-                var parts =  Utilities.GetFromMonitor<Inventory.Parts>($"filter=PartCodeId Eq'{partCode.Id}' AND ExtraDescription eq'{tb_PinType.Text}' AND IsNull(BlockedById)", "orderby(Description)");
+                var parts = Utilities.GetFromMonitor<Inventory.Parts>("select=ExtraDescription,ExtraFields.Identifier,ExtraFields.DecimalValue", "expand=ExtraFields", $"filter=PartCodeId eq'{partCode.Id}' AND ExtraDescription eq'{tb_PinType.Text}' AND IsNull(BlockedById)", "orderby=Description");
                 pbar_Calculate.Invoke((MethodInvoker)(() => pbar_Calculate.Maximum = parts.Count));
                 foreach (var part in parts)
                 {
-                    var dimension = Utilities.GetOneFromMonitor<Common.ExtraFields>("select=DecimalValue", $"filter=ParentId Eq'{part.Id}' AND Identifier Eq'T4'");
-                    var landlength = Utilities.GetOneFromMonitor<Common.ExtraFields>("select=DecimalValue", $"filter=ParentId Eq'{part.Id}' AND Identifier Eq'T9'");
+                    decimal? dimension = null;
+                    decimal? landlength = null;
+                    foreach (var field in part.ExtraFields)
+                    {
+                        if (dimension.HasValue && landlength.HasValue)
+                            break; // nu kan vi bryta, båda klara
+
+                        if (field.Identifier == identifierDimension.Identifier && field.DecimalValue.HasValue)
+                        {
+                            dimension = field.DecimalValue.Value;
+                            continue;
+                        }
+
+                        if (field.Identifier == identifierLL.Identifier && field.DecimalValue.HasValue)
+                        {
+                            landlength = field.DecimalValue.Value;
+                            continue;
+                        }
+                    }
+
                     pbar_Calculate.Invoke((MethodInvoker)(() =>
                     {
                         pbar_Calculate.Value = ctr;
                     }));
-                    tools.Add(new Pin (dimension.DecimalValue, landlength.DecimalValue));
                     ctr++;
+                    tools.Add(new Pin(dimension, landlength));
+                    
                 }
             }
             pbar_Calculate.Visible = false;
             cb_Pin.DataSource = null;  //Reset before binding
             var sortedTools = tools.OrderBy(t => t.Dimension).ToList();
             cb_Pin.DataSource = sortedTools;
-            cb_Pin.DisplayMember = "Dimension"; 
+            cb_Pin.DisplayMember = "DisplayText"; 
             cb_Pin.ValueMember = "LandLength";   
             lbl_AntalKanyl.Text = cb_Pin.Items.Count.ToString();
             cb_Pin.SelectedIndex = -1;
@@ -354,11 +396,23 @@ namespace DigitalProductionProgram.ToolManagement
 
         private (List<(decimal Dimension, decimal LandLength)>, List<(decimal Dimension, decimal LandLength)>) GetDieAndPinValues(bool useTheoretical)
         {
-            decimal selectedDieDim = 0;
-            decimal selectedPinDim = 0;
+            // Hjälpmetod för trådsäker åtkomst till en kontroll
+            T InvokeIfRequired<T>(Control control, Func<T> func)
+            {
+                if (control.InvokeRequired)
+                    return (T)control.Invoke(func);
+                else
+                    return func();
+            }
 
-            cb_Die.Invoke((MethodInvoker)(() => decimal.TryParse(cb_Die.Text, out selectedDieDim)));
-            cb_Pin.Invoke((MethodInvoker)(() => decimal.TryParse(cb_Pin.Text, out selectedPinDim)));
+            // Hämta selected values på ett trådsäkert sätt
+            decimal selectedDieDim = InvokeIfRequired(cb_Die, () =>
+                decimal.TryParse(cb_Die.Text, out var val) ? val : 0m
+            );
+
+            decimal selectedPinDim = InvokeIfRequired(cb_Pin, () =>
+                decimal.TryParse(cb_Pin.Text, out var val) ? val : 0m
+            );
 
             var isDieSelected = selectedDieDim > 0;
             var isPinSelected = selectedPinDim > 0;
@@ -368,6 +422,7 @@ namespace DigitalProductionProgram.ToolManagement
 
             if (useTheoretical)
             {
+                // Teoretiska värden
                 var dieMin = decimal.Parse(num_Die_min.Text);
                 var dieMax = decimal.Parse(num_Die_max.Text);
                 var dieStepper = decimal.Parse(num_Die_step.Text);
@@ -386,8 +441,18 @@ namespace DigitalProductionProgram.ToolManagement
             }
             else
             {
-                var dieItems = isDieSelected ? new List<object> { cb_Die.SelectedItem } : cb_Die.Items.Cast<object>().ToList();
-                var pinItems = isPinSelected ? new List<object> { cb_Pin.SelectedItem } : cb_Pin.Items.Cast<object>().ToList();
+                // Hämta items från UI på ett trådsäkert sätt
+                var dieItems = InvokeIfRequired(cb_Die, () =>
+                    isDieSelected
+                        ? new List<object> { cb_Die.SelectedItem }
+                        : cb_Die.Items.Cast<object>().ToList()
+                );
+
+                var pinItems = InvokeIfRequired(cb_Pin, () =>
+                    isPinSelected
+                        ? new List<object> { cb_Pin.SelectedItem }
+                        : cb_Pin.Items.Cast<object>().ToList()
+                );
 
                 dieValues = dieItems
                     .Select(d => ((d as Die)?.Dimension ?? 0.00m,
@@ -402,6 +467,7 @@ namespace DigitalProductionProgram.ToolManagement
 
             return (dieValues, pinValues);
         }
+
 
 
 
@@ -626,6 +692,8 @@ namespace DigitalProductionProgram.ToolManagement
             public decimal? Dimension { get; set; }
             public decimal? LandLength { get; set; }
 
+            public string DisplayText => Dimension.HasValue ? Dimension.Value.ToString("F2") : string.Empty;
+
             public Die(decimal? dimension, decimal? landLength)
             {
                 Dimension = dimension;//Calculation.ParseValue(dimension);
@@ -642,6 +710,7 @@ namespace DigitalProductionProgram.ToolManagement
             public decimal? Dimension { get; set; }
             public decimal? LandLength { get; set; }
 
+            public string DisplayText => Dimension.HasValue ? Dimension.Value.ToString("F2") : string.Empty;
             public Pin(decimal? dimension, decimal? landLength)
             {
                 Dimension = dimension; //.ParseValue(dimension);

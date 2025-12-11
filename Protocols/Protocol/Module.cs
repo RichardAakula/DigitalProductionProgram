@@ -762,7 +762,6 @@ namespace DigitalProductionProgram.Protocols.Protocol
 
             return null;
         }
-
         private DataGridViewCell[] Cells(List<string> listCodetexts)
         {
             var cells = new List<DataGridViewCell> { dgv_Module.Rows[dgv_Module.CurrentCell.RowIndex].Cells[dgv_Module.CurrentCell.ColumnIndex] };

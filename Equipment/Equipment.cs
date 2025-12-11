@@ -147,10 +147,10 @@ namespace DigitalProductionProgram.Equipment
 
         public static List<string?> List_Tool_Type(string codeName)
         {
-           
+
             var list = new List<string?>();
 
-            var partCodes =  Utilities.GetFromMonitor<Inventory.PartCodes>($"filter=Description eq'{codeName}'");
+            var partCodes = Utilities.GetFromMonitor<Inventory.PartCodes>($"filter=Description eq'{codeName}'");
 
             foreach (var partCode in partCodes)
             {
@@ -165,6 +165,7 @@ namespace DigitalProductionProgram.Equipment
             }
             return list;
         }
+
 
 
         public static List<string?> List_Equipment_Protocol(string codetext)

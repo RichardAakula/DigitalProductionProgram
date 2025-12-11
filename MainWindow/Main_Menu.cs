@@ -5,6 +5,8 @@ using DigitalProductionProgram.eMail;
 using DigitalProductionProgram.Help;
 using DigitalProductionProgram.Log;
 using DigitalProductionProgram.Measure;
+using DigitalProductionProgram.Monitor;
+using DigitalProductionProgram.Monitor.GET;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.Övrigt;
 using DigitalProductionProgram.PrintingServices;
@@ -20,6 +22,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.Json;
 using Color = System.Drawing.Color;
 using ProgressBar = DigitalProductionProgram.ControlsManagement.CustomProgressBar;
 
@@ -1552,5 +1555,73 @@ ORDER BY OrderID DESC ";
             foreach (var id in list)
                 Debug.WriteLine(id);
         }
+
+        private void testaToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var sw = Stopwatch.StartNew();
+
+                // Relativ URL
+                string query = "api/v1/Inventory/Parts?" +
+                               "$select=ExtraDescription,ExtraFields.Identifier,ExtraFields.DecimalValue,ExtraFields.StringValue,ExtraFields.IntegerValue" +
+                               "&$filter=PartCodeId eq'1365775941822409216'" +
+                               "&$expand=ExtraFields";
+
+                // Säkerställ login
+                Login_Monitor.Login_API();
+
+                // Lista för resultat
+                var result = new List<(string Identifier, string Value)>();
+
+                using (var stream = Login_Monitor.httpClient.GetStreamAsync(query).Result)
+                using (var sr = new StreamReader(stream))
+                using (var reader = new Newtonsoft.Json.JsonTextReader(sr))
+                {
+                    string? currentIdentifier = null;
+                    string? currentValue = null;
+
+                    while (reader.Read())
+                    {
+                        if (reader.TokenType == Newtonsoft.Json.JsonToken.PropertyName)
+                        {
+                            var propName = reader.Value?.ToString();
+                            if (propName == "Identifier")
+                            {
+                                reader.Read();
+                                currentIdentifier = reader.Value?.ToString();
+                            }
+                            else if (propName == "DecimalValue" || propName == "IntegerValue" || propName == "StringValue")
+                            {
+                                reader.Read();
+                                currentValue = reader.Value?.ToString();
+                            }
+                        }
+                        else if (reader.TokenType == Newtonsoft.Json.JsonToken.EndObject)
+                        {
+                            if (!string.IsNullOrEmpty(currentIdentifier) && !string.IsNullOrEmpty(currentValue))
+                            {
+                                result.Add((currentIdentifier, currentValue));
+                                currentIdentifier = null;
+                                currentValue = null;
+                            }
+                        }
+                    }
+                }
+
+                sw.Stop();
+                MessageBox.Show($"Total ExtraFields: {result.Count}\nElapsed ms: {sw.ElapsedMilliseconds}");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error: {ex.Message}");
+            }
+        }
+
+
+
+
+
+
     }
 }

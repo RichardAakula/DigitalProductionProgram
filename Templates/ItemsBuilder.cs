@@ -42,7 +42,7 @@ namespace DigitalProductionProgram.Templates
 
             IsListActivated = false;
             TypeOfList = listType;
-            this.listType = listType.ToString();
+            
             TemplateID = templateID;
             ListCodetext = listCodetext;
 
@@ -54,6 +54,7 @@ namespace DigitalProductionProgram.Templates
                 else
                     listType = ListType.Protocol;
             }
+            this.listType = listType.ToString();
 
             switch (listType)
                 {
@@ -433,7 +434,8 @@ namespace DigitalProductionProgram.Templates
             while (reader.Read())
             {
                 ItemsFieldId = reader["ItemFieldsId"] != DBNull.Value ? Convert.ToInt32(reader["ItemFieldsId"]) : 0;
-                cb_PartCode.SelectedValue = reader["PartCode"].ToString();
+                string test = reader["PartCode"].ToString();
+                cb_PartCode.SelectedItem = reader["PartCode"].ToString();
                 cb_Name.SelectedValue = reader["Name"].ToString();
                 cb_SecondaryName.SelectedValue = reader["SecondaryName"].ToString();
                 cb_Property.SelectedItem = reader["Property"].ToString();
@@ -501,7 +503,6 @@ namespace DigitalProductionProgram.Templates
 
         private void Save_MonitorList(int templateID)
         {
-
             if (dgv_Items.Rows.Count > 0)
                 return;
 
@@ -530,7 +531,7 @@ namespace DigitalProductionProgram.Templates
                 END
                 ELSE
                 BEGIN
-                    INSERT INTO List.ItemFields (TemplateID, PartCode, EndPoint, Property, Name, SecondaryName, FilterCodeText, SecondaryCodeText, ListType, CreatedBy)
+                    INSERT INTO List.ItemFields (TemplateID, PartCode, EndPoint, Property, Name, SecondaryName, FilterCodeText, SecondaryCodeText, SortMode, ListType, CreatedBy)
                     VALUES (@templateid, @partcode, @endpoint, @property, @name, @secondaryname, @filtercodetext, @secondarycodetext, @sortmode, @listtype, @username)
                  END";
 

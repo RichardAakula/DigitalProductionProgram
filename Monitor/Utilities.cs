@@ -1,5 +1,4 @@
-﻿
-using Azure.Core;
+﻿using Azure.Core;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.User;
 using System;
@@ -8,6 +7,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Windows;
@@ -35,8 +35,24 @@ namespace DigitalProductionProgram.Monitor
 
         private static readonly JsonSerializerOptions JsonOptions;
 
-        [DebuggerStepThrough]
-        private static HttpResponseMessage Http_response(string query)
+        //[DebuggerStepThrough]
+        public static string SyncHttpGet(string url)
+        {
+            var request = (HttpWebRequest)WebRequest.Create(url);
+            request.Method = "GET";
+            request.Accept = "application/json";
+
+            // Bypass cert fel (som curl)
+            request.ServerCertificateValidationCallback += (s, cert, chain, sslPolicyErrors) => true;
+
+            using (var response = (HttpWebResponse)request.GetResponse())
+            using (var stream = response.GetResponseStream())
+            using (var reader = new StreamReader(stream))
+            {
+                return reader.ReadToEnd();
+            }
+        }
+        private static HttpWebResponse Http_Response(string query)
         {
             Cursor previous = Cursor.Current;
             Cursor.Current = Cursors.WaitCursor;
@@ -47,29 +63,89 @@ namespace DigitalProductionProgram.Monitor
 
                 for (int attempt = 1; attempt <= maxRetries; attempt++)
                 {
-                    // ✔ Säkerställ att vi har sessionId och header
-                    if (Login_Monitor.sessionId == null)
-                        Login_Monitor.Login_API();
+                    HttpWebResponse response = null;
+                    WebException caughtEx = null;
+                    Stopwatch swTotal = Stopwatch.StartNew();
 
-                    // ✔ Skicka GET
-                    var response = Login_Monitor.httpClient.GetAsync(query).Result;
-
-                    // ✔ Klart
-                    if (response.IsSuccessStatusCode)
-                        return response;
-
-                    // 🔁 Endast vid 401 → försök logga in igen
-                    if (response.StatusCode == HttpStatusCode.Unauthorized && attempt < maxRetries)
+                    try
                     {
-                        Login_Monitor.sessionId = null; // force new login
-                        continue;
-                    }
+                        var req = (HttpWebRequest)WebRequest.Create(query);
+                        req.Method = "GET";
+                        req.Accept = "application/json";
+                        req.Timeout = 30000;
 
-                    // ❌ Alla andra fel → kasta
-                    throw new Exception($"Monitor API error: {response.StatusCode} - {response.ReasonPhrase}");
+                        req.Headers[HttpRequestHeader.AcceptEncoding] = "gzip, deflate, br";
+                        req.AutomaticDecompression = DecompressionMethods.GZip
+                                                     | DecompressionMethods.Deflate
+                                                     | DecompressionMethods.Brotli;
+
+                        // Håll anslutningen vid liv (mindre handshakes)
+                        req.KeepAlive = true;
+
+                        // (Valfritt) snabbare handskak och moderna protokoll
+                        ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls13;
+
+
+                        // SSL bypass
+                        req.ServerCertificateValidationCallback += (sender, cert, chain, sslErrors) => true;
+
+                        // Lägg till session header om vi har sessionId
+                        if (!string.IsNullOrEmpty(Login_Monitor.sessionId))
+                            req.Headers.Add("X-Monitor-SessionId", Login_Monitor.sessionId);
+
+                        Debug.WriteLine("====================================================");
+                        Debug.WriteLine($"HTTP CALL START  |  {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
+                        Debug.WriteLine($"URL              |  {query}");
+                        Debug.WriteLine($"ATTEMPT          |  {attempt}/{maxRetries}");
+
+                        // SYNKRON GET
+                        response = (HttpWebResponse)req.GetResponse();
+
+                        swTotal.Stop();
+
+                        // Logga resultat
+                        Debug.WriteLine($"DURATION TOTAL   |  {swTotal.ElapsedMilliseconds} ms");
+                        Debug.WriteLine($"HTTP STATUS      |  {(int)response.StatusCode} {response.StatusCode}");
+                        long? size = response.ContentLength >= 0 ? response.ContentLength : null;
+                        Debug.WriteLine($"PAYLOAD SIZE     |  {(size.HasValue ? size.Value + " bytes" : "unknown")}");
+                        Debug.WriteLine("RESULT           |  SUCCESS");
+                        Debug.WriteLine("====================================================");
+
+                        return response; // SUCCESS
+                    }
+                    catch (WebException ex)
+                    {
+                        swTotal.Stop();
+                        caughtEx = ex;
+                        response = ex.Response as HttpWebResponse;
+
+                        Debug.WriteLine($"DURATION TOTAL   |  {swTotal.ElapsedMilliseconds} ms");
+                        Debug.WriteLine($"EXCEPTION        |  {caughtEx}");
+
+                        if (response != null)
+                            Debug.WriteLine($"HTTP STATUS      |  {(int)response.StatusCode} {response.StatusCode}");
+                        else
+                            Debug.WriteLine($"HTTP STATUS      |  NO RESPONSE");
+
+                        // 401 Unauthorized → tvinga login och retry
+                        if (response != null && response.StatusCode == HttpStatusCode.Unauthorized && attempt < maxRetries)
+                        {
+                            Debug.WriteLine("RESULT           |  401 Unauthorized → RETRYING LOGIN");
+                            Login_Monitor.sessionId = null;
+                            Login_Monitor.Login_API(); // Synkron login
+                            response?.Close();
+                            continue;
+                        }
+
+                        // Alla andra fel → kasta
+                        response?.Close();
+                        Debug.WriteLine("RESULT           |  ERROR (NON-RETRYABLE)");
+                        Debug.WriteLine("====================================================");
+                        throw new Exception($"Monitor API error: {(int?)(response?.StatusCode) ?? 0} {response?.StatusCode ?? 0}", ex);
+                    }
                 }
 
-                throw new Exception("Monitor API: max retries reached.");
+                throw new Exception("Monitor API: maximum retry attempts reached.");
             }
             finally
             {
@@ -79,22 +155,39 @@ namespace DigitalProductionProgram.Monitor
 
 
 
+
+
+
+
         public static int CounterMonitorRequests;
-       // [DebuggerStepThrough]
+        [DebuggerStepThrough]
         public static List<T> GetFromMonitor<T>(params string[] queryOptions) where T : DTO, new()
         {
+            Cursor previous = Cursor.Current;
+            Cursor.Current = Cursors.WaitCursor;
             CounterMonitorRequests++;
+            
+            // Bygger Monitor-URL
             var query = BuildQuery<T>(queryOptions);
-            var response = Http_response(query);
 
-            if (response is null)
+            // Synkront GET-anrop
+            var response = Http_Response(query);
+           
+            if (response == null)
                 return null;
+            var responseStreamm = response.GetResponseStream();
 
-            var json = response.Content.ReadAsStringAsync().Result;
-
+            //Denna är snabb
             try
             {
-                return JsonSerializer.Deserialize<List<T>>(json, JsonOptions);
+               // var sw = new Stopwatch();
+               // sw.Start();
+                
+                var result = JsonSerializer.Deserialize<List<T>>(responseStreamm, JsonOptions);
+              //  MessageBox.Show(sw.ElapsedMilliseconds.ToString());
+                return result;
+
+                
             }
             catch (Exception ex)
             {
@@ -102,46 +195,81 @@ namespace DigitalProductionProgram.Monitor
                     MessageBox.Show($"JSON Error in GetFromMonitor:\n{ex}");
                 return null;
             }
+            finally
+            {
+                Cursor.Current = previous;
+                
+            }
         }
         [DebuggerStepThrough]
         public static T GetOneFromMonitor<T>(params string[] queryOptions) where T : DTO, new()
         {
+            Cursor previous = Cursor.Current;
+            Cursor.Current = Cursors.WaitCursor;
             CounterMonitorRequests++;
+
+            // Bygg query
             var query = BuildQuery<T>(queryOptions);
+
+            // Se till att den alltid bara tar 1 rad
             if (!query.Contains("$top="))
                 query += query.Contains("?$") ? "&$top=1" : "?$top=1";
 
-            var response = Http_response(query);
-            if (response is null)
+            // Synkron HTTP
+            var response = Http_Response(query);
+            if (response == null)
                 return default;
 
-            var json = response.Content.ReadAsStringAsync().Result;
+            string json;
 
-            var isIdSelect = queryOptions.Length > 0 && queryOptions[0].StartsWith("/");
+            // Läs JSON synkront från HttpWebResponse
+            using (var stream = response.GetResponseStream())
+            using (var reader = new StreamReader(stream))
+            {
+                json = reader.ReadToEnd();
+            }
+
+            // Är det en direkt-ID select (t.ex. "/12345")?
+            bool isIdSelect =
+                queryOptions.Length > 0 &&
+                queryOptions[0].StartsWith("/");
 
             try
             {
                 if (isIdSelect)
+                {
+                    // Returnera direkt T
                     return JsonSerializer.Deserialize<T>(json, JsonOptions);
-
-                var list = JsonSerializer.Deserialize<List<T>>(json, JsonOptions);
-                return list?.FirstOrDefault();
+                }
+                else
+                {
+                    // Annars returnera första elementet från en lista
+                    var list = JsonSerializer.Deserialize<List<T>>(json, JsonOptions);
+                    return list?.FirstOrDefault();
+                }
             }
             catch
             {
                 return default;
             }
+            finally
+            {
+                Cursor.Current = previous;
+            }
         }
-
         [DebuggerStepThrough]
         private static string BuildQuery<T>(string[] queryOptions) where T : DTO, new()
         {
-            var query = "";
+            // Bas-URL utan dubbel-slash-problem
+            string baseUrl =
+                $"https://{Database.MonitorHost}:8001/{Login_Monitor.LanguageCode}/{Database.MonitorCompany}/api/v1/{new T().URL}";
+
+            string query = "";
 
             if (queryOptions.Length > 0)
             {
-                var isIdSelect = queryOptions[0].StartsWith("/");
-                var i = isIdSelect ? 1 : 0;
+                bool isIdSelect = queryOptions[0].StartsWith("/");
+                int i = isIdSelect ? 1 : 0;
 
                 if (isIdSelect)
                     query = queryOptions[0];
@@ -153,8 +281,7 @@ namespace DigitalProductionProgram.Monitor
                     query += $"&${queryOptions[i]}";
             }
 
-            query = Login_Monitor.httpClient.BaseAddress + "/api/v1/" + new T().URL + query;
-            return query;
+            return baseUrl + query;
         }
 
 

@@ -36,7 +36,6 @@
             DataGridViewCellStyle dataGridViewCellStyle5 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle6 = new DataGridViewCellStyle();
             dgv_Module = new DataGridView();
-            label_LEFT = new Label();
             col_IsValueCritical = new DataGridViewCheckBoxColumn();
             col_TemplateID = new DataGridViewTextBoxColumn();
             col_IsList_Protocol = new DataGridViewCheckBoxColumn();
@@ -50,6 +49,7 @@
             col_NOM = new DataGridViewTextBoxColumn();
             col_MAX = new DataGridViewTextBoxColumn();
             col_StartUp_1 = new DataGridViewTextBoxColumn();
+            label_LEFT = new Label();
             ((System.ComponentModel.ISupportInitialize)dgv_Module).BeginInit();
             SuspendLayout();
             // 
@@ -101,17 +101,6 @@
             dgv_Module.EditingControlShowing += EditingControlShowing;
             dgv_Module.RowEnter += Module_RowEnter;
             dgv_Module.Leave += Module_Leave;
-            // 
-            // label_LEFT
-            // 
-            label_LEFT.BackColor = Color.White;
-            label_LEFT.Dock = DockStyle.Left;
-            label_LEFT.Location = new Point(0, 0);
-            label_LEFT.Margin = new Padding(0);
-            label_LEFT.Name = "label_LEFT";
-            label_LEFT.Size = new Size(20, 475);
-            label_LEFT.TabIndex = 899;
-            label_LEFT.Paint += Label_LEFT_Paint;
             // 
             // col_IsValueCritical
             // 
@@ -240,6 +229,17 @@
             col_StartUp_1.Name = "col_StartUp_1";
             col_StartUp_1.SortMode = DataGridViewColumnSortMode.NotSortable;
             col_StartUp_1.Width = 120;
+            // 
+            // label_LEFT
+            // 
+            label_LEFT.BackColor = Color.White;
+            label_LEFT.Dock = DockStyle.Left;
+            label_LEFT.Location = new Point(0, 0);
+            label_LEFT.Margin = new Padding(0);
+            label_LEFT.Name = "label_LEFT";
+            label_LEFT.Size = new Size(20, 475);
+            label_LEFT.TabIndex = 899;
+            label_LEFT.Paint += Label_LEFT_Paint;
             // 
             // Module
             // 

@@ -352,10 +352,21 @@ namespace DigitalProductionProgram.Help
 
         private static void Change_GUI_QuestionText(string?[] text)
         {
+            if (text != null)
+            {
+                infoText.btn_Yes.BackColor = CustomColors.Neutral_Back;
+                infoText.btn_Yes.ForeColor = CustomColors.Neutral_Front;
+                infoText.btn_Yes.FlatAppearance.MouseOverBackColor = CustomColors.CoolGrey;
+                
+                infoText.btn_No.BackColor = CustomColors.Neutral_Back;
+                infoText.btn_No.ForeColor = CustomColors.Neutral_Front;
+                infoText.btn_No.FlatAppearance.MouseOverBackColor = CustomColors.CoolGrey;
+            }
             if (text is null)
                 text = new[] { LanguageManager.GetString("yes"), LanguageManager.GetString("no") };
             infoText.btn_Yes.Text = text[0];
             infoText.btn_No.Text = text[1];
+
         }
 
 

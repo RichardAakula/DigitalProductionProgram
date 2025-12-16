@@ -1562,59 +1562,23 @@ ORDER BY OrderID DESC ";
             {
                 var sw = Stopwatch.StartNew();
 
-                // Relativ URL
-                string query = "api/v1/Inventory/Parts?" +
-                               "$select=ExtraDescription,ExtraFields.Identifier,ExtraFields.DecimalValue,ExtraFields.StringValue,ExtraFields.IntegerValue" +
-                               "&$filter=PartCodeId eq'1365775941822409216'" +
-                               "&$expand=ExtraFields";
+                string fullUrl =
+                    "https://stage-optig5.optinova.fi:8001/sv/001.1/api/v1/Inventory/Parts" +
+                    "?$select=ExtraDescription,ExtraFields.Identifier,ExtraFields.StringValue,ExtraFields.IntegerValue,ExtraFields.DecimalValue" +
+                    "&$filter=IsNull(BlockedById) AND PartCodeId Eq'1365775941822409216' AND ExtraDescription Eq'Munstycken TERMO'" +
+                    "&$expand=ExtraFields";
 
-                // Säkerställ login
-                Login_Monitor.Login_API();
-
-                // Lista för resultat
-                var result = new List<(string Identifier, string Value)>();
-
-                using (var stream = Login_Monitor.httpClient.GetStreamAsync(query).Result)
-                using (var sr = new StreamReader(stream))
-                using (var reader = new Newtonsoft.Json.JsonTextReader(sr))
-                {
-                    string? currentIdentifier = null;
-                    string? currentValue = null;
-
-                    while (reader.Read())
-                    {
-                        if (reader.TokenType == Newtonsoft.Json.JsonToken.PropertyName)
-                        {
-                            var propName = reader.Value?.ToString();
-                            if (propName == "Identifier")
-                            {
-                                reader.Read();
-                                currentIdentifier = reader.Value?.ToString();
-                            }
-                            else if (propName == "DecimalValue" || propName == "IntegerValue" || propName == "StringValue")
-                            {
-                                reader.Read();
-                                currentValue = reader.Value?.ToString();
-                            }
-                        }
-                        else if (reader.TokenType == Newtonsoft.Json.JsonToken.EndObject)
-                        {
-                            if (!string.IsNullOrEmpty(currentIdentifier) && !string.IsNullOrEmpty(currentValue))
-                            {
-                                result.Add((currentIdentifier, currentValue));
-                                currentIdentifier = null;
-                                currentValue = null;
-                            }
-                        }
-                    }
-                }
+                string json = Utilities.SyncHttpGet(fullUrl);
 
                 sw.Stop();
-                MessageBox.Show($"Total ExtraFields: {result.Count}\nElapsed ms: {sw.ElapsedMilliseconds}");
+
+                MessageBox.Show(
+                    $"JSON length: {json.Length}\n" +
+                    $"Elapsed: {sw.ElapsedMilliseconds} ms");
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error: {ex.Message}");
+                MessageBox.Show($"Error:\n{ex}");
             }
         }
 

@@ -1,15 +1,19 @@
 ﻿using DigitalProductionProgram.DatabaseManagement;
-using DigitalProductionProgram.MainWindow;
-using Microsoft.Data.SqlClient;
-using System.Collections.Generic;
-using System.Data;
-using System.Net;
-using System.Transactions;
-using System.Windows.Forms;
 using DigitalProductionProgram.Help;
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.Monitor.GET;
 using DigitalProductionProgram.PrintingServices;
 using DigitalProductionProgram.Protocols.Protocol;
+using Microsoft.Data.SqlClient;
+using System.Collections;
+using System.Collections.Generic;
+using System.Data;
+using System.Drawing;
+using System.Net;
+using System.Transactions;
+using System.Windows.Forms;
+using DigitalProductionProgram.Equipment;
+using OpenTK.Platform.MacOS;
 using TradeWright.UI.Forms;
 using static DigitalProductionProgram.Templates.Templates_Protocol;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Header;
@@ -20,30 +24,32 @@ namespace DigitalProductionProgram.Templates
     {
         public enum ListType { None, MeasureProtocol, Protocol, Processcard }
         public ListType TypeOfList;
-        private string listType;
-        private readonly int TemplateID;
+        public string listType;
+        private readonly int ProtocolDescriptionId;
+        // private readonly List<int> List_TemplateID;
         private static int ItemsFieldId;
         private static List<string> ListCodetext = new();
         private readonly IItemsProvider? itemsProvider;
-        public bool IsListActivated;
+        public static bool IsListActivated;
+        
         public interface IItemsProvider
         {
-            void Initialize(DataGridView dgvItems, DataGridView dgvListItems, ComboBox cbPartCode, ComboBox cbName, ComboBox cbSecondaryName, ComboBox cbProperties, ComboBox cbFilterCodeText, ComboBox cbSecondaryCodeText, ComboBox cbSortMode, TextBox tbText, int templateID);
+            void Initialize(DataGridView dgvItems, DataGridView dgvListItems, ComboBox cbPartCode, ComboBox cbName, ComboBox cbSecondaryName, ComboBox cbProperties, ComboBox cbFilterCodeText, ComboBox cbSecondaryCodeText, ComboBox cbSortMode, TextBox tbText, int protocolDescriptionId);
             void Load();
-            void SaveItem(string item);
+           // void SaveItem(string item);
         }
 
 
 
 
-        public ItemsBuilder(string parameter, ListType listType, int templateID, List<string> listCodetext = null)
+        public ItemsBuilder(string parameter, ListType listType, int protocolDescriptionId, List<string> listCodetext = null)
         {
             InitializeComponent();
 
             IsListActivated = false;
-            TypeOfList = listType;
-            
-            TemplateID = templateID;
+           
+            ProtocolDescriptionId = protocolDescriptionId;
+            // List_TemplateID = list_templateID;
             ListCodetext = listCodetext;
 
             if (listType == ListType.None)
@@ -55,31 +61,30 @@ namespace DigitalProductionProgram.Templates
                     listType = ListType.Protocol;
             }
             this.listType = listType.ToString();
-
+            tb_ListType.Text = listType.ToString();
+            TypeOfList = listType;
             switch (listType)
-                {
-                    case ListType.MeasureProtocol:
-                        this.Text = @"List for Measureprotocol";
-                        itemsProvider = new MeasureProtocolItems();
-                        break;
-                    case ListType.Processcard:
-                        this.Text = @"List for Processcards";
-                        itemsProvider = new ProcesscardItems();
-                        break;
-                    case ListType.Protocol:
-                        this.Text = @"List for Protocols";
-                        itemsProvider = new ProtocolItems();
-                        break;
-                }
+            {
+                case ListType.MeasureProtocol:
+                    this.Text = @"List for Measureprotocol";
+                    itemsProvider = new MeasureProtocolItems();
+                    break;
+                case ListType.Processcard:
+                    this.Text = @"List for Processcards";
+                    itemsProvider = new ProcesscardItems();
+                    break;
+                case ListType.Protocol:
+                    this.Text = @"List for Protocols";
+                    itemsProvider = new ProtocolItems();
+                    break;
+            }
 
 
             label_CodeText.Text = parameter;
-            itemsProvider?.Initialize(dgv_Items, dgv_ListItems, cb_PartCode, cb_Name,  cb_SecondaryName, cb_Properties, cb_FilterCodeText, cb_SecondaryCodeText, cb_SortMode, tb_AddNewItem,  templateID);
-            
-            if (dgv_Items.Rows.Count > 0)
-                tab_Main.SelectedTab = tab_Main.TabPages[0];
-            else
-                tab_Main.SelectedTab = tab_Main.TabPages[1];
+            itemsProvider?.Initialize(dgv_Items, dgv_ListItems, cb_PartCode, cb_Name, cb_SecondaryName, cb_Properties, cb_FilterCodeText, cb_SecondaryCodeText, cb_SortMode, tb_AddNewItem, protocolDescriptionId);
+
+           
+            Load_TotalLists();
 
         }
         private async void ItemsBuilder_Load(object sender, EventArgs e)
@@ -95,7 +100,7 @@ namespace DigitalProductionProgram.Templates
             cb_Name.DataSource = new List<Common.ExtraFieldTemplates>(list);
             cb_Name.DisplayMember = "Name";
             cb_Name.ValueMember = "Name";
-            cb_Name.SelectedIndex = - 1;
+            cb_Name.SelectedIndex = -1;
 
             cb_SecondaryName.DataSource = new List<Common.ExtraFieldTemplates>(list);
             cb_SecondaryName.DisplayMember = "Name";
@@ -104,10 +109,16 @@ namespace DigitalProductionProgram.Templates
 
             await Monitor.Monitor.Fill_ComboBox_PartCodes(cb_PartCode);
             cb_PartCode.SelectedIndex = -1;
+
             Fill_ComboBox_FilterColumns(cb_FilterCodeText, ListCodetext);
             Fill_ComboBox_FilterColumns(cb_SecondaryCodeText, ListCodetext);
 
             itemsProvider?.Load();
+
+            if (dgv_Items.Rows.Count > 0)
+                tab_Main.SelectedTab = tab_Main.TabPages[0];
+            else
+                tab_Main.SelectedTab = tab_Main.TabPages[1];
         }
         private void TabControl1_DrawItem(object? sender, DrawItemEventArgs e)
         {
@@ -167,7 +178,7 @@ namespace DigitalProductionProgram.Templates
             private TextBox? tb_Text;
             private int DescriptionID;
 
-            public void Initialize(DataGridView dgvItems, DataGridView dgvListItems, ComboBox cbPartCode, ComboBox cbName, ComboBox cbSecondaryName, ComboBox cbProperties, ComboBox cbFilterCodeText, ComboBox cbSecondaryCodeText, ComboBox cbSortMode, TextBox tbText, int templateID)
+            public void Initialize(DataGridView dgvItems, DataGridView dgvListItems, ComboBox cbPartCode, ComboBox cbName, ComboBox cbSecondaryName, ComboBox cbProperties, ComboBox cbFilterCodeText, ComboBox cbSecondaryCodeText, ComboBox cbSortMode, TextBox tbText, int protocolDescriptionId)
             {
                 dgv_Items = dgvItems;
                 dgv_ListItems = dgvListItems;
@@ -255,10 +266,10 @@ namespace DigitalProductionProgram.Templates
             private ComboBox? cb_FilterCodeText;
             private ComboBox? cb_SecondaryCodeText;
             private ComboBox? cb_SortMode;
-            private int TemplateID;
+            private int ProtocolDescriptionId;
 
 
-            public void Initialize(DataGridView dgvItems, DataGridView dgvListItems, ComboBox cbPartCode, ComboBox cbName, ComboBox cbSecondaryName, ComboBox cbProperties, ComboBox cbFilterCodeText, ComboBox cbSecondaryCodeText, ComboBox cbSortMode, TextBox tbText,  int templateID)
+            public void Initialize(DataGridView dgvItems, DataGridView dgvListItems, ComboBox cbPartCode, ComboBox cbName, ComboBox cbSecondaryName, ComboBox cbProperties, ComboBox cbFilterCodeText, ComboBox cbSecondaryCodeText, ComboBox cbSortMode, TextBox tbText, int protocolDescriptionId)
             {
                 dgv_Items = dgvItems;
                 dgv_ListItems = dgvListItems;
@@ -269,17 +280,19 @@ namespace DigitalProductionProgram.Templates
                 cb_FilterCodeText = cbFilterCodeText;
                 cb_SecondaryCodeText = cbSecondaryCodeText;
                 cb_SortMode = cbSortMode;
-                TemplateID = templateID;
+                ProtocolDescriptionId = protocolDescriptionId;
+                //List_TemplateID = list_templateID;
             }
 
             public void Load()
             {
-                Load_ListItems(dgv_Items, dgv_ListItems, cb_PartCode, cb_Name, cb_SecondaryName, cb_Properties, cb_FilterCodeText, cb_SecondaryCodeText, cb_SortMode, "Protocol", TemplateID);
+                Load_ListItems(dgv_Items, dgv_ListItems, cb_PartCode, cb_Name, cb_SecondaryName, cb_Properties, cb_FilterCodeText, cb_SecondaryCodeText, cb_SortMode, "Protocol", ProtocolDescriptionId);
+               
             }
-            public void SaveItem(string item)
-            {
-                Save_ListItem(TemplateID, item, dgv_Items.Rows.Count, "Protocol");
-            }
+            //public void SaveItem(string item)
+            //{
+            //    Save_ListItem(ProtocolDescriptionId, item, dgv_Items.Rows.Count, "Protocol");
+            //}
         }
         public class ProcesscardItems : IItemsProvider
         {
@@ -292,9 +305,9 @@ namespace DigitalProductionProgram.Templates
             private ComboBox? cb_FilterCodeText;
             private ComboBox? cb_SecondaryCodeText;
             private ComboBox? cb_SortMode;
-            private int TemplateID;
+            private int ProtocolDescriptionId;
 
-            public void Initialize(DataGridView dgvItems, DataGridView dgvListItems, ComboBox cbPartCode, ComboBox cbName, ComboBox cbSecondaryName, ComboBox cbProperties, ComboBox cbFilterCodeText, ComboBox cbSecondaryCodeText, ComboBox cbSortMode, TextBox tbText,  int templateID)
+            public void Initialize(DataGridView dgvItems, DataGridView dgvListItems, ComboBox cbPartCode, ComboBox cbName, ComboBox cbSecondaryName, ComboBox cbProperties, ComboBox cbFilterCodeText, ComboBox cbSecondaryCodeText, ComboBox cbSortMode, TextBox tbText, int protocolDescriptionId)
             {
                 dgv_Items = dgvItems;
                 dgv_ListItems = dgvListItems;
@@ -305,24 +318,25 @@ namespace DigitalProductionProgram.Templates
                 cb_FilterCodeText = cbFilterCodeText;
                 cb_SecondaryCodeText = cbSecondaryCodeText;
                 cb_SortMode = cbSortMode;
-                TemplateID = templateID;
+                ProtocolDescriptionId = protocolDescriptionId;
+                //List_TemplateID = list_templateID;
             }
 
             public void Load()
             {
-                Load_ListItems(dgv_Items, dgv_ListItems, cb_PartCode, cb_Name, cb_SecondaryName , cb_Properties, cb_FilterCodeText, cb_SecondaryCodeText, cb_SortMode, "Processcard", TemplateID);
+                Load_ListItems(dgv_Items, dgv_ListItems, cb_PartCode, cb_Name, cb_SecondaryName, cb_Properties, cb_FilterCodeText, cb_SecondaryCodeText, cb_SortMode, "Processcard", ProtocolDescriptionId);
             }
-            public void SaveItem(string item)
-            {
-                Save_ListItem(TemplateID, item, dgv_Items.Rows.Count, "Processcard");
-            }
+            //public void SaveItem(string item)
+            //{
+            //    Save_ListItem(ProtocolDescriptionId, item, dgv_Items.Rows.Count, "Processcard");
+            //}
         }
 
 
 
 
 
-        public static async Task<(List<string?> Items, bool IsItemsMultipleColumns, List<string> Cells_CodeText)> GetListItems(int TemplateID, string ListType, int dataType, Func<string, string?>? filterVariable = null)
+        public static async Task<(List<string?> Items, bool IsItemsMultipleColumns, List<string> Cells_CodeText)> GetListItems(int ProtocolDescriptionId, string ListType, int dataType, Func<string, string?>? filterVariable = null)
         {
             bool isMultipleColumns = false;
             var items = new List<string>();
@@ -333,10 +347,11 @@ namespace DigitalProductionProgram.Templates
                 FROM List.ItemFields as fields
                     LEFT JOIN List.Items as items 
                         ON fields.ItemId = items.Id
-                WHERE TemplateID = @templateID AND ListType = @listType
+                WHERE ProtocolDescriptionId = @protocoldescriptionid AND MainTemplateId = @maintemplateid AND ListType = @listType
                 ORDER BY ItemOrder";
             var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-            cmd.Parameters.AddWithValue("@templateID", TemplateID);
+            cmd.Parameters.AddWithValue("@protocoldescriptionid", ProtocolDescriptionId);
+            cmd.Parameters.AddWithValue("@maintemplateid", MainTemplate.ID);
             cmd.Parameters.AddWithValue("@listType", ListType);
             con.Open();
             await using var reader = await cmd.ExecuteReaderAsync();
@@ -364,7 +379,7 @@ namespace DigitalProductionProgram.Templates
                 filterCodeText = reader["FilterCodeText"] as string ?? reader["FilterCodeText"]?.ToString();
                 secondaryCodeText = reader["SecondaryCodeText"] as string ?? reader["SecondaryCodeText"]?.ToString();
             }
-            
+
             if (!string.IsNullOrEmpty(secondaryCodeText))
                 cells_CodeText.Add(secondaryCodeText);
 
@@ -381,60 +396,66 @@ namespace DigitalProductionProgram.Templates
             return (items, isMultipleColumns, cells_CodeText);
         }
 
-        private static void Load_ListItems(DataGridView dgv_Items, DataGridView dgv_ListItems, ComboBox cb_PartCode, ComboBox cb_Name, ComboBox cb_SecondaryName, ComboBox cb_Properties, ComboBox cb_FilterCodeText, ComboBox cb_SecondaryCodeText, ComboBox cb_SortMode, string ListType, int TemplateID)
+        private static void Load_ListItems(DataGridView dgv_Items, DataGridView dgv_ListItems, ComboBox cb_PartCode, ComboBox cb_Name, ComboBox cb_SecondaryName, ComboBox cb_Properties, ComboBox cb_FilterCodeText, ComboBox cb_SecondaryCodeText, ComboBox cb_SortMode, string ListType, int protocolDescriptionId)
         {
             dgv_ListItems.Rows.Clear();
             dgv_Items.Rows.Clear();
             using var con = new SqlConnection(Database.cs_Protocol);
             const string query =
                 @"
-                SELECT DISTINCT Id, items.Name, TemplateID, ItemOrder, ListType 
-                FROM List.Items as items
-                JOIN List.ItemFields as fields 
+                SELECT DISTINCT
+                    items.Id,
+                    items.Name,
+                    fields.ProtocolDescriptionId,
+                    fields.ItemOrder,
+                    fields.ListType
+                FROM List.Items AS items
+                LEFT JOIN List.ItemFields AS fields
                     ON items.Id = fields.ItemID
-                WHERE ListType = @listType
-                ORDER BY TemplateID, ItemOrder";
+                    AND fields.ListType = @listtype
+                ORDER BY fields.ProtocolDescriptionId, fields.ItemOrder;";
             var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-            cmd.Parameters.AddWithValue("@listType", ListType);
+            cmd.Parameters.AddWithValue("@listtype", ListType);
             con.Open();
             using var reader = cmd.ExecuteReader();
             while (reader.Read())
             {
+                IsListActivated = true;
                 var id = reader["Id"].ToString();
                 var item = reader["Name"].ToString();
-                int.TryParse(reader["TemplateID"].ToString(), out var templateID);
+                int.TryParse(reader["ProtocolDescriptionId"].ToString(), out var ProtocolDescriptionId);
                 var listType = reader["ListType"].ToString();
                 var exists = dgv_ListItems.Rows
                     .Cast<DataGridViewRow>()
                     .Any(r => r.Cells[0].Value?.ToString() == item);
                 if (!exists && item != null)
                     dgv_ListItems.Rows.Add(item);
-                if (TemplateID == templateID && listType == ListType)
+                if (protocolDescriptionId == ProtocolDescriptionId && listType == ListType)
                     dgv_Items.Rows.Add(id, item);
 
             }
 
-            Load_MonitorList(cb_PartCode, cb_Name, cb_SecondaryName, cb_Properties, cb_FilterCodeText, cb_SecondaryCodeText, cb_SortMode, TemplateID, ListType);
+            Load_MonitorList(cb_PartCode, cb_Name, cb_SecondaryName, cb_Properties, cb_FilterCodeText, cb_SecondaryCodeText, cb_SortMode, protocolDescriptionId, ListType);
         }
-
-        private static void Load_MonitorList(ComboBox cb_PartCode, ComboBox cb_Name, ComboBox cb_SecondaryName, ComboBox cb_Property, ComboBox cb_FilterCodeText, ComboBox cb_SecondaryCodeText, ComboBox cb_SortMode, int templateID, string listType)
+        private static void Load_MonitorList(ComboBox cb_PartCode, ComboBox cb_Name, ComboBox cb_SecondaryName, ComboBox cb_Property, ComboBox cb_FilterCodeText, ComboBox cb_SecondaryCodeText, ComboBox cb_SortMode, int protocolDescriptionId, string listType)
         {
             using var con = new SqlConnection(Database.cs_Protocol);
             const string query =
                 @"
                 SELECT ItemFieldsId, PartCode, Property, Name, SecondaryName, FilterCodeText, SecondaryCodeText, SortMode
                 FROM List.ItemFields 
-                WHERE TemplateID = @templateID AND ListType = @listType
-                ORDER BY TemplateID, ItemOrder";
+                WHERE ProtocolDescriptionId = @protocoldescriptionid AND MainTemplateId = @maintemplateid AND ListType = @listType
+                ORDER BY ProtocolDescriptionId, ItemOrder";
             var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@listType", listType);
-            cmd.Parameters.AddWithValue("@templateid", templateID);
+            cmd.Parameters.AddWithValue("@protocoldescriptionid", protocolDescriptionId);
+            cmd.Parameters.AddWithValue("@maintemplateid", MainTemplate.ID);
             con.Open();
             using var reader = cmd.ExecuteReader();
             while (reader.Read())
             {
+                IsListActivated = true;
                 ItemsFieldId = reader["ItemFieldsId"] != DBNull.Value ? Convert.ToInt32(reader["ItemFieldsId"]) : 0;
-                string test = reader["PartCode"].ToString();
                 cb_PartCode.SelectedItem = reader["PartCode"].ToString();
                 cb_Name.SelectedValue = reader["Name"].ToString();
                 cb_SecondaryName.SelectedValue = reader["SecondaryName"].ToString();
@@ -443,13 +464,87 @@ namespace DigitalProductionProgram.Templates
                 cb_SecondaryCodeText.SelectedItem = reader["SecondaryCodeText"].ToString();
                 cb_SortMode.SelectedItem = reader["SortMode"].ToString();
             }
+            
         }
-
-        private static void Save_ListItem(int templateID, string itemText, int itemOrder, string listType)
+        private void Load_TotalLists()
         {
             using var con = new SqlConnection(Database.cs_Protocol);
+            const string query = @"
+                SELECT COUNT(DISTINCT MainTemplateID) AS TotalLists
+                FROM List.ItemFields
+                WHERE ProtocolDescriptionId = @protocoldescriptionid AND ListType = @listtype";
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            cmd.Parameters.AddWithValue("@protocoldescriptionid", ProtocolDescriptionId);
+            cmd.Parameters.AddWithValue("@listtype", listType);
             con.Open();
+            var totalLists = cmd.ExecuteScalar();
+            label_TotalLists.Text = $@"Denna lista finns i {totalLists} Mallar";
+        }
+        //private static void Save_ListItem(int protocolDescriptionId, int mainTemplateID, string itemText, int itemOrder, string listType)
+        //{
 
+        //    using var con = new SqlConnection(Database.cs_Protocol);
+        //    con.Open();
+        //    IsListActivated = true;
+        //    using var tran = con.BeginTransaction();
+
+        //    // 1. Lägg till i List.Items om det inte redan finns, och hämta ID:t
+        //    var getItemIdQuery = @"
+        //        IF NOT EXISTS (SELECT 1 FROM List.Items WHERE Name = @itemtext)
+        //        BEGIN
+        //            INSERT INTO List.Items (Name, Description, CreatedBy)
+        //            VALUES (@itemtext, @description, @createdby);
+        //            SELECT SCOPE_IDENTITY();
+        //        END
+        //        ELSE
+        //        BEGIN
+        //            SELECT Id FROM List.Items WHERE Name = @itemtext;
+        //        END";
+
+        //    int itemId;
+        //    using (var cmd = new SqlCommand(getItemIdQuery, con, tran))
+        //    {
+        //        cmd.Parameters.AddWithValue("@itemtext", itemText);
+        //        cmd.Parameters.AddWithValue("@description", DBNull.Value);
+        //        cmd.Parameters.AddWithValue("@createdby", User.Person.Name);
+
+        //        itemId = Convert.ToInt32(cmd.ExecuteScalar());
+        //    }
+
+        //    // 2. Lägg till i List.ItemFields om kopplingen inte redan finns
+        //    var insertFieldQuery = @"
+        //        IF NOT EXISTS 
+        //        (
+        //            SELECT 1 FROM List.ItemFields 
+        //            WHERE ItemId = @itemid AND ProtocolDescriptionId = @protocoldescriptionid AND MainTemplateId = @maintemplateid AND ListType = @listtype
+        //        )
+        //        BEGIN
+        //            INSERT INTO List.ItemFields (ItemId, ProtocolDescriptionId, MainTemplateID, ListType, ItemOrder, CreatedBy)
+        //            VALUES (@itemid, @protocoldescriptionid, @maintemplateid, @listtype, @itemorder, @createdby);
+        //        END";
+
+        //    using (var cmd = new SqlCommand(insertFieldQuery, con, tran))
+        //    {
+        //        cmd.Parameters.AddWithValue("@itemid", itemId);
+        //        cmd.Parameters.AddWithValue("@protocoldescriptionid", protocolDescriptionId);
+        //        cmd.Parameters.AddWithValue("@maintemplateid", mainTemplateID);
+        //        cmd.Parameters.AddWithValue("@listtype", listType);
+        //        cmd.Parameters.AddWithValue("@itemorder", itemOrder);
+        //        cmd.Parameters.AddWithValue("@createdby", User.Person.Name);
+
+        //        cmd.ExecuteNonQuery();
+        //    }
+
+        //    tran.Commit();
+
+        //}
+
+        private void Save_ListItem(int protocolDescriptionId, int mainTemplateID, string itemText, int itemOrder, string listType)
+        {
+
+            using var con = new SqlConnection(Database.cs_Protocol);
+            con.Open();
+            IsListActivated = true;
             using var tran = con.BeginTransaction();
 
             // 1. Lägg till i List.Items om det inte redan finns, och hämta ID:t
@@ -480,17 +575,18 @@ namespace DigitalProductionProgram.Templates
                 IF NOT EXISTS 
                 (
                     SELECT 1 FROM List.ItemFields 
-                    WHERE ItemId = @itemid AND TemplateID = @templateid AND ListType = @listtype
+                    WHERE ItemId = @itemid AND ProtocolDescriptionId = @protocoldescriptionid AND MainTemplateId = @maintemplateid AND ListType = @listtype
                 )
                 BEGIN
-                    INSERT INTO List.ItemFields (ItemId, TemplateID, ListType, ItemOrder, CreatedBy)
-                    VALUES (@itemid, @templateid, @listtype, @itemorder, @createdby);
+                    INSERT INTO List.ItemFields (ItemId, ProtocolDescriptionId, MainTemplateID, ListType, ItemOrder, CreatedBy)
+                    VALUES (@itemid, @protocoldescriptionid, @maintemplateid, @listtype, @itemorder, @createdby);
                 END";
 
             using (var cmd = new SqlCommand(insertFieldQuery, con, tran))
             {
                 cmd.Parameters.AddWithValue("@itemid", itemId);
-                cmd.Parameters.AddWithValue("@templateid", templateID);
+                cmd.Parameters.AddWithValue("@protocoldescriptionid", protocolDescriptionId);
+                cmd.Parameters.AddWithValue("@maintemplateid", mainTemplateID);
                 cmd.Parameters.AddWithValue("@listtype", listType);
                 cmd.Parameters.AddWithValue("@itemorder", itemOrder);
                 cmd.Parameters.AddWithValue("@createdby", User.Person.Name);
@@ -499,13 +595,13 @@ namespace DigitalProductionProgram.Templates
             }
 
             tran.Commit();
-        }
 
-        private void Save_MonitorList(int templateID)
+        }
+        private void Save_MonitorList(int protocolDescriptionId, int mainTemplateId)
         {
             if (dgv_Items.Rows.Count > 0)
                 return;
-
+            IsListActivated = true;
             using var con = new SqlConnection(Database.cs_Protocol);
             con.Open();
 
@@ -513,7 +609,7 @@ namespace DigitalProductionProgram.Templates
                 IF EXISTS 
                 (
                     SELECT 1 FROM List.ItemFields
-                    WHERE TemplateID = @templateid AND ListType = @listtype
+                    WHERE ProtocolDescriptionID = @protocoldescriptionid AND MainTemplateId = @maintemplateid AND ListType = @listtype
                 )
                 BEGIN
                     UPDATE List.ItemFields
@@ -531,13 +627,14 @@ namespace DigitalProductionProgram.Templates
                 END
                 ELSE
                 BEGIN
-                    INSERT INTO List.ItemFields (TemplateID, PartCode, EndPoint, Property, Name, SecondaryName, FilterCodeText, SecondaryCodeText, SortMode, ListType, CreatedBy)
-                    VALUES (@templateid, @partcode, @endpoint, @property, @name, @secondaryname, @filtercodetext, @secondarycodetext, @sortmode, @listtype, @username)
+                    INSERT INTO List.ItemFields (ProtocolDescriptionId, MainTemplateId, PartCode, EndPoint, Property, Name, SecondaryName, FilterCodeText, SecondaryCodeText, SortMode, ListType, CreatedBy)
+                    VALUES (@protocoldescriptionid, @maintemplateid, @partcode, @endpoint, @property, @name, @secondaryname, @filtercodetext, @secondarycodetext, @sortmode, @listtype, @username)
                  END";
 
             using var cmd = new SqlCommand(query, con);
             cmd.Parameters.AddWithValue("@id", ItemsFieldId);
-            cmd.Parameters.AddWithValue("@templateid", templateID);
+            cmd.Parameters.AddWithValue("@protocoldescriptionid", protocolDescriptionId);
+            cmd.Parameters.AddWithValue("@maintemplateid", mainTemplateId);
             cmd.Parameters.AddWithValue("@partcode", cb_PartCode.SelectedValue?.ToString());
             cmd.Parameters.AddWithValue("@endpoint", "Inventory+Parts");
             SQL_Parameter.String(cmd.Parameters, "@property", cb_Properties.SelectedItem?.ToString());
@@ -555,16 +652,7 @@ namespace DigitalProductionProgram.Templates
         {
             ItemsFieldId = 0;
             using var con = new SqlConnection(Database.cs_Protocol);
-            var query = @"SELECT ProtocolDescriptionID FROM Protocol.Template WHERE ID = @templateid";
-            var cmd = new SqlCommand(query, con);
-            cmd.Parameters.AddWithValue("@templateid", TemplateID);
-            con.Open();
-
-            var result = cmd.ExecuteScalar()?.ToString();
-            int.TryParse(result, out var protocolDescriptionId);
-
-            using var con2 = new SqlConnection(Database.cs_Protocol);
-            query = @"
+            string query = @"
                 SELECT Name, Revision, ID
                 FROM Protocol.MainTemplate 
                 WHERE ID IN 
@@ -580,104 +668,193 @@ namespace DigitalProductionProgram.Templates
                             (
                                 SELECT 1 
                                 FROM List.ItemFields 
-                                WHERE TemplateID = Protocol.Template.ID
-                                AND ListType = @listtype
+                                WHERE ProtocolDescriptionId = Protocol.Template.ProtocolDescriptionID
+                                    AND ListType = @listtype
+                                    AND MainTemplateID = Protocol.MainTemplate.ID 
                             )
                     )
-                )";
-            var cmd2 = new SqlCommand(query, con2);
-            cmd2.Parameters.AddWithValue("@protocoldescriptionid", protocolDescriptionId);
-            cmd2.Parameters.AddWithValue("@listtype", listType);
-            con2.Open();
-
-            var reader2 = cmd2.ExecuteReader();
-            while (reader2.Read())
-            {
-                var name = reader2["Name"].ToString();
-                var revision = reader2["Revision"].ToString();
-                int.TryParse(reader2["ID"].ToString(), out var mainTemplateID);
-                InfoText.Question($"{name} - Revision {revision} har också fältet {label_CodeText.Text} i mallen.\n" +
-                                 $"Vill du koppla listan till denna mall?", CustomColors.InfoText_Color.Ok, "", this);
-                if (InfoText.answer == InfoText.Answer.Yes)
-                {
-                    var newTemplateID = NewTemplateID(mainTemplateID, protocolDescriptionId);
-                    foreach (var newTemplateIDItem in newTemplateID)
-                        if (newTemplateIDItem != 0)
-                            Save_MonitorList(newTemplateIDItem);
-                        else
-                            InfoText.Question($"Det gick inte att hitta en mall att koppla mot, kontakta Admin!", CustomColors.InfoText_Color.Bad, "WARNING!", this);
-                }
-
-            }
-        }
-        private List<int> NewTemplateID(int mainTemplateID, int protocolDescriptionID)
-        {
-            var list = new List<int>();
-            using var con = new SqlConnection(Database.cs_Protocol);
-            var query = @"
-                SELECT ID 
-                FROM Protocol.Template 
-                WHERE ProtocolDescriptionID = @protocolDescriptionID
-                    AND FormTemplateID IN (SELECT FormTemplateID FROM Protocol.FormTemplate WHERE MainTemplateID = @newMainTemplateID)";
+                )
+                ORDER BY Name";
             var cmd = new SqlCommand(query, con);
-            cmd.Parameters.AddWithValue("@protocolDescriptionID", protocolDescriptionID);
-            cmd.Parameters.AddWithValue("@newMainTemplateID", mainTemplateID);
+            cmd.Parameters.AddWithValue("@protocoldescriptionid", ProtocolDescriptionId);
+            cmd.Parameters.AddWithValue("@listtype", listType);
             con.Open();
+
             var reader = cmd.ExecuteReader();
             while (reader.Read())
             {
-                int.TryParse(reader["ID"].ToString(), out var templateID);
-                list.Add(templateID);
+                var name = reader["Name"].ToString();
+                var revision = reader["Revision"].ToString();
+                int.TryParse(reader["ID"].ToString(), out var mainTemplateID);
+                InfoText.Question($"{name} - Revision {revision} har också fältet {label_CodeText.Text} i mallen.\n" +
+                                 $"Vill du koppla listorna för Processkort samt Protokoll för denna mall?", CustomColors.InfoText_Color.Ok, "", this);
+                if (InfoText.answer == InfoText.Answer.Yes)
+                    Copy_ListsToNewTemplate(MainTemplate.ID, mainTemplateID, ProtocolDescriptionId);
+                    
             }
-            return list;
         }
 
-        
-        public static void Copy_OwnListToNewTemplate(int oldMainTemplateID, int newMainTemplateID)
+        public class TemplateMap
         {
-            //Osäker att detta funkar?
-            //Det funkade inte när jag skapade en ny revision av Extrudering Tryck
+            public int TemplateID { get; set; }
+            public int ProtocolDescriptionID { get; set; }
+            public int? ColumnIndex { get; set; }
+
+            public int ItemFieldsId { get; set; }
+        }
+
+        private static List<TemplateMap> ListOldTemplateID(int oldMainTemplateID)
+        {
+            var result = new List<TemplateMap>();
             using var con = new SqlConnection(Database.cs_Protocol);
-            const string query = @"SELECT ID, ProtocolDescriptionID FROM Protocol.Template WHERE FormTemplateID IN (SELECT FormTemplateID FROM Protocol.FormTemplate WHERE MainTemplateID = @oldmaintemplateid)";
+            const string query = @"
+                SELECT ItemFieldsId, TemplateID, ProtocolDescriptionID, ColumnIndex
+                FROM List.ItemFields as fields
+                JOIN Protocol.Template as template
+	                ON fields.TemplateID = template.ID
+                WHERE 
+                (
+                    TemplateID IN 
+                    (
+                        SELECT ID 
+                        FROM Protocol.Template
+                        WHERE FormTemplateID IN
+                        (
+                            SELECT FormTemplateID
+                            FROM Protocol.FormTemplate
+                            WHERE MainTemplateID = @oldmaintemplateid)))";
             var cmd = new SqlCommand(query, con);
             cmd.Parameters.AddWithValue("@oldmaintemplateid", oldMainTemplateID);
             con.Open();
             var reader = cmd.ExecuteReader();
             while (reader.Read())
             {
-                int.TryParse(reader["ID"].ToString(), out var templateID);
-                int.TryParse(reader["ProtocolDescriptionID"].ToString(), out var protocolDescriptionID);
-
-                using var con2 = new SqlConnection(Database.cs_Protocol);
-                const string query2 = @"SELECT ItemText, ItemOrder, ListType FROM List.ListItems WHERE TemplateID = @templateID";
-                var cmd2 = new SqlCommand(query2, con2);
-                cmd2.Parameters.AddWithValue("@templateID", templateID);
-                con2.Open();
-                var reader2 = cmd2.ExecuteReader();
-                while (reader2.Read())
+                result.Add(new TemplateMap
                 {
-                    var itemText = reader2["ItemText"].ToString();
-                    int.TryParse(reader2["ItemOrder"].ToString(), out var itemOrder);
-                    var listType = reader2["ListType"].ToString();
-                    using var con3 = new SqlConnection(Database.cs_Protocol);
-                    const string query3 = @"SELECT TOP(1) ID 
-                                FROM Protocol.Template 
-                                WHERE ProtocolDescriptionID = @protocolDescriptionID
-                                AND FormTemplateID IN (SELECT FormTemplateID FROM Protocol.FormTemplate WHERE MainTemplateID = @newMainTemplateID)
-                                ORDER BY ID";
-                    var cmd3 = new SqlCommand(query3, con3);
-                    cmd3.Parameters.AddWithValue("@protocolDescriptionID", protocolDescriptionID);
-                    cmd3.Parameters.AddWithValue("@newMainTemplateID", newMainTemplateID);
-                    con3.Open();
-                    var result = cmd3.ExecuteScalar(); // hämtar första kolumnen i första raden
-                    int.TryParse(result?.ToString(), out var newTemplateID);
-
-                    Save_ListItem(newTemplateID, itemText, itemOrder, listType);
-                }
+                    ItemFieldsId = Convert.ToInt32(reader.GetValue(0)),
+                    TemplateID = Convert.ToInt32(reader.GetValue(1)),
+                    ProtocolDescriptionID = Convert.ToInt32(reader.GetValue(2)),
+                    ColumnIndex = reader.IsDBNull(3) ? (int?)null : Convert.ToInt32(reader.GetValue(3))
+                });
             }
 
+            return result;
         }
+        private static List<TemplateMap> ListNewTemplateID(int newMainTemplateID)
+        {
+            var result = new List<TemplateMap>();
+            using var con = new SqlConnection(Database.cs_Protocol);
+            const string query = @"
+                SELECT ID, ProtocolDescriptionID, ColumnIndex
+                FROM Protocol.Template as template
+                WHERE 
+                (
+                    ID IN 
+                    (
+                        SELECT ID 
+                        FROM Protocol.Template
+                        WHERE FormTemplateID IN
+                        (
+                            SELECT FormTemplateID
+                            FROM Protocol.FormTemplate
+                            WHERE MainTemplateID = @newmaintemplateid)))";
+            var cmd = new SqlCommand(query, con);
+            cmd.Parameters.AddWithValue("@newmaintemplateid", newMainTemplateID);
+            con.Open();
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                result.Add(new TemplateMap
+                {
+                    TemplateID = Convert.ToInt32(reader.GetValue(0)),
+                    ProtocolDescriptionID = Convert.ToInt32(reader.GetValue(1)),
+                    ColumnIndex = reader.IsDBNull(2) ? (int?)null : Convert.ToInt32(reader.GetValue(2))
+                });
+            }
+            return result;
+        }
+        public static void Copy_ListsToNewTemplate(int? oldMainTemplateID, int newMainTemplateID, int? protocolDescriptionId = null)
+        {
+            using var con = new SqlConnection(Database.cs_Protocol);
+            var query = @"
+                SELECT 
+                    ItemFieldsId
+                FROM List.ItemFields
+                WHERE MainTemplateId = @maintemplateid";
+            if (protocolDescriptionId != null)
+                query += @"
+                    AND ProtocolDescriptionId = @protocoldescriptionid";
+            query += @"
+                AND EXISTS
+                (
+                    SELECT 1 FROM Protocol.Template
+                    WHERE ProtocolDescriptionID = List.ItemFields.ProtocolDescriptionId
+                        AND Template.FormTemplateID IN 
+                        (
+                            SELECT FormTemplateID
+                            FROM Protocol.FormTemplate
+                            WHERE MainTemplateID = @maintemplateid  
+                        )
+                )";
+            using var cmd = new SqlCommand(query, con);
+            cmd.Parameters.AddWithValue("@maintemplateid", oldMainTemplateID);
+            cmd.Parameters.AddWithValue("@protocoldescriptionid", protocolDescriptionId);
+            con.Open();
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                var itemFieldsId = reader.GetInt32(0);
+                Copy_ListItem(itemFieldsId, newMainTemplateID);
+            }
+        }
+        private static void Copy_ListItem(int itemFieldsId, int newMainTemplateId)
+        {
+            using var con = new SqlConnection(Database.cs_Protocol);
+            const string query = @"
+                INSERT INTO List.ItemFields
+                (
+                    ProtocolDescriptionId,
+                    MainTemplateId, 
+                    ItemId,
+                    ItemText,
+                    ItemOrder,
+                    PartCode,
+                    EndPoint,
+                    Property,
+                    Name,
+                    SecondaryName,
+                    FilterCodeText,
+                    SecondaryCodeText,
+                    SortMode,
+                    ListType,
+                    CreatedBy            
+                )
+                SELECT
+                    ProtocolDescriptionID,
+                    @newmaintemplateid AS MainTemplateId,
+                    ItemId,
+                    ItemText,
+                    ItemOrder,
+                    PartCode,
+                    EndPoint,
+                    Property,
+                    Name,
+                    SecondaryName,
+                    FilterCodeText,
+                    SecondaryCodeText,
+                    SortMode,
+                    ListType,
+                    @createdby            
+                FROM List.ItemFields
+                WHERE ItemFieldsId = @itemfieldsid;";
+            using var cmd = new SqlCommand(query, con);
+            cmd.Parameters.AddWithValue("@itemfieldsid", itemFieldsId);
+            cmd.Parameters.AddWithValue("@newmaintemplateid", newMainTemplateId);
+            cmd.Parameters.AddWithValue("@createdby", User.Person.Name);
 
+            con.Open();
+            cmd.ExecuteNonQuery();
+        }
         public void Fill_ComboBox_FilterColumns(ComboBox comboBox, List<string> listCodeText)
         {
             comboBox.Items.Clear();
@@ -688,6 +865,23 @@ namespace DigitalProductionProgram.Templates
                 comboBox.Items.Add(codeText);
         }
 
+        private void ListType_Enter(object sender, EventArgs e)
+        {
+            var choose_ListType = new Choose_Item(["Processcard", "Protocol"], [tb_ListType], false, false, true);
+            choose_ListType.ShowDialog();
+            switch (tb_ListType.Text)
+            {
+                case "Processcard":
+                    TypeOfList = ListType.Processcard;
+                    listType = "Processcard";
+                    break;
+                case "Protocol":
+                    TypeOfList = ListType.Protocol;
+                    listType = "Protocol";
+                    break;
+            }
+            Load_TotalLists();
+        }
         private void DeleteItem_Click(object sender, EventArgs e)
         {
             if (dgv_Items.SelectedRows.Count > 0)
@@ -711,7 +905,8 @@ namespace DigitalProductionProgram.Templates
             if (!string.IsNullOrEmpty(tb_AddNewItem.Text))
             {
                 dgv_Items.Rows.Add(tb_AddNewItem.Text);
-                itemsProvider.SaveItem(tb_AddNewItem.Text);
+                Save_ListItem(ProtocolDescriptionId, MainTemplate.ID, tb_AddNewItem.Text, dgv_Items.Rows.Count, listType);
+                //itemsProvider.SaveItem(tb_AddNewItem.Text);
                 itemsProvider.Load();
                 tb_AddNewItem.Text = string.Empty;
             }
@@ -723,25 +918,32 @@ namespace DigitalProductionProgram.Templates
             var item = dgv_ListItems.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString();
 
             if (item != null)
-                itemsProvider.SaveItem(item);
+                Save_ListItem(ProtocolDescriptionId, MainTemplate.ID, item, dgv_Items.Rows.Count, listType);
+                //itemsProvider.SaveItem(item);
             itemsProvider.Load();
         }
         private void Close_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(cb_PartCode.SelectedValue?.ToString()))
+            if (tab_Main.SelectedTab == page_MonitorLists && string.IsNullOrEmpty(cb_PartCode.SelectedValue?.ToString()))
             {
                 InfoText.Show("Du måste fylla i Typ av Verktyg för du sparar.", CustomColors.InfoText_Color.Bad, "Warning!", this);
                 cb_PartCode.Focus();
                 return;
             }
-            Save_MonitorList(TemplateID);
+            //foreach(var templateId in List_TemplateID)
+            Save_MonitorList(ProtocolDescriptionId, MainTemplate.ID);
             CheckForTemplatesToUpdate();
 
             this.Close();
         }
+        private void CopyListToOtherTemplates_Click(object sender, EventArgs e)
+        {
+            CheckForTemplatesToUpdate();
+            Load_TotalLists();
+        }
         private void ItemsBuilder_FormClosed(object sender, FormClosedEventArgs e)
         {
-            IsListActivated = dgv_Items.Rows.Count > 0;
+            //IsListActivated = dgv_Items.Rows.Count > 0;
         }
 
         private void cb_Module_SelectedIndexChanged(object sender, EventArgs e)
@@ -753,7 +955,6 @@ namespace DigitalProductionProgram.Templates
                     break;
             }
         }
-       
 
         
     }

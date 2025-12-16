@@ -68,8 +68,8 @@ namespace DigitalProductionProgram.Templates
         private PreviewTemplate preview;
 
 
-        public static List<string> List_TemplateNames = new List<string>();
-        public static List<string> List_RevisionNr = new List<string>();
+        public static List<string> List_TemplateNames = new();
+        public static List<string> List_RevisionNr = new();
 
         public static class TemplateButtons
         {
@@ -319,13 +319,15 @@ namespace DigitalProductionProgram.Templates
             MainTemplate.Save_NewTemplate(cb_TemplateName.Text, cb_TemplateRevision.Text, chb_IsUsingPreFab.Checked, chb_IsProductionLineNeeded.Checked, cb_LineClearance_Revision.Text, cb_MainInfo_Template.Text, tb_Workoperation.Text, flp_Main);
             MainTemplate.Load_MainTemplateID(cb_TemplateName.Text, cb_TemplateRevision.Text);
 
-            ItemsBuilder.Copy_OwnListToNewTemplate(oldMainTemplateID, MainTemplate.ID);
+            InfoText.Question("Vill du kopiera listor från den tidigare Revisionen av mallen?\n" +
+                              "Om du INTE kopierar dom måste du manuellt skapa listor för alla fält som använder sig av listor.", CustomColors.InfoText_Color.Info, null, this);
+            if (InfoText.answer == InfoText.Answer.Yes)
+                ItemsBuilder.Copy_ListsToNewTemplate(oldMainTemplateID, MainTemplate.ID);
 
             InfoText.Question("" +
                           $"Den nya mallen {cb_TemplateName.Text} är nu sparad och är nu klar att börja skapa nya processkort för.\n" +
                           "Vill du koppla gamla artikelnummer till den nya mallen?\n" +
-                          "Om du svarar 'Ja' så öppnas ett nytt formulär där du får välja vilka artiklar som skall kopplas om",
-                CustomColors.InfoText_Color.Info, null, this);
+                          "Om du svarar 'Ja' så öppnas ett nytt formulär där du får välja vilka artiklar som skall kopplas om", CustomColors.InfoText_Color.Info, null, this);
             if (InfoText.answer == InfoText.Answer.Yes)
             {
                 var partsManager = new Connect_Templates(cb_TemplateName.Text, cb_TemplateRevision.Text, false, Connect_Templates.SourceType.Type_Protocols);
@@ -334,6 +336,7 @@ namespace DigitalProductionProgram.Templates
             LoadRevisions();
             Fill_MainTemplate_Names();
         }
+       
         private async void Update_Template_Click(object sender, EventArgs e)
         {
             if (!IsOkSaveTemplate)
@@ -617,7 +620,7 @@ namespace DigitalProductionProgram.Templates
             {
                 dgv_ProtocolsActive_Main.Rows.RemoveAt(row);
                 dgv_ProtocolsActive_Main.Rows.Insert(row - 1, rowToMove);
-                dgv_ProtocolsActive_Main.CurrentCell = dgv_ProtocolsActive_Main.Rows[row - 1].Cells[1];
+                dgv_ProtocolsActive_Main.CurrentCell = dgv_ProtocolsActive_Main.Rows[row - 1].Cells[2];
                 TemplateButtons.IsOkUpdateTemplate = false;
             }
         }
@@ -629,7 +632,7 @@ namespace DigitalProductionProgram.Templates
             {
                 dgv_ProtocolsActive_Main.Rows.RemoveAt(row);
                 dgv_ProtocolsActive_Main.Rows.Insert(row + 1, rowToMove);
-                dgv_ProtocolsActive_Main.CurrentCell = dgv_ProtocolsActive_Main.Rows[row + 1].Cells[1];
+                dgv_ProtocolsActive_Main.CurrentCell = dgv_ProtocolsActive_Main.Rows[row + 1].Cells[2];
                 TemplateButtons.IsOkUpdateTemplate = false;
             }
         }
@@ -955,10 +958,11 @@ namespace DigitalProductionProgram.Templates
                 if (col is DataGridViewButtonColumn buttonColumn)
                 {
                     buttonColumn.FlatStyle = FlatStyle.Flat;
-                    buttonColumn.DefaultCellStyle.BackColor = Color.FromArgb(120, 120, 120);
-                    buttonColumn.DefaultCellStyle.ForeColor = Color.Black;
+                    buttonColumn.DefaultCellStyle.BackColor = CustomColors.Ok_Back;
+                    buttonColumn.DefaultCellStyle.ForeColor = CustomColors.Ok_Front;
                     buttonColumn.Text = "Edit List";
                     buttonColumn.UseColumnTextForButtonValue = true;
+
                 }
                 if (isLocked)
                     col.ReadOnly = true;
@@ -1033,6 +1037,7 @@ namespace DigitalProductionProgram.Templates
             private static bool _suppressCellValueChanged = false;
             private static void Dgv_CellValueChanged(object? sender, DataGridViewCellEventArgs e)
             {
+                if (IsLoading) return;
                 if (_suppressCellValueChanged) return;
 
                 var dgv = sender as DataGridView;
@@ -1087,10 +1092,11 @@ namespace DigitalProductionProgram.Templates
                 // Ta cellparameter (ex: col_CodeText)
                 var cellParameter = dgv.Rows[rowIndex].Cells["col_CodeText"];
                 // Försök parse description/template (säkert)
-                int.TryParse(dgv.Rows[rowIndex].Cells["col_ProtocolDescriptionID"].Value?.ToString(), out var descriptionID);
-                int.TryParse(dgv.Rows[rowIndex].Cells["col_TemplateID"].Value?.ToString(), out var templateID);
+               // int.TryParse(dgv.Rows[rowIndex].Cells["col_TemplateID"].Value?.ToString(), out var templateID);
+                int.TryParse(dgv.Rows[rowIndex].Cells["col_ProtocolDescriptionID"].Value?.ToString(), out var protocolDescriptionId);
 
                 // Samla alla CodeText från grid (kan optimeras om du vill)
+                //Denna används i ItemsBuilder när man ska filtrear listor
                 var list_CodeText = new List<string>();
                 foreach (DataGridViewRow row in dgv.Rows)
                 {
@@ -1115,14 +1121,10 @@ namespace DigitalProductionProgram.Templates
 
                     case "col_EditList":
                         // col_EditLists är knapp i din grid
-                        if (IsLoading) // din flagga från tidigare
+                        if (IsLoading)
                             return;
 
-                        var itemsBuilder = new ItemsBuilder(parameter: cellParameter?.Value?.ToString() ?? string.Empty, listType: ItemsBuilder.ListType.None, // eller nullable enum om du ändrat
-                            templateID: templateID,
-                            listCodetext: list_CodeText
-                        );
-
+                        var itemsBuilder = new ItemsBuilder(parameter: cellParameter?.Value?.ToString() ?? string.Empty, listType: ItemsBuilder.ListType.None, protocolDescriptionId,  list_CodeText);//Template.List_RelatedsTemplateIds(protocolDescriptionId)
                         itemsBuilder.ShowDialog();
 
                         // Om ItemsBuilder ändrar en cell i grid så vill vi undertrycka event medan vi uppdaterar
@@ -1133,10 +1135,10 @@ namespace DigitalProductionProgram.Templates
                             switch (itemsBuilder.TypeOfList)
                             {
                                 case ItemsBuilder.ListType.Processcard:
-                                    dgv.Rows[rowIndex].Cells["col_ProcesscardList"].Value = itemsBuilder.IsListActivated;
+                                    dgv.Rows[rowIndex].Cells["col_ProcesscardList"].Value = ItemsBuilder.IsListActivated;
                                     break;
                                 case ItemsBuilder.ListType.Protocol:
-                                    dgv.Rows[rowIndex].Cells["col_ProtocolList"].Value = itemsBuilder.IsListActivated;
+                                    dgv.Rows[rowIndex].Cells["col_ProtocolList"].Value = ItemsBuilder.IsListActivated;
                                     break;
 
                             }
@@ -1182,7 +1184,7 @@ namespace DigitalProductionProgram.Templates
 
 
 
-        public class MainTemplate
+        public abstract class MainTemplate
         {
             public static string? Name { get; set; }
             public static int ID { get; set; }
@@ -1385,7 +1387,8 @@ namespace DigitalProductionProgram.Templates
                     templateOrder++;
                 }
             }
-            public static void Save_Data(string name, string revision, bool isUsingPreFab, bool isUsingProdLine, string? lineClearanceTemplate, string mainInfoTemplate, string workoperation)
+
+            private static void Save_Data(string name, string revision, bool isUsingPreFab, bool isUsingProdLine, string? lineClearanceTemplate, string mainInfoTemplate, string workoperation)
             {
                 using (var con = new SqlConnection(Database.cs_Protocol))
                 {
@@ -1465,20 +1468,20 @@ namespace DigitalProductionProgram.Templates
                         return;
                 }
 
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    const string query = @"
+                using var con = new SqlConnection(Database.cs_Protocol);
+                const string query = @"
+                    DELETE FROM List.ItemFields WHERE TemplateID IN (SELECT ID FROM Protocol.Template WHERE FormTemplateID IN (SELECT FormTemplateID FROM Protocol.FormTemplate WHERE MainTemplateID = @oldmaintemplateid))                    
                     DELETE FROM Protocol.Template WHERE FormTemplateID IN (SELECT FormTemplateID FROM Protocol.FormTemplate WHERE MainTemplateID = @oldmaintemplateid)
                     DELETE FROM Protocol.FormTemplate WHERE MainTemplateID = @oldmaintemplateid
                     DELETE FROM Protocol.MainTemplate WHERE ID = @oldmaintemplateid";
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    con.Open();
-                    cmd.Parameters.AddWithValue("@oldmaintemplateid", ID);
-                    cmd.ExecuteNonQuery();
-                }
+
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                con.Open();
+                cmd.Parameters.AddWithValue("@oldmaintemplateid", ID);
+                cmd.ExecuteNonQuery();
             }
         }
-        public class FormTemplate
+        public abstract class FormTemplate
         {
             public static void AddColumns_dgv_FormTemplate(DataGridView dgv)
             {
@@ -1617,32 +1620,29 @@ namespace DigitalProductionProgram.Templates
                 con.Open();
                 cmd.ExecuteNonQuery();
             }
-          
+
         }
-        public class Template
+        public abstract class Template
         {
             public static int? ID(int row, int col, string revision, int formTemplateid)
             {
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    const string query = @"
+                using var con = new SqlConnection(Database.cs_Protocol);
+                const string query = @"
                     SELECT ID FROM Protocol.Template 
                     WHERE FormTemplateID = @formtemplateid
                         AND ColumnIndex = @colindex
                         AND RowIndex = @rowIndex 
                         AND revision = @revision";
 
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    cmd.Parameters.AddWithValue("@formtemplateid", formTemplateid);
-                    cmd.Parameters.AddWithValue("@rowIndex", row);
-                    cmd.Parameters.AddWithValue("@colindex", col);
-                    cmd.Parameters.AddWithValue("@revision", revision);
-                    con.Open();
-                    var value = cmd.ExecuteScalar();
-                    return (int?)value;
-                }
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                cmd.Parameters.AddWithValue("@formtemplateid", formTemplateid);
+                cmd.Parameters.AddWithValue("@rowIndex", row);
+                cmd.Parameters.AddWithValue("@colindex", col);
+                cmd.Parameters.AddWithValue("@revision", revision);
+                con.Open();
+                var value = cmd.ExecuteScalar();
+                return (int?)value;
             }
-
             public static void AddColumns_dgv_Template(DataGridView dgv)
             {
                 TemplateControls.AddColumn(dgv, new DataGridViewTextBoxColumn(), "TemplateID", "col_TemplateID", 1, false);
@@ -1668,6 +1668,7 @@ namespace DigitalProductionProgram.Templates
                 foreach (DataGridViewColumn column in dgv.Columns)
                     column.SortMode = DataGridViewColumnSortMode.NotSortable;
             }
+
             public static void Load_Data(string revision, int? formTemplateID)
             {
                 using var con = new SqlConnection(Database.cs_Protocol);
@@ -1683,25 +1684,27 @@ namespace DigitalProductionProgram.Templates
                     template.Decimals, 
                     template.IsUsedInProcesscard, 
                     template.IsValueCritical, 
-                    CASE 
-                        WHEN EXISTS 
-                        (
-                            SELECT 1 
-                            FROM List.ItemFields AS list 
-                            WHERE list.TemplateID = template.ID 
-                                AND list.ListType = 'Processcard'
-                        ) THEN CAST(1 AS bit) 
-                    ELSE CAST(0 AS bit) 
+                    CASE
+                    WHEN EXISTS
+                    (
+                        SELECT 1 
+                        FROM List.ItemFields AS list
+                        WHERE list.ProtocolDescriptionId = template.ProtocolDescriptionID
+                            AND MainTemplateID = @maintemplateid
+                            AND list.ListType = 'Processcard'
+                    ) THEN CAST(1 AS bit)
+                    ELSE CAST(0 AS bit)
                     END AS IsList_Processcard,
-                    CASE 
-                        WHEN EXISTS 
-                        (
-                            SELECT 1 
-                            FROM List.ItemFields AS list 
-                            WHERE list.TemplateID = template.ID 
-                                AND list.ListType = 'Protocol'
-                        ) THEN CAST(1 AS bit) 
-                        ELSE CAST(0 AS bit) 
+                    CASE
+                    WHEN EXISTS
+                    (
+                        SELECT 1 
+                        FROM List.ItemFields AS list
+                        WHERE list.ProtocolDescriptionId = template.ProtocolDescriptionID
+                            AND MainTemplateID = @maintemplateid
+                            AND list.ListType = 'Protocol'
+                    ) THEN CAST(1 AS bit)
+                    ELSE CAST(0 AS bit)
                     END AS IsList_Protocol,
                     template.IsOkWriteText, 
                     template.IsRequired
@@ -1716,6 +1719,7 @@ namespace DigitalProductionProgram.Templates
                 ORDER BY template.RowIndex, template.ColumnIndex";
                 var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@formtemplateid", formTemplateID);
+                cmd.Parameters.AddWithValue("@maintemplateid", MainTemplate.ID);
                 cmd.Parameters.AddWithValue("@revision", revision);
                 con.Open();
                 var reader = cmd.ExecuteReader();
@@ -1965,7 +1969,7 @@ namespace DigitalProductionProgram.Templates
             }
         }
 
-       
+        
     }
 }
 

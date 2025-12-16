@@ -32,6 +32,7 @@
             DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
             tlp_Main = new TableLayoutPanel();
+            btn_CopyListToOtherTemplates = new Button();
             btn_SaveItems = new Button();
             tab_Main = new TabControl();
             page_OwnLists = new TabPage();
@@ -85,6 +86,8 @@
             label_Property = new Label();
             page_DPP_Lists = new TabPage();
             label_CodeText = new Label();
+            tb_ListType = new TextBox();
+            label_TotalLists = new Label();
             label5 = new Label();
             label6 = new Label();
             label7 = new Label();
@@ -109,24 +112,44 @@
             // 
             // tlp_Main
             // 
-            tlp_Main.ColumnCount = 2;
+            tlp_Main.ColumnCount = 3;
             tlp_Main.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 223F));
-            tlp_Main.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 169F));
-            tlp_Main.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 20F));
+            tlp_Main.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 879F));
+            tlp_Main.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 60F));
+            tlp_Main.Controls.Add(btn_CopyListToOtherTemplates, 0, 1);
             tlp_Main.Controls.Add(btn_SaveItems, 0, 0);
-            tlp_Main.Controls.Add(tab_Main, 0, 1);
+            tlp_Main.Controls.Add(tab_Main, 0, 2);
             tlp_Main.Controls.Add(label_CodeText, 1, 0);
+            tlp_Main.Controls.Add(tb_ListType, 1, 1);
+            tlp_Main.Controls.Add(label_TotalLists, 2, 0);
             tlp_Main.Dock = DockStyle.Fill;
             tlp_Main.GrowStyle = TableLayoutPanelGrowStyle.AddColumns;
             tlp_Main.Location = new Point(0, 0);
             tlp_Main.Margin = new Padding(4, 3, 4, 3);
             tlp_Main.Name = "tlp_Main";
-            tlp_Main.RowCount = 2;
-            tlp_Main.RowStyles.Add(new RowStyle(SizeType.Absolute, 55F));
+            tlp_Main.RowCount = 3;
+            tlp_Main.RowStyles.Add(new RowStyle(SizeType.Absolute, 42F));
+            tlp_Main.RowStyles.Add(new RowStyle(SizeType.Absolute, 42F));
             tlp_Main.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            tlp_Main.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
             tlp_Main.Size = new Size(1299, 942);
             tlp_Main.TabIndex = 0;
+            // 
+            // btn_CopyListToOtherTemplates
+            // 
+            btn_CopyListToOtherTemplates.BackColor = Color.FromArgb(185, 188, 189);
+            btn_CopyListToOtherTemplates.Cursor = Cursors.Hand;
+            btn_CopyListToOtherTemplates.Dock = DockStyle.Top;
+            btn_CopyListToOtherTemplates.FlatStyle = FlatStyle.Flat;
+            btn_CopyListToOtherTemplates.Font = new Font("Lucida Sans", 10.25F);
+            btn_CopyListToOtherTemplates.ForeColor = Color.FromArgb(63, 116, 140);
+            btn_CopyListToOtherTemplates.Location = new Point(4, 45);
+            btn_CopyListToOtherTemplates.Margin = new Padding(4, 3, 4, 0);
+            btn_CopyListToOtherTemplates.Name = "btn_CopyListToOtherTemplates";
+            btn_CopyListToOtherTemplates.Size = new Size(215, 27);
+            btn_CopyListToOtherTemplates.TabIndex = 35;
+            btn_CopyListToOtherTemplates.Text = "Kopiera Lista till andra Mallar";
+            btn_CopyListToOtherTemplates.UseVisualStyleBackColor = false;
+            btn_CopyListToOtherTemplates.Click += CopyListToOtherTemplates_Click;
             // 
             // btn_SaveItems
             // 
@@ -139,7 +162,7 @@
             btn_SaveItems.Location = new Point(4, 3);
             btn_SaveItems.Margin = new Padding(4, 3, 4, 0);
             btn_SaveItems.Name = "btn_SaveItems";
-            btn_SaveItems.Size = new Size(215, 35);
+            btn_SaveItems.Size = new Size(215, 27);
             btn_SaveItems.TabIndex = 26;
             btn_SaveItems.Text = "Spara och Avsluta";
             btn_SaveItems.UseVisualStyleBackColor = false;
@@ -147,15 +170,15 @@
             // 
             // tab_Main
             // 
-            tlp_Main.SetColumnSpan(tab_Main, 2);
+            tlp_Main.SetColumnSpan(tab_Main, 3);
             tab_Main.Controls.Add(page_OwnLists);
             tab_Main.Controls.Add(page_MonitorLists);
             tab_Main.Controls.Add(page_DPP_Lists);
             tab_Main.Dock = DockStyle.Fill;
-            tab_Main.Location = new Point(3, 58);
+            tab_Main.Location = new Point(3, 87);
             tab_Main.Name = "tab_Main";
             tab_Main.SelectedIndex = 0;
-            tab_Main.Size = new Size(1293, 881);
+            tab_Main.Size = new Size(1293, 852);
             tab_Main.SizeMode = TabSizeMode.FillToRight;
             tab_Main.TabIndex = 33;
             // 
@@ -167,7 +190,7 @@
             page_OwnLists.Location = new Point(4, 24);
             page_OwnLists.Name = "page_OwnLists";
             page_OwnLists.Padding = new Padding(3);
-            page_OwnLists.Size = new Size(1285, 853);
+            page_OwnLists.Size = new Size(1285, 824);
             page_OwnLists.TabIndex = 0;
             page_OwnLists.Text = "Egna Listor";
             page_OwnLists.UseVisualStyleBackColor = true;
@@ -176,8 +199,8 @@
             // 
             tlp_OwnLists.BackColor = Color.FromArgb(6, 81, 87);
             tlp_OwnLists.ColumnCount = 3;
-            tlp_OwnLists.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 262F));
-            tlp_OwnLists.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 227F));
+            tlp_OwnLists.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 318F));
+            tlp_OwnLists.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 289F));
             tlp_OwnLists.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 8F));
             tlp_OwnLists.Controls.Add(label_Info_OwnItems, 0, 0);
             tlp_OwnLists.Controls.Add(gbx_AvailableOptions, 0, 1);
@@ -188,7 +211,7 @@
             tlp_OwnLists.RowCount = 2;
             tlp_OwnLists.RowStyles.Add(new RowStyle(SizeType.Percent, 4.202719F));
             tlp_OwnLists.RowStyles.Add(new RowStyle(SizeType.Percent, 95.79728F));
-            tlp_OwnLists.Size = new Size(1279, 847);
+            tlp_OwnLists.Size = new Size(1279, 818);
             tlp_OwnLists.TabIndex = 0;
             // 
             // label_Info_OwnItems
@@ -200,7 +223,7 @@
             label_Info_OwnItems.ForeColor = Color.FromArgb(184, 220, 231);
             label_Info_OwnItems.Location = new Point(3, 0);
             label_Info_OwnItems.Name = "label_Info_OwnItems";
-            label_Info_OwnItems.Size = new Size(483, 35);
+            label_Info_OwnItems.Size = new Size(601, 34);
             label_Info_OwnItems.TabIndex = 29;
             label_Info_OwnItems.Text = "Egna Listor";
             label_Info_OwnItems.TextAlign = ContentAlignment.MiddleCenter;
@@ -213,11 +236,11 @@
             gbx_AvailableOptions.Dock = DockStyle.Fill;
             gbx_AvailableOptions.Font = new Font("Lucida Sans", 10.25F);
             gbx_AvailableOptions.ForeColor = Color.FromArgb(239, 228, 177);
-            gbx_AvailableOptions.Location = new Point(2, 40);
+            gbx_AvailableOptions.Location = new Point(2, 39);
             gbx_AvailableOptions.Margin = new Padding(2, 5, 0, 0);
             gbx_AvailableOptions.Name = "gbx_AvailableOptions";
             gbx_AvailableOptions.Padding = new Padding(4, 3, 4, 3);
-            gbx_AvailableOptions.Size = new Size(260, 807);
+            gbx_AvailableOptions.Size = new Size(316, 779);
             gbx_AvailableOptions.TabIndex = 22;
             gbx_AvailableOptions.TabStop = false;
             gbx_AvailableOptions.Text = "Tillgängliga Alternativ";
@@ -240,7 +263,7 @@
             dgv_ListItems.Name = "dgv_ListItems";
             dgv_ListItems.ReadOnly = true;
             dgv_ListItems.RowHeadersVisible = false;
-            dgv_ListItems.Size = new Size(252, 732);
+            dgv_ListItems.Size = new Size(308, 704);
             dgv_ListItems.TabIndex = 3;
             dgv_ListItems.CellMouseDown += ItemList_CellMouseDown;
             // 
@@ -260,7 +283,7 @@
             tb_AddNewItem.Location = new Point(4, 52);
             tb_AddNewItem.Margin = new Padding(4, 3, 4, 3);
             tb_AddNewItem.Name = "tb_AddNewItem";
-            tb_AddNewItem.Size = new Size(252, 20);
+            tb_AddNewItem.Size = new Size(308, 20);
             tb_AddNewItem.TabIndex = 3;
             // 
             // btn_AddItem
@@ -274,7 +297,7 @@
             btn_AddItem.Location = new Point(4, 20);
             btn_AddItem.Margin = new Padding(0);
             btn_AddItem.Name = "btn_AddItem";
-            btn_AddItem.Size = new Size(252, 32);
+            btn_AddItem.Size = new Size(308, 32);
             btn_AddItem.TabIndex = 11;
             btn_AddItem.Text = "Lägg till text";
             btn_AddItem.UseVisualStyleBackColor = false;
@@ -287,10 +310,10 @@
             gbx_ChosenItems.Dock = DockStyle.Fill;
             gbx_ChosenItems.Font = new Font("Lucida Sans", 10.25F);
             gbx_ChosenItems.ForeColor = Color.FromArgb(239, 228, 177);
-            gbx_ChosenItems.Location = new Point(264, 40);
+            gbx_ChosenItems.Location = new Point(320, 39);
             gbx_ChosenItems.Margin = new Padding(2, 5, 0, 0);
             gbx_ChosenItems.Name = "gbx_ChosenItems";
-            gbx_ChosenItems.Size = new Size(225, 807);
+            gbx_ChosenItems.Size = new Size(287, 779);
             gbx_ChosenItems.TabIndex = 27;
             gbx_ChosenItems.TabStop = false;
             gbx_ChosenItems.Text = "Valda Alternativ";
@@ -320,7 +343,7 @@
             dgv_Items.Name = "dgv_Items";
             dgv_Items.RowHeadersVisible = false;
             dgv_Items.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgv_Items.Size = new Size(219, 752);
+            dgv_Items.Size = new Size(281, 724);
             dgv_Items.TabIndex = 25;
             // 
             // col_ID
@@ -349,7 +372,7 @@
             btn_DeleteItem.Location = new Point(3, 20);
             btn_DeleteItem.Margin = new Padding(0);
             btn_DeleteItem.Name = "btn_DeleteItem";
-            btn_DeleteItem.Size = new Size(219, 32);
+            btn_DeleteItem.Size = new Size(281, 32);
             btn_DeleteItem.TabIndex = 26;
             btn_DeleteItem.Text = "Radera markerat Alternativ";
             btn_DeleteItem.UseVisualStyleBackColor = false;
@@ -361,7 +384,7 @@
             page_MonitorLists.Location = new Point(4, 24);
             page_MonitorLists.Name = "page_MonitorLists";
             page_MonitorLists.Padding = new Padding(3);
-            page_MonitorLists.Size = new Size(1285, 853);
+            page_MonitorLists.Size = new Size(1285, 824);
             page_MonitorLists.TabIndex = 1;
             page_MonitorLists.Text = "Monitor Listor";
             page_MonitorLists.UseVisualStyleBackColor = true;
@@ -386,7 +409,7 @@
             tlp_MonitorLists.RowCount = 2;
             tlp_MonitorLists.RowStyles.Add(new RowStyle(SizeType.Percent, 4.82076645F));
             tlp_MonitorLists.RowStyles.Add(new RowStyle(SizeType.Percent, 95.17924F));
-            tlp_MonitorLists.Size = new Size(1279, 847);
+            tlp_MonitorLists.Size = new Size(1279, 818);
             tlp_MonitorLists.TabIndex = 0;
             // 
             // gbx_MonitorPartCode
@@ -395,10 +418,10 @@
             gbx_MonitorPartCode.Dock = DockStyle.Fill;
             gbx_MonitorPartCode.Font = new Font("Lucida Sans", 10.25F);
             gbx_MonitorPartCode.ForeColor = Color.FromArgb(239, 228, 177);
-            gbx_MonitorPartCode.Location = new Point(2, 45);
+            gbx_MonitorPartCode.Location = new Point(2, 44);
             gbx_MonitorPartCode.Margin = new Padding(2, 5, 0, 0);
             gbx_MonitorPartCode.Name = "gbx_MonitorPartCode";
-            gbx_MonitorPartCode.Size = new Size(200, 802);
+            gbx_MonitorPartCode.Size = new Size(200, 774);
             gbx_MonitorPartCode.TabIndex = 31;
             gbx_MonitorPartCode.TabStop = false;
             gbx_MonitorPartCode.Text = "Välj Typ";
@@ -422,7 +445,7 @@
             label_ListMonitor.ForeColor = Color.FromArgb(184, 220, 231);
             label_ListMonitor.Location = new Point(3, 0);
             label_ListMonitor.Name = "label_ListMonitor";
-            label_ListMonitor.Size = new Size(406, 40);
+            label_ListMonitor.Size = new Size(406, 39);
             label_ListMonitor.TabIndex = 29;
             label_ListMonitor.Text = "Monitor Listor";
             label_ListMonitor.TextAlign = ContentAlignment.MiddleCenter;
@@ -437,10 +460,10 @@
             gbx_MonitorAPI.Dock = DockStyle.Fill;
             gbx_MonitorAPI.Font = new Font("Lucida Sans", 10.25F);
             gbx_MonitorAPI.ForeColor = Color.FromArgb(239, 228, 177);
-            gbx_MonitorAPI.Location = new Point(414, 45);
+            gbx_MonitorAPI.Location = new Point(414, 44);
             gbx_MonitorAPI.Margin = new Padding(2, 5, 0, 0);
             gbx_MonitorAPI.Name = "gbx_MonitorAPI";
-            gbx_MonitorAPI.Size = new Size(208, 802);
+            gbx_MonitorAPI.Size = new Size(208, 774);
             gbx_MonitorAPI.TabIndex = 30;
             gbx_MonitorAPI.TabStop = false;
             gbx_MonitorAPI.Text = "Extra Fält";
@@ -562,10 +585,10 @@
             gbx_ExtraCodeText.Dock = DockStyle.Fill;
             gbx_ExtraCodeText.Font = new Font("Lucida Sans", 10.25F);
             gbx_ExtraCodeText.ForeColor = Color.FromArgb(239, 228, 177);
-            gbx_ExtraCodeText.Location = new Point(624, 45);
+            gbx_ExtraCodeText.Location = new Point(624, 44);
             gbx_ExtraCodeText.Margin = new Padding(2, 5, 0, 0);
             gbx_ExtraCodeText.Name = "gbx_ExtraCodeText";
-            gbx_ExtraCodeText.Size = new Size(208, 802);
+            gbx_ExtraCodeText.Size = new Size(208, 774);
             gbx_ExtraCodeText.TabIndex = 33;
             gbx_ExtraCodeText.TabStop = false;
             gbx_ExtraCodeText.Text = "Extra CodeText";
@@ -625,10 +648,10 @@
             gbx_Filter.Dock = DockStyle.Fill;
             gbx_Filter.Font = new Font("Lucida Sans", 10.25F);
             gbx_Filter.ForeColor = Color.FromArgb(239, 228, 177);
-            gbx_Filter.Location = new Point(204, 45);
+            gbx_Filter.Location = new Point(204, 44);
             gbx_Filter.Margin = new Padding(2, 5, 0, 0);
             gbx_Filter.Name = "gbx_Filter";
-            gbx_Filter.Size = new Size(208, 802);
+            gbx_Filter.Size = new Size(208, 774);
             gbx_Filter.TabIndex = 32;
             gbx_Filter.TabStop = false;
             gbx_Filter.Text = "Välj Filter";
@@ -824,7 +847,7 @@
             page_DPP_Lists.Location = new Point(4, 24);
             page_DPP_Lists.Name = "page_DPP_Lists";
             page_DPP_Lists.Padding = new Padding(3);
-            page_DPP_Lists.Size = new Size(1285, 853);
+            page_DPP_Lists.Size = new Size(1285, 824);
             page_DPP_Lists.TabIndex = 2;
             page_DPP_Lists.Text = "DPP Listor";
             // 
@@ -832,14 +855,38 @@
             // 
             label_CodeText.AutoSize = true;
             label_CodeText.Dock = DockStyle.Fill;
-            label_CodeText.Font = new Font("Segoe UI", 30F);
+            label_CodeText.Font = new Font("Segoe UI", 28F);
             label_CodeText.ForeColor = Color.FromArgb(184, 220, 231);
             label_CodeText.Location = new Point(226, 0);
             label_CodeText.Name = "label_CodeText";
-            label_CodeText.Size = new Size(1070, 55);
+            label_CodeText.Size = new Size(873, 42);
             label_CodeText.TabIndex = 34;
             label_CodeText.Text = "CodeText";
             label_CodeText.TextAlign = ContentAlignment.MiddleCenter;
+            // 
+            // tb_ListType
+            // 
+            tb_ListType.BackColor = Color.FromArgb(6, 81, 87);
+            tb_ListType.BorderStyle = BorderStyle.None;
+            tb_ListType.Dock = DockStyle.Fill;
+            tb_ListType.Font = new Font("Segoe UI", 28F);
+            tb_ListType.ForeColor = Color.FromArgb(171, 150, 85);
+            tb_ListType.Location = new Point(226, 45);
+            tb_ListType.Name = "tb_ListType";
+            tb_ListType.Size = new Size(873, 50);
+            tb_ListType.TabIndex = 36;
+            tb_ListType.TextAlign = HorizontalAlignment.Center;
+            tb_ListType.Enter += ListType_Enter;
+            // 
+            // label_TotalLists
+            // 
+            label_TotalLists.AutoSize = true;
+            label_TotalLists.ForeColor = Color.FromArgb(239, 228, 177);
+            label_TotalLists.Location = new Point(1105, 0);
+            label_TotalLists.Name = "label_TotalLists";
+            label_TotalLists.Size = new Size(151, 15);
+            label_TotalLists.TabIndex = 37;
+            label_TotalLists.Text = "Denna lista finns i xx Mallar";
             // 
             // label5
             // 
@@ -993,5 +1040,8 @@
         private Label label18;
         private ComboBox cb_SortMode;
         private Label label_SortMode;
+        private Button btn_CopyListToOtherTemplates;
+        private TextBox tb_ListType;
+        private Label label_TotalLists;
     }
 }

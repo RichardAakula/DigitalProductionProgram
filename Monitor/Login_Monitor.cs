@@ -45,141 +45,55 @@ namespace DigitalProductionProgram.Monitor
         [DebuggerStepThrough]
         public static void Login_API()
         {
-            EnsureHttpClient();
+            Stopwatch sw = Stopwatch.StartNew();
 
-            // ✔ Om vi redan HAR en session → bara lägg till headern om det saknas
+            // ✔ Om vi redan har session → gör inget
             if (sessionId != null)
-            {
-                if (!Login_Monitor.httpClient.DefaultRequestHeaders.Contains("X-Monitor-SessionId"))
-                    Login_Monitor.httpClient.DefaultRequestHeaders.Add("X-Monitor-SessionId", sessionId);
+                return;
 
-                return; // ✔ Ingen login igen
+            var credentials = Database.LoadCredentials();
+            var authJson =
+                $"{{\"Username\":\"{credentials.Username}\",\"Password\":\"{credentials.Password}\",\"ForceRelogin\":true}}";
+
+            string url = $"https://{Database.MonitorHost}:8001/{Login_Monitor.LanguageCode}/{Database.MonitorCompany}/login";
+
+            var request = (HttpWebRequest)WebRequest.Create(url);
+            request.Method = "POST";
+            request.ContentType = "application/json";
+            request.Accept = "application/json";
+
+            // ✔ Tillåt self-signed cert (samma som i HttpClientHandler)
+            request.ServerCertificateValidationCallback += (sender, cert, chain, sslPolicyErrors) => true;
+
+            // Skicka body synkront
+            using (var writer = new StreamWriter(request.GetRequestStream()))
+            {
+                writer.Write(authJson);
             }
 
-            // ---------------------------------------------------
-            // Ingen sessionId → logga in 1 gång
-            // ---------------------------------------------------
-            var credentials = Database.LoadCredentials();
-            var authData = new
+            // Synkront svar
+            using (var response = (HttpWebResponse)request.GetResponse())
             {
-                Username = credentials.Username,
-                Password = credentials.Password,
-                ForceRelogin = true
-            };
+                if (response.StatusCode != HttpStatusCode.OK)
+                    throw new Exception("Monitor login failed (sync).");
 
-            var authResponse = httpClient.PostAsJsonAsync("login", authData).Result;
-            if (!authResponse.IsSuccessStatusCode)
-                throw new Exception("Monitor login failed.");
+                // ✔ Hämta SessionId från headers
+                sessionId = response.Headers["X-Monitor-SessionId"];
 
-            sessionId = authResponse.Headers
-                .FirstOrDefault(x => x.Key.Contains("SessionId")).Value?
-                .FirstOrDefault();
+                if (sessionId == null)
+                    sessionId = response.Headers.AllKeys
+                        .Where(k => k.Contains("SessionId"))
+                        .Select(k => response.Headers[k])
+                        .FirstOrDefault();
 
-            if (sessionId == null)
-                throw new Exception("No SessionId returned from Monitor!");
+                if (sessionId == null)
+                    throw new Exception("Monitor login failed: No SessionId returned.");
+            }
 
-            // ✔ Viktigt: Lägg till headern DIREKT efter login
-            httpClient.DefaultRequestHeaders.Add("X-Monitor-SessionId", sessionId);
+            sw.Stop();
+            Debug.WriteLine("======== SYNC LOGIN ========");
+            Debug.WriteLine($"Time: {sw.ElapsedMilliseconds} ms");
         }
-
-        //public static void Login_API()
-        //{
-        //    EnsureHttpClient();
-
-        //    // Om vi redan är inloggade – skicka headern och dra
-        //    if (sessionId != null)
-        //    {
-        //        if (!httpClient.DefaultRequestHeaders.Contains("X-Monitor-SessionId"))
-        //            httpClient.DefaultRequestHeaders.Add("X-Monitor-SessionId", sessionId);
-
-        //        return;
-        //    }
-
-        //    // Annars logga in
-        //    var credentials = Database.LoadCredentials();
-        //    var authData = new
-        //    {
-        //        Username = credentials.Username,
-        //        Password = credentials.Password,
-        //        ForceRelogin = true
-        //    };
-
-        //    var authResponse = httpClient.PostAsJsonAsync("login", authData).Result;
-        //    if (!authResponse.IsSuccessStatusCode)
-        //        throw new Exception("Failed to authenticate with API.");
-
-        //    sessionId = authResponse.Headers
-        //        .FirstOrDefault(x => x.Key.Contains("SessionId")).Value?.FirstOrDefault();
-
-        //    // IMPORTANT: ADD HEADER HERE
-        //    if (!httpClient.DefaultRequestHeaders.Contains("X-Monitor-SessionId"))
-        //        httpClient.DefaultRequestHeaders.Add("X-Monitor-SessionId", sessionId);
-        //}
-
-
-        //public static void Login_API(string? company = null)
-        //{
-        //    try
-        //    {
-        //        Log.Activity.Start();
-        //        var sw = Stopwatch.StartNew();
-        //        company ??= Database.MonitorCompany;
-
-        //        BaseAddress = $"https://{Database.MonitorHost}:8001/{LanguageCode}/{company}/";
-
-        //        var handler = new HttpClientHandler
-        //        {
-        //            ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true
-        //        };
-
-        //        httpClient = new HttpClient(handler)
-        //        {
-        //            BaseAddress = new Uri(BaseAddress)
-        //        };
-
-        //        httpClient.DefaultRequestHeaders.Accept.Clear();
-        //        httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-        //        // Load from config
-        //        var credentials = Database.LoadCredentials();
-        //        //var decryptedPassword = Database.AesEncryption.Decrypt(credentials.Password);
-
-        //        var authenticationData = new
-        //        {
-        //            Username = credentials.Username,
-        //            Password = credentials.Password,
-        //            ForceRelogin = true
-        //        };
-        //        var authentication = httpClient.PostAsJsonAsync("login", authenticationData).Result;
-
-        //        if (authentication.IsSuccessStatusCode)
-        //        {
-        //            var sessionId = authentication.Headers.ToList()
-        //                .FirstOrDefault(x => x.Key.Contains("SessionId")).Value.FirstOrDefault();
-        //            httpClient.DefaultRequestHeaders.Add("X-Monitor-SessionId", sessionId);
-
-        //            var cookieContainer = new CookieContainer();
-        //            cookieContainer.Add(httpClient.BaseAddress, new Cookie("SessionId", sessionId));
-
-        //            sw.Stop();
-        //            if (sw.ElapsedMilliseconds < 1000)
-        //                Monitor.Set_Monitorstatus(Monitor.Status.Ok, sw.ElapsedMilliseconds.ToString());
-        //            else
-        //                Monitor.Set_Monitorstatus(Monitor.Status.Warning, sw.ElapsedMilliseconds.ToString());
-        //        }
-        //        else
-        //        {
-        //            Monitor.Set_Monitorstatus(Monitor.Status.Bad, "Failed to authenticate with API.");
-        //        }
-
-        //        Log.Activity.Stop("Login_Monitor");
-        //    }
-        //    catch (Exception exc)
-        //    {
-        //        Monitor.Set_Monitorstatus(Monitor.Status.Bad, exc.Message);
-        //        InfoText.Show(exc.Message, CustomColors.InfoText_Color.Bad, "Problem with Monitor.");
-        //    }
-        //}
 
         public static int TotalLoginAttemps;
        

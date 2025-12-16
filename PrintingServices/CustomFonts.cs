@@ -34,11 +34,11 @@ namespace DigitalProductionProgram.PrintingServices
         public static SolidBrush black = new SolidBrush(Color.Black);
         public static SolidBrush red = new SolidBrush(Color.Red);
 
-        public static Font A5 = new Font("Arial", 5);
-        public static Font A6 = new Font("Arial", 6);
-        public static Font A6_B = new Font("Arial", 6,FontStyle.Bold);
-        public static Font A7 = new Font("Arial", 7);
-        public static Font A7_I = new Font("Arial", 7, FontStyle.Italic);
+        public static Font A5 = new("Arial", 5);
+        public static Font A6 = new("Arial", 6);
+        public static Font A6_B = new("Arial", 6,FontStyle.Bold);
+        public static Font A7 = new("Arial", 7);
+        public static Font A7_I = new("Arial", 7, FontStyle.Italic);
         public static Font A7_B = new Font("Arial", 7, FontStyle.Bold);
         public static Font A8 = new Font("Arial", 8);
         public static Font A8_B = new Font("Arial", 8, FontStyle.Bold);
@@ -80,7 +80,7 @@ namespace DigitalProductionProgram.PrintingServices
         public static Font P12_B = new Font("Palatino LinoType", 12F, FontStyle.Bold);
     }
 
-    public class CustomColors
+    public abstract class CustomColors
     {
         public static Color Empty_Back = Color.FromArgb(60, 60, 60);
         public static Color Discarded_Back = Color.DimGray;

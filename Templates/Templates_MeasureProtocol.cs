@@ -567,7 +567,7 @@ namespace DigitalProductionProgram.Templates
                             cellDataType.Value = "Text";
                             cellControlType.ReadOnly = cellDataType.ReadOnly = true;
                             cellControlType.Style.BackColor = cellDataType.Style.BackColor = Color.LightGray;
-                            var itemsBuilder = new ItemsBuilder(cellParameter?.Value.ToString() ?? string.Empty,  ItemsBuilder.ListType.MeasureProtocol, 0 );//Det kanske behöver skickas in ett annat TemplateID här? TemplateID används till itemsbuilder för Processkort och Körprotokoll
+                            var itemsBuilder = new ItemsBuilder(cellParameter?.Value.ToString() ?? string.Empty,  ItemsBuilder.ListType.MeasureProtocol, 0,null );//Det kanske behöver skickas in ett annat TemplateID här? TemplateID används till itemsbuilder för Processkort och Körprotokoll
                             itemsBuilder.ShowDialog();
                         }
                         else

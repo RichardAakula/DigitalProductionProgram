@@ -237,8 +237,28 @@ namespace DigitalProductionProgram.Protocols.Protocol
                     template.Decimals, 
                     template.IsUsedInProcesscard, 
                     template.IsValueCritical, 
-                    template.IsList_Processcard, 
-                    template.IsList_Protocol, 
+                    CASE
+                        WHEN EXISTS
+                        (
+                            SELECT 1 
+                            FROM List.ItemFields AS list
+                            WHERE list.ProtocolDescriptionId = template.ProtocolDescriptionID
+                                AND MainTemplateID = @maintemplateid
+                                AND list.ListType = 'Processcard'
+                        ) THEN CAST(1 AS bit)
+                        ELSE CAST(0 AS bit)
+                    END AS IsList_Processcard,
+                    CASE
+                        WHEN EXISTS
+                        (
+                            SELECT 1 
+                            FROM List.ItemFields AS list
+                            WHERE list.ProtocolDescriptionId = template.ProtocolDescriptionID
+                                AND MainTemplateID = @maintemplateid
+                                AND list.ListType = 'Protocol'
+                        ) THEN CAST(1 AS bit)
+                        ELSE CAST(0 AS bit)
+                    END AS IsList_Protocol, 
                     template.IsOkWriteText, 
                     template.IsRequired, 
                     formtemplate.IsAuthenticationNeeded, 
@@ -316,16 +336,11 @@ namespace DigitalProductionProgram.Protocols.Protocol
 
             }
 
+            //Om endast Nominellt värde används för hela modulen så göms min och max kolumnerna
             if (CheckIfOnlyNomValue_ColIndex.Contains(0) == false && CheckIfOnlyNomValue_ColIndex.Contains(2) == false)
                 dgv_Module.Columns["col_MIN"].Visible = dgv_Module.Columns["col_MAX"].Visible = false;
-            if (isOkChangeProcessData)
-            {
-                dgv_Module.Columns["col_MIN"].ReadOnly = false;
-                dgv_Module.Columns["col_NOM"].ReadOnly = false;
-                dgv_Module.Columns["col_MAX"].ReadOnly = false;
-            }
+           
         }
-
         private void SetColorCodeText(bool isCritical, DataGridViewCell cell)
         {
             cell.Style.ForeColor = isCritical ? Color.Black : CustomColors.Ok_Front;
@@ -338,12 +353,15 @@ namespace DigitalProductionProgram.Protocols.Protocol
             switch (col)
             {
                 case 0:
+                    dgv_Module.Rows[row].Cells["col_MIN"].ReadOnly = false;
                     dgv_Module.Rows[row].Cells["col_MIN"].Style.BackColor = Color.Gainsboro;
                     break;
                 case 1:
+                    dgv_Module.Rows[row].Cells["col_NOM"].ReadOnly = false;
                     dgv_Module.Rows[row].Cells["col_NOM"].Style.BackColor = Color.Silver;
                     break;
                 case 2:
+                    dgv_Module.Rows[row].Cells["col_MAX"].ReadOnly = false;
                     dgv_Module.Rows[row].Cells["col_MAX"].Style.BackColor = Color.Gainsboro;
                     break;
             }
@@ -604,6 +622,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
             if (cell != null)
                 cell.Style.BackColor = Color.FromArgb(252, 250, 235);
         }
+
         private void Protocol_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
             var cell = dgv_Module?.CurrentCell;
@@ -753,6 +772,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
 
         private string? Filter_Variable(string codeText)
         {
+
             foreach (DataGridViewRow row in dgv_Module.Rows)
             {
                 if (row.Cells["col_CodeText"].Value.ToString() == codeText)
@@ -808,7 +828,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                 _ = bool.TryParse(dgv_Module.Rows[row].Cells["col_IsOkWriteText"].Value.ToString(), out var isOkWriteText);
                 _ = bool.TryParse(dgv_Module.Rows[e.RowIndex].Cells["col_IsList_Protocol"].Value.ToString(), out var IsListProtocol);
                 _ = int.TryParse(dgv_Module.Columns[e.ColumnIndex].HeaderText, out var startup);
-                var result = await ItemsBuilder.GetListItems(templateID, isProcesscardUnderManagement ? "Processcard" : "Protocol", dataType, Filter_Variable);
+                var result = await ItemsBuilder.GetListItems(protocolDescriptionID, isProcesscardUnderManagement ? "Processcard" : "Protocol", dataType, Filter_Variable);
                 items = result.Items;
 
                 var IsItemsMultipleColumns = result.IsItemsMultipleColumns;
@@ -842,20 +862,20 @@ namespace DigitalProductionProgram.Protocols.Protocol
                         //  items.Add(LanguageManager.GetString("yes") ?? string.Empty);
                         //    items.Add(LanguageManager.GetString("no") ?? string.Empty);
                         //     break;
-                       // case 80:    //EXTRUDER
-                           // items = CheckAuthority.IsWorkoperationAuthorized(CheckAuthority.TemplateWorkoperation.ExtruderRegister) ?
-                           //     Monitor.Services.ToolService.List_Equipment<Manufacturing.WorkCenters>("Description", "startswith(PartNumber, 'EXT')") : Machines.Extruders("EXTRUDER");
-                            //DigitalProductionProgram.Equipment.Equipment.List_From_Register("Extruder", "Extruder_Skruvar") : Machines.Extruders("EXTRUDER");
+                        // case 80:    //EXTRUDER
+                        // items = CheckAuthority.IsWorkoperationAuthorized(CheckAuthority.TemplateWorkoperation.ExtruderRegister) ?
+                        //     Monitor.Services.ToolService.List_Equipment<Manufacturing.WorkCenters>("Description", "startswith(PartNumber, 'EXT')") : Machines.Extruders("EXTRUDER");
+                        //DigitalProductionProgram.Equipment.Equipment.List_From_Register("Extruder", "Extruder_Skruvar") : Machines.Extruders("EXTRUDER");
                         //    break;
 
                         case 81:    //CYLINDER
                             items = Machines.Cylinders;
                             break;
-                       // case 85:    //KANYL TYP   //Ext PTFE-Ext PTFE GROV
-                       //     items.Add("S");
-                       //     items.Add("D");
-                       //     items.Add("S/D");
-                      //      break;
+                        // case 85:    //KANYL TYP   //Ext PTFE-Ext PTFE GROV
+                        //     items.Add("S");
+                        //     items.Add("D");
+                        //     items.Add("S/D");
+                        //      break;
                         //case 108:   //AUTO/MAN    //Ext PTFE GROV
                         //    items.Add("Auto");
                         //    items.Add("Manuell");
@@ -877,26 +897,26 @@ namespace DigitalProductionProgram.Protocols.Protocol
                         case 303: //TRANSPORTBAND/UPPTAGARE
                             items = DigitalProductionProgram.Equipment.Equipment.List_Equipment_Protocol("TRANSPORTBAND/UPPTAGARE");
                             break;
-                       // case 325: //RENGJORT CYLINDER
-                          //  items = DigitalProductionProgram.Equipment.Equipment.List_CleanedCylinder(startup);
-                          //  break;
-                        //case 304: //INTAG
-                        //    items = DigitalProductionProgram.Equipment.Equipment.List_Intag.ToList();
-                        //    break;
-                       // case 305: //SKRUVTYP
+                            // case 325: //RENGJORT CYLINDER
+                            //  items = DigitalProductionProgram.Equipment.Equipment.List_CleanedCylinder(startup);
+                            //  break;
+                            //case 304: //INTAG
+                            //    items = DigitalProductionProgram.Equipment.Equipment.List_Intag.ToList();
+                            //    break;
+                            // case 305: //SKRUVTYP
                             //Korprotokoll hämtar ID_Nummer
-                           // items = DigitalProductionProgram.Equipment.Equipment.List_Register(isProcesscardUnderManagement, NOM_Value(dgv_Row), "Register_Skruvar");
-                          //  IsItemsMultipleColumns = true;
+                            // items = DigitalProductionProgram.Equipment.Equipment.List_Register(isProcesscardUnderManagement, NOM_Value(dgv_Row), "Register_Skruvar");
+                            //  IsItemsMultipleColumns = true;
                             break;
-                        //case 306: //TORK
-                         //   items = DigitalProductionProgram.Equipment.Equipment.List_Register(isProcesscardUnderManagement, NOM_Value(dgv_Row), "Register_Torkar");
-                         //   IsItemsMultipleColumns = true;
+                            //case 306: //TORK
+                            //   items = DigitalProductionProgram.Equipment.Equipment.List_Register(isProcesscardUnderManagement, NOM_Value(dgv_Row), "Register_Torkar");
+                            //   IsItemsMultipleColumns = true;
                             break;
                         //case 307: //HUVUD
-                            //items = Monitor.Services.ToolService.List_Tools(NOM_Value(dgv_Row), null);
-                            //items = DigitalProductionProgram.Equipment.Equipment.List_Register(isProcesscardUnderManagement, NOM_Value(dgv_Row), "Register_Huvud");
-                            //IsItemsMultipleColumns = true;
-                            //break;
+                        //items = Monitor.Services.ToolService.List_Tools(NOM_Value(dgv_Row), null);
+                        //items = DigitalProductionProgram.Equipment.Equipment.List_Register(isProcesscardUnderManagement, NOM_Value(dgv_Row), "Register_Huvud");
+                        //IsItemsMultipleColumns = true;
+                        //break;
                         //case 308: //TORPED
                         //    items = DigitalProductionProgram.Equipment.Equipment.List_Register(isProcesscardUnderManagement, NOM_Value(dgv_Row), "Register_Torpeder");
                         //    IsItemsMultipleColumns = true;
@@ -907,11 +927,11 @@ namespace DigitalProductionProgram.Protocols.Protocol
                         //    break;
                         //case 310: //MUNSTYCKE TYP
 
-                           // items = Monitor.Services.ToolService.List_Tools<Inventory.PartTemplates, Inventory.Parts>("TOOLS (Titus)");
+                        // items = Monitor.Services.ToolService.List_Tools<Inventory.PartTemplates, Inventory.Parts>("TOOLS (Titus)");
 
-                            // items = DigitalProductionProgram.Equipment.Equipment.List_Tool_Type("Munstycke");
+                        // items = DigitalProductionProgram.Equipment.Equipment.List_Tool_Type("Munstycke");
 
-                            //break;
+                        //break;
                         //case 83: //MUNSTYCKE
                         //    cells = new[] { dgv_Module.Rows[e.RowIndex].Cells[col], dgv_Module.Rows[e.RowIndex + 1].Cells[col] };
                         //    if (Order.WorkOperation == Manage_WorkOperation.WorkOperations.Extrudering_FEP)
@@ -920,9 +940,9 @@ namespace DigitalProductionProgram.Protocols.Protocol
                         //        DieType = Value(col, 310);
                         //    items = Monitor.Services.ToolService.List_Tools(DieType, "Landlängd Nom");
 
-                            //items = DigitalProductionProgram.Equipment.Equipment.List_Tool(DieType, MIN_Value(dgv_Row), MAX_Value(dgv_Row));
-                            //IsItemsMultipleColumns = true;
-                            //break;
+                        //items = DigitalProductionProgram.Equipment.Equipment.List_Tool(DieType, MIN_Value(dgv_Row), MAX_Value(dgv_Row));
+                        //IsItemsMultipleColumns = true;
+                        //break;
                         //case 311: //KÄRNA TYP
                         //    items = Monitor.Services.ToolService.List_Tools<Inventory.PartTemplates, Inventory.Parts>("TOOLS (Titus)");
                         //    // items = DigitalProductionProgram.Equipment.Equipment.List_Tool_Type("Kanyl");
@@ -958,19 +978,19 @@ namespace DigitalProductionProgram.Protocols.Protocol
                             items = Task.Run(() => Monitor.Monitor.List_CandleFilter_PartNr("Candle")).Result;
                             break;
                         case 316: //KALIBRERINGSTYP
-                           // items = DigitalProductionProgram.Equipment.Equipment.List_Register(true, NOM_Value(dgv_Row), "Register_Kalibreringar");
-                            //  IsItemsMultipleColumns = false;
+                                  // items = DigitalProductionProgram.Equipment.Equipment.List_Register(true, NOM_Value(dgv_Row), "Register_Kalibreringar");
+                                  //  IsItemsMultipleColumns = false;
                             break;
                         case 159:   //HS MASKIN
-                           // items = Machines.HS_Machines;
+                                    // items = Machines.HS_Machines;
                             break;
                         case 75:    //RÖR ID# POS 1
                         case 160:   //RÖR ID# POS 2
                         case 161:   //RÖR ID# POS 3
-                          //  items = Tools.RegisterList.List_HS_PipeID(isProcesscardUnderManagement);
+                                    //  items = Tools.RegisterList.List_HS_PipeID(isProcesscardUnderManagement);
                             break;
                         case 71:    //HACKHYLSA
-                          //  items = Tools.RegisterList.List_HS_Hackhylsa;
+                                    //  items = Tools.RegisterList.List_HS_Hackhylsa;
                             break;
                         case 73:    //UPPTAGARE/HACK
                             items = Machines.HS_Upptagare;
@@ -1018,7 +1038,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
             }
             if (IsOkToSave || isProcesscardUnderManagement)
                 SpecialItems(row, col, protocolDescriptionID, isProcesscardUnderManagement);
-           
+
         }
         private void Module_RowEnter(object sender, DataGridViewCellEventArgs e)
         {
@@ -1631,6 +1651,6 @@ namespace DigitalProductionProgram.Protocols.Protocol
             }
         }
 
-       
+        
     }
 }

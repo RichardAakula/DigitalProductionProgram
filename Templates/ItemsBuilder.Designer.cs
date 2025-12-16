@@ -57,13 +57,20 @@
             flp_InfoText_ExtraFields = new FlowLayoutPanel();
             label9 = new Label();
             label10 = new Label();
-            label4 = new Label();
-            label14 = new Label();
-            cb_Name = new ComboBox();
-            label_Column = new Label();
+            label17 = new Label();
+            label18 = new Label();
+            cb_SortMode = new ComboBox();
+            label_SortMode = new Label();
+            cb_FilterCodeText = new ComboBox();
+            label_FilterColumn = new Label();
             cb_Module = new ComboBox();
             label_Module = new Label();
             gbx_ExtraCodeText = new GroupBox();
+            flowLayoutPanel1 = new FlowLayoutPanel();
+            label4 = new Label();
+            label14 = new Label();
+            label19 = new Label();
+            label20 = new Label();
             cb_SecondaryName = new ComboBox();
             label2 = new Label();
             cb_SecondaryCodeText = new ComboBox();
@@ -76,15 +83,12 @@
             label16 = new Label();
             label12 = new Label();
             label13 = new Label();
-            label17 = new Label();
-            label18 = new Label();
-            cb_SortMode = new ComboBox();
-            label_SortMode = new Label();
-            cb_FilterCodeText = new ComboBox();
-            label_FilterColumn = new Label();
+            cb_Name = new ComboBox();
+            label_Column = new Label();
             cb_Properties = new ComboBox();
             label_Property = new Label();
             page_DPP_Lists = new TabPage();
+            btn_ResetList = new Button();
             label_CodeText = new Label();
             tb_ListType = new TextBox();
             label_TotalLists = new Label();
@@ -106,6 +110,7 @@
             gbx_MonitorAPI.SuspendLayout();
             flp_InfoText_ExtraFields.SuspendLayout();
             gbx_ExtraCodeText.SuspendLayout();
+            flowLayoutPanel1.SuspendLayout();
             gbx_Filter.SuspendLayout();
             flp_InfoText_Filter.SuspendLayout();
             SuspendLayout();
@@ -118,18 +123,20 @@
             tlp_Main.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 60F));
             tlp_Main.Controls.Add(btn_CopyListToOtherTemplates, 0, 1);
             tlp_Main.Controls.Add(btn_SaveItems, 0, 0);
-            tlp_Main.Controls.Add(tab_Main, 0, 2);
+            tlp_Main.Controls.Add(tab_Main, 0, 3);
+            tlp_Main.Controls.Add(btn_ResetList, 0, 2);
             tlp_Main.Controls.Add(label_CodeText, 1, 0);
-            tlp_Main.Controls.Add(tb_ListType, 1, 1);
+            tlp_Main.Controls.Add(tb_ListType, 1, 2);
             tlp_Main.Controls.Add(label_TotalLists, 2, 0);
             tlp_Main.Dock = DockStyle.Fill;
             tlp_Main.GrowStyle = TableLayoutPanelGrowStyle.AddColumns;
             tlp_Main.Location = new Point(0, 0);
             tlp_Main.Margin = new Padding(4, 3, 4, 3);
             tlp_Main.Name = "tlp_Main";
-            tlp_Main.RowCount = 3;
-            tlp_Main.RowStyles.Add(new RowStyle(SizeType.Absolute, 42F));
-            tlp_Main.RowStyles.Add(new RowStyle(SizeType.Absolute, 42F));
+            tlp_Main.RowCount = 4;
+            tlp_Main.RowStyles.Add(new RowStyle(SizeType.Absolute, 33F));
+            tlp_Main.RowStyles.Add(new RowStyle(SizeType.Absolute, 33F));
+            tlp_Main.RowStyles.Add(new RowStyle(SizeType.Absolute, 33F));
             tlp_Main.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
             tlp_Main.Size = new Size(1299, 942);
             tlp_Main.TabIndex = 0;
@@ -138,14 +145,14 @@
             // 
             btn_CopyListToOtherTemplates.BackColor = Color.FromArgb(185, 188, 189);
             btn_CopyListToOtherTemplates.Cursor = Cursors.Hand;
-            btn_CopyListToOtherTemplates.Dock = DockStyle.Top;
+            btn_CopyListToOtherTemplates.Dock = DockStyle.Fill;
             btn_CopyListToOtherTemplates.FlatStyle = FlatStyle.Flat;
             btn_CopyListToOtherTemplates.Font = new Font("Lucida Sans", 10.25F);
             btn_CopyListToOtherTemplates.ForeColor = Color.FromArgb(63, 116, 140);
-            btn_CopyListToOtherTemplates.Location = new Point(4, 45);
-            btn_CopyListToOtherTemplates.Margin = new Padding(4, 3, 4, 0);
+            btn_CopyListToOtherTemplates.Location = new Point(4, 33);
+            btn_CopyListToOtherTemplates.Margin = new Padding(4, 0, 0, 0);
             btn_CopyListToOtherTemplates.Name = "btn_CopyListToOtherTemplates";
-            btn_CopyListToOtherTemplates.Size = new Size(215, 27);
+            btn_CopyListToOtherTemplates.Size = new Size(219, 33);
             btn_CopyListToOtherTemplates.TabIndex = 35;
             btn_CopyListToOtherTemplates.Text = "Kopiera Lista till andra Mallar";
             btn_CopyListToOtherTemplates.UseVisualStyleBackColor = false;
@@ -155,14 +162,14 @@
             // 
             btn_SaveItems.BackColor = Color.FromArgb(185, 188, 189);
             btn_SaveItems.Cursor = Cursors.Hand;
-            btn_SaveItems.Dock = DockStyle.Top;
+            btn_SaveItems.Dock = DockStyle.Fill;
             btn_SaveItems.FlatStyle = FlatStyle.Flat;
             btn_SaveItems.Font = new Font("Lucida Sans", 10.25F);
             btn_SaveItems.ForeColor = Color.FromArgb(63, 116, 140);
-            btn_SaveItems.Location = new Point(4, 3);
-            btn_SaveItems.Margin = new Padding(4, 3, 4, 0);
+            btn_SaveItems.Location = new Point(4, 0);
+            btn_SaveItems.Margin = new Padding(4, 0, 0, 0);
             btn_SaveItems.Name = "btn_SaveItems";
-            btn_SaveItems.Size = new Size(215, 27);
+            btn_SaveItems.Size = new Size(219, 33);
             btn_SaveItems.TabIndex = 26;
             btn_SaveItems.Text = "Spara och Avsluta";
             btn_SaveItems.UseVisualStyleBackColor = false;
@@ -175,10 +182,10 @@
             tab_Main.Controls.Add(page_MonitorLists);
             tab_Main.Controls.Add(page_DPP_Lists);
             tab_Main.Dock = DockStyle.Fill;
-            tab_Main.Location = new Point(3, 87);
+            tab_Main.Location = new Point(3, 102);
             tab_Main.Name = "tab_Main";
             tab_Main.SelectedIndex = 0;
-            tab_Main.Size = new Size(1293, 852);
+            tab_Main.Size = new Size(1293, 837);
             tab_Main.SizeMode = TabSizeMode.FillToRight;
             tab_Main.TabIndex = 33;
             // 
@@ -190,7 +197,7 @@
             page_OwnLists.Location = new Point(4, 24);
             page_OwnLists.Name = "page_OwnLists";
             page_OwnLists.Padding = new Padding(3);
-            page_OwnLists.Size = new Size(1285, 824);
+            page_OwnLists.Size = new Size(1285, 809);
             page_OwnLists.TabIndex = 0;
             page_OwnLists.Text = "Egna Listor";
             page_OwnLists.UseVisualStyleBackColor = true;
@@ -202,7 +209,7 @@
             tlp_OwnLists.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 318F));
             tlp_OwnLists.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 289F));
             tlp_OwnLists.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 8F));
-            tlp_OwnLists.Controls.Add(label_Info_OwnItems, 0, 0);
+            tlp_OwnLists.Controls.Add(label_Info_OwnItems, 1, 0);
             tlp_OwnLists.Controls.Add(gbx_AvailableOptions, 0, 1);
             tlp_OwnLists.Controls.Add(gbx_ChosenItems, 1, 1);
             tlp_OwnLists.Dock = DockStyle.Fill;
@@ -211,19 +218,18 @@
             tlp_OwnLists.RowCount = 2;
             tlp_OwnLists.RowStyles.Add(new RowStyle(SizeType.Percent, 4.202719F));
             tlp_OwnLists.RowStyles.Add(new RowStyle(SizeType.Percent, 95.79728F));
-            tlp_OwnLists.Size = new Size(1279, 818);
+            tlp_OwnLists.Size = new Size(1279, 803);
             tlp_OwnLists.TabIndex = 0;
             // 
             // label_Info_OwnItems
             // 
             label_Info_OwnItems.AutoSize = true;
-            tlp_OwnLists.SetColumnSpan(label_Info_OwnItems, 2);
             label_Info_OwnItems.Dock = DockStyle.Fill;
             label_Info_OwnItems.Font = new Font("Segoe UI", 15F);
             label_Info_OwnItems.ForeColor = Color.FromArgb(184, 220, 231);
-            label_Info_OwnItems.Location = new Point(3, 0);
+            label_Info_OwnItems.Location = new Point(321, 0);
             label_Info_OwnItems.Name = "label_Info_OwnItems";
-            label_Info_OwnItems.Size = new Size(601, 34);
+            label_Info_OwnItems.Size = new Size(283, 33);
             label_Info_OwnItems.TabIndex = 29;
             label_Info_OwnItems.Text = "Egna Listor";
             label_Info_OwnItems.TextAlign = ContentAlignment.MiddleCenter;
@@ -236,11 +242,11 @@
             gbx_AvailableOptions.Dock = DockStyle.Fill;
             gbx_AvailableOptions.Font = new Font("Lucida Sans", 10.25F);
             gbx_AvailableOptions.ForeColor = Color.FromArgb(239, 228, 177);
-            gbx_AvailableOptions.Location = new Point(2, 39);
+            gbx_AvailableOptions.Location = new Point(2, 38);
             gbx_AvailableOptions.Margin = new Padding(2, 5, 0, 0);
             gbx_AvailableOptions.Name = "gbx_AvailableOptions";
             gbx_AvailableOptions.Padding = new Padding(4, 3, 4, 3);
-            gbx_AvailableOptions.Size = new Size(316, 779);
+            gbx_AvailableOptions.Size = new Size(316, 765);
             gbx_AvailableOptions.TabIndex = 22;
             gbx_AvailableOptions.TabStop = false;
             gbx_AvailableOptions.Text = "Tillgängliga Alternativ";
@@ -263,7 +269,7 @@
             dgv_ListItems.Name = "dgv_ListItems";
             dgv_ListItems.ReadOnly = true;
             dgv_ListItems.RowHeadersVisible = false;
-            dgv_ListItems.Size = new Size(308, 704);
+            dgv_ListItems.Size = new Size(308, 690);
             dgv_ListItems.TabIndex = 3;
             dgv_ListItems.CellMouseDown += ItemList_CellMouseDown;
             // 
@@ -310,10 +316,10 @@
             gbx_ChosenItems.Dock = DockStyle.Fill;
             gbx_ChosenItems.Font = new Font("Lucida Sans", 10.25F);
             gbx_ChosenItems.ForeColor = Color.FromArgb(239, 228, 177);
-            gbx_ChosenItems.Location = new Point(320, 39);
+            gbx_ChosenItems.Location = new Point(320, 38);
             gbx_ChosenItems.Margin = new Padding(2, 5, 0, 0);
             gbx_ChosenItems.Name = "gbx_ChosenItems";
-            gbx_ChosenItems.Size = new Size(287, 779);
+            gbx_ChosenItems.Size = new Size(287, 765);
             gbx_ChosenItems.TabIndex = 27;
             gbx_ChosenItems.TabStop = false;
             gbx_ChosenItems.Text = "Valda Alternativ";
@@ -343,8 +349,9 @@
             dgv_Items.Name = "dgv_Items";
             dgv_Items.RowHeadersVisible = false;
             dgv_Items.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgv_Items.Size = new Size(281, 724);
+            dgv_Items.Size = new Size(281, 710);
             dgv_Items.TabIndex = 25;
+            dgv_Items.UserDeletingRow += dgv_Items_UserDeletingRow;
             // 
             // col_ID
             // 
@@ -384,7 +391,7 @@
             page_MonitorLists.Location = new Point(4, 24);
             page_MonitorLists.Name = "page_MonitorLists";
             page_MonitorLists.Padding = new Padding(3);
-            page_MonitorLists.Size = new Size(1285, 824);
+            page_MonitorLists.Size = new Size(1285, 809);
             page_MonitorLists.TabIndex = 1;
             page_MonitorLists.Text = "Monitor Listor";
             page_MonitorLists.UseVisualStyleBackColor = true;
@@ -409,7 +416,7 @@
             tlp_MonitorLists.RowCount = 2;
             tlp_MonitorLists.RowStyles.Add(new RowStyle(SizeType.Percent, 4.82076645F));
             tlp_MonitorLists.RowStyles.Add(new RowStyle(SizeType.Percent, 95.17924F));
-            tlp_MonitorLists.Size = new Size(1279, 818);
+            tlp_MonitorLists.Size = new Size(1279, 803);
             tlp_MonitorLists.TabIndex = 0;
             // 
             // gbx_MonitorPartCode
@@ -418,10 +425,10 @@
             gbx_MonitorPartCode.Dock = DockStyle.Fill;
             gbx_MonitorPartCode.Font = new Font("Lucida Sans", 10.25F);
             gbx_MonitorPartCode.ForeColor = Color.FromArgb(239, 228, 177);
-            gbx_MonitorPartCode.Location = new Point(2, 44);
+            gbx_MonitorPartCode.Location = new Point(2, 43);
             gbx_MonitorPartCode.Margin = new Padding(2, 5, 0, 0);
             gbx_MonitorPartCode.Name = "gbx_MonitorPartCode";
-            gbx_MonitorPartCode.Size = new Size(200, 774);
+            gbx_MonitorPartCode.Size = new Size(200, 760);
             gbx_MonitorPartCode.TabIndex = 31;
             gbx_MonitorPartCode.TabStop = false;
             gbx_MonitorPartCode.Text = "Välj Typ";
@@ -445,7 +452,7 @@
             label_ListMonitor.ForeColor = Color.FromArgb(184, 220, 231);
             label_ListMonitor.Location = new Point(3, 0);
             label_ListMonitor.Name = "label_ListMonitor";
-            label_ListMonitor.Size = new Size(406, 39);
+            label_ListMonitor.Size = new Size(406, 38);
             label_ListMonitor.TabIndex = 29;
             label_ListMonitor.Text = "Monitor Listor";
             label_ListMonitor.TextAlign = ContentAlignment.MiddleCenter;
@@ -453,46 +460,49 @@
             // gbx_MonitorAPI
             // 
             gbx_MonitorAPI.Controls.Add(flp_InfoText_ExtraFields);
-            gbx_MonitorAPI.Controls.Add(cb_Name);
-            gbx_MonitorAPI.Controls.Add(label_Column);
+            gbx_MonitorAPI.Controls.Add(cb_SortMode);
+            gbx_MonitorAPI.Controls.Add(label_SortMode);
+            gbx_MonitorAPI.Controls.Add(cb_FilterCodeText);
+            gbx_MonitorAPI.Controls.Add(label_FilterColumn);
             gbx_MonitorAPI.Controls.Add(cb_Module);
             gbx_MonitorAPI.Controls.Add(label_Module);
             gbx_MonitorAPI.Dock = DockStyle.Fill;
             gbx_MonitorAPI.Font = new Font("Lucida Sans", 10.25F);
             gbx_MonitorAPI.ForeColor = Color.FromArgb(239, 228, 177);
-            gbx_MonitorAPI.Location = new Point(414, 44);
+            gbx_MonitorAPI.Location = new Point(414, 43);
             gbx_MonitorAPI.Margin = new Padding(2, 5, 0, 0);
             gbx_MonitorAPI.Name = "gbx_MonitorAPI";
-            gbx_MonitorAPI.Size = new Size(208, 774);
+            gbx_MonitorAPI.Size = new Size(208, 760);
             gbx_MonitorAPI.TabIndex = 30;
             gbx_MonitorAPI.TabStop = false;
-            gbx_MonitorAPI.Text = "Extra Fält";
+            gbx_MonitorAPI.Text = "Filter";
             // 
             // flp_InfoText_ExtraFields
             // 
             flp_InfoText_ExtraFields.BackColor = Color.Transparent;
             flp_InfoText_ExtraFields.Controls.Add(label9);
             flp_InfoText_ExtraFields.Controls.Add(label10);
-            flp_InfoText_ExtraFields.Controls.Add(label4);
-            flp_InfoText_ExtraFields.Controls.Add(label14);
+            flp_InfoText_ExtraFields.Controls.Add(label17);
+            flp_InfoText_ExtraFields.Controls.Add(label18);
             flp_InfoText_ExtraFields.Dock = DockStyle.Top;
-            flp_InfoText_ExtraFields.Location = new Point(3, 120);
+            flp_InfoText_ExtraFields.Location = new Point(3, 170);
             flp_InfoText_ExtraFields.Name = "flp_InfoText_ExtraFields";
             flp_InfoText_ExtraFields.Padding = new Padding(0, 20, 0, 0);
-            flp_InfoText_ExtraFields.Size = new Size(202, 239);
+            flp_InfoText_ExtraFields.Size = new Size(202, 334);
             flp_InfoText_ExtraFields.TabIndex = 35;
             // 
             // label9
             // 
-            label9.BackColor = SystemColors.Info;
+            label9.BackColor = Color.FromArgb(255, 255, 192);
             label9.Font = new Font("Lucida Sans", 11.25F, FontStyle.Bold);
             label9.ForeColor = SystemColors.Highlight;
             label9.Location = new Point(3, 20);
+            label9.Margin = new Padding(3, 0, 3, 1);
             label9.Name = "label9";
             label9.Padding = new Padding(10, 5, 0, 0);
             label9.Size = new Size(199, 22);
             label9.TabIndex = 0;
-            label9.Text = "Name:";
+            label9.Text = "Filtrera på CodeText: ";
             // 
             // label10
             // 
@@ -500,262 +510,20 @@
             label10.Dock = DockStyle.Top;
             label10.Font = new Font("Lucida Sans", 9.25F);
             label10.ForeColor = Color.Gray;
-            label10.Location = new Point(3, 42);
+            label10.Location = new Point(3, 43);
+            label10.Margin = new Padding(3, 0, 3, 2);
             label10.Name = "label10";
             label10.Padding = new Padding(0, 10, 0, 0);
-            label10.Size = new Size(202, 70);
+            label10.Size = new Size(202, 115);
             label10.TabIndex = 33;
-            label10.Text = "Om \"Extra fält\" skall visas för användaren väljer du vilken variabel du vill visa här.\r\n\r\n\r\n\r\n";
-            // 
-            // label4
-            // 
-            label4.BackColor = SystemColors.Info;
-            label4.ForeColor = Color.Red;
-            label4.Location = new Point(3, 112);
-            label4.Name = "label4";
-            label4.Size = new Size(199, 16);
-            label4.TabIndex = 34;
-            label4.Text = "OBS!";
-            // 
-            // label14
-            // 
-            label14.BackColor = SystemColors.Info;
-            label14.Dock = DockStyle.Top;
-            label14.Font = new Font("Lucida Sans", 9.25F);
-            label14.ForeColor = Color.Gray;
-            label14.Location = new Point(3, 128);
-            label14.Name = "label14";
-            label14.Size = new Size(202, 39);
-            label14.TabIndex = 35;
-            label14.Text = "Om Name används kan INTE Property användas.";
-            // 
-            // cb_Name
-            // 
-            cb_Name.Dock = DockStyle.Top;
-            cb_Name.DropDownStyle = ComboBoxStyle.DropDownList;
-            cb_Name.FormattingEnabled = true;
-            cb_Name.Items.AddRange(new object[] { "PartNumber", "Description" });
-            cb_Name.Location = new Point(3, 96);
-            cb_Name.Name = "cb_Name";
-            cb_Name.Size = new Size(202, 24);
-            cb_Name.TabIndex = 31;
-            // 
-            // label_Column
-            // 
-            label_Column.AutoSize = true;
-            label_Column.Dock = DockStyle.Top;
-            label_Column.Location = new Point(3, 70);
-            label_Column.Name = "label_Column";
-            label_Column.Padding = new Padding(0, 5, 0, 5);
-            label_Column.Size = new Size(44, 26);
-            label_Column.TabIndex = 30;
-            label_Column.Text = "Name";
-            // 
-            // cb_Module
-            // 
-            cb_Module.Dock = DockStyle.Top;
-            cb_Module.DropDownStyle = ComboBoxStyle.DropDownList;
-            cb_Module.FormattingEnabled = true;
-            cb_Module.Items.AddRange(new object[] { "Common", "Inventory", "Manufacturing", "" });
-            cb_Module.Location = new Point(3, 46);
-            cb_Module.Name = "cb_Module";
-            cb_Module.Size = new Size(202, 24);
-            cb_Module.TabIndex = 27;
-            cb_Module.Visible = false;
-            cb_Module.SelectedIndexChanged += cb_Module_SelectedIndexChanged;
-            // 
-            // label_Module
-            // 
-            label_Module.AutoSize = true;
-            label_Module.Dock = DockStyle.Top;
-            label_Module.Location = new Point(3, 20);
-            label_Module.Name = "label_Module";
-            label_Module.Padding = new Padding(0, 5, 0, 5);
-            label_Module.Size = new Size(47, 26);
-            label_Module.TabIndex = 28;
-            label_Module.Text = "Modul";
-            label_Module.Visible = false;
-            // 
-            // gbx_ExtraCodeText
-            // 
-            gbx_ExtraCodeText.Controls.Add(cb_SecondaryName);
-            gbx_ExtraCodeText.Controls.Add(label2);
-            gbx_ExtraCodeText.Controls.Add(cb_SecondaryCodeText);
-            gbx_ExtraCodeText.Controls.Add(label3);
-            gbx_ExtraCodeText.Dock = DockStyle.Fill;
-            gbx_ExtraCodeText.Font = new Font("Lucida Sans", 10.25F);
-            gbx_ExtraCodeText.ForeColor = Color.FromArgb(239, 228, 177);
-            gbx_ExtraCodeText.Location = new Point(624, 44);
-            gbx_ExtraCodeText.Margin = new Padding(2, 5, 0, 0);
-            gbx_ExtraCodeText.Name = "gbx_ExtraCodeText";
-            gbx_ExtraCodeText.Size = new Size(208, 774);
-            gbx_ExtraCodeText.TabIndex = 33;
-            gbx_ExtraCodeText.TabStop = false;
-            gbx_ExtraCodeText.Text = "Extra CodeText";
-            // 
-            // cb_SecondaryName
-            // 
-            cb_SecondaryName.Dock = DockStyle.Top;
-            cb_SecondaryName.DropDownStyle = ComboBoxStyle.DropDownList;
-            cb_SecondaryName.FormattingEnabled = true;
-            cb_SecondaryName.Location = new Point(3, 96);
-            cb_SecondaryName.Name = "cb_SecondaryName";
-            cb_SecondaryName.Size = new Size(202, 24);
-            cb_SecondaryName.TabIndex = 33;
-            // 
-            // label2
-            // 
-            label2.AutoSize = true;
-            label2.Dock = DockStyle.Top;
-            label2.Location = new Point(3, 70);
-            label2.Name = "label2";
-            label2.Padding = new Padding(0, 5, 0, 5);
-            label2.Size = new Size(120, 26);
-            label2.TabIndex = 32;
-            label2.Text = "Secondary Name";
-            // 
-            // cb_SecondaryCodeText
-            // 
-            cb_SecondaryCodeText.Dock = DockStyle.Top;
-            cb_SecondaryCodeText.DropDownStyle = ComboBoxStyle.DropDownList;
-            cb_SecondaryCodeText.FormattingEnabled = true;
-            cb_SecondaryCodeText.Items.AddRange(new object[] { "eq", "startswith", "endwith" });
-            cb_SecondaryCodeText.Location = new Point(3, 46);
-            cb_SecondaryCodeText.Name = "cb_SecondaryCodeText";
-            cb_SecondaryCodeText.Size = new Size(202, 24);
-            cb_SecondaryCodeText.TabIndex = 28;
-            // 
-            // label3
-            // 
-            label3.AutoSize = true;
-            label3.Dock = DockStyle.Top;
-            label3.Location = new Point(3, 20);
-            label3.Name = "label3";
-            label3.Padding = new Padding(0, 5, 0, 5);
-            label3.Size = new Size(149, 26);
-            label3.TabIndex = 29;
-            label3.Text = "Secondary CodeText";
-            // 
-            // gbx_Filter
-            // 
-            gbx_Filter.Controls.Add(flp_InfoText_Filter);
-            gbx_Filter.Controls.Add(cb_SortMode);
-            gbx_Filter.Controls.Add(label_SortMode);
-            gbx_Filter.Controls.Add(cb_FilterCodeText);
-            gbx_Filter.Controls.Add(label_FilterColumn);
-            gbx_Filter.Controls.Add(cb_Properties);
-            gbx_Filter.Controls.Add(label_Property);
-            gbx_Filter.Dock = DockStyle.Fill;
-            gbx_Filter.Font = new Font("Lucida Sans", 10.25F);
-            gbx_Filter.ForeColor = Color.FromArgb(239, 228, 177);
-            gbx_Filter.Location = new Point(204, 44);
-            gbx_Filter.Margin = new Padding(2, 5, 0, 0);
-            gbx_Filter.Name = "gbx_Filter";
-            gbx_Filter.Size = new Size(208, 774);
-            gbx_Filter.TabIndex = 32;
-            gbx_Filter.TabStop = false;
-            gbx_Filter.Text = "Välj Filter";
-            // 
-            // flp_InfoText_Filter
-            // 
-            flp_InfoText_Filter.BackColor = Color.Transparent;
-            flp_InfoText_Filter.Controls.Add(label1);
-            flp_InfoText_Filter.Controls.Add(label11);
-            flp_InfoText_Filter.Controls.Add(label15);
-            flp_InfoText_Filter.Controls.Add(label16);
-            flp_InfoText_Filter.Controls.Add(label12);
-            flp_InfoText_Filter.Controls.Add(label13);
-            flp_InfoText_Filter.Controls.Add(label17);
-            flp_InfoText_Filter.Controls.Add(label18);
-            flp_InfoText_Filter.Dock = DockStyle.Top;
-            flp_InfoText_Filter.Location = new Point(3, 170);
-            flp_InfoText_Filter.Name = "flp_InfoText_Filter";
-            flp_InfoText_Filter.Padding = new Padding(0, 20, 0, 0);
-            flp_InfoText_Filter.Size = new Size(202, 445);
-            flp_InfoText_Filter.TabIndex = 36;
-            // 
-            // label1
-            // 
-            label1.BackColor = Color.FromArgb(255, 255, 192);
-            label1.Font = new Font("Lucida Sans", 11.25F, FontStyle.Bold);
-            label1.ForeColor = SystemColors.Highlight;
-            label1.Location = new Point(3, 20);
-            label1.Margin = new Padding(3, 0, 3, 1);
-            label1.Name = "label1";
-            label1.Padding = new Padding(10, 5, 0, 1);
-            label1.Size = new Size(199, 22);
-            label1.TabIndex = 0;
-            label1.Text = "Property:";
-            // 
-            // label11
-            // 
-            label11.BackColor = SystemColors.Info;
-            label11.Dock = DockStyle.Top;
-            label11.Font = new Font("Lucida Sans", 9.25F);
-            label11.ForeColor = Color.Gray;
-            label11.Location = new Point(3, 43);
-            label11.Name = "label11";
-            label11.Padding = new Padding(0, 10, 0, 0);
-            label11.Size = new Size(202, 59);
-            label11.TabIndex = 33;
-            label11.Text = "Vilket fält skall hämtas från Monitor?";
-            // 
-            // label15
-            // 
-            label15.BackColor = SystemColors.Info;
-            label15.ForeColor = Color.Red;
-            label15.Location = new Point(3, 102);
-            label15.Name = "label15";
-            label15.Size = new Size(201, 16);
-            label15.TabIndex = 36;
-            label15.Text = "OBS!";
-            // 
-            // label16
-            // 
-            label16.BackColor = SystemColors.Info;
-            label16.Dock = DockStyle.Top;
-            label16.Font = new Font("Lucida Sans", 9.25F);
-            label16.ForeColor = Color.Gray;
-            label16.Location = new Point(3, 118);
-            label16.Margin = new Padding(3, 0, 3, 2);
-            label16.Name = "label16";
-            label16.Size = new Size(202, 38);
-            label16.TabIndex = 37;
-            label16.Text = "Om Property används kan INTE Name användas.\r\n";
-            // 
-            // label12
-            // 
-            label12.BackColor = Color.FromArgb(255, 255, 192);
-            label12.Font = new Font("Lucida Sans", 11.25F, FontStyle.Bold);
-            label12.ForeColor = SystemColors.Highlight;
-            label12.Location = new Point(3, 158);
-            label12.Margin = new Padding(3, 0, 3, 1);
-            label12.Name = "label12";
-            label12.Padding = new Padding(10, 10, 0, 0);
-            label12.Size = new Size(199, 27);
-            label12.TabIndex = 34;
-            label12.Text = "Filtrera på CodeText:";
-            // 
-            // label13
-            // 
-            label13.BackColor = SystemColors.Info;
-            label13.Dock = DockStyle.Top;
-            label13.Font = new Font("Lucida Sans", 9.25F);
-            label13.ForeColor = Color.Gray;
-            label13.Location = new Point(3, 186);
-            label13.Margin = new Padding(3, 0, 3, 2);
-            label13.Name = "label13";
-            label13.Padding = new Padding(0, 10, 0, 0);
-            label13.Size = new Size(202, 109);
-            label13.TabIndex = 35;
-            label13.Text = "Här kan du filtrera listan, t.ex. på Skruvtyp kan du filtrera så användare endast ser dom skruvar som tillhör den typ av skruvar du valt i Processkortet.\r\n";
+            label10.Text = "Här kan du filtrera listan, t.ex. på Skruvtyp kan du filtrera så användare endast ser dom skruvar som tillhör den typ av skruvar du valt i Processkortet.";
             // 
             // label17
             // 
             label17.BackColor = Color.FromArgb(255, 255, 192);
             label17.Font = new Font("Lucida Sans", 11.25F, FontStyle.Bold);
             label17.ForeColor = SystemColors.Highlight;
-            label17.Location = new Point(3, 297);
+            label17.Location = new Point(3, 160);
             label17.Margin = new Padding(3, 0, 3, 1);
             label17.Name = "label17";
             label17.Padding = new Padding(10, 10, 0, 0);
@@ -769,7 +537,7 @@
             label18.Dock = DockStyle.Top;
             label18.Font = new Font("Lucida Sans", 9.25F);
             label18.ForeColor = Color.Gray;
-            label18.Location = new Point(3, 325);
+            label18.Location = new Point(3, 188);
             label18.Name = "label18";
             label18.Padding = new Padding(0, 10, 0, 0);
             label18.Size = new Size(202, 79);
@@ -819,6 +587,292 @@
             label_FilterColumn.TabIndex = 32;
             label_FilterColumn.Text = "Filtrera på CodeText?";
             // 
+            // cb_Module
+            // 
+            cb_Module.Dock = DockStyle.Top;
+            cb_Module.DropDownStyle = ComboBoxStyle.DropDownList;
+            cb_Module.FormattingEnabled = true;
+            cb_Module.Items.AddRange(new object[] { "Common", "Inventory", "Manufacturing", "" });
+            cb_Module.Location = new Point(3, 46);
+            cb_Module.Name = "cb_Module";
+            cb_Module.Size = new Size(202, 24);
+            cb_Module.TabIndex = 27;
+            cb_Module.Visible = false;
+            cb_Module.SelectedIndexChanged += cb_Module_SelectedIndexChanged;
+            // 
+            // label_Module
+            // 
+            label_Module.AutoSize = true;
+            label_Module.Dock = DockStyle.Top;
+            label_Module.Location = new Point(3, 20);
+            label_Module.Name = "label_Module";
+            label_Module.Padding = new Padding(0, 5, 0, 5);
+            label_Module.Size = new Size(47, 26);
+            label_Module.TabIndex = 28;
+            label_Module.Text = "Modul";
+            label_Module.Visible = false;
+            // 
+            // gbx_ExtraCodeText
+            // 
+            gbx_ExtraCodeText.Controls.Add(flowLayoutPanel1);
+            gbx_ExtraCodeText.Controls.Add(cb_SecondaryName);
+            gbx_ExtraCodeText.Controls.Add(label2);
+            gbx_ExtraCodeText.Controls.Add(cb_SecondaryCodeText);
+            gbx_ExtraCodeText.Controls.Add(label3);
+            gbx_ExtraCodeText.Dock = DockStyle.Fill;
+            gbx_ExtraCodeText.Font = new Font("Lucida Sans", 10.25F);
+            gbx_ExtraCodeText.ForeColor = Color.FromArgb(239, 228, 177);
+            gbx_ExtraCodeText.Location = new Point(624, 43);
+            gbx_ExtraCodeText.Margin = new Padding(2, 5, 0, 0);
+            gbx_ExtraCodeText.Name = "gbx_ExtraCodeText";
+            gbx_ExtraCodeText.Size = new Size(208, 760);
+            gbx_ExtraCodeText.TabIndex = 33;
+            gbx_ExtraCodeText.TabStop = false;
+            gbx_ExtraCodeText.Text = "Extra CodeText";
+            // 
+            // flowLayoutPanel1
+            // 
+            flowLayoutPanel1.BackColor = Color.Transparent;
+            flowLayoutPanel1.Controls.Add(label4);
+            flowLayoutPanel1.Controls.Add(label14);
+            flowLayoutPanel1.Controls.Add(label19);
+            flowLayoutPanel1.Controls.Add(label20);
+            flowLayoutPanel1.Dock = DockStyle.Top;
+            flowLayoutPanel1.Location = new Point(3, 120);
+            flowLayoutPanel1.Name = "flowLayoutPanel1";
+            flowLayoutPanel1.Padding = new Padding(0, 20, 0, 0);
+            flowLayoutPanel1.Size = new Size(202, 384);
+            flowLayoutPanel1.TabIndex = 36;
+            // 
+            // label4
+            // 
+            label4.BackColor = Color.FromArgb(255, 255, 192);
+            label4.Font = new Font("Lucida Sans", 11.25F, FontStyle.Bold);
+            label4.ForeColor = SystemColors.Highlight;
+            label4.Location = new Point(3, 20);
+            label4.Margin = new Padding(3, 0, 3, 1);
+            label4.Name = "label4";
+            label4.Padding = new Padding(10, 5, 0, 0);
+            label4.Size = new Size(199, 22);
+            label4.TabIndex = 0;
+            label4.Text = "Secondary CodeText: ";
+            // 
+            // label14
+            // 
+            label14.BackColor = SystemColors.Info;
+            label14.Dock = DockStyle.Top;
+            label14.Font = new Font("Lucida Sans", 9.25F);
+            label14.ForeColor = Color.Gray;
+            label14.Location = new Point(3, 43);
+            label14.Margin = new Padding(3, 0, 3, 2);
+            label14.Name = "label14";
+            label14.Padding = new Padding(0, 10, 0, 0);
+            label14.Size = new Size(202, 65);
+            label14.TabIndex = 33;
+            label14.Text = "Om du vill visa en kolumn till i listan väljer du här vilken CodeText du vill visa";
+            // 
+            // label19
+            // 
+            label19.BackColor = Color.FromArgb(255, 255, 192);
+            label19.Font = new Font("Lucida Sans", 11.25F, FontStyle.Bold);
+            label19.ForeColor = SystemColors.Highlight;
+            label19.Location = new Point(3, 110);
+            label19.Margin = new Padding(3, 0, 3, 1);
+            label19.Name = "label19";
+            label19.Padding = new Padding(10, 10, 0, 0);
+            label19.Size = new Size(199, 27);
+            label19.TabIndex = 38;
+            label19.Text = "Secondary Name";
+            // 
+            // label20
+            // 
+            label20.BackColor = SystemColors.Info;
+            label20.Dock = DockStyle.Top;
+            label20.Font = new Font("Lucida Sans", 9.25F);
+            label20.ForeColor = Color.Gray;
+            label20.Location = new Point(3, 138);
+            label20.Name = "label20";
+            label20.Padding = new Padding(0, 10, 0, 0);
+            label20.Size = new Size(202, 79);
+            label20.TabIndex = 39;
+            label20.Text = "Om du valt Secondary CodeText väljer du här vilket Extra Fält från Monitor du vill visa i listan.";
+            // 
+            // cb_SecondaryName
+            // 
+            cb_SecondaryName.Dock = DockStyle.Top;
+            cb_SecondaryName.DropDownStyle = ComboBoxStyle.DropDownList;
+            cb_SecondaryName.FormattingEnabled = true;
+            cb_SecondaryName.Location = new Point(3, 96);
+            cb_SecondaryName.Name = "cb_SecondaryName";
+            cb_SecondaryName.Size = new Size(202, 24);
+            cb_SecondaryName.TabIndex = 33;
+            // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.Dock = DockStyle.Top;
+            label2.Location = new Point(3, 70);
+            label2.Name = "label2";
+            label2.Padding = new Padding(0, 5, 0, 5);
+            label2.Size = new Size(120, 26);
+            label2.TabIndex = 32;
+            label2.Text = "Secondary Name";
+            // 
+            // cb_SecondaryCodeText
+            // 
+            cb_SecondaryCodeText.Dock = DockStyle.Top;
+            cb_SecondaryCodeText.DropDownStyle = ComboBoxStyle.DropDownList;
+            cb_SecondaryCodeText.FormattingEnabled = true;
+            cb_SecondaryCodeText.Items.AddRange(new object[] { "eq", "startswith", "endwith" });
+            cb_SecondaryCodeText.Location = new Point(3, 46);
+            cb_SecondaryCodeText.Name = "cb_SecondaryCodeText";
+            cb_SecondaryCodeText.Size = new Size(202, 24);
+            cb_SecondaryCodeText.TabIndex = 28;
+            // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Dock = DockStyle.Top;
+            label3.Location = new Point(3, 20);
+            label3.Name = "label3";
+            label3.Padding = new Padding(0, 5, 0, 5);
+            label3.Size = new Size(149, 26);
+            label3.TabIndex = 29;
+            label3.Text = "Secondary CodeText";
+            // 
+            // gbx_Filter
+            // 
+            gbx_Filter.Controls.Add(flp_InfoText_Filter);
+            gbx_Filter.Controls.Add(cb_Name);
+            gbx_Filter.Controls.Add(label_Column);
+            gbx_Filter.Controls.Add(cb_Properties);
+            gbx_Filter.Controls.Add(label_Property);
+            gbx_Filter.Dock = DockStyle.Fill;
+            gbx_Filter.Font = new Font("Lucida Sans", 10.25F);
+            gbx_Filter.ForeColor = Color.FromArgb(239, 228, 177);
+            gbx_Filter.Location = new Point(204, 43);
+            gbx_Filter.Margin = new Padding(2, 5, 0, 0);
+            gbx_Filter.Name = "gbx_Filter";
+            gbx_Filter.Size = new Size(208, 760);
+            gbx_Filter.TabIndex = 32;
+            gbx_Filter.TabStop = false;
+            gbx_Filter.Text = "Select";
+            // 
+            // flp_InfoText_Filter
+            // 
+            flp_InfoText_Filter.BackColor = Color.Transparent;
+            flp_InfoText_Filter.Controls.Add(label1);
+            flp_InfoText_Filter.Controls.Add(label11);
+            flp_InfoText_Filter.Controls.Add(label15);
+            flp_InfoText_Filter.Controls.Add(label16);
+            flp_InfoText_Filter.Controls.Add(label12);
+            flp_InfoText_Filter.Controls.Add(label13);
+            flp_InfoText_Filter.Dock = DockStyle.Top;
+            flp_InfoText_Filter.FlowDirection = FlowDirection.TopDown;
+            flp_InfoText_Filter.Location = new Point(3, 120);
+            flp_InfoText_Filter.Name = "flp_InfoText_Filter";
+            flp_InfoText_Filter.Padding = new Padding(0, 20, 0, 0);
+            flp_InfoText_Filter.Size = new Size(202, 384);
+            flp_InfoText_Filter.TabIndex = 36;
+            // 
+            // label1
+            // 
+            label1.BackColor = Color.FromArgb(255, 255, 192);
+            label1.Font = new Font("Lucida Sans", 11.25F, FontStyle.Bold);
+            label1.ForeColor = SystemColors.Highlight;
+            label1.Location = new Point(3, 20);
+            label1.Margin = new Padding(3, 0, 3, 1);
+            label1.Name = "label1";
+            label1.Padding = new Padding(10, 5, 0, 1);
+            label1.Size = new Size(199, 22);
+            label1.TabIndex = 0;
+            label1.Text = "Property:";
+            // 
+            // label11
+            // 
+            label11.BackColor = SystemColors.Info;
+            label11.Dock = DockStyle.Top;
+            label11.Font = new Font("Lucida Sans", 9.25F);
+            label11.ForeColor = Color.Gray;
+            label11.Location = new Point(3, 43);
+            label11.Name = "label11";
+            label11.Padding = new Padding(0, 10, 0, 0);
+            label11.Size = new Size(201, 49);
+            label11.TabIndex = 33;
+            label11.Text = "Vilket fält skall hämtas från Monitor?";
+            // 
+            // label15
+            // 
+            label15.BackColor = SystemColors.Info;
+            label15.ForeColor = Color.Red;
+            label15.Location = new Point(3, 92);
+            label15.Name = "label15";
+            label15.Size = new Size(201, 16);
+            label15.TabIndex = 36;
+            label15.Text = "OBS!";
+            // 
+            // label16
+            // 
+            label16.BackColor = SystemColors.Info;
+            label16.Dock = DockStyle.Top;
+            label16.Font = new Font("Lucida Sans", 9.25F);
+            label16.ForeColor = Color.Gray;
+            label16.Location = new Point(3, 108);
+            label16.Margin = new Padding(3, 0, 3, 2);
+            label16.Name = "label16";
+            label16.Size = new Size(201, 67);
+            label16.TabIndex = 37;
+            label16.Text = "Fälten Property och Extra Field kan inte användas samtidigt. Exakt ett av dem ska anges: \r\nom Property har ett värde måste Name vara tomt, och vice versa.\r\n";
+            // 
+            // label12
+            // 
+            label12.BackColor = Color.FromArgb(255, 255, 192);
+            label12.Font = new Font("Lucida Sans", 11.25F, FontStyle.Bold);
+            label12.ForeColor = SystemColors.Highlight;
+            label12.Location = new Point(3, 177);
+            label12.Margin = new Padding(3, 0, 3, 1);
+            label12.Name = "label12";
+            label12.Padding = new Padding(10, 10, 0, 0);
+            label12.Size = new Size(199, 27);
+            label12.TabIndex = 34;
+            label12.Text = "Extra Field:";
+            // 
+            // label13
+            // 
+            label13.BackColor = SystemColors.Info;
+            label13.Dock = DockStyle.Top;
+            label13.Font = new Font("Lucida Sans", 9.25F);
+            label13.ForeColor = Color.Gray;
+            label13.Location = new Point(3, 205);
+            label13.Margin = new Padding(3, 0, 3, 2);
+            label13.Name = "label13";
+            label13.Padding = new Padding(0, 10, 0, 0);
+            label13.Size = new Size(201, 109);
+            label13.TabIndex = 35;
+            label13.Text = "Extra fält är extra parametrar som finns i Monitor, välj passlig variabel här om du vill använda det istälelt för Property.\r\n";
+            // 
+            // cb_Name
+            // 
+            cb_Name.Dock = DockStyle.Top;
+            cb_Name.DropDownStyle = ComboBoxStyle.DropDownList;
+            cb_Name.FormattingEnabled = true;
+            cb_Name.Items.AddRange(new object[] { "PartNumber", "Description" });
+            cb_Name.Location = new Point(3, 96);
+            cb_Name.Name = "cb_Name";
+            cb_Name.Size = new Size(202, 24);
+            cb_Name.TabIndex = 31;
+            // 
+            // label_Column
+            // 
+            label_Column.AutoSize = true;
+            label_Column.Dock = DockStyle.Top;
+            label_Column.Location = new Point(3, 70);
+            label_Column.Name = "label_Column";
+            label_Column.Padding = new Padding(0, 5, 0, 5);
+            label_Column.Size = new Size(75, 26);
+            label_Column.TabIndex = 30;
+            label_Column.Text = "Extra Field";
+            // 
             // cb_Properties
             // 
             cb_Properties.Dock = DockStyle.Top;
@@ -847,9 +901,25 @@
             page_DPP_Lists.Location = new Point(4, 24);
             page_DPP_Lists.Name = "page_DPP_Lists";
             page_DPP_Lists.Padding = new Padding(3);
-            page_DPP_Lists.Size = new Size(1285, 824);
+            page_DPP_Lists.Size = new Size(1285, 809);
             page_DPP_Lists.TabIndex = 2;
             page_DPP_Lists.Text = "DPP Listor";
+            // 
+            // btn_ResetList
+            // 
+            btn_ResetList.BackColor = Color.FromArgb(255, 199, 206);
+            btn_ResetList.Dock = DockStyle.Fill;
+            btn_ResetList.FlatStyle = FlatStyle.Flat;
+            btn_ResetList.Font = new Font("Segoe UI", 10F);
+            btn_ResetList.ForeColor = Color.FromArgb(156, 0, 6);
+            btn_ResetList.Location = new Point(4, 66);
+            btn_ResetList.Margin = new Padding(4, 0, 0, 0);
+            btn_ResetList.Name = "btn_ResetList";
+            btn_ResetList.Size = new Size(219, 33);
+            btn_ResetList.TabIndex = 30;
+            btn_ResetList.Text = "Nollställ lista";
+            btn_ResetList.UseVisualStyleBackColor = false;
+            btn_ResetList.Click += ResetList_Click;
             // 
             // label_CodeText
             // 
@@ -859,7 +929,8 @@
             label_CodeText.ForeColor = Color.FromArgb(184, 220, 231);
             label_CodeText.Location = new Point(226, 0);
             label_CodeText.Name = "label_CodeText";
-            label_CodeText.Size = new Size(873, 42);
+            tlp_Main.SetRowSpan(label_CodeText, 2);
+            label_CodeText.Size = new Size(873, 66);
             label_CodeText.TabIndex = 34;
             label_CodeText.Text = "CodeText";
             label_CodeText.TextAlign = ContentAlignment.MiddleCenter;
@@ -869,12 +940,13 @@
             tb_ListType.BackColor = Color.FromArgb(6, 81, 87);
             tb_ListType.BorderStyle = BorderStyle.None;
             tb_ListType.Dock = DockStyle.Fill;
-            tb_ListType.Font = new Font("Segoe UI", 28F);
+            tb_ListType.Font = new Font("Segoe UI", 20F);
             tb_ListType.ForeColor = Color.FromArgb(171, 150, 85);
-            tb_ListType.Location = new Point(226, 45);
+            tb_ListType.Location = new Point(226, 69);
             tb_ListType.Name = "tb_ListType";
-            tb_ListType.Size = new Size(873, 50);
+            tb_ListType.Size = new Size(873, 36);
             tb_ListType.TabIndex = 36;
+            tb_ListType.Text = "Protocol";
             tb_ListType.TextAlign = HorizontalAlignment.Center;
             tb_ListType.Enter += ListType_Enter;
             // 
@@ -970,6 +1042,7 @@
             flp_InfoText_ExtraFields.ResumeLayout(false);
             gbx_ExtraCodeText.ResumeLayout(false);
             gbx_ExtraCodeText.PerformLayout();
+            flowLayoutPanel1.ResumeLayout(false);
             gbx_Filter.ResumeLayout(false);
             gbx_Filter.PerformLayout();
             flp_InfoText_Filter.ResumeLayout(false);
@@ -1030,8 +1103,6 @@
         private FlowLayoutPanel flp_InfoText_Filter;
         private Label label1;
         private Label label11;
-        private Label label4;
-        private Label label14;
         private Label label15;
         private Label label16;
         private Label label12;
@@ -1043,5 +1114,11 @@
         private Button btn_CopyListToOtherTemplates;
         private TextBox tb_ListType;
         private Label label_TotalLists;
+        private Button btn_ResetList;
+        private FlowLayoutPanel flowLayoutPanel1;
+        private Label label4;
+        private Label label14;
+        private Label label19;
+        private Label label20;
     }
 }

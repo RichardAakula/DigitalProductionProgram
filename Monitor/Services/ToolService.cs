@@ -60,15 +60,6 @@ namespace DigitalProductionProgram.Monitor.Services
             Login_Monitor.TotalLoginAttemps = 0;
             Utilities.CounterMonitorRequests = 0;
 
-            //Denna är här så att det inte blir problem i början ifall nån order blir kvar med fel mall så hämtas ALLA verktyg istället för FEP's och då tar det extremt länge att ladda alla verktyg
-            if (Order.WorkOperation == Manage_WorkOperation.WorkOperations.Extrudering_FEP && string.IsNullOrEmpty(filterCodeText))
-            {
-                if (partCode == "TIPS")
-                    filterCodeText = "Kanyler FEP";
-                if (partCode == "DIES")
-                    filterCodeText = "Munstycken FEP";
-            }
-
 
             // Hämta PartCodeId
             var partCodeObj = Utilities.GetOneFromMonitor<Inventory.PartCodes>($"filter=Description Eq'{partCode}'"); //10 ms

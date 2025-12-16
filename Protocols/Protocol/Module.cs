@@ -863,13 +863,13 @@ namespace DigitalProductionProgram.Protocols.Protocol
                         //    items.Add(LanguageManager.GetString("no") ?? string.Empty);
                         //     break;
                         // case 80:    //EXTRUDER
-                        // items = CheckAuthority.IsWorkoperationAuthorized(CheckAuthority.TemplateWorkoperation.ExtruderRegister) ?
+                        //items = CheckAuthority.IsWorkoperationAuthorized(CheckAuthority.TemplateWorkoperation.ExtruderRegister) ?
                         //     Monitor.Services.ToolService.List_Equipment<Manufacturing.WorkCenters>("Description", "startswith(PartNumber, 'EXT')") : Machines.Extruders("EXTRUDER");
                         //DigitalProductionProgram.Equipment.Equipment.List_From_Register("Extruder", "Extruder_Skruvar") : Machines.Extruders("EXTRUDER");
                         //    break;
 
-                        case 81:    //CYLINDER
-                            items = Machines.Cylinders;
+                        //case 81:    //CYLINDER
+                         //   items = Machines.Cylinders;
                             break;
                         // case 85:    //KANYL TYP   //Ext PTFE-Ext PTFE GROV
                         //     items.Add("S");

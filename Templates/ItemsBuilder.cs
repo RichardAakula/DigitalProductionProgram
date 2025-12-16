@@ -31,12 +31,12 @@ namespace DigitalProductionProgram.Templates
         private static List<string> ListCodetext = new();
         private readonly IItemsProvider? itemsProvider;
         public static bool IsListActivated;
-        
+
         public interface IItemsProvider
         {
             void Initialize(DataGridView dgvItems, DataGridView dgvListItems, ComboBox cbPartCode, ComboBox cbName, ComboBox cbSecondaryName, ComboBox cbProperties, ComboBox cbFilterCodeText, ComboBox cbSecondaryCodeText, ComboBox cbSortMode, TextBox tbText, int protocolDescriptionId);
-            void Load();
-           // void SaveItem(string item);
+            // void Load();
+            // void SaveItem(string item);
         }
 
 
@@ -47,7 +47,7 @@ namespace DigitalProductionProgram.Templates
             InitializeComponent();
 
             IsListActivated = false;
-           
+
             ProtocolDescriptionId = protocolDescriptionId;
             // List_TemplateID = list_templateID;
             ListCodetext = listCodetext;
@@ -83,8 +83,7 @@ namespace DigitalProductionProgram.Templates
             label_CodeText.Text = parameter;
             itemsProvider?.Initialize(dgv_Items, dgv_ListItems, cb_PartCode, cb_Name, cb_SecondaryName, cb_Properties, cb_FilterCodeText, cb_SecondaryCodeText, cb_SortMode, tb_AddNewItem, protocolDescriptionId);
 
-           
-            Load_TotalLists();
+
 
         }
         private async void ItemsBuilder_Load(object sender, EventArgs e)
@@ -113,7 +112,8 @@ namespace DigitalProductionProgram.Templates
             Fill_ComboBox_FilterColumns(cb_FilterCodeText, ListCodetext);
             Fill_ComboBox_FilterColumns(cb_SecondaryCodeText, ListCodetext);
 
-            itemsProvider?.Load();
+            Load_ListItems();
+            Load_TotalLists();
 
             if (dgv_Items.Rows.Count > 0)
                 tab_Main.SelectedTab = tab_Main.TabPages[0];
@@ -257,38 +257,38 @@ namespace DigitalProductionProgram.Templates
 
         public class ProtocolItems : IItemsProvider
         {
-            private DataGridView? dgv_Items;
-            private DataGridView? dgv_ListItems;
-            private ComboBox? cb_PartCode;
-            private ComboBox? cb_Name;
-            private ComboBox? cb_SecondaryName;
-            private ComboBox? cb_Properties;
-            private ComboBox? cb_FilterCodeText;
-            private ComboBox? cb_SecondaryCodeText;
-            private ComboBox? cb_SortMode;
-            private int ProtocolDescriptionId;
+            //private DataGridView? dgv_Items;
+            //private DataGridView? dgv_ListItems;
+            //private ComboBox? cb_PartCode;
+            //private ComboBox? cb_Name;
+            //private ComboBox? cb_SecondaryName;
+            //private ComboBox? cb_Properties;
+            //private ComboBox? cb_FilterCodeText;
+            //private ComboBox? cb_SecondaryCodeText;
+            //private ComboBox? cb_SortMode;
+            //private int ProtocolDescriptionId;
 
 
             public void Initialize(DataGridView dgvItems, DataGridView dgvListItems, ComboBox cbPartCode, ComboBox cbName, ComboBox cbSecondaryName, ComboBox cbProperties, ComboBox cbFilterCodeText, ComboBox cbSecondaryCodeText, ComboBox cbSortMode, TextBox tbText, int protocolDescriptionId)
             {
-                dgv_Items = dgvItems;
-                dgv_ListItems = dgvListItems;
-                cb_PartCode = cbPartCode;
-                cb_Name = cbName;
-                cb_SecondaryName = cbSecondaryName;
-                cb_Properties = cbProperties;
-                cb_FilterCodeText = cbFilterCodeText;
-                cb_SecondaryCodeText = cbSecondaryCodeText;
-                cb_SortMode = cbSortMode;
-                ProtocolDescriptionId = protocolDescriptionId;
+                //dgv_Items = dgvItems;
+                //dgv_ListItems = dgvListItems;
+                //cb_PartCode = cbPartCode;
+                //cb_Name = cbName;
+                //cb_SecondaryName = cbSecondaryName;
+                //cb_Properties = cbProperties;
+                //cb_FilterCodeText = cbFilterCodeText;
+                //cb_SecondaryCodeText = cbSecondaryCodeText;
+                //cb_SortMode = cbSortMode;
+                //ProtocolDescriptionId = protocolDescriptionId;
                 //List_TemplateID = list_templateID;
             }
 
-            public void Load()
-            {
-                Load_ListItems(dgv_Items, dgv_ListItems, cb_PartCode, cb_Name, cb_SecondaryName, cb_Properties, cb_FilterCodeText, cb_SecondaryCodeText, cb_SortMode, "Protocol", ProtocolDescriptionId);
-               
-            }
+            //public void Load()
+            //{
+            //    Load_ListItems(dgv_Items, dgv_ListItems, cb_PartCode, cb_Name, cb_SecondaryName, cb_Properties, cb_FilterCodeText, cb_SecondaryCodeText, cb_SortMode, "Protocol", ProtocolDescriptionId);
+
+            //}
             //public void SaveItem(string item)
             //{
             //    Save_ListItem(ProtocolDescriptionId, item, dgv_Items.Rows.Count, "Protocol");
@@ -296,40 +296,32 @@ namespace DigitalProductionProgram.Templates
         }
         public class ProcesscardItems : IItemsProvider
         {
-            private DataGridView? dgv_Items;
-            private DataGridView? dgv_ListItems;
-            private ComboBox? cb_PartCode;
-            private ComboBox? cb_Name;
-            private ComboBox? cb_SecondaryName;
-            private ComboBox? cb_Properties;
-            private ComboBox? cb_FilterCodeText;
-            private ComboBox? cb_SecondaryCodeText;
-            private ComboBox? cb_SortMode;
-            private int ProtocolDescriptionId;
+            //private DataGridView? dgv_Items;
+            //private DataGridView? dgv_ListItems;
+            //private ComboBox? cb_PartCode;
+            //private ComboBox? cb_Name;
+            //private ComboBox? cb_SecondaryName;
+            //private ComboBox? cb_Properties;
+            //private ComboBox? cb_FilterCodeText;
+            //private ComboBox? cb_SecondaryCodeText;
+            //private ComboBox? cb_SortMode;
+            //private int ProtocolDescriptionId;
 
             public void Initialize(DataGridView dgvItems, DataGridView dgvListItems, ComboBox cbPartCode, ComboBox cbName, ComboBox cbSecondaryName, ComboBox cbProperties, ComboBox cbFilterCodeText, ComboBox cbSecondaryCodeText, ComboBox cbSortMode, TextBox tbText, int protocolDescriptionId)
             {
-                dgv_Items = dgvItems;
-                dgv_ListItems = dgvListItems;
-                cb_PartCode = cbPartCode;
-                cb_Name = cbName;
-                cb_SecondaryName = cbSecondaryName;
-                cb_Properties = cbProperties;
-                cb_FilterCodeText = cbFilterCodeText;
-                cb_SecondaryCodeText = cbSecondaryCodeText;
-                cb_SortMode = cbSortMode;
-                ProtocolDescriptionId = protocolDescriptionId;
+                //dgv_Items = dgvItems;
+                //dgv_ListItems = dgvListItems;
+                //cb_PartCode = cbPartCode;
+                //cb_Name = cbName;
+                //cb_SecondaryName = cbSecondaryName;
+                //cb_Properties = cbProperties;
+                //cb_FilterCodeText = cbFilterCodeText;
+                //cb_SecondaryCodeText = cbSecondaryCodeText;
+                //cb_SortMode = cbSortMode;
+                //ProtocolDescriptionId = protocolDescriptionId;
                 //List_TemplateID = list_templateID;
             }
 
-            public void Load()
-            {
-                Load_ListItems(dgv_Items, dgv_ListItems, cb_PartCode, cb_Name, cb_SecondaryName, cb_Properties, cb_FilterCodeText, cb_SecondaryCodeText, cb_SortMode, "Processcard", ProtocolDescriptionId);
-            }
-            //public void SaveItem(string item)
-            //{
-            //    Save_ListItem(ProtocolDescriptionId, item, dgv_Items.Rows.Count, "Processcard");
-            //}
         }
 
 
@@ -396,7 +388,7 @@ namespace DigitalProductionProgram.Templates
             return (items, isMultipleColumns, cells_CodeText);
         }
 
-        private static void Load_ListItems(DataGridView dgv_Items, DataGridView dgv_ListItems, ComboBox cb_PartCode, ComboBox cb_Name, ComboBox cb_SecondaryName, ComboBox cb_Properties, ComboBox cb_FilterCodeText, ComboBox cb_SecondaryCodeText, ComboBox cb_SortMode, string ListType, int protocolDescriptionId)
+        private void Load_ListItems()
         {
             dgv_ListItems.Rows.Clear();
             dgv_Items.Rows.Clear();
@@ -413,9 +405,11 @@ namespace DigitalProductionProgram.Templates
                 LEFT JOIN List.ItemFields AS fields
                     ON items.Id = fields.ItemID
                     AND fields.ListType = @listtype
+                    AND fields.MainTemplateID = @maintemplateid
                 ORDER BY fields.ProtocolDescriptionId, fields.ItemOrder;";
             var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-            cmd.Parameters.AddWithValue("@listtype", ListType);
+            cmd.Parameters.AddWithValue("@listtype", listType);
+            cmd.Parameters.AddWithValue("@maintemplateid", MainTemplate.ID);
             con.Open();
             using var reader = cmd.ExecuteReader();
             while (reader.Read())
@@ -423,19 +417,19 @@ namespace DigitalProductionProgram.Templates
                 IsListActivated = true;
                 var id = reader["Id"].ToString();
                 var item = reader["Name"].ToString();
-                int.TryParse(reader["ProtocolDescriptionId"].ToString(), out var ProtocolDescriptionId);
-                var listType = reader["ListType"].ToString();
+                int.TryParse(reader["ProtocolDescriptionId"].ToString(), out var protocolDescriptionId);
+                var listtype = reader["ListType"].ToString();
                 var exists = dgv_ListItems.Rows
                     .Cast<DataGridViewRow>()
                     .Any(r => r.Cells[0].Value?.ToString() == item);
                 if (!exists && item != null)
                     dgv_ListItems.Rows.Add(item);
-                if (protocolDescriptionId == ProtocolDescriptionId && listType == ListType)
+                if (protocolDescriptionId == ProtocolDescriptionId && listtype == listType)
                     dgv_Items.Rows.Add(id, item);
 
             }
 
-            Load_MonitorList(cb_PartCode, cb_Name, cb_SecondaryName, cb_Properties, cb_FilterCodeText, cb_SecondaryCodeText, cb_SortMode, protocolDescriptionId, ListType);
+            Load_MonitorList(cb_PartCode, cb_Name, cb_SecondaryName, cb_Properties, cb_FilterCodeText, cb_SecondaryCodeText, cb_SortMode, ProtocolDescriptionId, listType);
         }
         private static void Load_MonitorList(ComboBox cb_PartCode, ComboBox cb_Name, ComboBox cb_SecondaryName, ComboBox cb_Property, ComboBox cb_FilterCodeText, ComboBox cb_SecondaryCodeText, ComboBox cb_SortMode, int protocolDescriptionId, string listType)
         {
@@ -464,7 +458,7 @@ namespace DigitalProductionProgram.Templates
                 cb_SecondaryCodeText.SelectedItem = reader["SecondaryCodeText"].ToString();
                 cb_SortMode.SelectedItem = reader["SortMode"].ToString();
             }
-            
+
         }
         private void Load_TotalLists()
         {
@@ -480,64 +474,6 @@ namespace DigitalProductionProgram.Templates
             var totalLists = cmd.ExecuteScalar();
             label_TotalLists.Text = $@"Denna lista finns i {totalLists} Mallar";
         }
-        //private static void Save_ListItem(int protocolDescriptionId, int mainTemplateID, string itemText, int itemOrder, string listType)
-        //{
-
-        //    using var con = new SqlConnection(Database.cs_Protocol);
-        //    con.Open();
-        //    IsListActivated = true;
-        //    using var tran = con.BeginTransaction();
-
-        //    // 1. Lägg till i List.Items om det inte redan finns, och hämta ID:t
-        //    var getItemIdQuery = @"
-        //        IF NOT EXISTS (SELECT 1 FROM List.Items WHERE Name = @itemtext)
-        //        BEGIN
-        //            INSERT INTO List.Items (Name, Description, CreatedBy)
-        //            VALUES (@itemtext, @description, @createdby);
-        //            SELECT SCOPE_IDENTITY();
-        //        END
-        //        ELSE
-        //        BEGIN
-        //            SELECT Id FROM List.Items WHERE Name = @itemtext;
-        //        END";
-
-        //    int itemId;
-        //    using (var cmd = new SqlCommand(getItemIdQuery, con, tran))
-        //    {
-        //        cmd.Parameters.AddWithValue("@itemtext", itemText);
-        //        cmd.Parameters.AddWithValue("@description", DBNull.Value);
-        //        cmd.Parameters.AddWithValue("@createdby", User.Person.Name);
-
-        //        itemId = Convert.ToInt32(cmd.ExecuteScalar());
-        //    }
-
-        //    // 2. Lägg till i List.ItemFields om kopplingen inte redan finns
-        //    var insertFieldQuery = @"
-        //        IF NOT EXISTS 
-        //        (
-        //            SELECT 1 FROM List.ItemFields 
-        //            WHERE ItemId = @itemid AND ProtocolDescriptionId = @protocoldescriptionid AND MainTemplateId = @maintemplateid AND ListType = @listtype
-        //        )
-        //        BEGIN
-        //            INSERT INTO List.ItemFields (ItemId, ProtocolDescriptionId, MainTemplateID, ListType, ItemOrder, CreatedBy)
-        //            VALUES (@itemid, @protocoldescriptionid, @maintemplateid, @listtype, @itemorder, @createdby);
-        //        END";
-
-        //    using (var cmd = new SqlCommand(insertFieldQuery, con, tran))
-        //    {
-        //        cmd.Parameters.AddWithValue("@itemid", itemId);
-        //        cmd.Parameters.AddWithValue("@protocoldescriptionid", protocolDescriptionId);
-        //        cmd.Parameters.AddWithValue("@maintemplateid", mainTemplateID);
-        //        cmd.Parameters.AddWithValue("@listtype", listType);
-        //        cmd.Parameters.AddWithValue("@itemorder", itemOrder);
-        //        cmd.Parameters.AddWithValue("@createdby", User.Person.Name);
-
-        //        cmd.ExecuteNonQuery();
-        //    }
-
-        //    tran.Commit();
-
-        //}
 
         private void Save_ListItem(int protocolDescriptionId, int mainTemplateID, string itemText, int itemOrder, string listType)
         {
@@ -690,7 +626,7 @@ namespace DigitalProductionProgram.Templates
                                  $"Vill du koppla listorna för Processkort samt Protokoll för denna mall?", CustomColors.InfoText_Color.Ok, "", this);
                 if (InfoText.answer == InfoText.Answer.Yes)
                     Copy_ListsToNewTemplate(MainTemplate.ID, mainTemplateID, ProtocolDescriptionId);
-                    
+
             }
         }
 
@@ -880,9 +816,28 @@ namespace DigitalProductionProgram.Templates
                     listType = "Protocol";
                     break;
             }
+            Load_ListItems();
             Load_TotalLists();
         }
         private void DeleteItem_Click(object sender, EventArgs e)
+        {
+            Delete_Item();
+            dgv_Items.Rows.RemoveAt(dgv_Items.SelectedRows[0].Index);
+        }
+        private void ResetList_Click(object sender, EventArgs e)
+        {
+            dgv_Items.Rows.Clear();
+            cb_PartCode.SelectedIndex = -1;
+            cb_Properties.SelectedIndex = -1;
+            cb_FilterCodeText.SelectedIndex = -1;
+            cb_SortMode.SelectedIndex = -1;
+            cb_Module.SelectedIndex = -1;
+            cb_Name.SelectedIndex = -1;
+            cb_SecondaryCodeText.SelectedIndex = -1;
+            cb_SecondaryName.SelectedIndex = -1;
+        }
+
+        private void Delete_Item()
         {
             if (dgv_Items.SelectedRows.Count > 0)
             {
@@ -892,13 +847,22 @@ namespace DigitalProductionProgram.Templates
 
                 const string query = @"
                     DELETE FROM List.ItemFields 
-                    WHERE ListID = @id";
+                    WHERE ItemId = @id
+                        AND MainTemplateID = @maintemplateid
+                        AND ProtocolDescriptionId = @protocoldescriptionid
+                        AND ListType = @listtype";
                 using var cmd = new SqlCommand(query, con);
                 cmd.Parameters.AddWithValue("@id", selectedRow.Cells["col_ID"].Value.ToString());
+                cmd.Parameters.AddWithValue("@maintemplateid", MainTemplate.ID);
+                cmd.Parameters.AddWithValue("@protocoldescriptionid", ProtocolDescriptionId);
+                cmd.Parameters.AddWithValue("@listtype", listType);
 
                 cmd.ExecuteScalar();
             }
-            dgv_Items.Rows.RemoveAt(dgv_Items.SelectedRows[0].Index);
+        }
+        private void dgv_Items_UserDeletingRow(object sender, DataGridViewRowCancelEventArgs e)
+        {
+            Delete_Item();
         }
         private void NewItem_Click(object sender, EventArgs e)
         {
@@ -906,8 +870,7 @@ namespace DigitalProductionProgram.Templates
             {
                 dgv_Items.Rows.Add(tb_AddNewItem.Text);
                 Save_ListItem(ProtocolDescriptionId, MainTemplate.ID, tb_AddNewItem.Text, dgv_Items.Rows.Count, listType);
-                //itemsProvider.SaveItem(tb_AddNewItem.Text);
-                itemsProvider.Load();
+                Load_ListItems();
                 tb_AddNewItem.Text = string.Empty;
             }
         }
@@ -919,8 +882,8 @@ namespace DigitalProductionProgram.Templates
 
             if (item != null)
                 Save_ListItem(ProtocolDescriptionId, MainTemplate.ID, item, dgv_Items.Rows.Count, listType);
-                //itemsProvider.SaveItem(item);
-            itemsProvider.Load();
+            //itemsProvider.SaveItem(item);
+            Load_ListItems();
         }
         private void Close_Click(object sender, EventArgs e)
         {
@@ -956,6 +919,6 @@ namespace DigitalProductionProgram.Templates
             }
         }
 
-        
+       
     }
 }

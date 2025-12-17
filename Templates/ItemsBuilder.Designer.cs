@@ -682,7 +682,7 @@
             label19.Padding = new Padding(10, 10, 0, 0);
             label19.Size = new Size(199, 27);
             label19.TabIndex = 38;
-            label19.Text = "Secondary Name";
+            label19.Text = "Secondary Extra Field";
             // 
             // label20
             // 

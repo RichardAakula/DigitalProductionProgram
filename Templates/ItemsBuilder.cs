@@ -589,30 +589,60 @@ namespace DigitalProductionProgram.Templates
             ItemsFieldId = 0;
             using var con = new SqlConnection(Database.cs_Protocol);
             string query = @"
-                SELECT Name, Revision, ID
-                FROM Protocol.MainTemplate 
-                WHERE ID IN 
+                
+SELECT Name, Revision, ID
+FROM Protocol.MainTemplate 
+WHERE ID IN 
+    (
+        SELECT MainTemplateID 
+        FROM Protocol.FormTemplate 
+        WHERE FormTemplateID IN 
+        (
+            SELECT FormTemplateID 
+            FROM Protocol.Template 
+            WHERE ProtocolDescriptionID = @protocoldescriptionid 
+                AND NOT EXISTS
                 (
-                    SELECT MainTemplateID 
-                    FROM Protocol.FormTemplate 
-                    WHERE FormTemplateID IN 
-                    (
-                        SELECT FormTemplateID 
-                        FROM Protocol.Template 
-                        WHERE ProtocolDescriptionID = @protocoldescriptionid 
-                            AND NOT EXISTS 
-                            (
-                                SELECT 1 
-                                FROM List.ItemFields 
-                                WHERE ProtocolDescriptionId = Protocol.Template.ProtocolDescriptionID
-                                    AND ListType = @listtype
-                                    AND MainTemplateID = Protocol.MainTemplate.ID 
-                            )
-                    )
+                    SELECT 1
+                    FROM List.ItemFields lif
+                    WHERE lif.ProtocolDescriptionId = Protocol.Template.ProtocolDescriptionID
+                        AND lif.MainTemplateID = Protocol.MainTemplate.ID
+                        AND (COALESCE(lif.PartCode, '')          = COALESCE(@partcode, lif.PartCode))
+                        AND (COALESCE(lif.Property, '')          = COALESCE(@property, lif.Property))
+                        AND (COALESCE(lif.Name, '')              = COALESCE(@name, lif.Name))
+                        AND (COALESCE(lif.SecondaryName, '')     = COALESCE(@secondaryname, lif.SecondaryName))
+                        AND (COALESCE(lif.FilterCodeText, '')    = COALESCE(@filtercodetext, lif.FilterCodeText))
+                        AND (COALESCE(lif.SecondaryCodeText, '') = COALESCE(@secondarycodetext, lif.SecondaryCodeText))
+                        AND (lif.SortMode                        = COALESCE(@sortmode, lif.SortMode))
+                        AND lif.ListType = @listtype
                 )
-                ORDER BY Name";
+        )
+    )";
+            var partCode = string.Empty;
+            if (cb_PartCode != null)
+                partCode = cb_PartCode.SelectedItem?.ToString() ?? string.Empty;
+            var property = string.Empty;
+            if (cb_Properties != null)
+                property = cb_Properties.SelectedItem?.ToString() ?? string.Empty;
+            var filterCodeText = string.Empty;
+            if (cb_FilterCodeText != null)
+                filterCodeText = cb_FilterCodeText.SelectedItem?.ToString() ?? string.Empty;
+            var secondaryCodeText = string.Empty;
+            if (cb_SecondaryCodeText != null)
+                secondaryCodeText = cb_SecondaryCodeText.SelectedItem?.ToString() ?? string.Empty;
+            var sortmode = string.Empty;
+            if (cb_SortMode != null)
+                sortmode = cb_SortMode.SelectedItem?.ToString() ?? string.Empty;
+
             var cmd = new SqlCommand(query, con);
             cmd.Parameters.AddWithValue("@protocoldescriptionid", ProtocolDescriptionId);
+            cmd.Parameters.AddWithValue("@partcode", partCode);
+            cmd.Parameters.AddWithValue("@property", property);
+            cmd.Parameters.AddWithValue("@name", cb_Name.Text);
+            cmd.Parameters.AddWithValue("@secondaryname", cb_SecondaryName.Text);
+            cmd.Parameters.AddWithValue("@filtercodetext", filterCodeText);
+            cmd.Parameters.AddWithValue("@secondarycodetext", secondaryCodeText);
+            cmd.Parameters.AddWithValue("@sortmode", sortmode);
             cmd.Parameters.AddWithValue("@listtype", listType);
             con.Open();
 
@@ -623,7 +653,7 @@ namespace DigitalProductionProgram.Templates
                 var revision = reader["Revision"].ToString();
                 int.TryParse(reader["ID"].ToString(), out var mainTemplateID);
                 InfoText.Question($"{name} - Revision {revision} har också fältet {label_CodeText.Text} i mallen.\n" +
-                                 $"Vill du koppla listorna för Processkort samt Protokoll för denna mall?", CustomColors.InfoText_Color.Ok, "", this);
+                                 $"Vill du spara/uppdatera listorna för Processkort samt Protokoll för denna mall?", CustomColors.InfoText_Color.Ok, "", this);
                 if (InfoText.answer == InfoText.Answer.Yes)
                     Copy_ListsToNewTemplate(MainTemplate.ID, mainTemplateID, ProtocolDescriptionId);
 
@@ -747,42 +777,80 @@ namespace DigitalProductionProgram.Templates
         {
             using var con = new SqlConnection(Database.cs_Protocol);
             const string query = @"
-                INSERT INTO List.ItemFields
-                (
-                    ProtocolDescriptionId,
-                    MainTemplateId, 
-                    ItemId,
-                    ItemText,
-                    ItemOrder,
-                    PartCode,
-                    EndPoint,
-                    Property,
-                    Name,
-                    SecondaryName,
-                    FilterCodeText,
-                    SecondaryCodeText,
-                    SortMode,
-                    ListType,
-                    CreatedBy            
-                )
-                SELECT
-                    ProtocolDescriptionID,
-                    @newmaintemplateid AS MainTemplateId,
-                    ItemId,
-                    ItemText,
-                    ItemOrder,
-                    PartCode,
-                    EndPoint,
-                    Property,
-                    Name,
-                    SecondaryName,
-                    FilterCodeText,
-                    SecondaryCodeText,
-                    SortMode,
-                    ListType,
-                    @createdby            
-                FROM List.ItemFields
-                WHERE ItemFieldsId = @itemfieldsid;";
+IF EXISTS
+(
+    SELECT 1
+    FROM List.ItemFields target
+    JOIN List.ItemFields source
+        ON source.ItemFieldsId = @itemfieldsid
+    WHERE target.ProtocolDescriptionId = source.ProtocolDescriptionId
+      AND target.MainTemplateId = @newmaintemplateid
+      AND target.ListType = source.ListType
+)
+BEGIN
+    UPDATE target
+    SET
+        ItemId       = source.ItemId,
+        ItemText     = source.ItemText,
+        ItemOrder    = source.ItemOrder,
+        EndPoint     = source.EndPoint,
+        Property     = source.Property,
+        PartCode     = source.PartCode,
+        Name         = source.Name,
+        SecondaryName= source.SecondaryName,
+        FilterCodeText = source.FilterCodeText,
+        SecondaryCodeText = source.SecondaryCodeText,
+        SortMode     = source.SortMode,
+        ModifiedBy   = @createdby,
+        ModifiedDate = GETDATE()
+    FROM List.ItemFields target
+    JOIN List.ItemFields source
+        ON source.ItemFieldsId = @itemfieldsid
+    WHERE target.ProtocolDescriptionId = source.ProtocolDescriptionId
+      AND target.MainTemplateId = @newmaintemplateid
+      AND target.ListType = source.ListType
+END
+ELSE
+BEGIN
+    INSERT INTO List.ItemFields
+    (
+        ProtocolDescriptionId,
+        MainTemplateId,
+        ItemId,
+        ItemText,
+        ItemOrder,
+        PartCode,
+        EndPoint,
+        Property,
+        Name,
+        SecondaryName,
+        FilterCodeText,
+        SecondaryCodeText,
+        SortMode,
+        ListType,
+        CreatedBy,
+        CreatedDate
+    )
+    SELECT
+        ProtocolDescriptionId,
+        @newmaintemplateid,
+        ItemId,
+        ItemText,
+        ItemOrder,
+        PartCode,
+        EndPoint,
+        Property,
+        Name,
+        SecondaryName,
+        FilterCodeText,
+        SecondaryCodeText,
+        SortMode,
+        ListType,
+        @createdby,
+        GETDATE()
+    FROM List.ItemFields
+    WHERE ItemFieldsId = @itemfieldsid
+END";
             using var cmd = new SqlCommand(query, con);
             cmd.Parameters.AddWithValue("@itemfieldsid", itemFieldsId);
             cmd.Parameters.AddWithValue("@newmaintemplateid", newMainTemplateId);

@@ -156,6 +156,8 @@ namespace DigitalProductionProgram.Templates
             // 
             // cb_TemplateName
             // 
+            cb_TemplateName.DropDownStyle = ComboBoxStyle.DropDownList;
+            cb_TemplateName.FlatStyle = FlatStyle.System;
             cb_TemplateName.Font = new Font("Lucida Sans", 11.25F);
             cb_TemplateName.FormattingEnabled = true;
             cb_TemplateName.Location = new Point(4, 222);
@@ -349,6 +351,8 @@ namespace DigitalProductionProgram.Templates
             // 
             // cb_TemplateRevision
             // 
+            cb_TemplateRevision.DropDownStyle = ComboBoxStyle.DropDownList;
+            cb_TemplateRevision.FlatStyle = FlatStyle.Flat;
             cb_TemplateRevision.Font = new Font("Lucida Sans", 11.25F);
             cb_TemplateRevision.FormattingEnabled = true;
             cb_TemplateRevision.Location = new Point(405, 222);
@@ -356,7 +360,6 @@ namespace DigitalProductionProgram.Templates
             cb_TemplateRevision.Name = "cb_TemplateRevision";
             cb_TemplateRevision.Size = new Size(82, 25);
             cb_TemplateRevision.TabIndex = 14;
-            cb_TemplateRevision.Text = "A";
             cb_TemplateRevision.SelectedIndexChanged += Template_RevisionNr_SelectedIndexChanged;
             cb_TemplateRevision.KeyPress += Revision_KeyPress;
             // 

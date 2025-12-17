@@ -26,7 +26,6 @@ namespace DigitalProductionProgram.Templates
         public ListType TypeOfList;
         public string listType;
         private readonly int ProtocolDescriptionId;
-        // private readonly List<int> List_TemplateID;
         private static int ItemsFieldId;
         private static List<string> ListCodetext = new();
         private readonly IItemsProvider? itemsProvider;
@@ -34,7 +33,9 @@ namespace DigitalProductionProgram.Templates
 
         public interface IItemsProvider
         {
-            void Initialize(DataGridView dgvItems, DataGridView dgvListItems, ComboBox cbPartCode, ComboBox cbName, ComboBox cbSecondaryName, ComboBox cbProperties, ComboBox cbFilterCodeText, ComboBox cbSecondaryCodeText, ComboBox cbSortMode, TextBox tbText, int protocolDescriptionId);
+            //void Initialize(DataGridView dgvItems, DataGridView dgvListItems, ComboBox cbPartCode, ComboBox cbName, ComboBox cbSecondaryName, ComboBox cbProperties, ComboBox cbFilterCodeText, ComboBox cbSecondaryCodeText, ComboBox cbSortMode, TextBox tbText, int protocolDescriptionId);
+
+            void Initialize();
             // void Load();
             // void SaveItem(string item);
         }
@@ -81,7 +82,7 @@ namespace DigitalProductionProgram.Templates
 
 
             label_CodeText.Text = parameter;
-            itemsProvider?.Initialize(dgv_Items, dgv_ListItems, cb_PartCode, cb_Name, cb_SecondaryName, cb_Properties, cb_FilterCodeText, cb_SecondaryCodeText, cb_SortMode, tb_AddNewItem, protocolDescriptionId);
+            itemsProvider?.Initialize();//dgv_Items, dgv_ListItems, cb_PartCode, cb_Name, cb_SecondaryName, cb_Properties, cb_FilterCodeText, cb_SecondaryCodeText, cb_SortMode, tb_AddNewItem, protocolDescriptionId);
 
 
 
@@ -178,12 +179,12 @@ namespace DigitalProductionProgram.Templates
             private TextBox? tb_Text;
             private int DescriptionID;
 
-            public void Initialize(DataGridView dgvItems, DataGridView dgvListItems, ComboBox cbPartCode, ComboBox cbName, ComboBox cbSecondaryName, ComboBox cbProperties, ComboBox cbFilterCodeText, ComboBox cbSecondaryCodeText, ComboBox cbSortMode, TextBox tbText, int protocolDescriptionId)
+            public void Initialize()//DataGridView dgvItems, DataGridView dgvListItems, ComboBox cbPartCode, ComboBox cbName, ComboBox cbSecondaryName, ComboBox cbProperties, ComboBox cbFilterCodeText, ComboBox cbSecondaryCodeText, ComboBox cbSortMode, TextBox tbText, int protocolDescriptionId)
             {
-                dgv_Items = dgvItems;
-                dgv_ListItems = dgvListItems;
-                tb_Text = tbText;
-                dgv_ListItems.CellMouseDown += ListItems_CellMouseDown;
+               // dgv_Items = dgvItems;
+                //dgv_ListItems = dgvListItems;
+                //tb_Text = tbText;
+                //dgv_ListItems.CellMouseDown += ListItems_CellMouseDown;
             }
 
             public void LoadData()
@@ -269,7 +270,7 @@ namespace DigitalProductionProgram.Templates
             //private int ProtocolDescriptionId;
 
 
-            public void Initialize(DataGridView dgvItems, DataGridView dgvListItems, ComboBox cbPartCode, ComboBox cbName, ComboBox cbSecondaryName, ComboBox cbProperties, ComboBox cbFilterCodeText, ComboBox cbSecondaryCodeText, ComboBox cbSortMode, TextBox tbText, int protocolDescriptionId)
+            public void Initialize()//DataGridView dgvItems, DataGridView dgvListItems, ComboBox cbPartCode, ComboBox cbName, ComboBox cbSecondaryName, ComboBox cbProperties, ComboBox cbFilterCodeText, ComboBox cbSecondaryCodeText, ComboBox cbSortMode, TextBox tbText, int protocolDescriptionId)
             {
                 //dgv_Items = dgvItems;
                 //dgv_ListItems = dgvListItems;
@@ -307,7 +308,7 @@ namespace DigitalProductionProgram.Templates
             //private ComboBox? cb_SortMode;
             //private int ProtocolDescriptionId;
 
-            public void Initialize(DataGridView dgvItems, DataGridView dgvListItems, ComboBox cbPartCode, ComboBox cbName, ComboBox cbSecondaryName, ComboBox cbProperties, ComboBox cbFilterCodeText, ComboBox cbSecondaryCodeText, ComboBox cbSortMode, TextBox tbText, int protocolDescriptionId)
+            public void Initialize()//DataGridView dgvItems, DataGridView dgvListItems, ComboBox cbPartCode, ComboBox cbName, ComboBox cbSecondaryName, ComboBox cbProperties, ComboBox cbFilterCodeText, ComboBox cbSecondaryCodeText, ComboBox cbSortMode, TextBox tbText, int protocolDescriptionId)
             {
                 //dgv_Items = dgvItems;
                 //dgv_ListItems = dgvListItems;
@@ -489,7 +490,7 @@ namespace DigitalProductionProgram.Templates
                 BEGIN
                     INSERT INTO List.Items (Name, Description, CreatedBy)
                     VALUES (@itemtext, @description, @createdby);
-                    SELECT SCOPE_IDENTITY();
+                    SELECT CAST(SCOPE_IDENTITY() AS int);
                 END
                 ELSE
                 BEGIN
@@ -613,7 +614,7 @@ WHERE ID IN
                         AND (COALESCE(lif.SecondaryName, '')     = COALESCE(@secondaryname, lif.SecondaryName))
                         AND (COALESCE(lif.FilterCodeText, '')    = COALESCE(@filtercodetext, lif.FilterCodeText))
                         AND (COALESCE(lif.SecondaryCodeText, '') = COALESCE(@secondarycodetext, lif.SecondaryCodeText))
-                        AND (lif.SortMode                        = COALESCE(@sortmode, lif.SortMode))
+                        AND (COALESCE(lif.SortMode, '')          = COALESCE(@sortmode, lif.SortMode))
                         AND lif.ListType = @listtype
                 )
         )
@@ -786,6 +787,7 @@ IF EXISTS
     WHERE target.ProtocolDescriptionId = source.ProtocolDescriptionId
       AND target.MainTemplateId = @newmaintemplateid
       AND target.ListType = source.ListType
+    AND target.ItemId = source.ItemId
 )
 BEGIN
     UPDATE target
@@ -904,7 +906,23 @@ END";
             cb_SecondaryCodeText.SelectedIndex = -1;
             cb_SecondaryName.SelectedIndex = -1;
         }
+        private void DeleteList_Click(object sender, EventArgs e)
+        {
+            using var con = new SqlConnection(Database.cs_Protocol);
+            const string query = @"
+                DELETE FROM List.ItemFields
+                WHERE MainTemplateID = @maintemplateid
+                    AND ProtocolDescriptionId = @protocoldescriptionid";
 
+            using var cmd = new SqlCommand(query, con);
+            cmd.Parameters.AddWithValue("@protocoldescriptionid", ProtocolDescriptionId);
+            cmd.Parameters.AddWithValue("@maintemplateid", MainTemplate.ID);
+
+            con.Open();
+            cmd.ExecuteNonQuery();
+            IsListActivated = false;
+            this.Close();
+        }
         private void Delete_Item()
         {
             if (dgv_Items.SelectedRows.Count > 0)

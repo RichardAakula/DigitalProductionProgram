@@ -22,6 +22,7 @@ using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
 using static DigitalProductionProgram.Monitor.GET.Inventory;
+using Part = DigitalProductionProgram.OrderManagement.Part;
 
 namespace DigitalProductionProgram.Monitor
 {
@@ -125,9 +126,12 @@ namespace DigitalProductionProgram.Monitor
         {
             get
             {
-                var parts = Utilities.GetFromMonitor<Inventory.Parts>("filter=startswith(Description, 'Rakblad')");
+                var list = new List<string?>();
 
-                return parts.Select(part => part.ExtraDescription).ToList();
+                var parts = Utilities.GetFromMonitor<Inventory.Parts>("filter=startswith(Description, 'Rakblad')");
+                foreach(var part in parts)
+                    list.Add(part.ExtraDescription);
+                return list;
             }
         }
 

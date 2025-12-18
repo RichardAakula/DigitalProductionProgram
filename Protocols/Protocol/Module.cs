@@ -834,13 +834,13 @@ namespace DigitalProductionProgram.Protocols.Protocol
                 var IsItemsMultipleColumns = result.IsItemsMultipleColumns;
                 var Cells_Codetext = result.Cells_CodeText;
                 DataGridViewCell[] cells = Cells(Cells_Codetext);
-                if (IsListProtocol)
+                //if (IsListProtocol)
                 {
                     switch (protocolDescriptionID)
                     {
-                        case 10:    //KRAGMASKIN
-                            items = Machines.Kragmaskiner(FormTemplateID);
-                            break;
+                        //case 10:    //KRAGMASKIN
+                        //    items = Machines.Kragmaskiner(FormTemplateID);
+                        //    break;
                         //case 19:    //ENKEL/DUBBEL KRAGE
                         //    items.Add("Enkel");
                         //    items.Add("Dubbel");
@@ -870,7 +870,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
 
                         //case 81:    //CYLINDER
                          //   items = Machines.Cylinders;
-                            break;
+                         //   break;
                         // case 85:    //KANYL TYP   //Ext PTFE-Ext PTFE GROV
                         //     items.Add("S");
                         //     items.Add("D");
@@ -992,9 +992,9 @@ namespace DigitalProductionProgram.Protocols.Protocol
                         case 71:    //HACKHYLSA
                                     //  items = Tools.RegisterList.List_HS_Hackhylsa;
                             break;
-                        case 73:    //UPPTAGARE/HACK
-                            items = Machines.HS_Upptagare;
-                            break;
+                            //  case 73:    //UPPTAGARE/HACK
+                            //  items = Machines.HS_Upptagare;
+                            //   break;
                         case 131:   //RAKBLADSTYP
                             items = Monitor.Monitor.List_RazorTypes;
                             break;

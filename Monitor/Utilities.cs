@@ -159,6 +159,8 @@ namespace DigitalProductionProgram.Monitor
 
 
 
+
+
         public static int CounterMonitorRequests;
         [DebuggerStepThrough]
         public static List<T> GetFromMonitor<T>(params string[] queryOptions) where T : DTO, new()
@@ -289,6 +291,9 @@ namespace DigitalProductionProgram.Monitor
         {
             public override long Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
             {
+                if (reader.TokenType == JsonTokenType.Null)
+                    return 0;
+
                 if (reader.TokenType == JsonTokenType.Number)
                     return reader.GetInt64();
 

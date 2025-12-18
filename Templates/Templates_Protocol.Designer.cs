@@ -352,7 +352,7 @@ namespace DigitalProductionProgram.Templates
             // cb_TemplateRevision
             // 
             cb_TemplateRevision.DropDownStyle = ComboBoxStyle.DropDownList;
-            cb_TemplateRevision.FlatStyle = FlatStyle.Flat;
+            cb_TemplateRevision.FlatStyle = FlatStyle.System;
             cb_TemplateRevision.Font = new Font("Lucida Sans", 11.25F);
             cb_TemplateRevision.FormattingEnabled = true;
             cb_TemplateRevision.Location = new Point(405, 222);

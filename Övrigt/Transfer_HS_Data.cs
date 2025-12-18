@@ -972,88 +972,93 @@ namespace DigitalProductionProgram.Övrigt
 
                 return listFormtemplateid;
             }
-            public static void TransferData(List<int> listOrderID, string PartNr, bool IsUsingProcesscard = true)
+
             public static void TransferData(List<int> listOrderID, string PartNr, bool IsUsingProcesscard = true)
             {
                 SetTotalMachines(listOrderID[0]);
                 double step = 100 / (float)listOrderID.Count;
-               
+
                 for (var Machine = 1; Machine < TotalMachines + 1; Machine++)
                 {
                     var pbar = new ProgressBar();
                     pbar.lbl_Percent_Main.Visible = true;
-                    
+
                     pbar.Show();
                     double percent = 0;
-                    
+
                     var row = 0;
                     var sb = new StringBuilder();
                     var IsUsingMultipleExtruders = TotalMachines > 1;
                     AddMainColumns_DataTableExcel(row);
-                   
-                        //row++;
-                        foreach (var orderID in listOrderID)
+
+                    //row++;
+                    foreach (var orderID in listOrderID)
+                    {
+                        var maintemplateID = Load_MainTemplateID(orderID);
+                        var listFormtemplateid = ListFormTemplateID(maintemplateID);
+                        AddColumns_DataTableExcel(listFormtemplateid);
+
+                        SetMaxStartUp(orderID);
+
+                        for (var startUp = 1; startUp < MaxStartUp + 1; startUp++)
                         {
-                            var maintemplateID = Load_MainTemplateID(orderID);
-                            var listFormtemplateid = ListFormTemplateID(maintemplateID);
-                            AddColumns_DataTableExcel(listFormtemplateid);
-                            
-                            SetMaxStartUp(orderID);
+                            DataTableExcel.Rows.Add();
+                            foreach (var formtemplateid in listFormtemplateid)
                             {
-                                for (var startUp = 1; startUp < MaxStartUp + 1; startUp++)
+                                var dt = DataTable_Order(orderID, formtemplateid, Machine, startUp, IsUsingProcesscard, IsUsingMultipleExtruders);
+
+                                for (var i = 0; i < dt.Rows.Count; i++)
                                 {
-                                    DataTableExcel.Rows.Add();
-                                    foreach (var formtemplateid in listFormtemplateid)
+                                    var codeText = dt.Rows[i]["CodeText"].ToString();
+                                    int.TryParse(dt.Rows[i]["Type"].ToString(), out var type);
+                                    int.TryParse(dt.Rows[i]["Uppstart"].ToString(), out var uppstart);
+                                    int.TryParse(dt.Rows[i]["RowIndex"].ToString(), out var column);
+                                    DateTime.TryParse(dt.Rows[i]["Date_Start"].ToString(), out DateTime date);
+
+                                    DataTableExcel.Rows[row]["OrderNr"] = dt.Rows[i]["OrderNr"].ToString();
+                                    DataTableExcel.Rows[row]["Operation"] = dt.Rows[i]["Operation"].ToString();
+                                    DataTableExcel.Rows[row]["PartNr"] = dt.Rows[i]["PartNr"].ToString();
+                                    DataTableExcel.Rows[row]["StartUp"] = uppstart;
+                                    DataTableExcel.Rows[row]["Machine"] = dt.Rows[i]["MachineIndex"].ToString();
+                                    var dateTimeFormat = CultureInfo.CurrentCulture.DateTimeFormat;
+                                    var formattedDate = date.ToString($"{dateTimeFormat.ShortDatePattern} {dateTimeFormat.ShortTimePattern}", CultureInfo.CurrentCulture);
+                                    DataTableExcel.Rows[row]["Date"] = formattedDate;
+                                    DataTableExcel.Rows[row]["ProdLine"] = dt.Rows[i]["ProdLine"].ToString();
+                                    DataTableExcel.Rows[row]["RoomTemp"] = dt.Rows[i]["Rum_Temp"].ToString();
+                                    DataTableExcel.Rows[row]["RoomMoisture"] = dt.Rows[i]["Rum_Fukt"].ToString();
+
+                                    switch (type)
                                     {
-                                        var dt = DataTable_Order(orderID, formtemplateid, Machine,startUp, IsUsingProcesscard, IsUsingMultipleExtruders);
-
-                                        for (var i = 0; i < dt.Rows.Count; i++)
-                                        {
-                                            var codeText = dt.Rows[i]["CodeText"].ToString();
-                                            int.TryParse(dt.Rows[i]["Type"].ToString(), out var type);
-                                            int.TryParse(dt.Rows[i]["Uppstart"].ToString(), out var uppstart);
-                                            int.TryParse(dt.Rows[i]["RowIndex"].ToString(), out var column);
-                                            DateTime.TryParse(dt.Rows[i]["Date_Start"].ToString(), out DateTime date);
-
-                                            DataTableExcel.Rows[row]["OrderNr"] = dt.Rows[i]["OrderNr"].ToString();
-                                            DataTableExcel.Rows[row]["Operation"] = dt.Rows[i]["Operation"].ToString();
-                                            DataTableExcel.Rows[row]["PartNr"] = dt.Rows[i]["PartNr"].ToString();
-                                            DataTableExcel.Rows[row]["StartUp"] = uppstart;
-                                            DataTableExcel.Rows[row]["Machine"] = dt.Rows[i]["MachineIndex"].ToString();
-                                            var dateTimeFormat = CultureInfo.CurrentCulture.DateTimeFormat;
-                                            var formattedDate = date.ToString($"{dateTimeFormat.ShortDatePattern} {dateTimeFormat.ShortTimePattern}", CultureInfo.CurrentCulture);
-                                            DataTableExcel.Rows[row]["Date"] = formattedDate;
-                                            DataTableExcel.Rows[row]["ProdLine"] = dt.Rows[i]["ProdLine"].ToString();
-                                            DataTableExcel.Rows[row]["RoomTemp"] = dt.Rows[i]["Rum_Temp"].ToString();
-                                            DataTableExcel.Rows[row]["RoomMoisture"] = dt.Rows[i]["Rum_Fukt"].ToString();
-
-                                        switch (type)
-                                            {
-                                                case 0:
-                                                    DataTableExcel.Rows[row][codeText] = $"{dt.Rows[i]["Value"]}";
-                                                    break;
-                                                case 1:
-                                                    DataTableExcel.Rows[row][codeText] = $"{dt.Rows[i]["TextValue"]}";
-                                                    break;
-                                                case 3:
-                                                    DataTableExcel.Rows[row][codeText] =
-                                                        dt.Rows[i]["DateValue"].ToString();
-                                                    break;
-                                            }
-                                        }
+                                        case 0:
+                                            DataTableExcel.Rows[row][codeText] = $"{dt.Rows[i]["Value"]}";
+                                            break;
+                                        case 1:
+                                            DataTableExcel.Rows[row][codeText] = $"{dt.Rows[i]["TextValue"]}";
+                                            break;
+                                        case 3:
+                                            DataTableExcel.Rows[row][codeText] =
+                                                dt.Rows[i]["DateValue"].ToString();
+                                            break;
                                     }
-                                    row++;
                                 }
-                                DataTableExcel.Rows.Add();
                             }
-                            pbar.Set_ValueProgressBar(percent, "Exporting data to Excel...");
-                            percent += step;
+
+                            row++;
                         }
+
+                        DataTableExcel.Rows.Add();
+
+                        pbar.Set_ValueProgressBar(percent, "Exporting data to Excel...");
+                        percent += step;
+                    }
+
                     pbar.Close();
                     pbar.Set_ValueProgressBar(percent, "Exporting data to Excel...");
                     ConvertDataTableTo_csv(DataTableExcel, sb);
                     Save_csvFile(sb, $"{PartNr} #{Machine}");
+                }
             }
+
             public static void MeasurementData(DataTable dt, string partNr)
             {
                 var sb = new StringBuilder();
@@ -1062,6 +1067,6 @@ namespace DigitalProductionProgram.Övrigt
                 }
             }
         }
-    }
+    
 }
 

@@ -1,5 +1,4 @@
-﻿using Azure.Core;
-using DigitalProductionProgram.DatabaseManagement;
+﻿using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.User;
 using System;
 using System.Collections.Generic;

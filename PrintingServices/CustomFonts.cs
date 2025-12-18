@@ -1,5 +1,5 @@
 ﻿using System.Configuration;
-using Microsoft.Data.SqlClient;
+using System.Data.SqlClient;
 using System.Drawing;
 using System.Windows.Forms;
 using DigitalProductionProgram.DatabaseManagement;

@@ -613,7 +613,7 @@ namespace DigitalProductionProgram.Browse_Protocols
 
 
             //Get_Protocol_Data.TransferDataToExcel.TransferData(listOrderID, listFormtemplateid, listMaintemplateid, dgv_OrderList.Rows[0].Cells["orderlist_PartNr"].Value.ToString() ?? string.Empty);
-            Get_Protocol_Data.TransferDataToExcel.ProtocolData(listOrderID, dgv_OrderList.Rows[0].Cells["orderlist_PartNr"].Value.ToString() ?? string.Empty);
+            Get_Protocol_Data.TransferDataToExcel.TransferData(listOrderID, dgv_OrderList.Rows[0].Cells["orderlist_PartNr"].Value.ToString() ?? string.Empty);
 
         }
         private void PrintOrder_Click(object sender, EventArgs e)

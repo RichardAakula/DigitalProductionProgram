@@ -1,18 +1,16 @@
-﻿using DigitalProductionProgram.DatabaseManagement;
+﻿using System.Globalization;
+using DigitalProductionProgram.ControlsManagement;
+using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Help;
+using DigitalProductionProgram.Log;
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.PrintingServices;
-using DigitalProductionProgram.User;
-using System;
-using Microsoft.Data.SqlClient;
-using System.Drawing;
-using System.Windows.Forms;
 using DigitalProductionProgram.Protocols.Protocol;
-using System.Globalization;
-using DigitalProductionProgram.ControlsManagement;
-using DigitalProductionProgram.MainWindow;
+using DigitalProductionProgram.User;
+using Microsoft.Data.SqlClient;
 
-namespace DigitalProductionProgram.Protocols
+namespace DigitalProductionProgram.Protocols.ExtraProtocols
 {
     public partial class Extra_Comments : Form
     {
@@ -53,24 +51,19 @@ namespace DigitalProductionProgram.Protocols
         {
             get
             {
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    var ctr = 0;
-                    var query = $@"
-                            SELECT TOP(1) Row FROM [Order].ExtraComments
-                            {Queries.WHERE_OrderID} 
-                            ORDER BY Row DESC";
-                    con.Open();
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    cmd.Parameters.AddWithValue("@id", Order.OrderID);
-                    var reader = cmd.ExecuteReader();
-                    while (reader.Read())
-                    {
-                        int.TryParse(reader[0].ToString(), out ctr);
-                    }
-                    ctr++;
-                    return ctr;
-                }
+                using var con = new SqlConnection(Database.cs_Protocol);
+                const string query = @"
+            SELECT ISNULL(MAX(Row), 0) + 1 
+            FROM [Order].ExtraComments
+            WHERE OrderID = @id";
+
+                using var cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@id", Order.OrderID);
+                ServerStatus.Add_Sql_Counter();
+
+                con.Open();
+                var result = cmd.ExecuteScalar();
+                return Convert.ToInt32(result);
             }
         }
 
@@ -211,10 +204,12 @@ namespace DigitalProductionProgram.Protocols
             catch { }
             using (var con = new SqlConnection(Database.cs_Protocol))
             {
-                var query = $"SELECT * FROM [Order].ExtraComments {Queries.WHERE_OrderID} ORDER BY Row";
+                var query = @"
+                    SELECT * FROM [Order].ExtraComments 
+                    WHERE OrderID = @orderid ORDER BY Row";
 
                 var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@id", Order.OrderID);
+                cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                 con.Open();
                 var reader = cmd.ExecuteReader();
                 var row = 0;
@@ -295,8 +290,9 @@ namespace DigitalProductionProgram.Protocols
 
         public static void Add(string spool, string comment, string empNr, bool isLocked, int row)
         {
-            using (var con = new SqlConnection(Database.cs_Protocol))
+            try
             {
+                using var con = new SqlConnection(Database.cs_Protocol);
                 const string query = @"INSERT INTO [Order].ExtraComments (OrderID, Spole, Kommentar, Datum, AnstNr, is_Locked, Row)
                                      VALUES (@orderid, @spool, @comment, @date, @empnr, @islocked, @row)";
                 var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
@@ -312,6 +308,11 @@ namespace DigitalProductionProgram.Protocols
                 con.Open();
                 cmd.ExecuteScalar();
             }
+            catch (Exception e)
+            {
+               Activity.Stop($"Error Add Extra Comment: {e.Message}");
+            }
+            
         }
     }
 }

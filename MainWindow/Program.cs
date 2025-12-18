@@ -11,6 +11,7 @@ using Microsoft.Data.SqlClient;
 using System.ComponentModel;
 using System.Data.Odbc;
 using System.Diagnostics;
+using DigitalProductionProgram.User;
 using static DigitalProductionProgram.DatabaseManagement.Database;
 
 namespace DigitalProductionProgram.MainWindow
@@ -88,6 +89,7 @@ namespace DigitalProductionProgram.MainWindow
             }
         }
 
+        public static Stopwatch stopwatch;
         private static bool IsDatabaseConnectionMissing =>
             string.IsNullOrEmpty(Database.cs_Protocol) ||
             string.IsNullOrEmpty(Database.cs_ToolRegister) ||
@@ -97,6 +99,7 @@ namespace DigitalProductionProgram.MainWindow
         [STAThread]
         private static void Main(string[] args)
         {
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
@@ -128,17 +131,18 @@ namespace DigitalProductionProgram.MainWindow
             //Application.Run(new Manage_Processcards());
             //return;
             //Nedanstående är originalkoden som skall laddas
-            var back = new BlackBackground("Initialising Digital Production Program.\nConnecting to Monitor and loading data from server, please wait.", 98, true)
-            {
-                TopMost = false,
-                WindowState = FormWindowState.Normal,
-                Width = 600,
-                Height = 300,
-                KeyPreview = true,
+            //var back = new BlackBackground("Initialising Digital Production Program.\nConnecting to Monitor and loading data from server, please wait.", 98, true)
+            //{
+            //    TopMost = false,
+            //    WindowState = FormWindowState.Normal,
+            //    Width = 600,
+            //    Height = 300,
+            //    KeyPreview = true,
 
-            };
-            back.Show();
-            Application.Run(new Main_Form(back));
+            //};
+            //back.ShowDialog();
+            Application.Run(new Main_Form());
+            //Application.Run(new Main_Form(back));
 
         }
 

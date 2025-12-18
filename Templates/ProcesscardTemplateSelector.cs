@@ -164,8 +164,7 @@ namespace DigitalProductionProgram.Templates
                 case Manage_WorkOperation.WorkOperations.Kragning_TEF:
                 case Manage_WorkOperation.WorkOperations.Skärmning:
                 case Manage_WorkOperation.WorkOperations.Slipning:
-                case Manage_WorkOperation.WorkOperations.Svetsning:
-                    Add_TemplateName();
+                Add_TemplateName();
                     break;
                 case Manage_WorkOperation.WorkOperations.Nothing:
                     if (IsOperatorStartingOrder)
@@ -196,57 +195,85 @@ namespace DigitalProductionProgram.Templates
         {
             using var con = new SqlConnection(Database.cs_Protocol);
             const string query = @"
-                WITH OrderedRevisions AS 
-                (
-                    SELECT 
-                        PartID, 
-                        PartGroupID, 
-                        RevNr, 
-                        ProdLine,
-                        ProdType,
-                        QA_sign,
-                        Historiska_Data, 
-                        Validerat,  
-                        Framtagning_Processfönster,
-                        Aktiv,
-                        ROW_NUMBER() OVER (PARTITION BY PartGroupID ORDER BY RevNr DESC) AS RowNum, -- Latest revision first
-                        COUNT(*) OVER (PARTITION BY PartGroupID) AS TotalRevisions,
-                        MIN(RevNr) OVER (PARTITION BY PartGroupID) AS FirstRev, -- First revision 
-                        MAX(RevNr) OVER (PARTITION BY PartGroupID) AS LatestRev, -- Latest revision
-                        MAX(CASE WHEN Framtagning_Processfönster = 'True' THEN RevNr END) OVER (PARTITION BY PartGroupID) AS LatestFramtagningRev, -- Latest revision where Framtagning_Processfönster = TRUE
-                        MAX(CASE WHEN QA_sign IS NOT NULL THEN RevNr END) OVER (PARTITION BY PartGroupID) AS LatestApprovedRev -- Find latest approved revision
-                    FROM Processcard.MainData 
-                    WHERE PartNr = @partnr
-                        AND WorkoperationID = (SELECT ID FROM Workoperation.Names WHERE Name = @workoperation)
-                 ),
-                    CheckAllNulls AS 
-                    (
-                        -- Find PartGroupIDs where ALL revisions have QA_sign = NULL
-                        SELECT PartGroupID 
-                        FROM OrderedRevisions 
-                        GROUP BY PartGroupID 
-                        HAVING COUNT(*) = COUNT(CASE WHEN QA_sign IS NULL THEN 1 END) 
-                    )
-                SELECT DISTINCT 
-                    PartID, 
-                    PartGroupID, 
-                    RevNr, 
-                    ProdLine, 
-                    ProdType, 
-                    QA_sign, 
-                    Historiska_Data, 
-                    Validerat, 
-                    Framtagning_Processfönster,
-                    Aktiv,
-                    LatestRev,
-                    CASE WHEN RevNr = LatestRev THEN 1 ELSE 0 END AS LatestRevSelected
-                FROM OrderedRevisions
-                WHERE (@IsOkSelectLatestRev = 1 AND RevNr = LatestRev) -- Select LatestRev if IsOkSelectLatestRev is true
-                    OR (@IsOkSelectLatestRev = 0 AND ((RevNr = LatestApprovedRev)
-                    OR (RevNr = FirstRev AND PartGroupID IN (SELECT PartGroupID FROM CheckAllNulls) AND Framtagning_Processfönster = 'False')
-                    OR (RevNr = LatestFramtagningRev AND PartGroupID IN (SELECT PartGroupID FROM CheckAllNulls) AND EXISTS (SELECT 1 FROM OrderedRevisions WHERE PartGroupID = OrderedRevisions.PartGroupID AND Framtagning_Processfönster = 'True'))
-                ))
-                ORDER BY PartGroupID, RevNr DESC;";
+               WITH OrderedRevisions AS 
+(
+    SELECT 
+        PartID, 
+        PartGroupID, 
+        RevNr, 
+        TRY_CAST(RevNr AS INT) AS RevNrInt,
+        ProdLine,
+        ProdType,
+        QA_sign,
+        Historiska_Data, 
+        Validerat,  
+        Framtagning_Processfönster,
+        Aktiv,
+        ROW_NUMBER() OVER (
+            PARTITION BY PartGroupID 
+            ORDER BY TRY_CAST(RevNr AS INT) DESC, RevNr DESC
+        ) AS RowNum,
+        COUNT(*) OVER (PARTITION BY PartGroupID) AS TotalRevisions,
+        MIN(RevNr) OVER (PARTITION BY PartGroupID) AS FirstRev,
+        MAX(RevNr) OVER (PARTITION BY PartGroupID) AS LatestRev,
+        MAX(CASE WHEN Framtagning_Processfönster = 'True' THEN RevNr END) 
+            OVER (PARTITION BY PartGroupID) AS LatestFramtagningRev,
+        MAX(CASE WHEN QA_sign IS NOT NULL THEN RevNr END) 
+            OVER (PARTITION BY PartGroupID) AS LatestApprovedRev
+    FROM Processcard.MainData 
+    WHERE PartNr = @partnr
+      AND WorkoperationID = (
+          SELECT ID FROM Workoperation.Names WHERE Name = @workoperation
+      )
+),
+CheckAllNulls AS 
+(
+    SELECT PartGroupID 
+    FROM OrderedRevisions 
+    GROUP BY PartGroupID 
+    HAVING COUNT(*) = COUNT(CASE WHEN QA_sign IS NULL THEN 1 END)
+),
+FinalSelection AS
+(
+    SELECT *,
+        CASE 
+            WHEN @IsOkSelectLatestRev = 1 AND RevNr = LatestRev THEN 1
+            WHEN @IsOkSelectLatestRev = 0 AND RevNr = LatestApprovedRev THEN 1
+            WHEN @IsOkSelectLatestRev = 0 AND PartGroupID IN (SELECT PartGroupID FROM CheckAllNulls)
+                 AND EXISTS (
+                     SELECT 1 FROM OrderedRevisions o2 
+                     WHERE o2.PartGroupID = OrderedRevisions.PartGroupID 
+                       AND o2.Framtagning_Processfönster = 'True'
+                 )
+                 AND RevNr = LatestFramtagningRev THEN 1
+            WHEN @IsOkSelectLatestRev = 0 AND PartGroupID IN (SELECT PartGroupID FROM CheckAllNulls)
+                 AND NOT EXISTS (
+                     SELECT 1 FROM OrderedRevisions o2 
+                     WHERE o2.PartGroupID = OrderedRevisions.PartGroupID 
+                       AND o2.Framtagning_Processfönster = 'True'
+                 )
+                 AND RevNr = FirstRev THEN 1
+            WHEN @IsOkSelectLatestRev = 0 AND Framtagning_Processfönster = 'True' AND RevNr = LatestRev THEN 1
+            ELSE 0
+        END AS IsSelected
+    FROM OrderedRevisions
+)
+SELECT TOP 1 WITH TIES
+    PartID, 
+    PartGroupID, 
+    RevNr, 
+    ProdLine, 
+    ProdType, 
+    QA_sign, 
+    Historiska_Data, 
+    Validerat, 
+    Framtagning_Processfönster,
+    Aktiv,
+    LatestRev,
+    CASE WHEN RevNr = LatestRev THEN 1 ELSE 0 END AS LatestRevSelected
+FROM FinalSelection
+WHERE IsSelected = 1
+ORDER BY ROW_NUMBER() OVER (PARTITION BY PartGroupID ORDER BY TRY_CAST(RevNr AS INT) DESC);";
 
             var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             cmd.Parameters.Add("@partnr", SqlDbType.NVarChar).Value = Order.PartNumber;
@@ -362,7 +389,7 @@ namespace DigitalProductionProgram.Templates
             // var org_Arbetsoperation = Order.WorkOperation;
             using var con = new SqlConnection(Database.cs_Protocol);
             var query = @"
-                    SELECT DISTINCT maintemplate.Name, workoperation.Name
+                    SELECT DISTINCT maintemplate.Name, workoperation.Name, maintemplate.ID
                     FROM Processcard.MainData AS processcard
                         LEFT JOIN Protocol.MainTemplate AS maintemplate
                             ON processcard.ProtocolMainTemplateID = maintemplate.ID
@@ -372,7 +399,7 @@ namespace DigitalProductionProgram.Templates
             if (IsOnlyProcesscard == false)
                 query +=
                     @"UNION
-                    SELECT DISTINCT maintemplate.Name, workoperation.Name
+                    SELECT DISTINCT maintemplate.Name, workoperation.Name, maintemplate.ID
                     FROM [Order].MainData AS protocol
                         LEFT JOIN Protocol.MainTemplate AS maintemplate
                             ON protocol.ProtocolMainTemplateID = maintemplate.ID
@@ -388,7 +415,9 @@ namespace DigitalProductionProgram.Templates
             {
                 var templatename = reader[0].ToString();
                 var workoperation = reader[1].ToString();
-                if (workoperation != null) Add_Button_ProtocolTemplate(templatename, templatename, 0, workoperation, null, null, Order.PartID, Order.PartGroupID, true);
+                int.TryParse(reader[2].ToString(), out var mainTemplateID);
+
+                if (workoperation != null) Add_Button_ProtocolTemplate(templatename, templatename, mainTemplateID, workoperation, null, null, Order.PartID, Order.PartGroupID, true);
             }
         }
 
@@ -399,7 +428,7 @@ namespace DigitalProductionProgram.Templates
             flp_Buttons.Controls.Add(btn);
             Height += btn.Height + 3;
 
-            if (isOkCheckPartNumber && IsOperatorStartingOrder)
+            if (isOkCheckPartNumber)// && IsOperatorStartingOrder)
                 SetForeColor_Label(btn, partid, isActive);
         }
         private void Add_Button_ProtocolTemplate(string? templatename, string? text, int id, string? workoperation = null, string? prodtype = null, string? prodline = null, int? partid = null, int? partGroupID = null, bool isProcesscardOkToStart = false, bool isOkCheckPartNumber = false)
@@ -434,9 +463,12 @@ namespace DigitalProductionProgram.Templates
             {
                 btn.ForeColor = CustomColors.Bad_Back;
                 btn.BackColor = CustomColors.Bad_Front;
-                btn.Cursor = Cursors.No;
-                btn.Click -= Button_Processcard_MouseClick;
-                //btn.Enabled = false;
+                if (IsOperatorStartingOrder)
+                {
+                    btn.Cursor = Cursors.No;
+                    btn.Click -= Button_Processcard_MouseClick;
+                }
+
                 return;
             }
 
@@ -495,8 +527,10 @@ namespace DigitalProductionProgram.Templates
 
             Order.PartID = lbl?.PartID;
             Order.PartGroupID = lbl?.PartGroupID;
+
             Order.ProdType = lbl?.ProdType;
-            Order.ProdLine = lbl?.ProdLine;
+            if (!string.IsNullOrEmpty(lbl?.ProdLine))
+                Order.ProdLine = lbl?.ProdLine;
             Order.RevNr = lbl?.RevNr;
 
             if (lbl?.IsLatestRevNrSelected == false && IsOperatorStartingOrder)

@@ -69,8 +69,8 @@ namespace DigitalProductionProgram.ControlsManagement
             int b = (int)(from.B + (to.B - from.B) * t);
             return Color.FromArgb(r, g, b);
         }
-
-        public void Set_ValueProgressBar(double value, string? info, double extraValue = 0, bool isOkRefresh = false)
+        [DebuggerStepThrough]
+        public void Set_ValueProgressBar(double value, string? info, double extraValue = 0)
         {
             value = Math.Max(0, Math.Min(100, value));
             extraValue = Math.Max(0, Math.Min(100, extraValue));

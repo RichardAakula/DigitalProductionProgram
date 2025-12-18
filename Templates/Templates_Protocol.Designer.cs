@@ -857,6 +857,7 @@ namespace DigitalProductionProgram.Templates
             // 
             // tb_NewCodeText
             // 
+            tb_NewCodeText.CharacterCasing = CharacterCasing.Upper;
             tb_NewCodeText.Font = new Font("Lucida Sans", 8.25F);
             tb_NewCodeText.Location = new Point(5, 155);
             tb_NewCodeText.Margin = new Padding(1, 0, 0, 0);

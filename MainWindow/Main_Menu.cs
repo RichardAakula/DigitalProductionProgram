@@ -17,10 +17,7 @@ using DigitalProductionProgram.Templates;
 using DigitalProductionProgram.ToolManagement;
 using DigitalProductionProgram.User;
 using Microsoft.Data.SqlClient;
-using Microsoft.VisualBasic.Devices;
 using System.Diagnostics;
-using System.Globalization;
-using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json;
 using Color = System.Drawing.Color;
@@ -45,7 +42,7 @@ namespace DigitalProductionProgram.MainWindow
 
         public void Unlock_Menu()
         {
-            // Menu_Arkiv_ManageDatabase.Enabled = CheckAuthority.IsRoleAuthorized(CheckAuthority.TemplateAuthorities.ChangeDatabaseSettings, false);
+            Menu_Arkiv_ManageDatabase.Enabled = CheckAuthority.IsRoleAuthorized(CheckAuthority.TemplateAuthorities.ChangeDatabaseSettings, false);
             Menu_Order_EditOrder.Enabled = CheckAuthority.IsRoleAuthorized(CheckAuthority.TemplateAuthorities.EditOrder, false);
             Menu_Order_DeleteOrder.Enabled = CheckAuthority.IsRoleAuthorized(CheckAuthority.TemplateAuthorities.DeleteOrder, false);
             Menu_Order_ReportProblemProductionSupport.Enabled = CheckAuthority.IsRoleAuthorized(CheckAuthority.TemplateAuthorities.ReportToProductionSupport, false);
@@ -66,7 +63,6 @@ namespace DigitalProductionProgram.MainWindow
             Menu_Order_DeleteOrder.Enabled = false;
             Menu_Protocol_Unlock_ValidatedProcesscard.Enabled = false;
         }
-
         public void Change_GUI_Mätdator()
         {
             Menu_Order.Enabled = false;
@@ -75,19 +71,16 @@ namespace DigitalProductionProgram.MainWindow
             Menu_Arkiv_Preview.Enabled = false;
             Menu_Arkiv_Print.Enabled = false;
         }
-
         public void Change_GUI_OrderNotFinished()
         {
             var menus = new[] { Menu_Order, Menu_Protocol, Menu_User, Menu_Settings, Menu_Themes };
             foreach (var menu in menus)
                 menu.Enabled = true;
         }
-
         public void Change_GUI_OrderFinished()
         {
             menuStrip.ForeColor = Color.Black;
         }
-
         public void Unlock_Korprotokoll_Menu()
         {
             if (CheckAuthority.IsWorkoperationAuthorized(CheckAuthority.TemplateWorkoperation.UsingCandleFilter_Screenpackage))
@@ -124,6 +117,11 @@ namespace DigitalProductionProgram.MainWindow
         //----------ARKIV/FILE----------
         private void Menu_Arkiv_NyOrder_Click(object sender, EventArgs e)
         {
+           ResetMainForm();
+        }
+
+        private void ResetMainForm()
+        {
             Order.Clear_Order();
             mainForm.Clear_Mainform();
             mainForm.OrderInformation.Clear();
@@ -131,18 +129,35 @@ namespace DigitalProductionProgram.MainWindow
             mainForm.measurePoints.ClearMeasurePoints();
             mainForm.measureStats.ClearData();
             mainForm.OrderInformation.tb_OrderNr.Enabled = true;
-
+            mainForm.Change_Theme();
+            mainForm.tlp_Left.BackColor = Color.Transparent;
+            mainForm.BackColor = Color.FromArgb(25, 25, 25);
+           
             //här
             //foreach (var series in MeasurementChart.chart.Series)
             //    if (series.Values is IList<double> values)
             //        values.Clear();
 
 
-            mainForm.Change_GUI_OrderEjKlar();
+            mainForm.Change_GUI_StandardColor();
             _ = Log.Activity.Stop("Användare klickar på Ny Order");
         }
+        private void Menu_Arkiv_UpdateDPP_Click(object sender, EventArgs e)
+        {
+            //var updaterPath = @"\\optifil\dpp\Update\Update DPP.exe"; // OGO
+            var updaterPath = @"\\ovf-s1-file\Digital Production Program\Update\Update DPP.exe"; // Ändra till rätt filnamn
+            if (File.Exists(updaterPath))
+            {
+                Process.Start(updaterPath);
+            }
+            else
+            {
+                MessageBox.Show("Updater could not be found, please contact Admin.", "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            Application.Exit(); // Stänger DPP
 
-        private void Menu_Arkiv_Öppna_Click(object sender, EventArgs e)
+        }
+        private async void Menu_Arkiv_Öppna_Click(object sender, EventArgs e)
         {
             if (Main_Form.IsZumbachÖppet)
             {
@@ -151,7 +166,6 @@ namespace DigitalProductionProgram.MainWindow
                 return;
             }
 
-            // Stoppa MainTimer eventuellt om det blir problem
             var screen = Screen.FromPoint(Cursor.Position);
 
             using var frmÖppna = new Open_Order
@@ -197,8 +211,8 @@ namespace DigitalProductionProgram.MainWindow
 
         private void Menu_Arkiv_ManageDatabase_Click(object sender, EventArgs e)
         {
-            //if (CheckAuthority.IsRoleAuthorized(CheckAuthority.TemplateAuthorities.ChangeDatabaseSettings) == false)
-            //    return;
+            if (CheckAuthority.IsRoleAuthorized(CheckAuthority.TemplateAuthorities.ChangeDatabaseSettings) == false)
+                return;
             using var database = new Database();
             database.ShowDialog();
             Application.Restart();
@@ -213,6 +227,9 @@ namespace DigitalProductionProgram.MainWindow
         private void Menu_Order_OrderKlar_Click(object sender, EventArgs e)
         {
             Order.Finish.Order(mainForm);
+
+            if (Person.Role == "SuperAdmin")
+                ResetMainForm();
         }
 
         private void Menu_Order_RedigeraOrder_Click(object sender, EventArgs e)
@@ -228,7 +245,6 @@ namespace DigitalProductionProgram.MainWindow
             else
                 InfoText.Show(LanguageManager.GetString("editOrder"), CustomColors.InfoText_Color.Bad, "Warning", this);
         }
-
         private void Menu_Order_RaderaOrder_ClickAsync(object sender, EventArgs e)
         {
             InfoText.Question($"{LanguageManager.GetString("delete")} \n\n" +
@@ -239,13 +255,11 @@ namespace DigitalProductionProgram.MainWindow
             {
                 Log.Activity.Start();
                 Order.DELETE_Order();
-                //Activity.Stop($"{Person.Name} raderade order {Order.OrderNumber} - Operation: {Order.Operation}");
-                //var task = Main_FilterQuickOpen.Load_ListAsync(mainForm.dgv_QuickOpen);
+                _ = Log.Activity.Stop($"{Person.Name} raderade order {Order.OrderNumber} - Operation: {Order.Operation}");
 
                 if (QC_Feedback.IsOperationHaveQCFeedback)
                     QC_Feedback.IncreaseRemainingViewsForOperation();
 
-                // Order.Clear_Order();//Detta görs i Clear_Mainform
                 mainForm.Clear_Mainform();
 
             }
@@ -256,7 +270,6 @@ namespace DigitalProductionProgram.MainWindow
             mainForm.PriorityPlanning.Load_PriorityPlanning();
 
         }
-
         private void Menu_Order_Rapport_Jira_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(Order.OrderNumber))
@@ -271,7 +284,6 @@ namespace DigitalProductionProgram.MainWindow
             jira.ShowDialog();
             black.Close();
         }
-
         private void Menu_Order_SkapaTestOrder_Click(object sender, EventArgs e)
         {
             var org_OrderNr = Order.OrderNumber;
@@ -292,12 +304,10 @@ namespace DigitalProductionProgram.MainWindow
 
             _ = Log.Activity.Stop($"{Person.Name} Skapar Testorder");
         }
-
         private void Menu_Order_OpenRandomOrder_Click(object sender, EventArgs e)
         {
             Order.Start.OpenRandomOrder(mainForm.OrderInformation);
         }
-
         private void Menu_Order_Relink_Processcard_Click(object sender, EventArgs e)
         {
             if (Order.IsOrderDone)
@@ -305,7 +315,6 @@ namespace DigitalProductionProgram.MainWindow
                 InfoText.Show(LanguageManager.GetString("changeProcesscard_Info_4"), CustomColors.InfoText_Color.Bad, "Warning", this);
                 return;
             }
-
             if (string.IsNullOrEmpty(Order.OrderNumber))
             {
                 InfoText.Show(LanguageManager.GetString("changeProcesscard_Info_1"), CustomColors.InfoText_Color.Bad, "Warning", this);
@@ -343,7 +352,6 @@ namespace DigitalProductionProgram.MainWindow
 
             mainForm.OrderInformation.lbl_RevNr.Text = Order.RevNr;
         }
-
         private void Menu_Order_Relink_Protocol_Click(object sender, EventArgs e)
         {
             if (Order.IsOrderDone)
@@ -351,13 +359,11 @@ namespace DigitalProductionProgram.MainWindow
                 InfoText.Show(LanguageManager.GetString("changeProtocol_Info_1"), CustomColors.InfoText_Color.Bad, "Warning", this);
                 return;
             }
-
             if (string.IsNullOrEmpty(Order.OrderNumber))
             {
                 InfoText.Show(LanguageManager.GetString("changeProtocol_Info_2"), CustomColors.InfoText_Color.Bad, "Warning", this);
                 return;
             }
-
             using var changeTemplate = new ProcesscardTemplateSelector(ProcesscardTemplateSelector.TemplateType.TemplateProtocol);
             changeTemplate.ShowDialog();
             using var con = new SqlConnection(Database.cs_Protocol);
@@ -373,7 +379,6 @@ namespace DigitalProductionProgram.MainWindow
             con.Open();
             cmd.ExecuteNonQuery();
         }
-
         private void Menu_Order_Relink_MeasureProtocol_Click(object sender, EventArgs e)
         {
             if (Order.IsOrderDone)
@@ -381,13 +386,11 @@ namespace DigitalProductionProgram.MainWindow
                 InfoText.Show(LanguageManager.GetString("changeMeasureProtocol_Info_1"), CustomColors.InfoText_Color.Bad, "Warning", this);
                 return;
             }
-
             if (string.IsNullOrEmpty(Order.OrderNumber))
             {
                 InfoText.Show(LanguageManager.GetString("changeMeasureProtocol_Info_2"), CustomColors.InfoText_Color.Bad, "Warning", this);
                 return;
             }
-
             using var changeTemplate = new ProcesscardTemplateSelector(ProcesscardTemplateSelector.TemplateType.TemplateMeasureProtocol);
             changeTemplate.ShowDialog();
             using var con = new SqlConnection(Database.cs_Protocol);
@@ -438,13 +441,11 @@ namespace DigitalProductionProgram.MainWindow
             //    MessageBox.Show($"An error occurred: {ex.Message}");
             //}
         }
-
         private void Menu_Protocol_ManageTemplates_LineClearance_Click(object sender, EventArgs e)
         {
             using var manage_LineClearanceTemplates = new Templates_LineClearance();
             manage_LineClearanceTemplates.ShowDialog();
         }
-
         private void Menu_Protocol_ManageTemplates_MeasureProtocol_Click(object sender, EventArgs e)
         {
             using var manage_MeasureProtocolTemplates = new Templates_MeasureProtocol();
@@ -683,36 +684,29 @@ Name = {Person.Name} - {Person.EmployeeNr}
 Befattning = {Person.Role}
 MonitorCompany = {Database.MonitorCompany}
 
-------TEMPLATES------
+------MEASUREPROTOCOL TEMPLATE------
 Measureprotocol.MainTemplateID = {Templates_MeasureProtocol.MainTemplate.ID}
 Measureprotocol.Name = {Templates_MeasureProtocol.MainTemplate.Name}
 
+------LINECLEARANCE TEMPLATE------
 LineClearance.MainTemplateID = {Templates_LineClearance.MainTemplate.LineClearance_MainTemplateID}
 
+------MAINPROTOCOL TEMPLATE------
 Protocol.MainTemplate.ID = {Templates_Protocol.MainTemplate.ID}
 Protocol.MainTemplate.Name = {Templates_Protocol.MainTemplate.Name}
 Protocol.MainTemplate.Revision = {Templates_Protocol.MainTemplate.Revision}"
                 , CustomColors.InfoText_Color.Info, "Info", this);
         }
-
-        public void Menu_Utvecklare_Add_Gallup_Click(object sender, EventArgs e)
+        private void Menu_Utvecklare_Add_Gallup_Click(object sender, EventArgs e)
         {
             using var addGallup = new Add_UserPoll();
             addGallup.ShowDialog();
         }
-
-        public void Menu_Utvecklare_Kolla_Gallup_Click(object sender, EventArgs e)
+        private void Menu_Utvecklare_Kolla_Gallup_Click(object sender, EventArgs e)
         {
             using var gallup = new UserPoll();
             gallup.ShowDialog();
         }
-
-        private void Menu_Developer_New_MeasureProtocol_Click(object sender, EventArgs e)
-        {
-            using var mp = new Measurement_Protocol();
-            mp.ShowDialog();
-        }
-
         private void Menu_Developer_Timer_test_Click(object sender, EventArgs e)
         {
             using var pbar = new ProgressBar();
@@ -1065,25 +1059,7 @@ Protocol.MainTemplate.Revision = {Templates_Protocol.MainTemplate.Revision}"
 
 
 
-        private void Menu_Utvecklare_MoveDataFromKorprotokollToKorprotokoll_Values(object sender, EventArgs e)
-        {
-            //Denna kod lägger till NULL-värden där det behövs när användare har lagt till Uppstart för Utrustningen men lämnat övriga moduler tomma
-            MessageBox.Show("Radera detta meddelande om denna funktion skall användas igen.");
-            return;
-            var pbar = new ProgressBar();
-            double percent = 0;
 
-            pbar.Show();
-            var listOrderId = new List<int>();
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query =
-                    @"
-                    SELECT data.OrderID, Uppstart, MachineIndex FROM [Order].Data AS data
-JOIN [Order].MainData as main
-	ON data.OrderID = main.OrderID
-WHERE ProtocolDescriptionID = 80 AND Uppstart > 1
-AND data.OrderID IN (SELECT OrderID FROM [Order].MainData WHERE Workoperation = 'Extrudering_Termo')
 
 AND NOT EXISTS(
 	SELECT 1
@@ -1254,7 +1230,10 @@ ORDER BY OrderID DESC ";
                 ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", orderid);
                 cmd.Parameters.AddWithValue("@descrId", descrId);
-                cmd.Parameters.AddWithValue("@datevalue", date);
+                if (date < DateTime.Parse("1950-01-01"))
+                    cmd.Parameters.AddWithValue("@datevalue", DBNull.Value);
+                else
+                    cmd.Parameters.AddWithValue("@datevalue", date);
                 //if (uppstart == 0)
                 //    cmd.Parameters.AddWithValue("@uppstart", DBNull.Value);
                 //else
@@ -1268,6 +1247,84 @@ ORDER BY OrderID DESC ";
                 cmd.ExecuteNonQuery();
             }
         }
+        private void INSERT_MätMainData(int orderid, bool discarded, DateTime date, string anstnr, string sign, int rowindex)
+        {
+            using var con = new SqlConnection(Database.cs_Protocol);
+            var query = @"
+                        IF NOT EXISTS 
+                            (SELECT * FROM [MeasureProtocol].[MainData]
+                                WHERE OrderID = @orderid AND [Date] = @date)
+                        INSERT INTO [MeasureProtocol].[MainData] (OrderID, Discarded, [Date], AnstNr, Sign, RowIndex)     
+                            VALUES (@orderid, @discarded, @date, @anstnr, @sign, @row)";
+
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            cmd.Parameters.AddWithValue("@orderid", orderid);
+            cmd.Parameters.AddWithValue("@discarded", discarded);
+            cmd.Parameters.AddWithValue("@date", date);
+            cmd.Parameters.AddWithValue("@anstnr", anstnr);
+            cmd.Parameters.AddWithValue("@sign", sign);
+            cmd.Parameters.AddWithValue("@row", rowindex);
+            con.Open();
+            cmd.ExecuteNonQuery();
+        }
+        private void INSERT_MätDataTextValue(int orderid, int descrid, string? textvalue, int rowindex)
+        {
+            using var con = new SqlConnection(Database.cs_Protocol);
+            var query = @"
+                        IF NOT EXISTS 
+                            (SELECT * FROM [MeasureProtocol].Data
+                                WHERE OrderID = @orderid AND DescriptionID = @descrid AND RowIndex = @rowindex)
+                        
+                            INSERT INTO [MeasureProtocol].Data (OrderID, DescriptionID, TextValue, RowIndex)     
+                            VALUES (@orderid, @descrid, @textvalue, @rowindex)";
+
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            cmd.Parameters.AddWithValue("@orderid", orderid);
+            cmd.Parameters.AddWithValue("@descrId", descrid);
+            cmd.Parameters.AddWithValue("@textvalue", textvalue);
+            cmd.Parameters.AddWithValue("@rowindex", rowindex);
+            con.Open();
+            cmd.ExecuteNonQuery();
+        }
+        private void INSERT_MätDataValue(int orderid, int descrid, string? value, int rowindex)
+        {
+            using var con = new SqlConnection(Database.cs_Protocol);
+            var query = @"
+                        IF NOT EXISTS 
+                            (SELECT * FROM [MeasureProtocol].Data
+                                WHERE OrderID = @orderid AND DescriptionID = @descrid AND RowIndex = @rowindex)
+                        
+                            INSERT INTO [MeasureProtocol].Data (OrderID, DescriptionID, Value, RowIndex)     
+                            VALUES (@orderid, @descrid, @value, @rowindex)";
+
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            cmd.Parameters.AddWithValue("@orderid", orderid);
+            cmd.Parameters.AddWithValue("@descrId", descrid);
+            SQL_Parameter.Double(cmd.Parameters, "@value", value);
+            cmd.Parameters.AddWithValue("@rowindex", rowindex);
+            con.Open();
+            cmd.ExecuteNonQuery();
+        }
+        private void INSERT_MätDataBoolValue(int orderid, int descrid, bool boolvalue, int rowindex)
+        {
+            using var con = new SqlConnection(Database.cs_Protocol);
+            var query = @"
+                        IF NOT EXISTS 
+                            (SELECT * FROM [MeasureProtocol].Data
+                                WHERE OrderID = @orderid AND DescriptionID = @descrid AND RowIndex = @rowindex)
+                        
+                            INSERT INTO [MeasureProtocol].Data (OrderID, DescriptionID, BoolValue, RowIndex)     
+                            VALUES (@orderid, @descrid, @boolvalue, @rowindex)";
+
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            cmd.Parameters.AddWithValue("@orderid", orderid);
+            cmd.Parameters.AddWithValue("@descrId", descrid);
+            SQL_Parameter.Boolean(cmd.Parameters, "@boolvalue", boolvalue);
+            cmd.Parameters.AddWithValue("@rowindex", rowindex);
+            con.Open();
+            cmd.ExecuteNonQuery();
+        }
+
 
         private void INSERT_DATA_Processcard_Value(int PartID, int templateID, string? value, byte machineindex, int type)
         {
@@ -1423,9 +1480,6 @@ ORDER BY OrderID DESC ";
 
         }
 
-        private void Menu_User_EditUser_Click(object sender, EventArgs e)
-        {
-        }
 
         private void Menu_Developer_AddThemePicture_Click(object sender, EventArgs e)
         {
@@ -1450,13 +1504,18 @@ ORDER BY OrderID DESC ";
         }
 
 
-        private void testToolStripMenuItem_Click(object sender, EventArgs e)
+        private void påskäggToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Order.Check_BioBurden_Samples(1, 1, this);
+            using var easterEgg = new EasterEgg_Code();
+            easterEgg.ShowDialog();
         }
 
+        private void testaChartToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MainMeasureStatistics.ValidateMeasurements.AverageValues();
+        }
 
-
+        
 
 
         private void Menu_Developer_ChangeLog_Click(object sender, EventArgs e)
@@ -1516,7 +1575,6 @@ ORDER BY OrderID DESC ";
             {
                 MessageBox.Show("Updatern kunde inte hittas.", "Fel", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-
             Application.Exit(); // Stänger DPP
 
         }

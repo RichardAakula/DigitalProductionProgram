@@ -46,12 +46,17 @@ namespace DigitalProductionProgram.Log
     {
         get
         {
+            const string appInstallerPath = @"\\optifil\dpp\Install DPP.appinstaller";
 
-            var doc = XDocument.Load(@"\\optifil\dpp\Install DPP.appinstaller");
-            var versionStr = doc.Root?.Attribute("Version")?.Value;
-            Version.TryParse(versionStr, out var latestVersion);
-            if (latestVersion != null) 
-                return latestVersion;
+            // ✅ Kontrollera att filen finns innan vi försöker läsa
+            if (File.Exists(appInstallerPath))
+            {
+                var doc = XDocument.Load(appInstallerPath);
+                var versionStr = doc.Root?.Attribute("Version")?.Value;
+                Version.TryParse(versionStr, out var latestVersion);
+                if (latestVersion != null)
+                    return latestVersion;
+            }
 
             try
             {
@@ -161,10 +166,10 @@ namespace DigitalProductionProgram.Log
         {
             using var con = new SqlConnection(Database.cs_Protocol);
             const string query = @"
-                    SELECT Tags, Version, DescriptionHeader, Description, HowToDo, ReleaseDate 
+                    SELECT Tags, Version, DescriptionHeader, Description, HowToDo, ReleaseDate,  VisibleToUser
                     FROM [Log].ChangeLog
-                    WHERE VisibleToUser = 'True'
-                    AND ReleaseDate IS NOT NULL
+                    --WHERE VisibleToUser = 'True'
+                    WHERE ReleaseDate IS NOT NULL
                     ORDER BY ID";
 
             var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
@@ -175,12 +180,17 @@ namespace DigitalProductionProgram.Log
 
             while (reader.Read())
             {
+                bool.TryParse(reader["VisibleToUser"].ToString(), out bool IsOkShowInfo);
+                var text = reader.IsDBNull(3) ? "N/A" : reader.GetString(3);
+                if (IsOkShowInfo == false)
+                    text = "N/A";
+
                 versions.Add(new VersionInfo
                 {
                     Tag = reader.IsDBNull(0) ? "Info" : reader.GetString(0),
                     VersionNr = reader.IsDBNull(1) ? new Version(0, 0, 0, 0) : Version.Parse(reader.GetString(1)),
                     DescriptionHeader = reader.IsDBNull(2) ? "" : reader.GetString(2),
-                    Description = reader.IsDBNull(3) ? "N/A" : reader.GetString(3),
+                    Description = text,
                     HowTo = reader.IsDBNull(4) ? "" : reader.GetString(4),
                     ReleaseDate = reader.IsDBNull(5) ? default : reader.GetDateTime(5)
 
@@ -299,7 +309,7 @@ namespace DigitalProductionProgram.Log
                 if (versionReadStartTime.HasValue)// && currentVersionBeingRead != null)
                 {
                     var duration = DateTime.Now - versionReadStartTime.Value;
-                    await Activity.AddTimeUserRead(currentVersionBeingRead.ToString(), duration);
+                    await Activity.AddTimeUserReadChangeLog(currentVersionBeingRead.ToString(), duration);
                 }
 
                 currentVersionBeingRead = clickedVersion;
@@ -434,7 +444,7 @@ namespace DigitalProductionProgram.Log
             if (versionReadStartTime.HasValue)// && currentVersionBeingRead != null)
             {
                 var duration = DateTime.Now - versionReadStartTime.Value;
-                await Activity.AddTimeUserRead(currentVersionBeingRead.ToString(), duration);
+                await Activity.AddTimeUserReadChangeLog(currentVersionBeingRead.ToString(), duration);
             }
             await User.Person.UpdateLastReadChangelogVersion(User.Person.Name);
         }

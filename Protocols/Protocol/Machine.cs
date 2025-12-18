@@ -4,13 +4,9 @@ using DigitalProductionProgram.Help;
 using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.PrintingServices;
-using DigitalProductionProgram.Protocols.Template_Management;
 using DigitalProductionProgram.Templates;
 using Microsoft.Data.SqlClient;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Windows.Forms;
 using static DigitalProductionProgram.Protocols.Protocol.Module;
 
 namespace DigitalProductionProgram.Protocols.Protocol
@@ -71,7 +67,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
             get
             {
                 var MaxWidth = 0;
-                foreach(Module module in tlp_Machine.Controls)
+                foreach (Module module in tlp_Machine.Controls)
                 {
                     var ModuleWidth = module.label_LEFT.Width + (from DataGridViewColumn column in module.dgv_Module.Columns let test = column.Name where column.Visible select column.Width).Sum();
                     if (ModuleWidth > MaxWidth)
@@ -85,7 +81,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
         public Machine(int machineIndex, ref bool isAutheticationNeeded, ref int height, bool isOkChangeProcessdata)
         {
             InitializeComponent();
-            Load_Templates(machineIndex, ref isAutheticationNeeded,ref height, isOkChangeProcessdata);
+            Load_Templates(machineIndex, ref isAutheticationNeeded, ref height, isOkChangeProcessdata);
             if (MainProtocol.IsUsingMultipleColumnsStartUp)
                 Divide_Startups(false);
 
@@ -99,8 +95,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
         }
 
 
-
-        public void Load_Templates(int machineIndex, ref bool isAutheticationNeeded,  ref int height, bool isOkChangeProcessdata)
+        private void Load_Templates(int machineIndex, ref bool isAutheticationNeeded, ref int height, bool isOkChangeProcessdata)
         {
             if (Templates_Protocol.MainTemplate.ID is 0)
                 return;
@@ -119,7 +114,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
             cmd.Parameters.AddWithValue("@machineindex", machineIndex);
             con.Open();
             var reader = cmd.ExecuteReader();
-            
+
             while (reader.Read())
             {
                 int.TryParse(reader["FormTemplateID"].ToString(), out var formtemplateid);
@@ -148,8 +143,8 @@ namespace DigitalProductionProgram.Protocols.Protocol
 
                 module.LoadTemplate(isHeaderVisible, processcardMinWidth, processcardNomWidth, processcardMaxWidth, runprotocolColWidth, isOkChangeProcessdata);
                 module.load_processcard.Load_ProcessData(formtemplateid);
-                height += module.TotalModuleHeight;// + 1; // +1 for the row height in the TableLayoutPanel
-              
+                height += module.TotalModuleHeight;
+
                 if (Order.OrderID is null == false)
                     module.Load_Data(formtemplateid);
 
@@ -160,7 +155,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                 tlp_Machine.RowStyles[tlp_Machine.RowCount - 2].Height = module.TotalModuleHeight;
                 modules.Add(module);
                 module.dgv_Module.MouseWheel += Korprotokoll_MouseWheel;
-             
+
             }
         }
 

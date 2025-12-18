@@ -15,7 +15,6 @@ using DigitalProductionProgram.Protocols.Protocol;
 using DigitalProductionProgram.Protocols.Skärmning_TEF;
 using DigitalProductionProgram.Protocols.Slipning_TEF;
 using DigitalProductionProgram.Protocols.Spolning_PTFE;
-using DigitalProductionProgram.Protocols.Svetsning_TEF;
 using DigitalProductionProgram.Templates;
 using DigitalProductionProgram.User;
 
@@ -27,7 +26,6 @@ namespace DigitalProductionProgram.Browse_Protocols
         private MainProtocol_Skärmning_TEF? skärmning_TEF;
         private MainProtocol_Slipning_TEF? slipning_TEF;
         private MainProtocol_Spolning_PTFE? spolning_PTFE;
-        private MainProtocol_Svetsning_TEF? svetsning_TEF;
 
 
         public static bool Is_BrowsingProtocols;
@@ -75,9 +73,6 @@ namespace DigitalProductionProgram.Browse_Protocols
                     break;
                 case Manage_WorkOperation.WorkOperations.Spolning_PTFE:
                     Initialize_GUI_Spolning_PTFE();
-                    break;
-                case Manage_WorkOperation.WorkOperations.Svetsning:
-                    Initialize_GUI_Svetsning_TEF();
                     break;
                 default:
                     // Initialize_GUI_Protocol();
@@ -173,20 +168,7 @@ namespace DigitalProductionProgram.Browse_Protocols
             spolning_PTFE.MainInfo.lbl_Customer.Click += Customer_Click;
             spolning_PTFE.MainInfo.lbl_OrderNr.Click += Order_Click;
         }
-        private void Initialize_GUI_Svetsning_TEF()
-        {
-            svetsning_TEF = new MainProtocol_Svetsning_TEF();
-            flp_Machines.Controls.Add(svetsning_TEF);
-
-            Prefab.Dispose();
-            svetsning_TEF.Lock_Controls();
-
-            Change_ControlsToClickable(new Control[] { svetsning_TEF.MainInfo.lbl_ArtikelNr, svetsning_TEF.MainInfo.lbl_Customer, svetsning_TEF.MainInfo.lbl_OrderNr });
-
-            svetsning_TEF.MainInfo.lbl_ArtikelNr.Click += PartNr_Click;
-            svetsning_TEF.MainInfo.lbl_Customer.Click += Customer_Click;
-            svetsning_TEF.MainInfo.lbl_OrderNr.Click += Order_Click;
-        }
+      
         private void Initialize_GUI_Protocol()
         {
             AddMachine(1);
@@ -461,9 +443,6 @@ namespace DigitalProductionProgram.Browse_Protocols
                 case Manage_WorkOperation.WorkOperations.Spolning_PTFE:
                     Load_Spolning_PTFE();
                     break;
-                case Manage_WorkOperation.WorkOperations.Svetsning:
-                    svetsning_TEF?.Load_Data();
-                    break;
                 default:
                     flp_Machines.Controls.Clear();
 
@@ -478,12 +457,11 @@ namespace DigitalProductionProgram.Browse_Protocols
 
             if (Prefab.IsDisposed == false)
             {
-                if (Prefab.dgv.Columns.Count > 0)
-                {
-                    Prefab.Load_Data(null, false);
-                    Prefab.dgv.Columns[3].DefaultCellStyle.ForeColor = SystemColors.Highlight;
-                    Prefab.dgv.Columns[1].DefaultCellStyle.ForeColor = SystemColors.Highlight;
-                }
+                Prefab.Load_Data(null, false);
+                //Nedanstående kod används inte i nuläget, men kan aktiveras om man behöver filtrerar på halvfabriakt i orderlistan.
+
+                //Prefab.dgv.Columns[3].DefaultCellStyle.ForeColor = SystemColors.Highlight;
+                //Prefab.dgv.Columns[1].DefaultCellStyle.ForeColor = SystemColors.Highlight;
             }
 
             mainInfo_A.Load_Data(Order.OrderID);
@@ -633,20 +611,6 @@ namespace DigitalProductionProgram.Browse_Protocols
                     listMaintemplateid.Add(maintemplateid);
             }
 
-            //var listFormtemplateid = new List<int>();
-            //using (var con = new SqlConnection(Database.cs_Protocol))
-            //{
-            //    const string query = @"SELECT FormTemplateID FROM Protocol.FormTemplate WHERE MainTemplateID = @maintemplateid";
-            //    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-            //    cmd.Parameters.AddWithValue("@maintemplateid", Templates_Protocol.MainTemplate.ID);
-            //    con.Open();
-            //    var reader = cmd.ExecuteReader();
-            //    while (reader.Read())
-            //    {
-            //        int.TryParse(reader[0].ToString(), out var formtemplateid);
-            //        listFormtemplateid.Add(formtemplateid);
-            //    }
-            //}
 
             //Get_Protocol_Data.TransferDataToExcel.TransferData(listOrderID, listFormtemplateid, listMaintemplateid, dgv_OrderList.Rows[0].Cells["orderlist_PartNr"].Value.ToString() ?? string.Empty);
             Get_Protocol_Data.TransferDataToExcel.ProtocolData(listOrderID, dgv_OrderList.Rows[0].Cells["orderlist_PartNr"].Value.ToString() ?? string.Empty);

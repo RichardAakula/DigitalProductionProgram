@@ -39,17 +39,15 @@ namespace DigitalProductionProgram.OrderManagement
 
         public static bool IsProductionLineConnectedToWorkoperation(string? prodLinje)
         {
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                const string query = "SELECT * FROM Workoperation.ProductionLines WHERE ProductionLine = @prodline";
-                con.Open();
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@prodline", prodLinje);
-                var reader = cmd.ExecuteReader();
-                while (reader.Read())
-                    return reader.HasRows;
-                return false;
-            }
+            using var con = new SqlConnection(Database.cs_Protocol);
+            const string query = "SELECT * FROM Workoperation.ProductionLines WHERE ProductionLine = @prodline";
+            con.Open();
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            cmd.Parameters.AddWithValue("@prodline", prodLinje);
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+                return reader.HasRows;
+            return false;
         }
         public static bool IsWorkoperationUsing_Measurepoints
         {
@@ -108,11 +106,13 @@ namespace DigitalProductionProgram.OrderManagement
             Slipning = 16,
             Spolning_PTFE = 17,
             Svetsning = 18,
-            Synergy_PTFE = 19,
+            Synergy_PTFE_K18 = 19,
+            Synergy_PTFE_K25 = 24,
             Bump_PTFE = 20,
             Slitting_PTFE = 21,
             Extrusion_HS = 22,
             Kragning_K20_TEF = 23,
+            Tapering_Bump_PTFE_K28 = 25,
             Plockning_PTFE,
             Spetsformning_PTFE
         }
@@ -192,7 +192,7 @@ namespace DigitalProductionProgram.OrderManagement
         {
             //Kontrollerar först om Ordern finns sparad och Laddar rätt arbetsoperation
             if (orderID != null)
-                return Load_WorkOperationOrderID(orderID);
+                return Load_WorkOperationWithOrderID(orderID);
             //Kontrollerar om det finns ett Processkort på PartNr och laddar WorkOperation
             if (partID == null)
                 partID = Order.PartID;
@@ -222,7 +222,7 @@ namespace DigitalProductionProgram.OrderManagement
             return null;
         }
 
-        private static WorkOperations Load_WorkOperationOrderID(int? orderID)
+        private static WorkOperations Load_WorkOperationWithOrderID(int? orderID)
         {
             if (orderID is null)
                 return WorkOperations.Nothing;
@@ -243,26 +243,24 @@ namespace DigitalProductionProgram.OrderManagement
         private static WorkOperations Load_WorkOperationPartID(int? partID)
         {
             //Kolla om ChooseProcesscard blir aktiverat nedanför någongång?
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                const string query = @"
+            using var con = new SqlConnection(Database.cs_Protocol);
+            const string query = @"
                         SELECT DISTINCT Name 
                         FROM Workoperation.Names 
                         WHERE ID = (SELECT WorkoperationID FROM Processcard.MainData WHERE PartID = @partid) AND ID IS NOT NULL";
-                con.Open();
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                SQL_Parameter.NullableINT(cmd.Parameters, "@partid", partID);
-                var reader = cmd.ExecuteReader();
-                var ctr = 0;
-                var WorkOperation = string.Empty;
-                while (reader.Read())
-                {
-                    WorkOperation = reader[0].ToString();
-                    ctr++;
-                }
-
-                return (WorkOperations)Enum.Parse(typeof(WorkOperations), WorkOperation);
+            con.Open();
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            SQL_Parameter.NullableINT(cmd.Parameters, "@partid", partID);
+            var reader = cmd.ExecuteReader();
+            var ctr = 0;
+            var WorkOperation = string.Empty;
+            while (reader.Read())
+            {
+                WorkOperation = reader[0].ToString();
+                ctr++;
             }
+
+            return (WorkOperations)Enum.Parse(typeof(WorkOperations), WorkOperation);
 
         }
         public static WorkOperations Load_WorkOperationProdLine(bool IsUserChooseArbOperation, string? prodline)
@@ -306,6 +304,5 @@ namespace DigitalProductionProgram.OrderManagement
             WorkOperation.ShowDialog();
             return Order.WorkOperation;
         }
-       // private static WorkOperations Load_WorkOperaion()
     }
 }

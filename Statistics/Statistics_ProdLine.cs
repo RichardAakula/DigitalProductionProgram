@@ -139,24 +139,23 @@ namespace DigitalProductionProgram.Statistics
             
             chart.Series.Add(LanguageManager.GetString("statsProdLine_1"));
             total_Value_Chart = 0;
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query = @"SELECT TOP 10 * FROM (
+            using var con = new SqlConnection(Database.cs_Protocol);
+            var query = @"SELECT TOP 10 * FROM (
                                 SELECT Customer, Count(*) as Antal 
                                     FROM [Order].MainData 
                                         WHERE ProdLine = @prodline
                                         GROUP BY Customer) AS a
                                 ORDER BY Antal DESC";
-                con.Open();
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@prodline", ProdLine);
-                var reader = cmd.ExecuteReader();
-                while (reader.Read())
-                {
-                    int.TryParse(reader[1].ToString(), out var antal);
-                    total_Value_Chart += antal;
-                    chart.Series[0].Points.AddXY(reader[0].ToString(), antal);
-                }
+            con.Open();
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            cmd.Parameters.AddWithValue("@prodline", ProdLine);
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                int.TryParse(reader[1].ToString(), out var antal);
+                total_Value_Chart += antal;
+                string customer = reader[0].ToString();
+                chart.Series[0].Points.AddXY(customer, antal);
             }
         }
         private void Fill_Chart_Vanligaste_ArtikelNr()
@@ -460,7 +459,7 @@ namespace DigitalProductionProgram.Statistics
                     case Manage_WorkOperation.WorkOperations.Hackning_PTFE:
                     case Manage_WorkOperation.WorkOperations.Spolning_PTFE:
                         return 11;
-                    case Manage_WorkOperation.WorkOperations.Synergy_PTFE:
+                    case Manage_WorkOperation.WorkOperations.Synergy_PTFE_K18:
                         return 10;
                     case Manage_WorkOperation.WorkOperations.Krympslangsblåsning:
                         return 14;

@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using Microsoft.Data.SqlClient;
 using System.Drawing;
@@ -166,7 +167,7 @@ namespace DigitalProductionProgram.PrintingServices
 
         }
 
-        
+
         public static float StringWidth(string? text, Font font, Graphics g)
         {
             var size = g.MeasureString(text, font);
@@ -184,7 +185,7 @@ namespace DigitalProductionProgram.PrintingServices
             text = text.Trim();
             int len = text.Length;
 
-            if (parts == 1 || len < parts * 4) // för kort text, returnera som en rad
+            if (parts == 1)
                 return new[] { text };
 
             var splitPoints = new List<int>();
@@ -192,9 +193,13 @@ namespace DigitalProductionProgram.PrintingServices
             for (int i = 1; i < parts; i++)
             {
                 int target = len * i / parts;
-                int split = FindNearestSpace(text, target, splitPoints.LastOrDefault());
-                if (split > 0)
-                    splitPoints.Add(split);
+                int split = FindNearestDelimiter(text, target, splitPoints.LastOrDefault());
+
+                // Om ingen delimiter hittas → använd exakt target
+                if (split <= 0)
+                    split = target;
+
+                splitPoints.Add(split);
             }
 
             var result = new List<string>();
@@ -207,7 +212,6 @@ namespace DigitalProductionProgram.PrintingServices
                 lastIndex = split;
             }
 
-            // sista delen
             result.Add(text.Substring(lastIndex).Trim());
 
             // säkerställ rätt antal element
@@ -216,6 +220,27 @@ namespace DigitalProductionProgram.PrintingServices
 
             return result.ToArray();
         }
+
+        private static int FindNearestDelimiter(string text, int target, int minIndex = 0)
+        {
+            char[] delimiters = { ' ', '-', '/', '_' };
+            int left = target;
+            int right = target;
+
+            while (left > minIndex || right < text.Length)
+            {
+                if (left > minIndex && delimiters.Contains(text[left]))
+                    return left;
+                if (right < text.Length && delimiters.Contains(text[right]))
+                    return right;
+
+                left--;
+                right++;
+            }
+
+            return -1; // ingen hittad
+        }
+
         private static int FindNearestSpace(string text, int targetIndex, int startIndex = 0)
         {
             if (targetIndex >= text.Length)
@@ -246,9 +271,9 @@ namespace DigitalProductionProgram.PrintingServices
         {
             Thin_Rectangle(e, x, y, width, height);
             x += width / 2;
-           
+
             e.Graphics?.DrawString(text, CustomFonts.A8, CustomFonts.black, x - TextRenderer.MeasureText(text, CustomFonts.A8).Width / 2f, y + 3);
-            
+
         }
         public static void Protocol_InfoText(PrintPageEventArgs e, string? text, bool isValueCritical, float x, int y, int MaxWidth, bool IsCenter, bool IsWrap, bool IsRightMargin = false)
         {
@@ -279,7 +304,7 @@ namespace DigitalProductionProgram.PrintingServices
                 }
 
                 string_Length = StringWidth(text, CustomFonts.parametrarFont_small, e.Graphics);
-                var TotalRows = (int)Math.Ceiling(string_Length / (double) MaxWidth);
+                var TotalRows = (int)Math.Ceiling(string_Length / (double)MaxWidth);
                 switch (TotalRows)
                 {
                     case 1:
@@ -390,7 +415,7 @@ namespace DigitalProductionProgram.PrintingServices
                 e.Graphics?.DrawString(text, CustomFonts.A8_BI, CustomFonts.operatör_clr, x - TextRenderer.MeasureText(text, CustomFonts.operatörFont_small).Width / 2f, y);
                 x += colwidth;
             }
-                
+
         }
         private static void PrintTextProcesskort_1_Row(PrintPageEventArgs e, Font font, string? text, float x, int y, bool IsCenter)
         {
@@ -438,7 +463,7 @@ namespace DigitalProductionProgram.PrintingServices
         }
         private static void PrintTextProcesskort_3_Rows(PrintPageEventArgs e, string? text, float x, int y, int MaxWidth, bool IsCenter)
         {
-           // var StringLength = text.Length / 3;
+            // var StringLength = text.Length / 3;
             var parts = SplitSmart(text, 3);
             var text_1 = parts[0];
             var text_2 = parts[1];
@@ -449,7 +474,7 @@ namespace DigitalProductionProgram.PrintingServices
             text_3 = text_3.TrimStart(); text_3 = text_3.TrimEnd();
             if (IsCenter)
             {
-                e.Graphics.DrawString(text_1, CustomFonts.parametrarFont_small, CustomFonts.parametrar_clr, x - StringWidth(text_1,CustomFonts.parametrarFont_small, e.Graphics) / 2, y - 10);
+                e.Graphics.DrawString(text_1, CustomFonts.parametrarFont_small, CustomFonts.parametrar_clr, x - StringWidth(text_1, CustomFonts.parametrarFont_small, e.Graphics) / 2, y - 10);
                 e.Graphics.DrawString(text_2, CustomFonts.parametrarFont_small, CustomFonts.parametrar_clr, x - StringWidth(text_2, CustomFonts.parametrarFont_small, e.Graphics) / 2, y - 1);
                 e.Graphics.DrawString(text_3, CustomFonts.parametrarFont_small, CustomFonts.parametrar_clr, x - StringWidth(text_3, CustomFonts.parametrarFont_small, e.Graphics) / 2, y + 10);
             }
@@ -473,8 +498,8 @@ namespace DigitalProductionProgram.PrintingServices
         }
         private static string? Text_Line(string? text)
         {
-            char[] chars = {'+', '-', ' ', '/'  };
-            foreach(var c in chars)
+            char[] chars = { '+', '-', ' ', '/' };
+            foreach (var c in chars)
                 if (text != null && text.Contains(c))
                     return text.Substring(0, text.IndexOf(c) + 1);
             return text;
@@ -534,7 +559,7 @@ namespace DigitalProductionProgram.PrintingServices
                 if (IsCenter)
                     e.Graphics.DrawString(text, font, CustomFonts.black, x + width / 2 - StringWidth(text, font, e.Graphics) / 2, y + height / 2 - 4);
                 else
-                    e.Graphics.DrawString(text, font, CustomFonts.black, x + 5,y + height / 2 - 4 );       
+                    e.Graphics.DrawString(text, font, CustomFonts.black, x + 5, y + height / 2 - 4);
             }
         }
         public static void Header_Measureprotocol(PrintPageEventArgs e, int x, int y, int width, int height, string? text)
@@ -551,8 +576,8 @@ namespace DigitalProductionProgram.PrintingServices
                     e.Graphics.DrawString(headers[0], font, CustomFonts.black, x + width / 2 - TextRenderer.MeasureText(headers[0], font).Width / 2, y + 15);
                     break;
                 case 2:
-                   
-                    if (StringWidth($"{headers[0]} {headers[1]}", font, e.Graphics) > width-2)
+
+                    if (StringWidth($"{headers[0]} {headers[1]}", font, e.Graphics) > width - 2)
                     {
                         e.Graphics.DrawString(headers[0], font, CustomFonts.black, x + width / 2 - (TextRenderer.MeasureText(headers[0], font).Width / 2), y + 8);
                         e.Graphics.DrawString(headers[1], font, CustomFonts.black, x + width / 2 - (TextRenderer.MeasureText(headers[1], font).Width / 2), y + 19);
@@ -562,10 +587,10 @@ namespace DigitalProductionProgram.PrintingServices
                     break;
 
                 case 3:
-                   if (StringWidth($"{headers[0]} {headers[1]}", font, e.Graphics) > width-2)
-                   {
+                    if (StringWidth($"{headers[0]} {headers[1]}", font, e.Graphics) > width - 2)
+                    {
                         // Om 0+1 är för stora
-                        if (StringWidth($"{headers[1]} {headers[2]}", font, e.Graphics) > width-2)
+                        if (StringWidth($"{headers[1]} {headers[2]}", font, e.Graphics) > width - 2)
                         {
                             e.Graphics.DrawString(headers[0], font, CustomFonts.black, x + width / 2 - TextRenderer.MeasureText(headers[0], font).Width / 2, y + 2);
                             e.Graphics.DrawString(headers[1], font, CustomFonts.black, x + width / 2 - TextRenderer.MeasureText(headers[1], font).Width / 2, y + 13);
@@ -576,14 +601,14 @@ namespace DigitalProductionProgram.PrintingServices
                             e.Graphics.DrawString(headers[0], font, CustomFonts.black, x + width / 2 - (TextRenderer.MeasureText(headers[0], font).Width / 2), y + 8);
                             e.Graphics.DrawString($"{headers[1]} {headers[2]}", font, CustomFonts.black, x + width / 2 - TextRenderer.MeasureText($"{headers[1]} {headers[2]}", font).Width / 2, y + 19);
                         }
-                   }
-                   else
-                   {
+                    }
+                    else
+                    {
                         e.Graphics.DrawString($"{headers[0]} {headers[1]}", font, CustomFonts.black, x + width / 2 - TextRenderer.MeasureText($"{headers[0]} {headers[1]}", font).Width / 2, y + 8);
                         e.Graphics.DrawString(headers[2], font, CustomFonts.black, x + width / 2 - TextRenderer.MeasureText(headers[2], font).Width / 2, y + 19);
-                   }
-                        
-                   break;
+                    }
+
+                    break;
 
                 case 4:
                     e.Graphics.DrawString(headers[0], font, CustomFonts.black, x + width / 2 - TextRenderer.MeasureText(headers[0], font).Width / 2, y + 1);
@@ -594,7 +619,7 @@ namespace DigitalProductionProgram.PrintingServices
 
             }
 
-            
+
         }
         public static void Thick_Rectangle(PrintPageEventArgs e, int x, int y, int width, int height)
         {
@@ -624,8 +649,8 @@ namespace DigitalProductionProgram.PrintingServices
             e.Graphics.DrawRectangle(CustomFonts.thinBlack, PrintVariables.LeftMargin, 70, PrintVariables.MaxPaperWidth - PrintVariables.LeftMargin, 22);
             e.Graphics.DrawString(text, new Font("Arial", 12, FontStyle.Bold), CustomFonts.black, PrintVariables.LeftMargin + 3, 72);
         }
-        
-        
+
+
         public static void ProductInformation(PrintPageEventArgs e)
         {
             Rubrik(e, LanguageManager.GetString("productInfo"), PrintVariables.LeftMargin, 89, PrintVariables.MaxPaperWidth - PrintVariables.LeftMargin);
@@ -633,7 +658,7 @@ namespace DigitalProductionProgram.PrintingServices
             e.Graphics.DrawRectangle(CustomFonts.thinBlack, 430, 111, 210, 48);
 
             //6 rader, 2 kolumner + 4 kolumner i z-led(djup)
-            object[,,] text = { 
+            object[,,] text = {
                 { { LanguageManager.GetString("label_Customer"),      30,  114 }, { utskrift_Korprotokoll["Customer"],       125, 114 } },
                 { { LanguageManager.GetString("label_Description"),   30,  137 }, { utskrift_Korprotokoll["Description"],    125, 137 } },
                 { { LanguageManager.GetString("date"),                435, 114 }, { utskrift_Korprotokoll["Date_Start"],     485, 114 } },
@@ -643,16 +668,16 @@ namespace DigitalProductionProgram.PrintingServices
 
             for (var x = 0; x < 6; x++)
             {
-                Protocol_InfoText(e, (string)text[x, 0, 0], false, (int)text[x,0,1], (int)text[x, 0, 2], 200, false, true);
+                Protocol_InfoText(e, (string)text[x, 0, 0], false, (int)text[x, 0, 1], (int)text[x, 0, 2], 200, false, true);
                 Text_Operatör(e, (string)text[x, 1, 0], (int)text[x, 1, 1], (int)text[x, 1, 2], 300, false, true);
             }
         }
-       
-       
-        
-        
-        
-       
+
+
+
+
+
+
         public static void Copy(PrintPageEventArgs e)
         {
             if (Order.Is_PrintOutCopy && !string.IsNullOrEmpty(Order.OrderNumber))
@@ -675,7 +700,7 @@ namespace DigitalProductionProgram.PrintingServices
         }
 
 
-       
+
         public class Diagram
         {
             public static void Print_Order_Info(PrintPageEventArgs e)
@@ -704,8 +729,8 @@ namespace DigitalProductionProgram.PrintingServices
                 e.Graphics.RotateTransform(-90f);
             }
         }
-       
-        
+
+
 
         public class Processcard
         {
@@ -713,7 +738,7 @@ namespace DigitalProductionProgram.PrintingServices
             {
                 for (int i = 0; i < headers.Length; i++)
                     headers[i] = headers[i].Replace("\n", "").Replace("\r", "");
-            
+
 
                 Thin_Rectangle(e, PrintVariables.LeftMargin, y, 18, height);
                 var font = CustomFonts.Con7_B;
@@ -759,8 +784,8 @@ namespace DigitalProductionProgram.PrintingServices
                 Info(e, x);
                 ValidatedOnOrders(e, x);
                 ApprovedProcesscard(e, x);
-                RevisionInfo(e, x);                    
-               
+                RevisionInfo(e, x);
+
             }
 
             private static void Header(PrintPageEventArgs e, int x)
@@ -846,21 +871,38 @@ namespace DigitalProductionProgram.PrintingServices
                     date = string.Empty;
                 else
                     date = DateTime.Parse(utskrift_Processkort["GodkäntDatum"]).ToString($"{dateTimeFormat.ShortDatePattern}", CultureInfo.CurrentCulture);
-                
+
 
                 if (date == "N/A" || date == string.Empty)
                     Text_NA(e, x + 254, PrintVariables.Y + 83, false);
                 else
                     e.Graphics.DrawString(date, CustomFonts.operatörFont, CustomFonts.parametrar_clr, x + 254, PrintVariables.Y + 83);
             }
+            public static int Height_RevInfoText(PrintPageEventArgs e)
+            {
+                var revInfo = utskrift_Processkort["RevInfo"];
+                float pageWidth = PrintVariables.MaxPaperWidth - PrintVariables.LeftMargin - 20;
+                const float padding = 10;
+                var commentLines = Regex.Split(revInfo, @"\r\n|\r|\n"); //comments.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+                var index = 0;
+                float totalHeight = 0;
+                while (index < commentLines.Length)
+                {
+                    var text = commentLines[index].Replace("\t", "    "); // Replace tab with four spaces
+                    var textSize = e.Graphics.MeasureString(text, CustomFonts.operatörFont, (int)pageWidth - PrintVariables.LeftMargin);
+                    totalHeight += textSize.Height + 4; // RowHeight;//* (int)padding + 10;
+                    index++;
+                }
+                return (int)totalHeight + 30;
+            }
             private static void RevisionInfo(PrintPageEventArgs e, int x)
             {
                 var rectangle_StartY = PrintVariables.Y;
 
-                e.Graphics.DrawString(LanguageManager.GetString("revisionInfo"), CustomFonts.M8_B, CustomFonts.black, x+10, PrintVariables.Y + 100);
+                e.Graphics.DrawString(LanguageManager.GetString("revisionInfo"), CustomFonts.M8_B, CustomFonts.black, x + 10, PrintVariables.Y + 100);
                 int yStartInnerRectangle = PrintVariables.Y + 115;
                 PrintVariables.Y += 130;
-                
+
                 var revInfo = utskrift_Processkort["RevInfo"];
                 float pageWidth = e.PageBounds.Width - 2 * x;
                 const float padding = 10;
@@ -890,17 +932,17 @@ namespace DigitalProductionProgram.PrintingServices
                 var yEndInnerRectangle = PrintVariables.Y - yStartInnerRectangle;
                 e.Graphics.DrawRectangle(CustomFonts.thinBlack, PrintVariables.LeftMargin + 2, yStartInnerRectangle, PrintVariables.MaxPaperWidth - PrintVariables.LeftMargin - 4, yEndInnerRectangle - 2);
 
-                e.Graphics.DrawRectangle(CustomFonts.thinBlack, x, rectangle_StartY, PrintVariables.MaxPaperWidth - PrintVariables.LeftMargin, PrintVariables.Y - rectangle_StartY); 
+                e.Graphics.DrawRectangle(CustomFonts.thinBlack, x, rectangle_StartY, PrintVariables.MaxPaperWidth - PrintVariables.LeftMargin, PrintVariables.Y - rectangle_StartY);
             }
         }
         internal class ExtraLineClearance
         {
             public static void Info(PrintPageEventArgs e, int y)
             {
-                var instruction =  Templates_LineClearance.MainTemplate.LineClearance_CenturiLink.Substring(Templates_LineClearance.MainTemplate.LineClearance_CenturiLink.LastIndexOf('/') + 1);
+                var instruction = Templates_LineClearance.MainTemplate.LineClearance_CenturiLink.Substring(Templates_LineClearance.MainTemplate.LineClearance_CenturiLink.LastIndexOf('/') + 1);
                 e.Graphics.DrawString($"Före tillverkning av order: {Order.OrderNumber} är Lince Clearance uförd enligt instruktion {instruction}.", CustomFonts.A9_BI, CustomFonts.black, 40, y);
             }
-           
+
             public static void Add_Task(PrintPageEventArgs e, ref int y, string header, string[] tasks)
             {
                 e.Graphics.DrawString($"{header}:", CustomFonts.A11_B, CustomFonts.black, 30, y);
@@ -948,7 +990,7 @@ namespace DigitalProductionProgram.PrintingServices
                 e.Graphics.DrawString("Namn:", CustomFonts.A10_I, CustomFonts.black, 310, y);
                 e.Graphics.DrawString($"{LC_Name}", CustomFonts.C10_B, CustomFonts.black, 360, y);
                 e.Graphics.DrawString("Datum/Tid:", CustomFonts.A10_I, CustomFonts.black, 550, y);
-                
+
                 var formattedDate = LC_Date.ToString($"{dateTimeFormat.ShortDatePattern}", CultureInfo.CurrentCulture);
                 e.Graphics.DrawString($"{formattedDate}", CustomFonts.C10_B, CustomFonts.black, 630, y);
                 e.Graphics.DrawString("Godkänd för produktion av:    Anst.Nr:", new Font("Arial", 9f, FontStyle.Bold | FontStyle.Italic), CustomFonts.black, 28, y + 30);
@@ -963,7 +1005,7 @@ namespace DigitalProductionProgram.PrintingServices
             public static void Kommentarer(PrintPageEventArgs e)
             {
                 var comments = utskrift_Korprotokoll["LC_Comments"];
-                Print_Protocol.PrintOut.Comments(PrintVariables.LeftMargin, (int)PrintVariables.PageHeight - 130, comments,  e);
+                Print_Protocol.PrintOut.Comments(PrintVariables.LeftMargin, (int)PrintVariables.PageHeight - 130, comments, e);
             }
         }
 
@@ -1153,7 +1195,7 @@ namespace DigitalProductionProgram.PrintingServices
                                 else
                                     value = Processcards.Processcard.Format_Value(NumberValue, decimals);
                             }
-                            
+
                             break;
                         case 1:
                             value = reader["TextValue"].ToString();

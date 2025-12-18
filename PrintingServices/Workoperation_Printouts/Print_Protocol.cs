@@ -1,4 +1,5 @@
-﻿using DigitalProductionProgram.DatabaseManagement;
+﻿using DigitalProductionProgram.ControlsManagement;
+using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Log;
 using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
@@ -10,10 +11,11 @@ using DigitalProductionProgram.Protocols.Protocol;
 using DigitalProductionProgram.Templates;
 using DigitalProductionProgram.User;
 using Microsoft.Data.SqlClient;
+using System.Data;
 using System.Drawing.Printing;
 using System.Globalization;
 using System.Text.RegularExpressions;
-using DigitalProductionProgram.ControlsManagement;
+using System.Xml.Linq;
 using static DigitalProductionProgram.PrintingServices.PrintVariables;
 using static DigitalProductionProgram.PrintingServices.Workoperation_Printouts.Print_Protocol.PrintOut;
 using FrequencyMarking = DigitalProductionProgram.Protocols.ExtraProtocols.FrequencyMarking;
@@ -23,21 +25,23 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
 {
     internal class Print_Protocol
     {
-        public static PrintPreviewDialog Preview_MainProtocol = new();
-        public static PrintPreviewDialog Preview_RunProtocol = new();
-        public static PrintPreviewDialog Preview_Comments = new ();
-        public static PrintPreviewDialog Preview_ExtraComments = new ();
-        public static PrintPreviewDialog Preview_LineClearance = new ();
-        public static PrintPreviewDialog Preview_FrequencyMarking = new ();
-        public static PrintPreviewDialog Preview_Compound_Protocol = new ();
-        
-        public static PrintDocument Print_MainProtocol = new ();
-        public static PrintDocument Print_RunProtocol = new ();
-        public static PrintDocument Print_Comments = new ();
-        public static PrintDocument Print_ExtraComments = new ();
-        public static PrintDocument Print_LineClearance = new ();
-        public static PrintDocument Print_Compund_Protocol = new ();
-        public static PrintDocument Print_FrequencyMarking = new ();
+        private static readonly PrintPreviewDialog Preview_MainProtocol = new();
+        private static readonly PrintPreviewDialog Preview_RunProtocol = new();
+        private static readonly PrintPreviewDialog Preview_Comments = new();
+        private static readonly PrintPreviewDialog Preview_MeasureInstruments = new();
+        private static readonly PrintPreviewDialog Preview_ExtraComments = new();
+        private static readonly PrintPreviewDialog Preview_LineClearance = new();
+        private static readonly PrintPreviewDialog Preview_FrequencyMarking = new();
+        private static readonly PrintPreviewDialog Preview_Compound_Protocol = new();
+
+        private static readonly PrintDocument Print_MainProtocol = new();
+        private static readonly PrintDocument Print_RunProtocol = new();
+        private static readonly PrintDocument Print_Comments = new();
+        private static readonly PrintDocument Print_MeasureInstruments = new();
+        private static readonly PrintDocument Print_ExtraComments = new();
+        private static readonly PrintDocument Print_LineClearance = new();
+        private static readonly PrintDocument Print_Compund_Protocol = new();
+        private static readonly PrintDocument Print_FrequencyMarking = new();
         public static TotalPrintOuts? totalPrintOuts;
 
         public Print_Protocol()
@@ -46,6 +50,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
             Print_RunProtocol.PrintPage += PrintPage_RunProtocol;
             Print_Comments.PrintPage += Print_Page_Comments;
             Print_ExtraComments.PrintPage += Print_Page_ExtraComments;
+            Print_MeasureInstruments.PrintPage += Print_Page_MeasureInstruments;
             Print_LineClearance.PrintPage += ExtraLineClearance_Print_Page;
             Print_Compund_Protocol.PrintPage += Print_Compound_Protocol_PrintPage;
             Print_FrequencyMarking.PrintPage += Frekvensmarkering_PrintPage;
@@ -56,6 +61,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
             Preview_MainProtocol.Document = Print_MainProtocol;
             Preview_Compound_Protocol.Document = Print_Compund_Protocol;
             Preview_Comments.Document = Print_Comments;
+            Preview_MeasureInstruments.Document = Print_MeasureInstruments;
             Preview_LineClearance.Document = Print_LineClearance;
             Preview_ExtraComments.Document = Print_ExtraComments;
             Preview_FrequencyMarking.Document = Print_FrequencyMarking;
@@ -80,7 +86,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
             var paperHeight = IsLandscapeMode ? defaultPaperSize.Width : defaultPaperSize.Height;
 
             // Calculate the maximum dimensions
-            
+
             PrintVariables.MaxPaperWidth = paperWidth - PrintVariables.LeftMargin * 2;
             PrintVariables.MaxPaperHeight = paperHeight - PrintVariables.LeftMargin * 2;
             PrintVariables.MaxWidthProcesscardRunProtocol = PrintVariables.MaxPaperWidth - PrintVariables.StartPointProcesscard;
@@ -113,9 +119,9 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                     var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@maintemplateid", Templates_Protocol.MainTemplate.ID);
                     con.Open();
-                   var value = cmd.ExecuteScalar();
-                   if (value != null)
-                       return int.Parse(value.ToString());
+                    var value = cmd.ExecuteScalar();
+                    if (value != null)
+                        return int.Parse(value.ToString());
                 }
 
                 _ = Activity.Stop($"Error: Skriver ut Körprotokoll - Fel TotalRows_Template. MainTemplateID = {Templates_Protocol.MainTemplate.ID}");
@@ -141,7 +147,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                 return list;
             }
         }
-        public static List<int> Active_FormTemplates = new List<int>();
+        private static List<int> Active_FormTemplates = new List<int>();
 
         public static int TotalRows_FormTemplateID(int formtemplateid)
         {
@@ -168,7 +174,23 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                 return int.Parse(value.ToString() ?? string.Empty);
             return 0;
         }
-
+        public static void SetHeightMeasureInstruments()
+        {
+            using var con = new SqlConnection(Database.cs_Protocol);
+            const string query = @"
+                        SELECT COUNT(*) FROM MeasureInstruments.Mätdon WHERE OrderID = @orderid";
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
+            con.Open();
+            var value = cmd.ExecuteScalar();
+            if (value != null)
+            {
+                Height_MeasureInstruments = int.Parse(value.ToString() ?? string.Empty) * 24;
+                return;
+            }
+            Height_MeasureInstruments = 0;
+        }
+        public static int Height_MeasureInstruments { get; set; }
         public static int TotalPrintOutsForStartUps(List<int> List_FormTemplates)
         {
             //Kontrollerar maxbredden på kolumnerna på körprotokoll samt processkort för inkommande FormTemplates och kollar hur många utskrifter som krävs för dessa
@@ -204,7 +226,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                 var space_Left = PrintVariables.MaxPaperWidth - PrintVariables.StartPointProcesscard - (processcard_MinWidth + processcard_NomWidth + processcard_MaxWidth);
                 if (space_Left < max_Width)
                     max_Width = space_Left;
-                        
+
                 if (runProtocol_ColWidth > max_RunProtocolWidth)
                     max_RunProtocolWidth = runProtocol_ColWidth;
             }
@@ -212,20 +234,20 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
             var maxStartupsPerPage = max_Width / max_RunProtocolWidth;
             return (int)Math.Ceiling(totalStartUps / (double)maxStartupsPerPage);
         }
-        public static int MaxStartUpPerPrintOut(List<int> List_FormTemplates)
+        private static int MaxStartUpPerPrintOut(List<int> List_FormTemplates)
         {
-                var max_Width = PrintVariables.MaxWidthProcesscardRunProtocol;
-                var processcard_MinWidth = 0;
-                var processcard_NomWidth = 0;
-                var processcard_MaxWidth = 0;
-                var runProtocol_ColWidth = 0;
-                var maxStartups = int.MaxValue;
+            var max_Width = PrintVariables.MaxWidthProcesscardRunProtocol;
+            var processcard_MinWidth = 0;
+            var processcard_NomWidth = 0;
+            var processcard_MaxWidth = 0;
+            var runProtocol_ColWidth = 0;
+            var maxStartups = int.MaxValue;
 
-                foreach (var formtemplateid in List_FormTemplates)
-                {
-                    var isOkCalculate = false;
-                    using var con = new SqlConnection(Database.cs_Protocol);
-                    const string query = @"
+            foreach (var formtemplateid in List_FormTemplates)
+            {
+                var isOkCalculate = false;
+                using var con = new SqlConnection(Database.cs_Protocol);
+                const string query = @"
                             SELECT DISTINCT 
                                 Processcard_MinWidth, 
                                 Processcard_ColWidth, 
@@ -246,18 +268,18 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                                             AND ColumnIndex IS NOT NULL
                                         )
                                     )";
-                    //--AND formtemplate.MaintemplateID = @maintemplateid";
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    cmd.Parameters.AddWithValue("@formtemplateid", formtemplateid);
-                    cmd.Parameters.AddWithValue("@maintemplateid", Templates_Protocol.MainTemplate.ID);
-                    con.Open();
-                    var reader = cmd.ExecuteReader();
-                    int columnCounter = 0;
-                    while (reader.Read())
-                    {
-                        int.TryParse(reader["Processcard_ColWidth"].ToString(), out processcard_NomWidth);
-                        int.TryParse(reader["Processcard_MinWidth"].ToString(), out processcard_MinWidth);
-                        int.TryParse(reader["Processcard_MaxWidth"].ToString(), out processcard_MaxWidth);
+                //--AND formtemplate.MaintemplateID = @maintemplateid";
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                cmd.Parameters.AddWithValue("@formtemplateid", formtemplateid);
+                cmd.Parameters.AddWithValue("@maintemplateid", Templates_Protocol.MainTemplate.ID);
+                con.Open();
+                var reader = cmd.ExecuteReader();
+                int columnCounter = 0;
+                while (reader.Read())
+                {
+                    int.TryParse(reader["Processcard_ColWidth"].ToString(), out processcard_NomWidth);
+                    int.TryParse(reader["Processcard_MinWidth"].ToString(), out processcard_MinWidth);
+                    int.TryParse(reader["Processcard_MaxWidth"].ToString(), out processcard_MaxWidth);
 
                     //if (int.TryParse(reader["Processcard_MinWidth"].ToString(), out processcard_MinWidth) == false)
                     //    processcard_MinWidth = processcard_NomWidth;
@@ -265,21 +287,37 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                     //if (int.TryParse(reader["Processcard_MaxWidth"].ToString(), out processcard_MaxWidth) == false)
                     //    processcard_MaxWidth = processcard_NomWidth;
                     int.TryParse(reader["RunProtocol_ColWidth"].ToString(), out runProtocol_ColWidth);
-                        columnCounter++;
-                        isOkCalculate = true;
-                    }
-
-                    if (isOkCalculate)
-                    {
-                        var startups = (int)Math.Floor(((double)max_Width - (processcard_MinWidth + processcard_NomWidth + processcard_MaxWidth)) / runProtocol_ColWidth);
-                        if (startups < maxStartups)
-                            maxStartups = startups;
-                    }
+                    columnCounter++;
+                    isOkCalculate = true;
                 }
-                return maxStartups;
+
+                if (isOkCalculate)
+                {
+                    var startups = (int)Math.Floor(((double)max_Width - (processcard_MinWidth + processcard_NomWidth + processcard_MaxWidth)) / runProtocol_ColWidth);
+                    if (startups < maxStartups)
+                        maxStartups = startups;
+                }
+            }
+            return maxStartups;
         }
 
+        private static int Height_ProcesscardBasedOn(PrintPageEventArgs e)
+        {
+            int top = 115;
+            int revInfo = Print.ProcessCardBasedOn.Height_RevInfoText(e);
+            return (top + revInfo + 4);
+        }
+        private static int Height_PreFab(PrintPageEventArgs e)
+        {
+            var header = 44;
+            var fabRows = PreFab.TotalRows_PreFab * 18;
+            return (header + fabRows);
+        }
 
+        
+        
+        
+        
         public static async Task Print_Preview_Order(bool IsPrinting)
         {
             totalPrintOuts = new TotalPrintOuts();
@@ -288,7 +326,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
             MaximizeAllWindows();
             InitializeGlobalPrintValues();
             Set_DefaultPaperSize(Print_MainProtocol, false);
-
+            SetHeightMeasureInstruments();
             var MaxRowsRunProtocol = (MaxPaperHeight - 180 - LeftMargin) / RowHeight;
             var totalPrintOutsForModules = Math.Ceiling((double)TotalRows_Template / MaxRowsRunProtocol);
 
@@ -301,6 +339,8 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
             await PrintExtraCommentsAsync(IsPrinting);
             await PrintLineClearanceAsync(IsPrinting);
             await PrintRunProtocolsAsync(IsPrinting, totalPrintOutsForModules, MaxRowsRunProtocol);
+            if (IsMeasureInstrumentsPrintedOut == false && Height_MeasureInstruments > 0)
+                await PrintMeasureInstruments(IsPrinting);
             await PrintMeasureProtocolsAsync(IsPrinting);
             if (FrequencyMarking.IsLäcksökning)
                 await PrintFrequencyMarking(IsPrinting);
@@ -312,6 +352,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
             ((Form)Preview_MainProtocol).WindowState = FormWindowState.Maximized;
             ((Form)Preview_ExtraComments).WindowState = FormWindowState.Maximized;
             ((Form)Preview_Comments).WindowState = FormWindowState.Maximized;
+            ((Form)Preview_MeasureInstruments).WindowState = FormWindowState.Maximized;
             ((Form)Preview_RunProtocol).WindowState = FormWindowState.Maximized;
             ((Form)Preview_LineClearance).WindowState = FormWindowState.Maximized;
             ((Form)Measureprotocol.Preview_MeasureProtocol).WindowState = FormWindowState.Maximized;
@@ -333,16 +374,17 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
         private static Task PrintMainProtocolAsync(bool isPrinting)
         {
             Set_DefaultPaperSize(Print_MainProtocol, false);
-
             if (isPrinting)
                 Print_MainProtocol.Print();
             else
                 Preview_MainProtocol.ShowDialog();
+            _ = Activity.Stop($"Skriver ut MainProtocol - Sida {Active_PrintOut}");
             return Task.CompletedTask;
         }
         private static Task PrintCommentsAsync(bool isPrinting)
         {
-            if (IsCommentsPrintedOut) return Task.FromResult(Task.CompletedTask);
+            if (IsCommentsPrintedOut) 
+                return Task.CompletedTask;
 
             var commentLines = Regex.Split(Print.utskrift_Korprotokoll?["Comments"] ?? string.Empty, @"\r\n|\r|\n");
 
@@ -354,11 +396,13 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                     Preview_Comments.ShowDialog();
             }
 
-            return Task.FromResult(Task.CompletedTask);
+            _ = Activity.Stop($"Skriver ut Comments - Sida {Active_PrintOut}");
+            return Task.CompletedTask;
         }
         private static Task PrintExtraCommentsAsync(bool isPrinting)
         {
-            if (totalPrintOuts == null) return Task.CompletedTask;
+            if (totalPrintOuts == null) 
+                return Task.CompletedTask;
             for (var i = 0; i < totalPrintOuts.PagesExtraComments; i++)
             {
                 ExtraCommentRow_To += (MaxPaperHeight - 221) / RowHeight;
@@ -371,7 +415,18 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
 
                 ExtraCommentRow_From = ExtraCommentRow_To + 1;
             }
-
+            _ = Activity.Stop($"Skriver ut Extra Comments - Sida {Active_PrintOut}");
+            return Task.CompletedTask;
+        }
+        public static Task PrintMeasureInstruments(bool isPrinting)
+        {
+            Set_DefaultPaperSize(Print_MeasureInstruments, true);
+           
+            if (isPrinting)
+                Print_MeasureInstruments.Print();
+            else
+                Preview_MeasureInstruments.ShowDialog();
+            _ = Activity.Stop($"Skriver ut Mätdon - Sida {Active_PrintOut}");
             return Task.CompletedTask;
         }
         private static Task PrintLineClearanceAsync(bool isPrinting)
@@ -386,11 +441,11 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
             else
                 Preview_LineClearance.ShowDialog();
 
+            _ = Activity.Stop($"Skriver ut Extra LineClearance - Sida {Active_PrintOut}");
             return Task.CompletedTask;
         }
         private static async Task PrintRunProtocolsAsync(bool isPrinting, double totalPrintOutsForModules, int maxRowsRunProtocol)
         {
-            
             for (var machineIndex = 1; machineIndex <= Korprotokoll.Total_Machines; machineIndex++)
             {
                 MachineIndex = machineIndex;
@@ -399,7 +454,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
 
                 for (var i = 0; i < totalPrintOutsForModules; i++)
                 {
-                    await Activity.Stop($"Skriver ut Körprotokoll - {i+1} / {totalPrintOutsForModules}");
+                    await Activity.Stop($"Skriver ut Körprotokoll - {i + 1} / {totalPrintOutsForModules}");
                     StartUp_From = 1;
                     StartUp_To = 0;
                     Active_FormTemplates = new List<int>();
@@ -446,9 +501,8 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                 }
             }
 
-            return;
         }
-        private static async Task PrintMeasureProtocolsAsync(bool isPrinting)
+        public static async Task PrintMeasureProtocolsAsync(bool isPrinting)
         {
             try
             {
@@ -507,14 +561,21 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                 Preview_Compound_Protocol.ShowDialog();
             return Task.CompletedTask;
         }
-
+       
 
         private static void PrintPage_MainProtocol(object sender, PrintPageEventArgs e)
         {
             PrintVariables.PageWidth = e.PageBounds.Width;
             PrintVariables.PageHeight = e.PageBounds.Height;
             PrintVariables.Active_PrintOut++;
-           
+            
+            var height_ProcesscardBasedOn = Height_ProcesscardBasedOn(e);
+            var height_PreFab = Height_PreFab(e);
+            var height_Comments = Height_Comments(e);
+            var SpaceLeft = PrintVariables.PageHeight - PrintVariables.Y - 40 - height_ProcesscardBasedOn - height_PreFab - height_Comments;
+            if (SpaceLeft < Height_MeasureInstruments && Height_MeasureInstruments > 0)
+                totalPrintOuts.PagesExtraMeasureInstruments = 1;
+
             Order_INFO(e);
             Measurepoints(e);
             PrintVariables.Y = 130;
@@ -526,7 +587,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
 
             Print.Rubrik(e, "Line Clearance", PrintVariables.LeftMargin, PrintVariables.Y, PrintVariables.MaxPaperWidth - PrintVariables.LeftMargin);
             Line_Clearance(e);
-            
+
             Print.ProcessCardBasedOn.PrintOut(PrintVariables.LeftMargin, e);
 
             if (PreFab.IsUsingPreFab)
@@ -535,18 +596,26 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                 Y += 30;
             }
 
-            var maxY = (int)PrintVariables.PageHeight - 60;
+            var maxY = (int)PrintVariables.PageHeight - 100;
             var comments = Print.utskrift_Korprotokoll["Comments"];
+            CommentIndex = 0;
             totalPrintOuts.SetPagesComments(e, comments, PrintVariables.LeftMargin, PrintVariables.Y, maxY);
             PageHeader(e, Templates_Protocol.MainTemplate.Name, totalPrintOuts.TotalPages);
-            Comments(PrintVariables.LeftMargin, maxY, comments , e);
-            
+            Comments(PrintVariables.LeftMargin, maxY, comments, e);
+            PrintVariables.Y += 10;
+            var spaceLeft = MaxPaperHeight - 40 - PrintVariables.Y; //40 är utrymmet för PagegFooter
+
+            if (spaceLeft > Height_MeasureInstruments && Height_MeasureInstruments > 0)
+            {
+                Measureprotocol.Print_MeasureInstruments(e, PrintVariables.Y);
+                IsMeasureInstrumentsPrintedOut  = true;
+            }
             Print.Copy(e);
             PageFooter(e);
         }
         private static void PrintPage_RunProtocol(object sender, PrintPageEventArgs e)
         {
-            if (totalPrintOuts != null) 
+            if (totalPrintOuts != null)
                 PageHeader(e, Templates_Protocol.MainTemplate.Name, totalPrintOuts.TotalPages);
             Order_INFO(e);
             e.Graphics?.DrawString(LanguageManager.GetString("print_IsValueCritical"), CustomFonts.parametrarFont_Bold, CustomFonts.black, LeftMargin, 130);
@@ -555,7 +624,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
             PageWidth = e.PageBounds.Width;
             PageHeight = e.PageBounds.Height;
             var y = 153;
-       
+
             var totalrows = 0;
             foreach (var formtemplateid in Active_FormTemplates)
             {
@@ -590,10 +659,10 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                 if (isHeaderVisible)
                     y += RowHeight;
             }
-           
+
             Print.Copy(e);
         }
-        
+
         private static void Print_Page_Comments(object sender, PrintPageEventArgs e)
         {
             Active_PrintOut++;
@@ -611,6 +680,15 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
 
             PrintVariables.Y = 150;
             Extra_Comments(e);
+        }
+        private static void Print_Page_MeasureInstruments(object sender, PrintPageEventArgs e)
+        {
+            Active_PrintOut++;
+            PageHeader(e, Templates_Protocol.MainTemplate.Name, totalPrintOuts.TotalPages);
+            Order_INFO(e);
+            PrintVariables.Y = 150;
+            Measureprotocol.Print_MeasureInstruments(e, PrintVariables.Y);
+            Print.Copy_Landscape(e);
         }
         private static void Print_Compound_Protocol_PrintPage(object sender, PrintPageEventArgs e)
         {
@@ -655,19 +733,19 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                         Print.ExtraLineClearance.Add_Task(e, ref y, reader["Category"].ToString(), tasks);
                         y += 30;
                     }
-                       
+
                 }
             }
             Print.Thin_Rectangle(e, PrintVariables.LeftMargin, 190, PrintVariables.MaxPaperWidth - PrintVariables.LeftMargin, y - 190);
-            Print.ExtraLineClearance.Text_DoneByAndApprovedBy(e, y+10);
-            PrintVariables.Y = y+60;
+            Print.ExtraLineClearance.Text_DoneByAndApprovedBy(e, y + 10);
+            PrintVariables.Y = y + 60;
             Print.ExtraLineClearance.Kommentarer(e);
         }
 
 
         internal class PrintOut
         {
-            public static Dictionary<(int row, int formtemplateid), List<int>> UsedColumns { get; } = new();
+            private static Dictionary<(int row, int formtemplateid), List<int>> UsedColumns { get; } = new();
             public static void LoadUsedColumns()
             {
                 UsedColumns.Clear();
@@ -762,8 +840,8 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                 e.Graphics.DrawImage(img, LeftMargin, 12);
                 Print.TemplateHeader(e, $"{LanguageManager.GetString("template")}: {templateName}");
 
-                e.Graphics.DrawString(LanguageManager.GetString("form"), CustomFonts.A12_BI, CustomFonts.black, MaxPaperWidth - 304, LeftMargin +12);
-                e.Graphics.DrawRectangle(CustomFonts.thinBlack, MaxPaperWidth - 309, LeftMargin +6, 309, 23);                                                                                
+                e.Graphics.DrawString(LanguageManager.GetString("form"), CustomFonts.A12_BI, CustomFonts.black, MaxPaperWidth - 304, LeftMargin + 12);
+                e.Graphics.DrawRectangle(CustomFonts.thinBlack, MaxPaperWidth - 309, LeftMargin + 6, 309, 23);
 
                 e.Graphics.DrawString("DPP-Version: " + vers, CustomFonts.A8, CustomFonts.black, PrintVariables.MaxPaperWidth - 448, 55);
                 e.Graphics.DrawRectangle(CustomFonts.thinBlack, MaxPaperWidth - 456, 53, 147, 17);
@@ -807,30 +885,30 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                 e.Graphics.DrawRectangle(CustomFonts.thinBlack, 930, 748, 159, 20);
             }
 
-          
+
 
             public static void Order_INFO(PrintPageEventArgs e)
             {
                 e.Graphics.DrawLine(CustomFonts.thinBlack, LeftMargin, 110, MaxPaperWidth, 110);
 
                 Print.Static_InfoText(e, LanguageManager.GetString("label_Customer"), LeftMargin, 95);
-                Print.Protocol_InfoText(e, Order.Customer,false, 88,  95, 280,false, true );
+                Print.Protocol_InfoText(e, Order.Customer, false, 88, 95, 280, false, true);
 
                 Print.Static_InfoText(e, LanguageManager.GetString("label_ProdType"), 360, 95);
-                Print.Protocol_InfoText(e, Order.ProdType, false,440,95,150,false,true);
+                Print.Protocol_InfoText(e, Order.ProdType, false, 440, 95, 150, false, true);
 
                 Print.Static_InfoText(e, LanguageManager.GetString("label_Description"), LeftMargin, 115);
-                Print.Protocol_InfoText(e, Order.Description, false,100, 115, 235, false, true);
+                Print.Protocol_InfoText(e, Order.Description, false, 100, 115, 235, false, true);
 
                 Print.Static_InfoText(e, "OrderNr-Operation:", MaxPaperWidth - 70, 95, true);
-                Print.Protocol_InfoText(e, $"{Order.OrderNumber}-{Order.Operation}", false,MaxPaperWidth, 95, 100, false, true, true);
+                Print.Protocol_InfoText(e, $"{Order.OrderNumber}-{Order.Operation}", false, MaxPaperWidth, 95, 100, false, true, true);
 
                 Print.Static_InfoText(e, LanguageManager.GetString("label_PartNumber"), MaxPaperWidth - 70, 115, true);
-                Print.Protocol_InfoText(e, $"{Order.PartNumber}", false,MaxPaperWidth, 115, 100, false, true, true);
+                Print.Protocol_InfoText(e, $"{Order.PartNumber}", false, MaxPaperWidth, 115, 100, false, true, true);
 
                 e.Graphics.DrawLine(CustomFonts.thinBlack, LeftMargin, 130, MaxPaperWidth, 130);
             }
-            
+
             public static void Measurepoints(PrintPageEventArgs e)
             {
                 var ctr = 0;
@@ -914,7 +992,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
 
                 e.Graphics?.DrawLine(CustomFonts.thinBlack, 605, 130, 605, 160);
             }
-          
+
 
             public static void Line_Clearance(PrintPageEventArgs e)
             {
@@ -932,7 +1010,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
 
                 if ((Templates_LineClearance.MainTemplate.LineClearance_MainTemplateID ?? 0) != 0)
                     return;
-                
+
 
                 switch (LineClearanceTemplate)
                 {
@@ -941,7 +1019,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                         PrintVariables.Y += 80;
                         break;
                     case "B"://HS
-                        Print.LineClearance.LineClearance_B(e); 
+                        Print.LineClearance.LineClearance_B(e);
                         Y += 85;
                         break;
                 }
@@ -956,50 +1034,107 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                 var dt_Halvfabrikat = Protocols.ExtraProtocols.PreFab.DataTable_PreFab(Order.OrderID, true);
                 var antal_Halvfabrikat = dt_Halvfabrikat.Rows.Count;
 
-                var partNrMaterialKey = LanguageManager.GetString("partNrMaterial") ?? "partNrMaterial";
-                var partNumberKey = LanguageManager.GetString("label_PartNumber") ?? "label_PartNumber";
+                if (dt_Halvfabrikat == null || dt_Halvfabrikat.Columns.Count == 0)
+                    return;
 
-                var columns = new Dictionary<string, (int Width, string DataKey)>
+                // --- Dynamiskt skapa kolumnlista ---
+                // Ange standardbredd per kolumn (kan justeras per kolumnnamn om du vill)
+                int defaultWidth = 120;
+
+                var columns = new List<(string Header, string DataKey, int Width)>();
+
+                foreach (DataColumn col in dt_Halvfabrikat.Columns)
                 {
-                    { partNrMaterialKey, (87, partNumberKey) },
-                    { "Material", (321, LanguageManager.GetString("label_Description") ?? "label_Description") },
-                    { "Extruder", (160, "Extruder:") },
-                    { "Batch Nr", (110, "BatchNr:") },
-                    { LanguageManager.GetString("preFab_BestBefore") ?? "preFab_BestBefore", (100, LanguageManager.GetString("preFab_BestBefore") ?? "preFab_BestBefore") }
-                };
+                    int width = defaultWidth;
 
-
-                // Draw headers
-                var currentX = LeftMargin;
-                foreach (var entry in columns)
-                {
-                    e.Graphics?.DrawRectangle(CustomFonts.thinBlack, currentX, Y - 2, entry.Value.Width, 18);
-                    e.Graphics?.DrawString(entry.Key, CustomFonts.A9_I, CustomFonts.black, currentX + 2, Y);
-                    currentX += entry.Value.Width;
-                }
-
-                Y += 20; // Move down after headers
-
-                for (var i = 0; i < antal_Halvfabrikat; i++)
-                {
-                    currentX = LeftMargin; // Reset X for each row
-
-                    foreach (var entry in columns)
+                    // (Valfritt) Anpassa vissa kolumner
+                    switch (col.ColumnName)
                     {
-                        e.Graphics?.DrawRectangle(CustomFonts.thinBlack, currentX, Y, entry.Value.Width, 18);
-                        string? text;
-                        var value = dt_Halvfabrikat?.Rows[i][entry.Value.DataKey];
-                        if (value is DateTime dateValue)
-                            text = dateValue.ToShortDateString();
-                        else
-                            text = dt_Halvfabrikat?.Rows[i][entry.Value.DataKey].ToString();
-
-                        Print.Text_Operatör(e, text, currentX + 2, Y + 4, entry.Value.Width - 4);
-                        currentX += entry.Value.Width; // Move X to the next column
+                        case "PartNumber":
+                        case "Artikelnr:":
+                            width = 87;
+                            break;
+                        case "Benämning:":
+                        case "Description:":
+                            width = 160;
+                            break;
+                        case "Material":
+                            width = 321;
+                            break;
+                        case "Extruder":
+                            width = 160;
+                            break;
+                        case "BatchNr":
+                            width = 110;
+                            break;
+                        case "BestBefore":
+                        case "Bäst Före":
+                            width = 100;
+                            break;
+                        case "Slang:":
+                            width = 110;
+                            break;
+                        case "ID":
+                        case "OD": 
+                        case "W":
+                            width = 50;
+                            break;
+                        case "TempID":
+                        case "Saldo:":
+                            continue;
                     }
 
-                    Y += 18; // Move down for the next row
+                    // Lägg till kolumnen
+                    columns.Add((col.ColumnName, col.ColumnName, width));
                 }
+
+                // --- Rita kolumnrubriker ---
+                var currentX = LeftMargin;
+                foreach (var col in columns)
+                {
+                    e.Graphics?.DrawRectangle(CustomFonts.thinBlack, currentX, Y - 2, col.Width, 18);
+                    e.Graphics?.DrawString(col.Header, CustomFonts.A9_I, CustomFonts.black, currentX + 2, Y);
+                    currentX += col.Width;
+                }
+
+                Y += 20;
+
+                // --- Rita data ---
+                for (var i = 0; i < antal_Halvfabrikat; i++)
+                {
+                    currentX = LeftMargin;
+                    foreach (var col in columns)
+                    {
+                        e.Graphics?.DrawRectangle(CustomFonts.thinBlack, currentX, Y, col.Width, 18);
+                        var value = dt_Halvfabrikat.Rows[i][col.DataKey];
+                        string? text = value is DateTime dt ? dt.ToShortDateString() : value?.ToString();
+                        Print.Text_Operatör(e, text, currentX + 2, Y + 4, col.Width - 4);
+                        currentX += col.Width;
+                    }
+                    Y += 18;
+                }
+            }
+
+            public static int Height_Comments(PrintPageEventArgs e)
+            {
+                var header = 22;
+                var comments = Print.utskrift_Korprotokoll["Comments"];
+                var commentLines = Regex.Split(comments, @"\r\n|\r|\n");
+                var x = 26;
+                float pageWidth = e.PageBounds.Width - 2 * x;
+                const float padding = 10;
+                var height = 0;
+                while (CommentIndex < commentLines.Length)
+                {
+                    var text = commentLines[PrintVariables.CommentIndex].Replace("\t", "    "); // Replace tab with four spaces
+                    var textSize = e.Graphics.MeasureString(text, CustomFonts.operatörFont, (int)pageWidth - PrintVariables.LeftMargin);
+
+
+                    height += (int)textSize.Height + 4;
+
+                    CommentIndex++;
+                }
+                return header + height;
             }
             public static void Comments(int x, int maxY, string? comments, PrintPageEventArgs e)
             {
@@ -1017,7 +1152,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                 {
                     var text = commentLines[PrintVariables.CommentIndex].Replace("\t", "    "); // Replace tab with four spaces
                     var textSize = e.Graphics.MeasureString(text, CustomFonts.operatörFont, (int)pageWidth - PrintVariables.LeftMargin);
-                   
+
                     var rect = new RectangleF(x + 4, PrintVariables.Y - 10, pageWidth - PrintVariables.LeftMargin, textSize.Height + 2 * padding);
 
                     var stringFormat = new StringFormat
@@ -1033,21 +1168,21 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                         e.Graphics.DrawRectangle(Pens.Black, PrintVariables.LeftMargin, startY, PrintVariables.MaxPaperWidth - PrintVariables.LeftMargin, PrintVariables.Y - startY);
                         return;
                     }
-                        
+
                     e.Graphics.DrawString(text, CustomFonts.operatörFont, CustomFonts.operatör_clr, rect, stringFormat);
 
                     if (PrintVariables.Y > maxY)
                     {
-                         e.Graphics.DrawRectangle(Pens.Black, PrintVariables.LeftMargin, startY, PrintVariables.MaxPaperWidth - PrintVariables.LeftMargin, PrintVariables.Y - startY);
-                         PrintVariables.CommentIndex++;
-                        
+                        e.Graphics.DrawRectangle(Pens.Black, PrintVariables.LeftMargin, startY, PrintVariables.MaxPaperWidth - PrintVariables.LeftMargin, PrintVariables.Y - startY);
+                        PrintVariables.CommentIndex++;
+
                         return;
                     }
                     PrintVariables.CommentIndex++;
                 }
                 PrintVariables.IsCommentsPrintedOut = true;
                 e.Graphics.DrawRectangle(Pens.Black, PrintVariables.LeftMargin, startY, PrintVariables.MaxPaperWidth - PrintVariables.LeftMargin, PrintVariables.Y - startY);
-             
+
             }
             public static void Extra_Comments(PrintPageEventArgs e)
             {
@@ -1059,12 +1194,12 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                 e.Graphics.DrawRectangle(CustomFonts.thinBlack, 599, PrintVariables.Y, 85, 35);
                 e.Graphics.DrawRectangle(CustomFonts.thinBlack, 684, PrintVariables.Y, 45, 35);
                 e.Graphics.DrawRectangle(CustomFonts.thinBlack, 729, PrintVariables.Y, 50, 35);
-                e.Graphics.DrawString($"{LanguageManager.GetString("spool_1")} /", CustomFonts.A8, CustomFonts.black, 30, PrintVariables.Y +5);
-                e.Graphics.DrawString(LanguageManager.GetString("spool_2"), CustomFonts.A8, CustomFonts.black, 36, PrintVariables.Y +18);
-                e.Graphics.DrawString(LanguageManager.GetString("comments"), CustomFonts.A8, CustomFonts.black, 78, PrintVariables.Y +12);
-                e.Graphics.DrawString(LanguageManager.GetString("date"), CustomFonts.A8, CustomFonts.black, 621, PrintVariables.Y +12);
-                e.Graphics.DrawString("Sign:", CustomFonts.A8, CustomFonts.black, 691, PrintVariables.Y +12);
-                e.Graphics.DrawString(LanguageManager.GetString("label_EmpNr"), CustomFonts.A8, CustomFonts.black, 733, PrintVariables.Y +12);
+                e.Graphics.DrawString($"{LanguageManager.GetString("spool_1")} /", CustomFonts.A8, CustomFonts.black, 30, PrintVariables.Y + 5);
+                e.Graphics.DrawString(LanguageManager.GetString("spool_2"), CustomFonts.A8, CustomFonts.black, 36, PrintVariables.Y + 18);
+                e.Graphics.DrawString(LanguageManager.GetString("comments"), CustomFonts.A8, CustomFonts.black, 78, PrintVariables.Y + 12);
+                e.Graphics.DrawString(LanguageManager.GetString("date"), CustomFonts.A8, CustomFonts.black, 621, PrintVariables.Y + 12);
+                e.Graphics.DrawString("Sign:", CustomFonts.A8, CustomFonts.black, 691, PrintVariables.Y + 12);
+                e.Graphics.DrawString(LanguageManager.GetString("label_EmpNr"), CustomFonts.A8, CustomFonts.black, 733, PrintVariables.Y + 12);
 
                 PrintVariables.Y += 35;
                 using (var con = new SqlConnection(Database.cs_Protocol))
@@ -1091,7 +1226,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                             var formattedDate = date.ToString($"{dateTimeFormat.ShortDatePattern} {dateTimeFormat.ShortTimePattern}", CultureInfo.CurrentCulture);
                             Print.Text_Operatör(e, date.Year > 1900 ? formattedDate : date.ToString("HH:mm"), 641, PrintVariables.Y + 4, 90, true);
                         }
-                           
+
                         var anstNr = reader["AnstNr"].ToString();
                         if (!string.IsNullOrEmpty(anstNr))
                             Print.Text_Operatör(e, Person.Get_SignWithName(Person.Get_NameWithAnstNr(anstNr)), 706, PrintVariables.Y + 4, 50, true);
@@ -1120,7 +1255,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
 
                 Print.RunProtocol.StartUps(e, x, y, totalrows, runProtocol_ColWidth, formtemplateid, StartUp_From, StartUp_To, MachineIndex, isHeaderVisible, isModuleUsingOven);
             }
-            public static void PrintHeader(PrintPageEventArgs e, int y, int formtemplateid, int[] colWidth)
+            private static void PrintHeader(PrintPageEventArgs e, int y, int formtemplateid, int[] colWidth)
             {
                 Print.Filled_Rectangle(e, CustomFonts.empty_Space, PrintVariables.LeftMargin, y, 172, PrintVariables.RowHeight);
                 Print.Thin_Rectangle(e, 196, y, 46, PrintVariables.RowHeight);
@@ -1146,12 +1281,12 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                     }
                 }
             }
-            public static void Protocol_Template(PrintPageEventArgs e, int y, string leftHeader, int formtemplateid, int minWidth, int nomWidth, int maxWidth, ref int totalrows, bool isHeaderVisible)
+            private static void Protocol_Template(PrintPageEventArgs e, int y, string leftHeader, int formtemplateid, int minWidth, int nomWidth, int maxWidth, ref int totalrows, bool isHeaderVisible)
             {
                 totalrows = 0;
                 if (isHeaderVisible)
                 {
-                    PrintHeader(e, y, formtemplateid, new int[]{minWidth, nomWidth, maxWidth});
+                    PrintHeader(e, y, formtemplateid, new int[] { minWidth, nomWidth, maxWidth });
                     y += RowHeight;
                 }
 
@@ -1217,7 +1352,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                             Print.Print_Unit(e, unit, 196, y + RowHeight * row, RowHeight, 46);
                             totalrows++;
                             break;
-                        
+
                         case 2:
                             Print.Filled_Rectangle(e, CustomFonts.min_max, x + minWidth + nomWidth, y + RowHeight * row, maxWidth, RowHeight);
                             break;
@@ -1250,7 +1385,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                 }
                 Print.Processcard.LEFT_Header(e, new[] { leftHeader }, totalrows * RowHeight, y);
             }
-            public static void Processcard_Parameters(PrintPageEventArgs e, int y, int formtemplateid, int machineindex, bool isHeaderVisible)
+            private static void Processcard_Parameters(PrintPageEventArgs e, int y, int formtemplateid, int machineindex, bool isHeaderVisible)
             {
                 var isModuleOnlyNomValues = IsModuleOnlyNomValues(formtemplateid);
                 if (isHeaderVisible)

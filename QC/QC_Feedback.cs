@@ -62,20 +62,18 @@ namespace DigitalProductionProgram.QC
             get
             {
                var list = new List<string?>();
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    const string query = @"
+               using var con = new SqlConnection(Database.cs_Protocol);
+               const string query = @"
                     SELECT PartNumber, OrderNr, Operation, qc.OrderID
                     FROM Parts.FeedBackQC as qc
                         JOIN [Order].MainData as main
                             ON qc.OrderID = main.OrderID";
-                    con.Open();
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    var reader = cmd.ExecuteReader();
-                    while (reader.Read())
-                        list.Add($"{reader["PartNumber"]} - {reader["OrderNr"]} - {reader["Operation"]}:{reader["OrderID"]}");
-                }
-                return list;
+               con.Open();
+               var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+               var reader = cmd.ExecuteReader();
+               while (reader.Read())
+                   list.Add($"{reader["PartNumber"]} - {reader["OrderNr"]} - {reader["Operation"]}:{reader["OrderID"]}");
+               return list;
             }
         }
         public static bool IsOperationHaveQCFeedback
@@ -84,24 +82,22 @@ namespace DigitalProductionProgram.QC
             {
                 if (string.IsNullOrEmpty(Order.PartNumber))
                     return false;
-                
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    const string query = @"
+
+                using var con = new SqlConnection(Database.cs_Protocol);
+                const string query = @"
                         SELECT * 
                             FROM Parts.FeedbackQC as qc
                             JOIN Parts.FeedBackQC_RemainingViews as counter
                                 ON qc.FeedbackQC_ID = counter.FeedbackQC_ID
 
                             WHERE qc.PartNumber = @partnumber AND IsDone = 'False' AND Operation = @operation AND RemainingViews > 0";
-                    con.Open();
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    cmd.Parameters.AddWithValue("@partnumber", Order.PartNumber);
-                    cmd.Parameters.AddWithValue("@operation", Order.Operation);
-                    var value = cmd.ExecuteScalar();
-                    if (value != null)
-                        return true;
-                }
+                con.Open();
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                cmd.Parameters.AddWithValue("@partnumber", Order.PartNumber);
+                cmd.Parameters.AddWithValue("@operation", Order.Operation);
+                var value = cmd.ExecuteScalar();
+                if (value != null)
+                    return true;
                 return false;
             }
         }
@@ -146,35 +142,60 @@ namespace DigitalProductionProgram.QC
         {
             if (orderid is null)
                 return;
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                const string query = @"
-                    SELECT (SELECT OrderNr FROM [Order].MainData WHERE OrderID = feedback.OrderID) as OrderNr, Text, Ppk_OrderNr, Ppk_History, Image, DateTime, RemainingViews
-                    FROM Parts.FeedBackQC as feedback
-                    JOIN Parts.FeedbackQC_RemainingViews as remViews
+            using var con = new SqlConnection(Database.cs_Protocol);
+            const string query = @"
+                    SELECT 
+                        md.OrderNr,
+                        md.Operation,
+                        md.ProdLine,
+                        md.ProdType,
+                        wo.Description,
+                        feedback.Text,
+                        feedback.Ppk_OrderNr,
+                        feedback.Ppk_History,
+                        feedback.Image,
+                        feedback.DateTime,
+                        remViews.RemainingViews,
+                        feedback.IsDone
+                    FROM Parts.FeedBackQC AS feedback
+                    JOIN Parts.FeedbackQC_RemainingViews AS remViews
                         ON feedback.FeedbackQC_ID = remViews.FeedbackQC_ID
-                    WHERE PartNumber = @partnumber AND IsDone = 'False'";
-                con.Open();
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@orderid", orderid);
-                cmd.Parameters.AddWithValue("@partnumber", tb_PartNr.Text);
-                var reader = cmd.ExecuteReader();
-                while (reader.Read())
+                    JOIN [Order].MainData AS md
+                        ON md.OrderID = feedback.OrderID
+                    JOIN [Workoperation].Names AS wo
+                        ON wo.ID = md.WorkOperationID
+                    WHERE feedback.PartNumber = @partnumber;";
+            con.Open();
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            cmd.Parameters.AddWithValue("@orderid", orderid);
+            cmd.Parameters.AddWithValue("@partnumber", tb_PartNr.Text);
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                tb_OrderNr.Text = reader["OrderNr"].ToString();
+                tb_Operation.Text = reader["Operation"].ToString();
+                tb_ProdLine.Text = reader["ProdLine"].ToString(); 
+                tb_ProdType.Text = reader["ProdType"].ToString();
+                tb_WorkOperation.Text = reader["Description"].ToString();
+                tb_Comments.Text = reader["Text"].ToString();
+                tb_ppkOrder.Text = reader["Ppk_OrderNr"].ToString();
+                tb_ppkHistory.Text = reader["Ppk_History"].ToString();
+                bool.TryParse(reader["IsDone"].ToString(), out bool isDone);
+                if (isDone)
+                    label_Header.BackColor = CustomColors.Ok_Back;
+                else
                 {
-                    tb_OrderNr.Text = reader["OrderNr"].ToString();
-                    tb_Comments.Text = reader["Text"].ToString();
-                    tb_ppkOrder.Text = reader["Ppk_OrderNr"].ToString();
-                    tb_ppkHistory.Text = reader["Ppk_History"].ToString();
-                    if (reader["Image"] != DBNull.Value)
-                    {
-                        var img = (byte[])reader["Image"];
-                        var ms = new MemoryStream(img);
-                        pb_Image.BackgroundImage = Image.FromStream(ms);
-                    }
-
-                    tb_Date.Text = reader["DateTime"].ToString();
-                    num_RemainingViews.Text = reader["RemainingViews"].ToString();
+                    label_Header.BackColor = CustomColors.Warning_Back;
                 }
+                if (reader["Image"] != DBNull.Value)
+                {
+                    var img = (byte[])reader["Image"];
+                    var ms = new MemoryStream(img);
+                    pb_Image.BackgroundImage = Image.FromStream(ms);
+                }
+
+                tb_Date.Text = reader["DateTime"].ToString();
+                num_RemainingViews.Text = reader["RemainingViews"].ToString();
             }
         }
         private void DecreaseRemainingViewsForOperation()
@@ -295,10 +316,38 @@ namespace DigitalProductionProgram.QC
                 pb_Image.BackgroundImage = Image.FromStream(ms);
             }
         }
-       
-       
+
+
+        private bool IsOperationAlreadyExist
+        {
+            get
+            {
+                using var con = new SqlConnection(Database.cs_Protocol);
+                const string query = @"
+                SELECT COUNT(*) 
+                FROM Parts.FeedbackQC as qc 
+                JOIN [Order].MainData as main
+	                ON qc.OrderID = main.OrderID
+                WHERE PartNumber = @partnumber
+                    AND Operation = (SELECT Operation FROM [Order].MainData WHERE OrderID = @orderid)";
+                con.Open();
+                var cmd = new SqlCommand(query, con);
+                ServerStatus.Add_Sql_Counter();
+                cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
+                cmd.Parameters.AddWithValue("@partnumber", tb_PartNr.Text);
+
+                int count = (int)cmd.ExecuteScalar();
+
+                return count > 1;
+            }
+        }
         private void Save_Exit_Click(object sender, EventArgs e)
         {
+            if (IsOperationAlreadyExist)
+            {
+                InfoText.Show("Det finns redan en feedback för denna operation och artikelnr, vänligen uppdatera den istället.", CustomColors.InfoText_Color.Bad, "Varning", this);
+                return;
+            }
             using (var image = pb_Image.BackgroundImage)
             {
                 var img = ImageToByteArray(image);
@@ -310,7 +359,7 @@ namespace DigitalProductionProgram.QC
                     var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                     cmd.Parameters.AddWithValue("@partnumber", tb_PartNr.Text);
-                    cmd.Parameters.AddWithValue("@text" ,tb_Comments.Text);
+                    cmd.Parameters.AddWithValue("@text", tb_Comments.Text);
                     SQL_Parameter.Double(cmd.Parameters, "@ppk_orderNr", tb_ppkOrder.Text);
                     SQL_Parameter.Double(cmd.Parameters, "@ppk_history", tb_ppkHistory.Text);
                     if (img is null)
@@ -347,7 +396,7 @@ namespace DigitalProductionProgram.QC
 
         private void PartNr_LoadHistory_Click(object sender, EventArgs e)
         {
-            using var chooseItem = new Choose_Item(HistoryPartNumbers, new Control[]{ tb_PartNr, tb_OrderNr }, true, false, false);
+            using var chooseItem = new Choose_Item(HistoryPartNumbers, [tb_PartNr, tb_OrderNr], true, false, false);
             chooseItem.ShowDialog();
             var ordernr = tb_OrderNr.Text;
             int? orderid;

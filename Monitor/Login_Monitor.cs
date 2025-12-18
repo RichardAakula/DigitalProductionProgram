@@ -7,6 +7,7 @@ using System.Net.Http.Json;
 using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Help;
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.PrintingServices;
 
 namespace DigitalProductionProgram.Monitor

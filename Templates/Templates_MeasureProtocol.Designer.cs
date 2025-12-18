@@ -46,9 +46,12 @@ namespace DigitalProductionProgram.Templates
             label_Buttons_Parameter = new Label();
             btn_NewRevision = new Button();
             toolTip = new ToolTip(components);
-            tb_AddNewParameter = new TextBox();
+            tb_FilterCodeText = new TextBox();
             btn_AddParameter = new Button();
             gbx_MeasureParameters = new GroupBox();
+            chb_IsMeasureValue = new CheckBox();
+            tb_NewCodeText = new TextBox();
+            label_FilterCodeText = new Label();
             gbox_MeasureProtocolTemplate = new GroupBox();
             chb_IsUsingCutterTakeUpUnit = new CheckBox();
             chb_ExtraInputBoxes_Second_Measurement = new CheckBox();
@@ -129,8 +132,8 @@ namespace DigitalProductionProgram.Templates
             cb_TemplateName.Name = "cb_TemplateName";
             cb_TemplateName.Size = new Size(372, 25);
             cb_TemplateName.TabIndex = 4;
-            cb_TemplateName.SelectedIndexChanged += Template_Name_SelectedIndexChanged;
-            cb_TemplateName.TextChanged += TemplateName_TextChanged;
+            cb_TemplateName.SelectionChangeCommitted += TemplateName_SelectionChangeCommitted;
+            cb_TemplateName.KeyDown += cb_TemplateName_KeyDown;
             // 
             // btn_SaveTemplate
             // 
@@ -267,46 +270,87 @@ namespace DigitalProductionProgram.Templates
             btn_NewRevision.UseVisualStyleBackColor = false;
             btn_NewRevision.MouseDown += NewRevision_MouseDown;
             // 
-            // tb_AddNewParameter
+            // tb_FilterCodeText
             // 
-            tb_AddNewParameter.Font = new Font("Lucida Sans", 8.25F);
-            tb_AddNewParameter.Location = new Point(7, 66);
-            tb_AddNewParameter.Margin = new Padding(4, 3, 4, 3);
-            tb_AddNewParameter.Name = "tb_AddNewParameter";
-            tb_AddNewParameter.Size = new Size(174, 20);
-            tb_AddNewParameter.TabIndex = 3;
-            tb_AddNewParameter.TextChanged += AddNewParameter_TextChanged;
+            tb_FilterCodeText.Dock = DockStyle.Bottom;
+            tb_FilterCodeText.Font = new Font("Lucida Sans", 8.25F);
+            tb_FilterCodeText.Location = new Point(4, 130);
+            tb_FilterCodeText.Margin = new Padding(4, 3, 4, 3);
+            tb_FilterCodeText.Name = "tb_FilterCodeText";
+            tb_FilterCodeText.Size = new Size(307, 20);
+            tb_FilterCodeText.TabIndex = 3;
+            tb_FilterCodeText.TextChanged += FilterCodeText_TextChanged;
             // 
             // btn_AddParameter
             // 
             btn_AddParameter.BackColor = Color.FromArgb(185, 188, 189);
             btn_AddParameter.Cursor = Cursors.Hand;
+            btn_AddParameter.Dock = DockStyle.Top;
             btn_AddParameter.FlatStyle = FlatStyle.Flat;
             btn_AddParameter.Font = new Font("Lucida Sans", 10.25F);
             btn_AddParameter.ForeColor = Color.FromArgb(63, 116, 140);
-            btn_AddParameter.Location = new Point(7, 27);
+            btn_AddParameter.Location = new Point(4, 20);
             btn_AddParameter.Margin = new Padding(4, 3, 4, 3);
             btn_AddParameter.Name = "btn_AddParameter";
-            btn_AddParameter.Size = new Size(175, 32);
+            btn_AddParameter.Size = new Size(307, 32);
             btn_AddParameter.TabIndex = 11;
             btn_AddParameter.Text = "Lägg till Parameter";
             btn_AddParameter.UseVisualStyleBackColor = false;
+            btn_AddParameter.Click += btn_AddParameter_Click;
             // 
             // gbx_MeasureParameters
             // 
+            gbx_MeasureParameters.Controls.Add(chb_IsMeasureValue);
+            gbx_MeasureParameters.Controls.Add(tb_NewCodeText);
+            gbx_MeasureParameters.Controls.Add(label_FilterCodeText);
             gbx_MeasureParameters.Controls.Add(btn_AddParameter);
-            gbx_MeasureParameters.Controls.Add(tb_AddNewParameter);
+            gbx_MeasureParameters.Controls.Add(tb_FilterCodeText);
             gbx_MeasureParameters.Dock = DockStyle.Bottom;
             gbx_MeasureParameters.Font = new Font("Lucida Sans", 10.25F);
             gbx_MeasureParameters.ForeColor = Color.FromArgb(239, 228, 177);
-            gbx_MeasureParameters.Location = new Point(4, 301);
+            gbx_MeasureParameters.Location = new Point(4, 252);
             gbx_MeasureParameters.Margin = new Padding(4, 3, 4, 3);
             gbx_MeasureParameters.Name = "gbx_MeasureParameters";
             gbx_MeasureParameters.Padding = new Padding(4, 3, 4, 3);
-            gbx_MeasureParameters.Size = new Size(315, 104);
+            gbx_MeasureParameters.Size = new Size(315, 153);
             gbx_MeasureParameters.TabIndex = 21;
             gbx_MeasureParameters.TabStop = false;
             gbx_MeasureParameters.Text = "Mätparametrar";
+            // 
+            // chb_IsMeasureValue
+            // 
+            chb_IsMeasureValue.AutoSize = true;
+            chb_IsMeasureValue.Checked = true;
+            chb_IsMeasureValue.CheckState = CheckState.Checked;
+            chb_IsMeasureValue.Location = new Point(203, 56);
+            chb_IsMeasureValue.Name = "chb_IsMeasureValue";
+            chb_IsMeasureValue.Size = new Size(94, 20);
+            chb_IsMeasureValue.TabIndex = 15;
+            chb_IsMeasureValue.Text = "Mätvärde?";
+            chb_IsMeasureValue.UseVisualStyleBackColor = true;
+            // 
+            // tb_NewCodeText
+            // 
+            tb_NewCodeText.Font = new Font("Lucida Sans", 8.25F);
+            tb_NewCodeText.Location = new Point(4, 52);
+            tb_NewCodeText.Margin = new Padding(1, 0, 0, 0);
+            tb_NewCodeText.Multiline = true;
+            tb_NewCodeText.Name = "tb_NewCodeText";
+            tb_NewCodeText.Size = new Size(188, 28);
+            tb_NewCodeText.TabIndex = 14;
+            // 
+            // label_FilterCodeText
+            // 
+            label_FilterCodeText.BackColor = Color.FromArgb(239, 228, 177);
+            label_FilterCodeText.Dock = DockStyle.Bottom;
+            label_FilterCodeText.Font = new Font("Lucida Sans", 10.25F);
+            label_FilterCodeText.ForeColor = Color.FromArgb(57, 108, 121);
+            label_FilterCodeText.Location = new Point(4, 102);
+            label_FilterCodeText.Margin = new Padding(0, 0, 0, 1);
+            label_FilterCodeText.Name = "label_FilterCodeText";
+            label_FilterCodeText.Size = new Size(307, 28);
+            label_FilterCodeText.TabIndex = 12;
+            label_FilterCodeText.Text = "Filtrera texten";
             // 
             // gbox_MeasureProtocolTemplate
             // 
@@ -819,7 +863,7 @@ namespace DigitalProductionProgram.Templates
         private PictureBox btn_MoveTaskDown;
         private Button btn_NewRevision;
         private ToolTip toolTip;
-        private TextBox tb_AddNewParameter;
+        private TextBox tb_FilterCodeText;
         private Button btn_AddParameter;
         private GroupBox gbx_MeasureParameters;
         private GroupBox gbox_MeasureProtocolTemplate;
@@ -858,5 +902,8 @@ namespace DigitalProductionProgram.Templates
         private DataGridViewTextBoxColumn col_Width;
         private DataGridViewTextBoxColumn col_MaxChars;
         private Button btn_ConnectPartNr_NewTemplate;
+        private Label label_FilterCodeText;
+        private TextBox tb_NewCodeText;
+        private CheckBox chb_IsMeasureValue;
     }
 }

@@ -91,13 +91,18 @@ namespace DigitalProductionProgram.Measure
             tlp_Main = new TableLayoutPanel();
             dgv_Measurements = new DataGridView();
             tlp_Info_Colors = new TableLayoutPanel();
-            pb_Info = new PictureBox();
             label_Discarded = new Label();
             label_Ok = new Label();
             label_Fail = new Label();
             label_Felskrivning = new Label();
             label_Warning = new Label();
+            panel1 = new Panel();
+            label_TotalMeasureMents = new Label();
+            lbl_DiscardedMeasurements = new Label();
+            lbl_TotalMeasurements = new Label();
+            label_DiscardedMeasurements = new Label();
             flp_Headers = new FlowLayoutPanel();
+            pb_Info = new PictureBox();
             flp_InputControls = new FlowLayoutPanel();
             panel_Bottom = new Panel();
             tlp_Help_InputData_2 = new TableLayoutPanel();
@@ -140,6 +145,7 @@ namespace DigitalProductionProgram.Measure
             tlp_Main.SuspendLayout();
             ((ISupportInitialize)dgv_Measurements).BeginInit();
             tlp_Info_Colors.SuspendLayout();
+            panel1.SuspendLayout();
             ((ISupportInitialize)pb_Info).BeginInit();
             panel_Bottom.SuspendLayout();
             tlp_Help_InputData_2.SuspendLayout();
@@ -171,7 +177,7 @@ namespace DigitalProductionProgram.Measure
             tlp_OrderInfo_TEF.RowCount = 2;
             tlp_OrderInfo_TEF.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
             tlp_OrderInfo_TEF.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
-            tlp_OrderInfo_TEF.Size = new Size(1326, 51);
+            tlp_OrderInfo_TEF.Size = new Size(1155, 51);
             tlp_OrderInfo_TEF.TabIndex = 85;
             // 
             // lbl_Benämning_Övrigt
@@ -184,7 +190,7 @@ namespace DigitalProductionProgram.Measure
             lbl_Benämning_Övrigt.Location = new Point(123, 26);
             lbl_Benämning_Övrigt.Margin = new Padding(1, 1, 0, 1);
             lbl_Benämning_Övrigt.Name = "lbl_Benämning_Övrigt";
-            lbl_Benämning_Övrigt.Size = new Size(888, 24);
+            lbl_Benämning_Övrigt.Size = new Size(717, 24);
             lbl_Benämning_Övrigt.TabIndex = 924;
             lbl_Benämning_Övrigt.TextAlign = ContentAlignment.MiddleLeft;
             // 
@@ -208,7 +214,7 @@ namespace DigitalProductionProgram.Measure
             lbl_OrderNr_Övrigt.Dock = DockStyle.Fill;
             lbl_OrderNr_Övrigt.Font = new Font("Consolas", 10F);
             lbl_OrderNr_Övrigt.ForeColor = Color.DarkSlateGray;
-            lbl_OrderNr_Övrigt.Location = new Point(1152, 1);
+            lbl_OrderNr_Övrigt.Location = new Point(981, 1);
             lbl_OrderNr_Övrigt.Margin = new Padding(1, 1, 1, 0);
             lbl_OrderNr_Övrigt.Name = "lbl_OrderNr_Övrigt";
             lbl_OrderNr_Övrigt.Size = new Size(173, 24);
@@ -221,7 +227,7 @@ namespace DigitalProductionProgram.Measure
             label_OrderNr.Dock = DockStyle.Fill;
             label_OrderNr.Font = new Font("Arial", 12F);
             label_OrderNr.ForeColor = Color.Black;
-            label_OrderNr.Location = new Point(1012, 1);
+            label_OrderNr.Location = new Point(841, 1);
             label_OrderNr.Margin = new Padding(1, 1, 0, 0);
             label_OrderNr.Name = "label_OrderNr";
             label_OrderNr.Size = new Size(139, 24);
@@ -249,7 +255,7 @@ namespace DigitalProductionProgram.Measure
             label_PartNumber.Dock = DockStyle.Fill;
             label_PartNumber.Font = new Font("Arial", 12F);
             label_PartNumber.ForeColor = Color.Black;
-            label_PartNumber.Location = new Point(1012, 26);
+            label_PartNumber.Location = new Point(841, 26);
             label_PartNumber.Margin = new Padding(1, 1, 0, 1);
             label_PartNumber.Name = "label_PartNumber";
             label_PartNumber.Size = new Size(139, 24);
@@ -263,7 +269,7 @@ namespace DigitalProductionProgram.Measure
             lbl_ArtikelNr_Övrigt.Dock = DockStyle.Fill;
             lbl_ArtikelNr_Övrigt.Font = new Font("Consolas", 10F);
             lbl_ArtikelNr_Övrigt.ForeColor = Color.DarkSlateGray;
-            lbl_ArtikelNr_Övrigt.Location = new Point(1152, 26);
+            lbl_ArtikelNr_Övrigt.Location = new Point(981, 26);
             lbl_ArtikelNr_Övrigt.Margin = new Padding(1);
             lbl_ArtikelNr_Övrigt.Name = "lbl_ArtikelNr_Övrigt";
             lbl_ArtikelNr_Övrigt.Size = new Size(173, 24);
@@ -280,7 +286,7 @@ namespace DigitalProductionProgram.Measure
             lbl_Kund_Övrigt.Location = new Point(123, 1);
             lbl_Kund_Övrigt.Margin = new Padding(1, 1, 0, 0);
             lbl_Kund_Övrigt.Name = "lbl_Kund_Övrigt";
-            lbl_Kund_Övrigt.Size = new Size(888, 24);
+            lbl_Kund_Övrigt.Size = new Size(717, 24);
             lbl_Kund_Övrigt.TabIndex = 902;
             lbl_Kund_Övrigt.TextAlign = ContentAlignment.MiddleLeft;
             // 
@@ -294,10 +300,10 @@ namespace DigitalProductionProgram.Measure
             flp_Buttons.Controls.Add(btn_Discard);
             flp_Buttons.Controls.Add(btn_TransferToExcel);
             flp_Buttons.Dock = DockStyle.Bottom;
-            flp_Buttons.Location = new Point(0, 1091);
+            flp_Buttons.Location = new Point(0, 788);
             flp_Buttons.Margin = new Padding(4, 3, 4, 3);
             flp_Buttons.Name = "flp_Buttons";
-            flp_Buttons.Size = new Size(1326, 69);
+            flp_Buttons.Size = new Size(1155, 69);
             flp_Buttons.TabIndex = 986;
             // 
             // btn_TransferLengthMeasure
@@ -782,7 +788,7 @@ namespace DigitalProductionProgram.Measure
             tlp_Mätdon.Controls.Add(label_HackNr, 0, 0);
             tlp_Mätdon.Controls.Add(measureInstrument, 0, 1);
             tlp_Mätdon.Dock = DockStyle.Right;
-            tlp_Mätdon.Location = new Point(870, 0);
+            tlp_Mätdon.Location = new Point(699, 0);
             tlp_Mätdon.Margin = new Padding(0, 5, 0, 0);
             tlp_Mätdon.Name = "tlp_Mätdon";
             tlp_Mätdon.RowCount = 2;
@@ -823,7 +829,7 @@ namespace DigitalProductionProgram.Measure
             // measureInstrument
             // 
             measureInstrument.AutoSize = true;
-            measureInstrument.BackColor = Color.Transparent;
+            measureInstrument.BackColor = Color.FromArgb(35, 103, 112);
             tlp_Mätdon.SetColumnSpan(measureInstrument, 2);
             measureInstrument.Dock = DockStyle.Fill;
             measureInstrument.Location = new Point(5, 28);
@@ -836,10 +842,9 @@ namespace DigitalProductionProgram.Measure
             // tlp_Main
             // 
             tlp_Main.BackColor = Color.FromArgb(25, 25, 25);
-            tlp_Main.ColumnCount = 3;
+            tlp_Main.ColumnCount = 2;
             tlp_Main.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 270F));
-            tlp_Main.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 386F));
-            tlp_Main.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            tlp_Main.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 510F));
             tlp_Main.Controls.Add(dgv_Measurements, 0, 0);
             tlp_Main.Controls.Add(tlp_Info_Colors, 0, 1);
             tlp_Main.Controls.Add(flp_Headers, 0, 2);
@@ -853,7 +858,7 @@ namespace DigitalProductionProgram.Measure
             tlp_Main.RowStyles.Add(new RowStyle(SizeType.Absolute, 74F));
             tlp_Main.RowStyles.Add(new RowStyle(SizeType.Absolute, 51F));
             tlp_Main.RowStyles.Add(new RowStyle(SizeType.Absolute, 27F));
-            tlp_Main.Size = new Size(1326, 733);
+            tlp_Main.Size = new Size(1155, 430);
             tlp_Main.TabIndex = 988;
             // 
             // dgv_Measurements
@@ -872,7 +877,7 @@ namespace DigitalProductionProgram.Measure
             dataGridViewCellStyle17.WrapMode = DataGridViewTriState.True;
             dgv_Measurements.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle17;
             dgv_Measurements.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            tlp_Main.SetColumnSpan(dgv_Measurements, 3);
+            tlp_Main.SetColumnSpan(dgv_Measurements, 2);
             dataGridViewCellStyle18.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dataGridViewCellStyle18.BackColor = SystemColors.Window;
             dataGridViewCellStyle18.Font = new Font("Courier New", 9.25F);
@@ -898,7 +903,7 @@ namespace DigitalProductionProgram.Measure
             dgv_Measurements.RowHeadersDefaultCellStyle = dataGridViewCellStyle19;
             dgv_Measurements.RowHeadersVisible = false;
             dgv_Measurements.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgv_Measurements.Size = new Size(1326, 581);
+            dgv_Measurements.Size = new Size(1155, 278);
             dgv_Measurements.TabIndex = 86;
             dgv_Measurements.TabStop = false;
             dgv_Measurements.CellMouseDoubleClick += CopyRow_Measurements_CellMouseDoubleClick;
@@ -906,43 +911,28 @@ namespace DigitalProductionProgram.Measure
             // 
             // tlp_Info_Colors
             // 
-            tlp_Info_Colors.BackColor = Color.FromArgb(25, 25, 25);
+            tlp_Info_Colors.BackColor = Color.FromArgb(45, 113, 122);
             tlp_Info_Colors.ColumnCount = 3;
-            tlp_Main.SetColumnSpan(tlp_Info_Colors, 3);
+            tlp_Main.SetColumnSpan(tlp_Info_Colors, 2);
             tlp_Info_Colors.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 251F));
             tlp_Info_Colors.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 229F));
-            tlp_Info_Colors.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 2662F));
-            tlp_Info_Colors.Controls.Add(pb_Info, 2, 0);
+            tlp_Info_Colors.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 20F));
             tlp_Info_Colors.Controls.Add(label_Discarded, 1, 1);
             tlp_Info_Colors.Controls.Add(label_Ok, 0, 0);
             tlp_Info_Colors.Controls.Add(label_Fail, 0, 1);
             tlp_Info_Colors.Controls.Add(label_Felskrivning, 1, 0);
             tlp_Info_Colors.Controls.Add(label_Warning, 0, 2);
+            tlp_Info_Colors.Controls.Add(panel1, 2, 0);
             tlp_Info_Colors.Dock = DockStyle.Fill;
-            tlp_Info_Colors.Location = new Point(0, 581);
-            tlp_Info_Colors.Margin = new Padding(0, 0, 0, 1);
+            tlp_Info_Colors.Location = new Point(1, 278);
+            tlp_Info_Colors.Margin = new Padding(1, 0, 1, 1);
             tlp_Info_Colors.Name = "tlp_Info_Colors";
             tlp_Info_Colors.RowCount = 3;
             tlp_Info_Colors.RowStyles.Add(new RowStyle(SizeType.Absolute, 23F));
             tlp_Info_Colors.RowStyles.Add(new RowStyle(SizeType.Absolute, 23F));
             tlp_Info_Colors.RowStyles.Add(new RowStyle(SizeType.Absolute, 23F));
-            tlp_Info_Colors.Size = new Size(1326, 73);
+            tlp_Info_Colors.Size = new Size(1153, 73);
             tlp_Info_Colors.TabIndex = 977;
-            // 
-            // pb_Info
-            // 
-            pb_Info.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            pb_Info.BackColor = Color.Transparent;
-            pb_Info.BackgroundImage = (Image)resources.GetObject("pb_Info.BackgroundImage");
-            pb_Info.BackgroundImageLayout = ImageLayout.Stretch;
-            pb_Info.Cursor = Cursors.Hand;
-            pb_Info.Location = new Point(3091, 3);
-            pb_Info.Margin = new Padding(4, 3, 4, 3);
-            pb_Info.Name = "pb_Info";
-            pb_Info.Size = new Size(47, 16);
-            pb_Info.SizeMode = PictureBoxSizeMode.Zoom;
-            pb_Info.TabIndex = 974;
-            pb_Info.TabStop = false;
             // 
             // label_Discarded
             // 
@@ -1014,39 +1004,119 @@ namespace DigitalProductionProgram.Measure
             label_Warning.Text = "Varning, värde utanför styrgräns";
             label_Warning.TextAlign = ContentAlignment.MiddleLeft;
             // 
+            // panel1
+            // 
+            panel1.BackColor = Color.FromArgb(45, 113, 122);
+            panel1.Controls.Add(pb_Info);
+            panel1.Controls.Add(label_TotalMeasureMents);
+            panel1.Controls.Add(lbl_DiscardedMeasurements);
+            panel1.Controls.Add(lbl_TotalMeasurements);
+            panel1.Controls.Add(label_DiscardedMeasurements);
+            panel1.Dock = DockStyle.Fill;
+            panel1.Location = new Point(480, 0);
+            panel1.Margin = new Padding(0);
+            panel1.Name = "panel1";
+            tlp_Info_Colors.SetRowSpan(panel1, 3);
+            panel1.Size = new Size(673, 73);
+            panel1.TabIndex = 977;
+            // 
+            // label_TotalMeasureMents
+            // 
+            label_TotalMeasureMents.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            label_TotalMeasureMents.AutoSize = true;
+            label_TotalMeasureMents.ForeColor = Color.FromArgb(187, 215, 228);
+            label_TotalMeasureMents.Location = new Point(494, 7);
+            label_TotalMeasureMents.Name = "label_TotalMeasureMents";
+            label_TotalMeasureMents.Size = new Size(128, 15);
+            label_TotalMeasureMents.TabIndex = 976;
+            label_TotalMeasureMents.Text = "Totalt Antal Mätningar:";
+            label_TotalMeasureMents.TextAlign = ContentAlignment.MiddleRight;
+            // 
+            // lbl_DiscardedMeasurements
+            // 
+            lbl_DiscardedMeasurements.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            lbl_DiscardedMeasurements.AutoSize = true;
+            lbl_DiscardedMeasurements.Font = new Font("Segoe UI", 10F);
+            lbl_DiscardedMeasurements.ForeColor = Color.FromArgb(187, 215, 228);
+            lbl_DiscardedMeasurements.Location = new Point(628, 28);
+            lbl_DiscardedMeasurements.Name = "lbl_DiscardedMeasurements";
+            lbl_DiscardedMeasurements.Size = new Size(17, 19);
+            lbl_DiscardedMeasurements.TabIndex = 976;
+            lbl_DiscardedMeasurements.Text = "0";
+            // 
+            // lbl_TotalMeasurements
+            // 
+            lbl_TotalMeasurements.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            lbl_TotalMeasurements.AutoSize = true;
+            lbl_TotalMeasurements.Font = new Font("Segoe UI", 10F);
+            lbl_TotalMeasurements.ForeColor = Color.FromArgb(187, 215, 228);
+            lbl_TotalMeasurements.Location = new Point(628, 5);
+            lbl_TotalMeasurements.Name = "lbl_TotalMeasurements";
+            lbl_TotalMeasurements.Size = new Size(17, 19);
+            lbl_TotalMeasurements.TabIndex = 976;
+            lbl_TotalMeasurements.Text = "0";
+            // 
+            // label_DiscardedMeasurements
+            // 
+            label_DiscardedMeasurements.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            label_DiscardedMeasurements.AutoSize = true;
+            label_DiscardedMeasurements.ForeColor = Color.FromArgb(187, 215, 228);
+            label_DiscardedMeasurements.Location = new Point(470, 28);
+            label_DiscardedMeasurements.Name = "label_DiscardedMeasurements";
+            label_DiscardedMeasurements.Size = new Size(152, 15);
+            label_DiscardedMeasurements.TabIndex = 976;
+            label_DiscardedMeasurements.Text = "Totalt Kasserade Mätningar:";
+            label_DiscardedMeasurements.TextAlign = ContentAlignment.MiddleRight;
+            // 
             // flp_Headers
             // 
             flp_Headers.BackColor = Color.FromArgb(10, 10, 10);
-            tlp_Main.SetColumnSpan(flp_Headers, 3);
+            tlp_Main.SetColumnSpan(flp_Headers, 2);
             flp_Headers.Dock = DockStyle.Fill;
-            flp_Headers.Location = new Point(0, 655);
+            flp_Headers.Location = new Point(0, 352);
             flp_Headers.Margin = new Padding(0);
             flp_Headers.Name = "flp_Headers";
-            flp_Headers.Size = new Size(1326, 51);
+            flp_Headers.Size = new Size(1155, 51);
             flp_Headers.TabIndex = 978;
+            // 
+            // pb_Info
+            // 
+            pb_Info.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            pb_Info.BackColor = Color.Transparent;
+            pb_Info.BackgroundImage = (Image)resources.GetObject("pb_Info.BackgroundImage");
+            pb_Info.BackgroundImageLayout = ImageLayout.Stretch;
+            pb_Info.Cursor = Cursors.Hand;
+            pb_Info.Location = new Point(2, 3);
+            pb_Info.Margin = new Padding(4, 3, 4, 3);
+            pb_Info.Name = "pb_Info";
+            pb_Info.Size = new Size(47, 45);
+            pb_Info.SizeMode = PictureBoxSizeMode.Zoom;
+            pb_Info.TabIndex = 974;
+            pb_Info.TabStop = false;
             // 
             // flp_InputControls
             // 
             flp_InputControls.BackColor = Color.FromArgb(10, 10, 10);
-            tlp_Main.SetColumnSpan(flp_InputControls, 3);
+            tlp_Main.SetColumnSpan(flp_InputControls, 2);
             flp_InputControls.Dock = DockStyle.Fill;
-            flp_InputControls.Location = new Point(0, 706);
+            flp_InputControls.Location = new Point(0, 403);
             flp_InputControls.Margin = new Padding(0, 0, 0, 2);
             flp_InputControls.Name = "flp_InputControls";
-            flp_InputControls.Size = new Size(1326, 25);
+            flp_InputControls.Size = new Size(1155, 25);
             flp_InputControls.TabIndex = 979;
             // 
             // panel_Bottom
             // 
+            panel_Bottom.BackColor = Color.FromArgb(25, 25, 25);
             panel_Bottom.Controls.Add(pb_CrossSectionTube);
             panel_Bottom.Controls.Add(tlp_Help_InputData_2);
             panel_Bottom.Controls.Add(tlp_Help_InputData_1);
             panel_Bottom.Controls.Add(tlp_Mätdon);
             panel_Bottom.Dock = DockStyle.Bottom;
-            panel_Bottom.Location = new Point(0, 852);
+            panel_Bottom.Location = new Point(0, 549);
             panel_Bottom.Margin = new Padding(4, 3, 4, 3);
             panel_Bottom.Name = "panel_Bottom";
-            panel_Bottom.Size = new Size(1326, 239);
+            panel_Bottom.Size = new Size(1155, 239);
             panel_Bottom.TabIndex = 989;
             // 
             // tlp_Help_InputData_2
@@ -1114,7 +1184,7 @@ namespace DigitalProductionProgram.Measure
             tlp_OrderInfo_FEP.RowCount = 2;
             tlp_OrderInfo_FEP.RowStyles.Add(new RowStyle(SizeType.Percent, 66.10169F));
             tlp_OrderInfo_FEP.RowStyles.Add(new RowStyle(SizeType.Percent, 33.8983F));
-            tlp_OrderInfo_FEP.Size = new Size(1326, 68);
+            tlp_OrderInfo_FEP.Size = new Size(1155, 68);
             tlp_OrderInfo_FEP.TabIndex = 990;
             // 
             // label_OD
@@ -1446,7 +1516,7 @@ namespace DigitalProductionProgram.Measure
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(25, 25, 25);
-            ClientSize = new Size(1326, 1160);
+            ClientSize = new Size(1155, 857);
             Controls.Add(tlp_Main);
             Controls.Add(tlp_OrderInfo_FEP);
             Controls.Add(tlp_OrderInfo_TEF);
@@ -1456,6 +1526,7 @@ namespace DigitalProductionProgram.Measure
             MinimumSize = new Size(983, 39);
             Name = "Measurement_Protocol";
             Text = "Mätprotokoll";
+            FormClosing += Measurement_Protocol_FormClosing;
             tlp_OrderInfo_TEF.ResumeLayout(false);
             tlp_OrderInfo_TEF.PerformLayout();
             flp_Buttons.ResumeLayout(false);
@@ -1470,6 +1541,8 @@ namespace DigitalProductionProgram.Measure
             tlp_Main.ResumeLayout(false);
             ((ISupportInitialize)dgv_Measurements).EndInit();
             tlp_Info_Colors.ResumeLayout(false);
+            panel1.ResumeLayout(false);
+            panel1.PerformLayout();
             ((ISupportInitialize)pb_Info).EndInit();
             panel_Bottom.ResumeLayout(false);
             tlp_Help_InputData_2.ResumeLayout(false);
@@ -1557,5 +1630,10 @@ namespace DigitalProductionProgram.Measure
         private DataGridViewTextBoxColumn col_Wall;
         private DataGridViewTextBoxColumn col_RecInfo;
         private DataGridViewTextBoxColumn col_RecWall;
+        private Label label_DiscardedMeasurements;
+        private Label label_TotalMeasureMents;
+        private Label lbl_TotalMeasurements;
+        private Label lbl_DiscardedMeasurements;
+        private Panel panel1;
     }
 }

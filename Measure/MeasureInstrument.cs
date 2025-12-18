@@ -99,8 +99,8 @@ namespace DigitalProductionProgram.Measure
                 {
                     dgv_Mätdon.Rows.Add();
                     dgv_Mätdon.Rows[row].HeaderCell.Value = reader["Mätdon"].ToString();
-                    dgv_Mätdon.Rows[row].HeaderCell.Style.BackColor = Color.FromArgb(255, 255, 225);
-                    dgv_Mätdon.Rows[row].HeaderCell.Style.ForeColor = Color.DimGray;
+                    dgv_Mätdon.Rows[row].HeaderCell.Style.BackColor = Color.FromArgb(35, 103, 112);
+                    dgv_Mätdon.Rows[row].HeaderCell.Style.ForeColor = Color.FromArgb(187, 215, 228);
                     
                     dgv_Mätdon.Rows[row].Cells[0].Value = reader["Nr"].ToString();
                     dgv_Mätdon.Rows[row].Cells[1].Value = reader["Row"].ToString();
@@ -231,7 +231,9 @@ namespace DigitalProductionProgram.Measure
             var Row = dgv_Mätdon.Rows
                 .Cast<DataGridViewRow>()
                 .Where(r => r.Cells["col_Row"].Value != null)
-                .Max(r => Convert.ToInt32(r.Cells["col_Row"].Value)) + 1;
+                .Select(r => Convert.ToInt32(r.Cells["col_Row"].Value))
+                .DefaultIfEmpty(0)  // Om tom → starta på 0
+                .Max() + 1;
 
             dgv_Mätdon.Rows[^1].Cells[1].Value = Row;
             Save_Mätdon(cell.Value.ToString(), null, Row);

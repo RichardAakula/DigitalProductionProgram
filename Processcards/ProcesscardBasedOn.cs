@@ -17,7 +17,7 @@ namespace DigitalProductionProgram.Processcards
 {
     public partial class ProcesscardBasedOn : UserControl
     {
-       
+        public event EventHandler? HeaderClicked;
         public static bool IsHistoricalData;
         public static bool IsValidated;
         public static bool IsUnderDevelopment;
@@ -27,6 +27,17 @@ namespace DigitalProductionProgram.Processcards
         {
             InitializeComponent();
             Clear_Data();
+            btn_ProcesscardBasedOn.Click += (s, e) =>
+            {
+                try
+                {
+                    HeaderClicked?.Invoke(this, e);
+                }
+                catch
+                {
+                    // swallow exceptions from subscribers
+                }
+            };
         }
        
         public void Translate_Form()
@@ -117,6 +128,13 @@ namespace DigitalProductionProgram.Processcards
 
             }
             reader.Close();
+        }
+        public void Reset_ProcesscardStatus()
+        {
+            lbl_RevNr.Text = @"A";
+            lbl_ApprovedDate.Text = string.Empty;
+            lbl_QA_Sign.Text = string.Empty;
+            lbl_UpprättatAv_Sign_AnstNr.Text = string.Empty;
         }
 
         private void FramtagningAvProcessfönster_CheckedChanged(object sender, EventArgs e)
@@ -238,19 +256,7 @@ namespace DigitalProductionProgram.Processcards
             }
         }
 
-        private void ProcesscardBasedOn_MouseClick(object sender, EventArgs e)
-        {
-            var parentControl = this.Parent;
-            while (!(parentControl is MainProtocol) && parentControl != null)
-                parentControl = parentControl.Parent;
-
-            if (!(parentControl is MainProtocol form)) 
-                return;
-            if (form.tlp_Main.ColumnStyles[1].Width > 450)
-                form.Hide_ExtraControls();
-            else
-                form.Show_ProcesscardBasedOn();
-        }
+        
 
         
     }

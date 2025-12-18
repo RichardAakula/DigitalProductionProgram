@@ -71,7 +71,10 @@ namespace DigitalProductionProgram.MainWindow
 
         public void Change_GUI_OrderNotFinished()
         {
-            Visible = true;
+            if (InvokeRequired)
+                Invoke(Change_GUI_OrderNotFinished);
+            else
+                Visible = true;
         }
         public void Change_GUI_OrderFinished()
         {
@@ -386,7 +389,7 @@ namespace DigitalProductionProgram.MainWindow
                 }
 
                 // BLÅ --Multipla processkort
-                if (status.IsMultipleProcesscard)
+                if (status != null && status.IsMultipleProcesscard)
                 {
                     rowObj.DefaultCellStyle.BackColor = Color.FromArgb(180, 198, 231);
                     rowObj.DefaultCellStyle.ForeColor = Color.DarkSlateGray;
@@ -394,7 +397,7 @@ namespace DigitalProductionProgram.MainWindow
                 }
 
                 // RÖD  - Ej godkänt av QA
-                if (!status.IsApprovedQA && status.IsPartIDExist)
+                if (status != null && !status.IsApprovedQA && status.IsPartIDExist)
                 {
                     rowObj.DefaultCellStyle.BackColor = CustomColors.Bad_Back;
                     rowObj.DefaultCellStyle.ForeColor = CustomColors.Bad_Front;

@@ -125,7 +125,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
             AddMainInfo();
             LoadData();
 
-           // float percent = 100f / Machine.TotalMachines;
+            // float percent = 100f / Machine.TotalMachines;
             for (int i = 0; i < TotalMachines; i++)
                 AddMachine(i + 1);
 
@@ -140,7 +140,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                 else
                     Module.IsOkShowList = true;
 
-
+            Set_PreFabHeight();
             if (Order.IsOrderDone)
                 return;
             var isOkToCloseForm = false;
@@ -149,6 +149,9 @@ namespace DigitalProductionProgram.Protocols.Protocol
         private void MainProtocol_Load(object sender, EventArgs e)
         {
             Module.IsOkToSave = true;
+            PreFab.HeaderClicked += PreFab_Click;
+            ProcesscardBasedOn.HeaderClicked += ProcesscardBasedOn_Click;
+            PreFab.ParentProtocol = this;
         }
 
         public void Translate_Form()
@@ -199,15 +202,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                 btn_Add_Oven.Visible = btn_RemoveOven.Visible = true;
 
         }
-        private void Hide_PreFab()
-        {
-            PreFab.Visible = false;
-            tlp_Right.RowStyles[1].Height = 0;
-        }
-        private void Hide_Equipment()
-        {
-            btn_Confirm_Equipment.Visible = btn_Edit_Equipment.Visible = false;
-        }
+
         private void AddMainInfo()
         {
             string MainInfoTemplate = null;
@@ -268,7 +263,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
 
         }
 
-        
+
         private void LC_Name_Click(object? sender, EventArgs e)
         {
             if (Order.IsOrderDone)
@@ -450,6 +445,11 @@ namespace DigitalProductionProgram.Protocols.Protocol
 
         private void CheckIfEquipmentIsConfirmed(bool isOkWarnUser, ref bool isOkToCloseForm)
         {
+            if (Order.IsOrderDone)
+            {
+                isOkToCloseForm = true;
+                return;
+            }
             isOkToCloseForm = true;
             var isQuestionAnswered = false;
             foreach (Machine machine in flp_Machines.Controls.OfType<Machine>())
@@ -474,31 +474,51 @@ namespace DigitalProductionProgram.Protocols.Protocol
                 extraComments.Close();
         }
 
-        public void Show_ProcesscardBasedOn()
+       
+        private void TogglePanelHeight(int rowIndex, int height)
         {
-            tlp_Right.RowStyles[2].Height = 100;
-            tlp_Main.ColumnStyles[1].Width = 650;
+            // Växla höjd mellan 32 och 150
+            var row = tlp_Right.RowStyles[rowIndex];
+            row.Height = row.Height == 32 ? height : 32;
+           
+            // Justera kolumnbredden dynamiskt
+            tlp_Main.ColumnStyles[1].Width =
+                (tlp_Right.RowStyles[1].Height == 32 && tlp_Right.RowStyles[2].Height == 32)
+                    ? 450
+                    : 600;
         }
 
-        public void Show_PreFab()
+        private void PreFab_Click(object? sender, EventArgs e)
         {
-            tlp_Right.RowStyles[1].Height = 150;
-            tlp_Main.ColumnStyles[1].Width = 600;
+           Set_PreFabHeight();
         }
 
-        public void Hide_ExtraControls()
+        public void Set_PreFabHeight()
         {
-            tlp_Right.RowStyles[1].Height = 28;
-            tlp_Right.RowStyles[2].Height = 28;
-            tlp_Main.ColumnStyles[1].Width = 412;
+            int maxHeight = 250;
+            int height = PreFab.dgv.RowTemplate.Height * PreFab.dgv.Rows.Count + PreFab.dgv.ColumnHeadersHeight + PreFab.btn_AddPreFab.Height + PreFab.btn_PreFab.Height;
+            TogglePanelHeight(1, Math.Min(height, maxHeight));
+        }
+        private void ProcesscardBasedOn_Click(object? sender, EventArgs e)
+            => TogglePanelHeight(2, 125);
+
+        private void Hide_PreFab()
+        {
+            PreFab.Visible = false;
+            tlp_Right.RowStyles[1].Height = 0;
+        }
+        private void Hide_Equipment()
+        {
+            btn_Confirm_Equipment.Visible = btn_Edit_Equipment.Visible = false;
         }
 
         private void flp_Machines_SizeChanged(object sender, EventArgs e)
         {
             foreach (Machine machine in flp_Machines.Controls)
             {
-                 machine.Width = TotalMachines > 0 ? (flp_Machines.Width / TotalMachines) - 10 : flp_Machines.Width - 10;
+                machine.Width = TotalMachines > 0 ? (flp_Machines.Width / TotalMachines) - 10 : flp_Machines.Width - 10;
             }
         }
+
     }
 }

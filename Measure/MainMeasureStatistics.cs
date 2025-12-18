@@ -15,6 +15,7 @@ using LiveChartsCore.Measure;
 using LiveChartsCore.Measure;
 using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.Painting;
+using LiveChartsCore.SkiaSharpView.SKCharts;
 using LiveChartsCore.SkiaSharpView.WinForms;
 using Microsoft.Data.SqlClient;
 using SkiaSharp;
@@ -67,7 +68,6 @@ namespace DigitalProductionProgram.Measure
 
 
         //public static int Max_Bag => (int)GetMeasurementValue("MAX", "Bag");
-        public static string? active_MeasureCode;
         public static int MeasureStatsHeight;
         public static string? ChartCodename = string.Empty;
         public static string? ChartCodeText = string.Empty;
@@ -109,9 +109,22 @@ namespace DigitalProductionProgram.Measure
         public async Task Add_MeasureInformation_MainForm(MeasurementChart _measurementChart, TableLayoutPanel tlp_MainWindow)
         {
             measurementChart = _measurementChart;
+            string axisName = MeasurementChart.cartesianChart?.YAxes.FirstOrDefault()?.Name ?? string.Empty;
+
             if (Order.OrderID is null || Templates_MeasureProtocol.MainTemplate.ID == 0 || Templates_MeasureProtocol.MainTemplate.ID is null)
                 return;
 
+            var totalValuesInMeasureProtocol = MeasurementChart.TotalValuesInMeasureProtocol;
+            var hasSameValues = MeasurementChart.TotalValuesInChart == totalValuesInMeasureProtocol;
+            var hasSameCodeText = MeasurementChart.ActiveCodeText == axisName;
+            var hasNoValues = totalValuesInMeasureProtocol == 0;
+
+            if (!hasSameCodeText)
+                goto ExecuteMeasureStats;
+            if (hasSameValues && !hasNoValues)
+                return;
+
+            ExecuteMeasureStats:
             Invoke(new Action(() => DrawingControl.SuspendDrawing(this)));
 
             foreach (var flp in tlp_Main.Controls.OfType<FlowLayoutPanel>())
@@ -200,12 +213,17 @@ namespace DigitalProductionProgram.Measure
 
             if (!string.IsNullOrEmpty(ChartCodename))
             {
-                await Task.Run(() => measurementChart.Add_Data_Chart_MainForm(ChartCodename, ChartCodeText));
+                if (string.IsNullOrEmpty(MeasurementChart.ActiveCodeName))
+                {
+                    MeasurementChart.ActiveCodeName = ChartCodename;
+                    MeasurementChart.ActiveCodeText = ChartCodeText;
+                }
+                    
+                await Task.Run(() => measurementChart.Add_Data_Chart_MainForm());
             }
             else
             {
                 await measurementChart.RemoveChart();
-               
             }
 
             tlp_MainWindow.Invoke(new Action<TableLayoutPanel>(SetHeight), tlp_MainWindow);
@@ -261,13 +279,14 @@ namespace DigitalProductionProgram.Measure
         public static async void Mätdata_Row_Click(object sender, EventArgs e)
         {
             var label = (Label)sender;
-            var mått = label.Name;
-            if (string.IsNullOrEmpty(mått))
+            var codeName = label.Name;
+            if (string.IsNullOrEmpty(codeName))
                 Load_MätStatistik();
             
-            active_MeasureCode = mått;
+            MeasurementChart.ActiveCodeName = codeName;
+            MeasurementChart.ActiveCodeText = label.Text;
 
-            await measurementChart?.Add_Data_Chart_MainForm(mått, label.Text);
+            await measurementChart?.Add_Data_Chart_MainForm();
         }
 
         private void ShowStats_Click(object sender, EventArgs e)

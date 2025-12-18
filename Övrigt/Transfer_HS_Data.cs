@@ -829,7 +829,7 @@ namespace DigitalProductionProgram.Övrigt
 
         public static class TransferDataToExcel
         {
-            private static readonly string[] MainHeaders = { "OrderNr", "Operation", "PartNr", "StartUp", "Machine", "Date", "ProdLine" };
+            private static readonly string[] MainHeaders = { "OrderNr", "Operation", "PartNr", "StartUp", "Machine", "Date", "RoomTemp", "RoomMoisture", "ProdLine" };
             private static int TotalMachines { get; set; }
             private static void SetTotalMachines(int orderid)
             {
@@ -863,7 +863,7 @@ namespace DigitalProductionProgram.Övrigt
                 var table = new DataTable();
                 using var con = new SqlConnection(Database.cs_Protocol);
                 var query = @"
-                                SELECT data.OrderID, OrderNr, Date_Start, Operation, PartNr, ProdLine, CodeText, template.ProtocolDescriptionID, Value, TextValue, DateValue, MachineIndex, Uppstart, Ugn, template.RowIndex,  template.Type
+                                SELECT data.OrderID, OrderNr, Date_Start, Operation, PartNr, ProdLine, Rum_Temp, Rum_Fukt,  CodeText, template.ProtocolDescriptionID, Value, TextValue, DateValue, MachineIndex, Uppstart, Ugn, template.RowIndex,  template.Type
                                 FROM [Order].Data as data
                                     INNER JOIN [Order].MainData AS maindata
 	                                    ON data.OrderID = maindata.OrderID
@@ -972,7 +972,8 @@ namespace DigitalProductionProgram.Övrigt
 
                 return listFormtemplateid;
             }
-            public static void ProtocolData(List<int> listOrderID, string PartNr, bool IsUsingProcesscard = true)
+            public static void TransferData(List<int> listOrderID, string PartNr, bool IsUsingProcesscard = true)
+            public static void TransferData(List<int> listOrderID, string PartNr, bool IsUsingProcesscard = true)
             {
                 SetTotalMachines(listOrderID[0]);
                 double step = 100 / (float)listOrderID.Count;
@@ -980,6 +981,8 @@ namespace DigitalProductionProgram.Övrigt
                 for (var Machine = 1; Machine < TotalMachines + 1; Machine++)
                 {
                     var pbar = new ProgressBar();
+                    pbar.lbl_Percent_Main.Visible = true;
+                    
                     pbar.Show();
                     double percent = 0;
                     
@@ -987,7 +990,8 @@ namespace DigitalProductionProgram.Övrigt
                     var sb = new StringBuilder();
                     var IsUsingMultipleExtruders = TotalMachines > 1;
                     AddMainColumns_DataTableExcel(row);
-
+                   
+                        //row++;
                         foreach (var orderID in listOrderID)
                         {
                             var maintemplateID = Load_MainTemplateID(orderID);
@@ -995,7 +999,6 @@ namespace DigitalProductionProgram.Övrigt
                             AddColumns_DataTableExcel(listFormtemplateid);
                             
                             SetMaxStartUp(orderID);
-                            //if (Templates.Templates_Protocol.MainTemplate.ID == maintemplateID)
                             {
                                 for (var startUp = 1; startUp < MaxStartUp + 1; startUp++)
                                 {
@@ -1021,8 +1024,10 @@ namespace DigitalProductionProgram.Övrigt
                                             var formattedDate = date.ToString($"{dateTimeFormat.ShortDatePattern} {dateTimeFormat.ShortTimePattern}", CultureInfo.CurrentCulture);
                                             DataTableExcel.Rows[row]["Date"] = formattedDate;
                                             DataTableExcel.Rows[row]["ProdLine"] = dt.Rows[i]["ProdLine"].ToString();
+                                            DataTableExcel.Rows[row]["RoomTemp"] = dt.Rows[i]["Rum_Temp"].ToString();
+                                            DataTableExcel.Rows[row]["RoomMoisture"] = dt.Rows[i]["Rum_Fukt"].ToString();
 
-                                            switch (type)
+                                        switch (type)
                                             {
                                                 case 0:
                                                     DataTableExcel.Rows[row][codeText] = $"{dt.Rows[i]["Value"]}";
@@ -1048,16 +1053,14 @@ namespace DigitalProductionProgram.Övrigt
                     pbar.Set_ValueProgressBar(percent, "Exporting data to Excel...");
                     ConvertDataTableTo_csv(DataTableExcel, sb);
                     Save_csvFile(sb, $"{PartNr} #{Machine}");
-                }
             }
-
             public static void MeasurementData(DataTable dt, string partNr)
             {
                 var sb = new StringBuilder();
                 ConvertDataTableTo_csv(dt, sb);
                 Save_csvFile(sb, $"MeasurementData-{partNr}");
+                }
             }
-           
         }
     }
 }

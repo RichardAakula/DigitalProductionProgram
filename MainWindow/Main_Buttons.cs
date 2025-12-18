@@ -79,9 +79,16 @@ namespace DigitalProductionProgram.MainWindow
         }
         public void Change_GUI_OrderNotFinished()
         {
+            if (InvokeRequired)
+            {
+                Invoke(new Action(Change_GUI_OrderNotFinished));
+                return;
+            }
+
             panel_Pictures.Visible = true;
             pb_UploadPicture.Visible = true;
         }
+
         public void Change_GUI_Show_Compund()
         {
             Compound.Visible = true;
@@ -177,29 +184,6 @@ namespace DigitalProductionProgram.MainWindow
                 return;
             }
             
-
-            switch (Order.WorkOperation)
-            {
-                case Manage_WorkOperation.WorkOperations.Spolning_PTFE:
-                    break;
-                case Manage_WorkOperation.WorkOperations.Kragning_PTFE:
-                case Manage_WorkOperation.WorkOperations.Kragning_K22_PTFE:
-                case Manage_WorkOperation.WorkOperations.Synergy_PTFE:
-                    if (LineClearance.IsLineClearanceApproved == false)
-                    {
-                        InfoText.Show(LanguageManager.GetString("Warning_OpenMeasureProtocol_3"), CustomColors.InfoText_Color.Bad, null);
-                        return;
-                    }
-                    break;
-                default:
-                    if (Order.IsOrderDone == false && LineClearance.IsLineClearanceDone == false)
-                    {
-                        InfoText.Show(LanguageManager.GetString("Warning_OpenMeasureProtocol_4"), CustomColors.InfoText_Color.Bad, null);
-                        return;
-                    }
-                    break;
-            }
-
             var screen = Screen.FromPoint(Cursor.Position);
             if (Order.OrderNumber != null)
             {
@@ -288,7 +272,7 @@ namespace DigitalProductionProgram.MainWindow
                 case Manage_WorkOperation.WorkOperations.Slipning:
                 case Manage_WorkOperation.WorkOperations.Spolning_PTFE:
                 case Manage_WorkOperation.WorkOperations.Svetsning:
-                case Manage_WorkOperation.WorkOperations.Synergy_PTFE:
+                case Manage_WorkOperation.WorkOperations.Synergy_PTFE_K18:
                     Browse_Protocols.Browse_Protocols.Is_BrowsingProtocols = true;
                     var bp = new Browse_Protocols.Browse_Protocols(Order.PartNumber);
                     var cs = Screen.FromControl(this);

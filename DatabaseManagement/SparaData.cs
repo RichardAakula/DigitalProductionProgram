@@ -8,6 +8,7 @@ using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.Övrigt;
 using DigitalProductionProgram.Processcards;
 using DigitalProductionProgram.Protocols;
+using DigitalProductionProgram.Protocols.ExtraProtocols;
 using DigitalProductionProgram.Protocols.Protocol;
 using DigitalProductionProgram.Protocols.Template_Management;
 using DigitalProductionProgram.Templates;

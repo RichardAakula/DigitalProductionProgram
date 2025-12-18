@@ -24,9 +24,9 @@ using CustomProgressBar = DigitalProductionProgram.ControlsManagement.CustomProg
 
 namespace DigitalProductionProgram.OrderManagement
 {
-    public class Order
+    public abstract class Order
     {
-        public static int TotalOrders
+        private static int TotalOrders
         {
             get
             {
@@ -162,17 +162,15 @@ namespace DigitalProductionProgram.OrderManagement
                 OrderID = null;
                 return;
             }
-                
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query = "SELECT OrderID FROM [Order].MainData WHERE OrderNr = @orderNr AND Operation = @operation";
-                con.Open();
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@orderNr", ordernr);
-                cmd.Parameters.AddWithValue("@operation", operation);
-                var value = cmd.ExecuteScalar();
-                OrderID = (int?)value;
-            }
+
+            using var con = new SqlConnection(Database.cs_Protocol);
+            var query = "SELECT OrderID FROM [Order].MainData WHERE OrderNr = @orderNr AND Operation = @operation";
+            con.Open();
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            cmd.Parameters.AddWithValue("@orderNr", ordernr);
+            cmd.Parameters.AddWithValue("@operation", operation);
+            var value = cmd.ExecuteScalar();
+            OrderID = (int?)value;
         }
 
         public static int? GetOrderID(string? ordernr, string operation)
@@ -197,66 +195,6 @@ namespace DigitalProductionProgram.OrderManagement
                 var value = cmd.ExecuteScalar();
                 return value.ToString();
             }
-        }
-
-        private static WorkOperations Temp_Workoperation;
-        private static int? Temp_OrderID;
-        private static int? Temp_PartID;
-        private static int? Temp_PartGroupID;
-        private static int Temp_MainTemplateID;
-        private static string? Temp_Benämning;
-        private static string? Temp_OrderNr;
-        private static string? Temp_Operation;
-        private static string? Temp_PartNr;
-        private static string? Temp_RevNr;
-        private static string? Temp_ProdLine;
-        private static string? Temp_Customer;
-        private static string? Temp_ProdType;
-        private static string Temp_ProdGroup;
-        private static string? Temp_TemplateRevision;
-        private static int? Temp_LineClearanceMainTemplateID;
-        private static int? Temp_MeasureProtocolMainTemplateID;
-
-        public static void Save_TempOrderInfo()
-        {
-            Temp_Benämning = Description;
-            Temp_MainTemplateID = Templates_Protocol.MainTemplate.ID;
-            Temp_LineClearanceMainTemplateID = Templates_LineClearance.MainTemplate.LineClearance_MainTemplateID;
-            Temp_MeasureProtocolMainTemplateID = Templates_MeasureProtocol.MainTemplate.ID;
-            Temp_OrderNr = OrderNumber;
-            Temp_OrderID = OrderID;
-            Temp_Operation = Operation;
-            Temp_PartNr = PartNumber;
-            Temp_PartID = PartID;
-            Temp_PartGroupID = PartGroupID;
-            Temp_RevNr = RevNr;
-            Temp_Workoperation = WorkOperation;
-            Temp_ProdLine = ProdLine;
-            Temp_ProdType = ProdType;
-            Temp_ProdGroup = ProdGroup;
-            Temp_Customer = Customer;
-            Temp_TemplateRevision = Templates_Protocol.MainTemplate.Revision;
-
-        }
-        public static void Restore_TempOrderInfo()
-        {
-            Description = Temp_Benämning;
-            Templates_Protocol.MainTemplate.ID = Temp_MainTemplateID;
-            Templates_LineClearance.MainTemplate.LineClearance_MainTemplateID = Temp_LineClearanceMainTemplateID;
-            Templates_MeasureProtocol.MainTemplate.ID = Temp_MeasureProtocolMainTemplateID;
-            OrderNumber = Temp_OrderNr;
-            OrderID = Temp_OrderID;
-            Operation = Temp_Operation;
-            PartNumber = Temp_PartNr;
-            PartID = Temp_PartID;
-            PartGroupID = Temp_PartGroupID;
-            RevNr = Temp_RevNr;
-            WorkOperation = Temp_Workoperation;
-            ProdLine = Temp_ProdLine;
-            ProdType = Temp_ProdType;
-            ProdGroup = Temp_ProdGroup;
-            Customer = Temp_Customer;
-            Templates_Protocol.MainTemplate.Revision = Temp_TemplateRevision;
         }
 
         public static void Load_OrderInformation()
@@ -648,6 +586,7 @@ namespace DigitalProductionProgram.OrderManagement
             Templates_Protocol.MainTemplate.Name = null;
             Templates_Protocol.MainTemplate.ID = 0;
             Templates_MeasureProtocol.MainTemplate.ID = null;
+            Templates_MeasureProtocol.MainTemplate.Name = null;
             Templates_LineClearance.MainTemplate.LineClearance_MainTemplateID = null;
             HS_Pipe_1 = null;
             HS_Pipe_2 = null;
@@ -670,8 +609,6 @@ namespace DigitalProductionProgram.OrderManagement
                         DELETE FROM [Order].MainData WHERE OrderID = @id    
                         DELETE FROM Korprotokoll_Slipning_Maskinparametrar WHERE OrderID = @id                         
                         DELETE FROM Korprotokoll_Slipning_Produktion WHERE OrderID = @id
-                        DELETE FROM Korprotokoll_Svetsning_Parametrar WHERE OrderID = @id
-                        DELETE FROM Korprotokoll_Svetsning_Maskinparametrar WHERE OrderID = @id 
                         
                         DELETE FROM [Order].PreFab WHERE OrderID = @id
                         DELETE FROM Measureprotocol.Data WHERE OrderID = @id 
@@ -681,6 +618,7 @@ namespace DigitalProductionProgram.OrderManagement
                         DELETE FROM [Order].Läcksökning WHERE OrderID = @id  
                         DELETE FROM Zumbach.Data WHERE OrderID = @id
                         DELETE FROM Zumbach.Measurements WHERE OrderID = @id
+                        DELETE FROM Parts.FeedbackQC WHERE OrderID = @id
                     COMMIT TRANSACTION";
 
             var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
@@ -859,7 +797,7 @@ namespace DigitalProductionProgram.OrderManagement
                 IsOrderDone = false;
                 Load_ProdType();
                 Templates_Protocol.MainTemplate.Revision = Korprotokoll.ProtocolTemplateRevision.OrderNr(OrderID);
-                _ = Activity.Stop($"Startar Order: {Person.Name}");
+                _ = Activity.Stop($"Startar Order: {Order.OrderNumber} - {Order.Operation} av {Person.Name}");
                 _ = Main_FilterQuickOpen.Load_ListAsync(main.dgv_QuickOpen);
             }
 
@@ -909,9 +847,9 @@ namespace DigitalProductionProgram.OrderManagement
                     RevNr = Processkort_General.LoadRevNr();
                     return true;
                 }
-            }   
+            }
 
-            public static void Save_MainInfo()
+            private static void Save_MainInfo()
             {
                 SaveData.INSERT_Korprotokoll_MainData();
                 Module.IsOkToSave = true;
@@ -921,23 +859,20 @@ namespace DigitalProductionProgram.OrderManagement
                     case WorkOperations.Extrudering_FEP:
                         Korprotokoll.Save_Date_StartUp1();
                         Korprotokoll.Save_Data("", 213, 0, 1, 1);//Zon 1
-                        //SaveData.UPDATE_Korprotokoll_Main_From_Processkort_Main();
-                        PreFab.SaveData.INSERT_Halvfabrikat();
+                        PreFab.SaveData.SavePrefabFromMonitor();
                         MainInfo_B.INSERT_Measurepoints_Korprotokoll();
                         break;
 
                     case WorkOperations.Extrudering_Termo:
                     case WorkOperations.Extrudering_Tryck:
                         Korprotokoll.Save_Date_StartUp1();
-                       // SaveData.UPDATE_Korprotokoll_Main_From_Processkort_Main();
-                        PreFab.SaveData.INSERT_Halvfabrikat();
+                        PreFab.SaveData.SavePrefabFromMonitor();
                         MainInfo_B.INSERT_Measurepoints_Korprotokoll();
                         break;
 
                     case WorkOperations.Extrusion_HS:
                         Korprotokoll.Save_Date_StartUp1();
-                       // SaveData.UPDATE_Korprotokoll_Main_From_Processkort_Main();
-                        PreFab.SaveData.INSERT_Halvfabrikat();
+                        PreFab.SaveData.SavePrefabFromMonitor();
                         MainInfo_B.INSERT_Measurepoints_Korprotokoll();
                         break;
 
@@ -949,24 +884,23 @@ namespace DigitalProductionProgram.OrderManagement
 
                     case WorkOperations.Krympslangsblåsning:
                     case WorkOperations.HeatShrink:
-                        //SaveData.UPDATE_Korprotokoll_Main_From_Processkort_Main();
-                        PreFab.SaveData.INSERT_Halvfabrikat();
+                        PreFab.SaveData.SavePrefabFromMonitor();
                         break;
 
                     case WorkOperations.Extrudering_PTFE:
                     case WorkOperations.Extrudering_Grov_PTFE:
-                        PreFab.SaveData.INSERT_Halvfabrikat();
+                        PreFab.SaveData.SavePrefabFromMonitor();
                         break;
 
                     case WorkOperations.Kragning_PTFE:
                     case WorkOperations.Kragning_K22_PTFE:
                         MainInfo_B.INSERT_Measurepoints_Korprotokoll();
-                       // SaveData.UPDATE_Korprotokoll_Main_From_Processkort_Main();
                         break;
 
                     case WorkOperations.Skärmning:
-                        //SaveData.UPDATE_Korprotokoll_Main_From_Processkort_Main();
-                        PreFab.SaveData.INSERT_Skärmning();
+                    case WorkOperations.Svetsning:
+                        PreFab.SaveData.SavePrefabFromMonitor();
+                        //PreFab.SaveData.INSERT_Skärmning();
                         break;
 
                     //case WorkOperations.Kragning_TEF:
@@ -975,10 +909,9 @@ namespace DigitalProductionProgram.OrderManagement
                     //    SaveData.UPDATE_Korprotokoll_Main_From_Processkort_Main();
                     //    break;
 
-                    case WorkOperations.Synergy_PTFE:
+                    case WorkOperations.Synergy_PTFE_K18:
                         MainInfo_B.INSERT_Measurepoints_Korprotokoll();
-                       // SaveData.UPDATE_Korprotokoll_Main_From_Processkort_Main();
-                        PreFab.SaveData.INSERT_Halvfabrikat();
+                        PreFab.SaveData.SavePrefabFromMonitor();
                         break;
                 }
                 Module.IsOkToSave = false;
@@ -1019,10 +952,11 @@ namespace DigitalProductionProgram.OrderManagement
                     return list;
                 }
             }
-            public static bool Is_OkFinishOrder(Main_Form main)
+
+            private static bool Is_OkFinishOrder(Main_Form main)
             {
-                    if (IsOrderDone_Before)
-                        return true;
+                if (IsOrderDone_Before)
+                    return true;
                   
                 switch (WorkOperation)
                 {
@@ -1030,6 +964,7 @@ namespace DigitalProductionProgram.OrderManagement
                             return Is_Blandning_PTFE_Done(main);
                         
                         case WorkOperations.Extrudering_FEP:
+                        case WorkOperations.Svetsning:
                             return Is_Protocol_Done(formTemplateIDs, main) && Is_Halvfabrikat_Done(main) && IsCommentsDone(main);
                         
                         case WorkOperations.Extrudering_PTFE:
@@ -1040,10 +975,7 @@ namespace DigitalProductionProgram.OrderManagement
                         case WorkOperations.Extrudering_Tryck:
                         case WorkOperations.Extrusion_HS:
                             return Is_Protocol_Done(formTemplateIDs, main) && Is_MeasureEquipmentFilledIn(main) && Is_CompoundForm_Done(main) && Is_RoomClimate_Done(main) && Is_Halvfabrikat_Done(main) && IsCommentsDone(main);
-                            
-                        default:
-                            return Is_Protocol_Done(formTemplateIDs, main) && Is_MeasureEquipmentFilledIn(main) && IsCommentsDone(main);
-
+                        
                         case WorkOperations.Kragning_TEF:
                             return Is_Halvfabrikat_Done(main) && Is_Protocol_Done(formTemplateIDs, main);
 
@@ -1055,10 +987,11 @@ namespace DigitalProductionProgram.OrderManagement
                             return true;
                         case WorkOperations.Slipning:
                             return Is_Slipning_Done(main) && IsCommentsDone(main);
-                       
-                        case WorkOperations.Svetsning:
-                            return Is_Svetsning_Done(main) && IsCommentsDone(main);
-                    }
+
+
+                    default:
+                        return Is_Protocol_Done(formTemplateIDs, main) && Is_MeasureEquipmentFilledIn(main) && IsCommentsDone(main);
+                }
                     return false;
             }
             private static bool Is_Protocol_Done(IEnumerable<int> array_formtemplateid, Main_Form main)
@@ -1081,7 +1014,8 @@ namespace DigitalProductionProgram.OrderManagement
                     FULL OUTER JOIN Processcard.Data as pc_data
                         ON template.id = pc_data.TemplateID
                         AND PartID = @partid
-                        AND NOT (pc_data.Value IS NULL AND pc_data.TextValue IS NULL)
+                        AND NOT (pc_data.Value IS NULL 
+                        AND (pc_data.TextValue IS NULL OR pc_data.TextValue = ''))
                     LEFT JOIN Protocol.Description as descr
                         ON descr.id = template.ProtocolDescriptionID
                     WHERE template.FormTemplateID = @formtemplateid 
@@ -1244,43 +1178,7 @@ namespace DigitalProductionProgram.OrderManagement
                 return true;
             }
 
-            private static bool Is_Svetsning_Done(Main_Form main)
-            {
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    var query = $"SELECT * FROM Korprotokoll_Svetsning_Maskinparametrar {Queries.WHERE_OrderID}";
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    cmd.Parameters.AddWithValue("@id", OrderID);
-                    con.Open();
-                    var reader = cmd.ExecuteReader();
-                    if (!reader.HasRows)
-                        return ShowMessage("Fyll i Maskinparametrarna i Körprotokollet", main);
-                }
-
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    var query = $"SELECT * FROM Korprotokoll_Svetsning_Parametrar {Queries.WHERE_OrderID}";
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    cmd.Parameters.AddWithValue("@id", OrderID);
-                    con.Open();
-                    var reader = cmd.ExecuteReader();
-                    if (!reader.HasRows)
-                        return ShowMessage("Fyll i Produktionsparametrarna i Körprotokollet", main);
-                }
-
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    var query = $"SELECT * FROM [Order].PreFab {Queries.WHERE_OrderID}";
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    cmd.Parameters.AddWithValue("@id", OrderID);
-                    con.Open();
-                    var reader = cmd.ExecuteReader();
-                    if (!reader.HasRows)
-                        return ShowMessage("Fyll i Halvfabrikatet i Körprotokollet", main);
-                }
-
-                return true;
-            }
+           
             private static bool Is_Slipning_Done(Main_Form main)
             {
                 using (var con = new SqlConnection(Database.cs_Protocol))
@@ -1435,7 +1333,15 @@ namespace DigitalProductionProgram.OrderManagement
                 if (IsOrderDone == false)
                     return;
 
-                //Fortsätter med allt som skall göras om ordern är klar
+                // Check/force a physical printer before starting any preview/print flow.
+                if (ok.utskrift && !Manage_PrintOuts.IsPrinterSelected)
+                {
+                    InfoText.Question("Vill du avsluta ordern och spara ordern som pdf istälelt för att skriva ut den?", CustomColors.InfoText_Color.Warning, "Ingen skrivare vald.");
+                    if (InfoText.answer == InfoText.Answer.No) 
+                        return;
+                }
+
+                // Finishing Order i and set EndDate and Print papers
                 if (!IsOrderDone_Before)
                 {
                     var dateTimeFormat = CultureInfo.CurrentCulture.DateTimeFormat;
@@ -1467,15 +1373,90 @@ namespace DigitalProductionProgram.OrderManagement
                 //Meddelar processtekniker om eventuella uppdateringar av Processkort
                 //Om Artikel är under Framarbetning OCH Antal ordrar körda är 3 så skickas ett mail eller om inget Processkort finns OCH antal körda ordrar = 3
                 //D-ordrar skall heller inte 
-                _ = Activity.Stop("Finish Order: Skickar mail ang. Processkortsuppdateringar");
-                Mail.ProcesscardNeedChanges_FinishOrder();
-                if (TotalOrders == 3 && !Processcard.IsNotUsingProcesscard(WorkOperation)) 
-                    Mail.NotifyOrderFinishedCount_3();
+                // if SuperAdmin close old orders ther is no need to send this mail
+                if (Person.Role != "SuperAdmin")
+                {
+                    _ = Activity.Stop("Finish Order: Skickar mail ang. Processkortsuppdateringar");
+                    Mail.ProcesscardNeedChanges_FinishOrder();
+                    if (TotalOrders == 3 && !Processcard.IsNotUsingProcesscard(WorkOperation))
+                        Mail.NotifyOrderFinishedCount_3();
+                }
 
                 _ = Main_FilterQuickOpen.Load_ListAsync(main.dgv_QuickOpen);
+               
             }
         }
+        private static OrderInfoSnapshot? _snapshot;
 
-        
+        private class OrderInfoSnapshot
+        {
+            public WorkOperations? Workoperation { get; set; }
+            public int? OrderID { get; set; }
+            public int? PartID { get; set; }
+            public int? PartGroupID { get; set; }
+            public int MainTemplateID { get; set; }
+            public string? Benamning { get; set; }
+            public string? OrderNr { get; set; }
+            public string? Operation { get; set; }
+            public string? PartNr { get; set; }
+            public string? RevNr { get; set; }
+            public string? ProdLine { get; set; }
+            public string? Customer { get; set; }
+            public string? ProdType { get; set; }
+            public string? ProdGroup { get; set; }
+            public string? TemplateRevision { get; set; }
+            public string? MainTemplateName { get; set; }
+            public int? LineClearanceMainTemplateID { get; set; }
+            public int? MeasureProtocolMainTemplateID { get; set; }
+        }
+        public static void Save_TempOrderInfo()
+        {
+            _snapshot = new OrderInfoSnapshot
+            {
+                Benamning = Description,
+                MainTemplateName = Templates_Protocol.MainTemplate.Name,
+                MainTemplateID = Templates_Protocol.MainTemplate.ID,
+                LineClearanceMainTemplateID = Templates_LineClearance.MainTemplate.LineClearance_MainTemplateID,
+                MeasureProtocolMainTemplateID = Templates_MeasureProtocol.MainTemplate.ID,
+                OrderNr = OrderNumber,
+                OrderID = OrderID,
+                Operation = Operation,
+                PartNr = PartNumber,
+                PartID = PartID,
+                PartGroupID = PartGroupID,
+                RevNr = RevNr,
+                Workoperation = WorkOperation,
+                ProdLine = ProdLine,
+                ProdType = ProdType,
+                ProdGroup = ProdGroup,
+                Customer = Customer,
+                TemplateRevision = Templates_Protocol.MainTemplate.Revision
+            };
+        }
+        public static void Restore_TempOrderInfo()
+        {
+            if (_snapshot is null)
+                return;
+
+            Description = _snapshot.Benamning;
+            Templates_Protocol.MainTemplate.Name = _snapshot.MainTemplateName;
+            Templates_Protocol.MainTemplate.ID = _snapshot.MainTemplateID;
+            Templates_LineClearance.MainTemplate.LineClearance_MainTemplateID = _snapshot.LineClearanceMainTemplateID;
+            Templates_MeasureProtocol.MainTemplate.ID = _snapshot.MeasureProtocolMainTemplateID;
+            OrderNumber = _snapshot.OrderNr;
+            OrderID = _snapshot.OrderID;
+            Operation = _snapshot.Operation;
+            PartNumber = _snapshot.PartNr;
+            PartID = _snapshot.PartID;
+            PartGroupID = _snapshot.PartGroupID;
+            RevNr = _snapshot.RevNr;
+            WorkOperation = (WorkOperations)_snapshot.Workoperation;
+            ProdLine = _snapshot.ProdLine;
+            ProdType = _snapshot.ProdType;
+            ProdGroup = _snapshot.ProdGroup;
+            Customer = _snapshot.Customer;
+            Templates_Protocol.MainTemplate.Revision = _snapshot.TemplateRevision;
+        }
+
     }
 }

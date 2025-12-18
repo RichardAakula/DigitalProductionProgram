@@ -30,7 +30,7 @@ namespace DigitalProductionProgram.Settings
         private Zumbach? zumbach;
         private SerialPort serialPort1;
         private bool IsOkAddPoints;
-        
+
 
         public Settings()
         {
@@ -249,7 +249,7 @@ namespace DigitalProductionProgram.Settings
         }
         public class SpecialPartNumbers
         {
-            public static string Parts_ExtraDescription(string description)
+            private static string Parts_ExtraDescription(string description)
             {
                 using (var con = new SqlConnection(Database.cs_Protocol))
                 {
@@ -275,7 +275,7 @@ namespace DigitalProductionProgram.Settings
                     return dt;
                 }
             }
-            public static DataTable DataTable_PartNrDescription
+            private static DataTable DataTable_PartNrDescription
             {
                 get
                 {
@@ -391,7 +391,7 @@ namespace DigitalProductionProgram.Settings
         {
             private readonly Settings settings;
 
-            public static string Template_ID(string Mätdon)
+            private static string Template_ID(string Mätdon)
             {
                 using (var con = new SqlConnection(Database.cs_Protocol))
                 {
@@ -419,17 +419,15 @@ namespace DigitalProductionProgram.Settings
 
             private void Load_MeasureInstruments()
             {
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    con.Open();
-                    const string query = @"
+                using var con = new SqlConnection(Database.cs_Protocol);
+                con.Open();
+                const string query = @"
                     SELECT MätdonsNr
                     FROM MeasureInstruments.Templates";
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    var reader = cmd.ExecuteReader();
-                    while (reader.Read())
-                        Add_Control_flp(reader.GetString(0), settings.flp_Measureinstruments);
-                }
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                var reader = cmd.ExecuteReader();
+                while (reader.Read())
+                    Add_Control_flp(reader.GetString(0), settings.flp_Measureinstruments);
             }
             private void Load_UsedMeasureInstruments()
             {
@@ -485,7 +483,7 @@ namespace DigitalProductionProgram.Settings
                 }
             }
 
-            public static void Delete(string workoperation)
+            private static void Delete(string workoperation)
             {
                 using (var con = new SqlConnection(Database.cs_Protocol))
                 {
@@ -498,7 +496,7 @@ namespace DigitalProductionProgram.Settings
                     cmd.ExecuteNonQuery();
                 }
             }
-            public static void Save(string workoperation, FlowLayoutPanel flp)
+            private static void Save(string workoperation, FlowLayoutPanel flp)
             {
                 Delete(workoperation);
 
@@ -614,7 +612,7 @@ namespace DigitalProductionProgram.Settings
 
                 LoadNotificationSubscriptions();
             }
-            public void LoadNotifications()
+            private void LoadNotifications()
             {
                 var dt = new DataTable();
                 const string query = "SELECT ID, Notification FROM [Settings].Notifications";
@@ -630,7 +628,7 @@ namespace DigitalProductionProgram.Settings
                 settings.dgv_Notifications.DataSource = dt;
                 settings.dgv_Notifications.Columns[0].Visible = false;
             }
-            public void LoadNotificationSubscriptions()
+            private void LoadNotificationSubscriptions()
             {
                 var dt = new DataTable();
                 var name = "";
@@ -715,34 +713,64 @@ namespace DigitalProductionProgram.Settings
 
 
 
-        public class SaveData
+        public abstract class SaveData
         {
-            public static void Quickstart_WorkOperation(Manage_WorkOperation.WorkOperations workoperation)
+            public static void Quickstart_WorkOperation(string workoperation)
             {
-                if (workoperation == Manage_WorkOperation.WorkOperations.Nothing)
-                    return;
                 using var con = new SqlConnection(Database.cs_Protocol);
+                con.Open();
+
+                var hostIdQuery = "SELECT HostID FROM Settings.General WHERE HostName = @hostname";
+                var hostIdCmd = new SqlCommand(hostIdQuery, con);
+                hostIdCmd.Parameters.AddWithValue("@hostname", Environment.MachineName);
+
+                var hostId = (int?)hostIdCmd.ExecuteScalar();
+                if (hostId == null)
+                    return; // inget hostID → inget att göra
+
+                ServerStatus.Add_Sql_Counter();
+
+                if (string.IsNullOrEmpty(workoperation))
+                {
+                    var deleteAllQuery = @"
+                        DELETE FROM Workoperation.QuickStartList
+                        WHERE HostID = @hostId";
+
+                    var deleteCmd = new SqlCommand(deleteAllQuery, con);
+                    deleteCmd.Parameters.AddWithValue("@hostId", hostId.Value);
+                    deleteCmd.ExecuteNonQuery();
+
+                    return;
+                }
+
                 var query = @"
-                    IF NOT EXISTS (SELECT * FROM Workoperation.QuickStartList WHERE HostID = (SELECT HostID FROM Settings.General WHERE HostName = @hostname) AND WorkoperationID = (SELECT ID FROM Workoperation.Names WHERE Name = @workoperation)) 
-                        BEGIN
+                    IF NOT EXISTS 
+                        (
+                            SELECT * FROM Workoperation.QuickStartList
+                            WHERE HostID = @hostId
+                                AND WorkoperationID = (SELECT ID FROM Workoperation.Names WHERE Name = @workoperation)
+                        )
+                    BEGIN
                         INSERT INTO Workoperation.QuickStartList (HostID, WorkoperationID)
                         VALUES 
                             (
-                                (SELECT HostID FROM Settings.General WHERE HostName = @hostname),
+                                @hostId,
                                 (SELECT ID FROM Workoperation.Names WHERE Name = @workoperation)
                             )
-                        END
-                        ELSE
-                        DELETE FROM Workoperation.QuickStartList WHERE HostID = (SELECT HostID FROM Settings.General WHERE HostName = @hostname) AND WorkoperationID = (SELECT ID FROM Workoperation.Names WHERE Name = @workoperation)";
+                    END
+                    ELSE
+                    BEGIN
+                        DELETE FROM Workoperation.QuickStartList
+                        WHERE HostID = @hostId
+                        AND WorkoperationID = (SELECT ID FROM Workoperation.Names WHERE Name = @workoperation)
+                    END";
 
-
-                con.Open();
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@hostname", Environment.MachineName);
-                cmd.Parameters.AddWithValue("@workoperation", workoperation.ToString());
-
-                cmd.ExecuteScalar();
+                var cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@hostId", hostId.Value);
+                cmd.Parameters.AddWithValue("@workoperation", workoperation);
+                cmd.ExecuteNonQuery();
             }
+
             public static void IsComputerOnlyForMeasure(bool value)
             {
                 using var con = new SqlConnection(Database.cs_Protocol);
@@ -809,7 +837,7 @@ namespace DigitalProductionProgram.Settings
             }
         }
 
-        public class LoadData
+        public abstract class LoadData
         {
             public static string Setting(string column)
             {

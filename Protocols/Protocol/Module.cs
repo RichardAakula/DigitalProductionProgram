@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.Data.SqlClient;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
@@ -184,20 +185,50 @@ namespace DigitalProductionProgram.Protocols.Protocol
             dgv_Module.Columns["col_CodeText"].HeaderText = LanguageManager.GetString("col_CodeText_Header");
         }
 
+
+        [DebuggerStepThrough]
         private void Label_LEFT_Paint(object sender, PaintEventArgs e)
         {
-            LeftHeader = LeftHeader?.Replace("\n", "");
-            var width = Processcard.TextLength(LeftHeader, new Font("Arial", 8), CreateGraphics());
-            Print_LeftLabel(e, LeftHeader, TotalModuleHeight / 2 - width / 2);
+            if (string.IsNullOrWhiteSpace(LeftHeader))
+                return;
 
+            // Ta bort radbrytningar
+            LeftHeader = LeftHeader.Replace("\n", "");
+
+            // Börja med en standardfont
+            float fontSize = 8f;
+            Font font = new Font("Arial", fontSize);
+
+            // Beräkna tillgänglig höjd (hur mycket plats vi har att rita på)
+            float availableHeight = TotalModuleHeight;
+
+            // Mät textens längd (eftersom den ritas vertikalt, så är "bredd" = textens höjd)
+            float textLength = Processcard.TextLength(LeftHeader, font, CreateGraphics());
+
+            // Minska fontstorleken tills texten får plats
+            while (textLength > availableHeight && fontSize > 4f)
+            {
+                font.Dispose();
+                fontSize -= 0.5f;
+                font = new Font("Arial", fontSize);
+                textLength = Processcard.TextLength(LeftHeader, font, CreateGraphics());
+            }
+            // Räkna ut var texten ska börja för att centreras vertikalt
+            float y = (availableHeight / 2f) - (textLength / 2f);
+
+            // Rita texten
+            Print_LeftLabel(e, LeftHeader,  (int)availableHeight, (int)y, font);
+            
             dgv_Module.ClearSelection();
         }
-        private static void Print_LeftLabel(PaintEventArgs e, string? text, int y, Font? font = null)
+        public static void Print_LeftLabel(PaintEventArgs e, string? text, int top, int y, Font? font = null)
         {
             font ??= new Font("Arial", 8);
             var g = e.Graphics;
 
             g.DrawString(text, font, Brushes.Black, 0, y, new StringFormat(StringFormatFlags.DirectionVertical));
+            using var pen = new Pen(Color.Black, 3);
+            g.DrawLine(pen, 0,top, 20, top);
         }
 
         private static bool IsCodeTextExistInModule(DataGridView dgv, string codeText)
@@ -565,13 +596,28 @@ namespace DigitalProductionProgram.Protocols.Protocol
         private void AllowedChars_CellKeyPress(object? sender, KeyPressEventArgs e)
         {
             var isOkWriteText = bool.Parse(dgv_Module.Rows[dgv_Module.CurrentCell.RowIndex].Cells["col_IsOkWriteText"].Value.ToString() ?? "false");
+            var isListProcesscard = bool.Parse(dgv_Module.Rows[dgv_Module.CurrentCell.RowIndex].Cells["col_IsList_Processcard"].Value.ToString() ?? "false");
             var isListProtocol = bool.Parse(dgv_Module.Rows[dgv_Module.CurrentCell.RowIndex].Cells["col_IsList_Protocol"].Value.ToString() ?? "false");
-            if (isOkWriteText == false && isListProtocol)
+
+            if (Manage_Processcards.IsProcesscardUnderManagement)
             {
-                if (CheckAuthority.IsRoleAuthorized(CheckAuthority.TemplateAuthorities.ChooseFreelyFromListsProtocol, false) == false)
-                    e.Handled = true;
-                return;
+                if (isOkWriteText == false && isListProcesscard)
+                {
+                    if (CheckAuthority.IsRoleAuthorized(CheckAuthority.TemplateAuthorities.ChooseFreelyFromListsProtocol, false) == false)
+                        e.Handled = true;
+                    return;
+                }
             }
+            else
+            {
+                if (isOkWriteText == false && isListProtocol)
+                {
+                    if (CheckAuthority.IsRoleAuthorized(CheckAuthority.TemplateAuthorities.ChooseFreelyFromListsProtocol, false) == false)
+                        e.Handled = true;
+                    return;
+                }
+            }
+
             if (IsOkToSave == false && Manage_Processcards.IsProcesscardUnderManagement == false)
             {
                 e.Handled = true;
@@ -664,6 +710,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
 
 
             bool.TryParse(dgv_Row.Cells["col_IsValueCritical"].Value.ToString(), out var IsValueCritical);
+            var codeText = dgv_Module.Rows[row].Cells["col_CodeText"].Value.ToString();
 
             var IsValidated = false;
             if (IsOk_CellValueChanged)
@@ -698,13 +745,16 @@ namespace DigitalProductionProgram.Protocols.Protocol
                         IsValidated = true;
                         break;
                     case 80:    //EXTRUDER
-                        Validate_Data.IsMachine_Ok(cell.Value.ToString(), "EXTRUDER", protocolDescriptionID, dgv_Module.CurrentCell, startUp, NOM_Value(dgv_Row), IsValueCritical, true);
+                        if (Monitor.Monitor.factory == Monitor.Monitor.Factory.ValleyForge) //Detta behöver göras annorlunda, isMachineInRange behöver flyttas in i Template
+                            Validate_Data.IsMachine_Ok(cell.Value.ToString(), "EXTRUDER", protocolDescriptionID, dgv_Module.CurrentCell, startUp, NOM_Value(dgv_Row), IsValueCritical, false);
+                        else
+                            Validate_Data.IsMachine_Ok(cell.Value.ToString(), "EXTRUDER", protocolDescriptionID, dgv_Module.CurrentCell, startUp, NOM_Value(dgv_Row), IsValueCritical, true);
                         IsValidated = true;
                         break;
                     case 83:    //MUNSTYCKE
                     case 209:   //KÄRNA
                         text = dgv_Module.Rows[row].Cells[col].Value.ToString();
-                        Validate_Data.IsTool_Ok(text, dgv_Row.Cells["col_CodeText"].Value.ToString(), protocolDescriptionID, NOM_Value(dgv_Row), cell, startUp, MachineIndex, MIN_Value(dgv_Row), MAX_Value(dgv_Row), IsValueCritical);
+                        Validate_Data.IsTool_Ok(text, codeText, protocolDescriptionID, NOM_Value(dgv_Row), cell, startUp, MachineIndex, MIN_Value(dgv_Row), MAX_Value(dgv_Row), IsValueCritical);
                         IsValidated = true;
                         break;
                     case 159:   //HS MASKIN
@@ -721,26 +771,31 @@ namespace DigitalProductionProgram.Protocols.Protocol
                         IsValidated = true;
                         break;
                     case 305:   //SCREW
-                        Validate_Data.IsEquipmentOk(IsValueCritical, NOM_Value(dgv_Row), dgv_Module.Rows[row].Cells["col_CodeText"].Value.ToString(), protocolDescriptionID, startUp, cell, "Register_Skruvar");
+                        Validate_Data.IsEquipmentOk(IsValueCritical, NOM_Value(dgv_Row), codeText, protocolDescriptionID, startUp, cell, "Register_Skruvar");
                         IsValidated = true;
                         break;
                     case 306:   //DRYER
-                        Validate_Data.IsEquipmentOk(IsValueCritical, NOM_Value(dgv_Row), dgv_Module.Rows[row].Cells["col_CodeText"].Value.ToString(), protocolDescriptionID, startUp, cell, "Register_Torkar");
+                        Validate_Data.IsEquipmentOk(IsValueCritical, NOM_Value(dgv_Row), codeText, protocolDescriptionID, startUp, cell, "Register_Torkar");
                         IsValidated = true;
                         break;
                     case 307:   //HEAD
-                        Validate_Data.IsEquipmentOk(IsValueCritical, NOM_Value(dgv_Row), dgv_Module.Rows[row].Cells["col_CodeText"].Value.ToString(), protocolDescriptionID, startUp, cell, "Register_Huvud");
+                        Validate_Data.IsEquipmentOk(IsValueCritical, NOM_Value(dgv_Row), codeText, protocolDescriptionID, startUp, cell, "Register_Huvud");
                         IsValidated = true;
                         break;
                     case 308:   //TORPEDO
-                        Validate_Data.IsEquipmentOk(IsValueCritical, NOM_Value(dgv_Row), dgv_Module.Rows[row].Cells["col_CodeText"].Value.ToString(), protocolDescriptionID, startUp, cell, "Register_Torpeder");
+                        Validate_Data.IsEquipmentOk(IsValueCritical, NOM_Value(dgv_Row), codeText, protocolDescriptionID, startUp, cell, "Register_Torpeder");
                         IsValidated = true;
                         break;
                     case 309:   //TORPEDONUTS
-                        Validate_Data.IsEquipmentOk(IsValueCritical, NOM_Value(dgv_Row), dgv_Module.Rows[row].Cells["col_CodeText"].Value.ToString(), protocolDescriptionID, startUp, cell, "Register_Torpedmuttrar");
+                        Validate_Data.IsEquipmentOk(IsValueCritical, NOM_Value(dgv_Row), codeText, protocolDescriptionID, startUp, cell, "Register_Torpedmuttrar");
                         IsValidated = true;
                         break;
                     case 314:
+                        IsValidated = true;
+                        break;
+                    case 399: //FORMER / KALIBRERING
+                        text = dgv_Module.Rows[row].Cells[col].Value.ToString();
+                        Validate_Data.IsTool_Ok(text, codeText, protocolDescriptionID, NOM_Value(dgv_Row), cell, startUp, MachineIndex, null, null, IsValueCritical);
                         IsValidated = true;
                         break;
                     //case 316: //CALIBRATION
@@ -977,10 +1032,22 @@ namespace DigitalProductionProgram.Protocols.Protocol
                         case 315: //FILTER ARTIKELNR
                             items = Task.Run(() => Monitor.Monitor.List_CandleFilter_PartNr("Candle")).Result;
                             break;
-                        case 316: //KALIBRERINGSTYP
+                       // case 316: //KALIBRERINGSTYP
                                   // items = DigitalProductionProgram.Equipment.Equipment.List_Register(true, NOM_Value(dgv_Row), "Register_Kalibreringar");
                                   //  IsItemsMultipleColumns = false;
+                         //   break;
+                        case 399:   //KALIBRERING 
+                            if (isProcesscardUnderManagement)
+                                items = DigitalProductionProgram.Equipment.Equipment.List_From_Register("Dimension_Bak", "Register_Kalibreringar", true, Value(col, 316));
+                            else
+                            {
+                                items = DigitalProductionProgram.Equipment.Equipment.List_From_Register("ID_Nummer", "Register_Kalibreringar", true, Value(col, 316));
+                                IsItemsMultipleColumns = true;
+                            }
+                                
+                            
                             break;
+
                         case 159:   //HS MASKIN
                                     // items = Machines.HS_Machines;
                             break;
@@ -1082,6 +1149,10 @@ namespace DigitalProductionProgram.Protocols.Protocol
                 case 311:
                     TipType = dgv_Module.Rows[row].Cells[col].Value.ToString();
                     break;
+                case 399:   //KALIBRERING 
+                    if (isProcesscardUnderManagement)
+                        cell.Value = Regex.Replace(cell.Value.ToString(), "[^0-9,]", "");
+                    break;
                 case 325:   //RENGJORT CYLINDER
                     break;
                 case 326:   //RENGJORT UTRUSTNING
@@ -1095,20 +1166,18 @@ namespace DigitalProductionProgram.Protocols.Protocol
         {
             public static void Delete_StartUp(int startup)
             {
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    var query = @"
+                using var con = new SqlConnection(Database.cs_Protocol);
+                var query = @"
                     IF EXISTS (SELECT * FROM [Order].Data WHERE OrderID = @orderid AND Uppstart = @uppstart)
                         DELETE FROM [Order].Data 
                         WHERE OrderID = @orderid 
                             AND Uppstart = @uppstart";
 
-                    con.Open();
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
-                    cmd.Parameters.AddWithValue("@uppstart", startup);
-                    cmd.ExecuteNonQuery();
-                }
+                con.Open();
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
+                cmd.Parameters.AddWithValue("@uppstart", startup);
+                cmd.ExecuteNonQuery();
             }
             public static void Delete_Oven(int startup, int oven)
             {

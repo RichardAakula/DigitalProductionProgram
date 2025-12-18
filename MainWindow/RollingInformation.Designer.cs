@@ -4,7 +4,7 @@ using System.Windows.Forms;
 
 namespace DigitalProductionProgram.MainWindow
 {
-    partial class Main_RollingInformation
+    partial class RollingInformation
     {
         /// <summary> 
         /// Required designer variable.

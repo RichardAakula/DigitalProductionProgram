@@ -44,7 +44,7 @@ namespace DigitalProductionProgram.Log
                 return now.Subtract(start);
             }
         }
-        public static DateTime Date_PlannedStop
+        public static string Date_PlannedStop
         {
             get
             {
@@ -53,9 +53,16 @@ namespace DigitalProductionProgram.Log
                 con.Open();
                 var cmd = new SqlCommand(query, con);
                 cmd.Parameters.AddWithValue("@now", DateTime.Now);
-                return DateTime.Parse(cmd.ExecuteScalar().ToString() ?? string.Empty);
+                var result = cmd.ExecuteScalar()?.ToString();
+
+                if (string.IsNullOrEmpty(result))
+                    return string.Empty;
+
+                var date = DateTime.Parse(result);
+                return date.ToString("dddd yyyy/MM/dd HH:mm"); 
             }
         }
+
 
         public static bool IsMaintenance_Coming
         {

@@ -299,44 +299,23 @@ namespace DigitalProductionProgram.Protocols
 
             }
         }
-        public static string? Load_Data(int? orderID, int formtemplateid, int protocoldescriptionid)
+        public static string? Load_Data(int? orderID)
         {
             using var con = new SqlConnection(Database.cs_Protocol);
             const string query =
-                "EXEC Korprotokoll.sp_Load_Data_Control @orderid, @formtemplateid, @revision, @protocoldescriptionid";
+                @"
+                    SELECT DISTINCT TextValue
+                    FROM[Order].Data AS protocol
+                    WHERE OrderID = @orderid    
+                        AND protocol.ProtocolDescriptionID = 246";
             con.Open();
-            var cmd = new SqlCommand(query, con)
-            {
-                CommandType = CommandType.Text
-            };
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+
             SQL_Parameter.NullableINT(cmd.Parameters, "@orderid", orderID);
-            cmd.Parameters.AddWithValue("@formtemplateid", formtemplateid);
-            cmd.Parameters.AddWithValue("@revision", ProtocolTemplateRevision.OrderNr(orderID));
-            cmd.Parameters.AddWithValue("@protocoldescriptionid", protocoldescriptionid);
             var reader = cmd.ExecuteReader();
             while (reader.Read())
             {
-                int.TryParse(reader["type"].ToString(), out var type);
-                var value = string.Empty;
-                switch (type)
-                {
-                    case 0: //NumberValue
-                        int.TryParse(reader["Decimals"].ToString(), out var decimals);
-                        value = double.TryParse(reader["Value"].ToString(), out var NumberValue) == false ? string.Empty : Processcard.Format_Value(NumberValue, decimals);
-                        break;
-                    case 1: //TextValue
-                        value = reader["TextValue"].ToString();
-                        break;
-                    case 2: //BoolValue
-                        bool.TryParse(reader["boolvalue"].ToString(), out var boolvalue);
-                        value = boolvalue.ToString();
-                        break;
-                    case 3: //DateValue
-                        if (DateTime.TryParse(reader["datevalue"].ToString(), out var date))
-                            value = date.ToString("yyyy-MM-dd HH:mm");
-                        break;
-                }
-
+                var value = reader["TextValue"].ToString();
                 if (string.IsNullOrEmpty(value))
                     value = "N/A";
 

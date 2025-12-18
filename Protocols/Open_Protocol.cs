@@ -61,12 +61,6 @@ namespace DigitalProductionProgram.Protocols
                     Open(new Spolning_PTFE.Spolning_PTFE(), parent);
                     break;
 
-                case Manage_WorkOperation.WorkOperations.Svetsning:
-                    if (Application.OpenForms.OfType<Svetsning_TEF.Svetsning_TEF>().Count() == 1)
-                        Application.OpenForms.OfType<Svetsning_TEF.Svetsning_TEF>().First().Close();
-                    Open(new Svetsning_TEF.Svetsning_TEF(), parent);
-                    break;
-
                 default:
                     if (Application.OpenForms.OfType<MainProtocol>().Count() == 1)
                         Application.OpenForms.OfType<MainProtocol>().First().Close();

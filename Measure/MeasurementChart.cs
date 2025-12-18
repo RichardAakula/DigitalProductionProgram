@@ -160,8 +160,45 @@ namespace DigitalProductionProgram.Measure
             return result - margin;
         }
 
-        public CartesianChart? cartesianChart;
-        private static LineSeries<ObservablePoint> serie_Values(string codetext)
+        public static int TotalValuesInChart
+        {
+            get
+            {
+                var currentCount = 0;
+                if (cartesianChart != null &&
+                    cartesianChart.Series != null &&
+                    cartesianChart.Series.Count() >= 3 &&
+                    cartesianChart.Series.ElementAt(2) is LineSeries<ObservablePoint> s &&
+                    s.Values is IEnumerable<ObservablePoint> values)
+                {
+                    currentCount = values.Count(); // 🔹 LINQ Count() extension
+                }
+                return currentCount;
+            }
+        }
+
+        public static int TotalValuesInMeasureProtocol
+        {
+            get
+            {
+                const string existsQuery = @"
+                SELECT COUNT(*)
+                FROM Measureprotocol.MainData
+                WHERE OrderID = @orderid
+                    AND (Discarded = 'False' OR Discarded IS NULL)";
+
+                using var con = new SqlConnection(Database.cs_Protocol);
+                con.OpenAsync();
+
+                using var cmd = new SqlCommand(existsQuery, con);
+                cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
+                var count = cmd.ExecuteScalar();
+                return int.Parse(count.ToString());
+            }
+        }
+
+        public static CartesianChart? cartesianChart;
+        private static LineSeries<ObservablePoint> serie_Values(string? codetext)
         {
             var serie = new LineSeries<ObservablePoint>
             {
@@ -256,7 +293,7 @@ namespace DigitalProductionProgram.Measure
        
 
 
-        private void Initialize_Chart_MainForm(string? codename, string codetext)
+        private void Initialize_Chart_MainForm(string? codename, string? codetext)
         {
             cartesianChart = new CartesianChart
             {
@@ -297,10 +334,9 @@ namespace DigitalProductionProgram.Measure
                         Yi = Y_Axis_MinValue(codename),
                         Yj = MeasurePoints.Tolerances.ActiveTolerance(codename, "LSL") ?? double.NaN,
                         Fill = new SolidColorPaint
-                        {
-                            Color = new SKColor(156,0,6,230)
-                        }
-
+                        { 
+                                Color = new SKColor(156,0,6,230)
+                       }
                     },
                     new()
                     {                    
@@ -315,8 +351,8 @@ namespace DigitalProductionProgram.Measure
                         Stroke = dashedStroke(SKColors.DeepSkyBlue),
                     }
                 },
-                XAxes = new[] 
-                {
+                XAxes =
+                [
                     new Axis
                     {
                         Name = "Measurement",
@@ -327,9 +363,9 @@ namespace DigitalProductionProgram.Measure
                         MinLimit = 1,
                         MinStep = 1
                     }
-                },
-                YAxes = new[]
-                {
+                ],
+                YAxes =
+                [
                     new Axis
                     {
                         Name = codetext,
@@ -341,7 +377,7 @@ namespace DigitalProductionProgram.Measure
                         MaxLimit = Y_Axis_MaxValue(codename, 0) ?? 10, // Sätt ett rimligt maxvärde om inget annat finns
                         MinStep = 0.001, // Stegstorlek för y-axeln
                     }
-                },
+                ],
                 LegendPosition = LiveChartsCore.Measure.LegendPosition.Right,
                 LegendTextPaint = new SolidColorPaint
                 {
@@ -352,17 +388,21 @@ namespace DigitalProductionProgram.Measure
                 ZoomMode = LiveChartsCore.Measure.ZoomAndPanMode.X, // Aktivera zoomning och panorering på både X- och Y-axlar
             };
           
-            cartesianChart.Series = new ISeries[] { serie_USL(codename), serie_UCL(codename), serie_Values(codetext), serie_AvgLatestOrder(codename), serie_AvgPart(codename), serie_LCL(codename),  serie_LSL(codename)  };
+            cartesianChart.Series = [serie_USL(codename), serie_UCL(codename), serie_Values(codetext), serie_AvgLatestOrder(codename), serie_AvgPart(codename), serie_LCL(codename),  serie_LSL(codename)];
 
-            this.Invoke(() => Controls.Add(cartesianChart));
+           // this.Invoke(() => Controls.Add(cartesianChart));
         }
-        public async Task Add_Data_Chart_MainForm(string? codename, string? codetext)
+
+        public static string? ActiveCodeName;
+        public static string? ActiveCodeText;
+        public async Task Add_Data_Chart_MainForm()
         {
             this.Invoke(() => Visible = true);
+
             await RemoveChart();
 
-            this.Invoke(() => Initialize_Chart_MainForm(codename, codetext));
-
+            this.Invoke(() => Initialize_Chart_MainForm(ActiveCodeName, ActiveCodeText));
+            this.Invoke(Refresh);
 
             await using var con = new SqlConnection(Database.cs_Protocol);
             
@@ -382,15 +422,13 @@ namespace DigitalProductionProgram.Measure
             {
                 ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
-                cmd.Parameters.AddWithValue("@codename", codename);
+                cmd.Parameters.AddWithValue("@codename", ActiveCodeName);
 
                 await con.OpenAsync();
 
                 await using (var reader = await cmd.ExecuteReaderAsync())
                 {
                     var measurementValues = new ObservableCollection<ObservablePoint>();
-                   // var avgLastOrderValues = new ObservableCollection<ObservablePoint>();
-                   // var avgPartValues = new ObservableCollection<ObservablePoint>();
 
                    var index = 1;
                     while (await reader.ReadAsync())
@@ -400,7 +438,7 @@ namespace DigitalProductionProgram.Measure
                             continue;
 
                         measurementValues.Add(new ObservablePoint(index, result));
-                        
+
                         index++;
                     }
 
@@ -412,8 +450,6 @@ namespace DigitalProductionProgram.Measure
                         seriesList[4] is LineSeries<ObservablePoint> series2)
                     {
                         series0.Values = measurementValues;
-                       // series1.Values = avgLastOrderValues;
-                       // series2.Values = avgPartValues;
                     }
                 }
             }
@@ -422,6 +458,14 @@ namespace DigitalProductionProgram.Measure
 
         public Task RemoveChart()
         {
+            if (cartesianChart != null)
+            {
+                this.Invoke(() => {
+                    Controls.Remove(cartesianChart);
+                    cartesianChart.Dispose();
+                });
+                cartesianChart = null;
+            }
             this.Invoke(() => this.Controls.Clear());
             return Task.CompletedTask;
         }

@@ -20,18 +20,15 @@ namespace DigitalProductionProgram.Processcards
     public class Processcard
     {
         public readonly Module module;
-      
+
         public Processcard(Module parentModule)
         {
             module = parentModule;
-           
+
         }
 
-        
 
-        //public static readonly List<int> Rows_double = new List<int>();
-        //public static readonly List<int> Rows_int = new List<int>();
-        //public static readonly List<int> Rows_string = new List<int>();
+      
 
         public static bool IsNotUsingProcesscard(WorkOperations workoperation)
         {
@@ -47,11 +44,14 @@ namespace DigitalProductionProgram.Processcards
         }
         public static bool IsMultipleProcesscard(WorkOperations workoperation, string? partNr = null)
         {
+            var ctr = 0;
+            var test = Order.PartID;
+
             if (partNr is null)
                 partNr = Order.PartNumber;
             if (partNr is null)
                 return false;
-            var ctr = 0;
+
             using (var con = new SqlConnection(Database.cs_Protocol))
             {
                 var query = "SELECT DISTINCT ProdLine, ProdType FROM Processcard.MainData WHERE PartNr = @partnr AND WorkoperationID = (SELECT ID FROM Workoperation.Names WHERE Name = @workoperation AND ID IS NOT NULL)";//" AND Aktiv = 'True'"; //Inaktiva Processkort behöver räknas med och visas men operatör skall inte kunna starta det
@@ -112,7 +112,7 @@ namespace DigitalProductionProgram.Processcards
             }
         }
 
-        
+
         public static string Latest_Processcard_Revision(int formtemplateid)
         {
             using (var con = new SqlConnection(Database.cs_Protocol))
@@ -162,7 +162,7 @@ namespace DigitalProductionProgram.Processcards
             cmd.Parameters.AddWithValue("@formtemplateid", formtemplateid);
             cmd.Parameters.AddWithValue("@colIndex", col);
             cmd.Parameters.AddWithValue("@rowIndex", row);
-                
+
             con.Open();
             var value = cmd.ExecuteScalar();
             return (int?)value;
@@ -181,7 +181,7 @@ namespace DigitalProductionProgram.Processcards
             return int.Parse(value.ToString());
         }
 
-        
+
         public static void Load_Data(DataGridView dgv_Processkort, int formtemplateid, bool IsMultipleExtruder = false)
         {
             var Cell_Min = 2;
@@ -210,7 +210,7 @@ namespace DigitalProductionProgram.Processcards
             else
                 cmd.Parameters.AddWithValue("@machineindex", DBNull.Value);
             var reader = cmd.ExecuteReader();
-                
+
             while (reader.Read())
             {
                 int.TryParse(reader["type"].ToString(), out var type);
@@ -306,16 +306,14 @@ namespace DigitalProductionProgram.Processcards
             }
             if (InfoText.answer == InfoText.Answer.No)
                 return;
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query = @"UPDATE Processcard.MainData SET Aktiv = @flag WHERE PartGroupID = @partgroupid";
+            using var con = new SqlConnection(Database.cs_Protocol);
+            var query = @"UPDATE Processcard.MainData SET Aktiv = @flag WHERE PartGroupID = @partgroupid";
 
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@flag", flag);
-                SQL_Parameter.NullableINT(cmd.Parameters, "@partgroupid", Order.PartGroupID);
-                con.Open();
-                cmd.ExecuteNonQuery();
-            }
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            cmd.Parameters.AddWithValue("@flag", flag);
+            SQL_Parameter.NullableINT(cmd.Parameters, "@partgroupid", Order.PartGroupID);
+            con.Open();
+            cmd.ExecuteNonQuery();
         }
         public static void DeleteProcesscard(int? partID)
         {
@@ -341,12 +339,12 @@ namespace DigitalProductionProgram.Processcards
                 case WorkOperations.Kragning_K22_PTFE:
                 case WorkOperations.Kragning_TEF:
                 case WorkOperations.Krympslangsblåsning:
-                    
+
                 case WorkOperations.HeatShrink:
                 case WorkOperations.Skärmning:
-                case WorkOperations.Synergy_PTFE:
+                case WorkOperations.Synergy_PTFE_K18:
                 case WorkOperations.Slitting_PTFE:
-                    
+
                     IsNoArtikelID = true;
                     break;
                 case WorkOperations.Slipning:
@@ -367,7 +365,7 @@ namespace DigitalProductionProgram.Processcards
             cmd.Parameters.AddWithValue("@partID", partID);
             cmd.ExecuteNonQuery();
         }
-        
+
         private static void Add_Parameters(SqlCommand cmd, List<SqlParameter> parameters, int partID)
         {
             cmd.Parameters.AddRange(parameters.ToArray());
@@ -375,7 +373,10 @@ namespace DigitalProductionProgram.Processcards
             SQL_Parameter.NullableINT(cmd.Parameters, "@artID", partID);
             cmd.Parameters.AddWithValue("@partgroupid", Order.PartGroupID);
             SQL_Parameter.String(cmd.Parameters, "@prodline", Order.ProdLine);
-            SQL_Parameter.String(cmd.Parameters, "@prodtype", Order.ProdType);
+            if (ControlValidator.IsStringNA(Order.ProdType))
+                SQL_Parameter.String(cmd.Parameters, "@prodtype", DBNull.Value.ToString(), true);
+            else
+                SQL_Parameter.String(cmd.Parameters, "@prodtype", Order.ProdType);
         }
         public static int TextLength(string? text, Font font, Graphics g)
         {
@@ -406,7 +407,7 @@ namespace DigitalProductionProgram.Processcards
                     var column = 0;
                     for (var col = module.dgv_Module.Columns.Count - 3; col < module.dgv_Module.Columns.Count; col++)
                     {
-                        var pcID = Templates_Protocol.Template.ID(row, column,revision, module.FormTemplateID);
+                        var pcID = Templates_Protocol.Template.ID(row, column, revision, module.FormTemplateID);
                         column++;
                         if (pcID.HasValue)
                         {
@@ -449,28 +450,28 @@ namespace DigitalProductionProgram.Processcards
             }
             private string UPDATE_Values(string revision)
             {
-                    string query = null;
-                    var machineIndex = "NULL";
-                    if (module.MachineIndex > 0)
-                        machineIndex = module.MachineIndex.ToString();
+                string query = null;
+                var machineIndex = "NULL";
+                if (module.MachineIndex > 0)
+                    machineIndex = module.MachineIndex.ToString();
 
-                    for (var row = 0; row < module.dgv_Module.Rows.Count; row++)
+                for (var row = 0; row < module.dgv_Module.Rows.Count; row++)
+                {
+                    var column = 0;
+                    for (var col = module.dgv_Module.Columns.Count - 3; col < module.dgv_Module.Columns.Count; col++)
                     {
-                        var column = 0;
-                        for (var col = module.dgv_Module.Columns.Count - 3; col < module.dgv_Module.Columns.Count; col++)
+                        var pcID = Templates_Protocol.Template.ID(row, column, revision, module.FormTemplateID);
+                        column++;
+                        if (pcID.HasValue)
                         {
-                            var pcID = Templates_Protocol.Template.ID(row, column, revision, module.FormTemplateID);
-                            column++;
-                            if (pcID.HasValue)
+                            var type = ValueType(pcID);
+                            switch (type)
                             {
-                                var type = ValueType(pcID);
-                                switch (type)
-                                {
-                                    case 0: //NumberValue
-                                        if (module.dgv_Module.Rows[row].Cells[col].Value != null)
-                                        {
-                                            if (double.TryParse(module.dgv_Module.Rows[row].Cells[col].Value.ToString(), out var value))
-                                                query += $@"
+                                case 0: //NumberValue
+                                    if (module.dgv_Module.Rows[row].Cells[col].Value != null)
+                                    {
+                                        if (double.TryParse(module.dgv_Module.Rows[row].Cells[col].Value.ToString(), out var value))
+                                            query += $@"
                                                 IF NOT EXISTS (SELECT 1 FROM Processcard.Data WHERE PartID = @partID AND TemplateID = {pcID} AND COALESCE(MachineIndex, 0) = COALESCE({machineIndex}, 0))
                                                 BEGIN
                                                     INSERT INTO Processcard.Data (PartID, TemplateID, Value, MachineIndex) VALUES (@partID, {pcID}, {string.Format(CultureInfo.InvariantCulture, "{0}", value)}, {machineIndex})
@@ -479,9 +480,9 @@ namespace DigitalProductionProgram.Processcards
                                                 BEGIN
                                                     UPDATE Processcard.Data SET Value = {string.Format(CultureInfo.InvariantCulture, "{0}", value)} WHERE PartID = @partID AND TemplateID = {pcID} AND COALESCE(MachineIndex, 0) = COALESCE({machineIndex}, 0)
                                                 END";
-                                        }
-                                        else
-                                            query += $@"
+                                    }
+                                    else
+                                        query += $@"
                                                 IF NOT EXISTS (SELECT 1 FROM Processcard.Data WHERE PartID = @partID AND TemplateID = {pcID} AND COALESCE(MachineIndex, 0) = COALESCE({machineIndex}, 0))
                                                 BEGIN
                                                     INSERT INTO Processcard.Data (PartID, TemplateID, Value, MachineIndex) VALUES (@partID, {pcID}, NULL, {machineIndex})
@@ -490,12 +491,12 @@ namespace DigitalProductionProgram.Processcards
                                                 BEGIN
                                                     UPDATE Processcard.Data SET Value = NULL WHERE PartID = @partID AND TemplateID = {pcID} AND COALESCE(MachineIndex, 0) = COALESCE({machineIndex}, 0)
                                                 END";
-                                        break;
-                                    case 1: //TextValue
-                                        if (module.dgv_Module.Rows[row].Cells[col].Value != null)
-                                        {
-                                            var textValue = module.dgv_Module.Rows[row].Cells[col].Value.ToString();
-                                            query += $@"
+                                    break;
+                                case 1: //TextValue
+                                    if (module.dgv_Module.Rows[row].Cells[col].Value != null)
+                                    {
+                                        var textValue = module.dgv_Module.Rows[row].Cells[col].Value.ToString();
+                                        query += $@"
                                             IF NOT EXISTS (SELECT 1 FROM Processcard.Data WHERE PartID = @partID AND TemplateID = {pcID} AND COALESCE(MachineIndex, 0) = COALESCE({machineIndex}, 0))
                                             BEGIN
                                                 INSERT INTO Processcard.Data (PartID, TemplateID, TextValue, MachineIndex) VALUES (@partID, {pcID}, '{textValue}', {machineIndex})
@@ -504,9 +505,9 @@ namespace DigitalProductionProgram.Processcards
                                             BEGIN
                                                 UPDATE Processcard.Data SET TextValue = '{textValue}' WHERE PartID = @partID AND TemplateID = {pcID} AND COALESCE(MachineIndex, 0) = COALESCE({machineIndex}, 0)
                                             END";
-                                        }
-                                        else
-                                            query += $@"
+                                    }
+                                    else
+                                        query += $@"
                                             IF NOT EXISTS (SELECT 1 FROM Processcard.Data WHERE PartID = @partID AND TemplateID = {pcID} AND COALESCE(MachineIndex, 0) = COALESCE({machineIndex}, 0))
                                                 BEGIN
                                             INSERT INTO Processcard.Data (PartID, TemplateID, TextValue, MachineIndex) VALUES (@partID, {pcID}, NULL, {machineIndex})
@@ -515,12 +516,12 @@ namespace DigitalProductionProgram.Processcards
                                             BEGIN
                                                 UPDATE Processcard.Data SET TextValue = NULL WHERE PartID = @partID AND TemplateID = {pcID} AND COALESCE(MachineIndex, 0) = COALESCE({machineIndex}, 0)
                                             END";
-                                        break;
-                                }
+                                    break;
                             }
                         }
                     }
-                    return query;
+                }
+                return query;
             }
             private static int ValueType(int? templ_ID)
             {
@@ -535,7 +536,7 @@ namespace DigitalProductionProgram.Processcards
                 var value = cmd.ExecuteScalar();
                 return int.Parse(value.ToString());
             }
-            
+
             public static void Save_MainData(ref bool IsOk, int PartID, List<SqlParameter> parameters = null)
             {
                 using var con = new SqlConnection(Database.cs_Protocol);
@@ -609,7 +610,7 @@ namespace DigitalProductionProgram.Processcards
                 con.Open();
                 Manage_Processcards.Execute_cmd(cmd, ref IsOk);
             }
-           
+
             public static void Update_MainData(ref bool IsOk, List<SqlParameter> parameters = null)
             {
                 using var con = new SqlConnection(Database.cs_Protocol);
@@ -658,6 +659,7 @@ namespace DigitalProductionProgram.Processcards
 
             public void Load_ProcessData(int formTemplateID)
             {
+                int colIndex = module.dgv_Module.Columns["col_MIN"].Index;
                 using (var con = new SqlConnection(Database.cs_Protocol))
                 {
                     var query = $@"
@@ -676,8 +678,6 @@ namespace DigitalProductionProgram.Processcards
                     con.Open();
                     var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     SQL_Parameter.NullableINT(cmd.Parameters, "@partID", Order.PartID);
-                    //template.Revision bör ej behövas kvar eftersom MainTemplateID är unikt och revisionen baseras på det
-                    // cmd.Parameters.AddWithValue("@revision", Manage_Templates.MainTemplate.Revision);
                     cmd.Parameters.AddWithValue("@formtemplateid", formTemplateID);
                     cmd.Parameters.AddWithValue("@machineindex", module.MachineIndex);
 
@@ -699,7 +699,7 @@ namespace DigitalProductionProgram.Processcards
                                 value = reader["TextValue"].ToString();
                                 break;
                         }
-                        module.dgv_Module.Rows[row].Cells[col + 9].Value = value;
+                        module.dgv_Module.Rows[row].Cells[colIndex + col].Value = value;
                     }
                 }
                 module.dgv_Module.CellValueChanged += module.Module_ValidateData_SaveData_CellValueChanged;

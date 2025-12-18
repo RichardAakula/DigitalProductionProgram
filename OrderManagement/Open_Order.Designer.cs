@@ -31,268 +31,314 @@ namespace DigitalProductionProgram.OrderManagement
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            this.btn_OpenOrder = new System.Windows.Forms.Button();
-            this.label_ProdLine = new System.Windows.Forms.Label();
-            this.label_PartNumber = new System.Windows.Forms.Label();
-            this.dgv_OrderList = new System.Windows.Forms.DataGridView();
-            this.tb_PartNumber = new System.Windows.Forms.TextBox();
-            this.tb_ProdLine = new System.Windows.Forms.TextBox();
-            this.label_DateFrom = new System.Windows.Forms.Label();
-            this.date_From = new System.Windows.Forms.DateTimePicker();
-            this.label_DateTo = new System.Windows.Forms.Label();
-            this.date_To = new System.Windows.Forms.DateTimePicker();
-            this.label_Customer = new System.Windows.Forms.Label();
-            this.tb_Customer = new System.Windows.Forms.TextBox();
-            this.label_OrderNr = new System.Windows.Forms.Label();
-            this.tb_OrderNr = new System.Windows.Forms.TextBox();
-            this.label_Frisökning = new System.Windows.Forms.Label();
-            this.tb_CodeText = new System.Windows.Forms.TextBox();
-            this.tb_FreeText = new System.Windows.Forms.TextBox();
-            ((System.ComponentModel.ISupportInitialize)(this.dgv_OrderList)).BeginInit();
-            this.SuspendLayout();
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
+            btn_OpenOrder = new Button();
+            label_ProdLine = new Label();
+            label_PartNumber = new Label();
+            dgv_OrderList = new DataGridView();
+            tb_PartNumber = new TextBox();
+            tb_ProdLine = new TextBox();
+            label_DateFrom = new Label();
+            date_From = new DateTimePicker();
+            label_DateTo = new Label();
+            date_To = new DateTimePicker();
+            label_Customer = new Label();
+            tb_Customer = new TextBox();
+            label_OrderNr = new Label();
+            tb_OrderNr = new TextBox();
+            label_Frisökning = new Label();
+            tb_CodeText = new TextBox();
+            tb_FreeText = new TextBox();
+            label_TemplateName = new Label();
+            tb_TemplateName = new TextBox();
+            ((ISupportInitialize)dgv_OrderList).BeginInit();
+            SuspendLayout();
             // 
             // btn_OpenOrder
             // 
-            this.btn_OpenOrder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btn_OpenOrder.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btn_OpenOrder.Font = new System.Drawing.Font("Lucida Sans", 10.25F);
-            this.btn_OpenOrder.ForeColor = System.Drawing.Color.DarkGoldenrod;
-            this.btn_OpenOrder.Location = new System.Drawing.Point(1039, 503);
-            this.btn_OpenOrder.Name = "btn_OpenOrder";
-            this.btn_OpenOrder.Size = new System.Drawing.Size(121, 29);
-            this.btn_OpenOrder.TabIndex = 1;
-            this.btn_OpenOrder.Text = "Öppna order";
-            this.btn_OpenOrder.UseVisualStyleBackColor = true;
-            this.btn_OpenOrder.Click += new System.EventHandler(this.Öppna_Click);
+            btn_OpenOrder.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btn_OpenOrder.FlatStyle = FlatStyle.Flat;
+            btn_OpenOrder.Font = new Font("Lucida Sans", 10.25F);
+            btn_OpenOrder.ForeColor = Color.DarkGoldenrod;
+            btn_OpenOrder.Location = new Point(1488, 650);
+            btn_OpenOrder.Margin = new Padding(4, 3, 4, 3);
+            btn_OpenOrder.Name = "btn_OpenOrder";
+            btn_OpenOrder.Size = new Size(141, 33);
+            btn_OpenOrder.TabIndex = 1;
+            btn_OpenOrder.Text = "Öppna order";
+            btn_OpenOrder.UseVisualStyleBackColor = true;
+            btn_OpenOrder.Click += Öppna_Click;
             // 
             // label_ProdLine
             // 
-            this.label_ProdLine.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label_ProdLine.Font = new System.Drawing.Font("Lucida Sans", 10.25F);
-            this.label_ProdLine.ForeColor = System.Drawing.Color.DarkGoldenrod;
-            this.label_ProdLine.Location = new System.Drawing.Point(1024, 130);
-            this.label_ProdLine.Name = "label_ProdLine";
-            this.label_ProdLine.Size = new System.Drawing.Size(136, 16);
-            this.label_ProdLine.TabIndex = 8;
-            this.label_ProdLine.Text = "ProduktionsLinje:";
-            this.label_ProdLine.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            label_ProdLine.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            label_ProdLine.Font = new Font("Lucida Sans", 10.25F);
+            label_ProdLine.ForeColor = Color.DarkGoldenrod;
+            label_ProdLine.Location = new Point(1471, 150);
+            label_ProdLine.Margin = new Padding(4, 0, 4, 0);
+            label_ProdLine.Name = "label_ProdLine";
+            label_ProdLine.Size = new Size(159, 18);
+            label_ProdLine.TabIndex = 8;
+            label_ProdLine.Text = "ProduktionsLinje:";
+            label_ProdLine.TextAlign = ContentAlignment.TopRight;
             // 
             // label_PartNumber
             // 
-            this.label_PartNumber.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label_PartNumber.Font = new System.Drawing.Font("Lucida Sans", 10.25F);
-            this.label_PartNumber.ForeColor = System.Drawing.Color.DarkGoldenrod;
-            this.label_PartNumber.Location = new System.Drawing.Point(1024, 70);
-            this.label_PartNumber.Name = "label_PartNumber";
-            this.label_PartNumber.Size = new System.Drawing.Size(136, 16);
-            this.label_PartNumber.TabIndex = 2;
-            this.label_PartNumber.Text = "ArtikelNr:";
-            this.label_PartNumber.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            label_PartNumber.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            label_PartNumber.Font = new Font("Lucida Sans", 10.25F);
+            label_PartNumber.ForeColor = Color.DarkGoldenrod;
+            label_PartNumber.Location = new Point(1471, 81);
+            label_PartNumber.Margin = new Padding(4, 0, 4, 0);
+            label_PartNumber.Name = "label_PartNumber";
+            label_PartNumber.Size = new Size(159, 18);
+            label_PartNumber.TabIndex = 2;
+            label_PartNumber.Text = "ArtikelNr:";
+            label_PartNumber.TextAlign = ContentAlignment.TopRight;
             // 
             // dgv_OrderList
             // 
-            this.dgv_OrderList.AllowUserToAddRows = false;
-            this.dgv_OrderList.AllowUserToDeleteRows = false;
-            this.dgv_OrderList.AllowUserToResizeColumns = false;
-            this.dgv_OrderList.AllowUserToResizeRows = false;
-            this.dgv_OrderList.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
-            this.dgv_OrderList.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(63)))), ((int)(((byte)(115)))), ((int)(((byte)(140)))));
-            this.dgv_OrderList.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(81)))), ((int)(((byte)(85)))), ((int)(((byte)(92)))));
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Arial", 11.25F);
-            dataGridViewCellStyle1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(183)))), ((int)(((byte)(220)))), ((int)(((byte)(233)))));
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(81)))), ((int)(((byte)(85)))), ((int)(((byte)(92)))));
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(147)))), ((int)(((byte)(146)))), ((int)(((byte)(153)))));
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgv_OrderList.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
-            this.dgv_OrderList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(63)))), ((int)(((byte)(115)))), ((int)(((byte)(140)))));
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(239)))), ((int)(((byte)(228)))), ((int)(((byte)(177)))));
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(239)))), ((int)(((byte)(228)))), ((int)(((byte)(177)))));
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(63)))), ((int)(((byte)(115)))), ((int)(((byte)(140)))));
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgv_OrderList.DefaultCellStyle = dataGridViewCellStyle2;
-            this.dgv_OrderList.Dock = System.Windows.Forms.DockStyle.Left;
-            this.dgv_OrderList.EnableHeadersVisualStyles = false;
-            this.dgv_OrderList.Location = new System.Drawing.Point(0, 0);
-            this.dgv_OrderList.Margin = new System.Windows.Forms.Padding(10, 10, 3, 3);
-            this.dgv_OrderList.MultiSelect = false;
-            this.dgv_OrderList.Name = "dgv_OrderList";
-            this.dgv_OrderList.RowHeadersVisible = false;
-            this.dgv_OrderList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgv_OrderList.Size = new System.Drawing.Size(600, 544);
-            this.dgv_OrderList.TabIndex = 14;
+            dgv_OrderList.AllowUserToAddRows = false;
+            dgv_OrderList.AllowUserToDeleteRows = false;
+            dgv_OrderList.AllowUserToResizeColumns = false;
+            dgv_OrderList.AllowUserToResizeRows = false;
+            dgv_OrderList.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
+            dgv_OrderList.BackgroundColor = Color.FromArgb(63, 115, 140);
+            dgv_OrderList.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
+            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = Color.FromArgb(81, 85, 92);
+            dataGridViewCellStyle1.Font = new Font("Arial", 11.25F);
+            dataGridViewCellStyle1.ForeColor = Color.FromArgb(183, 220, 233);
+            dataGridViewCellStyle1.SelectionBackColor = Color.FromArgb(81, 85, 92);
+            dataGridViewCellStyle1.SelectionForeColor = Color.FromArgb(147, 146, 153);
+            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
+            dgv_OrderList.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dgv_OrderList.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = Color.FromArgb(63, 115, 140);
+            dataGridViewCellStyle2.Font = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle2.ForeColor = Color.FromArgb(239, 228, 177);
+            dataGridViewCellStyle2.SelectionBackColor = Color.FromArgb(239, 228, 177);
+            dataGridViewCellStyle2.SelectionForeColor = Color.FromArgb(63, 115, 140);
+            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.False;
+            dgv_OrderList.DefaultCellStyle = dataGridViewCellStyle2;
+            dgv_OrderList.Dock = DockStyle.Left;
+            dgv_OrderList.EnableHeadersVisualStyles = false;
+            dgv_OrderList.Location = new Point(0, 0);
+            dgv_OrderList.Margin = new Padding(12, 12, 4, 3);
+            dgv_OrderList.MultiSelect = false;
+            dgv_OrderList.Name = "dgv_OrderList";
+            dgv_OrderList.RowHeadersVisible = false;
+            dgv_OrderList.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgv_OrderList.Size = new Size(1263, 704);
+            dgv_OrderList.TabIndex = 14;
             // 
             // tb_PartNumber
             // 
-            this.tb_PartNumber.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.tb_PartNumber.Location = new System.Drawing.Point(1024, 90);
-            this.tb_PartNumber.Name = "tb_PartNumber";
-            this.tb_PartNumber.Size = new System.Drawing.Size(136, 20);
-            this.tb_PartNumber.TabIndex = 15;
-            this.tb_PartNumber.TextChanged += new System.EventHandler(this.PartNumber_TextChanged);
+            tb_PartNumber.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            tb_PartNumber.Location = new Point(1471, 104);
+            tb_PartNumber.Margin = new Padding(4, 3, 4, 3);
+            tb_PartNumber.Name = "tb_PartNumber";
+            tb_PartNumber.Size = new Size(158, 23);
+            tb_PartNumber.TabIndex = 15;
+            tb_PartNumber.TextChanged += Filter_TextChanged;
             // 
             // tb_ProdLine
             // 
-            this.tb_ProdLine.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.tb_ProdLine.Location = new System.Drawing.Point(1024, 150);
-            this.tb_ProdLine.Name = "tb_ProdLine";
-            this.tb_ProdLine.Size = new System.Drawing.Size(136, 20);
-            this.tb_ProdLine.TabIndex = 15;
-            this.tb_ProdLine.TextChanged += new System.EventHandler(this.PartNumber_TextChanged);
+            tb_ProdLine.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            tb_ProdLine.Location = new Point(1471, 173);
+            tb_ProdLine.Margin = new Padding(4, 3, 4, 3);
+            tb_ProdLine.Name = "tb_ProdLine";
+            tb_ProdLine.Size = new Size(158, 23);
+            tb_ProdLine.TabIndex = 15;
+            tb_ProdLine.TextChanged += Filter_TextChanged;
             // 
             // label_DateFrom
             // 
-            this.label_DateFrom.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label_DateFrom.Font = new System.Drawing.Font("Lucida Sans", 10.25F);
-            this.label_DateFrom.ForeColor = System.Drawing.Color.DarkGoldenrod;
-            this.label_DateFrom.Location = new System.Drawing.Point(960, 310);
-            this.label_DateFrom.Name = "label_DateFrom";
-            this.label_DateFrom.Size = new System.Drawing.Size(200, 16);
-            this.label_DateFrom.TabIndex = 16;
-            this.label_DateFrom.Text = "Från Datum";
-            this.label_DateFrom.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            label_DateFrom.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            label_DateFrom.Font = new Font("Lucida Sans", 10.25F);
+            label_DateFrom.ForeColor = Color.DarkGoldenrod;
+            label_DateFrom.Location = new Point(1396, 428);
+            label_DateFrom.Margin = new Padding(4, 0, 4, 0);
+            label_DateFrom.Name = "label_DateFrom";
+            label_DateFrom.Size = new Size(233, 18);
+            label_DateFrom.TabIndex = 16;
+            label_DateFrom.Text = "Från Datum";
+            label_DateFrom.TextAlign = ContentAlignment.TopRight;
+            label_DateFrom.Click += label_DateFrom_Click;
             // 
             // date_From
             // 
-            this.date_From.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.date_From.Location = new System.Drawing.Point(960, 330);
-            this.date_From.Name = "date_From";
-            this.date_From.Size = new System.Drawing.Size(200, 20);
-            this.date_From.TabIndex = 17;
-            this.date_From.ValueChanged += new System.EventHandler(this.PartNumber_TextChanged);
+            date_From.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            date_From.Location = new Point(1396, 451);
+            date_From.Margin = new Padding(4, 3, 4, 3);
+            date_From.Name = "date_From";
+            date_From.Size = new Size(233, 23);
+            date_From.TabIndex = 17;
+            date_From.ValueChanged += date_From_ValueChanged;
             // 
             // label_DateTo
             // 
-            this.label_DateTo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label_DateTo.Font = new System.Drawing.Font("Lucida Sans", 10.25F);
-            this.label_DateTo.ForeColor = System.Drawing.Color.DarkGoldenrod;
-            this.label_DateTo.Location = new System.Drawing.Point(960, 250);
-            this.label_DateTo.Name = "label_DateTo";
-            this.label_DateTo.Size = new System.Drawing.Size(200, 16);
-            this.label_DateTo.TabIndex = 16;
-            this.label_DateTo.Text = "Till Datum";
-            this.label_DateTo.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            label_DateTo.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            label_DateTo.Font = new Font("Lucida Sans", 10.25F);
+            label_DateTo.ForeColor = Color.DarkGoldenrod;
+            label_DateTo.Location = new Point(1396, 358);
+            label_DateTo.Margin = new Padding(4, 0, 4, 0);
+            label_DateTo.Name = "label_DateTo";
+            label_DateTo.Size = new Size(233, 18);
+            label_DateTo.TabIndex = 16;
+            label_DateTo.Text = "Till Datum";
+            label_DateTo.TextAlign = ContentAlignment.TopRight;
             // 
             // date_To
             // 
-            this.date_To.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.date_To.Location = new System.Drawing.Point(960, 270);
-            this.date_To.Name = "date_To";
-            this.date_To.Size = new System.Drawing.Size(200, 20);
-            this.date_To.TabIndex = 17;
-            this.date_To.ValueChanged += new System.EventHandler(this.PartNumber_TextChanged);
+            date_To.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            date_To.Location = new Point(1396, 382);
+            date_To.Margin = new Padding(4, 3, 4, 3);
+            date_To.Name = "date_To";
+            date_To.Size = new Size(233, 23);
+            date_To.TabIndex = 17;
+            date_To.ValueChanged += Filter_TextChanged;
             // 
             // label_Customer
             // 
-            this.label_Customer.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label_Customer.Font = new System.Drawing.Font("Lucida Sans", 10.25F);
-            this.label_Customer.ForeColor = System.Drawing.Color.DarkGoldenrod;
-            this.label_Customer.Location = new System.Drawing.Point(1024, 191);
-            this.label_Customer.Name = "label_Customer";
-            this.label_Customer.Size = new System.Drawing.Size(136, 16);
-            this.label_Customer.TabIndex = 8;
-            this.label_Customer.Text = "Kund:";
-            this.label_Customer.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            label_Customer.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            label_Customer.Font = new Font("Lucida Sans", 10.25F);
+            label_Customer.ForeColor = Color.DarkGoldenrod;
+            label_Customer.Location = new Point(1471, 220);
+            label_Customer.Margin = new Padding(4, 0, 4, 0);
+            label_Customer.Name = "label_Customer";
+            label_Customer.Size = new Size(159, 18);
+            label_Customer.TabIndex = 8;
+            label_Customer.Text = "Kund:";
+            label_Customer.TextAlign = ContentAlignment.TopRight;
             // 
             // tb_Customer
             // 
-            this.tb_Customer.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.tb_Customer.Location = new System.Drawing.Point(1024, 210);
-            this.tb_Customer.Name = "tb_Customer";
-            this.tb_Customer.Size = new System.Drawing.Size(136, 20);
-            this.tb_Customer.TabIndex = 15;
-            this.tb_Customer.TextChanged += new System.EventHandler(this.PartNumber_TextChanged);
+            tb_Customer.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            tb_Customer.Location = new Point(1471, 242);
+            tb_Customer.Margin = new Padding(4, 3, 4, 3);
+            tb_Customer.Name = "tb_Customer";
+            tb_Customer.Size = new Size(158, 23);
+            tb_Customer.TabIndex = 15;
+            tb_Customer.TextChanged += Filter_TextChanged;
             // 
             // label_OrderNr
             // 
-            this.label_OrderNr.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label_OrderNr.Font = new System.Drawing.Font("Lucida Sans", 10.25F);
-            this.label_OrderNr.ForeColor = System.Drawing.Color.DarkGoldenrod;
-            this.label_OrderNr.Location = new System.Drawing.Point(1024, 10);
-            this.label_OrderNr.Name = "label_OrderNr";
-            this.label_OrderNr.Size = new System.Drawing.Size(136, 16);
-            this.label_OrderNr.TabIndex = 2;
-            this.label_OrderNr.Text = "OrderNr";
-            this.label_OrderNr.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            label_OrderNr.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            label_OrderNr.Font = new Font("Lucida Sans", 10.25F);
+            label_OrderNr.ForeColor = Color.DarkGoldenrod;
+            label_OrderNr.Location = new Point(1471, 12);
+            label_OrderNr.Margin = new Padding(4, 0, 4, 0);
+            label_OrderNr.Name = "label_OrderNr";
+            label_OrderNr.Size = new Size(159, 18);
+            label_OrderNr.TabIndex = 2;
+            label_OrderNr.Text = "OrderNr";
+            label_OrderNr.TextAlign = ContentAlignment.TopRight;
             // 
             // tb_OrderNr
             // 
-            this.tb_OrderNr.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.tb_OrderNr.Location = new System.Drawing.Point(1024, 30);
-            this.tb_OrderNr.Name = "tb_OrderNr";
-            this.tb_OrderNr.Size = new System.Drawing.Size(136, 20);
-            this.tb_OrderNr.TabIndex = 15;
-            this.tb_OrderNr.TextChanged += new System.EventHandler(this.PartNumber_TextChanged);
+            tb_OrderNr.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            tb_OrderNr.Location = new Point(1471, 35);
+            tb_OrderNr.Margin = new Padding(4, 3, 4, 3);
+            tb_OrderNr.Name = "tb_OrderNr";
+            tb_OrderNr.Size = new Size(158, 23);
+            tb_OrderNr.TabIndex = 15;
+            tb_OrderNr.TextChanged += Filter_TextChanged;
             // 
             // label_Frisökning
             // 
-            this.label_Frisökning.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label_Frisökning.Font = new System.Drawing.Font("Lucida Sans", 10.25F);
-            this.label_Frisökning.ForeColor = System.Drawing.Color.DarkGoldenrod;
-            this.label_Frisökning.Location = new System.Drawing.Point(1024, 372);
-            this.label_Frisökning.Name = "label_Frisökning";
-            this.label_Frisökning.Size = new System.Drawing.Size(136, 16);
-            this.label_Frisökning.TabIndex = 8;
-            this.label_Frisökning.Text = "Fritext:";
-            this.label_Frisökning.TextAlign = System.Drawing.ContentAlignment.TopRight;
-            this.label_Frisökning.Visible = false;
+            label_Frisökning.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            label_Frisökning.Font = new Font("Lucida Sans", 10.25F);
+            label_Frisökning.ForeColor = Color.DarkGoldenrod;
+            label_Frisökning.Location = new Point(1471, 499);
+            label_Frisökning.Margin = new Padding(4, 0, 4, 0);
+            label_Frisökning.Name = "label_Frisökning";
+            label_Frisökning.Size = new Size(159, 18);
+            label_Frisökning.TabIndex = 8;
+            label_Frisökning.Text = "Fritext:";
+            label_Frisökning.TextAlign = ContentAlignment.TopRight;
+            label_Frisökning.Visible = false;
             // 
             // tb_CodeText
             // 
-            this.tb_CodeText.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.tb_CodeText.Location = new System.Drawing.Point(1024, 391);
-            this.tb_CodeText.Name = "tb_CodeText";
-            this.tb_CodeText.ReadOnly = true;
-            this.tb_CodeText.Size = new System.Drawing.Size(136, 20);
-            this.tb_CodeText.TabIndex = 15;
-            this.tb_CodeText.Visible = false;
-            this.tb_CodeText.Click += new System.EventHandler(this.tb_CodeText_Click);
+            tb_CodeText.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            tb_CodeText.Location = new Point(1471, 521);
+            tb_CodeText.Margin = new Padding(4, 3, 4, 3);
+            tb_CodeText.Name = "tb_CodeText";
+            tb_CodeText.ReadOnly = true;
+            tb_CodeText.Size = new Size(158, 23);
+            tb_CodeText.TabIndex = 15;
+            tb_CodeText.Visible = false;
+            tb_CodeText.Click += tb_CodeText_Click;
             // 
             // tb_FreeText
             // 
-            this.tb_FreeText.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.tb_FreeText.Location = new System.Drawing.Point(1024, 427);
-            this.tb_FreeText.Name = "tb_FreeText";
-            this.tb_FreeText.Size = new System.Drawing.Size(136, 20);
-            this.tb_FreeText.TabIndex = 15;
-            this.tb_FreeText.Visible = false;
-            this.tb_FreeText.TextChanged += new System.EventHandler(this.PartNumber_TextChanged);
+            tb_FreeText.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            tb_FreeText.Location = new Point(1471, 563);
+            tb_FreeText.Margin = new Padding(4, 3, 4, 3);
+            tb_FreeText.Name = "tb_FreeText";
+            tb_FreeText.Size = new Size(158, 23);
+            tb_FreeText.TabIndex = 15;
+            tb_FreeText.Visible = false;
+            tb_FreeText.TextChanged += Filter_TextChanged;
             // 
-            // Öppna
+            // label_TemplateName
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(6)))), ((int)(((byte)(81)))), ((int)(((byte)(87)))));
-            this.ClientSize = new System.Drawing.Size(1172, 544);
-            this.Controls.Add(this.date_To);
-            this.Controls.Add(this.date_From);
-            this.Controls.Add(this.label_DateTo);
-            this.Controls.Add(this.label_DateFrom);
-            this.Controls.Add(this.tb_FreeText);
-            this.Controls.Add(this.tb_CodeText);
-            this.Controls.Add(this.tb_Customer);
-            this.Controls.Add(this.tb_ProdLine);
-            this.Controls.Add(this.tb_OrderNr);
-            this.Controls.Add(this.tb_PartNumber);
-            this.Controls.Add(this.dgv_OrderList);
-            this.Controls.Add(this.label_Frisökning);
-            this.Controls.Add(this.label_Customer);
-            this.Controls.Add(this.label_ProdLine);
-            this.Controls.Add(this.label_OrderNr);
-            this.Controls.Add(this.label_PartNumber);
-            this.Controls.Add(this.btn_OpenOrder);
-            this.Name = "Öppna";
-            this.Text = "Öppna";
-            this.Load += new System.EventHandler(this.Öppna_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.dgv_OrderList)).EndInit();
-            this.ResumeLayout(false);
-            this.PerformLayout();
+            label_TemplateName.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            label_TemplateName.Font = new Font("Lucida Sans", 10.25F);
+            label_TemplateName.ForeColor = Color.DarkGoldenrod;
+            label_TemplateName.Location = new Point(1470, 283);
+            label_TemplateName.Margin = new Padding(4, 0, 4, 0);
+            label_TemplateName.Name = "label_TemplateName";
+            label_TemplateName.Size = new Size(159, 18);
+            label_TemplateName.TabIndex = 8;
+            label_TemplateName.Text = "Protokoll namn";
+            label_TemplateName.TextAlign = ContentAlignment.TopRight;
+            // 
+            // tb_TemplateName
+            // 
+            tb_TemplateName.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            tb_TemplateName.Location = new Point(1470, 305);
+            tb_TemplateName.Margin = new Padding(4, 3, 4, 3);
+            tb_TemplateName.Name = "tb_TemplateName";
+            tb_TemplateName.Size = new Size(158, 23);
+            tb_TemplateName.TabIndex = 15;
+            tb_TemplateName.TextChanged += Filter_TextChanged;
+            tb_TemplateName.Enter += tb_TemplateName_Enter;
+            // 
+            // Open_Order
+            // 
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            BackColor = Color.FromArgb(6, 81, 87);
+            ClientSize = new Size(1643, 704);
+            Controls.Add(date_To);
+            Controls.Add(date_From);
+            Controls.Add(label_DateTo);
+            Controls.Add(label_DateFrom);
+            Controls.Add(tb_FreeText);
+            Controls.Add(tb_CodeText);
+            Controls.Add(tb_TemplateName);
+            Controls.Add(tb_Customer);
+            Controls.Add(tb_ProdLine);
+            Controls.Add(tb_OrderNr);
+            Controls.Add(tb_PartNumber);
+            Controls.Add(dgv_OrderList);
+            Controls.Add(label_Frisökning);
+            Controls.Add(label_TemplateName);
+            Controls.Add(label_Customer);
+            Controls.Add(label_ProdLine);
+            Controls.Add(label_OrderNr);
+            Controls.Add(label_PartNumber);
+            Controls.Add(btn_OpenOrder);
+            Margin = new Padding(4, 3, 4, 3);
+            Name = "Open_Order";
+            Text = "Öppna";
+            Shown += Open_Order_Shown;
+            ((ISupportInitialize)dgv_OrderList).EndInit();
+            ResumeLayout(false);
+            PerformLayout();
 
         }
 
@@ -314,5 +360,7 @@ namespace DigitalProductionProgram.OrderManagement
         private Label label_Frisökning;
         private TextBox tb_CodeText;
         private TextBox tb_FreeText;
+        private Label label_TemplateName;
+        private TextBox tb_TemplateName;
     }
 }

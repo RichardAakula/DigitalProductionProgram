@@ -18,6 +18,15 @@ using DigitalProductionProgram.PrintingServices;
 using DigitalProductionProgram.Processcards;
 using DigitalProductionProgram.Protocols.Protocol;
 using DigitalProductionProgram.User;
+using Microsoft.Data.SqlClient;
+using System;
+using System.Diagnostics;
+using System.Drawing;
+using System.Globalization;
+using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Windows.Forms;
 
 namespace DigitalProductionProgram.Övrigt
 {
@@ -134,7 +143,7 @@ namespace DigitalProductionProgram.Övrigt
             ChangeColor_dgvCell(codetext, protocolDescriptionID, cell, IsErrorAndValidated, IsErrorAndHistoricalData, IsOnlyWarning, IsOk, startUp);
 
         }
-        public static void IsMachine_Ok(string text, string codetext, int protocolDescriptionID, DataGridViewCell cell, int uppstart, string? nomValue,  bool IsValueCritical, bool isMachineInRange)
+        public static void IsMachine_Ok(string text, string codetext, int protocolDescriptionID, DataGridViewCell cell, int uppstart, string? nomValue, bool IsValueCritical, bool isMachineInRange)
         {
             if (Person.Role == "Utveckling" || (cell != null && cell.ReadOnly))
                 return;
@@ -199,12 +208,13 @@ namespace DigitalProductionProgram.Övrigt
                     IsErrorAndHistoricalData = false;
                     IsErrorAndValidated = false;
                     IsReferenceOnly = true;
-                    // IsOk = true;
+                   // IsOk = true;
                 }
             }
 
             ChangeColor_dgvCell(codetext, protocolDescriptionID, cell, IsErrorAndValidated, IsErrorAndHistoricalData, IsReferenceOnly, IsOk, uppstart);
         }
+
         public static void IsHSPipe_Ok(string? text, string codetext, int protocolDescriptionID, string? nom, DataGridViewCell cell, int uppstart, bool isNomValueCritical)
         {
             if (Person.Role == "Utveckling")
@@ -288,40 +298,91 @@ namespace DigitalProductionProgram.Övrigt
             else
                 Value_DataGridView_Number(IsValueCritical, codetext, Min, Nom, Max, Value, protocolDescriptionID, cell, control, uppstart, maskin);
         }
-
-        private static void Value_DataGridView_Text(bool IsValueCritical, string name, string? Nom,  string? Value, int protocolDescriptionID, DataGridViewCell cell = null, Control control = null, int uppstart = 0, int maskin = 0)
+        private static void Value_DataGridView_Text(bool IsValueCritical, string name, string? Nom, string? Value, int protocolDescriptionID, DataGridViewCell cell = null, Control control = null, int uppstart = 0, int maskin = 0)
         {
             var IsErrorAndHistoricalData = false;
             var IsErrorAndValidated = false;
             var IsOnlyWarning = false;
+            var IsOk = true;
 
-            if (string.IsNullOrEmpty(Value) && cell != null)
+            // Hämta aktuell text (från kontroll eller cell)
+            var actualValue = control is null ? Value : control.Text;
+
+            if (string.IsNullOrWhiteSpace(actualValue) && cell != null)
             {
                 cell.Style.BackColor = Color.White;
                 cell.Style.ForeColor = Color.Black;
                 return;
             }
-            if (IsValueCritical)
+
+            var normNom = NormalizeString(Nom);
+            var normValue = NormalizeString(actualValue);
+
+            bool match = string.IsNullOrEmpty(normNom) || string.Equals(normValue, normNom, StringComparison.OrdinalIgnoreCase);
+
+            if (!match)
             {
-                if (Value != Nom && !string.IsNullOrEmpty(Nom))
+                IsOk = false;
+                if (IsValueCritical)
                 {
-                    IsErrorAndHistoricalData = ProcesscardBasedOn.IsHistoricalData;
-                    IsErrorAndValidated = ProcesscardBasedOn.IsValidated;
+                    if (ProcesscardBasedOn.IsHistoricalData)
+                        IsErrorAndHistoricalData = true;
+                    if (ProcesscardBasedOn.IsValidated)
+                        IsErrorAndValidated = true;
+                    IsOk = false;
+                }
+                else
+                {
+                    IsOnlyWarning = true;
                 }
             }
-            else
-            {
-                if (Nom != Value && string.IsNullOrEmpty(Nom) == false)
-                    IsOnlyWarning = true;
-            }
-            var IsOk = !IsErrorAndHistoricalData && !IsErrorAndValidated;
-
 
             if (control is null)
                 ChangeColor_dgvCell(name, protocolDescriptionID, cell, IsErrorAndValidated, IsErrorAndHistoricalData, IsOnlyWarning, IsOk, uppstart, maskin);
             else
                 ChangeColor_TextBox(name, protocolDescriptionID, control, IsErrorAndValidated, IsErrorAndHistoricalData, IsOnlyWarning, IsOk, uppstart, maskin);
         }
+        //private static void Value_DataGridView_Text(bool IsValueCritical, string name, string? Nom, string? Value, int protocolDescriptionID, DataGridViewCell cell = null, Control control = null, int uppstart = 0, int maskin = 0)
+        //{
+        //    var IsErrorAndHistoricalData = false;
+        //    var IsErrorAndValidated = false;
+        //    var IsOnlyWarning = false;
+        //    var IsOk = true;
+        //    // Choose actual text source (cell value or control text)
+        //    var actualValue = control is null ? Value : control.Text;
+
+        //    if (string.IsNullOrWhiteSpace(actualValue) && cell != null)
+        //    {
+        //        cell.Style.BackColor = Color.White;
+        //        cell.Style.ForeColor = Color.Black;
+        //        return;
+        //    }
+
+
+        //    var normValue = NormalizeString(actualValue);
+        //    var normNom = NormalizeString(Nom);
+
+        //    if (IsValueCritical)
+        //    {
+        //        if (!string.IsNullOrEmpty(normNom) && !string.Equals(normValue, normNom, StringComparison.OrdinalIgnoreCase))
+        //        {
+        //            IsErrorAndHistoricalData = ProcesscardBasedOn.IsHistoricalData;
+        //            IsErrorAndValidated = ProcesscardBasedOn.IsValidated;
+        //        }
+        //    }
+        //    else
+        //    {
+        //        if (!string.IsNullOrEmpty(normNom) && !string.Equals(normNom, normValue, StringComparison.OrdinalIgnoreCase))
+        //            IsOnlyWarning = true;
+        //    }
+
+        //   // var IsOk = !IsErrorAndHistoricalData && !IsErrorAndValidated;
+
+        //    if (control is null)
+        //        ChangeColor_dgvCell(name, protocolDescriptionID, cell, IsErrorAndValidated, IsErrorAndHistoricalData, IsOnlyWarning, IsOk, uppstart, maskin);
+        //    else
+        //        ChangeColor_TextBox(name, protocolDescriptionID, control, IsErrorAndValidated, IsErrorAndHistoricalData, IsOnlyWarning, IsOk, uppstart, maskin);
+        //}
         private static void Value_DataGridView_Number(bool IsValueCritical, string name, string? Min, string? Nom, string? Max, string? Value, int protocolDescriptionID, DataGridViewCell cell = null, Control control = null, int uppstart = 0, int maskin = 0)
         {
             var IsErrorAndHistoricalData = false;
@@ -479,7 +540,15 @@ namespace DigitalProductionProgram.Övrigt
                     return;
                 IsOk = false;
             }
-            if (IsOnlyWarning)
+            //if (IsOk)
+            //{
+            //    //Om ok blir det Grönt
+            //    cell.Style.BackColor = CustomColors.Ok_Back;
+            //    cell.Style.ForeColor = CustomColors.Ok_Front;
+            //    return;
+            //}
+
+            if (IsOnlyWarning && IsOk == false)
             {
                 cell.Style.BackColor = CustomColors.Warning_Back;
                 cell.Style.ForeColor = CustomColors.Warning_Front;

@@ -53,9 +53,9 @@ namespace DigitalProductionProgram.MainWindow
             FeedBackQC = new DigitalProductionProgram.QC.FeedBackQC();
             TipsAndTrix = new DigitalProductionProgram.Övrigt.TipsAndTrix();
             tlp_Top = new TableLayoutPanel();
-            RollingInformation = new Main_RollingInformation();
             MainMenu = new Main_Menu();
             Serverstatus = new ServerStatus();
+            RollingInformation = new RollingInformation();
             tlp_Left = new TableLayoutPanel();
             panel_Profile = new Panel();
             tlp_UserInfo = new TableLayoutPanel();
@@ -288,10 +288,10 @@ namespace DigitalProductionProgram.MainWindow
             tlp_Top.ColumnCount = 3;
             tlp_Top.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 665F));
             tlp_Top.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
-            tlp_Top.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 105F));
-            tlp_Top.Controls.Add(RollingInformation, 1, 0);
+            tlp_Top.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 169F));
             tlp_Top.Controls.Add(MainMenu, 0, 0);
             tlp_Top.Controls.Add(Serverstatus, 2, 0);
+            tlp_Top.Controls.Add(RollingInformation, 1, 0);
             tlp_Top.Dock = DockStyle.Top;
             tlp_Top.Location = new Point(0, 0);
             tlp_Top.Margin = new Padding(0);
@@ -300,16 +300,6 @@ namespace DigitalProductionProgram.MainWindow
             tlp_Top.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
             tlp_Top.Size = new Size(1924, 43);
             tlp_Top.TabIndex = 912;
-            // 
-            // RollingInformation
-            // 
-            RollingInformation.BackColor = Color.FromArgb(155, 25, 25);
-            RollingInformation.Dock = DockStyle.Fill;
-            RollingInformation.Location = new Point(670, 5);
-            RollingInformation.Margin = new Padding(5);
-            RollingInformation.Name = "RollingInformation";
-            RollingInformation.Size = new Size(1144, 33);
-            RollingInformation.TabIndex = 893;
             // 
             // MainMenu
             // 
@@ -324,11 +314,22 @@ namespace DigitalProductionProgram.MainWindow
             // 
             // Serverstatus
             // 
-            Serverstatus.Location = new Point(1824, 3);
+            Serverstatus.Dock = DockStyle.Fill;
+            Serverstatus.Location = new Point(1760, 3);
             Serverstatus.Margin = new Padding(5, 3, 5, 3);
             Serverstatus.Name = "Serverstatus";
-            Serverstatus.Size = new Size(95, 37);
+            Serverstatus.Size = new Size(159, 37);
             Serverstatus.TabIndex = 895;
+            // 
+            // RollingInformation
+            // 
+            RollingInformation.BackColor = Color.Transparent;
+            RollingInformation.Dock = DockStyle.Fill;
+            RollingInformation.Location = new Point(669, 3);
+            RollingInformation.Margin = new Padding(4, 3, 4, 3);
+            RollingInformation.Name = "RollingInformation";
+            RollingInformation.Size = new Size(1082, 37);
+            RollingInformation.TabIndex = 896;
             // 
             // tlp_Left
             // 
@@ -911,13 +912,12 @@ namespace DigitalProductionProgram.MainWindow
         public TableLayoutPanel tlp_ExtraInfo;
         private System.Windows.Forms.Timer timer_Check_MeasurePoints;
         private System.Windows.Forms.Timer timer_Check_If_Maintenance_Has_Started;
-        private Main_RollingInformation RollingInformation;
+       
         public MainMeasureStatistics measureStats;
         public MeasurePoints measurePoints;
         public Main_OrderInformation OrderInformation;
         public Main_AQL AQL;
         public Main_Buttons Buttons;
-        private TableLayoutPanel tlp_Left;
         public Panel panel_Profile;
         private PictureBox pbOperatör;
         private PictureBox pb_Grade;
@@ -952,5 +952,7 @@ namespace DigitalProductionProgram.MainWindow
         private Statistics_DPP Statistics_DPP;
         public Övrigt.TipsAndTrix TipsAndTrix;
         private MeasurementChart measurementChart;
+        private RollingInformation RollingInformation;
+        public TableLayoutPanel tlp_Left;
     }
 }

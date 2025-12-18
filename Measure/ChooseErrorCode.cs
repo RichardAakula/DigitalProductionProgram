@@ -45,16 +45,14 @@ namespace DigitalProductionProgram.Measure
         }
         private void Fill_ErrorCodes()
         {
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                const string query = "SELECT Felkod, Beskrivning FROM MeasureProtocol.ErrorCodes WHERE Grupp = @grupp ORDER BY Felkod";
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@grupp", Order.WorkOperation.ToString());
-                con.Open();
-                var reader = cmd.ExecuteReader();
-                while(reader.Read())
-                    cb_ErrorCode.Items.Add($"{reader[0]} - {reader[1]}");
-            }
+            using var con = new SqlConnection(Database.cs_Protocol);
+            const string query = "SELECT Felkod, Beskrivning FROM MeasureProtocol.ErrorCodes WHERE Grupp = @grupp ORDER BY Felkod";
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            cmd.Parameters.AddWithValue("@grupp", Order.WorkOperation.ToString());
+            con.Open();
+            var reader = cmd.ExecuteReader();
+            while(reader.Read())
+                cb_ErrorCode.Items.Add($"{reader[0]} - {reader[1]}");
         }
         private void ErrorCode_SelectedIndexChanged(object sender, EventArgs e)
         {

@@ -80,6 +80,7 @@ namespace DigitalProductionProgram.ToolManagement
             // tb_PinType.Text = Tools.RegularUsedToolType("Kanyler");
            // IsOpening = false;
            
+           
         }
         private void Load_RegularSettings()
         {
@@ -112,16 +113,15 @@ namespace DigitalProductionProgram.ToolManagement
             cmd.Parameters.AddWithValue("@userid", Person.UserID);
             con.Open();
 
-            using (var reader = cmd.ExecuteReader())
-            {
-                var values = new Dictionary<string, decimal>();
+            using var reader = cmd.ExecuteReader();
+            var values = new Dictionary<string, decimal>();
 
-                while (reader.Read())
-                {
-                    string columnName = reader.GetString(0);
-                    decimal value = reader.IsDBNull(1) ? 0 : reader.GetDecimal(1);
-                    values[columnName] = value;
-                }
+            while (reader.Read())
+            {
+                string columnName = reader.GetString(0);
+                decimal value = reader.IsDBNull(1) ? 0 : reader.GetDecimal(1);
+                values[columnName] = value;
+            }
 
                 num_DDR_min.Value = values.TryGetValue("Most_Common_DDR_min", out var value1) ? value1 : 0;
                 num_DDR_max.Value = values.TryGetValue("Most_Common_DDR_max", out var value2) ? value2 : 0;

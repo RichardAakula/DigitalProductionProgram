@@ -317,19 +317,23 @@ ORDER BY [Year];";
         };
         private async Task<List<(string Label, int Value)>> LoadChartDataAsync(string query)
         {
-            var data = new List<(string Label, int Value)>();
-            await using var con = new SqlConnection(Database.cs_Protocol);
-            await using var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-            await con.OpenAsync();
-            await using var reader = await cmd.ExecuteReaderAsync();
-            while (await reader.ReadAsync())
+            return await Database.ExecuteSafeAsync(async con =>
             {
-                var label = reader[1].ToString();
-                int.TryParse(reader[0].ToString(), out var value);
-                data.Add((label, value));
-            }
+                var data = new List<(string Label, int Value)>();
 
-            return data;
+                await using var cmd = new SqlCommand(query, con);
+                ServerStatus.Add_Sql_Counter();
+
+                await using var reader = await cmd.ExecuteReaderAsync();
+                while (await reader.ReadAsync())
+                {
+                    var label = reader[1].ToString();
+                    int.TryParse(reader[0].ToString(), out var value);
+                    data.Add((label, value));
+                }
+
+                return data;
+            });
         }
 
         public Statistics_DPP()
@@ -362,8 +366,18 @@ ORDER BY [Year];";
 
         public async Task CreateChartAsync(string legendText, string query)
         {
+            foreach (Control ctrl in this.Controls)
+            {
+                if (ctrl is CartesianChart chart)
+                {
+                    chart.MouseDown -= chart_Statistics_MouseDown;
+                    chart.Dispose(); // Frigör resurser
+                }
+            }
             this.Controls.Clear(); // Clear existing controls in the panel
             var data = await LoadChartDataAsync(query);
+            if (data == null || !data.Any())
+                return;
             var values = data.Select(d => (double)d.Value).ToArray();
             var labels = data.Select(d => d.Label).ToArray();
             var columnSeries = new ColumnSeries<double>
@@ -413,6 +427,7 @@ ORDER BY [Year];";
         }
     }
 }
+
 
 
 

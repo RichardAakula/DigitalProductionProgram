@@ -1,8 +1,4 @@
-﻿using System;
-using Microsoft.Data.SqlClient;
-using System.Drawing.Printing;
-using System.Windows.Forms;
-using DigitalProductionProgram.DatabaseManagement;
+﻿using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.Processcards;
@@ -10,6 +6,11 @@ using DigitalProductionProgram.Protocols.Protocol;
 using DigitalProductionProgram.Protocols.Template_Management;
 using DigitalProductionProgram.Templates;
 using DigitalProductionProgram.User;
+using Microsoft.Data.SqlClient;
+using System;
+using System.Drawing.Printing;
+using System.Windows.Forms;
+using static DigitalProductionProgram.PrintingServices.PrintVariables;
 
 namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
 {
@@ -33,13 +34,16 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
 
 
 
-        public static void PrintPreview_Order(bool IsPrinting)
+        public static async Task PrintPreview_Order(bool IsPrinting)
         {
             Part.SetPartNrSpecial("Spolning Stripes");
             Print_Protocol.totalPrintOuts = new PrintVariables.TotalPrintOuts
             {
                 PagesSpolning = (int)Math.Ceiling((double)Module.TotalStartUps / 24)
             };
+            Print_Protocol.SetHeightMeasureInstruments();
+            Print_Protocol.totalPrintOuts.PagesExtraMeasureInstruments = 1;
+
             PrintVariables.CommentIndex = 0;
 
             Measureprotocol.FirstRowMeasurment = 1;
@@ -64,30 +68,13 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                 if (i < antal_Utskrifter)
                     PrintVariables.Active_PrintOut ++;
             }
+            //Skrivet ut Mätdon
+            if (Print_Protocol.Height_MeasureInstruments > 0)
+               await Print_Protocol.PrintMeasureInstruments(IsPrinting);
 
             //Skriver ut Mätprotokoll
-            for (var ctr = 1; ctr < Measureprotocol.TotalMeasureProtocols + 1; ctr++)
-            {
-                if (Measureprotocol.IsLandscape)
-                {
-                    Print_Protocol.Set_DefaultPaperSize(Measureprotocol.Print_MeasureProtocol, true);
-                    if (IsPrinting)
-                        Measureprotocol.Print_MeasureProtocol_Landscape.Print();
-                    else
-                        Measureprotocol.Preview_MeasureProtocol_Landscape.ShowDialog();
-                }
-                else
-                {
-                    Print_Protocol.Set_DefaultPaperSize(Measureprotocol.Print_MeasureProtocol, false);
-                    if (IsPrinting)
-                        Measureprotocol.Print_MeasureProtocol.Print();
-                    else
-                        Measureprotocol.Preview_MeasureProtocol.ShowDialog();
-                }
-                Measureprotocol.FirstRowMeasurment = Measureprotocol.LastRowMeasurement + 1;
-                Measureprotocol.LastRowMeasurement += Measureprotocol.TotalRowsMeasureprotocolPrintOut;
-                //PrintVariables.Active_PrintOut++;
-            }
+            await Print_Protocol.PrintMeasureProtocolsAsync(IsPrinting);
+           
         }
 
         private static void Protocol_Print_Page(object sender, PrintPageEventArgs e)

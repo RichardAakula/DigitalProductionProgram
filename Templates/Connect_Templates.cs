@@ -205,10 +205,9 @@ namespace DigitalProductionProgram.Templates
             {
                 get
                 {
-                    using (var con = new SqlConnection(Database.cs_Protocol))
-                    {
-                        con.Open();
-                        var query = @"
+                    using var con = new SqlConnection(Database.cs_Protocol);
+                    con.Open();
+                    var query = @"
                     SELECT TOP 1 ID
                     FROM 
                         (
@@ -218,13 +217,12 @@ namespace DigitalProductionProgram.Templates
                         )
                     AS SubQuery";
 
-                        var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                        cmd.Parameters.AddWithValue("@name", TemplateName);
-                        cmd.Parameters.AddWithValue("@revision", TemplateRevision);
-                        var value = cmd.ExecuteScalar();
-                        if (value != null)
-                            return int.Parse(value.ToString());
-                    }
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                    cmd.Parameters.AddWithValue("@name", TemplateName);
+                    cmd.Parameters.AddWithValue("@revision", TemplateRevision);
+                    var value = cmd.ExecuteScalar();
+                    if (value != null)
+                        return int.Parse(value.ToString());
 
                     return 0;
                 }
@@ -232,23 +230,20 @@ namespace DigitalProductionProgram.Templates
             private static bool IsAutoSelectPartNr { get; set; }
             public static void Load_ProtocolMainTemplateID(string templateName, string revision)
             {
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    con.Open();
-                    var query = @"
+                using var con = new SqlConnection(Database.cs_Protocol);
+                con.Open();
+                var query = @"
                     SELECT ID FROM Protocol.MainTemplate WHERE Name = @name AND Revision = @revision";
 
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    cmd.Parameters.AddWithValue("@name", templateName);
-                    cmd.Parameters.AddWithValue("@revision", revision);
-                    var value = cmd.ExecuteScalar();
-                    if (value != null)
-                        MainTemplateID = int.Parse(value.ToString());
-                }
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                cmd.Parameters.AddWithValue("@name", templateName);
+                cmd.Parameters.AddWithValue("@revision", revision);
+                var value = cmd.ExecuteScalar();
+                if (value != null)
+                    MainTemplateID = int.Parse(value.ToString());
             }
             public static void Load_PartList(DataGridView dgv, bool IsAllRevisions)
             {
-            
                 dt_PartList = new DataTable();
                 using (var con = new SqlConnection(Database.cs_Protocol))
                 {
@@ -429,7 +424,6 @@ namespace DigitalProductionProgram.Templates
 
                     var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     var da = new SqlDataAdapter(cmd);
-                    //cmd.Parameters.AddWithValue("@new_maintemplateid", MainTemplateID);
 
                     da.Fill(dt_PartList);
                     da.Dispose();

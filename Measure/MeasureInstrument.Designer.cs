@@ -53,15 +53,15 @@ namespace DigitalProductionProgram.Measure
             dgv_Mätdon.AllowUserToDeleteRows = false;
             dgv_Mätdon.AllowUserToResizeColumns = false;
             dgv_Mätdon.AllowUserToResizeRows = false;
-            dgv_Mätdon.BackgroundColor = Color.FromArgb(15, 15, 15);
+            dgv_Mätdon.BackgroundColor = Color.FromArgb(45, 113, 122);
             dgv_Mätdon.BorderStyle = BorderStyle.None;
             dgv_Mätdon.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgv_Mätdon.ColumnHeadersVisible = false;
             dgv_Mätdon.Columns.AddRange(new DataGridViewColumn[] { col_MätDonNr, col_Row });
             dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = SystemColors.Window;
+            dataGridViewCellStyle1.BackColor = Color.FromArgb(35, 103, 112);
             dataGridViewCellStyle1.Font = new Font("Consolas", 9F);
-            dataGridViewCellStyle1.ForeColor = Color.DarkSlateGray;
+            dataGridViewCellStyle1.ForeColor = Color.FromArgb(187, 215, 228);
             dataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight;
             dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
             dataGridViewCellStyle1.WrapMode = DataGridViewTriState.False;
@@ -202,7 +202,7 @@ namespace DigitalProductionProgram.Measure
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             AutoSize = true;
-            BackColor = Color.FromArgb(15, 15, 15);
+            BackColor = Color.FromArgb(35, 103, 112);
             Controls.Add(dgv_Mätdon);
             Controls.Add(tlp_Main);
             Controls.Add(label_MeasureInstrument_Header);

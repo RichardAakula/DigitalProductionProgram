@@ -5,20 +5,9 @@ using DigitalProductionProgram.Help;
 using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.PrintingServices;
-using DigitalProductionProgram.Processcards;
-using DigitalProductionProgram.Protocols.Template_Management;
 using DigitalProductionProgram.User;
 using Microsoft.Data.SqlClient;
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using static DigitalProductionProgram.Templates.Templates_Protocol;
-using ProgressBar = DigitalProductionProgram.ControlsManagement.CustomProgressBar;
 
 namespace DigitalProductionProgram.Templates
 {
@@ -30,6 +19,8 @@ namespace DigitalProductionProgram.Templates
         {
             get
             {
+                if (MainTemplate.ID == 0)
+                    return 0;
                 using var con = new SqlConnection(Database.cs_Protocol);
                 const string query = @"
                     SELECT COUNT(*) FROM Processcard.MainData WHERE ProtocolMainTemplateID = @maintemplateid";
@@ -47,6 +38,8 @@ namespace DigitalProductionProgram.Templates
         {
             get
             {
+                if (MainTemplate.ID == 0)
+                    return 0;
                 using var con = new SqlConnection(Database.cs_Protocol);
                 const string query = @"
                     SELECT COUNT(*) FROM [Order].MainData WHERE ProtocolMainTemplateID = @maintemplateid";
@@ -122,6 +115,40 @@ namespace DigitalProductionProgram.Templates
         {
             get
             {
+                var list_ProtocolDescriptionID = new List<int>();
+
+                foreach (Panel panel in flp_Main.Controls)
+                {
+                    var label_Name = new Label();
+                    foreach (var lbl in panel.Controls.OfType<Label>())
+                        label_Name = lbl;
+
+                    DataGridView dgv_Template = null;
+                    foreach (var dgv in panel.Controls.OfType<DataGridView>())
+                    {
+                        if (dgv.Name != "dgv_FormTemplate")
+                            dgv_Template = dgv;
+
+                    }
+                    foreach (DataGridViewRow row in dgv_Template.Rows)
+                    {
+                        var codeText = row.Cells["col_CodeText"].Value == null ? "" : row.Cells["col_CodeText"].Value.ToString();
+                        var protocolDescriptionID = row.Cells["col_ProtocolDescriptionID"].Value == null ? 0 : int.Parse(row.Cells["col_ProtocolDescriptionID"].Value.ToString() ?? "0");
+
+                        if (list_ProtocolDescriptionID.Contains(protocolDescriptionID))
+                        {
+                            InfoText.Show($"Parametern '{codeText}' finns redan i modulen \n'{label_Name.Text}', du kan inte ha samma parameter flera gånger i samma mall.", CustomColors.InfoText_Color.Bad, "Warning!", this);
+                            return false;
+                        }
+                        list_ProtocolDescriptionID.Add(protocolDescriptionID);
+                    }
+                }
+                if (MainTemplate.IsTemplateExist(cb_TemplateName.Text, cb_TemplateRevision.Text))
+                {
+                    InfoText.Show("Denna Revision finns redan, om du vill spara en ny mall måste du ändra Revision först.", CustomColors.InfoText_Color.Bad, "Warning!", this);
+                    return false;
+                }
+
                 if (string.IsNullOrEmpty(cb_TemplateRevision.Text))
                 {
                     InfoText.Show("Fyll i mallens revisionsnr före du sparar mallen.", CustomColors.InfoText_Color.Bad, "Warning!", this);
@@ -141,7 +168,7 @@ namespace DigitalProductionProgram.Templates
                 return true;
             }
         }
-
+       
 
         public Templates_Protocol()
         {
@@ -437,7 +464,7 @@ namespace DigitalProductionProgram.Templates
         {
             preview = new PreviewTemplate(cb_LineClearance_Revision.Text, cb_MainInfo_Template.Text);
             preview.Show();
-            preview.Update_Template(flp_Main);
+            _ = preview.Update_TemplateAsync(flp_Main);
         }
         private void LineClearance_Revision_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -609,7 +636,7 @@ namespace DigitalProductionProgram.Templates
         {
             dgv_ProtocolsActive_Main.Rows.RemoveAt(dgv_ProtocolsActive_Main.CurrentCell.RowIndex);
 
-            preview?.Update_Template(flp_Main);
+            //_ = preview.Update_TemplateAsync(flp_Main);
             TemplateButtons.IsOkUpdateTemplate = false;
         }
         private void CodeTextUp_Click(object sender, EventArgs e)
@@ -711,17 +738,16 @@ namespace DigitalProductionProgram.Templates
             using (var con = new SqlConnection(Database.cs_Protocol))
             {
                 const string query = @"
-                    SELECT FormTemplateID, ModuleName, formtemplate.MainTemplateID, maintemplate.Name as TemplateName, LineClearance_Template, MachineIndex, workoperation.Name as Workoperation, maintemplate.CreatedBy, maintemplate.CreatedDate
-                    FROM Protocol.FormTemplate as formtemplate
-                        JOIN Protocol.MainTemplate as maintemplate
+                    SELECT FormTemplateID, ModuleName, maintemplate.ID, maintemplate.Name as TemplateName, LineClearance_Template, MachineIndex, workoperation.Name as Workoperation, maintemplate.CreatedBy, maintemplate.CreatedDate
+                    FROM Protocol.MainTemplate as maintemplate
+                        LEFT JOIN Protocol.FormTemplate as formtemplate
                             ON formtemplate.MainTemplateID = maintemplate.ID
-                        JOIN Workoperation.Names as workoperation
+                        LEFT JOIN Workoperation.Names as workoperation
                             ON maintemplate.WorkoperationID = workoperation.ID
                         LEFT JOIN LineClearance.MainTemplate as lc
                             ON lc.ProtocolMainTemplateID = maintemplate.ID
                                 AND lc.LineClearance_Revision = maintemplate.LineClearance_Template
-                    WHERE formtemplate.MainTemplateID = (SELECT ID From Protocol.MainTemplate WHERE Name = @templatename AND Revision = @revision) 
-                        AND TemplateOrder IS NOT NULL 
+                    WHERE maintemplate.Name = @templatename AND Revision = @revision
                     ORDER BY TemplateOrder, MachineIndex";
                 var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@templateName", cb_TemplateName.Text);
@@ -737,7 +763,7 @@ namespace DigitalProductionProgram.Templates
                     lineClearance_Revision = reader["LineClearance_Template"].ToString();
                     var codetext = reader["ModuleName"].ToString();
                     int.TryParse(reader["FormTemplateID"].ToString(), out var formTemplateID);
-                    MainTemplate.ID = int.Parse(reader["MainTemplateID"].ToString());
+                    MainTemplate.ID = int.Parse(reader["ID"].ToString());
                     MainTemplate.Name = reader["TemplateName"].ToString();
                     int.TryParse(reader["MachineIndex"].ToString(), out var machindeIndex);
 
@@ -981,7 +1007,7 @@ namespace DigitalProductionProgram.Templates
                 ChangePanelHeight(dgv);
                 if (flp is null || previewTemplate.IsDisposed)
                     return;
-                previewTemplate.Update_Template(flp);
+                previewTemplate.Update_TemplateAsync(flp);
             }
             private static void RowsRemoved_dgv(object? sender, DataGridViewRowsRemovedEventArgs e)
             {
@@ -1024,7 +1050,7 @@ namespace DigitalProductionProgram.Templates
             {
                 if (flp is null || previewTemplate.IsDisposed)
                     return;
-                previewTemplate.Update_Template(flp);
+                using var _ = previewTemplate.Update_TemplateAsync(flp);
             }
             private static void CurrentCellDirtyStateChanged(object? sender, EventArgs e)
             {
@@ -1210,6 +1236,8 @@ namespace DigitalProductionProgram.Templates
             }
             public static bool IsTemplateConnectedToProcesscard(ref int total)
             {
+                if (ID == 0)
+                    return false;
                 using var con = new SqlConnection(Database.cs_Protocol);
                 const string query = @"
                     SELECT COUNT(*) FROM Processcard.MainData WHERE ProtocolMainTemplateID = @maintemplateid";
@@ -1276,8 +1304,10 @@ namespace DigitalProductionProgram.Templates
                 return 0;
             }
 
-            public static void Load_MainTemplateID(string templateName, string revision)
+            public static void Load_MainTemplateID(string? templateName, string revision)
             {
+                if (templateName == null)
+                    return;
                 using var con = new SqlConnection(Database.cs_Protocol);
                 const string query =
                     @"SELECT ID FROM Protocol.MainTemplate WHERE Name = @name AND Revision = @revision";
@@ -1498,7 +1528,7 @@ namespace DigitalProductionProgram.Templates
                 TemplateControls.AddColumn(dgv, new DataGridViewTextBoxColumn(), "Kolumnbredd Max Processkort", "col_MaxProcesscardWidth", 100);
                 TemplateControls.AddColumn(dgv, new DataGridViewTextBoxColumn(), "Kolumnbredd Nom Körprotokoll", "col_NomRunProtocolWidth", 100);
 
-                dgv.Rows.Add(false, 1, false, false, false, 50, 50);
+                dgv.Rows.Add(false, 1, false, false, false, 50, 50, 50, 50);
             }
             public static void Load_Data(int? formTemplateID, string templateName, string templateRevision, int machineIndex)
             {
@@ -1543,10 +1573,15 @@ namespace DigitalProductionProgram.Templates
 
                     int.TryParse(reader["Processcard_MaxWidth"].ToString(), out var pcMaxWidth);
                     dgv_Active_ModuleInfo.Rows[0].Cells["col_MaxProcesscardWidth"].Value = pcMaxWidth;
+                    bool.TryParse(reader["IsStartUpDates"].ToString(), out var isStartUpDates);
+                    dgv_Active_ModuleInfo.Rows[0].Cells["col_IsStartUpDates"].Value = isStartUpDates;
 
 
-                    int.TryParse(reader["RunProtocol_ColWidth"].ToString(), out var rpColWidth);
-                    dgv_Active_ModuleInfo.Rows[0].Cells["col_NomRunProtocolWidth"].Value = rpColWidth;
+                        int.TryParse(reader["RunProtocol_ColWidth"].ToString(), out var rpColWidth);
+                        dgv_Active_ModuleInfo.Rows[0].Cells["col_RunProtocolWidth"].Value =
+                            rpColWidth;
+
+                    }
                 }
             }
             public static void Save_Data(string templateName, string revision, DataGridView dgv, string moduleName, int templateOrder)

@@ -1,4 +1,5 @@
-﻿using DigitalProductionProgram.OrderManagement;
+﻿using System.Data;
+using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.Help;
 using DigitalProductionProgram.PrintingServices;
 using DigitalProductionProgram.DatabaseManagement;
@@ -23,7 +24,7 @@ namespace DigitalProductionProgram.Measure
     {
         public Wall wall;
 
-        private Bitmap Img_1_Layer
+        private Bitmap? Img_1_Layer
         {
             get
             {
@@ -39,7 +40,6 @@ namespace DigitalProductionProgram.Measure
                 if (wall.IsNeutral)
                     picture = "Neutral";
 
-
                 var basePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "Cross_Section_Tube", "1_Layer");
                 string imagePath;
                 if (runout.Contains('0') || runout == "1-1-1-1")
@@ -52,7 +52,10 @@ namespace DigitalProductionProgram.Measure
 
                 try
                 {
-                    // Open a FileStream and load the Bitmap from it, ensuring it's closed properly
+                    // Check if file exists before opening
+                    if (!File.Exists(imagePath))
+                        return null;
+
                     using var stream = new FileStream(imagePath, FileMode.Open, FileAccess.Read, FileShare.Read);
                     return new Bitmap(stream);
                 }
@@ -433,7 +436,7 @@ namespace DigitalProductionProgram.Measure
         {
             dgv.Rows.Add();
             //dgv.Rows[dgv.Rows.Count - 1].HeaderCell.Value = text;
-            dgv.Rows[dgv.Rows.Count - 1].Cells[0].Value = text;
+            dgv.Rows[^1].Cells[0].Value = text;
 
         }
         private void Add_GUI_HelpInput_Controls(Measurement_Protocol mp, bool isUsingSecondHelpInput)
@@ -513,7 +516,14 @@ namespace DigitalProductionProgram.Measure
 
             try
             {
-                SafeInvoke(mp.pb_CrossSectionTube, () => mp.pb_CrossSectionTube.BackgroundImage = bmp);
+                SafeInvoke(mp.pb_CrossSectionTube, () => {
+                    if (mp.pb_CrossSectionTube.BackgroundImage != null)
+                    {
+                        mp.pb_CrossSectionTube.BackgroundImage.Dispose();
+                        mp.pb_CrossSectionTube.BackgroundImage = null;
+                    }
+                    mp.pb_CrossSectionTube.BackgroundImage = bmp;
+                });
             }
             catch (Exception ex)
             {
@@ -575,15 +585,12 @@ namespace DigitalProductionProgram.Measure
             await using (var con = new SqlConnection(Database.cs_Protocol))
             {
                 const string query = @"
-            SELECT Item
-            FROM MeasureProtocol.ItemsList
-            WHERE MeasureProtocolMainTemplateID = @maintemplateid
-              AND DescriptionID = @descriptionid";
-
-                await con.OpenAsync();
-
-                await using var cmd = new SqlCommand(query, con);
-                ServerStatus.Add_Sql_Counter();
+                    SELECT
+                        Item
+                    FROM MeasureProtocol.ItemsList
+                    WHERE MeasureProtocolMainTemplateID = @maintemplateid
+                    AND DescriptionID = @descriptionid";
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@maintemplateid", Templates_MeasureProtocol.MainTemplate.ID);
                 cmd.Parameters.AddWithValue("@descriptionid", tb.DescriptionID);
 
@@ -598,18 +605,23 @@ namespace DigitalProductionProgram.Measure
             switch (codename)
             {
                 case "PreFab":
-                    // Hämta DataTable synkront (antag att det inte är tungt)
-                    var dt = PreFab.DataTable_Halvfabrikat_Krympslang(Order.OrderID);
-                    if (dt.Rows.Count <= 0)
+                    if (PreFab.DataTable_PreFab(Order.OrderID).Rows.Count <= 0)
                         return;
-
-                    var partNr = dt.Rows[0][LanguageManager.GetString("label_PartNumber")].ToString();
-
-                    // Hämta batchnummer från Monitor asynkront
+                    items = Monitor.Monitor.PreFab_BatchNr(PreFab.DataTable_PreFab(Order.OrderID).Rows[0][LanguageManager.GetString("label_PartNumber")].ToString());
+                    break;
+                case "BatchNr_Skärmad":
+                    var partNr = string.Empty;
+                    foreach (DataRow row in PreFab.DataTable_PreFab(Order.OrderID).Rows)
+                    {
+                        if (row["Slang:"].ToString()== "Skärmad")
+                        {
+                            partNr = row[$"{LanguageManager.GetString("label_PartNumber")}"].ToString();
+                            break;
+                        }
+                    }
                     items = Monitor.Monitor.PreFab_BatchNr(partNr);
                     break;
 
-                // Lägg till fler case här om du vill
             }
 
             if (items == null || items.Count <= 0)
@@ -887,6 +899,8 @@ namespace DigitalProductionProgram.Measure
                     Margin = new Padding(1, 1, 0, 0),
                     Padding = new Padding(18, 0, 0, 0),
                     Width = width,
+                    AutoSize = false,
+                    Height = 22,
                     Name = name
                 };
                 flp_InputControls.Controls.Add(checkBox);

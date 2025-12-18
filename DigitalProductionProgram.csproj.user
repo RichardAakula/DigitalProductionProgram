@@ -88,8 +88,11 @@
     <Compile Update="MainWindow\Main_PriorityPlanning.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Update="MainWindow\Main_RollingInformation.cs">
+    <Compile Update="MainWindow\RollingInformation.cs">
       <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Measure\BrowseMeasureProtocols.cs">
+      <SubType>Form</SubType>
     </Compile>
     <Compile Update="Measure\MeasurementChart.cs">
       <SubType>UserControl</SubType>
@@ -100,13 +103,16 @@
     <Compile Update="MainWindow\ServerStatus.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Update="Measure\Measurement_Protocol.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Protocols\Protocol\Machine.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Update="Statistics\Statistics_DPP.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Update="Measure\AddMeasurePointsManually.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Update="Measure\BrowseMeasureProtocols.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="Measure\ChooseErrorCode.cs">
@@ -117,9 +123,6 @@
     </Compile>
     <Compile Update="Measure\MeasureInstrument.cs">
       <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Measure\Measurement_Protocol.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Update="Measure\MeasurePoints.cs">
       <SubType>UserControl</SubType>
@@ -223,9 +226,6 @@
     <Compile Update="Protocols\MainInfo\Room_TempMoisture.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Update="Protocols\Protocol\Machine.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
     <Compile Update="Protocols\Protocol\MainProtocol.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -266,15 +266,6 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Update="Protocols\Spolning_PTFE\Spolning_PTFE.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Update="Protocols\Svetsning_TEF\MainProtocol_Svetsning_TEF.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Protocols\Svetsning_TEF\PC_Svetsning_TEF.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Protocols\Svetsning_TEF\Svetsning_TEF.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="QC\FeedBackQC.cs">
@@ -385,6 +376,9 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Update="Properties\Resources.sv-SE.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Update="SQL_Queries\Processcard.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Update="Zumbach\MeasureWithZumbach.resx">

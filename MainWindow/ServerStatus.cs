@@ -102,6 +102,10 @@ namespace DigitalProductionProgram.MainWindow
         {
             lbl_SQL_Queries.Text = Database.SQL_Counter.ToString();
         }
+        public void Set_DPP_Memory_Usage(string memoryUsage)
+        {
+            lbl_Memory.Text = memoryUsage;
+        }
         private void MonitorStatus_MouseHover(object sender, EventArgs e)
         {
             var tooltip = new ToolTip

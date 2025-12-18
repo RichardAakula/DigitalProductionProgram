@@ -26,7 +26,7 @@ using Part = DigitalProductionProgram.OrderManagement.Part;
 
 namespace DigitalProductionProgram.Monitor
 {
-    internal class Monitor
+    internal abstract class Monitor
     {
         public static Monitor Current { get; } = new Monitor();
 
@@ -248,6 +248,8 @@ namespace DigitalProductionProgram.Monitor
         {
             var list = new List<string> { "Bag", "StripesAvg", "PreFab" };
             var FormTemplateSelectionRows = Utilities.GetOneFromMonitor<Common.FormTemplateSelectionRows>($"filter=FormTemplateId Eq'{formtemplateid}'");
+            if (FormTemplateSelectionRows is null)
+                return list;
             var parameters = Utilities.GetFromMonitor<Common.FormTemplateRows>("select=Description", $"filter=FormTemplateSelectionRowId Eq'{FormTemplateSelectionRows.Id}'");
 
             foreach (var parameter in parameters.Where(parameter => list.Contains(parameter.Description) == false))
@@ -305,7 +307,7 @@ namespace DigitalProductionProgram.Monitor
             }
         }
 
-        public static decimal Balance(string partNumber, string serialNumber = null)
+        public static decimal Balance(string? partNumber, string? serialNumber = null)
         {
             var part = Utilities.GetOneFromMonitor<Inventory.Parts>($"filter=PartNumber Eq'{partNumber}'");
             if (part == null)
@@ -324,7 +326,7 @@ namespace DigitalProductionProgram.Monitor
             return quantity;
         }
 
-        public static string BestBeforeDate(string partNumber, string serialNumber)
+        public static string BestBeforeDate(string? partNumber, string? serialNumber)
         {
             var part = Utilities.GetOneFromMonitor<Inventory.Parts>($"filter=PartNumber Eq'{partNumber}'");
             if (part == null || string.IsNullOrEmpty(serialNumber))
@@ -362,8 +364,7 @@ namespace DigitalProductionProgram.Monitor
             return MeasurePoint.Value;
 
         }
-
-        public static string Units(string artikelNr)
+        public static string Units(string? artikelNr)
         {
             var part = Utilities.GetOneFromMonitor<Inventory.Parts>($"filter=PartNumber Eq'{artikelNr}'");
             if (part is null)
@@ -406,34 +407,35 @@ namespace DigitalProductionProgram.Monitor
 
         public static void Set_Monitorstatus(Status Status, string text)
         {
-            Log.Activity.Start();
+
+           // Log.Activity.Start();
             switch(Status)
             {
                 case Status.Ok:
                 {
                     status = Status.Ok;
                     MonitorStatus = $"Connection to Monitor ok: Responsetime = {text} ms";
-                    if (lbl_Monitorstatus != null) lbl_Monitorstatus.ForeColor = Color.FromArgb(198, 239, 206);
-                    if (panel_Monitorstatus != null) ServerStatus.DrawPanelMonitorStatus(panel_Monitorstatus, Color.FromArgb(198, 239, 206));
+                    if (lbl_Monitorstatus != null) 
+                        lbl_Monitorstatus.ForeColor = Color.FromArgb(198, 239, 206);
                     break;
                 }
                 case Status.Warning:
                     status = Status.Warning;
                     MonitorStatus = $"Connection to Monitor is bad, but working: Responsetime = {text} ms";
                     if (lbl_Monitorstatus != null) lbl_Monitorstatus.ForeColor = Color.FromArgb(156, 101, 0);
-                    if (panel_Monitorstatus != null) ServerStatus.DrawPanelMonitorStatus(panel_Monitorstatus, Color.FromArgb(255, 235, 156));
                     break;
                 case Status.Bad:
                 {
                     status = Status.Bad;
                     MonitorStatus = $"Connection to Monitor is not working, please contact Admin.\n\n{text}";
-                    if (lbl_Monitorstatus != null) lbl_Monitorstatus.ForeColor = Color.FromArgb(156, 0, 6);
-                    if (panel_Monitorstatus != null) ServerStatus.DrawPanelMonitorStatus(panel_Monitorstatus, Color.FromArgb(255, 199, 206));
+                    if (lbl_Monitorstatus != null) 
+                        lbl_Monitorstatus.ForeColor = Color.FromArgb(156, 0, 6);
                     Main_Form.timer_ReloginMonitor = 10; // Börjar logga in automatiskt efter 10 sekunder om anslutningen till Monitor är dålig
                         break;
                 }
            }
-            _ = Log.Activity.Stop($"ResponseTime to Monitor: {text}");
+           // _ = Log.Activity.Stop($"ResponseTime to Monitor: {text}");
+
         }
 
         public void Load_OrderInformation()
@@ -651,42 +653,7 @@ namespace DigitalProductionProgram.Monitor
             Unit = Task.Run(() =>
                 Utilities.GetOneFromMonitor<Common.Units>($"filter=Number Eq'{partUnit.UnitId}'")).Result;
         }
-
-        //public static void Load_DataTable_Measurpoints(string? OrderNr, string? Operation, bool IsOkWarnNoMeasurpoints)
-        //{
-        //    DataTable_Measurepoints = new DataTable();
-        //    DataTable_Measurepoints.Columns.Add("Description");             //0
-        //    DataTable_Measurepoints.Columns.Add("USL", typeof(double));     //1
-        //    DataTable_Measurepoints.Columns.Add("UCL", typeof(double));     //2
-        //    DataTable_Measurepoints.Columns.Add("NOM", typeof(double));     //3
-        //    DataTable_Measurepoints.Columns.Add("LCL", typeof(double));     //4 
-        //    DataTable_Measurepoints.Columns.Add("LSL", typeof(double));     //5
-        //    if (Manage_WorkOperation.IsWorkoperationUsing_Measurepoints == false)
-        //        return;
-        //    var order = Utilities.GetOneFromMonitor<Manufacturing.ManufacturingOrders>($"filter=OrderNumber Eq'{OrderNr}'");
-        //    if (order is null)
-        //        return;
-
-        //    var operations = Utilities.GetOneFromMonitor<Manufacturing.ManufacturingOrderOperations>($"filter=ManufacturingOrderId Eq'{order.Id}' AND OperationNumber Eq'{Operation}'");
-        //    if (operations is null)
-        //        return;
-        //    var ManufacturingOrderOperationControlDataRows = Utilities.GetOneFromMonitor<Manufacturing.ManufacturingOrderOperationControlDataRows>($"filter=ManufacturingOrderOperationId Eq'{operations.Id}'");
-        //    if (ManufacturingOrderOperationControlDataRows is null)
-        //    {
-        //        if (!IsOkWarnNoMeasurpoints || OrderManagement.Order.IsOrderDone || factory == Factory.Holding)
-        //            return;
-        //        if (factory != Factory.Holding)
-        //            Mail.NotifyCustomerServiceMissingMeasurepoints();
-        //        return;
-        //    }
-
-        //    var FormTemplateSelectionRows = Utilities.GetOneFromMonitor<Common.FormTemplateSelectionRows>($"filter=FormTemplateId Eq'{ManufacturingOrderOperationControlDataRows.OverridenFormTemplateId}'");
-        //    var Measurepoints = Utilities.GetFromMonitor<Common.FormTemplateRows>($"filter=FormTemplateSelectionRowId eq'{FormTemplateSelectionRows.Id}' AND " +
-        //                                                                   "(LowerBoundary gt'0' OR UpperBoundary gt'0' OR Value gt'0' OR MinValue gt'0' OR MaxValue gt'0') AND Description neq'Concentricity' AND Description neq 'Amount (per bag/spool)'", "orderby=RowIndex");
-        //    foreach (var mp in Measurepoints)
-        //        DataTable_Measurepoints.Rows.Add(mp.Description, mp.Value + mp.MaxValue, mp.Value + mp.UpperBoundary, mp.Value, mp.Value + mp.LowerBoundary, mp.Value + mp.MinValue);
-
-        //}
+        public static DataTable? DataTable_Measurepoints { get; set; }
         public static void Load_DataTable_Measurpoints(string? OrderNr, string? Operation, bool IsOkWarnNoMeasurpoints)
         {
             DataTable_Measurepoints = new DataTable();

@@ -5,7 +5,6 @@ using DigitalProductionProgram.Övrigt;
 using DigitalProductionProgram.Protocols.Kragning_TEF;
 using DigitalProductionProgram.Protocols.Skärmning_TEF;
 using DigitalProductionProgram.Protocols.Slipning_TEF;
-using DigitalProductionProgram.Protocols.Svetsning_TEF;
 
 namespace DigitalProductionProgram.Processcards
 {
@@ -65,8 +64,6 @@ namespace DigitalProductionProgram.Processcards
             Processcard_Skärmning = new PC_Skärmning();
             tp_Slipning = new TabPage();
             Processkort_Slipning = new PC_Slipning_TEF();
-            tp_Svetsning = new TabPage();
-            Processkort_Svetsning = new PC_Svetsning_TEF();
             tp_Protocol = new TabPage();
             flp_Machines = new FlowLayoutPanel();
             tlp_Processkort_Top = new TableLayoutPanel();
@@ -119,7 +116,6 @@ namespace DigitalProductionProgram.Processcards
             tp_Kragning.SuspendLayout();
             tp_Skärmning.SuspendLayout();
             tp_Slipning.SuspendLayout();
-            tp_Svetsning.SuspendLayout();
             tp_Protocol.SuspendLayout();
             tlp_Processkort_Top.SuspendLayout();
             flp_Left.SuspendLayout();
@@ -354,7 +350,6 @@ namespace DigitalProductionProgram.Processcards
             tab_Main.Controls.Add(tp_Kragning);
             tab_Main.Controls.Add(tp_Skärmning);
             tab_Main.Controls.Add(tp_Slipning);
-            tab_Main.Controls.Add(tp_Svetsning);
             tab_Main.Controls.Add(tp_Protocol);
             tab_Main.Dock = DockStyle.Fill;
             tab_Main.Location = new Point(0, 25);
@@ -421,26 +416,6 @@ namespace DigitalProductionProgram.Processcards
             Processkort_Slipning.Name = "Processkort_Slipning";
             Processkort_Slipning.Size = new Size(423, 152);
             Processkort_Slipning.TabIndex = 0;
-            // 
-            // tp_Svetsning
-            // 
-            tp_Svetsning.BackColor = Color.Khaki;
-            tp_Svetsning.Controls.Add(Processkort_Svetsning);
-            tp_Svetsning.Location = new Point(4, 24);
-            tp_Svetsning.Name = "tp_Svetsning";
-            tp_Svetsning.Padding = new Padding(3);
-            tp_Svetsning.Size = new Size(192, 72);
-            tp_Svetsning.TabIndex = 6;
-            tp_Svetsning.Text = "Svets";
-            // 
-            // Processkort_Svetsning
-            // 
-            Processkort_Svetsning.Dock = DockStyle.Fill;
-            Processkort_Svetsning.Location = new Point(3, 3);
-            Processkort_Svetsning.Margin = new Padding(0);
-            Processkort_Svetsning.Name = "Processkort_Svetsning";
-            Processkort_Svetsning.Size = new Size(186, 66);
-            Processkort_Svetsning.TabIndex = 0;
             // 
             // tp_Protocol
             // 
@@ -616,7 +591,7 @@ namespace DigitalProductionProgram.Processcards
             cb_TemplateRevision.Name = "cb_TemplateRevision";
             cb_TemplateRevision.Size = new Size(121, 25);
             cb_TemplateRevision.TabIndex = 1013;
-            cb_TemplateRevision.SelectedIndexChanged += ProtocolTemplateRevision_SelectedIndexChanged;
+            cb_TemplateRevision.SelectionChangeCommitted += TemplateName_SelectionChangeCommitted;
             // 
             // btn_ReloadPartNr
             // 
@@ -713,7 +688,6 @@ namespace DigitalProductionProgram.Processcards
             pb_Info.SizeMode = PictureBoxSizeMode.Zoom;
             pb_Info.TabIndex = 870;
             pb_Info.TabStop = false;
-            pb_Info.Click += Info_Click;
             // 
             // panel_ProductionLine
             // 
@@ -959,7 +933,7 @@ namespace DigitalProductionProgram.Processcards
             btn_DeActivate_PartNr.TabIndex = 1009;
             btn_DeActivate_PartNr.Text = "Inaktivera Processkortet";
             btn_DeActivate_PartNr.UseVisualStyleBackColor = true;
-            btn_DeActivate_PartNr.Click += Aktivera_Inaktivera_ArtikelNr_Click;
+            btn_DeActivate_PartNr.Click += ActivateDeactivateProcesscard_Click;
             // 
             // btn_UpdateTemplate
             // 
@@ -1072,7 +1046,6 @@ namespace DigitalProductionProgram.Processcards
             tp_Kragning.ResumeLayout(false);
             tp_Skärmning.ResumeLayout(false);
             tp_Slipning.ResumeLayout(false);
-            tp_Svetsning.ResumeLayout(false);
             tp_Protocol.ResumeLayout(false);
             tlp_Processkort_Top.ResumeLayout(false);
             tlp_Processkort_Top.PerformLayout();
@@ -1144,8 +1117,6 @@ namespace DigitalProductionProgram.Processcards
         private PC_Skärmning Processcard_Skärmning;
         private TabPage tp_Slipning;
         private PC_Slipning_TEF Processkort_Slipning;
-        private TabPage tp_Svetsning;
-        private PC_Svetsning_TEF Processkort_Svetsning;
         private TabPage tp_Protocol;
         public Button btn_ReloadPartNr;
         private Label label_ProtocolTemplateName;

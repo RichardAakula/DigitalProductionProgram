@@ -91,7 +91,8 @@ namespace DigitalProductionProgram.MainWindow
                         ELSE lc.CenturiLink 
                     END AS CenturiLink, 
                     orders.ProtocolMainTemplateID, 
-                    Name, 
+                    maintemplate.Name as ProtocolTemplateName,
+                    measure.Name as MeasureprotocolTemplateName,
                     IsUsingPreFab, 
                     IsMultipleColumnsStartup
                 FROM [Order].MainData AS orders
@@ -101,6 +102,8 @@ namespace DigitalProductionProgram.MainWindow
                         ON orders.ProtocolMainTemplateID = formtemplate.MainTemplateID
                     LEFT JOIN LineClearance.MainTemplate AS lc
                         ON lc.ProtocolMainTemplateID = maintemplate.ID
+                    LEFT JOIN MeasureProtocol.MainTemplate as measure
+                        ON orders.MeasureProtocolMainTemplateID = measure.MeasureProtocolMainTemplateID
                 WHERE OrderID = @orderid
                 ORDER BY IsMultipleColumnsStartup DESC";
 
@@ -141,14 +144,12 @@ namespace DigitalProductionProgram.MainWindow
                     if (TryParse(reader["LineClearanceMainTemplateID"].ToString(), out var lc_MainTemplateID))
                         Templates_LineClearance.MainTemplate.LineClearance_MainTemplateID = lc_MainTemplateID;
                    
-                    Templates_MeasureProtocol.MainTemplate.ID = reader["MeasureProtocolMainTemplateID"] is DBNull
-                        ? null
-                        : (int?)Convert.ToInt32(reader["MeasureProtocolMainTemplateID"]);
-
+                    Templates_MeasureProtocol.MainTemplate.ID = reader["MeasureProtocolMainTemplateID"] is DBNull ? null : (int?)Convert.ToInt32(reader["MeasureProtocolMainTemplateID"]);
+                    Templates_MeasureProtocol.MainTemplate.Name = reader["MeasureprotocolTemplateName"].ToString();
                     Templates_LineClearance.MainTemplate.LineClearance_CenturiLink = reader["CenturiLink"].ToString();
                     bool.TryParse(reader["IsMultipleColumnsStartup"].ToString(), out var isUsingOven);
                     Templates_Protocol.MainTemplate.IsUsingOven = isUsingOven;
-                    Templates_Protocol.MainTemplate.Name = reader["Name"].ToString();
+                    Templates_Protocol.MainTemplate.Name = reader["ProtocolTemplateName"].ToString();
                     Templates_Protocol.MainTemplate.Revision = reader["ProtocolTemplateRevision"].ToString();
                     bool.TryParse(reader["IsUsingPreFab"].ToString(), out var isUsingPrefab);
                     PreFab.IsUsingPreFab = isUsingPrefab;
@@ -243,7 +244,7 @@ namespace DigitalProductionProgram.MainWindow
             Clear();
             tb_OrderNr.Text = ordernr;
             string test = cb_Operation.Text;
-            if (string.IsNullOrEmpty(tb_OrderNr.Text) || tb_OrderNr.Text.Length < 3)
+            if (string.IsNullOrEmpty(tb_OrderNr.Text) || tb_OrderNr.Text.Length < 2)
             {
                 panel_tb_OrderNr.BackColor = tb_OrderNr.BackColor = Color.Khaki;
                 cb_Operation.Enabled = false;

@@ -122,6 +122,22 @@ namespace DigitalProductionProgram.DatabaseManagement
                 return default!;
             }
         }
+        public static async Task<T> ExecuteSafeAsync<T>(Func<SqlConnection, Task<T>> action)
+        {
+            try
+            {
+                await using var con = new SqlConnection(Database.cs_Protocol);
+                await con.OpenAsync();
+                return await action(con);
+            }
+            catch (Exception)
+            {
+                // Logga eller räkna
+                InfoText.Show(LanguageManager.GetString("errorConnectingDatabase"),
+                    CustomColors.InfoText_Color.Bad, "Error!");
+                return default!;
+            }
+        }
         public static void Load_DatabaseSettings()
         {
             cs_Protocol = null;
@@ -300,10 +316,11 @@ namespace DigitalProductionProgram.DatabaseManagement
         }
         private void MonitorCompany_Enter(object sender, EventArgs e)
         {
-            label_Info.Text = "001.1 - Optinova Godby Ab\n" +
-                              "003.1 - Optinova Holding Ab\n" +
-                              "010.1 - Optinova Thailand Co\n" +
-                              "012.1 - Optinova Valley Forge\n";
+            label_Info.Text = @"001.1 - Optinova Godby Ab
+                                003.1 - Optinova Holding Ab
+                                010.1 - Optinova Thailand Co
+                                012.1 - Optinova Valley Forge";
+
         }
         private void MonitorHost_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -375,13 +392,13 @@ namespace DigitalProductionProgram.DatabaseManagement
             public string Name { get; set; }
             public int ID { get; set; }
         }
-        public static readonly List<DataBaseType> datatype = new List<DataBaseType>
-        {
+        public static readonly List<DataBaseType> datatype =
+        [
             new DataBaseType { Name = "Numeric", ID = 0 },
             new DataBaseType { Name = "Text", ID = 1 },
             new DataBaseType { Name = "Bool", ID = 2 },
             new DataBaseType { Name = "DateTime", ID = 3 }
-        };
+        ];
         public static Monitor_API_Credentials LoadCredentials()
         {
             string settingsPath = Path.Combine(

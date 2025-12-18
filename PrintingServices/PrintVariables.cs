@@ -8,6 +8,7 @@ using DigitalProductionProgram.PrintingServices.Workoperation_Printouts;
 using static DigitalProductionProgram.PrintingServices.Workoperation_Printouts.Print_Protocol.PrintOut;
 using DigitalProductionProgram.OrderManagement;
 using System.Data;
+using System.Security.Cryptography.Pkcs;
 using DigitalProductionProgram.Protocols.ExtraProtocols;
 using DigitalProductionProgram.Templates;
 
@@ -36,11 +37,14 @@ namespace DigitalProductionProgram.PrintingServices
         public static float PageHeight;
 
         public static bool IsCommentsPrintedOut;
+        public static bool IsMeasureInstrumentsPrintedOut;
 
         public class TotalPrintOuts
         {
             private int PagesComments { get; set; }
             public int PagesExtraComments { get; set; }
+            public int PagesExtraMeasureInstruments { get; set; }
+            
             public int PagesExtraLineClearance =>
                 (Templates_LineClearance.MainTemplate.LineClearance_MainTemplateID ?? 0) == 0 ? 0 : 1;
             public int PagesMainProtocol = 0;
@@ -55,7 +59,6 @@ namespace DigitalProductionProgram.PrintingServices
             }
             public int PagesFrequencyMarking => FrequencyMarking.IsLäcksökning ? 1 : 0;
             public int PagesKragning { get; set; }
-            public int PagesSvetsning { get; set; }
             public int PagesSkärmning { get; set; }
             public int PagesSlipning { get; set; }
             public int PagesBlandning { get; set; }
@@ -68,30 +71,42 @@ namespace DigitalProductionProgram.PrintingServices
             public void SetPagesComments(PrintPageEventArgs e, string? comments, int x, int startY, int maxY)
             {
                 float pageWidth = e.PageBounds.Width - 2 * x;
-                var commentLines = Regex.Split(comments, @"\r\n|\r|\n");
+                var commentLines = Regex.Split(comments ?? "", @"\r\n|\r|\n");
                 var firstPageHeight = maxY - startY;
-                var otherPageHeight = (int)PageHeight - 130;//130 är extra marginaler uppe och nere
+                var otherPageHeight = (int)PageHeight - 130 - 190; // 130 = extra marginaler nere, 190 = uppe
                 var pageHeight = firstPageHeight;
                 float currentHeight = 0;
-                var pageCount = 0;
+                int pageCount = 0;
+
+                bool previousWasEmpty = false;
 
                 foreach (var comment in commentLines)
                 {
-                    var text = comment.Replace("\t", "    "); // Replace tabs with spaces
-                    var textSize = e.Graphics.MeasureString(text, CustomFonts.operatörFont, (int)pageWidth - LeftMargin);
+                    var text = comment.Replace("\t", "    "); // ersätt tabbar med mellanslag
+                    bool isEmpty = string.IsNullOrWhiteSpace(text);
+                    var measureText = isEmpty ? " " : text;
 
+                    var textSize = e.Graphics.MeasureString(measureText, CustomFonts.operatörFont, (int)pageWidth - LeftMargin);
+
+                    // hoppa över om två tomma rader i rad
+                    if (isEmpty && previousWasEmpty)
+                        continue;
+
+                    // kolla sidbyte
                     if (currentHeight + textSize.Height > pageHeight)
                     {
-                        // Move to the next page
                         pageCount++;
                         currentHeight = 0;
-                        pageHeight = otherPageHeight; // From now on, we have 1000px per page
+                        pageHeight = otherPageHeight;
                     }
 
                     currentHeight += (int)textSize.Height;
+                    previousWasEmpty = isEmpty;
                 }
+
                 PagesComments = pageCount;
             }
+
             public void SetPagesProtocols(int TotalRows_Template, int MaxRowsRunProtocol)
             {
                 var totalPages = 0;
@@ -142,13 +157,13 @@ namespace DigitalProductionProgram.PrintingServices
                 PagesMainProtocol + 
                 PagesComments + 
                 PagesExtraComments + 
+                PagesExtraMeasureInstruments +
                 PagesExtraLineClearance + 
                 PagesProtocols + 
                 PagesMeasureProtocol + 
                 PagesCompound + 
                 PagesFrequencyMarking + 
                 PagesKragning +
-                PagesSvetsning + 
                 PagesSkärmning + 
                 PagesSlipning +
                 PagesBlandning +

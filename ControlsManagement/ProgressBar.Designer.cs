@@ -136,12 +136,12 @@ namespace DigitalProductionProgram.ControlsManagement
         }
 
         #endregion
-
-        private System.Windows.Forms.ProgressBar pBar_Main;
         private Label lbl_Info;
         private Label lbl_Percent_Main;
         private Panel panel_Main;
         private Label lbl_Percent_Extra;
         private System.Windows.Forms.ProgressBar pBar_Extra;
+        public ProgressBar pBar_Main;
+        public Label lbl_Percent_Main;
     }
 }

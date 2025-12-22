@@ -126,105 +126,65 @@ namespace DigitalProductionProgram.MainWindow
         {
             var blackback = new BlackBackground("Initialising Digital Production Program.\nConnecting to Monitor and loading data from server, please wait.", 98, true)
             {
-                //TopMost = true,
+                TopMost = true,
                 WindowState = FormWindowState.Maximized,
-                
                 KeyPreview = true,
-
             };
-            blackback.Show();
-            this.Visible = false;
-            black = blackback;
-            
-            Settings.Settings.LoadData.Load_Settings();
-
-            Activity.Start();
-
-            InitializeComponent();
-            
-            Translate_MainForm();
-            
-            MainMenu.mainForm = this;
-            OrderInformation.mainForm = this;
-
-            print = new Manage_PrintOuts();
-            Monitor.Monitor.lbl_Monitorstatus = Serverstatus.lbl_MonitorStatus;
+            blackback.Show(); this.Visible = false;
+            black = blackback; Settings.Settings.LoadData.Load_Settings();
+            Activity.Start(); InitializeComponent(); Translate_MainForm();
+            MainMenu.mainForm = this; OrderInformation.mainForm = this;
+            print = new Manage_PrintOuts(); Monitor.Monitor.lbl_Monitorstatus = Serverstatus.lbl_MonitorStatus;
             Monitor.Monitor.panel_Monitorstatus = Serverstatus.panel_MonitorStatus;
-
             Login_Monitor.Login_API();
-
             if ((Environment.MachineName == "THAI-DPP-TEST01" || Environment.MachineName == "OH-ID61") && IsAutoLoginSuperAdmin)
                 AUTOLOGIN_SUPERADMIN();
             else
             {
                 IsLoadingPriorityPlan = true;
                 IsLoadingMeasurePoints = true;
-            }
 
+            }
             Login_Monitor.GiveUserWarningMonitorOnStageServer();
             Serverstatus.SetMainForm(this);
-
-
             PriorityPlanning.dgv_PriorityPlanning.CellClick += PriorityPlanning_OrderNr_CellClick;
             OrderInformation.cb_Operation.SelectedIndexChanged += Operation_SelectedIndexChanged;
-
             lbl_Company.Text = Monitor.Monitor.factory.ToString();
-
             if (IsAutoOpenOrder == false)
             {
-                Enum.TryParse(Settings.Settings.Tema, out Teman.Theme);
-
-                Teman.Choose_Theme();
-
-                if (!Program.IsComputerOnlyForMeasurements && IsAutoOpenOrder == false)
-                    OrderInformation.tb_OrderNr.AutoCompleteCustomSource = Monitor.Monitor.AutoFillOrdernr;
-
-                _ = Main_FilterQuickOpen.Load_ListAsync(dgv_QuickOpen);
-
+                Enum.TryParse(Settings.Settings.Tema, out Teman.Theme); Teman.Choose_Theme(); if (!Program.IsComputerOnlyForMeasurements && IsAutoOpenOrder == false) OrderInformation.tb_OrderNr.AutoCompleteCustomSource = Monitor.Monitor.AutoFillOrdernr; _ = Main_FilterQuickOpen.Load_ListAsync(dgv_QuickOpen);
             }
             OrderInformation.tb_OrderNr.Focus();
             dgv_QuickOpen.ClearSelection();
-
             if (Database.cs_Protocol.Contains("GOD_DPP_DEV"))
                 IsBetaMode = true;
-
-            Text = "Digital Production Program - " + ChangeLog.CurrentVersion;
-            Refresh();
-           
-
-            Mail.AutoTestJira();
-            CheckForMaintenanceWork();
+            Text = "Digital Production Program - " + ChangeLog.CurrentVersion; Refresh();
+            Mail.AutoTestJira(); CheckForMaintenanceWork();
         }
+
         private async void MainForm_Load(object sender, EventArgs e)
         {
             if (IsAutoOpenOrder == false)
             {
                 Monitor.Monitor.Load_WorkCenters();
-                
                 PriorityPlanning.Load_ProdGrupp();
-
                 if (Settings.Settings.MeasuringComputerOnly)
                     Change_GUI_Mätdator();
-
                 await Task.Run(() => RollingInformation.Change_Tips());
-
             }
-            
-           
             var processes = Process.GetProcessesByName("DigitalProductionProgram");
             await Activity.Stop($"Uppstart av program # {processes.Length}");
             startTime = DateTime.Now;
             Initialize_Timers();
             Change_GUI_StandardColor();
-
-
             if (black != null)
             {
-                if (black.InvokeRequired)
-                    black.Invoke(() => black.Close());
+                if (black.InvokeRequired) black.Invoke(() => black.Close());
                 else
                     black.Close();
             }
+
+            this.Visible = true;
             this.Invoke((MethodInvoker)(this.BringToFront));
         }
 

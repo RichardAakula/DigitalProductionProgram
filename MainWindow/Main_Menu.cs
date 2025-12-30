@@ -45,7 +45,7 @@ namespace DigitalProductionProgram.MainWindow
             Menu_Developer.Visible = CheckAuthority.IsOkShowDeveloperMenu;
             Menu_User_CheckMyAnalysis.Visible = CheckAuthority.IsFactoryAuthorized(CheckAuthority.TemplateFactory.MyAnalysis);
             Menu_Protocol_ManageTemplates.Visible = CheckAuthority.IsRoleAuthorized(CheckAuthority.TemplateAuthorities.ManageTemplates, false);
-
+            Menu_Arkiv_ManageDatabase.Visible = CheckAuthority.IsRoleAuthorized(CheckAuthority.TemplateAuthorities.ChangeDatabaseSettings, false);
         }
 
 
@@ -54,7 +54,7 @@ namespace DigitalProductionProgram.MainWindow
             Menu_Developer.Visible = false;
             Menu_Order_EditOrder.Enabled = false;
             Menu_Order_ReportProblemProductionSupport.Enabled = false;
-            Menu_Arkiv_ManageDatabase.Enabled = false;
+           // Menu_Arkiv_ManageDatabase.Enabled = false;
             Menu_Order_DeleteOrder.Enabled = false;
             Menu_Protocol_Unlock_ValidatedProcesscard.Enabled = false;
         }
@@ -139,8 +139,9 @@ namespace DigitalProductionProgram.MainWindow
         }
         private void Menu_Arkiv_UpdateDPP_Click(object sender, EventArgs e)
         {
-            //var updaterPath = @"\\optifil\dpp\Update\Update DPP.exe"; // OGO
-            var updaterPath = @"\\ovf-s1-file\Digital Production Program\Update\Update DPP.exe"; // Ändra till rätt filnamn
+            //var updaterPath = @"\\optifil\dpp\Update\Update DPP.exe";                                     // OGO
+            //var updaterPath = @"\\ovf-s1-file\Digital Production Program\Update\Update DPP.exe";          // OVF
+            var updaterPath = @"\\oth-s2-file\Digital Production Program\Update\Update DPP.exe";            // OTH
             if (File.Exists(updaterPath))
             {
                 Process.Start(updaterPath);

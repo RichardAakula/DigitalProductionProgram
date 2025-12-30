@@ -18,7 +18,8 @@ namespace DigitalProductionProgram.DatabaseManagement
         public static int SQL_Counter = 0;
 
         
-        private const string ServerOTH = @"THAI-SRV1-SQL01\SQLEXPRESS";
+        //private const string ServerOTH = @"THAI-SRV1-SQL01\SQLEXPRESS";
+        private const string ServerOTH = "OTH-S1-SQL01";
         private const string ServerOGO = "GOD-S1-SQL01";
         private const string ServerOVF = "OVF-S1-SQL";
 
@@ -27,14 +28,14 @@ namespace DigitalProductionProgram.DatabaseManagement
         
 
         private static readonly string csDPP_OGO = $"Data Source={ServerOGO};Initial Catalog=Korprotokoll;Persist Security Info=True;User ID={UserID};Password={Password};Connect Timeout=10;Encrypt=True;TrustServerCertificate=True;";
-        private static readonly string csDPP_OTH = $"Data Source={ServerOTH};Initial Catalog=Korprotokoll_Thai;Persist Security Info=True;User ID={UserID};Password={Password};Connect Timeout=5;Encrypt=True;TrustServerCertificate=True;";
+        private static readonly string csDPP_OTH = $"Data Source={ServerOTH};Initial Catalog=DP_OTH;Persist Security Info=True;User ID={UserID};Password={Password};Connect Timeout=30;Encrypt=True;TrustServerCertificate=True;";
         private static readonly string csDPP_OVF = $"Data Source={ServerOVF};Initial Catalog=DPP_OVF;Persist Security Info=True;User ID={UserID};Password={Password};Connect Timeout=5;Encrypt=True;TrustServerCertificate=True;";
         private static readonly string csDPP_Beta = $"Data Source={ServerOGO};Initial Catalog=GOD_DPP_DEV;Persist Security Info=True;User ID={UserID};Password={Password};Connect Timeout=5;Encrypt=True;TrustServerCertificate=True;";
         
 
         private static readonly string csToolRegisterGodby = $"Data Source={ServerOGO};Initial Catalog=Verktygsprogram;Persist Security Info=True;User ID={UserID};Password={Password};Connect Timeout=5;Encrypt=True;TrustServerCertificate=True;";
-        private const string csToolRegisterThai = "Data Source=THAI-SRV1-SQL01\\SQLEXPRESS;Initial Catalog=Toolregister_Thai;Persist Security Info=True;User ID=korprotokoll;Password=korprotokoll;Connect Timeout=5;Encrypt=True;TrustServerCertificate=True;";
-        private const string csToolRegisterOVF = "Data Source=OVF-S1-SQL;Initial Catalog=Toolregister_OVF;Persist Security Info=True;User ID=korprotokoll;Password=korprotokoll;Connect Timeout=5;Encrypt=True;TrustServerCertificate=True;";
+        private const string csToolRegisterThai = $"Data Source={ServerOTH};Initial Catalog=Toolregister_OTH;Persist Security Info=True;User ID=korprotokoll;Password=korprotokoll;Connect Timeout=30;Encrypt=True;TrustServerCertificate=True;";
+        private const string csToolRegisterOVF = $"Data Source={ServerOVF};Initial Catalog=Toolregister_OVF;Persist Security Info=True;User ID=korprotokoll;Password=korprotokoll;Connect Timeout=5;Encrypt=True;TrustServerCertificate=True;";
         /// </summary>
 
 
@@ -134,7 +135,7 @@ namespace DigitalProductionProgram.DatabaseManagement
             catch (Exception)
             {
                 // Logga eller räkna
-                InfoText.Show(LanguageManager.GetString("errorConnectingDatabase"),
+                InfoText.Show(LanguageManager.GetString("errorConnectingDatabase" + $" - ({action.Method.Name})"),
                     CustomColors.InfoText_Color.Bad, "Error!");
                 return default!;
             }
@@ -158,7 +159,9 @@ namespace DigitalProductionProgram.DatabaseManagement
                 settingsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "DatabaseSettings.json");
             }
 
-            var json = File.ReadAllText(settingsPath);
+            if (Environment.MachineName == "OTH-S3-CONSULT")
+                MessageBox.Show(settingsPath);
+                var json = File.ReadAllText(settingsPath);
             var jObject = JObject.Parse(json);
 
             //"Data Source=GOD-S1-SQL01;Initial Catalog=Korprotokoll;Persist Security Info=True;User ID=korprotokoll;Password=GOD-Stout4-Gladiator-Gazing-Retail-Pegboard;Connect Timeout=5;Encrypt=True;TrustServerCertificate=True;";
@@ -257,8 +260,8 @@ namespace DigitalProductionProgram.DatabaseManagement
                     break;
                 case "Thailand":
                     ServerDPP = ServerOTH;
-                    DatabaseDPP = "Korprotokoll_Thai";
-                    timeout = 10;
+                    DatabaseDPP = "DPP_OTH";
+                    timeout = 1000;
                     Password = "korprotokoll";
                     cb_Toolregister.Text = @"Thailand";
                     cb_MonitorCompany.Text = @"010.1";
@@ -297,7 +300,7 @@ namespace DigitalProductionProgram.DatabaseManagement
                 case "Thailand":
                     ServerToolregister = ServerOTH;
                     timeout = 10;
-                    DatabaseToolregister = "Toolregister_Thai";
+                    DatabaseToolregister = "Toolregister_OTH";
                     break;
                 case "Valley Forge":
                     ServerToolregister = ServerOVF;

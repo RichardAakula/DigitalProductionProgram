@@ -85,10 +85,15 @@ namespace DigitalProductionProgram.MainWindow
                     ctrl = Buttons.Frequency_Marking;
                     Buttons.F9_FrequencyMarking_Click(ctrl, null);
                     return true;
+                case Keys.F12:
+                    //black.Close();
+                    break;
+                        
             }
             // Call the base class
             return base.ProcessCmdKey(ref msg, keyData);
         }
+        
         protected override CreateParams CreateParams //Tar bort en massa flickering
         {
             get
@@ -120,7 +125,7 @@ namespace DigitalProductionProgram.MainWindow
         // Denna rad måste finnas för utskrifterna
         private readonly Manage_PrintOuts? print;
         private readonly BlackBackground black;
-
+        //TEST
         //public Main_Form(BlackBackground back)
         public Main_Form()
         {
@@ -131,19 +136,20 @@ namespace DigitalProductionProgram.MainWindow
                 KeyPreview = true,
             };
             blackback.Show(); this.Visible = false;
-            black = blackback; Settings.Settings.LoadData.Load_Settings();
-            Activity.Start(); InitializeComponent(); Translate_MainForm();
+            black = blackback;
+            Settings.Settings.LoadData.Load_Settings();
+            Activity.Start(); 
+            InitializeComponent(); Translate_MainForm();
             MainMenu.mainForm = this; OrderInformation.mainForm = this;
             print = new Manage_PrintOuts(); Monitor.Monitor.lbl_Monitorstatus = Serverstatus.lbl_MonitorStatus;
             Monitor.Monitor.panel_Monitorstatus = Serverstatus.panel_MonitorStatus;
             Login_Monitor.Login_API();
-            if ((Environment.MachineName == "THAI-DPP-TEST01" || Environment.MachineName == "OH-ID61") && IsAutoLoginSuperAdmin)
-                AUTOLOGIN_SUPERADMIN();
-            else
+            //if ((Environment.MachineName == "THAI-DPP-TEST01" || Environment.MachineName == "OH-ID61") && IsAutoLoginSuperAdmin)
+            //    AUTOLOGIN_SUPERADMIN();
+            //else
             {
                 IsLoadingPriorityPlan = true;
                 IsLoadingMeasurePoints = true;
-
             }
             Login_Monitor.GiveUserWarningMonitorOnStageServer();
             Serverstatus.SetMainForm(this);
@@ -171,6 +177,7 @@ namespace DigitalProductionProgram.MainWindow
                 if (Settings.Settings.MeasuringComputerOnly)
                     Change_GUI_Mätdator();
                 await Task.Run(() => RollingInformation.Change_Tips());
+                RollingInformation.Change_Tips();
             }
             var processes = Process.GetProcessesByName("DigitalProductionProgram");
             await Activity.Stop($"Uppstart av program # {processes.Length}");

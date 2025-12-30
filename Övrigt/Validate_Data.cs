@@ -271,7 +271,11 @@ namespace DigitalProductionProgram.Övrigt
             {
                 if (cell is null)
                     return;
-                if (double.TryParse(Value, out _))
+                if (double.TryParse(
+                        Value.Replace(',', '.'),
+                        NumberStyles.Any,
+                        CultureInfo.InvariantCulture,
+                        out _))
                     IsText = false;
                 else
                     IsText = true;
@@ -397,9 +401,18 @@ namespace DigitalProductionProgram.Övrigt
                     max = value_max;
 
             if (cell is null)
-                double.TryParse(control.Text, out value);
+                double.TryParse(
+                    control.Text.Replace(',', '.'),
+                    NumberStyles.Any,
+                    CultureInfo.InvariantCulture,
+                    out value);
             else
-                double.TryParse(Value, out value);
+                double.TryParse(
+                    Value.Replace(',', '.'),
+                    NumberStyles.Any,
+                    CultureInfo.InvariantCulture,
+                    out value);
+                
 
             if (ProcesscardBasedOn.IsHistoricalData || ProcesscardBasedOn.IsValidated)
             {

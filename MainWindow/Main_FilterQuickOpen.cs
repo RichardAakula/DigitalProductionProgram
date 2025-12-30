@@ -117,20 +117,24 @@ namespace DigitalProductionProgram.MainWindow
         }
         public static async Task Load_ListAsync(DataGridView dgv)
         {
-            Load_QuickStart();
+            // 1) TUNG LADDNING → på bakgrundstråd
+            await Task.Run(Load_QuickStart);
 
+            // 2) Sortering i minnet
             var dv = DataTable_SnabbÖppna?.DefaultView;
-            if (dv.Count > 0)
+            if (dv != null && dv.Count > 0)
+            {
                 dv.Sort = "Datum DESC";
-            DataTable_SnabbÖppna = dv.ToTable();
+                DataTable_SnabbÖppna = dv.ToTable();
+            }
 
-            await Task.Run(() => dgv.Invoke(new Action(() => dgv.DataSource = DataTable_SnabbÖppna)));
+            // 3) Tillbaka på UI-tråden (vi är i OnShown) → INGEN Invoke behövs
+            dgv.DataSource = DataTable_SnabbÖppna;
+
             var colorsByOpId = LoadQuickStartColors();
-
-            for (var i = 0; i < dgv.Rows.Count; i++)
+            for (int i = 0; i < dgv.Rows.Count; i++)
             {
                 int workOpId = (int)dgv.Rows[i].Cells["WorkOperationID"].Value;
-
                 if (colorsByOpId.TryGetValue(workOpId, out var colorPair))
                 {
                     dgv.Rows[i].DefaultCellStyle.BackColor = colorPair.BackColor;
@@ -140,23 +144,21 @@ namespace DigitalProductionProgram.MainWindow
 
             if (dgv.Rows.Count > 0)
             {
-                await Task.Run(() =>
-                {
-                    dgv.Invoke(new Action(() => dgv.Columns[0].Visible = false)); // OrderID
-                    dgv.Invoke(new Action(() => dgv.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells)); // OrderNr
-                    dgv.Invoke(new Action(() => dgv.Columns[1].ReadOnly = true));
-                    dgv.Invoke(new Action(() => dgv.Columns[2].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells)); // PartNr
-                    dgv.Invoke(new Action(() => dgv.Columns[3].Visible = false)); // PartID
-                    dgv.Invoke(new Action(() => dgv.Columns[4].Width = 85)); // Customer
-                    dgv.Invoke(new Action(() => dgv.Columns[4].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill)); // PartNr
-                    dgv.Invoke(new Action(() => dgv.Columns[5].Width = 100)); // Date
-                    dgv.Invoke(new Action(() => dgv.Columns[6].Visible = false)); // ProdLine
-                    dgv.Invoke(new Action(() => dgv.Columns[7].Visible = false)); // ProdTyp
-                    dgv.Invoke(new Action(() => dgv.Columns["WorkoperationID"].Visible = false)); // WorkoperationID
-                    dgv.Invoke(new Action(() => dgv.Height = dgv.Rows.Count * 22 + 15));
-                    dgv.Invoke(new Action(() => dgv.Width = 290));
-                });
+                dgv.Columns[0].Visible = false; // OrderID
+                dgv.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells; // OrderNr
+                dgv.Columns[1].ReadOnly = true;
+                dgv.Columns[2].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells; // PartNr
+                dgv.Columns[3].Visible = false; // PartID
+                dgv.Columns[4].Width = 85; // Customer
+                dgv.Columns[4].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill; // PartNr
+                dgv.Columns[5].Width = 100; // Date
+                dgv.Columns[6].Visible = false; // ProdLine
+                dgv.Columns[7].Visible = false; // ProdTyp
+                dgv.Columns["WorkoperationID"].Visible = false; // WorkoperationID
+                dgv.Height = dgv.Rows.Count * 22 + 15;
+                dgv.Width = 290;
             }
+
             dgv.ClearSelection();
         }
 

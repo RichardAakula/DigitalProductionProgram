@@ -206,7 +206,7 @@ namespace DigitalProductionProgram.Monitor
         {
             get
             {
-                Login_Monitor.Login_API("003.1");
+                //Login_Monitor.Login_API("003.1");
 
                 var date = DateTime.Now.ToString("yyyy-MM-dd");
                 var users = Utilities.GetFromMonitor<TimeRecording.AttendanceChart>($"select=FirstName,LastName,IsClosedInterval,AbsenceDescription,IntervalStart,IntervalEnd&$filter=startswith(IntervalStart, '{date}')&$orderby=IntervalStart");

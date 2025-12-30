@@ -20,8 +20,10 @@ using DigitalProductionProgram.User;
 
 namespace DigitalProductionProgram.Monitor
 {
-    internal abstract class Monitor
+    internal class Monitor
     {
+        public static Monitor Current { get; } = new Monitor();
+
         public static Factory factory;
         public enum Factory
         {
@@ -349,7 +351,7 @@ namespace DigitalProductionProgram.Monitor
 
         }
 
-        public static void Load_OrderInformation()
+        public void Load_OrderInformation()
         {
             Load_Order(OrderManagement.Order.OrderNumber);
             Load_Operations(int.Parse(OrderManagement.Order.Operation));
@@ -387,55 +389,99 @@ namespace DigitalProductionProgram.Monitor
         {
             if (Order is null)
                 return;
-            Customer = Utilities.GetOneFromMonitor<Sales.Customers>($"filter=Id Eq'{Order.CustomerId}'");
+
+            // Hämta kund i bakgrundstråd
+            Customer = Task.Run(() =>
+                Utilities.GetOneFromMonitor<Sales.Customers>($"filter=Id Eq'{Order.CustomerId}'")
+            ).Result;
         }
         public static void Load_Department()
         {
             if (WorkCenter is null)
                 return;
-            Department = Utilities.GetOneFromMonitor<Common.Departments>($"filter=Id Eq'{WorkCenter.DepartmentId}'");
+
+            // Hämta avdelning i bakgrundstråd
+            Department = Task.Run(() =>
+                Utilities.GetOneFromMonitor<Common.Departments>($"filter=Id Eq'{WorkCenter.DepartmentId}'")
+            ).Result;
         }
-        public static void Load_Part()
+        public void Load_Part()
         {
             if (Order is null)
                 return;
-            Part = Utilities.GetOneFromMonitor<Inventory.Parts>($"filter=Id Eq'{Order.PartId}'");
+
+            // Hämta delen i bakgrundstråd
+            Part = Task.Run(() =>
+                Utilities.GetOneFromMonitor<Inventory.Parts>($"filter=Id Eq'{Order.PartId}'")
+            ).Result;
         }
-        public static void Load_PartMaterial(int Operation = 0)
+        public static void Load_PartMaterial(int operation = 0)
         {
             if (Order is null)
                 return;
-            var order = Utilities.GetOneFromMonitor<Manufacturing.ManufacturingOrders>($"filter=OrderNumber Eq'{Order.OrderNumber}'");
-            string filter;
-            if (Operation == 0)
-                filter = $"filter=ManufacturingOrderId Eq'{order.Id}'";
-            else
-                filter = $"filter=ManufacturingOrderId Eq'{order.Id}' AND ToOperationNumber Eq'{Operation}'";
-            var materials = Utilities.GetOneFromMonitor<Manufacturing.ManufacturingOrderMaterials>(filter);
+
+            // Hämta order i bakgrundstråd
+            var order = Task.Run(() =>
+                Utilities.GetOneFromMonitor<Manufacturing.ManufacturingOrders>($"filter=OrderNumber Eq'{Order.OrderNumber}'")
+            ).Result;
+
+            if (order is null)
+                return;
+
+            // Bygg filter
+            string filter = operation == 0
+                ? $"filter=ManufacturingOrderId Eq'{order.Id}'"
+                : $"filter=ManufacturingOrderId Eq'{order.Id}' AND ToOperationNumber Eq'{operation}'";
+
+            // Hämta material i bakgrundstråd
+            var materials = Task.Run(() =>
+                Utilities.GetOneFromMonitor<Manufacturing.ManufacturingOrderMaterials>(filter)
+            ).Result;
+
             if (materials is null)
                 return;
-            Part_Material = Utilities.GetOneFromMonitor<Inventory.Parts>($"filter=Id Eq'{materials.PartId}'");
+
+            // Hämta Part_Material i bakgrundstråd
+            Part_Material = Task.Run(() =>
+                Utilities.GetOneFromMonitor<Inventory.Parts>($"filter=Id Eq'{materials.PartId}'")).Result;
         }
         public static void Load_WorkCenter(string prodgrupp)
         {
-            WorkCenter = Utilities.GetOneFromMonitor<Manufacturing.WorkCenters>($"filter=Number Eq'{prodgrupp}'");
+            // Hämta WorkCenter i bakgrundstråd
+            WorkCenter = Task.Run(() =>
+                Utilities.GetOneFromMonitor<Manufacturing.WorkCenters>($"filter=Number Eq'{prodgrupp}'")
+            ).Result;
         }
         public static void Load_WorkCenters()
         {
             WorkCenters = new Dictionary<string, string>();
-            var listWorkcenter = Utilities.GetFromMonitor<Manufacturing.WorkCenters>("select=Number,Description", "orderby=Number");
+
+            // Hämta listan av WorkCenters i bakgrundstråd
+            var listWorkcenter = Task.Run(() =>
+                Utilities.GetFromMonitor<Manufacturing.WorkCenters>("select=Number,Description", "orderby=Number")
+            ).Result;
 
             if (listWorkcenter is null)
-               return;
+                return;
+
             foreach (var workcenter in listWorkcenter)
                 WorkCenters.Add(workcenter.Number, workcenter.Description);
         }
-        public static void Load_Unit()
+        public void Load_Unit()
         {
             if (Order is null)
                 return;
-            var partUnit = Utilities.GetOneFromMonitor<Common.PartUnitUsages>($"filter=PartId Eq'{Part.Id}'");
-            Unit = Utilities.GetOneFromMonitor<Common.Units>($"filter=Number Eq'{partUnit.UnitId}'");
+
+            // Hämta partUnit i bakgrundstråd
+            var partUnit = Task.Run(() =>
+                Utilities.GetOneFromMonitor<Common.PartUnitUsages>($"filter=PartId Eq'{Part.Id}'")).Result;
+
+            if (partUnit is null)
+                return;
+
+            // Hämta Unit i bakgrundstråd
+            Unit = Task.Run(() =>
+                Utilities.GetOneFromMonitor<Common.Units>($"filter=Number Eq'{partUnit.UnitId}'")).Result;
         }
         public static DataTable? DataTable_Measurepoints { get; set; }
         public static void Load_DataTable_Measurpoints(string? OrderNr, string? Operation, bool IsOkWarnNoMeasurpoints)
@@ -447,16 +493,31 @@ namespace DigitalProductionProgram.Monitor
             DataTable_Measurepoints.Columns.Add("NOM", typeof(double));     //3
             DataTable_Measurepoints.Columns.Add("LCL", typeof(double));     //4 
             DataTable_Measurepoints.Columns.Add("LSL", typeof(double));     //5
+
             if (Manage_WorkOperation.IsWorkoperationUsing_Measurepoints == false)
                 return;
-            var order = Utilities.GetOneFromMonitor<Manufacturing.ManufacturingOrders>($"filter=OrderNumber Eq'{OrderNr}'");
+
+            // Hämta order i bakgrundstråd
+            var order = Task.Run(() =>
+                Utilities.GetOneFromMonitor<Manufacturing.ManufacturingOrders>($"filter=OrderNumber Eq'{OrderNr}'")
+            ).Result;
+
             if (order is null)
                 return;
-            
-            var operations = Utilities.GetOneFromMonitor<Manufacturing.ManufacturingOrderOperations>($"filter=ManufacturingOrderId Eq'{order.Id}' AND OperationNumber Eq'{Operation}'");
+
+            // Hämta operationen i bakgrundstråd
+            var operations = Task.Run(() =>
+                Utilities.GetOneFromMonitor<Manufacturing.ManufacturingOrderOperations>($"filter=ManufacturingOrderId Eq'{order.Id}' AND OperationNumber Eq'{Operation}'")
+            ).Result;
+
             if (operations is null)
                 return;
-            var ManufacturingOrderOperationControlDataRows = Utilities.GetOneFromMonitor<Manufacturing.ManufacturingOrderOperationControlDataRows>($"filter=ManufacturingOrderOperationId Eq'{operations.Id}'");
+
+            // Hämta kontrollrader i bakgrundstråd
+            var ManufacturingOrderOperationControlDataRows = Task.Run(() =>
+                Utilities.GetOneFromMonitor<Manufacturing.ManufacturingOrderOperationControlDataRows>($"filter=ManufacturingOrderOperationId Eq'{operations.Id}'")
+            ).Result;
+
             if (ManufacturingOrderOperationControlDataRows is null)
             {
                 if (!IsOkWarnNoMeasurpoints || OrderManagement.Order.IsOrderDone || factory == Factory.Holding)
@@ -466,12 +527,24 @@ namespace DigitalProductionProgram.Monitor
                 return;
             }
 
-            var FormTemplateSelectionRows = Utilities.GetOneFromMonitor<Common.FormTemplateSelectionRows>($"filter=FormTemplateId Eq'{ManufacturingOrderOperationControlDataRows.OverridenFormTemplateId}'");
-            var Measurepoints = Utilities.GetFromMonitor<Common.FormTemplateRows>($"filter=FormTemplateSelectionRowId eq'{FormTemplateSelectionRows.Id}' AND " +
-                                                                           "(LowerBoundary gt'0' OR UpperBoundary gt'0' OR Value gt'0' OR MinValue gt'0' OR MaxValue gt'0') AND Description neq'Concentricity' AND Description neq 'Amount (per bag/spool)'", "orderby=RowIndex");
-            foreach (var mp in Measurepoints)
-                DataTable_Measurepoints.Rows.Add(mp.Description, mp.Value + mp.MaxValue, mp.Value + mp.UpperBoundary, mp.Value, mp.Value + mp.LowerBoundary, mp.Value + mp.MinValue);
+            // Hämta FormTemplateSelectionRows i bakgrundstråd
+            var FormTemplateSelectionRows = Task.Run(() =>
+                Utilities.GetOneFromMonitor<Common.FormTemplateSelectionRows>($"filter=FormTemplateId Eq'{ManufacturingOrderOperationControlDataRows.OverridenFormTemplateId}'")).Result;
 
+            // Hämta Measurepoints i bakgrundstråd
+            var Measurepoints = Task.Run(() =>
+                Utilities.GetFromMonitor<Common.FormTemplateRows>($"filter=FormTemplateSelectionRowId eq'{FormTemplateSelectionRows.Id}' AND " +
+                                                                  "(LowerBoundary gt'0' OR UpperBoundary gt'0' OR Value gt'0' OR MinValue gt'0' OR MaxValue gt'0') AND Description neq'Concentricity' AND Description neq 'Amount (per bag/spool)'", "orderby=RowIndex")).Result;
+
+            foreach (var mp in Measurepoints)
+                DataTable_Measurepoints.Rows.Add(
+                    mp.Description,
+                    mp.Value + mp.MaxValue,
+                    mp.Value + mp.UpperBoundary,
+                    mp.Value,
+                    mp.Value + mp.LowerBoundary,
+                    mp.Value + mp.MinValue
+                );
         }
 
         public static void Fill_cb_ProdGrupp(ComboBox cb_ProdGrupp, ComboBox cb_ProdGrupp_Benämning)

@@ -618,7 +618,6 @@ namespace DigitalProductionProgram.OrderManagement
                         DELETE FROM [Order].Läcksökning WHERE OrderID = @id  
                         DELETE FROM Zumbach.Data WHERE OrderID = @id
                         DELETE FROM Zumbach.Measurements WHERE OrderID = @id
-                        DELETE FROM Parts.FeedbackQC WHERE OrderID = @id
                     COMMIT TRANSACTION";
 
             var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
@@ -629,7 +628,7 @@ namespace DigitalProductionProgram.OrderManagement
 
 
 
-        
+
 
 
         public static class Start

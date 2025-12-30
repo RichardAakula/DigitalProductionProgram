@@ -1,15 +1,23 @@
-﻿namespace DigitalProductionProgram.Monitor.GET
+﻿using System.Text.Json.Serialization;
+
+namespace DigitalProductionProgram.Monitor.GET
 {
-    public class Sales
+    public abstract class Sales
     {
         internal class Customers : DTO
         {
+            [JsonIgnore]
             public override string URL => "Sales/Customers";
 
-            public long Id { get; set; } //Kundens ID
-            public string? Name { get; set; } //KundNamn
-            public string Url { get; set; } //Kundens WebAdress
+            public long Id { get; set; }
+
+            [JsonPropertyName("name")]
+            public string? Name { get; set; }
+
+            [JsonPropertyName("url")]
+            public string Url { get; set; }
         }
+
 
         internal class CustomerPartLinks : DTO
         {

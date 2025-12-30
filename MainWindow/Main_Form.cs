@@ -144,9 +144,9 @@ namespace DigitalProductionProgram.MainWindow
             print = new Manage_PrintOuts(); Monitor.Monitor.lbl_Monitorstatus = Serverstatus.lbl_MonitorStatus;
             Monitor.Monitor.panel_Monitorstatus = Serverstatus.panel_MonitorStatus;
             Login_Monitor.Login_API();
-            //if ((Environment.MachineName == "THAI-DPP-TEST01" || Environment.MachineName == "OH-ID61") && IsAutoLoginSuperAdmin)
-            //    AUTOLOGIN_SUPERADMIN();
-            //else
+            if ((Environment.MachineName == "THAI-DPP-TEST01" || Environment.MachineName == "OH-ID61") && IsAutoLoginSuperAdmin)
+                AUTOLOGIN_SUPERADMIN();
+            else
             {
                 IsLoadingPriorityPlan = true;
                 IsLoadingMeasurePoints = true;
@@ -179,6 +179,7 @@ namespace DigitalProductionProgram.MainWindow
                 await Task.Run(() => RollingInformation.Change_Tips());
                 RollingInformation.Change_Tips();
             }
+            //Detta räknar hur många instanser av programmet som är öppna
             var processes = Process.GetProcessesByName("DigitalProductionProgram");
             await Activity.Stop($"Uppstart av program # {processes.Length}");
             startTime = DateTime.Now;
@@ -548,7 +549,7 @@ namespace DigitalProductionProgram.MainWindow
             }
 
             Order.Load_OrderInformation();
-            Monitor.Monitor.Load_OrderInformation();
+            Monitor.Monitor.Current.Load_OrderInformation();
 
             var IsOkStartOrder = true;
 

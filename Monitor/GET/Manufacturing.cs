@@ -20,7 +20,7 @@ namespace DigitalProductionProgram.Monitor.GET
             public long Id { get; set; }
             public string? OrderNumber { get; set; }
             public long? CustomerId { get; set; }
-            public string Status { get; set; }
+            public int Status { get; set; }
             public string PartId { get; set; }
             public string Part { get; set; }
             public string StartDate { get; set; }

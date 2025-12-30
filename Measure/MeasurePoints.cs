@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -300,6 +301,7 @@ namespace DigitalProductionProgram.Measure
         {
             //Om Ordern snabbladdas i utvecklarmiljö behöver Mätpunkter laddas från Monitor här
             //CodeName i Measureprotocol.Description Måste vara samma som i Monitor för att få fram rätt värde
+            [DebuggerStepThrough]
             public static double? ActiveTolerance(string? CodeName, string Value)
             {
                 if (Monitor.Monitor.DataTable_Measurepoints == null)

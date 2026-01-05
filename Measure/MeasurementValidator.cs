@@ -9,7 +9,7 @@ using static DigitalProductionProgram.Measure.MeasurePoints;
 
 namespace DigitalProductionProgram.Measure
 {
-    internal class MeasurementValidator
+    internal abstract class MeasurementValidator
     {
         public static void DataVerification_Value(double value, Control ctrl)
         {

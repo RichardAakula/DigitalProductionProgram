@@ -895,7 +895,7 @@ namespace DigitalProductionProgram.Processcards
                 {
                     foreach (var module in tlp.Controls.OfType<Module>())
                     {
-                        module.dgv_Module.CellValueChanged -= module.Module_ValidateData_SaveData_CellValueChanged;
+                        module.dgv_Module.CellValueChanged -= module.ValidateData_SaveData_CellValueChanged;
                         foreach (var dt in dataTables_ProcessData)
                         {
                             // if (dt.TableName == module.LeftHeader)

@@ -2378,4 +2378,7 @@ Kontakta IT-support om felet kvarstår.</value>
   <data name="top10LatestOrders" xml:space="preserve">
     <value>10 senaste startade orders</value>
   </data>
+  <data name="Menu_Order_ReadProposedProcesscardChanges" xml:space="preserve">
+    <value>Läs förslag på Processkortsuppdateringar för denna Order</value>
+  </data>
 </root>

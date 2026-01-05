@@ -129,17 +129,29 @@ namespace DigitalProductionProgram.MainWindow
         //public Main_Form(BlackBackground back)
         public Main_Form()
         {
-            var blackback = new BlackBackground("Initialising Digital Production Program.\nConnecting to Monitor and loading data from server, please wait.", 98, true)
+            var blackback = new BlackBackground("Initialising Digital Production Program.\n" +
+                                                "" +
+                                                "Connecting to Monitor and loading data from server, please wait.", 98, true)
             {
                 TopMost = true,
                 WindowState = FormWindowState.Maximized,
                 KeyPreview = true,
             };
+
+            if (Debugger.IsAttached)
+            {
+                blackback.TopMost = false;
+                blackback.FormBorderStyle = FormBorderStyle.FixedToolWindow;
+                blackback.StartPosition = FormStartPosition.CenterScreen; // gör den mindre och central
+            }
+
             blackback.Show(); this.Visible = false;
+
             black = blackback;
             Settings.Settings.LoadData.Load_Settings();
             Activity.Start(); 
-            InitializeComponent(); Translate_MainForm();
+            InitializeComponent(); 
+            Translate_MainForm();
             MainMenu.mainForm = this; OrderInformation.mainForm = this;
             print = new Manage_PrintOuts(); Monitor.Monitor.lbl_Monitorstatus = Serverstatus.lbl_MonitorStatus;
             Monitor.Monitor.panel_Monitorstatus = Serverstatus.panel_MonitorStatus;

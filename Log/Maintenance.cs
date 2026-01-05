@@ -127,8 +127,7 @@ namespace DigitalProductionProgram.Log
 
         public static void StartInstallation()
         {
-            var updaterPath = @"\\optifil\dpp\Update\Update DPP.exe";
-            Process.Start(updaterPath);
+            Process.Start(Database.UpdatePath);
             Application.Exit();  // Stänger huvudprogrammet för uppdatering
         }
 

@@ -2382,4 +2382,7 @@ Please contact IT support if the issue persists.</value>
   <data name="top10LatestOrders" xml:space="preserve">
     <value>10 latest started orders</value>
   </data>
+  <data name="Menu_Order_ReadProposedProcesscardChanges" xml:space="preserve">
+    <value>View proposed process card updates for this order.</value>
+  </data>
 </root>

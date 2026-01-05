@@ -21,7 +21,7 @@ using System.Windows.Forms;
 
 namespace DigitalProductionProgram.Övrigt
 {
-    internal class Validate_Data
+    internal abstract class Validate_Data
     {
         [DebuggerStepThrough]
         static string? NormalizeString(string? s)
@@ -271,21 +271,15 @@ namespace DigitalProductionProgram.Övrigt
             {
                 if (cell is null)
                     return;
-                if (double.TryParse(
-                        Value.Replace(',', '.'),
-                        NumberStyles.Any,
-                        CultureInfo.InvariantCulture,
-                        out _))
+                if (!string.IsNullOrWhiteSpace(Value) &&
+                    double.TryParse(Value.Replace(',', '.'), NumberStyles.Any, CultureInfo.InvariantCulture, out _))
                     IsText = false;
                 else
                     IsText = true;
             }
             else
             {
-                if (double.TryParse(control.Text, out _))
-                    IsText = false;
-                else
-                    IsText= true;
+                IsText = !double.TryParse(control.Text, out _);
             }
 
             if (IsText)
@@ -337,47 +331,6 @@ namespace DigitalProductionProgram.Övrigt
             else
                 ChangeColor_TextBox(name, protocolDescriptionID, control, IsErrorAndValidated, IsErrorAndHistoricalData, IsOnlyWarning, IsOk, uppstart, maskin);
         }
-        //private static void Value_DataGridView_Text(bool IsValueCritical, string name, string? Nom, string? Value, int protocolDescriptionID, DataGridViewCell cell = null, Control control = null, int uppstart = 0, int maskin = 0)
-        //{
-        //    var IsErrorAndHistoricalData = false;
-        //    var IsErrorAndValidated = false;
-        //    var IsOnlyWarning = false;
-        //    var IsOk = true;
-        //    // Choose actual text source (cell value or control text)
-        //    var actualValue = control is null ? Value : control.Text;
-
-        //    if (string.IsNullOrWhiteSpace(actualValue) && cell != null)
-        //    {
-        //        cell.Style.BackColor = Color.White;
-        //        cell.Style.ForeColor = Color.Black;
-        //        return;
-        //    }
-
-
-        //    var normValue = NormalizeString(actualValue);
-        //    var normNom = NormalizeString(Nom);
-
-        //    if (IsValueCritical)
-        //    {
-        //        if (!string.IsNullOrEmpty(normNom) && !string.Equals(normValue, normNom, StringComparison.OrdinalIgnoreCase))
-        //        {
-        //            IsErrorAndHistoricalData = ProcesscardBasedOn.IsHistoricalData;
-        //            IsErrorAndValidated = ProcesscardBasedOn.IsValidated;
-        //        }
-        //    }
-        //    else
-        //    {
-        //        if (!string.IsNullOrEmpty(normNom) && !string.Equals(normNom, normValue, StringComparison.OrdinalIgnoreCase))
-        //            IsOnlyWarning = true;
-        //    }
-
-        //   // var IsOk = !IsErrorAndHistoricalData && !IsErrorAndValidated;
-
-        //    if (control is null)
-        //        ChangeColor_dgvCell(name, protocolDescriptionID, cell, IsErrorAndValidated, IsErrorAndHistoricalData, IsOnlyWarning, IsOk, uppstart, maskin);
-        //    else
-        //        ChangeColor_TextBox(name, protocolDescriptionID, control, IsErrorAndValidated, IsErrorAndHistoricalData, IsOnlyWarning, IsOk, uppstart, maskin);
-        //}
         private static void Value_DataGridView_Number(bool IsValueCritical, string name, string? Min, string? Nom, string? Max, string? Value, int protocolDescriptionID, DataGridViewCell cell = null, Control control = null, int uppstart = 0, int maskin = 0)
         {
             var IsErrorAndHistoricalData = false;
@@ -385,7 +338,6 @@ namespace DigitalProductionProgram.Övrigt
             var IsOnlyWarning = false;
 
             var IsOk = true;
-            double value;
             double? min = null;
             double? nom = null;
             double? max = null;
@@ -400,19 +352,13 @@ namespace DigitalProductionProgram.Övrigt
                 if (double.TryParse(Max, out var value_max))
                     max = value_max;
 
-            if (cell is null)
-                double.TryParse(
-                    control.Text.Replace(',', '.'),
-                    NumberStyles.Any,
-                    CultureInfo.InvariantCulture,
-                    out value);
-            else
-                double.TryParse(
-                    Value.Replace(',', '.'),
-                    NumberStyles.Any,
-                    CultureInfo.InvariantCulture,
-                    out value);
-                
+            var input = cell is null
+                    ? control?.Text : Value;
+            if (!double.TryParse(input?.Replace(',', '.'), NumberStyles.Any, CultureInfo.InvariantCulture, out double value))
+            {
+                // Ingen giltig siffra → behandla som OK eller return
+                return;
+            }
 
             if (ProcesscardBasedOn.IsHistoricalData || ProcesscardBasedOn.IsValidated)
             {
@@ -449,9 +395,8 @@ namespace DigitalProductionProgram.Övrigt
                 ChangeColor_TextBox(name, protocolDescriptionID, control, IsErrorAndValidated, IsErrorAndHistoricalData, IsOnlyWarning, IsOk, uppstart, maskin);
         }
 
-        
 
-        public static bool IsFieldReportedTo_Processtekniker(string text)
+        private static bool IsFieldReportedTo_Processtekniker(string text)
         {
             using var con = new SqlConnection(Database.cs_Protocol);
             var query = $"SELECT * FROM Processcard.ProposedChanges {Queries.WHERE_OrderID} AND Rubrik LIKE '%{text}%'";

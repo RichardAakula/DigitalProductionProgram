@@ -1934,4 +1934,7 @@
   <data name="top10LatestOrders" xml:space="preserve">
     <value></value>
   </data>
+  <data name="Menu_Order_ReadProposedProcesscardChanges" xml:space="preserve">
+    <value></value>
+  </data>
 </root>

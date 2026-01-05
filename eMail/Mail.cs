@@ -159,12 +159,8 @@ namespace DigitalProductionProgram.eMail
                             "<br /><br />";
                 }
             }
-
-            
-
            
             Send($"{Order.WorkOperation}, {Order.PartNumber}, {Order.OrderNumber}-{Order.Operation}", 1);
-
         }
 
         public static async void AutoTestJira()

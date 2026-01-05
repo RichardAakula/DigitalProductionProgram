@@ -219,7 +219,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
             
             dgv_Module.ClearSelection();
         }
-        public static void Print_LeftLabel(PaintEventArgs e, string? text, int top, int y, Font? font = null)
+        private static void Print_LeftLabel(PaintEventArgs e, string? text, int top, int y, Font? font = null)
         {
             font ??= new Font("Arial", 8);
             var g = e.Graphics;
@@ -662,7 +662,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
         {
             dgv_Module?.ClearSelection();
         }
-        public void Module_ValidateData_SaveData_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        public void ValidateData_SaveData_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
             if (Browse_Protocols.Browse_Protocols.Is_BrowsingProtocols || Manage_Processcards.IsProcesscardUnderManagement)
                 return;
@@ -708,7 +708,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                     case 160:  //RÖR ID# POS 2
                     case 161:  //RÖR ID# POS 3
                         text = dgv_Module.Rows[row].Cells[col].Value.ToString();
-                        Validate_Data.IsHSPipe_Ok(text, dgv_Row.Cells[0].Value.ToString(), protocolDescriptionID, NOM_Value(dgv_Row), dgv_Row.Cells[col], startUp, IsValueCritical);
+                        Validate_Data.IsHSPipe_Ok(text, codeText, protocolDescriptionID, NOM_Value(dgv_Row), dgv_Row.Cells[col], startUp, IsValueCritical);
                         IsValidated = true;
                         break;
                     case 80:    //EXTRUDER

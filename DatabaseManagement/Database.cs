@@ -36,6 +36,13 @@ namespace DigitalProductionProgram.DatabaseManagement
         private static readonly string csToolRegisterGodby = $"Data Source={ServerOGO};Initial Catalog=Verktygsprogram;Persist Security Info=True;User ID={UserID};Password={Password};Connect Timeout=5;Encrypt=True;TrustServerCertificate=True;";
         private const string csToolRegisterThai = $"Data Source={ServerOTH};Initial Catalog=Toolregister_OTH;Persist Security Info=True;User ID=korprotokoll;Password=korprotokoll;Connect Timeout=30;Encrypt=True;TrustServerCertificate=True;";
         private const string csToolRegisterOVF = $"Data Source={ServerOVF};Initial Catalog=Toolregister_OVF;Persist Security Info=True;User ID=korprotokoll;Password=korprotokoll;Connect Timeout=5;Encrypt=True;TrustServerCertificate=True;";
+
+        private const string UpdatePath_OGO = @"\\optifil\dpp\Update\Update DPP.exe";
+        private const string UpdatePath_OTH = @"\\oth-s2-file\Digital Production Program\Update\Update DPP.exe";
+        private const string UpdatePath_OVF = @"\\ovf-s1-file\Digital Production Program\Update\Update DPP.exe";
+
+        public const string UpdatePath = UpdatePath_OTH;
+
         /// </summary>
 
 
@@ -155,13 +162,9 @@ namespace DigitalProductionProgram.DatabaseManagement
 
             // Fallback till installationsmappen om filen inte finns
             if (!File.Exists(settingsPath))
-            {
                 settingsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "DatabaseSettings.json");
-            }
-
-            if (Environment.MachineName == "OTH-S3-CONSULT")
-                MessageBox.Show(settingsPath);
-                var json = File.ReadAllText(settingsPath);
+           
+            var json = File.ReadAllText(settingsPath);
             var jObject = JObject.Parse(json);
 
             //"Data Source=GOD-S1-SQL01;Initial Catalog=Korprotokoll;Persist Security Info=True;User ID=korprotokoll;Password=GOD-Stout4-Gladiator-Gazing-Retail-Pegboard;Connect Timeout=5;Encrypt=True;TrustServerCertificate=True;";

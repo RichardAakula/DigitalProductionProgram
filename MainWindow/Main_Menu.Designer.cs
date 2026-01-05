@@ -130,10 +130,12 @@ namespace DigitalProductionProgram.MainWindow
             flyttaMätdataFrånSvetsningToolStripMenuItem = new ToolStripMenuItem();
             ettToolStripMenuItem = new ToolStripMenuItem();
             tvåToolStripMenuItem = new ToolStripMenuItem();
+            Menu_Developer_EasterEggPsycho = new ToolStripMenuItem();
             menuStrip = new MenuStrip();
             Menu_Equipment = new ToolStripMenuItem();
             Menu_Equipment_UseFilter = new ToolStripMenuItem();
             Menu_Equipment_UseSilpaket = new ToolStripMenuItem();
+            Menu_Order_ReadProposedProcesscardChanges = new ToolStripMenuItem();
             menuStrip.SuspendLayout();
             SuspendLayout();
             // 
@@ -201,7 +203,7 @@ namespace DigitalProductionProgram.MainWindow
             // 
             // Menu_Order
             // 
-            Menu_Order.DropDownItems.AddRange(new ToolStripItem[] { Menu_Order_OrderDone, Menu_Order_EditOrder, Menu_Order_DeleteOrder, Menu_Order_ReportProblemProductionSupport, Menu_Order_CreateTestOrder, Menu_Order_OpenRandomOrder, Menu_Order_QC_Feedback, Menu_Order_LinkOrder });
+            Menu_Order.DropDownItems.AddRange(new ToolStripItem[] { Menu_Order_OrderDone, Menu_Order_EditOrder, Menu_Order_DeleteOrder, Menu_Order_ReportProblemProductionSupport, Menu_Order_ReadProposedProcesscardChanges, Menu_Order_CreateTestOrder, Menu_Order_OpenRandomOrder, Menu_Order_QC_Feedback, Menu_Order_LinkOrder });
             Menu_Order.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
             Menu_Order.ForeColor = Color.DeepSkyBlue;
             Menu_Order.Name = "Menu_Order";
@@ -214,7 +216,7 @@ namespace DigitalProductionProgram.MainWindow
             Menu_Order_OrderDone.AccessibleRole = AccessibleRole.MenuBar;
             Menu_Order_OrderDone.Enabled = false;
             Menu_Order_OrderDone.Name = "Menu_Order_OrderDone";
-            Menu_Order_OrderDone.Size = new Size(348, 22);
+            Menu_Order_OrderDone.Size = new Size(434, 22);
             Menu_Order_OrderDone.Text = "Order Klar";
             Menu_Order_OrderDone.Click += Menu_Order_OrderKlar_Click;
             // 
@@ -222,7 +224,7 @@ namespace DigitalProductionProgram.MainWindow
             // 
             Menu_Order_EditOrder.Enabled = false;
             Menu_Order_EditOrder.Name = "Menu_Order_EditOrder";
-            Menu_Order_EditOrder.Size = new Size(348, 22);
+            Menu_Order_EditOrder.Size = new Size(434, 22);
             Menu_Order_EditOrder.Text = "Redigera en färdig Order";
             Menu_Order_EditOrder.Click += Menu_Order_RedigeraOrder_Click;
             // 
@@ -230,7 +232,7 @@ namespace DigitalProductionProgram.MainWindow
             // 
             Menu_Order_DeleteOrder.Enabled = false;
             Menu_Order_DeleteOrder.Name = "Menu_Order_DeleteOrder";
-            Menu_Order_DeleteOrder.Size = new Size(348, 22);
+            Menu_Order_DeleteOrder.Size = new Size(434, 22);
             Menu_Order_DeleteOrder.Text = "Radera Order";
             Menu_Order_DeleteOrder.Click += Menu_Order_RaderaOrder_ClickAsync;
             // 
@@ -238,7 +240,7 @@ namespace DigitalProductionProgram.MainWindow
             // 
             Menu_Order_ReportProblemProductionSupport.Enabled = false;
             Menu_Order_ReportProblemProductionSupport.Name = "Menu_Order_ReportProblemProductionSupport";
-            Menu_Order_ReportProblemProductionSupport.Size = new Size(348, 22);
+            Menu_Order_ReportProblemProductionSupport.Size = new Size(434, 22);
             Menu_Order_ReportProblemProductionSupport.Text = "Rapportera problem till produktionssupport";
             Menu_Order_ReportProblemProductionSupport.Click += Menu_Order_Rapport_Jira_Click;
             // 
@@ -246,7 +248,7 @@ namespace DigitalProductionProgram.MainWindow
             // 
             Menu_Order_CreateTestOrder.Enabled = false;
             Menu_Order_CreateTestOrder.Name = "Menu_Order_CreateTestOrder";
-            Menu_Order_CreateTestOrder.Size = new Size(348, 22);
+            Menu_Order_CreateTestOrder.Size = new Size(434, 22);
             Menu_Order_CreateTestOrder.Text = "Skapa Testorder";
             Menu_Order_CreateTestOrder.Click += Menu_Order_SkapaTestOrder_Click;
             // 
@@ -255,14 +257,14 @@ namespace DigitalProductionProgram.MainWindow
             Menu_Order_OpenRandomOrder.MergeAction = MergeAction.Insert;
             Menu_Order_OpenRandomOrder.Name = "Menu_Order_OpenRandomOrder";
             Menu_Order_OpenRandomOrder.ShortcutKeys = Keys.Control | Keys.R;
-            Menu_Order_OpenRandomOrder.Size = new Size(348, 22);
+            Menu_Order_OpenRandomOrder.Size = new Size(434, 22);
             Menu_Order_OpenRandomOrder.Text = "Öppna Random Order";
             Menu_Order_OpenRandomOrder.Click += Menu_Order_OpenRandomOrder_Click;
             // 
             // Menu_Order_QC_Feedback
             // 
             Menu_Order_QC_Feedback.Name = "Menu_Order_QC_Feedback";
-            Menu_Order_QC_Feedback.Size = new Size(348, 22);
+            Menu_Order_QC_Feedback.Size = new Size(434, 22);
             Menu_Order_QC_Feedback.Text = "Lämna feedback för denna körning";
             Menu_Order_QC_Feedback.Click += Menu_Order_QC_Feedback_Click;
             // 
@@ -270,7 +272,7 @@ namespace DigitalProductionProgram.MainWindow
             // 
             Menu_Order_LinkOrder.DropDownItems.AddRange(new ToolStripItem[] { Menu_Order_ReLink_Processcard, Menu_Order_ReLink_Protocol, Menu_Order_ReLink_MeasureProtocol });
             Menu_Order_LinkOrder.Name = "Menu_Order_LinkOrder";
-            Menu_Order_LinkOrder.Size = new Size(348, 22);
+            Menu_Order_LinkOrder.Size = new Size(434, 22);
             Menu_Order_LinkOrder.Text = "Länka Order";
             // 
             // Menu_Order_ReLink_Processcard
@@ -685,7 +687,7 @@ namespace DigitalProductionProgram.MainWindow
             // 
             // Menu_Developer
             // 
-            Menu_Developer.DropDownItems.AddRange(new ToolStripItem[] { Menu_Developer_GetOrderInfo, Menu_Developer_SendMailToAllUsers, Menu_Developer_AddGallup, Menu_Developer_CheckGallup, Menu_Developer_OpenRandomOrder, Menu_Developer_Timer_test, Menu_Developer_ExportHS_Data, Menu_Developer_GetDataForQuoting, testaNAntalKörningarPåArtikelNrToolStripMenuItem, Menu_Developer_AddThemePicture, Menu_Developer_TestNewProtocol, testCalendarToolStripMenuItem, påskäggToolStripMenuItem, Developer_CountSql_Queries, Developer_Clear_Sql_Queries, testaChartToolStripMenuItem, flyttaDataFrånSvetsnigToolStripMenuItem, flyttaMätdataFrånSvetsningToolStripMenuItem, ettToolStripMenuItem, tvåToolStripMenuItem });
+            Menu_Developer.DropDownItems.AddRange(new ToolStripItem[] { Menu_Developer_GetOrderInfo, Menu_Developer_SendMailToAllUsers, Menu_Developer_AddGallup, Menu_Developer_CheckGallup, Menu_Developer_OpenRandomOrder, Menu_Developer_Timer_test, Menu_Developer_ExportHS_Data, Menu_Developer_GetDataForQuoting, testaNAntalKörningarPåArtikelNrToolStripMenuItem, Menu_Developer_AddThemePicture, Menu_Developer_TestNewProtocol, testCalendarToolStripMenuItem, påskäggToolStripMenuItem, Developer_CountSql_Queries, Developer_Clear_Sql_Queries, testaChartToolStripMenuItem, flyttaDataFrånSvetsnigToolStripMenuItem, flyttaMätdataFrånSvetsningToolStripMenuItem, ettToolStripMenuItem, tvåToolStripMenuItem, Menu_Developer_EasterEggPsycho });
             Menu_Developer.ForeColor = Color.DeepSkyBlue;
             Menu_Developer.Name = "Menu_Developer";
             Menu_Developer.Size = new Size(81, 32);
@@ -869,6 +871,13 @@ namespace DigitalProductionProgram.MainWindow
             tvåToolStripMenuItem.Text = "Utan Expand";
             tvåToolStripMenuItem.Click += utanExpand;
             // 
+            // Menu_Developer_EasterEggPsycho
+            // 
+            Menu_Developer_EasterEggPsycho.Name = "Menu_Developer_EasterEggPsycho";
+            Menu_Developer_EasterEggPsycho.Size = new Size(271, 22);
+            Menu_Developer_EasterEggPsycho.Text = "Easter Egg Psycho";
+            Menu_Developer_EasterEggPsycho.Click += Menu_Developer_EasterEggPsycho_Click;
+            // 
             // menuStrip
             // 
             menuStrip.BackColor = Color.Transparent;
@@ -918,6 +927,13 @@ namespace DigitalProductionProgram.MainWindow
             Menu_Equipment_UseSilpaket.Size = new Size(181, 22);
             Menu_Equipment_UseSilpaket.Text = "Använd Silpaket";
             Menu_Equipment_UseSilpaket.Click += Menu_Protocol_UseSilpaket_Click;
+            // 
+            // Menu_Order_ReadProposedProcesscardChanges
+            // 
+            Menu_Order_ReadProposedProcesscardChanges.Name = "Menu_Order_ReadProposedProcesscardChanges";
+            Menu_Order_ReadProposedProcesscardChanges.Size = new Size(434, 22);
+            Menu_Order_ReadProposedProcesscardChanges.Text = "Läs förslag på Processkortsuppdateringar för denna Order";
+            Menu_Order_ReadProposedProcesscardChanges.Click += Menu_Order_ReadProposedProcesscardChanges_Click;
             // 
             // Main_Menu
             // 
@@ -1040,5 +1056,7 @@ namespace DigitalProductionProgram.MainWindow
         private ToolStripMenuItem flyttaMätdataFrånSvetsningToolStripMenuItem;
         private ToolStripMenuItem ettToolStripMenuItem;
         private ToolStripMenuItem tvåToolStripMenuItem;
+        private ToolStripMenuItem Menu_Developer_EasterEggPsycho;
+        private ToolStripMenuItem Menu_Order_ReadProposedProcesscardChanges;
     }
 }

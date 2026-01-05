@@ -8,6 +8,7 @@ using Microsoft.Data.SqlClient;
 using System.ComponentModel;
 using System.Data.Odbc;
 using System.Diagnostics;
+using DigitalProductionProgram.EasterEggs;
 using DigitalProductionProgram.User;
 using static DigitalProductionProgram.DatabaseManagement.Database;
 
@@ -99,7 +100,8 @@ namespace DigitalProductionProgram.MainWindow
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-
+           
+            
             //Kontrollerar att alla databaskopplingar är ok, annars får användaren välja  
             Load_DatabaseSettings();
 

@@ -28,6 +28,9 @@
     <Compile Update="EasterEggs\EasterEgg_Code.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Update="EasterEggs\EasterEgg_GetPsycho.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="eMail\Processcard_Changes.cs">
       <SubType>Form</SubType>
     </Compile>

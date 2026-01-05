@@ -702,7 +702,7 @@ namespace DigitalProductionProgram.Processcards
                         module.dgv_Module.Rows[row].Cells[colIndex + col].Value = value;
                     }
                 }
-                module.dgv_Module.CellValueChanged += module.Module_ValidateData_SaveData_CellValueChanged;
+                module.dgv_Module.CellValueChanged += module.ValidateData_SaveData_CellValueChanged;
             }
         }
     }

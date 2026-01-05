@@ -15,8 +15,11 @@ using DigitalProductionProgram.Templates;
 using DigitalProductionProgram.ToolManagement;
 using DigitalProductionProgram.User;
 using Microsoft.Data.SqlClient;
+using Microsoft.VisualBasic.ApplicationServices;
+using System.Data;
 using System.Diagnostics;
 using System.Text;
+using System.Text.RegularExpressions;
 using Color = System.Drawing.Color;
 using ProgressBar = DigitalProductionProgram.ControlsManagement.CustomProgressBar;
 
@@ -54,7 +57,7 @@ namespace DigitalProductionProgram.MainWindow
             Menu_Developer.Visible = false;
             Menu_Order_EditOrder.Enabled = false;
             Menu_Order_ReportProblemProductionSupport.Enabled = false;
-           // Menu_Arkiv_ManageDatabase.Enabled = false;
+            // Menu_Arkiv_ManageDatabase.Enabled = false;
             Menu_Order_DeleteOrder.Enabled = false;
             Menu_Protocol_Unlock_ValidatedProcesscard.Enabled = false;
         }
@@ -112,7 +115,7 @@ namespace DigitalProductionProgram.MainWindow
         //----------ARKIV/FILE----------
         private void Menu_Arkiv_NyOrder_Click(object sender, EventArgs e)
         {
-           ResetMainForm();
+            ResetMainForm();
         }
 
         private void ResetMainForm()
@@ -127,7 +130,7 @@ namespace DigitalProductionProgram.MainWindow
             mainForm.Change_Theme();
             mainForm.tlp_Left.BackColor = Color.Transparent;
             mainForm.BackColor = Color.FromArgb(25, 25, 25);
-           
+
             //här
             //foreach (var series in MeasurementChart.chart.Series)
             //    if (series.Values is IList<double> values)
@@ -139,12 +142,9 @@ namespace DigitalProductionProgram.MainWindow
         }
         private void Menu_Arkiv_UpdateDPP_Click(object sender, EventArgs e)
         {
-            //var updaterPath = @"\\optifil\dpp\Update\Update DPP.exe";                                     // OGO
-            //var updaterPath = @"\\ovf-s1-file\Digital Production Program\Update\Update DPP.exe";          // OVF
-            var updaterPath = @"\\oth-s2-file\Digital Production Program\Update\Update DPP.exe";            // OTH
-            if (File.Exists(updaterPath))
+            if (File.Exists(Database.UpdatePath))
             {
-                Process.Start(updaterPath);
+                Process.Start(Database.UpdatePath);
             }
             else
             {
@@ -275,6 +275,41 @@ namespace DigitalProductionProgram.MainWindow
             black.Show();
             jira.ShowDialog();
             black.Close();
+        }
+        private void Menu_Order_ReadProposedProcesscardChanges_Click(object sender, EventArgs e)
+        {
+            using var con = new SqlConnection(Database.cs_Protocol);
+            const string query = @"
+                SELECT 
+                    Rubrik, 
+                    Meddelande, 
+                    Namn, 
+                    Datum
+                FROM Processcard.ProposedChanges
+                WHERE OrderID = @orderid
+                ORDER BY Datum DESC";
+            var cmd = new SqlCommand(query, con);
+            cmd.Parameters.Add("@orderid", System.Data.SqlDbType.Int).Value = Order.OrderID;
+            con.Open();
+            var reader = cmd.ExecuteReader();
+            var text = new StringBuilder("\n");
+            var brRegex = new Regex(@"<br\s*/?>", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+            while (reader.Read())
+            {
+                var rubrik = reader["Rubrik"].ToString()?.Replace("<br />", "\n  ");
+
+                var meddelande = reader["Meddelande"]?.ToString() ?? string.Empty;
+                meddelande = brRegex.Replace(meddelande, "\n").Replace("\r\n", "\n").Replace("\r", "").Trim('\n');
+
+                var namn = reader["Namn"].ToString();
+                var datum = reader["Datum"].ToString();
+
+                text.AppendLine($"[{datum}]\n{rubrik} \n        ({meddelande}) \n-{namn}\n\n");
+            }
+
+
+            InfoText.Show(text.ToString(), CustomColors.InfoText_Color.Info, "Föreslagna ändringar för processkort", this);
+
         }
         private void Menu_Order_SkapaTestOrder_Click(object sender, EventArgs e)
         {
@@ -565,6 +600,7 @@ namespace DigitalProductionProgram.MainWindow
             Points.Add_Points(1, menu.Text);
             Task.Run(mainForm.Change_Theme);
             //mainForm.Change_Theme();
+
         }
 
         //----------HJÄLP----------
@@ -758,6 +794,7 @@ Protocol.MainTemplate.Revision = {Templates_Protocol.MainTemplate.Revision}"
         {
             ServerStatus.dictMethodsSqlCounter.Clear();
             Database.SQL_Counter = 0;
+
         }
 
 
@@ -1171,7 +1208,7 @@ Protocol.MainTemplate.Revision = {Templates_Protocol.MainTemplate.Revision}"
             MainMeasureStatistics.ValidateMeasurements.AverageValues();
         }
 
-        
+
 
 
         private void flyttaDataFrånSvetsnigToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1371,5 +1408,13 @@ WHERE m.WorkoperationID = 14
         {
             List<string> list = Monitor.Monitor.List_All_Tools_WithOutExpand();
         }
+
+        private void Menu_Developer_EasterEggPsycho_Click(object sender, EventArgs e)
+        {
+            EasterEgg_GetPsycho psycho = new EasterEgg_GetPsycho();
+            psycho.Show();
+        }
+
+        
     }
 }

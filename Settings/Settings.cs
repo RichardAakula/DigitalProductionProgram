@@ -856,16 +856,14 @@ namespace DigitalProductionProgram.Settings
             public static void Load_Settings()
             {
                 try
-                {
+                { 
                     using var con = new SqlConnection(Database.cs_Protocol);
                     const string query = @"
                         SELECT * FROM [Settings].General
                         WHERE general.HostName = @hostname";
 
-                    using var cmd = new SqlCommand(query, con)
-                    {
-                        CommandTimeout = 5
-                    };
+                    using var cmd = new SqlCommand(query, con);
+                    cmd.CommandTimeout = 5;
 
                     ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@hostname", Environment.MachineName);
@@ -889,7 +887,8 @@ namespace DigitalProductionProgram.Settings
                 }
                 catch (Exception)
                 {
-                    InfoText.Show(LanguageManager.GetString("errorConnectingDatabase"),
+                    InfoText.Show($"{LanguageManager.GetString("errorConnectingDatabase")}\n" +
+                                  $"",
                         CustomColors.InfoText_Color.Bad, "Error!");
 
                     Application.Exit(); // stäng programmet direkt

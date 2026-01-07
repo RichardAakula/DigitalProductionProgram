@@ -1299,18 +1299,18 @@ namespace DigitalProductionProgram.Protocols.Protocol
             public void ConfirmEquipment(DataGridView dgv)
             {
                 var col = dgv.Columns.Count - 1;
-                dgv.Rows[dgv.Rows.Count - 2].Cells[col].Selected = true;
-                dgv.Rows[dgv.Rows.Count - 2].Cells[col].Value = DateTime.Now;
+                dgv.Rows[^2].Cells[col].Selected = true;
+                dgv.Rows[^2].Cells[col].Value = DateTime.Now;
 
-                dgv.Rows[dgv.Rows.Count - 1].Cells[col].Selected = true;
-                dgv.Rows[dgv.Rows.Count - 1].Cells[col].Value = Person.Name;
+                dgv.Rows[^1].Cells[col].Selected = true;
+                dgv.Rows[^1].Cells[col].Value = Person.Name;
                 Lock_Equipment(col);
                 _ = Activity.Stop("Operatör har bekräftat Utrustningen.");
                 dgv.ClearSelection();
             }
             public void CheckIfEquipmentIsConfirmed(ref bool isQuestionAnswered, ref bool isOkCloseForm, bool isOkWarnUser)
             {
-                var cell = module.dgv_Module.Rows[module.dgv_Module.Rows.Count - 1].Cells[module.dgv_Module.Columns.Count - 1];
+                var cell = module.dgv_Module.Rows[^1].Cells[module.dgv_Module.Columns.Count - 1];
                 int.TryParse(cell.OwningColumn.HeaderText, out var StartUp);
 
                 if (module.IsAuthenticationNeeded && (cell.Value == null || string.IsNullOrEmpty(cell.Value.ToString())) && IsEquipmentEmpty(module.dgv_Module) == false)
@@ -1344,22 +1344,20 @@ namespace DigitalProductionProgram.Protocols.Protocol
             public static void Delete_LastStartup(int startup, int formtemplateid, DataGridView dgv)
             {
                 //Om Användare stänger ner Körprotokollet utan att ha fyllt i hela utrustningen så raderas utrustningen från senaste uppstart
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    const string query = @"
+                using var con = new SqlConnection(Database.cs_Protocol);
+                const string query = @"
                             DELETE FROM [Order].Data
                             WHERE OrderID = @orderid
                                 AND Uppstart = @startup
                                 AND ProtocolDescriptionID IN (SELECT ProtocolDescriptionID FROM Protocol.Template WHERE FormTemplateID = @formtemplateid)";
-                    con.Open();
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
-                    cmd.Parameters.AddWithValue("@startup", startup);
-                    // cmd.Parameters.AddWithValue("@machineindex", machine);
-                    cmd.Parameters.AddWithValue("@formtemplateid", formtemplateid);
+                con.Open();
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
+                cmd.Parameters.AddWithValue("@startup", startup);
+                // cmd.Parameters.AddWithValue("@machineindex", machine);
+                cmd.Parameters.AddWithValue("@formtemplateid", formtemplateid);
 
-                    cmd.ExecuteNonQuery();
-                }
+                cmd.ExecuteNonQuery();
             }
             public bool IsEquipmentOkToConfirm(DataGridView dgv, int machineIndex)
             {

@@ -1937,4 +1937,7 @@
   <data name="Menu_Order_ReadProposedProcesscardChanges" xml:space="preserve">
     <value></value>
   </data>
+  <data name="orderNotOpen" xml:space="preserve">
+    <value></value>
+  </data>
 </root>

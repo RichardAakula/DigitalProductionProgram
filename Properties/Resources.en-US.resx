@@ -2385,4 +2385,7 @@ Please contact IT support if the issue persists.</value>
   <data name="Menu_Order_ReadProposedProcesscardChanges" xml:space="preserve">
     <value>View proposed process card updates for this order.</value>
   </data>
+  <data name="orderNotOpen" xml:space="preserve">
+    <value>No open Order.</value>
+  </data>
 </root>

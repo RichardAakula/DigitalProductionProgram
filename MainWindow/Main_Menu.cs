@@ -140,7 +140,7 @@ namespace DigitalProductionProgram.MainWindow
             mainForm.Change_GUI_StandardColor();
             _ = Log.Activity.Stop("Användare klickar på Ny Order");
         }
-        private void Menu_Arkiv_UpdateDPP_Click(object sender, EventArgs e)
+        private void Menu_File_UpdateDPP_Click(object sender, EventArgs e)
         {
             if (File.Exists(Database.UpdatePath))
             {
@@ -153,7 +153,7 @@ namespace DigitalProductionProgram.MainWindow
             Application.Exit(); // Stänger DPP
 
         }
-        private async void Menu_Arkiv_Öppna_Click(object sender, EventArgs e)
+        private async void Menu_File_Öppna_Click(object sender, EventArgs e)
         {
             if (Main_Form.IsZumbachÖppet)
             {
@@ -184,7 +184,7 @@ namespace DigitalProductionProgram.MainWindow
             }
         }
 
-        private void Menu_Arkiv_Förhandsgranska_Click(object sender, EventArgs e)
+        private void Menu_File_Preview_Click(object sender, EventArgs e)
         {
             if (Print.IsPrinterInstalled)
             {
@@ -197,12 +197,12 @@ namespace DigitalProductionProgram.MainWindow
             }
 
         }
-        private void Menu_Arkiv_SkrivUt_Click(object sender, EventArgs e)
+        private void Menu_File_Printout_Click(object sender, EventArgs e)
         {
             Order.Is_PrintOutCopy = true;
             mainForm.PrintOut();
         }
-        private void Menu_Arkiv_ManageDatabase_Click(object sender, EventArgs e)
+        private void Menu_File_ManageDatabase_Click(object sender, EventArgs e)
         {
             if (CheckAuthority.IsRoleAuthorized(CheckAuthority.TemplateAuthorities.ChangeDatabaseSettings) == false)
                 return;
@@ -211,20 +211,20 @@ namespace DigitalProductionProgram.MainWindow
             Application.Restart();
         }
 
-        private void Menu_Arkiv_Avsluta_Click(object sender, EventArgs e)
+        private void Menu_File_Exit_Click(object sender, EventArgs e)
         {
             Application.Exit();
         }
 
         //----------ORDER----------
-        private void Menu_Order_OrderKlar_Click(object sender, EventArgs e)
+        private void Menu_Order_FinishOrder_Click(object sender, EventArgs e)
         {
             Order.Finish.Order(mainForm);
 
             if (Person.Role == "SuperAdmin")
                 ResetMainForm();
         }
-        private void Menu_Order_RedigeraOrder_Click(object sender, EventArgs e)
+        private void Menu_Order_EditOrder_Click(object sender, EventArgs e)
         {
             if (Order.OrderNumber != string.Empty && Order.IsOrderDone)
             {
@@ -237,7 +237,7 @@ namespace DigitalProductionProgram.MainWindow
             else
                 InfoText.Show(LanguageManager.GetString("editOrder"), CustomColors.InfoText_Color.Bad, "Warning", this);
         }
-        private void Menu_Order_RaderaOrder_ClickAsync(object sender, EventArgs e)
+        private void Menu_Order_DeleteOrder_ClickAsync(object sender, EventArgs e)
         {
             InfoText.Question($"{LanguageManager.GetString("delete")} \n\n" +
                           $"OrderNr {Order.OrderNumber}\n" +
@@ -262,7 +262,7 @@ namespace DigitalProductionProgram.MainWindow
             mainForm.PriorityPlanning.Load_PriorityPlanning();
 
         }
-        private void Menu_Order_Rapport_Jira_Click(object sender, EventArgs e)
+        private void Menu_Order_ReportToJira_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(Order.OrderNumber))
             {
@@ -278,6 +278,11 @@ namespace DigitalProductionProgram.MainWindow
         }
         private void Menu_Order_ReadProposedProcesscardChanges_Click(object sender, EventArgs e)
         {
+            if (string.IsNullOrEmpty(Order.OrderNumber))
+            {
+                InfoText.Show(LanguageManager.GetString("orderNotOpen"), CustomColors.InfoText_Color.Bad, "Warning", this);
+                return;
+            }
             using var con = new SqlConnection(Database.cs_Protocol);
             const string query = @"
                 SELECT 
@@ -311,7 +316,7 @@ namespace DigitalProductionProgram.MainWindow
             InfoText.Show(text.ToString(), CustomColors.InfoText_Color.Info, "Föreslagna ändringar för processkort", this);
 
         }
-        private void Menu_Order_SkapaTestOrder_Click(object sender, EventArgs e)
+        private void Menu_Order_CreateTestOrder_Click(object sender, EventArgs e)
         {
             var org_OrderNr = Order.OrderNumber;
             using var c_to = new CreateTestOrder();
@@ -335,7 +340,7 @@ namespace DigitalProductionProgram.MainWindow
         {
             Order.Start.OpenRandomOrder(mainForm.OrderInformation);
         }
-        private void Menu_Order_Relink_Processcard_Click(object sender, EventArgs e)
+        private void Menu_Order_RelinkProcesscard_Click(object sender, EventArgs e)
         {
             if (Order.IsOrderDone)
             {
@@ -378,7 +383,7 @@ namespace DigitalProductionProgram.MainWindow
 
             mainForm.OrderInformation.lbl_RevNr.Text = Order.RevNr;
         }
-        private void Menu_Order_Relink_Protocol_Click(object sender, EventArgs e)
+        private void Menu_Order_RelinkProtocol_Click(object sender, EventArgs e)
         {
             if (Order.IsOrderDone)
             {
@@ -404,7 +409,7 @@ namespace DigitalProductionProgram.MainWindow
             con.Open();
             cmd.ExecuteNonQuery();
         }
-        private void Menu_Order_Relink_MeasureProtocol_Click(object sender, EventArgs e)
+        private void Menu_Order_RelinkMeasureProtocol_Click(object sender, EventArgs e)
         {
             if (Order.IsOrderDone)
             {
@@ -432,7 +437,7 @@ namespace DigitalProductionProgram.MainWindow
         }
 
         //----------PROTOKOLL/PROTOCOL----------
-        private void Menu_Processkort_HanteraProcesskort_Click(object sender, EventArgs e)
+        private void Menu_Protocol_ManageProcesscards_Click(object sender, EventArgs e)
         {
             if (Order.OrderID != null && Person.Role != "SuperAdmin")
             {
@@ -444,8 +449,6 @@ namespace DigitalProductionProgram.MainWindow
             using var WorkOperation = new Choose_WorkOperation_BrowseProtocols_ManageProcesscards(true, false, false, LanguageManager.GetString("label_ChoosePC_Header"));
             WorkOperation.ShowDialog();
         }
-
-
         private void Menu_Protocol_ManageTemplates_Protocols_Click(object sender, EventArgs e)
         {
             if (Person.IsUserSignedIn(false) == false)
@@ -474,9 +477,6 @@ namespace DigitalProductionProgram.MainWindow
             using var manage_MeasureProtocolTemplates = new Templates_MeasureProtocol();
             manage_MeasureProtocolTemplates.ShowDialog();
         }
-
-
-        //----------KÖRPROTOKOLL----------
         private void Menu_Protocol_UseFilter_Click(object sender, EventArgs e)
         {
             if (Order.OrderID is null)
@@ -592,7 +592,7 @@ namespace DigitalProductionProgram.MainWindow
         }
 
         //----------TEMAN----------
-        private void Menu_Tema_Click(object sender, EventArgs e)
+        private void Menu_Theme_Click(object sender, EventArgs e)
         {
             var menu = (ToolStripMenuItem)sender;
             Teman.load_Themes[menu.Text]();
@@ -740,7 +740,7 @@ Protocol.MainTemplate.Revision = {Templates_Protocol.MainTemplate.Revision}"
             MessageBox.Show($"Orders utan processkort = {Part.TotalOrders_WithoutProcesscard}\n" +
                             $"Orders med processkort = {Part.TotalOrders_WithProcesscardBasedOn_DevelopmentOfProcesscard}");
         }
-        private void Öppna_Random_Order(string? artikelNr)
+        private void Menu_Developer_OpenRandomOrder_Click(string? artikelNr)
         {
             mainForm.Clear_Mainform();
             using (var con = new SqlConnection(Database.cs_Protocol))
@@ -776,7 +776,7 @@ Protocol.MainTemplate.Revision = {Templates_Protocol.MainTemplate.Revision}"
             using var calender = new LoggedInUsers();
             calender.ShowDialog();
         }
-        private void Developer_CountSql_Queries_Click(object sender, EventArgs e)
+        private void Menu_Developer_CountSqlQueries_Click(object sender, EventArgs e)
         {
             var sb = new StringBuilder();
             sb.AppendLine($"Totalt antal SQL-anrop: {Database.SQL_Counter}\n\n");
@@ -790,13 +790,21 @@ Protocol.MainTemplate.Revision = {Templates_Protocol.MainTemplate.Revision}"
             // Kopiera till urklipp
             Clipboard.SetText(sb.ToString());
         }
-        private void Developer_Clear_Sql_Queries_Click(object sender, EventArgs e)
+        private void Menu_Developer_ClearSqlQueries_Click(object sender, EventArgs e)
         {
             ServerStatus.dictMethodsSqlCounter.Clear();
             Database.SQL_Counter = 0;
-
         }
-
+        private void Menu_Developer_AddThemePicture_Click(object sender, EventArgs e)
+        {
+            using var addTheme = new AddTheme();
+            addTheme.ShowDialog();
+        }
+        private void Menu_Developer_EasterEggPsycho_Click(object sender, EventArgs e)
+        {
+            EasterEgg_GetPsycho psycho = new EasterEgg_GetPsycho();
+            psycho.Show();
+        }
 
 
 
@@ -1174,12 +1182,7 @@ Protocol.MainTemplate.Revision = {Templates_Protocol.MainTemplate.Revision}"
         }
 
 
-        private void Menu_Developer_AddThemePicture_Click(object sender, EventArgs e)
-        {
-            using var addTheme = new AddTheme();
-            addTheme.ShowDialog();
-        }
-
+        
         private void testaMailToolStripMenuItem_Click(object sender, EventArgs e)
         {
             InfoText.Question("Vill du skicka mail till alla användare", CustomColors.InfoText_Color.Info, "Skicka Mail?", this);
@@ -1409,12 +1412,7 @@ WHERE m.WorkoperationID = 14
             List<string> list = Monitor.Monitor.List_All_Tools_WithOutExpand();
         }
 
-        private void Menu_Developer_EasterEggPsycho_Click(object sender, EventArgs e)
-        {
-            EasterEgg_GetPsycho psycho = new EasterEgg_GetPsycho();
-            psycho.Show();
-        }
-
+       
         
     }
 }

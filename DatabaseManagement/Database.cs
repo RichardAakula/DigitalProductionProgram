@@ -19,45 +19,76 @@ namespace DigitalProductionProgram.DatabaseManagement
 
         
         //private const string ServerOTH = @"THAI-SRV1-SQL01\SQLEXPRESS";
-        private const string ServerOTH = "OTH-S1-SQL01";
-        private const string ServerOGO = "GOD-S1-SQL01";
-        private const string ServerOVF = "OVF-S1-SQL";
+        //private const string ServerOTH = "OTH-S1-SQL01";
+        //private const string ServerOGO = "GOD-S1-SQL01";
+        //private const string ServerOVF = "OVF-S1-SQL";
 
-        private const string UserID = "korprotokoll";
-        private static string Password = "GOD-Stout4-Gladiator-Gazing-Retail-Pegboard";
-        
+       // private const string UserID = "korprotokoll";
+       // private static string Password = "GOD-Stout4-Gladiator-Gazing-Retail-Pegboard";
+       public static class DatabaseSettings
+       {
+           public static class Server
+           {
+               public static readonly string OGO = "GOD-S1-SQL01";
+               public static readonly string OTH = "OTH-S1-SQL01";
+               public static readonly string OVF = "OVF-S1-SQL";
+            }
 
-        private static readonly string csDPP_OGO = $"Data Source={ServerOGO};Initial Catalog=Korprotokoll;Persist Security Info=True;User ID={UserID};Password={Password};Connect Timeout=10;Encrypt=True;TrustServerCertificate=True;";
-        private static readonly string csDPP_OTH = $"Data Source={ServerOTH};Initial Catalog=DP_OTH;Persist Security Info=True;User ID={UserID};Password={Password};Connect Timeout=30;Encrypt=True;TrustServerCertificate=True;";
-        private static readonly string csDPP_OVF = $"Data Source={ServerOVF};Initial Catalog=DPP_OVF;Persist Security Info=True;User ID={UserID};Password={Password};Connect Timeout=5;Encrypt=True;TrustServerCertificate=True;";
-        private static readonly string csDPP_Beta = $"Data Source={ServerOGO};Initial Catalog=GOD_DPP_DEV;Persist Security Info=True;User ID={UserID};Password={Password};Connect Timeout=5;Encrypt=True;TrustServerCertificate=True;";
-        
+           public static class Name
+           {
+               public static readonly string OGO = "Korprotokoll";
+               public static readonly string OTH = "DPP_OTH";
+               public static readonly string OVF = "DPP_OVF";
+           }
+           public static class UserID
+           {
+               public static readonly string OGO = "korprotokoll";
+               public static readonly string OTH = "korprotokoll";
+               public static readonly string OVF = "korprotokoll";
+           }
+           public static class Password
+           {
+               public static readonly string OGO = "GOD-Stout4-Gladiator-Gazing-Retail-Pegboard";
+               public static readonly string OTH = "korprotokoll";
+               public static readonly string OVF = "korprotokoll";
+            }
+           public static class TimeOut
+           {
+               public static readonly int OGO = 5;
+               public static readonly int OTH = 30;
+               public static readonly int OVF = 5;
+            }
+        }
+       
+        // private static readonly string csDPP_OGO = $"Data Source={ServerOGO};Initial Catalog=Korprotokoll;Persist Security Info=True;User ID={UserID};Password={Password};Connect Timeout=10;Encrypt=True;TrustServerCertificate=True;";
+        // private static readonly string csDPP_OTH = $"Data Source={ServerOTH};Initial Catalog=DP_OTH;Persist Security Info=True;User ID={UserID};Password={Password};Connect Timeout=30;Encrypt=True;TrustServerCertificate=True;";
+        // private static readonly string csDPP_OVF = $"Data Source={ServerOVF};Initial Catalog=DPP_OVF;Persist Security Info=True;User ID={UserID};Password={Password};Connect Timeout=5;Encrypt=True;TrustServerCertificate=True;";
+        // private static readonly string csDPP_Beta = $"Data Source={ServerOGO};Initial Catalog=GOD_DPP_DEV;Persist Security Info=True;User ID={UserID};Password={Password};Connect Timeout=5;Encrypt=True;TrustServerCertificate=True;";
 
-        private static readonly string csToolRegisterGodby = $"Data Source={ServerOGO};Initial Catalog=Verktygsprogram;Persist Security Info=True;User ID={UserID};Password={Password};Connect Timeout=5;Encrypt=True;TrustServerCertificate=True;";
-        private const string csToolRegisterThai = $"Data Source={ServerOTH};Initial Catalog=Toolregister_OTH;Persist Security Info=True;User ID=korprotokoll;Password=korprotokoll;Connect Timeout=30;Encrypt=True;TrustServerCertificate=True;";
-        private const string csToolRegisterOVF = $"Data Source={ServerOVF};Initial Catalog=Toolregister_OVF;Persist Security Info=True;User ID=korprotokoll;Password=korprotokoll;Connect Timeout=5;Encrypt=True;TrustServerCertificate=True;";
+
+        private static readonly string csToolRegisterGodby = $"Data Source={DatabaseSettings.Server.OGO};Initial Catalog={DatabaseSettings.Name.OGO};Persist Security Info=True;User ID={DatabaseSettings.UserID.OGO};Password={DatabaseSettings.Password.OGO};Connect Timeout={DatabaseSettings.TimeOut.OGO};Encrypt=True;TrustServerCertificate=True;";
+        private static readonly string csToolRegisterThai = $"Data Source={DatabaseSettings.Server.OTH};Initial Catalog={DatabaseSettings.Name.OTH};Persist Security Info=True;User ID={DatabaseSettings.UserID.OTH};Password={DatabaseSettings.Password.OTH};Connect Timeout={DatabaseSettings.TimeOut.OTH};Encrypt=True;TrustServerCertificate=True;";
+        private static readonly string csToolRegisterOVF = $"Data Source={DatabaseSettings.Server.OVF};Initial Catalog={DatabaseSettings.Name.OVF};Persist Security Info=True;User ID={DatabaseSettings.UserID.OVF};Password={DatabaseSettings.Password.OVF};Connect Timeout={DatabaseSettings.TimeOut.OVF};Encrypt=True;TrustServerCertificate=True;";
 
         private const string UpdatePath_OGO = @"\\optifil\dpp\Update\Update DPP.exe";
         private const string UpdatePath_OTH = @"\\oth-s2-file\Digital Production Program\Update\Update DPP.exe";
         private const string UpdatePath_OVF = @"\\ovf-s1-file\Digital Production Program\Update\Update DPP.exe";
 
-        public const string UpdatePath = UpdatePath_OTH;
-
         /// </summary>
 
 
-        public static string cs_Protocol = csDPP_OGO;
-        public static string cs_ToolRegister = csToolRegisterGodby;
-        public static string MonitorHost = "optig5";
+        public static string? cs_Protocol;// = csDPP_OGO;
+        public static string? cs_ToolRegister;// = csToolRegisterGodby;
+        public static string? MonitorHost = "optig5";
 
-        public static string MonitorCompany = "001.1";
+        public static string? MonitorCompany = "001.1";
         
 
         private bool mouseDown;
         private Point lastLocation;
         
         
-        public static Type DataType(string kolumn, string register)
+        public static Type? DataType(string kolumn, string register)
         {
             using var con = new SqlConnection(Database.cs_Protocol);
             var cmd = new SqlCommand($"SELECT TOP(1) {kolumn} FROM {register}", con);
@@ -88,7 +119,7 @@ namespace DigitalProductionProgram.DatabaseManagement
         private string? building_csProtocol;
         private string? building_csToolRegister;
 
-        public static string InstallationPath
+        public static string UpdatePath
         {
             get
             {
@@ -96,12 +127,12 @@ namespace DigitalProductionProgram.DatabaseManagement
                 {
                     case Monitor.Monitor.Factory.Godby:
                     case Monitor.Monitor.Factory.Holding:
-                        return @"\\optifil\dpp\";
+                        return UpdatePath_OGO;
                     
                     case Monitor.Monitor.Factory.Thailand:
-                        return @"\\optifil\dpp\";
+                        return UpdatePath_OTH;
                     case Monitor.Monitor.Factory.ValleyForge:
-                        return @"\\optifil\dpp\";
+                        return UpdatePath_OVF;
                     default:
                         throw new InvalidOperationException("Ogiltig fabrik angiven.");
                 }
@@ -123,7 +154,7 @@ namespace DigitalProductionProgram.DatabaseManagement
                 con.Open();
                 return action(con);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // Här kan du logga, visa fel, eller slå på en SQL-counter
                 InfoText.Show(LanguageManager.GetString("errorConnectingDatabase"),
@@ -155,7 +186,7 @@ namespace DigitalProductionProgram.DatabaseManagement
             MonitorCompany = null;
 
             // Försök läsa från användarmappen
-            string settingsPath = Path.Combine(
+            var settingsPath = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                 "DigitalProductionProgram",
                 "DatabaseSettings.json");
@@ -199,10 +230,10 @@ namespace DigitalProductionProgram.DatabaseManagement
             cb_DPP.Text = cs_Protocol switch
             {
                 string s when s.Contains("GOD_DPP_DEV", StringComparison.OrdinalIgnoreCase) => "Godby Test",
-                string s when s.Contains(ServerOGO, StringComparison.OrdinalIgnoreCase) => "Godby",
-                string s when s.Contains(ServerOTH, StringComparison.OrdinalIgnoreCase) => "Thailand",
-                string s when s.Contains(ServerOVF, StringComparison.OrdinalIgnoreCase) => "Valley Forge",
-                _ => "Okänd plats"
+                string s when s.Contains(DatabaseSettings.Server.OGO, StringComparison.OrdinalIgnoreCase) => "Godby",
+                string s when s.Contains(DatabaseSettings.Server.OTH, StringComparison.OrdinalIgnoreCase) => "Thailand",
+                string s when s.Contains(DatabaseSettings.Server.OVF, StringComparison.OrdinalIgnoreCase) => "Valley Forge",
+                _ => "Unknown plase, contact Admin."
             };
 
 
@@ -216,19 +247,6 @@ namespace DigitalProductionProgram.DatabaseManagement
             else if (cs_Protocol.Equals(csToolRegisterOVF, StringComparison.OrdinalIgnoreCase))
                 cb_Toolregister.Text = "Valley Forge";
 
-
-            //switch (cs_ToolRegister)
-            //{
-            //    case csToolRegisterGodby:
-            //        cb_Toolregister.Text = "Godby";
-            //        break;
-            //    case csToolRegisterThai:
-            //        cb_Toolregister.Text = "Thailand";
-            //        break;
-            //    case csToolRegisterOVF:
-            //        cb_Toolregister.Text = "Valley Forge";
-            //        break;
-            //}
             cb_MonitorHost.Text = MonitorHost;
             cb_MonitorCompany.Text = MonitorCompany;
            
@@ -239,46 +257,53 @@ namespace DigitalProductionProgram.DatabaseManagement
         {
             IsOkSave();
 
-            string? ServerDPP = null;
-            string? DatabaseDPP = null;
-           
-            var timeout = 0;
+            string? db_Server = null;
+            string? db_Name = null;
+            string? db_UserID = null;
+            string? db_Password = null;
+            int? db_TimeOut = 5;
+
+           // var timeout = 0;
             switch (cb_DPP.Text)
             {
                 case "Godby":
-                    ServerDPP = ServerOGO;
-                    DatabaseDPP = "Korprotokoll";
-                    timeout = 5;
-                    Password = "GOD-Stout4-Gladiator-Gazing-Retail-Pegboard";
+                    db_Server = DatabaseSettings.Server.OGO;
+                    db_Name = DatabaseSettings.Name.OGO;
+                    db_UserID = DatabaseSettings.UserID.OGO;
+                    db_Password = DatabaseSettings.Password.OGO;
+                    db_TimeOut = DatabaseSettings.TimeOut.OGO;
                     cb_Toolregister.Text = @"Godby";
                     cb_MonitorCompany.Text = @"001.1";
                     break;
                 case "Godby Test":
-                    ServerDPP = ServerOGO;
-                    DatabaseDPP = "GOD_DPP_DEV";
-                    timeout = 5;
-                    Password = "GOD-Stout4-Gladiator-Gazing-Retail-Pegboard";
+                    db_Server = DatabaseSettings.Server.OGO;
+                    db_Name = "GOD_DPP_DEV";
+                    db_UserID = DatabaseSettings.UserID.OGO;
+                    db_Password = DatabaseSettings.Password.OGO;
+                    db_TimeOut = DatabaseSettings.TimeOut.OGO;
                     cb_Toolregister.Text = @"Godby";
                     cb_MonitorCompany.Text = @"001.1";
                     break;
                 case "Thailand":
-                    ServerDPP = ServerOTH;
-                    DatabaseDPP = "DPP_OTH";
-                    timeout = 1000;
-                    Password = "korprotokoll";
+                    db_Server = DatabaseSettings.Server.OTH;
+                    db_Name = DatabaseSettings.Name.OTH;
+                    db_UserID = DatabaseSettings.UserID.OTH;
+                    db_TimeOut = DatabaseSettings.TimeOut.OTH;
+                    db_Password = DatabaseSettings.Password.OTH;
                     cb_Toolregister.Text = @"Thailand";
                     cb_MonitorCompany.Text = @"010.1";
                     break;
                 case "Valley Forge":
-                    ServerDPP = ServerOVF;
-                    DatabaseDPP = "DPP_OVF";
-                    timeout = 10;
-                    Password = "korprotokoll";
+                    db_Server = DatabaseSettings.Server.OVF;
+                    db_Name = DatabaseSettings.Name.OVF;
+                    db_UserID = DatabaseSettings.UserID.OVF;
+                    db_TimeOut = DatabaseSettings.TimeOut.OVF;
+                    db_Password = DatabaseSettings.Password.OVF;
                     cb_Toolregister.Text = @"Valley Forge";
                     cb_MonitorCompany.Text = @"012.1";
                     break;
             }
-            building_csProtocol = $"Data Source={ServerDPP};Initial Catalog={DatabaseDPP};Persist Security Info=True;User ID={UserID};Password={Password};Connect Timeout={timeout};Encrypt=True;TrustServerCertificate=True;";
+            building_csProtocol = $"Data Source={db_Server};Initial Catalog={db_Name};Persist Security Info=True;User ID={db_UserID};Password={db_Password};Connect Timeout={db_TimeOut};Encrypt=True;TrustServerCertificate=True;";
             
         }
         private void DPP_Enter(object sender, EventArgs e)
@@ -289,29 +314,37 @@ namespace DigitalProductionProgram.DatabaseManagement
         {
             IsOkSave();
 
-            string ServerToolregister = null;
-            string DatabaseToolregister = null;
-            var timeout = 0;
+            string? ServerToolregister = null;
+            string? DatabaseToolregister = null;
+            string? db_UserID = null;
+            string? db_Password = null;
+            int? db_TimeOut = 5;
 
             switch (cb_Toolregister.Text)
             {
                 case "Godby":
-                    ServerToolregister = ServerOGO;
-                    timeout = 5;
+                    ServerToolregister = DatabaseSettings.Server.OGO;
+                    db_UserID = DatabaseSettings.UserID.OGO;
+                    db_Password = DatabaseSettings.Password.OGO;
+                    db_TimeOut = DatabaseSettings.TimeOut.OGO;
                     DatabaseToolregister = "Verktygsprogram";
                     break;
                 case "Thailand":
-                    ServerToolregister = ServerOTH;
-                    timeout = 10;
+                    ServerToolregister = DatabaseSettings.Server.OTH;
+                    db_UserID = DatabaseSettings.UserID.OTH;
+                    db_Password = DatabaseSettings.Password.OTH;
+                    db_TimeOut = DatabaseSettings.TimeOut.OTH;
                     DatabaseToolregister = "Toolregister_OTH";
                     break;
                 case "Valley Forge":
-                    ServerToolregister = ServerOVF;
-                    timeout = 10;
+                    ServerToolregister = DatabaseSettings.Server.OVF;
+                    db_UserID = DatabaseSettings.UserID.OVF;
+                    db_Password = DatabaseSettings.Password.OVF;
+                    db_TimeOut = DatabaseSettings.TimeOut.OVF;
                     DatabaseToolregister = "Toolregister_OVF";
                     break;
             }
-            building_csToolRegister = $"Data Source={ServerToolregister};Initial Catalog={DatabaseToolregister};Persist Security Info=True;User ID={UserID};Password={Password};Connect Timeout={timeout};Encrypt=True;TrustServerCertificate=True;";
+            building_csToolRegister = $"Data Source={ServerToolregister};Initial Catalog={DatabaseToolregister};Persist Security Info=True;User ID={db_UserID};Password={db_Password};Connect Timeout={db_TimeOut};Encrypt=True;TrustServerCertificate=True;";
         }
         private void Toolregister_Enter(object sender, EventArgs e)
         {
@@ -367,7 +400,7 @@ namespace DigitalProductionProgram.DatabaseManagement
 
         private void Save_XmlFile()
         {
-            string settingsPath = Path.Combine(
+            var settingsPath = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                 "DigitalProductionProgram",
                 "DatabaseSettings.json");
@@ -375,7 +408,7 @@ namespace DigitalProductionProgram.DatabaseManagement
 
             if (!File.Exists(settingsPath))
             {
-                MessageBox.Show("DatabaseSettings.json hittades inte.", "Fel", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(@"DatabaseSettings.json hittades inte.", "Fel", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
@@ -396,19 +429,19 @@ namespace DigitalProductionProgram.DatabaseManagement
 
         public class DataBaseType
         {
-            public string Name { get; set; }
-            public int ID { get; set; }
+            public required string Name { get; init; }
+            public int ID { get; init; }
         }
         public static readonly List<DataBaseType> datatype =
         [
-            new DataBaseType { Name = "Numeric", ID = 0 },
-            new DataBaseType { Name = "Text", ID = 1 },
-            new DataBaseType { Name = "Bool", ID = 2 },
-            new DataBaseType { Name = "DateTime", ID = 3 }
+            new() { Name = "Numeric", ID = 0 },
+            new() { Name = "Text", ID = 1 },
+            new() { Name = "Bool", ID = 2 },
+            new() { Name = "DateTime", ID = 3 }
         ];
         public static Monitor_API_Credentials LoadCredentials()
         {
-            string settingsPath = Path.Combine(
+            var settingsPath = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                 "DigitalProductionProgram",
                 "DatabaseSettings.json");
@@ -437,8 +470,8 @@ namespace DigitalProductionProgram.DatabaseManagement
 
         public class Monitor_API_Credentials
         {
-            public string Username { get; set; }
-            public string Password { get; set; }
+            public required string Username { get; init; }
+            public required string Password { get; set; }
         }
 
         public static class AesEncryption
@@ -522,7 +555,7 @@ namespace DigitalProductionProgram.DatabaseManagement
             }
 
             // Helper function to check if a string is Base64 encoded
-            public static bool IsBase64String(string base64String)
+            private static bool IsBase64String(string base64String)
             {
                 base64String = base64String.Trim();
                 return (base64String.Length % 4 == 0) &&

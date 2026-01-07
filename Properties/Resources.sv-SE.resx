@@ -2206,7 +2206,7 @@ Kontakta Admin vid behov.</value>
     <value>Utvecklare</value>
   </data>
   <data name="Menu_Developer_GetOrderInfo" xml:space="preserve">
-    <value>Get Order Info</value>
+    <value>Hämta Order Info</value>
   </data>
   <data name="Menu_Theme_Beach" xml:space="preserve">
     <value>Beach</value>
@@ -2380,5 +2380,8 @@ Kontakta IT-support om felet kvarstår.</value>
   </data>
   <data name="Menu_Order_ReadProposedProcesscardChanges" xml:space="preserve">
     <value>Läs förslag på Processkortsuppdateringar för denna Order</value>
+  </data>
+  <data name="orderNotOpen" xml:space="preserve">
+    <value>Ingen Order är öppen.</value>
   </data>
 </root>

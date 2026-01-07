@@ -62,9 +62,22 @@ namespace DigitalProductionProgram.Protocols
                     break;
 
                 default:
-                    if (Application.OpenForms.OfType<MainProtocol>().Count() == 1)
-                        Application.OpenForms.OfType<MainProtocol>().First().Close();
-                    Open(new MainProtocol(), parent);
+                    var existing = Application.OpenForms
+                        .OfType<MainProtocol>()
+                        .FirstOrDefault();
+
+                    if (existing != null)
+                    {
+                        if (existing.WindowState == FormWindowState.Minimized)
+                            existing.WindowState = FormWindowState.Normal;
+
+                        existing.BringToFront();
+                        existing.Activate();
+                    }
+                    else
+                    {
+                        Open(new MainProtocol(), parent);
+                    }
                     break;
             }
         }

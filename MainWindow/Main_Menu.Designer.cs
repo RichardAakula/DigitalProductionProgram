@@ -162,7 +162,7 @@ namespace DigitalProductionProgram.MainWindow
             Menu_Arkiv_Open.ShortcutKeys = Keys.Control | Keys.O;
             Menu_Arkiv_Open.Size = new Size(281, 22);
             Menu_Arkiv_Open.Text = "Öppna...";
-            Menu_Arkiv_Open.Click += Menu_Arkiv_Öppna_Click;
+            Menu_Arkiv_Open.Click += Menu_File_Öppna_Click;
             // 
             // Menu_Arkiv_Preview
             // 
@@ -170,28 +170,28 @@ namespace DigitalProductionProgram.MainWindow
             Menu_Arkiv_Preview.ShortcutKeys = Keys.Control | Keys.F;
             Menu_Arkiv_Preview.Size = new Size(281, 22);
             Menu_Arkiv_Preview.Text = "Förhandsgranska...";
-            Menu_Arkiv_Preview.Click += Menu_Arkiv_Förhandsgranska_Click;
+            Menu_Arkiv_Preview.Click += Menu_File_Preview_Click;
             // 
             // Menu_Arkiv_Print
             // 
             Menu_Arkiv_Print.Name = "Menu_Arkiv_Print";
             Menu_Arkiv_Print.Size = new Size(281, 22);
             Menu_Arkiv_Print.Text = "Skriv ut...(Endast kopia)";
-            Menu_Arkiv_Print.Click += Menu_Arkiv_SkrivUt_Click;
+            Menu_Arkiv_Print.Click += Menu_File_Printout_Click;
             // 
             // Menu_Arkiv_ManageDatabase
             // 
             Menu_Arkiv_ManageDatabase.Name = "Menu_Arkiv_ManageDatabase";
             Menu_Arkiv_ManageDatabase.Size = new Size(281, 22);
             Menu_Arkiv_ManageDatabase.Text = "Hantera Anslutningsinställningar";
-            Menu_Arkiv_ManageDatabase.Click += Menu_Arkiv_ManageDatabase_Click;
+            Menu_Arkiv_ManageDatabase.Click += Menu_File_ManageDatabase_Click;
             // 
             // Menu_Arkiv_UpdateDPP
             // 
             Menu_Arkiv_UpdateDPP.Name = "Menu_Arkiv_UpdateDPP";
             Menu_Arkiv_UpdateDPP.Size = new Size(281, 22);
             Menu_Arkiv_UpdateDPP.Text = "Uppdatera DPP";
-            Menu_Arkiv_UpdateDPP.Click += Menu_Arkiv_UpdateDPP_Click;
+            Menu_Arkiv_UpdateDPP.Click += Menu_File_UpdateDPP_Click;
             // 
             // Menu_Arkiv_Exit
             // 
@@ -199,7 +199,7 @@ namespace DigitalProductionProgram.MainWindow
             Menu_Arkiv_Exit.ShortcutKeys = Keys.Control | Keys.A;
             Menu_Arkiv_Exit.Size = new Size(281, 22);
             Menu_Arkiv_Exit.Text = "Avsluta";
-            Menu_Arkiv_Exit.Click += Menu_Arkiv_Avsluta_Click;
+            Menu_Arkiv_Exit.Click += Menu_File_Exit_Click;
             // 
             // Menu_Order
             // 
@@ -218,7 +218,7 @@ namespace DigitalProductionProgram.MainWindow
             Menu_Order_OrderDone.Name = "Menu_Order_OrderDone";
             Menu_Order_OrderDone.Size = new Size(434, 22);
             Menu_Order_OrderDone.Text = "Order Klar";
-            Menu_Order_OrderDone.Click += Menu_Order_OrderKlar_Click;
+            Menu_Order_OrderDone.Click += Menu_Order_FinishOrder_Click;
             // 
             // Menu_Order_EditOrder
             // 
@@ -226,7 +226,7 @@ namespace DigitalProductionProgram.MainWindow
             Menu_Order_EditOrder.Name = "Menu_Order_EditOrder";
             Menu_Order_EditOrder.Size = new Size(434, 22);
             Menu_Order_EditOrder.Text = "Redigera en färdig Order";
-            Menu_Order_EditOrder.Click += Menu_Order_RedigeraOrder_Click;
+            Menu_Order_EditOrder.Click += Menu_Order_EditOrder_Click;
             // 
             // Menu_Order_DeleteOrder
             // 
@@ -234,7 +234,7 @@ namespace DigitalProductionProgram.MainWindow
             Menu_Order_DeleteOrder.Name = "Menu_Order_DeleteOrder";
             Menu_Order_DeleteOrder.Size = new Size(434, 22);
             Menu_Order_DeleteOrder.Text = "Radera Order";
-            Menu_Order_DeleteOrder.Click += Menu_Order_RaderaOrder_ClickAsync;
+            Menu_Order_DeleteOrder.Click += Menu_Order_DeleteOrder_ClickAsync;
             // 
             // Menu_Order_ReportProblemProductionSupport
             // 
@@ -242,7 +242,7 @@ namespace DigitalProductionProgram.MainWindow
             Menu_Order_ReportProblemProductionSupport.Name = "Menu_Order_ReportProblemProductionSupport";
             Menu_Order_ReportProblemProductionSupport.Size = new Size(434, 22);
             Menu_Order_ReportProblemProductionSupport.Text = "Rapportera problem till produktionssupport";
-            Menu_Order_ReportProblemProductionSupport.Click += Menu_Order_Rapport_Jira_Click;
+            Menu_Order_ReportProblemProductionSupport.Click += Menu_Order_ReportToJira_Click;
             // 
             // Menu_Order_CreateTestOrder
             // 
@@ -250,7 +250,7 @@ namespace DigitalProductionProgram.MainWindow
             Menu_Order_CreateTestOrder.Name = "Menu_Order_CreateTestOrder";
             Menu_Order_CreateTestOrder.Size = new Size(434, 22);
             Menu_Order_CreateTestOrder.Text = "Skapa Testorder";
-            Menu_Order_CreateTestOrder.Click += Menu_Order_SkapaTestOrder_Click;
+            Menu_Order_CreateTestOrder.Click += Menu_Order_CreateTestOrder_Click;
             // 
             // Menu_Order_OpenRandomOrder
             // 
@@ -280,21 +280,21 @@ namespace DigitalProductionProgram.MainWindow
             Menu_Order_ReLink_Processcard.Name = "Menu_Order_ReLink_Processcard";
             Menu_Order_ReLink_Processcard.Size = new Size(253, 22);
             Menu_Order_ReLink_Processcard.Text = "Till nytt Processkort";
-            Menu_Order_ReLink_Processcard.Click += Menu_Order_Relink_Processcard_Click;
+            Menu_Order_ReLink_Processcard.Click += Menu_Order_RelinkProcesscard_Click;
             // 
             // Menu_Order_ReLink_Protocol
             // 
             Menu_Order_ReLink_Protocol.Name = "Menu_Order_ReLink_Protocol";
             Menu_Order_ReLink_Protocol.Size = new Size(253, 22);
             Menu_Order_ReLink_Protocol.Text = "Till ny Mall för Protokoll";
-            Menu_Order_ReLink_Protocol.Click += Menu_Order_Relink_Protocol_Click;
+            Menu_Order_ReLink_Protocol.Click += Menu_Order_RelinkProtocol_Click;
             // 
             // Menu_Order_ReLink_MeasureProtocol
             // 
             Menu_Order_ReLink_MeasureProtocol.Name = "Menu_Order_ReLink_MeasureProtocol";
             Menu_Order_ReLink_MeasureProtocol.Size = new Size(253, 22);
             Menu_Order_ReLink_MeasureProtocol.Text = "Till ny Mall för Mätprotokoll";
-            Menu_Order_ReLink_MeasureProtocol.Click += Menu_Order_Relink_MeasureProtocol_Click;
+            Menu_Order_ReLink_MeasureProtocol.Click += Menu_Order_RelinkMeasureProtocol_Click;
             // 
             // Menu_Protocol
             // 
@@ -311,7 +311,7 @@ namespace DigitalProductionProgram.MainWindow
             Menu_Protocol_ManageProcesscards.ShortcutKeys = Keys.Control | Keys.P;
             Menu_Protocol_ManageProcesscards.Size = new Size(259, 22);
             Menu_Protocol_ManageProcesscards.Text = "Hantera Processkort";
-            Menu_Protocol_ManageProcesscards.Click += Menu_Processkort_HanteraProcesskort_Click;
+            Menu_Protocol_ManageProcesscards.Click += Menu_Protocol_ManageProcesscards_Click;
             // 
             // Menu_Protocol_Unlock_ValidatedProcesscard
             // 
@@ -491,7 +491,7 @@ namespace DigitalProductionProgram.MainWindow
             Menu_Theme_Beach.Name = "Menu_Theme_Beach";
             Menu_Theme_Beach.Size = new Size(153, 22);
             Menu_Theme_Beach.Text = "Beach";
-            Menu_Theme_Beach.Click += Menu_Tema_Click;
+            Menu_Theme_Beach.Click += Menu_Theme_Click;
             // 
             // Menu_Theme_Forest
             // 
@@ -499,7 +499,7 @@ namespace DigitalProductionProgram.MainWindow
             Menu_Theme_Forest.Name = "Menu_Theme_Forest";
             Menu_Theme_Forest.Size = new Size(153, 22);
             Menu_Theme_Forest.Text = "Forest";
-            Menu_Theme_Forest.Click += Menu_Tema_Click;
+            Menu_Theme_Forest.Click += Menu_Theme_Click;
             // 
             // Menu_Theme_Sky
             // 
@@ -507,7 +507,7 @@ namespace DigitalProductionProgram.MainWindow
             Menu_Theme_Sky.Name = "Menu_Theme_Sky";
             Menu_Theme_Sky.Size = new Size(153, 22);
             Menu_Theme_Sky.Text = "Sky";
-            Menu_Theme_Sky.Click += Menu_Tema_Click;
+            Menu_Theme_Sky.Click += Menu_Theme_Click;
             // 
             // Menu_Theme_Sun
             // 
@@ -515,7 +515,7 @@ namespace DigitalProductionProgram.MainWindow
             Menu_Theme_Sun.Name = "Menu_Theme_Sun";
             Menu_Theme_Sun.Size = new Size(153, 22);
             Menu_Theme_Sun.Text = "Sun";
-            Menu_Theme_Sun.Click += Menu_Tema_Click;
+            Menu_Theme_Sun.Click += Menu_Theme_Click;
             // 
             // Menu_Theme_Water
             // 
@@ -523,7 +523,7 @@ namespace DigitalProductionProgram.MainWindow
             Menu_Theme_Water.Name = "Menu_Theme_Water";
             Menu_Theme_Water.Size = new Size(153, 22);
             Menu_Theme_Water.Text = "Water";
-            Menu_Theme_Water.Click += Menu_Tema_Click;
+            Menu_Theme_Water.Click += Menu_Theme_Click;
             // 
             // Menu_Theme_Black
             // 
@@ -532,7 +532,7 @@ namespace DigitalProductionProgram.MainWindow
             Menu_Theme_Black.Name = "Menu_Theme_Black";
             Menu_Theme_Black.Size = new Size(153, 22);
             Menu_Theme_Black.Text = "Black";
-            Menu_Theme_Black.Click += Menu_Tema_Click;
+            Menu_Theme_Black.Click += Menu_Theme_Click;
             // 
             // Menu_Theme_Winter
             // 
@@ -540,7 +540,7 @@ namespace DigitalProductionProgram.MainWindow
             Menu_Theme_Winter.Name = "Menu_Theme_Winter";
             Menu_Theme_Winter.Size = new Size(153, 22);
             Menu_Theme_Winter.Text = "Winter";
-            Menu_Theme_Winter.Click += Menu_Tema_Click;
+            Menu_Theme_Winter.Click += Menu_Theme_Click;
             // 
             // Menu_Theme_Light
             // 
@@ -548,7 +548,7 @@ namespace DigitalProductionProgram.MainWindow
             Menu_Theme_Light.Name = "Menu_Theme_Light";
             Menu_Theme_Light.Size = new Size(153, 22);
             Menu_Theme_Light.Text = "Light";
-            Menu_Theme_Light.Click += Menu_Tema_Click;
+            Menu_Theme_Light.Click += Menu_Theme_Click;
             // 
             // Menu_Theme_Pink
             // 
@@ -556,35 +556,35 @@ namespace DigitalProductionProgram.MainWindow
             Menu_Theme_Pink.Name = "Menu_Theme_Pink";
             Menu_Theme_Pink.Size = new Size(153, 22);
             Menu_Theme_Pink.Text = "Pink";
-            Menu_Theme_Pink.Click += Menu_Tema_Click;
+            Menu_Theme_Pink.Click += Menu_Theme_Click;
             // 
             // Menu_Theme_Cars
             // 
             Menu_Theme_Cars.Name = "Menu_Theme_Cars";
             Menu_Theme_Cars.Size = new Size(153, 22);
             Menu_Theme_Cars.Text = "Cars";
-            Menu_Theme_Cars.Click += Menu_Tema_Click;
+            Menu_Theme_Cars.Click += Menu_Theme_Click;
             // 
             // Menu_Theme_Animals
             // 
             Menu_Theme_Animals.Name = "Menu_Theme_Animals";
             Menu_Theme_Animals.Size = new Size(153, 22);
             Menu_Theme_Animals.Text = "Animals";
-            Menu_Theme_Animals.Click += Menu_Tema_Click;
+            Menu_Theme_Animals.Click += Menu_Theme_Click;
             // 
             // Menu_Theme_Music
             // 
             Menu_Theme_Music.Name = "Menu_Theme_Music";
             Menu_Theme_Music.Size = new Size(153, 22);
             Menu_Theme_Music.Text = "Music";
-            Menu_Theme_Music.Click += Menu_Tema_Click;
+            Menu_Theme_Music.Click += Menu_Theme_Click;
             // 
             // Menu_Theme_Houses
             // 
             Menu_Theme_Houses.Name = "Menu_Theme_Houses";
             Menu_Theme_Houses.Size = new Size(153, 22);
             Menu_Theme_Houses.Text = "Houses";
-            Menu_Theme_Houses.Click += Menu_Tema_Click;
+            Menu_Theme_Houses.Click += Menu_Theme_Click;
             // 
             // Menu_Theme_Nature
             // 
@@ -593,7 +593,7 @@ namespace DigitalProductionProgram.MainWindow
             Menu_Theme_Nature.Name = "Menu_Theme_Nature";
             Menu_Theme_Nature.Size = new Size(153, 22);
             Menu_Theme_Nature.Text = "Nature";
-            Menu_Theme_Nature.Click += Menu_Tema_Click;
+            Menu_Theme_Nature.Click += Menu_Theme_Click;
             // 
             // Menu_Theme_Dark
             // 
@@ -602,7 +602,7 @@ namespace DigitalProductionProgram.MainWindow
             Menu_Theme_Dark.Name = "Menu_Theme_Dark";
             Menu_Theme_Dark.Size = new Size(153, 22);
             Menu_Theme_Dark.Text = "Dark";
-            Menu_Theme_Dark.Click += Menu_Tema_Click;
+            Menu_Theme_Dark.Click += Menu_Theme_Click;
             // 
             // Menu_Theme_Discography
             // 
@@ -610,14 +610,14 @@ namespace DigitalProductionProgram.MainWindow
             Menu_Theme_Discography.Name = "Menu_Theme_Discography";
             Menu_Theme_Discography.Size = new Size(153, 22);
             Menu_Theme_Discography.Text = "Discography";
-            Menu_Theme_Discography.Click += Menu_Tema_Click;
+            Menu_Theme_Discography.Click += Menu_Theme_Click;
             // 
             // Menu_Theme_Optinova
             // 
             Menu_Theme_Optinova.Name = "Menu_Theme_Optinova";
             Menu_Theme_Optinova.Size = new Size(153, 22);
             Menu_Theme_Optinova.Text = "Optinova";
-            Menu_Theme_Optinova.Click += Menu_Tema_Click;
+            Menu_Theme_Optinova.Click += Menu_Theme_Click;
             // 
             // Menu_Help
             // 
@@ -827,14 +827,14 @@ namespace DigitalProductionProgram.MainWindow
             Developer_CountSql_Queries.Name = "Developer_CountSql_Queries";
             Developer_CountSql_Queries.Size = new Size(271, 22);
             Developer_CountSql_Queries.Text = "Räkna SQL Queries";
-            Developer_CountSql_Queries.Click += Developer_CountSql_Queries_Click;
+            Developer_CountSql_Queries.Click += Menu_Developer_CountSqlQueries_Click;
             // 
             // Developer_Clear_Sql_Queries
             // 
             Developer_Clear_Sql_Queries.Name = "Developer_Clear_Sql_Queries";
             Developer_Clear_Sql_Queries.Size = new Size(271, 22);
             Developer_Clear_Sql_Queries.Text = "Töm SQL Queries";
-            Developer_Clear_Sql_Queries.Click += Developer_Clear_Sql_Queries_Click;
+            Developer_Clear_Sql_Queries.Click += Menu_Developer_ClearSqlQueries_Click;
             // 
             // testaChartToolStripMenuItem
             // 

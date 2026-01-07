@@ -277,8 +277,6 @@ namespace DigitalProductionProgram.eMail
                 client.Send(mailMessage);
             client.Dispose();
 
-           
-
         }
         public static void Inform_QA_ApproveProcesscard(string revNr)
         {

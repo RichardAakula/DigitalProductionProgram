@@ -154,7 +154,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
             PreFab.ParentProtocol = this;
         }
 
-        public void Translate_Form()
+        private void Translate_Form()
         {
             LanguageManager.TranslationHelper.TranslateControls(new Control[] { btn_AddStartUp, btn_RemoveStartUp, btn_Confirm_Equipment, btn_Edit_Equipment });
             btn_ExtraComments.Text = LanguageManager.GetString("extraComments");

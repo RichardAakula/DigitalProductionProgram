@@ -1441,11 +1441,6 @@ HS-Machine = {Equipment.Equipment.HS_Machine}", CustomColors.InfoText_Color.Info
                         Parts.Add(reader[1].ToString());
                 }
 
-
-                // InfoText.Show($"Är du säker på att du vill skapa {Parts.Count} st nya processkort.", CustomColors.InfoText_Color.Warning, null, null, null, 0, true);
-                // if (InfoText.answer == InfoText.Answer.No)
-                //     return;
-
                 foreach (var partNr in Parts)
                 {
                     using var con = new SqlConnection(Database.cs_Protocol);

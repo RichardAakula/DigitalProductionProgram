@@ -239,7 +239,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
             Print.Header_Measureprotocol(e, x, y, width_Sign, height, "Sign.");
             List_Width.Add(47);
 
-            //Skriver ut rutor för operatörens mätningar
+            //Print out rutor för operatörens mätningar
             x = 26;
             foreach (var col in List_Width)
             {

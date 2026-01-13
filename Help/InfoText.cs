@@ -42,7 +42,7 @@ namespace DigitalProductionProgram.Help
             timer_Second_ctr = new Timer();
             timer_close = new Timer();
 
-            lbl_Message.ForeColor = clr_Fore;
+            rtb_Message.ForeColor = clr_Fore;
             pb_Line_Top.Image = pb_Line_Bottom.Image = img_Line;
         }
 
@@ -62,21 +62,38 @@ namespace DigitalProductionProgram.Help
                 System.Reflection.BindingFlags.SetProperty |
                 System.Reflection.BindingFlags.Instance |
                 System.Reflection.BindingFlags.NonPublic,
-                null, infoText.lbl_Message, new object[] { true });
+                null, infoText.rtb_Message, new object[] { true });
 
             Change_GUI_Header(header);
             infoText.tlp_Main.RowStyles[2].Height = 10;
             infoText.tlp_Main.RowStyles[3].Height = 0;
             infoText.btn_Yes.Visible = infoText.btn_No.Visible = false;
-            infoText.lbl_Message.MaximumSize = new Size(infoText.tlp_Main.Width - 40, 0); // radbryt
+            //infoText.rtb_Message.MaximumSize = new Size(infoText.tlp_Main.Width - 40, 0); // radbryt
             Translate_Form();
 
-            Change_GUI_Size(message);
+            //Change_GUI_Size();
 
             if (IsSpecialText)
-                SpecialText(infoText.lbl_Message, message);
+                SpecialText(infoText.rtb_Message, message);
             else
-                infoText.lbl_Message.Text = message;
+            {
+                if (message.TrimStart().StartsWith(@"{\rtf", StringComparison.OrdinalIgnoreCase))
+                    infoText.rtb_Message.Rtf = message;
+                else
+                    infoText.rtb_Message.Text = message;
+            }
+            Change_GUI_Size();
+            //infoText.lbl_Message.MaximumSize = new Size(infoText.panel_Message.ClientSize.Width - 20, 0); // radbryt
+
+            //Size needed = TextRenderer.MeasureText(
+            //    infoText.lbl_Message.Text,
+            //    infoText.lbl_Message.Font,
+            //    new Size(infoText.lbl_Message.MaximumSize.Width, int.MaxValue),
+            //    TextFormatFlags.WordBreak | TextFormatFlags.TextBoxControl
+            //);
+
+            //// Sätt höjd så den blir större än panelen → Panelen visar vertikal scrollbar
+            //infoText.lbl_Message.Size = new Size(infoText.lbl_Message.MaximumSize.Width, needed.Height + 8);
 
 
             // Vänta på att användaren stänger rutan
@@ -90,9 +107,15 @@ namespace DigitalProductionProgram.Help
             infoText = new InfoText();
             infoText.TopMost = true;
             if (IsSpecialText)
-                SpecialText(infoText.lbl_Message, Question);
+                SpecialText(infoText.rtb_Message, Question);
             else
-                infoText.lbl_Message.Text = Question;
+            {
+                if (Question.TrimStart().StartsWith(@"{\rtf", StringComparison.OrdinalIgnoreCase))
+                    infoText.rtb_Message.Rtf = Question;
+                else
+                    infoText.rtb_Message.Text = Question;
+            }
+
             infoText.tlp_Main.RowStyles[2].Height = 10;
             infoText.tlp_Main.RowStyles[3].Height = 0;
 
@@ -100,7 +123,7 @@ namespace DigitalProductionProgram.Help
             Change_GUI_Header(header);
             Change_GUI_Question(true);
             Change_GUI_QuestionText(null);
-            Change_GUI_Size(Question);
+            Change_GUI_Size();
             infoText.ShowDialog();
         }
 
@@ -135,13 +158,13 @@ namespace DigitalProductionProgram.Help
             {
                 TopMost = true
             };
-            infoText.lbl_Message.Text = Question;
+            infoText.rtb_Message.Text = Question;
             InputTextList = list_Items;
 
             Translate_Form();
             Change_GUI_Header(header);
             Change_GUI_Return_Text();
-            Change_GUI_Size(Question);
+            Change_GUI_Size();
             infoText.ShowDialog();
         }
         public static void PromptForValue(string Question, CustomColors.InfoText_Color color, string? header, Control? Form, Image img)
@@ -152,7 +175,7 @@ namespace DigitalProductionProgram.Help
             {
                 TopMost = true
             };
-            infoText.lbl_Message.Text = Question;
+            infoText.rtb_Message.Text = Question;
 
             Translate_Form();
             Change_GUI_Header(header);
@@ -164,7 +187,7 @@ namespace DigitalProductionProgram.Help
             }
 
             Change_GUI_Return_Value();
-            Change_GUI_Size(Question);
+            Change_GUI_Size();
             infoText.ShowDialog();
         }
 
@@ -311,43 +334,68 @@ namespace DigitalProductionProgram.Help
             if (img == null && url_Video == null)
                 infoText.tlp_Main.ColumnStyles[2].Width = 0;
         }
-        private static void Change_GUI_Size(string? text)
+        //private static void Change_GUI_Size(string? text)
+        //{
+        //    var maxWidth = infoText.tlp_Main.Width - 40; // Lite padding
+        //    var size = TextRenderer.MeasureText(text, infoText.rtb_Message.Font, new Size(maxWidth, 0), TextFormatFlags.WordBreak);
+
+        //    float height = infoText.tlp_Main.RowStyles[0].Height + size.Height + infoText.tlp_Main.RowStyles[2].Height;//+ size.Height;
+
+        //    if (height > 800)
+        //        height = 800;
+
+        //    infoText.Height = (int)height + 70;
+        //    Screen screen = Screen.FromPoint(Cursor.Position);
+        //    infoText.Width = screen.Bounds.Width;
+        //}
+        private static void Change_GUI_Size()
         {
-            var maxWidth = infoText.tlp_Main.Width - 40; // Lite padding
-            var size = TextRenderer.MeasureText(text, infoText.lbl_Message.Font, new Size(maxWidth, 0), TextFormatFlags.WordBreak);
+            if (infoText.rtb_Message == null)
+                return;
 
-            infoText.lbl_Message.MaximumSize = new Size(maxWidth, 0); // så den faktiskt radbryts
-            infoText.lbl_Message.Height = size.Height;
+            // Bestäm maxbredd med lite padding
+            int maxWidth = infoText.tlp_Main.Width - 40;
 
-            // Om rad 1 är autosize – tvinga den till rätt höjd
-            infoText.tlp_Main.RowStyles[1].Height = size.Height;
+            int textHeight = 0;
 
-            // infoText.tlp_Main.PerformLayout();
+            if (!string.IsNullOrEmpty(infoText.rtb_Message.Rtf) && infoText.rtb_Message.Rtf.StartsWith(@"{\rtf"))
+            {
+                // RTF-text: mät höjd med GetPositionFromCharIndex
+                infoText.rtb_Message.Update(); // säkerställ layout
 
-            int height = infoText.tlp_Main.PreferredSize.Height;
+                int lastCharIndex = Math.Max(infoText.rtb_Message.TextLength - 1, 0);
+                Point lastPos = infoText.rtb_Message.GetPositionFromCharIndex(lastCharIndex);
 
-            if (height > 800)
-                height = 800;
+                textHeight = lastPos.Y + infoText.rtb_Message.Font.Height;
+            }
+            else
+            {
+                // Vanlig text: mät med TextRenderer
+                string text = infoText.rtb_Message.Text ?? string.Empty;
 
-            infoText.Height = height + 50;
+                var size = TextRenderer.MeasureText(
+                    text,
+                    infoText.rtb_Message.Font,
+                    new Size(maxWidth, 0),
+                    TextFormatFlags.WordBreak
+                );
+
+                textHeight = size.Height;
+            }
+
+            // Lägg till höjder från TableLayoutPanel rows
+            float totalHeight = infoText.tlp_Main.RowStyles[0].Height + textHeight + infoText.tlp_Main.RowStyles[2].Height;
+
+            // Begränsa till maxhöjd
+            if (totalHeight > 800)
+                totalHeight = 800;
+
+            // Sätt storlek
+            infoText.Height = (int)totalHeight + 70;
+
+            // Sätt bredd till skärmbredd
             Screen screen = Screen.FromPoint(Cursor.Position);
             infoText.Width = screen.Bounds.Width;
-
-
-            //infoText.Width = form is null
-            //    ? Screen.PrimaryScreen.Bounds.Width
-            //    : Screen.FromControl(form).Bounds.Width;
-
-
-
-
-            //var height = (int)infoText.tlp_Main.RowStyles[0].Height + (int)infoText.tlp_Main.RowStyles[1].Height + infoText.lbl_Message.Height + (int)infoText.tlp_Main.RowStyles[3].Height + (int)infoText.tlp_Main.RowStyles[4].Height + (int)infoText.tlp_Main.RowStyles[5].Height;
-
-            //if (height > 800)
-            //    height = 800;
-            //infoText.Height = height + 50;
-
-            //infoText.Width = form is null ? Screen.PrimaryScreen.Bounds.Width : Screen.FromControl(form).Bounds.Width;
         }
 
         private static void Change_GUI_QuestionText(string?[] text)

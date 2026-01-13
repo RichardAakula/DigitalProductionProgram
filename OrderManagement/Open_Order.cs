@@ -54,7 +54,7 @@ namespace DigitalProductionProgram.OrderManagement
             LanguageManager.TranslationHelper.TranslateControls(controls);
         }
 
-        public async Task Load_dt_Korprotokoll_MainDataAsync()
+        private async Task Load_dt_Korprotokoll_MainDataAsync()
         {
             dt_Korprotokoll_MainData = new DataTable();
             try

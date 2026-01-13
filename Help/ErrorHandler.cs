@@ -3,11 +3,11 @@ using DigitalProductionProgram.Log;
 
 namespace DigitalProductionProgram.Help
 {
-    internal class ErrorHandler
+    internal abstract class ErrorHandler
     {
-        public static async void Allmänt_Fel(Exception exception, string fel)
+        public static  void Allmänt_Fel(Exception exception, string fel)
         {
-            await Activity.Stop($@"Allmänt Fel: {exception.Message} - {fel}");
+            _= Activity.Stop($@"Error: {exception.Message} - {fel}");
         }
     }
 }

@@ -331,7 +331,7 @@ namespace DigitalProductionProgram.MainWindow
             using var öp = new Overview_ProductionLines();
             öp.ShowDialog();
 
-            await Log.Activity.Stop("Överblick ProdLinjer");
+            await Log.Activity.Stop("Overview Production Lines");
             Cursor = Cursors.Default;
            // Main_Form.Timer_UpdateChart_Start();
         }

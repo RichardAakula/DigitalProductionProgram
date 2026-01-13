@@ -1,19 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using Microsoft.Data.SqlClient;
-using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Globalization;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.InteropServices;
-using System.Text.RegularExpressions;
-using System.Windows.Forms;
-using DigitalProductionProgram.ControlsManagement;
+﻿using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Equipment;
 using DigitalProductionProgram.Help;
+using DigitalProductionProgram.Log;
 using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.Övrigt;
@@ -21,6 +10,19 @@ using DigitalProductionProgram.PrintingServices;
 using DigitalProductionProgram.Processcards;
 using DigitalProductionProgram.Templates;
 using DigitalProductionProgram.User;
+using Microsoft.Data.SqlClient;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Globalization;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
+using System.Windows.Forms;
 using Activity = DigitalProductionProgram.Log.Activity;
 
 namespace DigitalProductionProgram.Protocols.Protocol
@@ -61,7 +63,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
         {
             return oven == 0 ? $"{startup}" : $"{startup}-Ugn# {oven}";
         }
-        public static int StartUp(string headertext)
+        public static int StartUp(string headertext, [CallerMemberName] string method = "")
         {
             if (headertext.Contains('-'))
             {
@@ -71,9 +73,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
             }
 
             if (int.TryParse(headertext, out var startup) == false)
-            {
-                _ = Activity.Stop($"Error Save Data: Wrong Startup: {headertext}");
-            }
+                _ = Activity.Stop($"Error Save Data: Wrong Startup: {headertext} - Method: {method}"); 
             return startup;
 
         }
@@ -149,7 +149,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
 
         }
 
-        public static bool IsOk_CellValueChanged;
+        private static bool IsOk_CellValueChanged;
         public static bool IsOkShowList;
         public Equipment equipment;
         public Processcard.Save save_processcard;
@@ -791,7 +791,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
 
             DatabaseManagement.Save_Data(dgv_Module, row, FormTemplateID, oven, MachineIndex);
         }
-        public void Module_ShowSpecialItems_CellRightMouseDown(object sender, DataGridViewCellMouseEventArgs e)
+        private void Module_ShowSpecialItems_CellRightMouseDown(object sender, DataGridViewCellMouseEventArgs e)
         {
             if (Browse_Protocols.Browse_Protocols.Is_BrowsingProtocols)
                 return;
@@ -1088,7 +1088,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
 
 
 
-        public class DatabaseManagement
+        public abstract class DatabaseManagement
         {
             public static void Delete_StartUp(int startup)
             {
@@ -1124,77 +1124,294 @@ namespace DigitalProductionProgram.Protocols.Protocol
                     cmd.ExecuteNonQuery();
                 }
             }
+            //public static void Save_Data(DataGridView dgv, int row, int formtemplateid, int OvenIndex = 0, int machineindex = 0)
+            //{
+            //    if (Module.IsOkToSave == false)
+            //        return;
+            //    var cell = dgv.CurrentCell;
+
+            //    var protocol_Description_ID = Protocol_Description.Protocol_Description_ID_Row(row, formtemplateid);
+            //    _ = int.Parse(dgv.Rows[row].Cells["col_DataType"].Value.ToString());
+            //    int type = ValueType(protocol_Description_ID, formtemplateid);
+
+            //    using var con = new SqlConnection(Database.cs_Protocol);
+            //    var query = OvenIndex > 0 ? @"
+            //        IF NOT EXISTS (SELECT * FROM [Order].Data WHERE OrderID = @orderid AND ProtocolDescriptionID = @protocoldescriptionid AND uppstart = @uppstart AND ugn = @ugn)
+            //            INSERT INTO [Order].Data (OrderID, ProtocolDescriptionID, MachineIndex, Uppstart, Ugn, Value, TextValue, BoolValue)
+            //            VALUES (@orderid, @protocoldescriptionid, @machineindex, @uppstart, @ugn, @value, @textvalue, @boolvalue)
+            //        ELSE
+            //            UPDATE [Order].Data 
+            //                SET value = @value, textvalue = @textvalue, BoolValue = @boolvalue
+            //            WHERE OrderID = @orderid AND ProtocolDescriptionID = @protocoldescriptionid AND uppstart = @uppstart AND ugn = @ugn" : @"
+            //        IF NOT EXISTS (SELECT * FROM [Order].Data WHERE OrderID = @orderid AND ProtocolDescriptionID = @protocoldescriptionid AND (COALESCE(Uppstart, 0) = COALESCE(@uppstart, 0)) AND (COALESCE(MachineIndex, 0) = COALESCE(@machineindex, 0)))
+            //            INSERT INTO [Order].Data (OrderID, ProtocolDescriptionID, MachineIndex, Uppstart, Ugn, Value, TextValue, BoolValue, datevalue)
+            //            VALUES (@orderid, @protocoldescriptionid, @machineindex, @uppstart, @ugn, @value, @textvalue, @boolvalue, @datevalue)
+            //        ELSE
+            //            UPDATE [Order].Data 
+            //                SET value = @value, textvalue = @textvalue, BoolValue = @boolvalue, datevalue = @datevalue
+            //            WHERE OrderID = @orderid AND ProtocolDescriptionID = @protocoldescriptionid AND (COALESCE(Uppstart, 0) = COALESCE(@uppstart, 0)) AND (COALESCE(MachineIndex, 0) = COALESCE(@machineindex, 0))";
+            //    con.Open();
+            //    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            //    cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
+            //    cmd.Parameters.AddWithValue("@protocoldescriptionid", protocol_Description_ID);
+            //    SQL_Parameter.Int(cmd.Parameters, "@machineindex", machineindex);
+            //    cmd.Parameters.AddWithValue("@uppstart", Module.StartUp(dgv.Columns[cell.ColumnIndex].HeaderText)); //dgv.Columns[cell.ColumnIndex].HeaderText);
+            //    if (OvenIndex > 0)
+            //        cmd.Parameters.AddWithValue("@ugn", OvenIndex);
+            //    else
+            //        cmd.Parameters.AddWithValue("@ugn", DBNull.Value);
+
+            //    switch (type)
+            //    {
+            //        case 0://NumberValue
+            //            SQL_Parameter.Double(cmd.Parameters, "@value", cell.Value);
+            //            cmd.Parameters.AddWithValue("@textvalue", DBNull.Value);
+            //            cmd.Parameters.AddWithValue("@boolvalue", DBNull.Value);
+            //            cmd.Parameters.AddWithValue("@datevalue", DBNull.Value);
+            //            break;
+            //        case 1://TextValue
+            //            if (cell.Value != null)
+            //                SQL_Parameter.String(cmd.Parameters, "@textvalue", cell.Value.ToString());
+            //            else
+            //                cmd.Parameters.AddWithValue("@textvalue", DBNull.Value);
+            //            cmd.Parameters.AddWithValue("@value", DBNull.Value);
+            //            cmd.Parameters.AddWithValue("@boolvalue", DBNull.Value);
+            //            cmd.Parameters.AddWithValue("@datevalue", DBNull.Value);
+            //            break;
+            //        case 2://BoolValue
+            //            SQL_Parameter.Boolean(cmd.Parameters, "@boolean", cell.Value);
+            //            cmd.Parameters.AddWithValue("@textvalue", DBNull.Value);
+            //            cmd.Parameters.AddWithValue("@value", DBNull.Value);
+            //            cmd.Parameters.AddWithValue("@datevalue", DBNull.Value);
+            //            break;
+            //        case 3://DateValue
+            //            if (DateTime.TryParse(cell.Value.ToString(), out var dateValue))
+            //                cmd.Parameters.AddWithValue("@datevalue", dateValue);
+            //            cmd.Parameters.AddWithValue("@textvalue", DBNull.Value);
+            //            cmd.Parameters.AddWithValue("@value", DBNull.Value);
+            //            cmd.Parameters.AddWithValue("@boolvalue", DBNull.Value);
+            //            break;
+            //    }
+
+            //    cmd.ExecuteNonQuery();
+            //}
             public static void Save_Data(DataGridView dgv, int row, int formtemplateid, int OvenIndex = 0, int machineindex = 0)
             {
                 if (Module.IsOkToSave == false)
                     return;
-                var cell = dgv.CurrentCell;
 
-                var protocol_Description_ID = Protocol_Description.Protocol_Description_ID_Row(row, formtemplateid);
+                var cell = dgv.CurrentCell;
+                var startUp = Module.StartUp(dgv.Columns[cell.ColumnIndex].HeaderText);
+                var protocolDescriptionID = Protocol_Description.Protocol_Description_ID_Row(row, formtemplateid);
                 _ = int.Parse(dgv.Rows[row].Cells["col_DataType"].Value.ToString());
-                int type = ValueType(protocol_Description_ID, formtemplateid);
+                int type = ValueType(protocolDescriptionID, formtemplateid);
 
                 using var con = new SqlConnection(Database.cs_Protocol);
-                var query = OvenIndex > 0 ? @"
-                    IF NOT EXISTS (SELECT * FROM [Order].Data WHERE OrderID = @orderid AND ProtocolDescriptionID = @protocoldescriptionid AND uppstart = @uppstart AND ugn = @ugn)
-                        INSERT INTO [Order].Data (OrderID, ProtocolDescriptionID, MachineIndex, Uppstart, Ugn, Value, TextValue, BoolValue)
-                        VALUES (@orderid, @protocoldescriptionid, @machineindex, @uppstart, @ugn, @value, @textvalue, @boolvalue)
-                    ELSE
-                        UPDATE [Order].Data 
-                            SET value = @value, textvalue = @textvalue, BoolValue = @boolvalue
-                        WHERE OrderID = @orderid AND ProtocolDescriptionID = @protocoldescriptionid AND uppstart = @uppstart AND ugn = @ugn" : @"
-                    IF NOT EXISTS (SELECT * FROM [Order].Data WHERE OrderID = @orderid AND ProtocolDescriptionID = @protocoldescriptionid AND (COALESCE(Uppstart, 0) = COALESCE(@uppstart, 0)) AND (COALESCE(MachineIndex, 0) = COALESCE(@machineindex, 0)))
-                        INSERT INTO [Order].Data (OrderID, ProtocolDescriptionID, MachineIndex, Uppstart, Ugn, Value, TextValue, BoolValue, datevalue)
-                        VALUES (@orderid, @protocoldescriptionid, @machineindex, @uppstart, @ugn, @value, @textvalue, @boolvalue, @datevalue)
-                    ELSE
-                        UPDATE [Order].Data 
-                            SET value = @value, textvalue = @textvalue, BoolValue = @boolvalue, datevalue = @datevalue
-                        WHERE OrderID = @orderid AND ProtocolDescriptionID = @protocoldescriptionid AND (COALESCE(Uppstart, 0) = COALESCE(@uppstart, 0)) AND (COALESCE(MachineIndex, 0) = COALESCE(@machineindex, 0))";
                 con.Open();
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+
+                using var tran = con.BeginTransaction();
+
+                // En gemensam batch som först gör upsert i [Order].Data och sedan loggar i Log.ActivityLog
+                // Vi använder en "flagga" via TABLE VARIABLE för att veta om det blev INSERT eller UPDATE.
+                var query = (OvenIndex > 0) ? @"
+                    DECLARE @action NVARCHAR(10);
+
+                    IF NOT EXISTS 
+                    (
+                        SELECT 1
+                        FROM [Order].Data
+                        WHERE OrderID = @orderid
+                            AND ProtocolDescriptionID = @protocoldescriptionid
+                            AND Uppstart = @uppstart
+                            AND Ugn = @ugn
+                    )
+                    BEGIN
+                        INSERT INTO [Order].Data (OrderID, ProtocolDescriptionID, MachineIndex, Uppstart, Ugn, Value, TextValue, BoolValue, DateValue)
+                        VALUES (@orderid, @protocoldescriptionid, @machineindex, @uppstart, @ugn, @value, @textvalue, @boolvalue, @datevalue);
+                        SET @action = N'INSERT';
+                    END
+                    ELSE
+                    BEGIN
+                        UPDATE [Order].Data
+                        SET Value = @value,
+                            TextValue = @textvalue,
+                            BoolValue = @boolvalue,
+                            DateValue = @datevalue
+                        WHERE OrderID = @orderid
+                            AND ProtocolDescriptionID = @protocoldescriptionid
+                            AND Uppstart = @uppstart
+                            AND Ugn = @ugn;
+                        SET @action = N'UPDATE';
+                    END
+
+                    INSERT INTO Log.ActivityLog
+                        (
+                            HostID, 
+                            UserID, 
+                            OrderID, 
+                            Program, 
+                            Version, 
+                            Date,   
+                            Info)
+                    VALUES
+                         (
+                            (SELECT HostID FROM [Settings].General WHERE HostName = @hostname), 
+                            @userid, 
+                            @orderid, 
+                            @program, 
+                            @version, 
+                            @date,                            
+                            CONCAT(
+                                'Save data: ',
+                                COALESCE((SELECT TOP(1) CodeText FROM [Protocol].[Description] WHERE ID = @protocoldescriptionid), 'N/A'),
+                                ' - Value = ', @value,
+                                ' - StartUp = ', @uppstart,
+                                ', Machine = ', @machineindex));
+                    " : @"
+        
+                    DECLARE @action NVARCHAR(10);
+
+                    IF NOT EXISTS 
+                    (
+                        SELECT 1
+                        FROM [Order].Data
+                        WHERE OrderID = @orderid
+                            AND ProtocolDescriptionID = @protocoldescriptionid
+                            AND COALESCE(Uppstart, 0) = COALESCE(@uppstart, 0)
+                            AND COALESCE(MachineIndex, 0) = COALESCE(@machineindex, 0)
+                    )
+                    BEGIN
+                        INSERT INTO [Order].Data (OrderID, ProtocolDescriptionID, MachineIndex, Uppstart, Ugn, Value, TextValue, BoolValue, DateValue)
+                        VALUES (@orderid, @protocoldescriptionid, @machineindex, @uppstart, @ugn, @value, @textvalue, @boolvalue, @datevalue);
+                        SET @action = N'INSERT';
+                    END
+                    ELSE
+                    BEGIN
+                        UPDATE [Order].Data
+                        SET Value = @value,
+                            TextValue = @textvalue,
+                            BoolValue = @boolvalue,
+                            DateValue = @datevalue
+                        WHERE OrderID = @orderid
+                            AND ProtocolDescriptionID = @protocoldescriptionid
+                            AND COALESCE(Uppstart, 0) = COALESCE(@uppstart, 0)
+                            AND COALESCE(MachineIndex, 0) = COALESCE(@machineindex, 0);
+                        SET @action = N'UPDATE';
+                    END
+
+                    INSERT INTO Log.ActivityLog
+                        (
+                            HostID, 
+                            UserID, 
+                            OrderID, 
+                            Program, 
+                            Version, 
+                            Date,   
+                            Info)
+                    VALUES
+                         (
+                            (SELECT HostID FROM [Settings].General WHERE HostName = @hostname), 
+                            @userid, 
+                            @orderid, 
+                            @program, 
+                            @version, 
+                            @date,                            
+                            CONCAT(
+                                'Save data: ',
+                                COALESCE((SELECT TOP(1) CodeText FROM [Protocol].[Description] WHERE ID = @protocoldescriptionid), 'N/A'),
+                                ' - Value = ', @value,
+                                ' - StartUp = ', @uppstart,
+                                ', Machine = ', @machineindex));";
+
+                using var cmd = new SqlCommand(query, con, tran);
+                ServerStatus.Add_Sql_Counter();
+
+                // Gemensamma parametrar
                 cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
-                cmd.Parameters.AddWithValue("@protocoldescriptionid", protocol_Description_ID);
+                cmd.Parameters.AddWithValue("@protocoldescriptionid", protocolDescriptionID);
+
+                // machineindex kan vara null/0: använd din hjälpfunktion för korrekt null-hantering
                 SQL_Parameter.Int(cmd.Parameters, "@machineindex", machineindex);
-                cmd.Parameters.AddWithValue("@uppstart", Module.StartUp(dgv.Columns[cell.ColumnIndex].HeaderText)); //dgv.Columns[cell.ColumnIndex].HeaderText);
+
+                // Uppstart beror på kolumnhuvudet (din befintliga logik)
+                cmd.Parameters.AddWithValue("@uppstart", startUp);
+
+                // Ugn (OvenIndex), null om inte angiven
                 if (OvenIndex > 0)
                     cmd.Parameters.AddWithValue("@ugn", OvenIndex);
                 else
                     cmd.Parameters.AddWithValue("@ugn", DBNull.Value);
 
+                // Miljö: användarnamn och klientinfo (justera efter din miljö)
+                SQL_Parameter.Int(cmd.Parameters, "@userid", Person.UserID);
+                cmd.Parameters.AddWithValue("@hostname", Activity.HostName);
+                cmd.Parameters.AddWithValue("@date", DateTime.Now);
+                cmd.Parameters.AddWithValue("@program", "SaveData");
+                cmd.Parameters.AddWithValue("@version", ChangeLog.CurrentVersion.ToString());
+               // cmd.Parameters.AddWithValue("@info", $"Save data ProtocolDescriptionId = {protocolDescriptionID} - Value = {cell.Value} - StartUp = {startUp}, Machine = {machineindex}");
+
+                // Sätt värdeparametrar baserat på 'type'
                 switch (type)
                 {
-                    case 0://NumberValue
+                    case 0: // NumberValue
                         SQL_Parameter.Double(cmd.Parameters, "@value", cell.Value);
                         cmd.Parameters.AddWithValue("@textvalue", DBNull.Value);
                         cmd.Parameters.AddWithValue("@boolvalue", DBNull.Value);
                         cmd.Parameters.AddWithValue("@datevalue", DBNull.Value);
                         break;
-                    case 1://TextValue
+
+                    case 1: // TextValue
                         if (cell.Value != null)
                             SQL_Parameter.String(cmd.Parameters, "@textvalue", cell.Value.ToString());
                         else
                             cmd.Parameters.AddWithValue("@textvalue", DBNull.Value);
+
                         cmd.Parameters.AddWithValue("@value", DBNull.Value);
                         cmd.Parameters.AddWithValue("@boolvalue", DBNull.Value);
                         cmd.Parameters.AddWithValue("@datevalue", DBNull.Value);
                         break;
-                    case 2://BoolValue
-                        SQL_Parameter.Boolean(cmd.Parameters, "@boolean", cell.Value);
+
+                    case 2: // BoolValue
+                            // BUGFIX: använd @boolvalue (inte @boolean)
+                        SQL_Parameter.Boolean(cmd.Parameters, "@boolvalue", cell.Value);
                         cmd.Parameters.AddWithValue("@textvalue", DBNull.Value);
                         cmd.Parameters.AddWithValue("@value", DBNull.Value);
                         cmd.Parameters.AddWithValue("@datevalue", DBNull.Value);
                         break;
-                    case 3://DateValue
-                        if (DateTime.TryParse(cell.Value.ToString(), out var dateValue))
+
+                    case 3: // DateValue
+                        if (cell?.Value != null && DateTime.TryParse(cell.Value.ToString(), out var dateValue))
                             cmd.Parameters.AddWithValue("@datevalue", dateValue);
+                        else
+                            cmd.Parameters.AddWithValue("@datevalue", DBNull.Value);
+
                         cmd.Parameters.AddWithValue("@textvalue", DBNull.Value);
                         cmd.Parameters.AddWithValue("@value", DBNull.Value);
                         cmd.Parameters.AddWithValue("@boolvalue", DBNull.Value);
+                        break;
+
+                    default:
+                        // Fallback: sätt alla till NULL
+                        cmd.Parameters.AddWithValue("@value", DBNull.Value);
+                        cmd.Parameters.AddWithValue("@textvalue", DBNull.Value);
+                        cmd.Parameters.AddWithValue("@boolvalue", DBNull.Value);
+                        cmd.Parameters.AddWithValue("@datevalue", DBNull.Value);
                         break;
                 }
 
-                cmd.ExecuteNonQuery();
+                try
+                {
+                    cmd.ExecuteNonQuery();
+                    tran.Commit();
+                }
+                catch (Exception ex)
+                {
+                    tran.Rollback();
+                    Activity.Stop($"Error while saving data in Module.DatabaseManagement.Save_Data: {ex.Message}");
+                    throw;
+                }
             }
+
 
             public static int ValueType(int? id, int FormTemplateID)
             {
@@ -1279,18 +1496,13 @@ namespace DigitalProductionProgram.Protocols.Protocol
             }
         }
 
-        public class Equipment
+        public class Equipment(Module parentModule)
         {
-            public static bool IsEquipmentEmpty(DataGridView dgv)
+            private static bool IsEquipmentEmpty(DataGridView dgv)
             {
                 return (from DataGridViewRow row in dgv.Rows select row.Cells[dgv.Columns.Count - 1].Value into cellValue where cellValue != null select cellValue).All(cellValue => string.IsNullOrEmpty(cellValue.ToString()));
             }
-            private readonly Module module;
-
-            public Equipment(Module parentModule)
-            {
-                module = parentModule;
-            }
+            private readonly Module module = parentModule;
 
             public void Lock_Equipment(int col)
             {
@@ -1305,7 +1517,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                 dgv.Rows[^1].Cells[col].Selected = true;
                 dgv.Rows[^1].Cells[col].Value = Person.Name;
                 Lock_Equipment(col);
-                _ = Activity.Stop("Operatör har bekräftat Utrustningen.");
+                _ = Activity.Stop("The operator has confirmed the Equipment");
                 dgv.ClearSelection();
             }
             public void CheckIfEquipmentIsConfirmed(ref bool isQuestionAnswered, ref bool isOkCloseForm, bool isOkWarnUser)
@@ -1317,7 +1529,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                 {
                     if (isOkWarnUser == false)
                     {//Om av någon orsak utrustning har blivit sparad utan att operatör har bekräftat utrustningen så raderas den automatiskt nästa gång protokollet öppnas.
-                        _ = Activity.Stop($"Senaste Uppstart för utrustning raderas pga att operatör {Person.Name} inte har bekräftat utrustningen. Användare har INTE fått meddelande om detta.");
+                        _ = Activity.Stop($"Latest equipment startup is cleared because operator {Person.Name} did not confirm the equipment. User are NOT notified");
                         Delete_LastStartup(StartUp, module.FormTemplateID, module.dgv_Module);
                         foreach (DataGridViewRow row in module.dgv_Module.Rows)
                             row.Cells[module.dgv_Module.Columns.Count - 1].Value = string.Empty;
@@ -1327,7 +1539,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                         InfoText.Question(LanguageManager.GetString("equipment_Info_1"), CustomColors.InfoText_Color.Warning, "Warning!", null);
                     if (InfoText.answer == InfoText.Answer.Yes)
                     {
-                        _ = Activity.Stop($"Senaste Uppstart för utrustning raderas pga att operatör {Person.Name} inte har bekräftat utrustningen. Användare har fått meddelande om detta.");
+                        _ = Activity.Stop($"Latest equipment startup is cleared because operator {Person.Name} did not confirm the equipment. User are notified");
                         Delete_LastStartup(StartUp, module.FormTemplateID, module.dgv_Module);
                         isQuestionAnswered = true;
                         isOkCloseForm = true;
@@ -1341,7 +1553,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
 
 
             }
-            public static void Delete_LastStartup(int startup, int formtemplateid, DataGridView dgv)
+            private static void Delete_LastStartup(int startup, int formtemplateid, DataGridView dgv)
             {
                 //Om Användare stänger ner Körprotokollet utan att ha fyllt i hela utrustningen så raderas utrustningen från senaste uppstart
                 using var con = new SqlConnection(Database.cs_Protocol);
@@ -1379,7 +1591,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
             }
         }
 
-        public class Production
+        public abstract class Production
         {
             public static void AddDates(DataGridView dgv, int FormTemplateID)
             {
@@ -1425,7 +1637,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
             }
         }
 
-        public class Extrusion
+        public abstract class Extrusion
         {
             public static void Cleaned_Cylinder(DataGridView dgv_Protocol, int formtemplateid, int machineindex)
             {
@@ -1494,7 +1706,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                         break;
                 }
             }
-            public static void Copy_FromLastStartUp(DataGridView dgv_Protocol)
+            private static void Copy_FromLastStartUp(DataGridView dgv_Protocol)
             {
                 for (var i = 2; i < dgv_Protocol.Rows.Count - 2; i++)
                 {
@@ -1505,7 +1717,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
 
                 }
             }
-            public static void Copy_FromLastOrder(DataGridView dgv_Protocol, int formtemplateid, int machineindex)
+            private static void Copy_FromLastOrder(DataGridView dgv_Protocol, int formtemplateid, int machineindex)
             {
                 var lastOrderID = Order.LastOrderID;
                 using var con = new SqlConnection(Database.cs_Protocol);
@@ -1567,7 +1779,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                     }
                 }
             }
-            public static void Delete_Equipment(DataGridView dgv_Protocol)
+            private static void Delete_Equipment(DataGridView dgv_Protocol)
             {
                 for (var i = 2; i < dgv_Protocol.Rows.Count - 1; i++)
                     dgv_Protocol.Rows[i].Cells[dgv_Protocol.Columns.Count - 1].Value = string.Empty;
@@ -1629,7 +1841,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
             }
         }
 
-        public class HeatShrink
+        public abstract class HeatShrink
         {
             public static void Change_Color_MachineName(DataGridView dgv_Protocol)
             {

@@ -310,7 +310,7 @@ namespace DigitalProductionProgram.Protocols.Slipning_TEF
         }
         private void Save_Data(string date)
         {
-            Points.Add_Points(7, $"Överför Produktion - Slipning, IsUpdating = {IsUpdating_Parameter}, RowID = RowID");
+            Points.Add_Points(7, $"Save Production Data - Slipning, IsUpdating = {IsUpdating_Parameter}, RowID = RowID");
             var dateTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
             for (var col = -1; col < 16; col++)
             {
@@ -415,10 +415,6 @@ namespace DigitalProductionProgram.Protocols.Slipning_TEF
             }
             using var choose_Item = new Choose_Item(list, new[] {ctrl}, false);
             choose_Item.ShowDialog();
-
-            _ = Activity.Stop(Monitor.Monitor.Part_Material is null == false ? 
-                $"Felsökning tomma lotnr Slipning: ArtikelNr halvfabrikat: {Monitor.Monitor.Part_Material.PartNumber}. Antal i list: {list.Count}" : 
-                $"Felsökning tomma lotnr Slipning: Monitor.Load_Data.Part_Material.PartNumber is null. Antal i list: {list.Count}");
         }
 
 

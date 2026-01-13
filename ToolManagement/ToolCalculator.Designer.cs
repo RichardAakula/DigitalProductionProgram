@@ -1013,6 +1013,7 @@
             tb_OD.Name = "tb_OD";
             tb_OD.Size = new Size(57, 19);
             tb_OD.TabIndex = 197;
+            tb_OD.TextChanged += ID_OD_TextChanged;
             // 
             // tb_Wall
             // 

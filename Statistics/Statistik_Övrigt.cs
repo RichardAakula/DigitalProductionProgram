@@ -1940,7 +1940,7 @@ namespace DigitalProductionProgram.Statistics
             ctr_Queries = 0;
             
             Load_Chart(true, 0);
-            _ = Activity.Stop("Statistik - Random - F7");
+            _ = Activity.Stop("Statistics - Random - F7");
             timer_Change_Chart.Enabled = true;
             timer_Change_Chart.Start();
         }

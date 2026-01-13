@@ -60,11 +60,6 @@ namespace DigitalProductionProgram.DatabaseManagement
             }
         }
        
-        // private static readonly string csDPP_OGO = $"Data Source={ServerOGO};Initial Catalog=Korprotokoll;Persist Security Info=True;User ID={UserID};Password={Password};Connect Timeout=10;Encrypt=True;TrustServerCertificate=True;";
-        // private static readonly string csDPP_OTH = $"Data Source={ServerOTH};Initial Catalog=DP_OTH;Persist Security Info=True;User ID={UserID};Password={Password};Connect Timeout=30;Encrypt=True;TrustServerCertificate=True;";
-        // private static readonly string csDPP_OVF = $"Data Source={ServerOVF};Initial Catalog=DPP_OVF;Persist Security Info=True;User ID={UserID};Password={Password};Connect Timeout=5;Encrypt=True;TrustServerCertificate=True;";
-        // private static readonly string csDPP_Beta = $"Data Source={ServerOGO};Initial Catalog=GOD_DPP_DEV;Persist Security Info=True;User ID={UserID};Password={Password};Connect Timeout=5;Encrypt=True;TrustServerCertificate=True;";
-
 
         private static readonly string csToolRegisterGodby = $"Data Source={DatabaseSettings.Server.OGO};Initial Catalog={DatabaseSettings.Name.OGO};Persist Security Info=True;User ID={DatabaseSettings.UserID.OGO};Password={DatabaseSettings.Password.OGO};Connect Timeout={DatabaseSettings.TimeOut.OGO};Encrypt=True;TrustServerCertificate=True;";
         private static readonly string csToolRegisterThai = $"Data Source={DatabaseSettings.Server.OTH};Initial Catalog={DatabaseSettings.Name.OTH};Persist Security Info=True;User ID={DatabaseSettings.UserID.OTH};Password={DatabaseSettings.Password.OTH};Connect Timeout={DatabaseSettings.TimeOut.OTH};Encrypt=True;TrustServerCertificate=True;";
@@ -75,7 +70,6 @@ namespace DigitalProductionProgram.DatabaseManagement
         private const string UpdatePath_OVF = @"\\ovf-s1-file\Digital Production Program\Update\Update DPP.exe";
 
         /// </summary>
-
 
         public static string? cs_Protocol;// = csDPP_OGO;
         public static string? cs_ToolRegister;// = csToolRegisterGodby;

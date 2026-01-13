@@ -183,7 +183,7 @@ namespace DigitalProductionProgram.User
             lbl_User.Text = Person.Get_NameWithAnstNr(anstNr);
             tb_Password.Focus();
            // if (Environment.MachineName != "OH-ID61")
-                _ = Log.Activity.Stop($"Snabblogin - {lbl_User.Text}");
+                _ = Log.Activity.Stop($"Quick Login - {lbl_User.Text}");
         }
         private void HideObjects()
         {
@@ -486,7 +486,7 @@ namespace DigitalProductionProgram.User
                     Sounds.PlayGollum();
                 await CheckVersion();
                 if (Environment.MachineName != "OH-ID61")
-                    _ = Log.Activity.Stop("Loggar in: " + lbl_User.Text);
+                    _ = Log.Activity.Stop("Logging in: " + lbl_User.Text);
                 Close();
             }
         }

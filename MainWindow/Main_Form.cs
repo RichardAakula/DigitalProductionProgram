@@ -193,7 +193,7 @@ namespace DigitalProductionProgram.MainWindow
             }
             //Detta räknar hur många instanser av programmet som är öppna
             var processes = Process.GetProcessesByName("DigitalProductionProgram");
-            await Activity.Stop($"Uppstart av program # {processes.Length}");
+            await Activity.Stop($"Application startup # {processes.Length}");
             startTime = DateTime.Now;
             Initialize_Timers();
             Change_GUI_StandardColor();
@@ -208,16 +208,29 @@ namespace DigitalProductionProgram.MainWindow
             this.Invoke((MethodInvoker)(this.BringToFront));
         }
 
+
         protected override void SetVisibleCore(bool value)
         {
+            // Om vi är på fel tråd – flytta arbetet till UI-tråden och avsluta direkt
+            if (this.InvokeRequired)
+            {
+                // BeginInvoke för att undvika deadlocks
+                this.BeginInvoke(new Action<bool>(v => SetVisibleCore(v)), value);
+                return;
+            }
+
+            // Nu är vi på UI-tråden
             if (!this.IsHandleCreated)
             {
-                // Create the handle (window) for the form
+                // Skapa handtaget på UI-tråden
                 this.CreateHandle();
-                value = false; // Set visibility to false
+                // Behåll osynligt initialt om det är det du vill
+                value = false;
             }
+
             base.SetVisibleCore(value);
         }
+
 
 
 
@@ -532,7 +545,7 @@ namespace DigitalProductionProgram.MainWindow
 
 
             Set_GUI_Theme_Krympslang();
-            _ = Activity.Stop(Teman.Theme.ToString());
+            _ = Activity.Stop($"Choosing Theme {Teman.Theme.ToString()}");
         }
 
 
@@ -589,8 +602,8 @@ namespace DigitalProductionProgram.MainWindow
 
             lbl_ExtraInfo.Text = Part.ExtraInfo_Part;
 
-            if (IsAutoOpenOrder == false)
-                Task.Run(Change_Theme);
+            //if (IsAutoOpenOrder == false)
+            //    Task.Run(Change_Theme);
             Task.Run(Change_GUI_MainForm);
 
             Change_GUI_ExtraInfo();
@@ -645,7 +658,7 @@ namespace DigitalProductionProgram.MainWindow
             //OrderInformation.tb_OrderNr.SelectionLength = 0;
             Cursor = Cursors.Arrow;
 
-            _ = Activity.Stop("Öppnar Order:");
+            _ = Activity.Stop("Opening Order:");
         }
         private void Load_MainForm()
         {
@@ -849,7 +862,7 @@ namespace DigitalProductionProgram.MainWindow
 
             if (!string.IsNullOrEmpty(lbl_Namn.Text))
             {
-                Points.Add_Points(1, "Loggar in.");
+                Points.Add_Points(1, "Log in");
                 SaveData.UPDATE_User_Online(true, lbl_EmpNr.Text);
             }
 
@@ -1117,12 +1130,12 @@ namespace DigitalProductionProgram.MainWindow
 
             if (InfoText.answer == InfoText.Answer.No)
             {
-                _ = Activity.Stop($"Användare {Person.Name} uppdaterade INTE programmet.");
+                _ = Activity.Stop($"User {Person.Name} did NOT update the application");
                 timer_CheckForUpdate = 120; // 2 timmar
             }
             else
             {
-                _ = Activity.Stop($"Användare {Person.Name} uppdaterade programmet.");
+                _ = Activity.Stop($"User {Person.Name} updated the Application");
                 Maintenance.StartInstallation();
             }
         }
@@ -1181,7 +1194,7 @@ namespace DigitalProductionProgram.MainWindow
             InfoText.Show($"{LanguageManager.GetString("maintenanceWork_4")} {Maintenance.Time_Left} \n\n" +
                           $"{Maintenance.Date_PlannedStop} {LanguageManager.GetString("maintenanceWork_2")}\n\n" +
                           $"{LanguageManager.GetString("maintenanceWork_3")} {Maintenance.PlannedTime}", clr, "Info", this);
-            _ = Activity.Stop($"{Person.Name} har läst om Planerat Stopp");
+            _ = Activity.Stop($"{Person.Name} has read about the scheduled downtime");
 
         }
 
@@ -1202,9 +1215,9 @@ namespace DigitalProductionProgram.MainWindow
 
             // 👇 BLOCKERA tills async Stop() är helt klar
             Activity.Stop(
-                $"Stänger DPP: (Antal SQL_Frågor: {Database.SQL_Counter}) " +
-                $"(Vanligaste Metod: {topMethod.Key} Antal frågor på vanligaste Metod: {topMethod.Value}) " +
-                $"- Total Tid: {totalTime}"
+                $"Closing DPP: (Total SQL Queries: {Database.SQL_Counter}) " +
+                $"(Most Common Method: {topMethod.Key} - Total Queries for most common Method: {topMethod.Value}) " +
+                $"- Total Time: {totalTime}"
             ).GetAwaiter().GetResult();
         }
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)

@@ -281,23 +281,22 @@ namespace DigitalProductionProgram.User
             panel_Chart.Controls.Add(chart);
         }
 
-        public static async Task<Dictionary<string, int>> GetAllLoginCountsAsync()
+        private static async Task<Dictionary<string, int>> GetAllLoginCountsAsync()
         {
             var result = new Dictionary<string, int>();
 
             await using var con = new SqlConnection(Database.cs_Protocol);
             await using var cmd = new SqlCommand(@"
-        SELECT p.Name, COUNT(*) AS Cnt
-        FROM Log.ActivityLog a
-        JOIN [User].Person p ON p.UserID = a.UserID
-        WHERE a.Info LIKE 'Loggar in%'
-        GROUP BY p.Name
-    ", con);
+                SELECT p.Name, COUNT(*) AS Cnt
+                FROM Log.ActivityLog a
+                JOIN [User].Person p ON p.UserID = a.UserID
+                WHERE a.Info LIKE 'Logging in%'
+                GROUP BY p.Name", con);
 
             ServerStatus.Add_Sql_Counter();
             await con.OpenAsync();
 
-            using var reader = await cmd.ExecuteReaderAsync();
+            await using var reader = await cmd.ExecuteReaderAsync();
             while (await reader.ReadAsync())
             {
                 var name = reader.GetString(0);

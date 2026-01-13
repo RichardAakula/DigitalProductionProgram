@@ -796,7 +796,7 @@ namespace DigitalProductionProgram.OrderManagement
                 IsOrderDone = false;
                 Load_ProdType();
                 Templates_Protocol.MainTemplate.Revision = Korprotokoll.ProtocolTemplateRevision.OrderNr(OrderID);
-                _ = Activity.Stop($"Startar Order: {Order.OrderNumber} - {Order.Operation} av {Person.Name}");
+                _ = Activity.Stop($"Starting Order: {Order.OrderNumber} - {Order.Operation} by {Person.Name}");
                 _ = Main_FilterQuickOpen.Load_ListAsync(main.dgv_QuickOpen);
             }
 
@@ -1358,13 +1358,13 @@ namespace DigitalProductionProgram.OrderManagement
                 }
 
                 Is_PrintOutCopy = false;
-                _ = Activity.Stop("Skriver ut Order vid avslut.");
+                _ = Activity.Stop("Prints the order when finished.");
                 if (ok.utskrift)
                     main.PrintOut();
 
                 SaveData.UPDATE_OrderKlar();
                 IsOrderDone = true;
-                _ = Activity.Stop("Avslutad Order.");
+                _ = Activity.Stop("Order Finished");
                 main.MainMenu.Menu_Order_OrderDone.Enabled = false;
                 main.MainMenu.Menu_User.Enabled = false;
                 main.Change_GUI_OrderKlar();
@@ -1375,7 +1375,7 @@ namespace DigitalProductionProgram.OrderManagement
                 // if SuperAdmin close old orders ther is no need to send this mail
                 if (Person.Role != "SuperAdmin")
                 {
-                    _ = Activity.Stop("Finish Order: Skickar mail ang. Processkortsuppdateringar");
+                    _ = Activity.Stop("Finish Order: Sends email notifications about process card updates.");
                     Mail.ProcesscardNeedChanges_FinishOrder();
                     if (TotalOrders == 3 && !Processcard.IsNotUsingProcesscard(WorkOperation))
                         Mail.NotifyOrderFinishedCount_3();

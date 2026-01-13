@@ -208,7 +208,7 @@ namespace DigitalProductionProgram.MainWindow
                 var ordernr = Utilities.GetOneFromMonitor<Manufacturing.ManufacturingOrders>($"filter=Id Eq'{row.ManufacturingOrderId}'");
                 var part = Utilities.GetOneFromMonitor<Inventory.Parts>($"filter=Id Eq'{row.PartId}'");
                 var ts = row.PlannedFinishDate - row.PlannedStartDate;
-                if (ordernr == null)
+                if (ordernr == null || part is null)
                     continue;
 
                 var key = $"{ordernr.OrderNumber}-{row.OperationNumber}";

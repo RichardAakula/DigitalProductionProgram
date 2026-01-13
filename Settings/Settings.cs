@@ -874,7 +874,7 @@ namespace DigitalProductionProgram.Settings
                     if (!reader.HasRows)
                     {
                         SaveData.SaveNewProfile();
-                        _ = Activity.Stop($"Sparar ny profil för dator - {Environment.MachineName}");
+                        _ = Activity.Stop($"Save new profile for Computer # {Environment.MachineName}");
                     }
 
                     while (reader.Read())

@@ -192,17 +192,20 @@ namespace DigitalProductionProgram.Protocols.Spolning_PTFE
         }
         private static string Korprotokoll_Extruder(string? lotnr)
         {
+            int orderid = OrderID(lotnr);
+            if (orderid == 0)
+                return string.Empty;
             //Hämtar Extruder från Extrudering_PTFE baserat på vilket ordernr operatören skriver in
             //Om det inte finns extruder i ordern skickas N/A tillbaka.
             using var con = new SqlConnection(Database.cs_Protocol);
             var query = @"
-                        SELECT TOP(1) textvalue FROM [Order].Data
+                        SELECT TOP(1) TextValue FROM [Order].Data
                         WHERE OrderID = @orderid 
                         AND ProtocolDescriptionID = 80
                         ORDER BY uppstart";
             con.Open();
             var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-            cmd.Parameters.AddWithValue("@orderid", OrderID(lotnr));
+            cmd.Parameters.AddWithValue("@orderid", orderid);
             var value = cmd.ExecuteScalar();
             if (value != null)
                 return value.ToString();
@@ -213,6 +216,9 @@ namespace DigitalProductionProgram.Protocols.Spolning_PTFE
         {
             //Hämtar Ugn_Nr från Mätprotokoll baserat på vilket ordernr samt PåsNr operatören skriver in
             //Om det inte finns matchande nr i ordern skickas N/A tillbaka.
+            int orderid = OrderID(lotnr);
+            if (orderid == 0)
+                return string.Empty;
             using var con = new SqlConnection(Database.cs_Protocol);
             var query = @"
                         SELECT 
@@ -231,7 +237,7 @@ namespace DigitalProductionProgram.Protocols.Spolning_PTFE
                             AND (main.Discarded = 'False' OR main.Discarded IS NULL)";
             con.Open();
             var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-            cmd.Parameters.AddWithValue("@orderid", OrderID(lotnr));
+            cmd.Parameters.AddWithValue("@orderid", orderid);
             cmd.Parameters.AddWithValue("@bag", påse);
             var value = cmd.ExecuteScalar();
             if (value != null)
@@ -513,44 +519,100 @@ namespace DigitalProductionProgram.Protocols.Spolning_PTFE
 
                 if (EditRow != null)
                     uppstart = (int)EditRow;
-                using (var con = new SqlConnection(Database.cs_Protocol))
+                using var con = new SqlConnection(Database.cs_Protocol);
+                var query = @"
+                    BEGIN TRY
+                        BEGIN TRAN;
+
+                        INSERT INTO [Order].Data
+                        (
+                            OrderID, 
+                            ProtocolDescriptionID, 
+                            Uppstart, 
+                            Ugn, 
+                            Value, 
+                            TextValue, 
+                            BoolValue
+                        )
+                        VALUES
+                        (
+                            @orderid, 
+                            @protocoldescriptionid, 
+                            @uppstart, 
+                            NULL, 
+                            @value, 
+                            @textvalue, 
+                            @boolvalue
+                        );
+
+                        INSERT INTO Log.ActivityLog
+                        (
+                            HostID, 
+                            UserID, 
+                            OrderID, 
+                            Program, 
+                            Version, 
+                            Date, 
+                            Info
+                        )
+                        VALUES
+                        (
+                            (SELECT HostID FROM [Settings].General WHERE HostName = @hostname),
+                            @userid,
+                            @orderid,
+                            @program,
+                            @version,
+                            @date,
+                            CONCAT
+                                (
+                                    'Save data: ',
+                                    COALESCE((SELECT TOP(1) CodeText FROM [Protocol].[Description] WHERE ID = @protocoldescriptionid), 'N/A'),
+                                    ' - Value = ', COALESCE(CONVERT(varchar(50), @value), 'NULL'),
+                                    ' - StartUp = ', COALESCE(CONVERT(varchar(10), @uppstart), 'NULL')
+                                )
+                        );
+                        COMMIT TRAN;
+                    END TRY
+                    BEGIN CATCH
+                    IF @@TRANCOUNT > 0 ROLLBACK TRAN;
+                    THROW;
+                    END CATCH";
+                con.Open();
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
+                cmd.Parameters.AddWithValue("@protocoldescriptionid", pcID);
+                cmd.Parameters.AddWithValue("@uppstart", uppstart);
+                SQL_Parameter.Int(cmd.Parameters, "@userid", Person.UserID);
+                cmd.Parameters.AddWithValue("@hostname", Activity.HostName);
+                cmd.Parameters.AddWithValue("@date", DateTime.Now);
+                cmd.Parameters.AddWithValue("@program", "SaveData");
+                cmd.Parameters.AddWithValue("@version", ChangeLog.CurrentVersion.ToString());
+
+                switch (type)
                 {
-                    var query = @"
-                        INSERT INTO [Order].Data (OrderID, ProtocolDescriptionID, Uppstart, Ugn, Value, TextValue, BoolValue)
-                        VALUES (@orderid, @protocoldescriptionid, @uppstart, NULL, @value, @textvalue, @boolvalue)";
-                    con.Open();
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
-                    cmd.Parameters.AddWithValue("@protocoldescriptionid", pcID);
-                    cmd.Parameters.AddWithValue("@uppstart", uppstart);
-
-                    switch (type)
-                    {
-                        case 0: //NumberValue
-                            SQL_Parameter.Double(cmd.Parameters, "@value", cell.Value);
+                    case 0: //NumberValue
+                        SQL_Parameter.Double(cmd.Parameters, "@value", cell.Value);
+                        cmd.Parameters.AddWithValue("@textvalue", DBNull.Value);
+                        cmd.Parameters.AddWithValue("@boolvalue", DBNull.Value);
+                        break;
+                    case 1: //TextValue
+                    case 3: //Date
+                        if (cell.Value != null)
+                            SQL_Parameter.String(cmd.Parameters, "@textvalue", cell.Value.ToString());
+                        else
                             cmd.Parameters.AddWithValue("@textvalue", DBNull.Value);
-                            cmd.Parameters.AddWithValue("@boolvalue", DBNull.Value);
-                            break;
-                        case 1: //TextValue
-                        case 3: //Date
-                            if (cell.Value != null)
-                                SQL_Parameter.String(cmd.Parameters, "@textvalue", cell.Value.ToString());
-                            else
-                                cmd.Parameters.AddWithValue("@textvalue", DBNull.Value);
-                            cmd.Parameters.AddWithValue("@value", DBNull.Value);
-                            cmd.Parameters.AddWithValue("@boolvalue", DBNull.Value);
-                            break;
-                        case 2: //Bool
-                            SQL_Parameter.Boolean(cmd.Parameters, "@boolvalue", "True");
-                            cmd.Parameters.AddWithValue("@textvalue", DBNull.Value);
-                            cmd.Parameters.AddWithValue("@value", DBNull.Value);
-                            break;
-                    }
-                    cmd.ExecuteNonQuery();
+                        cmd.Parameters.AddWithValue("@value", DBNull.Value);
+                        cmd.Parameters.AddWithValue("@boolvalue", DBNull.Value);
+                        break;
+                    case 2: //Bool
+                        SQL_Parameter.Boolean(cmd.Parameters, "@boolvalue", "True");
+                        cmd.Parameters.AddWithValue("@textvalue", DBNull.Value);
+                        cmd.Parameters.AddWithValue("@value", DBNull.Value);
+                        break;
                 }
-
+                cmd.ExecuteNonQuery();
             }
-            _ = Activity.Stop($"Användare överför mätning Uppstart = {uppstart}. TotalRows = {dgv_Journal.Rows.Count}");
+            _ = Activity.Stop($"User Save Measurement for Startup = {uppstart}. TotalRows = {dgv_Journal.Rows.Count}");
             dgv_Journal_Input.Rows.Clear();
             Load_Data();
             dgv_Journal_Input.Rows.Add();
@@ -580,7 +642,7 @@ namespace DigitalProductionProgram.Protocols.Spolning_PTFE
             dgv_Journal.Rows.RemoveAt(dgv_Journal.CurrentCell.RowIndex);
 
 
-            _ = Activity.Stop($"Användare {Person.Name} redigerade rad {row}");
+            _ = Activity.Stop($"User {Person.Name} edited row {row}");
 
             dgv_Journal_Input.CellValueChanged += Journal_Input_CellValueChanged;
         }
@@ -774,7 +836,7 @@ namespace DigitalProductionProgram.Protocols.Spolning_PTFE
             for (var i = 0; i < dgv_Journal.Columns.Count - 5; i++)
                 if (dgv_Journal.Rows[row].Cells[i].Value != null)
                     dgv_Journal_Input.Rows[0].Cells[i].Value = dgv_Journal.Rows[row].Cells[i].Value.ToString();
-            _ = Activity.Stop($"Användare kopierar rad #{row}");
+            _ = Activity.Stop($"User Copy Row #{row}");
         }
 
         private void dgv_Journal_Input_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)

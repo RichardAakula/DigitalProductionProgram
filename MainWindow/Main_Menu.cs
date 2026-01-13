@@ -20,6 +20,7 @@ using System.Data;
 using System.Diagnostics;
 using System.Text;
 using System.Text.RegularExpressions;
+using Activity = DigitalProductionProgram.Log.Activity;
 using Color = System.Drawing.Color;
 using ProgressBar = DigitalProductionProgram.ControlsManagement.CustomProgressBar;
 
@@ -50,8 +51,6 @@ namespace DigitalProductionProgram.MainWindow
             Menu_Protocol_ManageTemplates.Visible = CheckAuthority.IsRoleAuthorized(CheckAuthority.TemplateAuthorities.ManageTemplates, false);
             Menu_Arkiv_ManageDatabase.Visible = CheckAuthority.IsRoleAuthorized(CheckAuthority.TemplateAuthorities.ChangeDatabaseSettings, false);
         }
-
-
         public void Lock_Menu()
         {
             Menu_Developer.Visible = false;
@@ -60,24 +59,6 @@ namespace DigitalProductionProgram.MainWindow
             // Menu_Arkiv_ManageDatabase.Enabled = false;
             Menu_Order_DeleteOrder.Enabled = false;
             Menu_Protocol_Unlock_ValidatedProcesscard.Enabled = false;
-        }
-        public void Change_GUI_Mätdator()
-        {
-            Menu_Order.Enabled = false;
-
-            Menu_Arkiv_NewOrder.Enabled = false;
-            Menu_Arkiv_Preview.Enabled = false;
-            Menu_Arkiv_Print.Enabled = false;
-        }
-        public void Change_GUI_OrderNotFinished()
-        {
-            var menus = new[] { Menu_Order, Menu_Protocol, Menu_User, Menu_Settings, Menu_Themes };
-            foreach (var menu in menus)
-                menu.Enabled = true;
-        }
-        public void Change_GUI_OrderFinished()
-        {
-            menuStrip.ForeColor = Color.Black;
         }
         public void Unlock_Korprotokoll_Menu()
         {
@@ -110,6 +91,27 @@ namespace DigitalProductionProgram.MainWindow
             }
         }
 
+        public void Change_GUI_Mätdator()
+        {
+            Menu_Order.Enabled = false;
+
+            Menu_Arkiv_NewOrder.Enabled = false;
+            Menu_Arkiv_Preview.Enabled = false;
+            Menu_Arkiv_Print.Enabled = false;
+        }
+        public void Change_GUI_OrderNotFinished()
+        {
+            var menus = new[] { Menu_Order, Menu_Protocol, Menu_User, Menu_Settings, Menu_Themes };
+            foreach (var menu in menus)
+                menu.Enabled = true;
+        }
+        public void Change_GUI_OrderFinished()
+        {
+            menuStrip.ForeColor = Color.Black;
+        }
+
+
+
 
 
         //----------ARKIV/FILE----------
@@ -117,7 +119,6 @@ namespace DigitalProductionProgram.MainWindow
         {
             ResetMainForm();
         }
-
         private void ResetMainForm()
         {
             Order.Clear_Order();
@@ -127,18 +128,12 @@ namespace DigitalProductionProgram.MainWindow
             mainForm.measurePoints.ClearMeasurePoints();
             mainForm.measureStats.ClearData();
             mainForm.OrderInformation.tb_OrderNr.Enabled = true;
-            mainForm.Change_Theme();
+           // mainForm.Change_Theme();
             mainForm.tlp_Left.BackColor = Color.Transparent;
             mainForm.BackColor = Color.FromArgb(25, 25, 25);
-
-            //här
-            //foreach (var series in MeasurementChart.chart.Series)
-            //    if (series.Values is IList<double> values)
-            //        values.Clear();
-
-
+            
             mainForm.Change_GUI_StandardColor();
-            _ = Log.Activity.Stop("Användare klickar på Ny Order");
+            _ = Log.Activity.Stop("User Click New Order");
         }
         private void Menu_File_UpdateDPP_Click(object sender, EventArgs e)
         {
@@ -150,7 +145,8 @@ namespace DigitalProductionProgram.MainWindow
             {
                 MessageBox.Show("Updater could not be found, please contact Admin.", "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-            Application.Exit(); // Stänger DPP
+
+            Application.Exit(); // Closing DPP
 
         }
         private async void Menu_File_Öppna_Click(object sender, EventArgs e)
@@ -183,7 +179,6 @@ namespace DigitalProductionProgram.MainWindow
                 _ = mainForm.StartOrLoadOrder(true);
             }
         }
-
         private void Menu_File_Preview_Click(object sender, EventArgs e)
         {
             if (Print.IsPrinterInstalled)
@@ -210,7 +205,6 @@ namespace DigitalProductionProgram.MainWindow
             database.ShowDialog();
             Application.Restart();
         }
-
         private void Menu_File_Exit_Click(object sender, EventArgs e)
         {
             Application.Exit();
@@ -240,14 +234,14 @@ namespace DigitalProductionProgram.MainWindow
         private void Menu_Order_DeleteOrder_ClickAsync(object sender, EventArgs e)
         {
             InfoText.Question($"{LanguageManager.GetString("delete")} \n\n" +
-                          $"OrderNr {Order.OrderNumber}\n" +
-                          $"Operation {Order.Operation}?", CustomColors.InfoText_Color.Warning, "Warning!", this);
+                              $"OrderNr {Order.OrderNumber}\n" +
+                              $"Operation {Order.Operation}?", CustomColors.InfoText_Color.Warning, "Warning!", this);
             if (InfoText.answer != InfoText.Answer.Yes) return;
             if (!string.IsNullOrEmpty(Order.OrderNumber))
             {
                 Log.Activity.Start();
                 Order.DELETE_Order();
-                _ = Log.Activity.Stop($"{Person.Name} raderade order {Order.OrderNumber} - Operation: {Order.Operation}");
+                _ = Log.Activity.Stop($"{Person.Name} Deleted Order {Order.OrderNumber} - Operation: {Order.Operation}");
 
                 if (QC_Feedback.IsOperationHaveQCFeedback)
                     QC_Feedback.IncreaseRemainingViewsForOperation();
@@ -283,6 +277,7 @@ namespace DigitalProductionProgram.MainWindow
                 InfoText.Show(LanguageManager.GetString("orderNotOpen"), CustomColors.InfoText_Color.Bad, "Warning", this);
                 return;
             }
+
             using var con = new SqlConnection(Database.cs_Protocol);
             const string query = @"
                 SELECT 
@@ -334,7 +329,7 @@ namespace DigitalProductionProgram.MainWindow
             _ = mainForm.StartOrLoadOrder(true);
             mainForm.Change_GUI_MainForm();
 
-            _ = Log.Activity.Stop($"{Person.Name} Skapar Testorder");
+            _ = Activity.Stop($"{Person.Name} Creating a TestOrder");
         }
         private void Menu_Order_OpenRandomOrder_Click(object sender, EventArgs e)
         {
@@ -347,6 +342,7 @@ namespace DigitalProductionProgram.MainWindow
                 InfoText.Show(LanguageManager.GetString("changeProcesscard_Info_4"), CustomColors.InfoText_Color.Bad, "Warning", this);
                 return;
             }
+
             if (string.IsNullOrEmpty(Order.OrderNumber))
             {
                 InfoText.Show(LanguageManager.GetString("changeProcesscard_Info_1"), CustomColors.InfoText_Color.Bad, "Warning", this);
@@ -368,7 +364,8 @@ namespace DigitalProductionProgram.MainWindow
                         UPDATE [Order].MainData
                             SET PartID = @partID, RevNr = @revNr, ProdLine = @prodline, ProdType = @prodtyp
                         WHERE OrderID = @orderid";
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                var cmd = new SqlCommand(query, con);
+                ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                 SQL_Parameter.NullableINT(cmd.Parameters, "@partID", Order.PartID);
                 SQL_Parameter.String(cmd.Parameters, "@revNr", Order.RevNr);
@@ -390,11 +387,13 @@ namespace DigitalProductionProgram.MainWindow
                 InfoText.Show(LanguageManager.GetString("changeProtocol_Info_1"), CustomColors.InfoText_Color.Bad, "Warning", this);
                 return;
             }
+
             if (string.IsNullOrEmpty(Order.OrderNumber))
             {
                 InfoText.Show(LanguageManager.GetString("changeProtocol_Info_2"), CustomColors.InfoText_Color.Bad, "Warning", this);
                 return;
             }
+
             using var changeTemplate = new ProcesscardTemplateSelector(ProcesscardTemplateSelector.TemplateType.TemplateProtocol);
             changeTemplate.ShowDialog();
             using var con = new SqlConnection(Database.cs_Protocol);
@@ -402,7 +401,8 @@ namespace DigitalProductionProgram.MainWindow
                         UPDATE [Order].MainData
                             SET ProtocolMainTemplateID = @protocolmaintemplateid
                         WHERE OrderID = @orderid";
-            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            var cmd = new SqlCommand(query, con);
+            ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
             cmd.Parameters.AddWithValue("@protocolmaintemplateid", Templates_Protocol.MainTemplate.ID);
 
@@ -416,11 +416,13 @@ namespace DigitalProductionProgram.MainWindow
                 InfoText.Show(LanguageManager.GetString("changeMeasureProtocol_Info_1"), CustomColors.InfoText_Color.Bad, "Warning", this);
                 return;
             }
+
             if (string.IsNullOrEmpty(Order.OrderNumber))
             {
                 InfoText.Show(LanguageManager.GetString("changeMeasureProtocol_Info_2"), CustomColors.InfoText_Color.Bad, "Warning", this);
                 return;
             }
+
             using var changeTemplate = new ProcesscardTemplateSelector(ProcesscardTemplateSelector.TemplateType.TemplateMeasureProtocol);
             changeTemplate.ShowDialog();
             using var con = new SqlConnection(Database.cs_Protocol);
@@ -428,15 +430,171 @@ namespace DigitalProductionProgram.MainWindow
                         UPDATE [Order].MainData
                             SET MeasureProtocolMainTemplateID = @measureprotocolmaintemplateid
                         WHERE OrderID = @orderid";
-            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter(); ServerStatus.Add_Sql_Counter();
+            var cmd = new SqlCommand(query, con);
+            ServerStatus.Add_Sql_Counter();
+            ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
             cmd.Parameters.AddWithValue("@measureprotocolmaintemplateid", Templates_MeasureProtocol.MainTemplate.ID);
 
             con.Open();
             cmd.ExecuteNonQuery();
         }
+        //private void Menu_Order_OrderLog_Click(object sender, EventArgs e)
+        //{
+        //    if (string.IsNullOrEmpty(Order.OrderNumber))
+        //        return;
+        //    Activity.Start();
+        //    StringBuilder sb = new StringBuilder();
+        //    sb.AppendLine($"--- Order Log for OrderNr: {Order.OrderNumber} ---\n\n");
+        //    using var con = new SqlConnection(Database.cs_Protocol);
+        //    const string query = $@"
+        //        SELECT
+        //            log.Date,
+        //            log.Info,
+        //            log.HostID,
+        //            log.UserID,
+        //            g.HostName,
+        //            p.Name AS UserName
+        //        FROM [Log].ActivityLog AS log
+        //        LEFT JOIN [Settings].General AS g
+        //            ON g.HostID = log.HostID
+        //        LEFT JOIN [User].Person AS p
+        //            ON p.UserID = log.UserID
+        //        WHERE log.OrderID = @orderid    
+        //            AND Program NOT IN 
+        //            (
+        //                'AddMachine', 
+        //                'Add_Points', 
+        //                'Http_response', 
+        //                'CopyRow_CellMouseDoubleClick', 
+        //                'ResetMainForm', 
+        //                'Menu_Order_OrderLog_Click', 
+        //                'CheckIfEquipmentIsConfirmed'
+        //            )
+        //            AND Info NOT LIKE '%Felsökning%'
+        //        ORDER BY log.Date DESC;";
+        //    var cmd = new SqlCommand(query, con);
+        //    ServerStatus.Add_Sql_Counter();
+        //    cmd.Parameters.Add("@orderid", SqlDbType.Int).Value = Order.OrderID;
+        //    con.Open();
+        //    var reader = cmd.ExecuteReader();
+        //    while (reader.Read())
+        //    {
+        //        sb.AppendLine($"[{reader["Date"].ToString()}] - {reader["UserName"].ToString()} @ {reader["HostName"].ToString()}");
+        //        sb.AppendLine($"     {reader["Info"].ToString()}\n\n");
+        //    }
+        //    sb.AppendLine($"--- End of Order Log for OrderNr: {Order.OrderNumber} ---");
+        //    InfoText.Show(sb.ToString(), CustomColors.InfoText_Color.Info, "Order Log", this);
+        //    _ = Activity.Stop("User Checks OrderLog");
+        //}
+
+
+
 
         //----------PROTOKOLL/PROTOCOL----------
+        private void Menu_Order_OrderLog_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(Order.OrderNumber))
+                return;
+
+            Activity.Start();
+
+            StringBuilder sb = new StringBuilder();
+
+            // Starta RTF och definiera färger: 1=blå, 2=grå, 3=grön
+            sb.Append(@"{\rtf1\ansi\deff0");
+            sb.AppendLine(@"{\colortbl ;");
+            sb.AppendLine(@"\red250\green250\blue250;");   // ParmesanFont  --Datum
+            sb.AppendLine(@"\red216\green109\blue205;");      // Name+HostName
+            sb.AppendLine(@"\red184\green220\blue231;");  // LightBlue  --Info
+            sb.AppendLine(@"\red239\green228\blue177;");  // Parmesan   --Rubrik
+            sb.AppendLine(@"}");
+
+            // Rubrik i grön
+            sb.Append(@"\cf4\b\fs32 --- Order Log for OrderNr: " + EscapeRtf(Order.OrderNumber) + @" ---\b0\fs20\line\line");
+
+            using var con = new SqlConnection(Database.cs_Protocol);
+            const string query = @"
+        SELECT
+            log.Date,
+            log.Info,
+            log.HostID,
+            log.UserID,
+            g.HostName,
+            p.Name AS UserName
+        FROM [Log].ActivityLog AS log
+        LEFT JOIN [Settings].General AS g
+            ON g.HostID = log.HostID
+        LEFT JOIN [User].Person AS p
+            ON p.UserID = log.UserID
+        WHERE log.OrderID = @orderid    
+            AND Program NOT IN 
+            (
+                'AddMachine', 
+                'Add',
+                'Add_Points', 
+                'Http_response', 
+                'CopyRow_CellMouseDoubleClick', 
+                'ResetMainForm', 
+                'Menu_Order_OrderLog_Click', 
+                'CheckIfEquipmentIsConfirmed',
+                'MainForm_FormClosing',
+                'Inledande_LotNr_Enter' ,
+                'SavePrefabFromMonitor',
+                'AutoTestJira',
+                'Looping_ThroughMeasurements'       
+            )
+            AND Info NOT LIKE '%Felsökning%'
+            AND Info NOT LIKE '%Error%'
+        ORDER BY log.Date DESC;";
+
+            var cmd = new SqlCommand(query, con);
+            ServerStatus.Add_Sql_Counter();
+            cmd.Parameters.Add("@orderid", SqlDbType.Int).Value = Order.OrderID;
+
+            con.Open();
+            var reader = cmd.ExecuteReader();
+
+            while (reader.Read())
+            {
+                var date = EscapeRtf(reader["Date"].ToString());
+                var user = EscapeRtf(reader["UserName"].ToString());
+                var host = EscapeRtf(reader["HostName"].ToString());
+                var info = EscapeRtf(reader["Info"].ToString());
+
+                // Datum + användare + HostName
+                sb.Append(
+                    @"\cf1\fs20 " + date +
+                    @"\cf2\b   " + user + @" @ " + host +
+                    @"\line"
+                );
+
+                // Info
+                sb.Append(@"\cf3\pard\li360\fi-360\bullet\tab ");
+                sb.Append(EscapeRtf(info));
+                sb.Append(@"\par\line");
+            }
+
+            // Sluttext i grön
+            sb.Append(@"\cf4\b\fs32 --- End of Order Log for OrderNr: " + EscapeRtf(Order.OrderNumber) + @" ---\line");
+
+            sb.Append("}"); // avsluta RTF
+
+            // Skicka in till InfoText
+            InfoText.Show(sb.ToString(), CustomColors.InfoText_Color.Info, "Order Log", this);
+
+            _ = Activity.Stop("User Checks OrderLog");
+        }
+
+        // Hjälpmetod för att escapera RTF-specialtecken
+        private string EscapeRtf(string text)
+        {
+            if (string.IsNullOrEmpty(text))
+                return string.Empty;
+
+            return text.Replace(@"\", @"\\").Replace("{", @"\{").Replace("}", @"\}");
+        }
+
         private void Menu_Protocol_ManageProcesscards_Click(object sender, EventArgs e)
         {
             if (Order.OrderID != null && Person.Role != "SuperAdmin")
@@ -532,7 +690,6 @@ namespace DigitalProductionProgram.MainWindow
             using var my_Analysis = new My_Analysis();
             my_Analysis.ShowDialog();
         }
-
         private void Menu_User_Authorities_Roles_Click(object sender, EventArgs e)
         {
             using var authorities = new AuthorizationManager(AuthorizationManager.Scenario.Roles);
@@ -553,6 +710,7 @@ namespace DigitalProductionProgram.MainWindow
             using var authorities = new AuthorizationManager(AuthorizationManager.Scenario.Factory);
             authorities.ShowDialog();
         }
+
         //----------VERKTYG----------
         private void Menu_Verktyg_Inställningar_Click(object sender, EventArgs e)
         {
@@ -568,7 +726,7 @@ namespace DigitalProductionProgram.MainWindow
             inst.ShowDialog();
             _ = Main_FilterQuickOpen.Load_ListAsync(mainForm.dgv_QuickOpen);
 
-            _ = Log.Activity.Stop($"Kollar inställningar.");
+            _ = Log.Activity.Stop($"Open Settings");
         }
         private void Menu_Verktyg_Beräkna_Material_Click(object sender, EventArgs e)
         {
@@ -599,12 +757,9 @@ namespace DigitalProductionProgram.MainWindow
             Settings.Settings.SaveData.UPDATE_Setting("Theme", null, menu.Text);
             Points.Add_Points(1, menu.Text);
             Task.Run(mainForm.Change_Theme);
-            //mainForm.Change_Theme();
-
         }
 
         //----------HJÄLP----------
-
         private void Menu_Help_RapporteraFel_Click(object sender, EventArgs e)
         {
             Process.Start(new ProcessStartInfo
@@ -652,6 +807,7 @@ namespace DigitalProductionProgram.MainWindow
                     UseShellExecute = true
                 });
         }
+
         //----------UVECKLING----------
         private void Menu_Utvecklare_GetOrderInfo(object sender, EventArgs e)
         {
@@ -704,14 +860,14 @@ LineClearance.MainTemplateID = {Templates_LineClearance.MainTemplate.LineClearan
 Protocol.MainTemplate.ID = {Templates_Protocol.MainTemplate.ID}
 Protocol.MainTemplate.Name = {Templates_Protocol.MainTemplate.Name}
 Protocol.MainTemplate.Revision = {Templates_Protocol.MainTemplate.Revision}"
-, CustomColors.InfoText_Color.Info, "Info", this);
+                , CustomColors.InfoText_Color.Info, "Info", this);
         }
-        private void Menu_Utvecklare_Add_Gallup_Click(object sender, EventArgs e)
+        private void Menu_Developer_Add_Gallup_Click(object sender, EventArgs e)
         {
             using var addGallup = new Add_UserPoll();
             addGallup.ShowDialog();
         }
-        private void Menu_Utvecklare_Kolla_Gallup_Click(object sender, EventArgs e)
+        private void Menu_Developer_Kolla_Gallup_Click(object sender, EventArgs e)
         {
             using var gallup = new UserPoll();
             gallup.ShowDialog();
@@ -730,7 +886,6 @@ Protocol.MainTemplate.Revision = {Templates_Protocol.MainTemplate.Revision}"
                 percent += 1;
             }
         }
-
         private void Menu_Developer_GetDataForQuoting_Click(object sender, EventArgs e)
         {
             Get_Protocol_Data.Get_QuoteData.TransferData();
@@ -747,7 +902,8 @@ Protocol.MainTemplate.Revision = {Templates_Protocol.MainTemplate.Revision}"
             {
                 var query =
                     @"SELECT TOP(1) OrderNr, Operation FROM [Order].MainData WHERE ArtikelNr = @partnr AND RevNr IS NOT NULL ORDER BY NEWID()";
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                var cmd = new SqlCommand(query, con);
+                ServerStatus.Add_Sql_Counter();
 
                 con.Open();
                 cmd.Parameters.AddWithValue("@partnr", artikelNr);
@@ -824,7 +980,8 @@ Protocol.MainTemplate.Revision = {Templates_Protocol.MainTemplate.Revision}"
                             VALUES (@orderid, @descrId, @uppstart, @machineindex, @value)
                 END";
 
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                var cmd = new SqlCommand(query, con);
+                ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", orderid);
                 cmd.Parameters.AddWithValue("@descrId", descrId);
                 SQL_Parameter.Double(cmd.Parameters, "@value", value);
@@ -861,7 +1018,8 @@ Protocol.MainTemplate.Revision = {Templates_Protocol.MainTemplate.Revision}"
 			                WHERE OrderID = @orderid AND uppstart = @uppstart AND (COALESCE(MachineIndex, 0) = COALESCE(@machineindex, 0)) AND ProtocolDescriptionID = @descrId
                     END";
 
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                var cmd = new SqlCommand(query, con);
+                ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", orderid);
                 cmd.Parameters.AddWithValue("@descrId", descrId);
                 SQL_Parameter.String(cmd.Parameters, "@textvalue", textvalue);
@@ -897,7 +1055,8 @@ Protocol.MainTemplate.Revision = {Templates_Protocol.MainTemplate.Revision}"
 
 
 
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                var cmd = new SqlCommand(query, con);
+                ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", orderid);
                 cmd.Parameters.AddWithValue("@descrId", descrId);
                 SQL_Parameter.Boolean(cmd.Parameters, "@boolvalue", boolvalue);
@@ -934,7 +1093,8 @@ Protocol.MainTemplate.Revision = {Templates_Protocol.MainTemplate.Revision}"
 			                WHERE OrderID = @orderid AND uppstart = @uppstart AND (COALESCE(MachineIndex, 0) = COALESCE(@machineindex, 0)) AND ProtocolDescriptionID = @descrId
                     END";
 
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                var cmd = new SqlCommand(query, con);
+                ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", orderid);
                 cmd.Parameters.AddWithValue("@descrId", descrId);
                 if (date < DateTime.Parse("1950-01-01"))
@@ -964,7 +1124,8 @@ Protocol.MainTemplate.Revision = {Templates_Protocol.MainTemplate.Revision}"
                         INSERT INTO [MeasureProtocol].[MainData] (OrderID, Discarded, [Date], AnstNr, Sign, RowIndex)     
                             VALUES (@orderid, @discarded, @date, @anstnr, @sign, @row)";
 
-            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            var cmd = new SqlCommand(query, con);
+            ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@orderid", orderid);
             cmd.Parameters.AddWithValue("@discarded", discarded);
             cmd.Parameters.AddWithValue("@date", date);
@@ -985,7 +1146,8 @@ Protocol.MainTemplate.Revision = {Templates_Protocol.MainTemplate.Revision}"
                             INSERT INTO [MeasureProtocol].Data (OrderID, DescriptionID, TextValue, RowIndex)     
                             VALUES (@orderid, @descrid, @textvalue, @rowindex)";
 
-            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            var cmd = new SqlCommand(query, con);
+            ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@orderid", orderid);
             cmd.Parameters.AddWithValue("@descrId", descrid);
             cmd.Parameters.AddWithValue("@textvalue", textvalue);
@@ -1004,7 +1166,8 @@ Protocol.MainTemplate.Revision = {Templates_Protocol.MainTemplate.Revision}"
                             INSERT INTO [MeasureProtocol].Data (OrderID, DescriptionID, Value, RowIndex)     
                             VALUES (@orderid, @descrid, @value, @rowindex)";
 
-            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            var cmd = new SqlCommand(query, con);
+            ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@orderid", orderid);
             cmd.Parameters.AddWithValue("@descrId", descrid);
             SQL_Parameter.Double(cmd.Parameters, "@value", value);
@@ -1023,7 +1186,8 @@ Protocol.MainTemplate.Revision = {Templates_Protocol.MainTemplate.Revision}"
                             INSERT INTO [MeasureProtocol].Data (OrderID, DescriptionID, BoolValue, RowIndex)     
                             VALUES (@orderid, @descrid, @boolvalue, @rowindex)";
 
-            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            var cmd = new SqlCommand(query, con);
+            ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@orderid", orderid);
             cmd.Parameters.AddWithValue("@descrId", descrid);
             SQL_Parameter.Boolean(cmd.Parameters, "@boolvalue", boolvalue);
@@ -1051,7 +1215,8 @@ Protocol.MainTemplate.Revision = {Templates_Protocol.MainTemplate.Revision}"
                             WHERE PartID = @PartID AND (COALESCE(MachineIndex, 0) = COALESCE(@machineindex, 0)) AND TemplateID = @templateid
                         END";
 
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                var cmd = new SqlCommand(query, con);
+                ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@partid", PartID);
                 cmd.Parameters.AddWithValue("@templateid", templateID);
                 if (machineindex == 0)
@@ -1083,7 +1248,8 @@ Protocol.MainTemplate.Revision = {Templates_Protocol.MainTemplate.Revision}"
                             WHERE PartID = @PartID AND (COALESCE(MachineIndex, 0) = COALESCE(@machineindex, 0)) AND TemplateID = @templateid
                         END";
 
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                var cmd = new SqlCommand(query, con);
+                ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@partid", PartID);
                 cmd.Parameters.AddWithValue("@templateid", templateID);
                 if (machineindex == 0)
@@ -1100,7 +1266,6 @@ Protocol.MainTemplate.Revision = {Templates_Protocol.MainTemplate.Revision}"
                 cmd.ExecuteNonQuery();
             }
         }
-
         private void INSERT_DATA_WithoutUppstart_Korprotokoll_TextValue(int orderid, int descrId, string? value)
         {
             if (string.IsNullOrEmpty(value))
@@ -1121,7 +1286,8 @@ Protocol.MainTemplate.Revision = {Templates_Protocol.MainTemplate.Revision}"
 			                WHERE OrderID = @orderid AND ProtocolDescriptionID = @descrId
                     END";
 
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                var cmd = new SqlCommand(query, con);
+                ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", orderid);
                 cmd.Parameters.AddWithValue("@descrId", descrId);
                 SQL_Parameter.String(cmd.Parameters, "@textvalue", value);
@@ -1133,39 +1299,7 @@ Protocol.MainTemplate.Revision = {Templates_Protocol.MainTemplate.Revision}"
                 cmd.ExecuteNonQuery();
             }
         }
-        private void INSERT_DATA_WithoutUppstart_Korprotokoll_Value(int orderid, int descrId, string? value)
-        {
-            if (string.IsNullOrEmpty(value))
-                return;
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query = @"
-                    BEGIN
-                        IF NOT EXISTS 
-                            (SELECT * FROM Korprotokoll_Values 
-                                WHERE OrderID = @orderid AND ProtocolDescriptionID = @descrId)
-                        
-                            INSERT INTO Korprotokoll_Values (OrderID, ProtocolDescriptionID, Uppstart, Ugn, value, textvalue)     
-                            VALUES (@orderid, @descrId, NULL, NULL, @value, NULL)
-                        ELSE
-                            UPDATE Korprotokoll_Values
-			                SET value = @value
-			                WHERE OrderID = @orderid AND ProtocolDescriptionID = @descrId
-                    END";
 
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@orderid", orderid);
-                cmd.Parameters.AddWithValue("@descrId", descrId);
-                SQL_Parameter.Double(cmd.Parameters, "@value", value);
-                cmd.Parameters.AddWithValue("@textvalue", DBNull.Value);
-                cmd.Parameters.AddWithValue("@boolvalue", DBNull.Value);
-                cmd.Parameters.AddWithValue("@uppstart", DBNull.Value);
-                cmd.Parameters.AddWithValue("@ugn", DBNull.Value);
-
-                con.Open();
-                cmd.ExecuteNonQuery();
-            }
-        }
 
 
 
@@ -1182,7 +1316,7 @@ Protocol.MainTemplate.Revision = {Templates_Protocol.MainTemplate.Revision}"
         }
 
 
-        
+
         private void testaMailToolStripMenuItem_Click(object sender, EventArgs e)
         {
             InfoText.Question("Vill du skicka mail till alla användare", CustomColors.InfoText_Color.Info, "Skicka Mail?", this);
@@ -1223,7 +1357,8 @@ Protocol.MainTemplate.Revision = {Templates_Protocol.MainTemplate.Revision}"
                 var query = @"
                    SELECT OrderID FROM [Order].MainData WHERE WorkoperationID = 14";
 
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                var cmd = new SqlCommand(query, con);
+                ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@uppstart", DBNull.Value);
                 cmd.Parameters.AddWithValue("@ugn", DBNull.Value);
 
@@ -1263,7 +1398,8 @@ Protocol.MainTemplate.Revision = {Templates_Protocol.MainTemplate.Revision}"
                         FROM Korprotokoll_Svetsning_Maskinparametrar
                         WHERE OrderID = @orderid
                         ORDER BY  [DatumTid]";
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                    var cmd = new SqlCommand(query, con);
+                    ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@orderid", orderid);
                     con.Open();
                     var reader = cmd.ExecuteReader();
@@ -1304,9 +1440,11 @@ Protocol.MainTemplate.Revision = {Templates_Protocol.MainTemplate.Revision}"
                     }
                 }
             }
+
             MessageBox.Show("Klart");
 
         }
+
         private void flyttaMätDataFrånSvetsnigToolStripMenuItem_Click(object sender, EventArgs e)
         {
             return;
@@ -1326,7 +1464,8 @@ WHERE m.WorkoperationID = 14
   ORDER BY OrderID;
 ";
 
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                var cmd = new SqlCommand(query, con);
+                ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@uppstart", DBNull.Value);
                 cmd.Parameters.AddWithValue("@ugn", DBNull.Value);
 
@@ -1364,7 +1503,8 @@ WHERE m.WorkoperationID = 14
                         FROM [Korprotokoll_Svetsning_Parametrar]
                         WHERE OrderID = @orderid
                         ORDER BY  [DatumTid]";
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                var cmd = new SqlCommand(query, con);
+                ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", orderid);
                 con.Open();
                 var reader = cmd.ExecuteReader();
@@ -1397,6 +1537,7 @@ WHERE m.WorkoperationID = 14
                     row++;
                 }
             }
+
             MessageBox.Show("Klart");
 
         }
@@ -1412,7 +1553,61 @@ WHERE m.WorkoperationID = 14
             List<string> list = Monitor.Monitor.List_All_Tools_WithOutExpand();
         }
 
-       
+        private void fixaChangeLogListaToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("-----ChangeLog for DigitalProductionProgram-----");
+            sb.AppendLine();
+            using var con = new SqlConnection(Database.cs_Protocol);
+            var query = @"
+                       SELECT ReleaseDate, Version, Tags, DescriptionHeader, Description, HowToDo, VisibleToUser, IsCritical FROM Log.ChangeLog";
+            var cmd = new SqlCommand(query, con);
+            ServerStatus.Add_Sql_Counter();
+            con.Open();
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                var releaseDate = reader["ReleaseDate"].ToString() ?? "";
+                var version = reader["Version"].ToString() ?? "";
+                var tags = reader["Tags"].ToString() ?? "";
+                var header = reader["DescriptionHeader"].ToString() ?? "Info";
+                var description = reader["Description"].ToString() ?? "";
+                var howToDo = reader["HowToDo"].ToString() ?? "";
+                bool.TryParse(reader["VisibleToUser"].ToString(), out var isVisibleToUser);
+                bool.TryParse(reader["IsCritical"].ToString(), out var isCritical);
+                {
+                    sb.AppendLine($"## Version: {version}");
+                    sb.AppendLine($"Release Date: {releaseDate}");
+                    switch (tags)
+                    {
+                        case "Nytt":
+                            tags = "New Feature";
+                            break;
+                        case "Fix":
+                            tags = "Small bugfix";
+                            break;
+                        case "Bugfix":
+                            tags = "Bug Fix";
+                            break;
+                        default:
+                            tags = "ℹ Info";
+                            break;
+                    }
+
+                    sb.AppendLine($"### {tags}");
+                    sb.AppendLine($"-Header: {header}");
+                    sb.AppendLine($"  {description}");
+                    sb.AppendLine($"How To Do: {howToDo}");
+                    sb.AppendLine($"Is Critical: {isCritical}");
+                    sb.AppendLine($"IsVisibleToUser: {isVisibleToUser}");
+                    sb.AppendLine();
+                }
+            }
+
+            MessageBox.Show("Klart");
+            Clipboard.SetText(sb.ToString());
+        }
+
         
     }
 }

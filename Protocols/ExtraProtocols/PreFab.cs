@@ -415,7 +415,7 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
                 case "Slang:":
                     var slang = dgv.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString();
                     UPDATE_PreFab(null, slang, null, null, null, tempid, null);
-                    _ = Activity.Stop($"Användare {User.Person.Name} uppdaterar Prefab: (Slang = {slang}) - TempID = {tempid}");
+                    _ = Activity.Stop($"Användare {Person.Name} updating Prefab: (Slang = {slang}) - TempID = {tempid}");
                     break;
 
                 //var col = e.ColumnIndex;
@@ -443,26 +443,26 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
                         cell_Saldo.Value = $"{Monitor.Monitor.Balance(cell_ArtikelNr.Value.ToString(), cell_BatchNr.Value.ToString()):0.00} {Monitor.Monitor.Units(cell_ArtikelNr.Value.ToString())}";
                     }
                     UPDATE_PreFab(batchNr, null, null, null, null, tempid, bestBeforeDate);
-                    _ = Activity.Stop($"Användare {User.Person.Name} uppdaterar Prefab: (BatchNr = {batchNr}) - (BestBeforeDate = {bestBeforeDate}) - TempID = {tempid}");
+                    _ = Activity.Stop($"User {Person.Name} updating Prefab: (BatchNr = {batchNr}) - (BestBeforeDate = {bestBeforeDate}) - TempID = {tempid}");
                     break;
                 case "Extruder:":
                     var extruder = dgv.Rows[row].Cells["Extruder:"].Value.ToString();
                     UPDATE_PreFab_Extruder(extruder, tempid); 
-                    _ = Activity.Stop($"Användare {User.Person.Name} uppdaterar Prefab_Extruder: (Extruder = {extruder}) - TempID = {tempid}");
+                    _ = Activity.Stop($"User {Person.Name} updating Prefab_Extruder: (Extruder = {extruder}) - TempID = {tempid}");
                     break;
                 case "ID":
                     double? id = null;
                     if (double.TryParse(dgv.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString(), out var parsedID))
                         id = parsedID;
                     UPDATE_PreFab(null, null, id, null, null, tempid, null);
-                    _ = Activity.Stop($"Användare {User.Person.Name} uppdaterar PreFab: (ID = {id}) - TempID = {tempid}");
+                    _ = Activity.Stop($"User {Person.Name} updating PreFab: (ID = {id}) - TempID = {tempid}");
                     break;
                 case "OD":
                     double? od = null;
                     if (double.TryParse(dgv.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString(), out var parsedOD))
                         od = parsedOD;
                     UPDATE_PreFab(null, null, null, od, null, tempid, null);
-                    _ = Activity.Stop($"Användare {User.Person.Name} uppdaterar PreFab: (OD = {od}) - TempID = {tempid}");
+                    _ = Activity.Stop($"User {Person.Name} updating PreFab: (OD = {od}) - TempID = {tempid}");
                     break;
                 case "Wall":
                 case "W":
@@ -470,7 +470,7 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
                     if (double.TryParse(dgv.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString(), out var parsedWall))
                         wall = parsedWall;
                     UPDATE_PreFab(null, null, null, null, wall, tempid, null);
-                    _ = Activity.Stop($"Användare {User.Person.Name} uppdaterar PreFab: (Wall = {wall}) - TempID = {tempid}");
+                    _ = Activity.Stop($"User {Person.Name} updating PreFab: (Wall = {wall}) - TempID = {tempid}");
                     break;
             }
         }
@@ -591,20 +591,11 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
                             var id = Monitor.Monitor.MeasurePoint(part.PartNumber, "ID", 10);
                             var od = Monitor.Monitor.MeasurePoint(part.PartNumber,  "OD", 10);
                             var w = Monitor.Monitor.MeasurePoint(part.PartNumber,  "Wall", 10);
-                            if (id > od)    //Blir ibland fel att ID och OD mixas
-                            {
-                                Activity.Start();
-                                SQL_Parameter.Double(cmd.Parameters, "@H_ID", id);
-                                SQL_Parameter.Double(cmd.Parameters, "@H_OD", od);
-                                SQL_Parameter.Double(cmd.Parameters, "@H_W", w);
-                                _ = Activity.Stop($"Halvfabrikat fel ID/OD: ID = {id} - OD = {od}");
-                            }
-                            else
-                            {
-                                SQL_Parameter.Double(cmd.Parameters, "@H_ID", id);
-                                SQL_Parameter.Double(cmd.Parameters, "@H_OD", od);
-                                SQL_Parameter.Double(cmd.Parameters, "@H_W", w);
-                            }
+                           
+                            SQL_Parameter.Double(cmd.Parameters, "@H_ID", id);
+                            SQL_Parameter.Double(cmd.Parameters, "@H_OD", od);
+                            SQL_Parameter.Double(cmd.Parameters, "@H_W", w);
+                            
                         }
                         con.Open();
                         cmd.ExecuteNonQuery();
@@ -631,7 +622,7 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
                 cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                 cmd.Parameters.AddWithValue("@tempid", tempId);
                 cmd.ExecuteNonQuery();
-                _ = Activity.Stop($"Användare {User.Person.Name} Lägger till Prefab: TempID = {tempId}");
+                _ = Activity.Stop($"User {Person.Name} Adding Prefab: TempID = {tempId}");
             }
             public static void DELETE_Row(int tempID)
             {
@@ -652,9 +643,6 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
         {
             dgv.ClearSelection();
         }
-
-        
-
     }
 }
 

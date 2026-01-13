@@ -188,7 +188,7 @@ namespace DigitalProductionProgram.Measure
                     AND (Discarded = 'False' OR Discarded IS NULL)";
 
                 using var con = new SqlConnection(Database.cs_Protocol);
-                con.OpenAsync();
+                con.Open();
 
                 using var cmd = new SqlCommand(existsQuery, con);
                 cmd.Parameters.AddWithValue("@orderid", Order.OrderID);

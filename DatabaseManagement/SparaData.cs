@@ -330,16 +330,14 @@ namespace DigitalProductionProgram.DatabaseManagement
 
             if (!string.IsNullOrEmpty(Person.Name) && (Environment.MachineName == Korprotokoll.Open_ByComputer) && (Person.Name == Korprotokoll.Open_ByUser) || is_Ok_To_Reset)
             {
-                await Activity.Stop($"Användare: {Person.Name} på Dator: {Environment.MachineName} Loggar ut Användare {Korprotokoll.Open_ByUser} från Dator {Korprotokoll.Open_ByComputer}");
+                await Activity.Stop($"User: {Person.Name} @: {Environment.MachineName} Logging out user: {Korprotokoll.Open_ByUser} from Computer: {Korprotokoll.Open_ByComputer}");
 
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    var query = Queries.UPDATE_Reset_Processcard_Open;
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    cmd.Parameters.AddWithValue("@id", Order.OrderID);
-                    con.Open();
-                    cmd.ExecuteScalar();
-                }
+                using var con = new SqlConnection(Database.cs_Protocol);
+                var query = Queries.UPDATE_Reset_Processcard_Open;
+                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                cmd.Parameters.AddWithValue("@id", Order.OrderID);
+                con.Open();
+                cmd.ExecuteScalar();
             }
         }
         public static void Set_Processcard_Open()

@@ -14,27 +14,28 @@
 
 
   //-------OGO-------
-  //"ConnectionStrings": {
-  //  "csProtocol": "Data Source=GOD-S1-SQL01;Initial Catalog=Korprotokoll;Persist Security Info=True;User ID=korprotokoll;Password=GOD-Stout4-Gladiator-Gazing-Retail-Pegboard;Connect Timeout=5;Encrypt=True;TrustServerCertificate=True;",
-  //  "csToolregister": "Data Source=GOD-S1-SQL01;Initial Catalog=Verktygsprogram;Persist Security Info=True;User ID=korprotokoll;Password=GOD-Stout4-Gladiator-Gazing-Retail-Pegboard;Connect Timeout=5;Encrypt=True;TrustServerCertificate=True;",
-  //  "MonitorCompany": "001.1",
-  //  "MonitorHost": "optig5"
+  "ConnectionStrings": {
+    "csProtocol": "Data Source=GOD-S1-SQL01;Initial Catalog=Korprotokoll;Persist Security Info=True;User ID=korprotokoll;Password=GOD-Stout4-Gladiator-Gazing-Retail-Pegboard;Connect Timeout=5;Encrypt=True;TrustServerCertificate=True;",
+    "csToolregister": "Data Source=GOD-S1-SQL01;Initial Catalog=Verktygsprogram;Persist Security Info=True;User ID=korprotokoll;Password=GOD-Stout4-Gladiator-Gazing-Retail-Pegboard;Connect Timeout=5;Encrypt=True;TrustServerCertificate=True;",
+    "MonitorCompany": "001.1",
+    "MonitorHost": "optig5"
 
-  //-------OVF-------
-  //"ConnectionStrings": {
-  //  "csProtocol": "Data Source=OVF-S1-SQL;Initial Catalog=DPP_OVF;Persist Security Info=True;User ID=korprotokoll;Password=korprotokoll;Connect Timeout=5;Encrypt=True;TrustServerCertificate=True;",
-  //  "csToolregister": "Data Source=OVF-S1-SQL;Initial Catalog=Toolregister_OVF;Persist Security Info=True;User ID=korprotokoll;Password=korprotokoll;Connect Timeout=5;Encrypt=True;TrustServerCertificate=True;",
-  //  "MonitorHost": "optig5",
-  //  "MonitorCompany": "012.1"
+    //-------OVF-------
+    //"ConnectionStrings": {
+    //  "csProtocol": "Data Source=OVF-S1-SQL;Initial Catalog=DPP_OVF;Persist Security Info=True;User ID=korprotokoll;Password=korprotokoll;Connect Timeout=5;Encrypt=True;TrustServerCertificate=True;",
+    //  "csToolregister": "Data Source=OVF-S1-SQL;Initial Catalog=Toolregister_OVF;Persist Security Info=True;User ID=korprotokoll;Password=korprotokoll;Connect Timeout=5;Encrypt=True;TrustServerCertificate=True;",
+    //  "MonitorHost": "optig5",
+    //  "MonitorCompany": "012.1"
 
     //-------OTH-------
-  "ConnectionStrings": {
-    "csProtocol": "Data Source=OTH-S1-SQL01;Initial Catalog=DPP_OTH;Persist Security Info=True;User ID=korprotokoll;Password=korprotokoll;Connect Timeout=30;Encrypt=True;TrustServerCertificate=True;",
-    "csToolregister": "Data Source=OTH-S1-SQL01;Initial Catalog=Toolregister_OTH;Persist Security Info=True;User ID=korprotokoll;Password=korprotokoll;Connect Timeout=30;Encrypt=True;TrustServerCertificate=True;",
-    "MonitorHost": "optig5",
-    "MonitorCompany": "010.1"
-  },
+    //"ConnectionStrings": {
+    //  "csProtocol": "Data Source=OTH-S1-SQL01;Initial Catalog=DPP_OTH;Persist Security Info=True;User ID=korprotokoll;Password=korprotokoll;Connect Timeout=30;Encrypt=True;TrustServerCertificate=True;",
+    //  "csToolregister": "Data Source=OTH-S1-SQL01;Initial Catalog=Toolregister_OTH;Persist Security Info=True;User ID=korprotokoll;Password=korprotokoll;Connect Timeout=30;Encrypt=True;TrustServerCertificate=True;",
+    //  "MonitorHost": "optig5",
+    //  "MonitorCompany": "010.1"
 
+
+  },
   "ApiCredentials": {
     "Username": "OPTIAPI",
     "Password": "k9zhvAFaEC/OzCgRnCToTG9eH6ktiHDPSKQ+Y0YJufU="

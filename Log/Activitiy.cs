@@ -11,7 +11,7 @@ namespace DigitalProductionProgram.Log;
 
 internal class Activity
 {
-    private static readonly string HostName = Environment.MachineName;
+    public static readonly string HostName = Environment.MachineName;
     private static DateTime StartTime;
     private static TimeSpan ElapsedTime => DateTime.Now.Subtract(StartTime);
     public static long CurrentMemory;

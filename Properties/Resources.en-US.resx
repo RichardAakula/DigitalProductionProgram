@@ -2388,4 +2388,14 @@ Please contact IT support if the issue persists.</value>
   <data name="orderNotOpen" xml:space="preserve">
     <value>No open Order.</value>
   </data>
+  <data name="Menu_Order_OrderLog" xml:space="preserve">
+    <value>Order Log</value>
+  </data>
+  <data name="zumbach_DeleteMeasurement" xml:space="preserve">
+    <value>Are you certain you want to discard this entire measurement?</value>
+  </data>
+  <data name="error_Monitor" xml:space="preserve">
+    <value>Unable to connect to Monitor. The service may be temporarily down or the network is unavailable.
+Please try again later. If the problem persists, contact support.</value>
+  </data>
 </root>

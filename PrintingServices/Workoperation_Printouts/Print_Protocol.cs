@@ -124,7 +124,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                         return int.Parse(value.ToString());
                 }
 
-                _ = Activity.Stop($"Error: Skriver ut Körprotokoll - Fel TotalRows_Template. MainTemplateID = {Templates_Protocol.MainTemplate.ID}");
+                _ = Activity.Stop($"Error: Printing Protocol - Wrong TotalRows_Template. MainTemplateID = {Templates_Protocol.MainTemplate.ID}");
                 return 0;
             }
         }
@@ -378,7 +378,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                 Print_MainProtocol.Print();
             else
                 Preview_MainProtocol.ShowDialog();
-            _ = Activity.Stop($"Skriver ut MainProtocol - Sida {Active_PrintOut}");
+            _ = Activity.Stop($"Print Out MainProtocol - Page {Active_PrintOut}");
             return Task.CompletedTask;
         }
         private static Task PrintCommentsAsync(bool isPrinting)
@@ -396,7 +396,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                     Preview_Comments.ShowDialog();
             }
 
-            _ = Activity.Stop($"Skriver ut Comments - Sida {Active_PrintOut}");
+            _ = Activity.Stop($"Print out Comments - Sida {Active_PrintOut}");
             return Task.CompletedTask;
         }
         private static Task PrintExtraCommentsAsync(bool isPrinting)
@@ -415,7 +415,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
 
                 ExtraCommentRow_From = ExtraCommentRow_To + 1;
             }
-            _ = Activity.Stop($"Skriver ut Extra Comments - Sida {Active_PrintOut}");
+            _ = Activity.Stop($"Print out Extra Comments - Page {Active_PrintOut}");
             return Task.CompletedTask;
         }
         public static Task PrintMeasureInstruments(bool isPrinting)
@@ -426,7 +426,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                 Print_MeasureInstruments.Print();
             else
                 Preview_MeasureInstruments.ShowDialog();
-            _ = Activity.Stop($"Skriver ut Mätdon - Sida {Active_PrintOut}");
+            _ = Activity.Stop($"Printing Measurement Instruments - Page {Active_PrintOut}");
             return Task.CompletedTask;
         }
         private static Task PrintLineClearanceAsync(bool isPrinting)
@@ -441,7 +441,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
             else
                 Preview_LineClearance.ShowDialog();
 
-            _ = Activity.Stop($"Skriver ut Extra LineClearance - Sida {Active_PrintOut}");
+            _ = Activity.Stop($"Print out Extra LineClearance - Page {Active_PrintOut}");
             return Task.CompletedTask;
         }
         private static async Task PrintRunProtocolsAsync(bool isPrinting, double totalPrintOutsForModules, int maxRowsRunProtocol)
@@ -454,7 +454,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
 
                 for (var i = 0; i < totalPrintOutsForModules; i++)
                 {
-                    await Activity.Stop($"Skriver ut Körprotokoll - {i + 1} / {totalPrintOutsForModules}");
+                    await Activity.Stop($"Printing Protocol - {i + 1} / {totalPrintOutsForModules}");
                     StartUp_From = 1;
                     StartUp_To = 0;
                     Active_FormTemplates = new List<int>();
@@ -534,12 +534,12 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                     Measureprotocol.FirstRowMeasurment = Measureprotocol.LastRowMeasurement + 1;
                     Measureprotocol.LastRowMeasurement += Measureprotocol.TotalRowsMeasureprotocolPrintOut;
 
-                    await Activity.Stop($"Skriver ut Mätprotokoll - {ctr} / {totalPrintOutsMeasureProtocol - 1}");
+                    await Activity.Stop($"Printing Measurement Protocol - {ctr} / {totalPrintOutsMeasureProtocol - 1}");
                 }
             }
             catch (Exception e)
             {
-                _ = Activity.Stop($"Skriver ut Mätprotokoll\n e.Message {e.Message} e.StackTrace {e.StackTrace}");
+                _ = Activity.Stop($"Printing Measurement Protocol\n e.Message {e.Message} e.StackTrace {e.StackTrace}");
             }
         }
         private static Task PrintFrequencyMarking(bool isPrinting)
@@ -1325,7 +1325,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
 
                     if (int.TryParse(reader["ColumnIndex"].ToString(), out var col) == false)
                     {
-                        Print.Protocol_InfoText(e, codetext, isValueCritical, 44, y + RowHeight * row + 3, 154, false, true);             //Skriver ut CodeText
+                        Print.Protocol_InfoText(e, codetext, isValueCritical, 44, y + RowHeight * row + 3, 154, false, true);             //Print Out CodeText
                         if (isModuleOnlyNomValues)
                             Print.Filled_Rectangle(e, CustomFonts.empty_Space, x, y + RowHeight * row, nomWidth, RowHeight);
                         else
@@ -1348,7 +1348,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                             else
                                 Print.Filled_Rectangle(e, CustomFonts.nom, x + minWidth, y + RowHeight * row, nomWidth, RowHeight);      //NOM bakgrund: Går över NOM
                             Print.Thin_Rectangle(e, 42, y + RowHeight * row, 154, RowHeight);                                            //Rutor runt CodeText
-                            Print.Protocol_InfoText(e, codetext, isValueCritical, 44, y + RowHeight * row + 3, 154, false, true);         //Skriver ut CodeText
+                            Print.Protocol_InfoText(e, codetext, isValueCritical, 44, y + RowHeight * row + 3, 154, false, true);         //Print OutCodeText
                             Print.Print_Unit(e, unit, 196, y + RowHeight * row, RowHeight, 46);
                             totalrows++;
                             break;

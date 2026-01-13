@@ -314,7 +314,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
             foreach (Machine machine in flp_Machines.Controls)
                 machine.Remove_StartUp();
 
-            _ = Activity.Stop($"Uppstart: {startup} raderades.");
+            _ = Activity.Stop($"StartUp # {startup} was deleted");
         }
         private void Confirm_Equipment_Click(object sender, EventArgs e)
         {
@@ -343,7 +343,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
 
             if (Person.IsPasswordOk(LanguageManager.GetString("extrusionTEF_Info_3")) == false)
             {
-                _ = Activity.Stop("Operatör har slagit in fel lösenord före överföring av utrustning");
+                _ = Activity.Stop("User entered an incorrect password before transferring the equipment");
                 return;
             }
 

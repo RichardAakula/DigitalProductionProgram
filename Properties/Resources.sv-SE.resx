@@ -2384,4 +2384,14 @@ Kontakta IT-support om felet kvarstår.</value>
   <data name="orderNotOpen" xml:space="preserve">
     <value>Ingen Order är öppen.</value>
   </data>
+  <data name="Menu_Order_OrderLog" xml:space="preserve">
+    <value>Orderlogg</value>
+  </data>
+  <data name="zumbach_DeleteMeasurement" xml:space="preserve">
+    <value>Är du säker på att du vill ta bort hela denna mätning?</value>
+  </data>
+  <data name="error_Monitor" xml:space="preserve">
+    <value>Det gick inte att ansluta till Monitor. Tjänsten kan vara tillfälligt nere eller nätverket otillgängligt.
+Försök igen om en stund. Om problemet kvarstår, kontakta support.</value>
+  </data>
 </root>

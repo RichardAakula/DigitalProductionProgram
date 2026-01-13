@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Eventing.Reader;
 using Microsoft.Data.SqlClient;
 using System.Linq;
 using System.Threading;
@@ -619,7 +620,7 @@ namespace DigitalProductionProgram.ToolManagement
 
         private void ToolCalculator_FormClosed(object sender, FormClosedEventArgs e)
         {
-            _ = Activity.Stop($"Beräknat Verktyg.");
+            _ = Activity.Stop($"Calculated Tools");
         }
     }
 }

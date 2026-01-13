@@ -285,7 +285,7 @@ namespace DigitalProductionProgram.Measure
             if (Order.WorkOperation != Manage_WorkOperation.WorkOperations.Nothing)
                 cb_Workoperations.Text = Order.WorkOperation.ToString();
 
-            _ = Log.Activity.Stop("Sökning Mätprotokoll");
+            _ = Log.Activity.Stop("Search Measurement Protocol");
         }
         private void BrowseMeasureProtocols_Load(object sender, EventArgs e)
         {
@@ -841,7 +841,7 @@ namespace DigitalProductionProgram.Measure
             var ctr = dgv_MeasureProtocol.Rows.Count - 1;
             var measurementValues = new ObservableCollection<ObservablePoint>();
 
-            // Skriver ut värden till diagrammet
+            // Print out värden till diagrammet
             for (var i = 0; i < ctr; i++)
             {
                 if (dgv_MeasureProtocol.Rows[i].Cells.Count <= col)

@@ -88,7 +88,7 @@ namespace DigitalProductionProgram.Measure
             if (double.TryParse(tb_USL.Text, out var usl))
                 MeasureWithZumbach.ExpOD_USL = usl;
 
-            _ = Activity.Stop($"Användare sparade mätpunkter. LSL = {lsl}, LCL = {lcl}, UCL = {ucl}, USL = {usl}");
+            _ = Activity.Stop($"User saved Measurepoints for Zumbach: LSL = {lsl}, LCL = {lcl}, UCL = {ucl}, USL = {usl}");
             this.Close();
         }
 

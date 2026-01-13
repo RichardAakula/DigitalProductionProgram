@@ -51,7 +51,7 @@ namespace DigitalProductionProgram.Protocols
             label_Header.Text = this.kolumn;
             Load_Data_From_Databas();
             Initalize_Form();
-            _ = Activity.Stop($"{Person.Name} har tittat på 10 senaste körningar på orderNr {Order.OrderNumber}");
+            _ = Activity.Stop($"{Person.Name} has viewed the 10 most recent runs for the order number {Order.OrderNumber}");
         }
 
         private void Load_Data_From_Databas()

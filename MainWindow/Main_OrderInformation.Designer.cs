@@ -180,6 +180,7 @@ namespace DigitalProductionProgram.MainWindow
             cb_Operation.BackColor = Color.White;
             cb_Operation.Dock = DockStyle.Fill;
             cb_Operation.DropDownHeight = 150;
+            cb_Operation.DropDownStyle = ComboBoxStyle.DropDownList;
             cb_Operation.DropDownWidth = 150;
             cb_Operation.FlatStyle = FlatStyle.Flat;
             cb_Operation.Font = new Font("Arial", 10F);
@@ -193,6 +194,7 @@ namespace DigitalProductionProgram.MainWindow
             cb_Operation.Size = new Size(299, 24);
             cb_Operation.TabIndex = 1;
             cb_Operation.TabStop = false;
+            cb_Operation.KeyDown += cb_Operation_KeyDown;
             // 
             // label_ProdGroup
             // 

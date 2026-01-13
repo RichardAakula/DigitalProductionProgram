@@ -84,7 +84,7 @@ namespace DigitalProductionProgram.Processcards
                 }
             }
 
-            _ = Activity.Stop($"QA Godkänt Processkort - {Order.PartNumber} - ProdLinje: {Order.ProdLine} - ProduktTyp: {Order.ProdType}");
+            _ = Activity.Stop($"QA Approved Process card - {Order.PartNumber} - ProductionLine: {Order.ProdLine} - Product Type: {Order.ProdType}");
         }
         public void Load_Data()
         {

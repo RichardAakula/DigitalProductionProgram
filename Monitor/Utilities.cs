@@ -140,7 +140,7 @@ namespace DigitalProductionProgram.Monitor
                         response?.Close();
                         Debug.WriteLine("RESULT           |  ERROR (NON-RETRYABLE)");
                         Debug.WriteLine("====================================================");
-                        throw new Exception($"Monitor API error: {(int?)(response?.StatusCode) ?? 0} {response?.StatusCode ?? 0}", ex);
+                        return null;
                     }
                 }
 
@@ -161,7 +161,7 @@ namespace DigitalProductionProgram.Monitor
 
 
         public static int CounterMonitorRequests;
-        [DebuggerStepThrough]
+        //[DebuggerStepThrough]
         public static List<T> GetFromMonitor<T>(params string[] queryOptions) where T : DTO, new()
         {
             Cursor previous = Cursor.Current;
@@ -202,7 +202,7 @@ namespace DigitalProductionProgram.Monitor
 
             }
         }
-        [DebuggerStepThrough]
+       // [DebuggerStepThrough]
         public static T GetOneFromMonitor<T>(params string[] queryOptions) where T : DTO, new()
         {
             Cursor previous = Cursor.Current;

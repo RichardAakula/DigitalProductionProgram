@@ -84,7 +84,7 @@ namespace DigitalProductionProgram.Övrigt
             tb_Material_2.Text = string.Empty;
             tb_Pigment.Text = string.Empty;
             tb_Total_Mängd.Text = string.Empty;
-            _ = Activity.Stop($"Beräkna Material - {cb_BlandningsTyp.Text}");
+            _ = Activity.Stop($"Calculate Material - {cb_BlandningsTyp.Text}");
         }
     }
 }

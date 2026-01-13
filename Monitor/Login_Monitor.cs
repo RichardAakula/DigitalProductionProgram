@@ -44,10 +44,12 @@ namespace DigitalProductionProgram.Monitor
         }
 
         //[DebuggerStepThrough]
-        public static void Login_API()
+        public static void Login_API(bool forceRelogin = false)
         {
             Stopwatch sw = Stopwatch.StartNew();
 
+            if (forceRelogin)
+                sessionId = null;
             // ✔ Om vi redan har session → gör inget
             if (sessionId != null)
                 return;
@@ -73,27 +75,35 @@ namespace DigitalProductionProgram.Monitor
             }
 
             // Synkront svar
-            using (var response = (HttpWebResponse)request.GetResponse())
+            try
             {
-                if (response.StatusCode != HttpStatusCode.OK)
-                    throw new Exception("Monitor login failed (sync).");
+                using (var response = (HttpWebResponse)request.GetResponse())
+                {
+                    if (response.StatusCode != HttpStatusCode.OK)
+                        throw new Exception("Monitor login failed (sync).");
 
-                // ✔ Hämta SessionId från headers
-                sessionId = response.Headers["X-Monitor-SessionId"];
+                    // ✔ Hämta SessionId från headers
+                    sessionId = response.Headers["X-Monitor-SessionId"];
 
-                if (sessionId == null)
-                    sessionId = response.Headers.AllKeys
-                        .Where(k => k.Contains("SessionId"))
-                        .Select(k => response.Headers[k])
-                        .FirstOrDefault();
+                    if (sessionId == null)
+                        sessionId = response.Headers.AllKeys
+                            .Where(k => k.Contains("SessionId"))
+                            .Select(k => response.Headers[k])
+                            .FirstOrDefault();
 
-                if (sessionId == null)
-                    throw new Exception("Monitor login failed: No SessionId returned.");
+                    if (sessionId == null)
+                        throw new Exception("Monitor login failed: No SessionId returned.");
+                }
+
+                sw.Stop();
+                Debug.WriteLine("======== SYNC LOGIN ========");
+                Debug.WriteLine($"Time: {sw.ElapsedMilliseconds} ms");
             }
-
-            sw.Stop();
-            Debug.WriteLine("======== SYNC LOGIN ========");
-            Debug.WriteLine($"Time: {sw.ElapsedMilliseconds} ms");
+            catch (WebException ex)
+            {
+                InfoText.Show(LanguageManager.GetString("error_Monitor"), CustomColors.InfoText_Color.Bad, "Error Monitor");
+                return;
+            }
         }
 
         public static int TotalLoginAttemps;

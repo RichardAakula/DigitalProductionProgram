@@ -216,7 +216,7 @@ namespace DigitalProductionProgram.Zumbach
 
         public MeasureWithZumbach(Screen pos)
         {
-            _ = Log.Activity.Stop("Startar Zumbachfönster.");
+            _ = Log.Activity.Stop("Open Zumbach Form");
             InitializeComponent();
             serialPort = new SerialPort();
             pbar = new CustomProgressBar { Location = pos.Bounds.Location };
@@ -241,7 +241,7 @@ namespace DigitalProductionProgram.Zumbach
 
             Log.Activity.Start();
             Load_Data();
-            _ = Log.Activity.Stop("Laddat Zumbachdata");
+            _ = Log.Activity.Stop("Zumbachdata Loaded");
             Measurement = Zumbach.DataTable_Measurements.Rows.Count > 0 ? Zumbach.DataTable_Measurements.Rows.Count : 1;
             pbar.Close();
         }
@@ -566,7 +566,7 @@ namespace DigitalProductionProgram.Zumbach
         }
         private void Print_Chart_PrintPage(object sender, PrintPageEventArgs e)
         {
-            _ = Log.Activity.Stop("Skriver ut Zumbachmätningar.");
+            _ = Log.Activity.Stop("Printing Zumbach measurements");
             Print.utskrift_Korprotokoll = Print.List_PrintOut_Korprotokoll;
             Print_Protocol.totalPrintOuts = new PrintVariables.TotalPrintOuts();
             Print_Protocol.Set_DefaultPaperSize(print_Chart, true);
@@ -1397,7 +1397,7 @@ namespace DigitalProductionProgram.Zumbach
 
             Task.Factory.StartNew(ChangeTheme);
             Calculate_Data();
-            _ = Log.Activity.Stop("Loggar data Zumbach:");
+            _ = Log.Activity.Stop("Logs data with Zumbach:");
         }
 
         private void SortOut_BadData_Zumbach()
@@ -1596,7 +1596,7 @@ namespace DigitalProductionProgram.Zumbach
         }
         private void DiscardMeasurement_Click(object sender, EventArgs e)
         {
-            InfoText.Question("Är du säker på att du vill skrota hela denna mätning?", CustomColors.InfoText_Color.Warning, "Warning!", this);
+            InfoText.Question(LanguageManager.GetString("zumbach_DeleteMeasurement"), CustomColors.InfoText_Color.Warning, "Warning!", this);
             if (InfoText.answer == InfoText.Answer.Yes)
                 DiscardMeasureMent(int.Parse(lbl_Measurement.Text));
             Load_Data();

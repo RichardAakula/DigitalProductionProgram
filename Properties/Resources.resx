@@ -1940,4 +1940,13 @@
   <data name="orderNotOpen" xml:space="preserve">
     <value></value>
   </data>
+  <data name="Menu_Order_OrderLog" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="zumbach_DeleteMeasurement" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="error_Monitor" xml:space="preserve">
+    <value></value>
+  </data>
 </root>

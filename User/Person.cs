@@ -13,7 +13,7 @@ using System.Reflection;
 
 namespace DigitalProductionProgram.User
 {
-    public class Person
+    public abstract class Person
     {
         public static string? Role = null!;
         
@@ -210,7 +210,7 @@ namespace DigitalProductionProgram.User
                 using var con = new SqlConnection(Database.cs_Protocol);
                 const string query = "SELECT COUNT(*) FROM Log.ActivityLog  WHERE Info = @info";
                 var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@info", $"Loggar in: {Name}");
+                cmd.Parameters.AddWithValue("@info", $"Logging in: {Name}");
                 con.Open();
                 return (int)cmd.ExecuteScalar();
             }
@@ -591,7 +591,7 @@ namespace DigitalProductionProgram.User
         }
     }
 
-    public class Points
+    public static class Points
     {
         public static int TotalPoints { get; set; }
 
@@ -634,7 +634,7 @@ namespace DigitalProductionProgram.User
                     con.Open();
                     cmd.ExecuteScalar();
                 }
-                _ = Activity.Stop($"{point} poäng. Totalt: {TotalPoints} poäng: ({Text})");
+                _ = Activity.Stop($"{point} points. Totally: {TotalPoints} points: ({Text})");
             }
         }
     }

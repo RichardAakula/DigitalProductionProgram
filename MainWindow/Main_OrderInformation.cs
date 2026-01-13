@@ -143,7 +143,7 @@ namespace DigitalProductionProgram.MainWindow
                         Templates_Protocol.MainTemplate.ID = mainTemplateID;
                     if (TryParse(reader["LineClearanceMainTemplateID"].ToString(), out var lc_MainTemplateID))
                         Templates_LineClearance.MainTemplate.LineClearance_MainTemplateID = lc_MainTemplateID;
-                   
+
                     Templates_MeasureProtocol.MainTemplate.ID = reader["MeasureProtocolMainTemplateID"] is DBNull ? null : (int?)Convert.ToInt32(reader["MeasureProtocolMainTemplateID"]);
                     Templates_MeasureProtocol.MainTemplate.Name = reader["MeasureprotocolTemplateName"].ToString();
                     Templates_LineClearance.MainTemplate.LineClearance_CenturiLink = reader["CenturiLink"].ToString();
@@ -252,7 +252,15 @@ namespace DigitalProductionProgram.MainWindow
             }
             StartOrder();
         }
-
+        private void cb_Operation_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                e.Handled = true;
+                e.SuppressKeyPress = true;
+                mainForm?.Operation_SelectedIndexChanged(sender, e);
+            }
+        }
         public void StartOrder()
         {
             cb_Operation.Enabled = true;
@@ -291,7 +299,7 @@ namespace DigitalProductionProgram.MainWindow
                     var item = (Operation_Description)t;
                     if (item.Operation == operation)
                     {
-                        cb_Operation.SelectedValue = operation;   
+                        cb_Operation.SelectedValue = operation;
                         return;
                     }
                 }
@@ -322,6 +330,8 @@ namespace DigitalProductionProgram.MainWindow
             if (EasterEgg_Code.IsGameStarted)
                 InfoText.Show(EasterEgg_Code.Level_1.Riddle_1, CustomColors.InfoText_Color.Info, "The Cipher Wheel", this);
         }
+
+        
     }
 
 }

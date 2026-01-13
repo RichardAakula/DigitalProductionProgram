@@ -14,7 +14,7 @@ namespace DigitalProductionProgram.Templates
 {
     public partial class ProcesscardTemplateSelector : Form
     {
-        public bool IsOkClose;
+        private bool IsOkClose;
         public bool IsAborted = false;
         private static bool IsDevelopmentOfProcessCard(int? partID)
         {
@@ -31,7 +31,7 @@ namespace DigitalProductionProgram.Templates
         private readonly bool IsOnlyProcesscard;
         private readonly bool IsAutoSelectTemplate;
 
-        public int totalLabels;
+        private int totalLabels;
         public enum TemplateType
         {
             TemplateProtocol,
@@ -96,7 +96,7 @@ namespace DigitalProductionProgram.Templates
             Load_Processcard(IsOkSelectLatestRev);
 
             if (totalLabels == 0)
-                _ = Activity.Stop("Problem - Välj ProduktionsLinje");
+                _ = Activity.Stop($"Error - TemplateSelector: IsOperatorStartingOrder = {isOperatorStartingOrder} / IsOnlyProcesscard = {isOnlyProcesscard} / IsAutoSelectTemplate = {isAutoSelectTemplate}");
 
            
         }
@@ -536,7 +536,7 @@ ORDER BY ROW_NUMBER() OVER (PARTITION BY PartGroupID ORDER BY TRY_CAST(RevNr AS 
             if (lbl?.IsLatestRevNrSelected == false && IsOperatorStartingOrder)
                 Mail.NotifyQAPartNumberNeedApproval(lbl.LatestRevNr, Order.RevNr);
 
-            _ = Activity.Stop($"TemplateSelector: Valde Processkort {lbl?.Text}");
+            _ = Activity.Stop($"TemplateSelector: Selected Processcard {lbl?.Text}");
             IsAborted = false;
             IsOkClose = true;
             Close();
@@ -550,7 +550,7 @@ ORDER BY ROW_NUMBER() OVER (PARTITION BY PartGroupID ORDER BY TRY_CAST(RevNr AS 
                 Templates_MeasureProtocol.MainTemplate.ID = lbl.TemplateID;
                 Templates_MeasureProtocol.MainTemplate.Revision = lbl.TemplateRevision;
 
-                _ = Activity.Stop($"TemplateSelector: Valde Mätprotokoll {lbl.Text}");
+                _ = Activity.Stop($"TemplateSelector: Selected Measurement Protocol {lbl.Text}");
             }
 
             IsAborted = false;
@@ -567,7 +567,7 @@ ORDER BY ROW_NUMBER() OVER (PARTITION BY PartGroupID ORDER BY TRY_CAST(RevNr AS 
                 if (Enum.TryParse(lbl.Workoperation, out Manage_WorkOperation.WorkOperations workOperation))
                     Order.WorkOperation = workOperation;
 
-                _ = Activity.Stop($"TemplateSelector: Valde Protokoll-mall {lbl.Text}");
+                _ = Activity.Stop($"TemplateSelector: Selected Protocol Template {lbl.Text}");
             }
 
             IsAborted = false;
@@ -582,7 +582,7 @@ ORDER BY ROW_NUMBER() OVER (PARTITION BY PartGroupID ORDER BY TRY_CAST(RevNr AS 
             if (Enum.TryParse(lbl?.Workoperation, out Manage_WorkOperation.WorkOperations workOperation))
                 Order.WorkOperation = workOperation;
 
-            _ = Activity.Stop($"TemplateSelector: Valde Arbetsoperation {lbl?.Text}");
+            _ = Activity.Stop($"TemplateSelector: Selected WorkOperation {lbl?.Text}");
             IsOkClose = true;
             Close();
         }

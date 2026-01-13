@@ -46,15 +46,13 @@ namespace DigitalProductionProgram.Help
             btn_Yes = new Button();
             tlp_Main = new TableLayoutPanel();
             pb_Tube = new PictureBox();
-            panel_Message = new Panel();
-            lbl_Message = new Label();
+            rtb_Message = new RichTextBox();
             pb_Line_Top = new PictureBox();
             pb_Line_Bottom = new PictureBox();
             flp_Img.SuspendLayout();
             tlp_Buttons.SuspendLayout();
             tlp_Main.SuspendLayout();
             ((ISupportInitialize)pb_Tube).BeginInit();
-            panel_Message.SuspendLayout();
             ((ISupportInitialize)pb_Line_Top).BeginInit();
             ((ISupportInitialize)pb_Line_Bottom).BeginInit();
             SuspendLayout();
@@ -71,10 +69,10 @@ namespace DigitalProductionProgram.Help
             flp_Img.Dock = DockStyle.Fill;
             flp_Img.Font = new Font("Palatino Linotype", 9.75F, FontStyle.Underline, GraphicsUnit.Point, 0);
             flp_Img.ForeColor = SystemColors.HotTrack;
-            flp_Img.Location = new Point(1643, 90);
+            flp_Img.Location = new Point(1643, 142);
             flp_Img.Margin = new Padding(4, 3, 4, 3);
             flp_Img.Name = "flp_Img";
-            flp_Img.Size = new Size(225, 408);
+            flp_Img.Size = new Size(225, 327);
             flp_Img.TabIndex = 2;
             // 
             // lbl_img_1
@@ -259,7 +257,7 @@ namespace DigitalProductionProgram.Help
             tlp_Main.Controls.Add(lbl_Rubrik, 1, 0);
             tlp_Main.Controls.Add(flp_Img, 2, 2);
             tlp_Main.Controls.Add(pb_Tube, 0, 2);
-            tlp_Main.Controls.Add(panel_Message, 1, 1);
+            tlp_Main.Controls.Add(rtb_Message, 1, 1);
             tlp_Main.Dock = DockStyle.Fill;
             tlp_Main.GrowStyle = TableLayoutPanelGrowStyle.FixedSize;
             tlp_Main.Location = new Point(0, 6);
@@ -267,8 +265,8 @@ namespace DigitalProductionProgram.Help
             tlp_Main.Name = "tlp_Main";
             tlp_Main.RowCount = 4;
             tlp_Main.RowStyles.Add(new RowStyle(SizeType.Absolute, 47F));
-            tlp_Main.RowStyles.Add(new RowStyle(SizeType.Absolute, 40F));
-            tlp_Main.RowStyles.Add(new RowStyle(SizeType.Absolute, 414F));
+            tlp_Main.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            tlp_Main.RowStyles.Add(new RowStyle(SizeType.Absolute, 333F));
             tlp_Main.RowStyles.Add(new RowStyle(SizeType.Absolute, 29F));
             tlp_Main.Size = new Size(1872, 501);
             tlp_Main.TabIndex = 11;
@@ -279,38 +277,28 @@ namespace DigitalProductionProgram.Help
             pb_Tube.BackColor = Color.Transparent;
             pb_Tube.BackgroundImageLayout = ImageLayout.Stretch;
             pb_Tube.Dock = DockStyle.Right;
-            pb_Tube.Location = new Point(4, 90);
+            pb_Tube.Location = new Point(4, 142);
             pb_Tube.Margin = new Padding(4, 3, 4, 3);
             pb_Tube.Name = "pb_Tube";
             tlp_Main.SetRowSpan(pb_Tube, 2);
-            pb_Tube.Size = new Size(225, 437);
+            pb_Tube.Size = new Size(225, 356);
             pb_Tube.TabIndex = 13;
             pb_Tube.TabStop = false;
             // 
-            // panel_Message
+            // rtb_Message
             // 
-            panel_Message.AutoScroll = true;
-            panel_Message.AutoSize = true;
-            panel_Message.Controls.Add(lbl_Message);
-            panel_Message.Dock = DockStyle.Fill;
-            panel_Message.Location = new Point(233, 47);
-            panel_Message.Margin = new Padding(0);
-            panel_Message.Name = "panel_Message";
-            panel_Message.Size = new Size(1406, 40);
-            panel_Message.TabIndex = 15;
-            // 
-            // lbl_Message
-            // 
-            lbl_Message.AutoSize = true;
-            lbl_Message.Dock = DockStyle.Fill;
-            lbl_Message.Font = new Font("Lucida Sans", 10.25F);
-            lbl_Message.ForeColor = Color.FromArgb(181, 210, 207);
-            lbl_Message.Location = new Point(0, 0);
-            lbl_Message.Name = "lbl_Message";
-            lbl_Message.Size = new Size(65, 16);
-            lbl_Message.TabIndex = 0;
-            lbl_Message.Text = "Message";
-            lbl_Message.TextAlign = ContentAlignment.MiddleLeft;
+            rtb_Message.BackColor = Color.FromArgb(6, 71, 77);
+            rtb_Message.BorderStyle = BorderStyle.None;
+            rtb_Message.DetectUrls = false;
+            rtb_Message.Dock = DockStyle.Fill;
+            rtb_Message.Font = new Font("Lucida Sans", 10.25F);
+            rtb_Message.ForeColor = Color.FromArgb(181, 210, 207);
+            rtb_Message.Location = new Point(236, 50);
+            rtb_Message.Name = "rtb_Message";
+            rtb_Message.ScrollBars = RichTextBoxScrollBars.Vertical;
+            rtb_Message.Size = new Size(1400, 86);
+            rtb_Message.TabIndex = 1;
+            rtb_Message.Text = "";
             // 
             // pb_Line_Top
             // 
@@ -369,8 +357,6 @@ namespace DigitalProductionProgram.Help
             tlp_Main.ResumeLayout(false);
             tlp_Main.PerformLayout();
             ((ISupportInitialize)pb_Tube).EndInit();
-            panel_Message.ResumeLayout(false);
-            panel_Message.PerformLayout();
             ((ISupportInitialize)pb_Line_Top).EndInit();
             ((ISupportInitialize)pb_Line_Bottom).EndInit();
             ResumeLayout(false);
@@ -395,7 +381,6 @@ namespace DigitalProductionProgram.Help
         private PictureBox pb_Line_Top;
         private PictureBox pb_Tube;
         private PictureBox pb_Line_Bottom;
-        private Panel panel_Message;
-        private Label lbl_Message;
+        private RichTextBox rtb_Message;
     }
 }

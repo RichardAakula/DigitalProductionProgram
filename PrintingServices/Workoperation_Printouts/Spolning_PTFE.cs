@@ -55,7 +55,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
             Print_Protocol.Set_DefaultPaperSize(Print, true);
 
             PrintVariables.Active_PrintOut = 1;
-            // Skriver ut Protocol
+            // Print Out Protocol
             Start = 0;
             var antal_Utskrifter = Print_Protocol.totalPrintOuts.PagesSpolning;
             for (var i = 1; i < antal_Utskrifter + 1; i++)
@@ -72,7 +72,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
             if (Print_Protocol.Height_MeasureInstruments > 0)
                await Print_Protocol.PrintMeasureInstruments(IsPrinting);
 
-            //Skriver ut Mätprotokoll
+            //Printing Measurement Protocol
             await Print_Protocol.PrintMeasureProtocolsAsync(IsPrinting);
            
         }

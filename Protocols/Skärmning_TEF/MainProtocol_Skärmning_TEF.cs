@@ -638,7 +638,7 @@ namespace DigitalProductionProgram.Protocols.Skärmning_TEF
                 InfoText.Show("Någonting blev fel, kontrollera att allt är ifyllt och att du skapat ett arbetskort", CustomColors.InfoText_Color.Warning, "Warning", this);
                 return;
             }
-            Points.Add_Points(7, "Överför Produktion, Skärmning");
+            Points.Add_Points(7, "Save Production Data - Skärmning");
             var tab_Index = tab_ctrl_Arbetskort.SelectedIndex;
             var ctrl_tb = new Control[] { tb_Produktion_Mätare, tb_Produktion_Temp_L1, tb_Produktion_Temp_L2, tb_Produktion_ID_L1, tb_Produktion_ID_L2, tb_Produktion_OD1_L1, tb_Produktion_OD1_L2, tb_Produktion_ODs_L1, tb_Produktion_ODs_L2, tb_Verktygs_ID, tb_Produktion_Kommentar };
             ControlManager.Set_Control_NA(ctrl_tb);

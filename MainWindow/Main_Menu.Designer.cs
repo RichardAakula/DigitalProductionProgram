@@ -45,6 +45,7 @@ namespace DigitalProductionProgram.MainWindow
             Menu_Order_EditOrder = new ToolStripMenuItem();
             Menu_Order_DeleteOrder = new ToolStripMenuItem();
             Menu_Order_ReportProblemProductionSupport = new ToolStripMenuItem();
+            Menu_Order_ReadProposedProcesscardChanges = new ToolStripMenuItem();
             Menu_Order_CreateTestOrder = new ToolStripMenuItem();
             Menu_Order_OpenRandomOrder = new ToolStripMenuItem();
             Menu_Order_QC_Feedback = new ToolStripMenuItem();
@@ -52,6 +53,7 @@ namespace DigitalProductionProgram.MainWindow
             Menu_Order_ReLink_Processcard = new ToolStripMenuItem();
             Menu_Order_ReLink_Protocol = new ToolStripMenuItem();
             Menu_Order_ReLink_MeasureProtocol = new ToolStripMenuItem();
+            Menu_Order_OrderLog = new ToolStripMenuItem();
             Menu_Protocol = new ToolStripMenuItem();
             Menu_Protocol_ManageProcesscards = new ToolStripMenuItem();
             Menu_Protocol_Unlock_ValidatedProcesscard = new ToolStripMenuItem();
@@ -131,11 +133,11 @@ namespace DigitalProductionProgram.MainWindow
             ettToolStripMenuItem = new ToolStripMenuItem();
             tvåToolStripMenuItem = new ToolStripMenuItem();
             Menu_Developer_EasterEggPsycho = new ToolStripMenuItem();
+            fixaChangeLogListaToolStripMenuItem = new ToolStripMenuItem();
             menuStrip = new MenuStrip();
             Menu_Equipment = new ToolStripMenuItem();
             Menu_Equipment_UseFilter = new ToolStripMenuItem();
             Menu_Equipment_UseSilpaket = new ToolStripMenuItem();
-            Menu_Order_ReadProposedProcesscardChanges = new ToolStripMenuItem();
             menuStrip.SuspendLayout();
             SuspendLayout();
             // 
@@ -203,7 +205,7 @@ namespace DigitalProductionProgram.MainWindow
             // 
             // Menu_Order
             // 
-            Menu_Order.DropDownItems.AddRange(new ToolStripItem[] { Menu_Order_OrderDone, Menu_Order_EditOrder, Menu_Order_DeleteOrder, Menu_Order_ReportProblemProductionSupport, Menu_Order_ReadProposedProcesscardChanges, Menu_Order_CreateTestOrder, Menu_Order_OpenRandomOrder, Menu_Order_QC_Feedback, Menu_Order_LinkOrder });
+            Menu_Order.DropDownItems.AddRange(new ToolStripItem[] { Menu_Order_OrderDone, Menu_Order_EditOrder, Menu_Order_DeleteOrder, Menu_Order_ReportProblemProductionSupport, Menu_Order_ReadProposedProcesscardChanges, Menu_Order_CreateTestOrder, Menu_Order_OpenRandomOrder, Menu_Order_QC_Feedback, Menu_Order_LinkOrder, Menu_Order_OrderLog });
             Menu_Order.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
             Menu_Order.ForeColor = Color.DeepSkyBlue;
             Menu_Order.Name = "Menu_Order";
@@ -243,6 +245,13 @@ namespace DigitalProductionProgram.MainWindow
             Menu_Order_ReportProblemProductionSupport.Size = new Size(434, 22);
             Menu_Order_ReportProblemProductionSupport.Text = "Rapportera problem till produktionssupport";
             Menu_Order_ReportProblemProductionSupport.Click += Menu_Order_ReportToJira_Click;
+            // 
+            // Menu_Order_ReadProposedProcesscardChanges
+            // 
+            Menu_Order_ReadProposedProcesscardChanges.Name = "Menu_Order_ReadProposedProcesscardChanges";
+            Menu_Order_ReadProposedProcesscardChanges.Size = new Size(434, 22);
+            Menu_Order_ReadProposedProcesscardChanges.Text = "Läs förslag på Processkortsuppdateringar för denna Order";
+            Menu_Order_ReadProposedProcesscardChanges.Click += Menu_Order_ReadProposedProcesscardChanges_Click;
             // 
             // Menu_Order_CreateTestOrder
             // 
@@ -295,6 +304,13 @@ namespace DigitalProductionProgram.MainWindow
             Menu_Order_ReLink_MeasureProtocol.Size = new Size(253, 22);
             Menu_Order_ReLink_MeasureProtocol.Text = "Till ny Mall för Mätprotokoll";
             Menu_Order_ReLink_MeasureProtocol.Click += Menu_Order_RelinkMeasureProtocol_Click;
+            // 
+            // Menu_Order_OrderLog
+            // 
+            Menu_Order_OrderLog.Name = "Menu_Order_OrderLog";
+            Menu_Order_OrderLog.Size = new Size(434, 22);
+            Menu_Order_OrderLog.Text = "Orderlogg";
+            Menu_Order_OrderLog.Click += Menu_Order_OrderLog_Click;
             // 
             // Menu_Protocol
             // 
@@ -687,7 +703,7 @@ namespace DigitalProductionProgram.MainWindow
             // 
             // Menu_Developer
             // 
-            Menu_Developer.DropDownItems.AddRange(new ToolStripItem[] { Menu_Developer_GetOrderInfo, Menu_Developer_SendMailToAllUsers, Menu_Developer_AddGallup, Menu_Developer_CheckGallup, Menu_Developer_OpenRandomOrder, Menu_Developer_Timer_test, Menu_Developer_ExportHS_Data, Menu_Developer_GetDataForQuoting, testaNAntalKörningarPåArtikelNrToolStripMenuItem, Menu_Developer_AddThemePicture, Menu_Developer_TestNewProtocol, testCalendarToolStripMenuItem, påskäggToolStripMenuItem, Developer_CountSql_Queries, Developer_Clear_Sql_Queries, testaChartToolStripMenuItem, flyttaDataFrånSvetsnigToolStripMenuItem, flyttaMätdataFrånSvetsningToolStripMenuItem, ettToolStripMenuItem, tvåToolStripMenuItem, Menu_Developer_EasterEggPsycho });
+            Menu_Developer.DropDownItems.AddRange(new ToolStripItem[] { Menu_Developer_GetOrderInfo, Menu_Developer_SendMailToAllUsers, Menu_Developer_AddGallup, Menu_Developer_CheckGallup, Menu_Developer_OpenRandomOrder, Menu_Developer_Timer_test, Menu_Developer_ExportHS_Data, Menu_Developer_GetDataForQuoting, testaNAntalKörningarPåArtikelNrToolStripMenuItem, Menu_Developer_AddThemePicture, Menu_Developer_TestNewProtocol, testCalendarToolStripMenuItem, påskäggToolStripMenuItem, Developer_CountSql_Queries, Developer_Clear_Sql_Queries, testaChartToolStripMenuItem, flyttaDataFrånSvetsnigToolStripMenuItem, flyttaMätdataFrånSvetsningToolStripMenuItem, ettToolStripMenuItem, tvåToolStripMenuItem, Menu_Developer_EasterEggPsycho, fixaChangeLogListaToolStripMenuItem });
             Menu_Developer.ForeColor = Color.DeepSkyBlue;
             Menu_Developer.Name = "Menu_Developer";
             Menu_Developer.Size = new Size(81, 32);
@@ -714,14 +730,14 @@ namespace DigitalProductionProgram.MainWindow
             Menu_Developer_AddGallup.Name = "Menu_Developer_AddGallup";
             Menu_Developer_AddGallup.Size = new Size(271, 22);
             Menu_Developer_AddGallup.Text = "Lägg till Gallup";
-            Menu_Developer_AddGallup.Click += Menu_Utvecklare_Add_Gallup_Click;
+            Menu_Developer_AddGallup.Click += Menu_Developer_Add_Gallup_Click;
             // 
             // Menu_Developer_CheckGallup
             // 
             Menu_Developer_CheckGallup.Name = "Menu_Developer_CheckGallup";
             Menu_Developer_CheckGallup.Size = new Size(271, 22);
             Menu_Developer_CheckGallup.Text = "Kolla Gallup";
-            Menu_Developer_CheckGallup.Click += Menu_Utvecklare_Kolla_Gallup_Click;
+            Menu_Developer_CheckGallup.Click += Menu_Developer_Kolla_Gallup_Click;
             // 
             // Menu_Developer_OpenRandomOrder
             // 
@@ -878,6 +894,13 @@ namespace DigitalProductionProgram.MainWindow
             Menu_Developer_EasterEggPsycho.Text = "Easter Egg Psycho";
             Menu_Developer_EasterEggPsycho.Click += Menu_Developer_EasterEggPsycho_Click;
             // 
+            // fixaChangeLogListaToolStripMenuItem
+            // 
+            fixaChangeLogListaToolStripMenuItem.Name = "fixaChangeLogListaToolStripMenuItem";
+            fixaChangeLogListaToolStripMenuItem.Size = new Size(271, 22);
+            fixaChangeLogListaToolStripMenuItem.Text = "Fixa ChangeLog lista";
+            fixaChangeLogListaToolStripMenuItem.Click += fixaChangeLogListaToolStripMenuItem_Click;
+            // 
             // menuStrip
             // 
             menuStrip.BackColor = Color.Transparent;
@@ -927,13 +950,6 @@ namespace DigitalProductionProgram.MainWindow
             Menu_Equipment_UseSilpaket.Size = new Size(181, 22);
             Menu_Equipment_UseSilpaket.Text = "Använd Silpaket";
             Menu_Equipment_UseSilpaket.Click += Menu_Protocol_UseSilpaket_Click;
-            // 
-            // Menu_Order_ReadProposedProcesscardChanges
-            // 
-            Menu_Order_ReadProposedProcesscardChanges.Name = "Menu_Order_ReadProposedProcesscardChanges";
-            Menu_Order_ReadProposedProcesscardChanges.Size = new Size(434, 22);
-            Menu_Order_ReadProposedProcesscardChanges.Text = "Läs förslag på Processkortsuppdateringar för denna Order";
-            Menu_Order_ReadProposedProcesscardChanges.Click += Menu_Order_ReadProposedProcesscardChanges_Click;
             // 
             // Main_Menu
             // 
@@ -1058,5 +1074,7 @@ namespace DigitalProductionProgram.MainWindow
         private ToolStripMenuItem tvåToolStripMenuItem;
         private ToolStripMenuItem Menu_Developer_EasterEggPsycho;
         private ToolStripMenuItem Menu_Order_ReadProposedProcesscardChanges;
+        private ToolStripMenuItem fixaChangeLogListaToolStripMenuItem;
+        private ToolStripMenuItem Menu_Order_OrderLog;
     }
 }

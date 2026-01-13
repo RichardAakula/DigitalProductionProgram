@@ -204,7 +204,7 @@ namespace DigitalProductionProgram.Measure
             if (Order.IsOrderDone)
                 Lock_Protocol();
 
-            _ = Activity.Stop("Öppnar Mätprotokoll");
+            _ = Activity.Stop("Open Measurement Protocol");
         }
 
 
@@ -615,7 +615,7 @@ namespace DigitalProductionProgram.Measure
 
 
 
-            Points.Add_Points(5, "Överför Mätning - Mätprotokoll");
+            Points.Add_Points(5, "Save Measurement - MeasurementProtocol");
             Load_MeasureData();
             Refresh();
             Thread.Sleep(1000);
@@ -632,7 +632,7 @@ namespace DigitalProductionProgram.Measure
             if (dgv_Measurements.Rows.Count == 1)
                 Settings.Settings.Notifications.Subscription.NotifyFirstRun();
 
-            _ = Activity.Stop($"Överför Mätning ({loginfo}) - {Order.WorkOperation} - Spole: {bag} - RowIndex: {dgv_Measurements.Rows.Count} - Användare.AnstNr = {Person.EmployeeNr}");
+            _ = Activity.Stop($"Save Measurement ({loginfo}) - {Order.WorkOperation} - Spool/Bag: {bag} - RowIndex: {dgv_Measurements.Rows.Count} - User.Empl.Nr = {Person.EmployeeNr}");
             dgv_HelpInput_1.Focus();
             Calculate.Reset_Values();
         }
@@ -1275,7 +1275,7 @@ namespace DigitalProductionProgram.Measure
 
         private void Measurement_Protocol_FormClosing(object sender, FormClosingEventArgs e)
         {
-            _ = Activity.Stop("Stänger Mätprotokoll");
+            _ = Activity.Stop("Closing Measurement Protocol");
         }
     }
 

@@ -345,7 +345,7 @@ namespace DigitalProductionProgram.QC
         {
             if (IsOperationAlreadyExist)
             {
-                InfoText.Show("Det finns redan en feedback för denna operation och artikelnr, vänligen uppdatera den istället.", CustomColors.InfoText_Color.Bad, "Varning", this);
+                InfoText.Show("Det finns redan feedback för denna operation och artikelnr, vänligen uppdatera den istället.", CustomColors.InfoText_Color.Bad, "Varning", this);
                 return;
             }
             using (var image = pb_Image.BackgroundImage)

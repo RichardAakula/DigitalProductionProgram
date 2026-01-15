@@ -121,7 +121,6 @@ namespace DigitalProductionProgram.MainWindow
         private const int develop_MainTimer = 30000; // 10 sekunder
 
 
-
         // Denna rad måste finnas för utskrifterna
         private readonly Manage_PrintOuts? print;
         private readonly BlackBackground black;
@@ -206,6 +205,7 @@ namespace DigitalProductionProgram.MainWindow
 
             this.Visible = true;
             this.Invoke((MethodInvoker)(this.BringToFront));
+            CheckForUpdate();
         }
 
 
@@ -383,8 +383,7 @@ namespace DigitalProductionProgram.MainWindow
 
         }
 
-
-        public void Translate_MainForm()
+        private void Translate_MainForm()
         {
             var controls = new Control[] { TipsAndTrix.label_Tips_Trix, label_EmpNr, label_Sign, label_Role, label_Filter, label_QuickOpenOrder };
             LanguageManager.TranslationHelper.TranslateControls(controls);
@@ -449,7 +448,6 @@ namespace DigitalProductionProgram.MainWindow
 
             Size = new Size(1250, 600);
         }
-
         private void Change_GUI_ExtraInfo()
         {
             if (InvokeRequired)
@@ -469,7 +467,6 @@ namespace DigitalProductionProgram.MainWindow
                 tlp_ExtraInfo.Visible = false;
             }
         }
-
         private void Change_GUI_Grade()
         {
             if (string.IsNullOrEmpty(Person.EmployeeNr))
@@ -498,7 +495,6 @@ namespace DigitalProductionProgram.MainWindow
 
             lbl_Percent.Text = $"{Convert.ToInt32(Grade.percent_Grade(Grade.grade) * 100)} %";
         }
-
         private void ChangeToBetaMode()
         {
             if (Environment.MachineName != "OH-ID61")
@@ -509,7 +505,6 @@ namespace DigitalProductionProgram.MainWindow
             var betaOverlay = new BetaOverlayForm(this);
             betaOverlay.Show();
         }
-
         public void Change_Theme()
         {
             if (Order.IsOrderDone)
@@ -698,7 +693,6 @@ namespace DigitalProductionProgram.MainWindow
 
 
 
-
         //---------------------------------------------CLEAR--------------------------------------------------
         public void Clear_Mainform()
         {
@@ -729,11 +723,6 @@ namespace DigitalProductionProgram.MainWindow
 
 
         //---------------------------------------------KÖRPLANERING-------------------------------------------
-        //private void Timer_Update_Körplanering_Start()
-        //{
-
-        //   // timer_Update_Körplanering.Start();
-        //}
         private void PriorityPlanning_OrderNr_CellClick(object? sender, DataGridViewCellEventArgs e)
         {
             if (PriorityPlanning.dgv_PriorityPlanning.Columns[0].Name != "OrderNr" || e.RowIndex < 0)
@@ -817,7 +806,6 @@ namespace DigitalProductionProgram.MainWindow
             blackBackground.Close();
 
         }
-
 
 
 

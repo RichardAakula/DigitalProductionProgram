@@ -2394,4 +2394,7 @@ Kontakta IT-support om felet kvarstår.</value>
     <value>Det gick inte att ansluta till Monitor. Tjänsten kan vara tillfälligt nere eller nätverket otillgängligt.
 Försök igen om en stund. Om problemet kvarstår, kontakta support.</value>
   </data>
+  <data name="processcard_SuggestedChanges" xml:space="preserve">
+    <value>Föreslagna ändringar för processkort</value>
+  </data>
 </root>

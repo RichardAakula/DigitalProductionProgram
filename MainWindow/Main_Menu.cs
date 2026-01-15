@@ -139,6 +139,7 @@ namespace DigitalProductionProgram.MainWindow
         {
             if (File.Exists(Database.UpdatePath))
             {
+                _ = Activity.Stop("User updated DPP via the menu");
                 Process.Start(Database.UpdatePath);
             }
             else
@@ -239,9 +240,9 @@ namespace DigitalProductionProgram.MainWindow
             if (InfoText.answer != InfoText.Answer.Yes) return;
             if (!string.IsNullOrEmpty(Order.OrderNumber))
             {
-                Log.Activity.Start();
+                Activity.Start();
                 Order.DELETE_Order();
-                _ = Log.Activity.Stop($"{Person.Name} Deleted Order {Order.OrderNumber} - Operation: {Order.Operation}");
+                _ = Activity.Stop($"{Person.Name} Deleted Order {Order.OrderNumber} - Operation: {Order.Operation}");
 
                 if (QC_Feedback.IsOperationHaveQCFeedback)
                     QC_Feedback.IncreaseRemainingViewsForOperation();
@@ -289,7 +290,7 @@ namespace DigitalProductionProgram.MainWindow
                 WHERE OrderID = @orderid
                 ORDER BY Datum DESC";
             var cmd = new SqlCommand(query, con);
-            cmd.Parameters.Add("@orderid", System.Data.SqlDbType.Int).Value = Order.OrderID;
+            cmd.Parameters.Add("@orderid", SqlDbType.Int).Value = Order.OrderID;
             con.Open();
             var reader = cmd.ExecuteReader();
             var text = new StringBuilder("\n");
@@ -306,9 +307,8 @@ namespace DigitalProductionProgram.MainWindow
 
                 text.AppendLine($"[{datum}]\n{rubrik} \n        ({meddelande}) \n-{namn}\n\n");
             }
-
-
-            InfoText.Show(text.ToString(), CustomColors.InfoText_Color.Info, "Föreslagna ändringar för processkort", this);
+            _ = Activity.Stop("User checks suggested changes for the  Process card");
+            InfoText.Show(text.ToString(), CustomColors.InfoText_Color.Info, LanguageManager.GetString("processcard_SuggestedChanges"), this); 
 
         }
         private void Menu_Order_CreateTestOrder_Click(object sender, EventArgs e)

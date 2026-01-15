@@ -2398,4 +2398,7 @@ Please contact IT support if the issue persists.</value>
     <value>Unable to connect to Monitor. The service may be temporarily down or the network is unavailable.
 Please try again later. If the problem persists, contact support.</value>
   </data>
+  <data name="processcard_SuggestedChanges" xml:space="preserve">
+    <value>Suggested changes for the process card</value>
+  </data>
 </root>

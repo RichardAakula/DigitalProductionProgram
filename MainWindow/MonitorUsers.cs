@@ -1,26 +1,13 @@
 ﻿using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Monitor;
 using DigitalProductionProgram.Monitor.GET;
-using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.PrintingServices;
-using DigitalProductionProgram.User;
 using LiveChartsCore;
 using LiveChartsCore.Defaults;
 using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.Painting;
 using LiveChartsCore.SkiaSharpView.SKCharts;
-using LiveChartsCore.SkiaSharpView.WinForms;
 using SkiaSharp;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using System.Windows.Forms.Design;
-using LiveChartsCore.Drawing;
-using LiveChartsCore.Measure;
 using Action = System.Action;
 using Padding = System.Windows.Forms.Padding;
 
@@ -263,7 +250,7 @@ namespace DigitalProductionProgram.MainWindow
             // Aktivera tooltip med styling
             chart.Tooltip = new SKDefaultTooltip
             {
-               // BackgroundPaint = new SolidColorPaint(SKColors.Red),
+                // BackgroundPaint = new SolidColorPaint(SKColors.Red),
 
             };
             chart.TooltipPosition = LiveChartsCore.Measure.TooltipPosition.Top;
@@ -481,6 +468,11 @@ namespace DigitalProductionProgram.MainWindow
             {
                 ctrl.Width = flp_List.ClientSize.Width - SystemInformation.VerticalScrollBarWidth;
             }
+        }
+
+        private void tlp_Main_Paint(object sender, PaintEventArgs e)
+        {
+
         }
     }
 }

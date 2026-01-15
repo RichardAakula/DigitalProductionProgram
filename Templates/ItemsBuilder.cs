@@ -124,7 +124,7 @@ namespace DigitalProductionProgram.Protocols.Template_Management
                // if (IsTaskExistInCategory(dgv_LineClearance_Active_Main, task))
                  //   return;
                 dgv_Items.Rows.Add();
-                dgv_Items.Rows[dgv_Items.Rows.Count - 1].Cells["col_Items"].Value = $"• {item}";
+                dgv_Items.Rows[^1].Cells["col_Items"].Value = $"• {item}";
 
                 Items.Load();
             }

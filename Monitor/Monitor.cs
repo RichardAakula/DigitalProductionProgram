@@ -343,7 +343,7 @@ namespace DigitalProductionProgram.Monitor
                     MonitorStatus = $"Connection to Monitor is not working, please contact Admin.\n\n{text}";
                     if (lbl_Monitorstatus != null) 
                         lbl_Monitorstatus.ForeColor = Color.FromArgb(156, 0, 6);
-                    Main_Form.timer_ReloginMonitor = 10; // Börjar logga in automatiskt efter 10 sekunder om anslutningen till Monitor är dålig
+                   // Main_Form.timer_ReloginMonitor = 10; // Börjar logga in automatiskt efter 10 sekunder om anslutningen till Monitor är dålig
                         break;
                 }
            }

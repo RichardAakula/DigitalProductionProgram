@@ -33,7 +33,7 @@ namespace DigitalProductionProgram.MainWindow
     public partial class Main_Form : Form
     {
         private static readonly Timer Timer_UpdateSQL_Counter = new Timer();
-
+        private ApplicationScheduler _scheduler;
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
             Control ctrl;
@@ -102,23 +102,20 @@ namespace DigitalProductionProgram.MainWindow
                 cp.ExStyle |= 0x02000000; // Turn on WS_EX_COMPOSITED
                 return cp;
             }
-        }
-
-        public static bool IsZumbachÖppet = false;
-        private static bool IsBetaMode;
+        } 
 
         //UPPSNABBNING AV PROGRAMMET VID UTVECKLING
         public static bool IsLoadingPriorityPlan;
         private static bool IsLoadingMeasurePoints = true;
-        private static bool IsOpenRandomOrder = false;
-        private static bool IsAutoOpenOrder = false;
-        private static bool IsAutoLoginSuperAdmin = true;
+        private static readonly bool IsOpenRandomOrder = false;
+        private static readonly bool IsAutoOpenOrder = false;
+        public static bool IsAutoLoginSuperAdmin = true;
         public static string adminHostName = "OH-ID61";
 
         private DateTime startTime;
         private const string? develop_OrderNr = "H67876";
         private const string? develop_Operation = "10";
-        private const int develop_MainTimer = 30000; // 10 sekunder
+        
 
 
         // Denna rad måste finnas för utskrifterna
@@ -176,7 +173,8 @@ namespace DigitalProductionProgram.MainWindow
             if (Database.cs_Protocol.Contains("GOD_DPP_DEV"))
                 IsBetaMode = true;
             Text = "Digital Production Program - " + ChangeLog.CurrentVersion; Refresh();
-            Mail.AutoTestJira(); CheckForMaintenanceWork();
+            Mail.AutoTestJira(); 
+            
         }
 
         private async void MainForm_Load(object sender, EventArgs e)
@@ -193,8 +191,10 @@ namespace DigitalProductionProgram.MainWindow
             //Detta räknar hur många instanser av programmet som är öppna
             var processes = Process.GetProcessesByName("DigitalProductionProgram");
             await Activity.Stop($"Application startup # {processes.Length}");
+            _scheduler = new ApplicationScheduler(UpdateMeasureInformationAsync, UpdateGuiGrade, Statistics_DPP, Serverstatus);
+            _scheduler.Start();
+
             startTime = DateTime.Now;
-            Initialize_Timers();
             Change_GUI_StandardColor();
             if (black != null)
             {
@@ -203,9 +203,12 @@ namespace DigitalProductionProgram.MainWindow
                     black.Close();
             }
 
+            
+
             this.Visible = true;
             this.Invoke((MethodInvoker)(this.BringToFront));
-            CheckForUpdate();
+            _scheduler.CheckForMaintenanceWork();
+            _scheduler.CheckForUpdate();
         }
 
 
@@ -230,9 +233,6 @@ namespace DigitalProductionProgram.MainWindow
 
             base.SetVisibleCore(value);
         }
-
-
-
 
         private void AUTOLOGIN_SUPERADMIN()
         {
@@ -306,16 +306,7 @@ namespace DigitalProductionProgram.MainWindow
             MainMenu.menuStrip.Visible = true;
         }
 
-        private void Initialize_Timers()
-        {
-            timer_Master = new Timer();
-            if (Environment.MachineName == adminHostName && IsAutoLoginSuperAdmin)
-                timer_Master.Interval = develop_MainTimer;
-            else
-                timer_Master.Interval = 60000; // 1 minut
-            timer_Master.Tick += MasterTimer_Tick;
-            timer_Master.Start();
-        }
+        
 
         //----------- CHANGE GUI-----------------------
         public void Change_GUI_MainForm()
@@ -467,6 +458,10 @@ namespace DigitalProductionProgram.MainWindow
                 tlp_ExtraInfo.Visible = false;
             }
         }
+        private void UpdateGuiGrade()
+        {
+            Change_GUI_Grade();
+        }
         private void Change_GUI_Grade()
         {
             if (string.IsNullOrEmpty(Person.EmployeeNr))
@@ -542,7 +537,13 @@ namespace DigitalProductionProgram.MainWindow
             Set_GUI_Theme_Krympslang();
             _ = Activity.Stop($"Choosing Theme {Teman.Theme.ToString()}");
         }
+        private async Task UpdateMeasureInformationAsync()
+        {
+            if (string.IsNullOrEmpty(Order.OrderNumber))
+                return;
 
+            await measureStats.Add_MeasureInformation_MainForm(measurementChart, tlp_MainWindow);
+        }
 
         //---------------------------------------------STARTA ORDER---------------------------------------------
         public async Task StartOrLoadOrder(bool IsOperationOk)
@@ -1010,182 +1011,6 @@ namespace DigitalProductionProgram.MainWindow
                           "5 - Körningen gick mycket bra utan problem orsakade av materialet.",
                 CustomColors.InfoText_Color.Info, "Info", this);
         }
-
-
-
-
-
-
-        //---------------------------------------------TIMERS-------------------------------------------------
-        private int counter_ChangeGrade = 0;
-        private int counter_CheckForUpdate = 0;
-        private int counter_CheckMätpunkter = 0;
-        private int counter_PlaneratStopp = 0;
-        private int counter_UpdateChart = 0;
-        private int counter_ReLoginMonitor = 0;
-        private int timer_counterPlaneratStopp = 60;  // 1 timme
-        public static int timer_ReloginMonitor = 600000;
-        private int timer_CheckForUpdate = 10; //10 minut
-
-        public Timer? timer_Master;
-        private async void MasterTimer_Tick(object? sender, EventArgs e)
-        {
-            timer_Master.Stop();
-            // Varje minut
-            counter_ChangeGrade++;
-            counter_PlaneratStopp++;
-            counter_CheckForUpdate++;
-            counter_CheckMätpunkter++;
-            counter_UpdateChart++;
-            counter_ReLoginMonitor++;
-
-
-            Serverstatus.Set_Sql_Counter(); // Uppdatera serverstatus varje sekund
-
-            Activity.LoadMemory();
-            Serverstatus.Set_DPP_Memory_Usage(Activity.CurrentMemory.ToString());
-            // 60 minuter: Kontrollera planerat stopp
-            if (counter_PlaneratStopp >= timer_counterPlaneratStopp)
-            {
-                counter_PlaneratStopp = 0;
-                CheckForMaintenanceWork();
-            }
-
-            // 10 minut: Kolla efter uppdatering
-            if (counter_CheckForUpdate >= timer_CheckForUpdate)
-            {
-                counter_CheckForUpdate = 0;
-                CheckForUpdate();
-            }
-
-            // 5 minuter: Kontrollera mätpunkter
-            if (counter_CheckMätpunkter >= 5 && Person.Role == "SuperAdmin" && IsZumbachÖppet == false)
-            {
-                counter_CheckMätpunkter = 0;
-                MainMeasureStatistics.ValidateMeasurements.AverageValues();
-            }
-            
-            // 5 min: Kolla statistik
-            if (counter_UpdateChart >= 1 && IsZumbachÖppet == false)
-            {
-                counter_UpdateChart = 0;
-                if (!string.IsNullOrEmpty(Order.OrderNumber))
-                    await measureStats.Add_MeasureInformation_MainForm(measurementChart, tlp_MainWindow);
-                //_ = Task.Run(() => measureStats.Add_MeasureInformation_MainForm(measurementChart, tlp_MainWindow));
-
-                await Statistics_DPP.Load_StatisticsAsync();
-            }
-
-            // 10 min: Ändra GUI-grade
-            if (counter_ChangeGrade >= 10 && IsZumbachÖppet == false)
-            {
-                counter_ChangeGrade = 0;
-                Change_GUI_Grade();
-            }
-
-            timer_Master.Start();
-        }
-
-
-
-        private void CheckForUpdate()
-        {
-            if (ChangeLog.LatestVersion is null)
-                return;
-
-            if (ChangeLog.LatestVersion.CompareTo(ChangeLog.CurrentVersion) <= 0)
-                return;
-
-            if (Program.IsUpdateCritical)
-            {
-                InfoText.Show(LanguageManager.GetString("update_Info_1"),
-                    CustomColors.InfoText_Color.Bad,
-                    "Warning!", this);
-
-                Maintenance.StartInstallation();
-                counter_CheckForUpdate = 1; // 1 minut mellan försöken
-                return;
-            }
-
-            Activity.Start();
-
-            InfoText.Question(
-                $"{LanguageManager.GetString("update_Info_1_1")}\n\n" +
-                $"{ChangeLog.News}\n" +
-                $"{LanguageManager.GetString("update_Info_1_2")}",
-                CustomColors.InfoText_Color.Warning,
-                "Warning!", this);
-
-            if (InfoText.answer == InfoText.Answer.No)
-            {
-                _ = Activity.Stop($"User {Person.Name} did NOT update the application");
-                timer_CheckForUpdate = 120; // 2 timmar
-            }
-            else
-            {
-                _ = Activity.Stop($"User {Person.Name} updated the Application");
-                Maintenance.StartInstallation();
-            }
-        }
-        private void ReLogin_Monitor()
-        {
-            
-            if (Monitor.Monitor.status == Monitor.Monitor.Status.Bad)
-            {
-                Login_Monitor.Login_API();
-
-                timer_ReloginMonitor = Monitor.Monitor.status != Monitor.Monitor.Status.Bad ? 300 : 10; // Om ok, vänta 5min innan nästa inloggning, annars 10 sek
-            }
-                
-        }
-        private void CheckForMaintenanceWork()
-        {
-            if (Person.Role == "SuperAdmin")
-                return;
-
-            if (Maintenance.IsMaintenance_Ongoing)
-            {
-                InfoText.Show($"{LanguageManager.GetString("maintenanceWork_1")} {Maintenance.Time_Ongoing}.",
-                    CustomColors.InfoText_Color.Bad, "Info", this);
-                Application.Exit();
-                Environment.Exit(0);
-                return;
-            }
-
-            if (!Maintenance.IsMaintenance_Coming)
-                return;
-
-            var clr = CustomColors.InfoText_Color.Ok;
-            //Mellan 8 timmar och 2 dygn kvar till planerat stopp
-            if (Maintenance.Time_Left_Stop.TotalHours > 8)
-            {
-                timer_counterPlaneratStopp = 60; // 1 timme
-                clr = CustomColors.InfoText_Color.Warning;
-            }
-
-            //Mer än 2 dygn kvar till planerat stopp
-            if (Maintenance.Time_Left_Stop.TotalDays > 2)
-            {
-                timer_counterPlaneratStopp = 420; // 7 timmar
-                clr = CustomColors.InfoText_Color.Ok;
-            }
-                
-            //Mindre än 8 timmar kvar till planerat stopp
-            if (Maintenance.Time_Left_Stop.TotalHours < 8)
-            {
-                timer_counterPlaneratStopp = 30; // 30 minuter
-                clr = CustomColors.InfoText_Color.Bad;
-            }
-                
-
-            Activity.Start();
-            InfoText.Show($"{LanguageManager.GetString("maintenanceWork_4")} {Maintenance.Time_Left} \n\n" +
-                          $"{Maintenance.Date_PlannedStop} {LanguageManager.GetString("maintenanceWork_2")}\n\n" +
-                          $"{LanguageManager.GetString("maintenanceWork_3")} {Maintenance.PlannedTime}", clr, "Info", this);
-            _ = Activity.Stop($"{Person.Name} has read about the scheduled downtime");
-
-        }
-
 
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)

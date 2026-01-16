@@ -180,7 +180,6 @@ namespace DigitalProductionProgram.MainWindow
             cb_Operation.BackColor = Color.White;
             cb_Operation.Dock = DockStyle.Fill;
             cb_Operation.DropDownHeight = 150;
-            cb_Operation.DropDownStyle = ComboBoxStyle.DropDownList;
             cb_Operation.DropDownWidth = 150;
             cb_Operation.FlatStyle = FlatStyle.Flat;
             cb_Operation.Font = new Font("Arial", 10F);

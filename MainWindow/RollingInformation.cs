@@ -267,7 +267,7 @@ namespace DigitalProductionProgram.MainWindow
             this.BackColor = Teman.backColor_Menu;
             lbl_Tips.ForeColor = Teman.foreColor_Tips;
         }
-        public void Change_Tips()
+        public async Task Change_Tips()
         {
             if (tips != null && Total_Tips > CounterTips)
             {
@@ -285,8 +285,8 @@ namespace DigitalProductionProgram.MainWindow
                 await Task.Run(() => Load_list_Tips());
             }
 
-            else
-                Load_list_Tips();
+            //else
+            //    Load_list_Tips();
 
             timer_MoveLabel.Start();
         }

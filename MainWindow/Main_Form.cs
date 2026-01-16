@@ -107,10 +107,10 @@ namespace DigitalProductionProgram.MainWindow
         //UPPSNABBNING AV PROGRAMMET VID UTVECKLING
         public static bool IsLoadingPriorityPlan;
         private static bool IsLoadingMeasurePoints = true;
-        private static readonly bool IsOpenRandomOrder = false;
-        private static readonly bool IsAutoOpenOrder = false;
-        public static bool IsAutoLoginSuperAdmin = true;
-        public static string adminHostName = "OH-ID61";
+        private const bool IsOpenRandomOrder = false;
+        private const bool IsAutoOpenOrder = false;
+        public const bool IsAutoLoginSuperAdmin = true;
+        public const string adminHostName = "OH-ID61";
 
         private DateTime startTime;
         private const string? develop_OrderNr = "H67876";

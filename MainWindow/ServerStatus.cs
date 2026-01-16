@@ -10,6 +10,15 @@ namespace DigitalProductionProgram.MainWindow
 {
     public partial class ServerStatus : UserControl
     {
+        public static LoginResult? LastLoginResult { get; private set; }
+        public static event Action<LoginResult>? LoginStatusChanged;
+        public static void Report(LoginResult result)
+        {
+            LastLoginResult = result;
+            LoginStatusChanged?.Invoke(result);
+        }
+
+
         public static string? DPP_ServerStatus;
         private Main_Form? mainForm;
         private static readonly object _lock = new();
@@ -19,71 +28,69 @@ namespace DigitalProductionProgram.MainWindow
         public ServerStatus()
         {
             InitializeComponent();
+            LoginStatusChanged += OnLoginStatusChanged;
+            DatabaseConnectionStatus.StatusChanged += OnDatabaseStatusChanged;
         }
+       
         public void SetMainForm(Main_Form form)
         {
             mainForm = form;
         }
-        public static void DrawPanelMonitorStatus(Panel panel, Color color)
+        private void OnLoginStatusChanged(LoginResult result)
         {
-            //panel.Paint += (sender, e) =>
-            //{
-            //    if (panel.Width <= 0 || panel.Height <= 0)
-            //        return; // Undvik crash
-
-            //    using var g = e.Graphics;
-            //    Point[] trianglePoints =
-            //    {
-            //        new Point(0, 0),
-            //        new Point(panel.Width / 2, panel.Height),
-            //        new Point(panel.Width, 0)
-            //    };
-
-            //    using Brush brush = new SolidBrush(color);
-            //    try
-            //    {
-            //        g.FillPolygon(brush, trianglePoints);
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        Debug.WriteLine($"Fel i DrawPanelMonitorStatus: {ex.Message}");
-            //    }
-            //};
-
-        }
-        public void DrawPanelDPP_ServerStatus(long time)
-        {
-            Color color = Color.Aqua;
-            if (time > 100)
-                color = Color.BlueViolet;
-
-            panel_DPP_ServerStatus.Paint += (sender, e) =>
+            if (InvokeRequired)
             {
-                using var g = e.Graphics;
-                // Define the points of the triangle
-                Point[] trianglePoints =
-                {
-                    new Point(0, 0),
-                    new Point(panel_DPP_ServerStatus.Width / 2, panel_DPP_ServerStatus.Height),
-                    new Point(panel_DPP_ServerStatus.Width, 0)
-                };
+                BeginInvoke(new Action(() => OnLoginStatusChanged(result)));
+                return;
+            }
 
-                // Draw the filled triangle
-                using (Brush brush = new SolidBrush(color))
-                {
-                    try
-                    {
-                        g.FillPolygon(brush, trianglePoints);
-                        // g.DrawPolygon(Pens.DarkGreen, trianglePoints);
-                    }
-                    catch (Exception exception)
-                    {
-                        Console.WriteLine(exception);
-                    }
-                }
-            };
+            if (!result.Success)
+            {
+                lbl_MonitorStatus.ForeColor = Color.DarkRed;
+                
+            }
+
+            switch (result.ElapsedMilliseconds)
+            {
+                case > 400:
+                    lbl_MonitorStatus.ForeColor = Color.Red;
+                    break;
+                case > 300:
+                    lbl_MonitorStatus.ForeColor = Color.DarkOrange;
+                    break;
+                case > 250:
+                    lbl_MonitorStatus.ForeColor = Color.Orange;
+                    break;
+                default:
+                    lbl_MonitorStatus.ForeColor = Color.Green;
+                    break;
+            }
+           
         }
+        private void OnDatabaseStatusChanged(DatabaseExecutionResult result)
+        {
+            if (InvokeRequired)
+            {
+                BeginInvoke(new Action(() => OnDatabaseStatusChanged(result)));
+                return;
+            }
 
+            switch (result.ElapsedMilliseconds)
+            {
+                case > 50:
+                    lbl_DPP_Status.ForeColor = Color.Red;
+                    break;
+                case > 30:
+                    lbl_DPP_Status.ForeColor = Color.DarkOrange;
+                    break;
+                case > 20:
+                    lbl_DPP_Status.ForeColor = Color.Orange;
+                    break;
+                default:
+                    lbl_DPP_Status.ForeColor = Color.Green;
+                    break;
+            }
+        }
         [DebuggerStepThrough]
         public static void Add_Sql_Counter([CallerMemberName]string methodname = null)
         {
@@ -138,5 +145,33 @@ namespace DigitalProductionProgram.MainWindow
                 flying.StartGame();
             }
         }
+
+
+
+        
+    }
+    public static class DatabaseConnectionStatus
+    {
+        public static DatabaseExecutionResult? LastResult { get; private set; }
+
+        public static event Action<DatabaseExecutionResult>? StatusChanged;
+
+        public static void Report(DatabaseExecutionResult result)
+        {
+            LastResult = result;
+            StatusChanged?.Invoke(result);
+        }
+    }
+
+    public class LoginResult
+    {
+        public bool Success { get; init; }
+        public long ElapsedMilliseconds { get; init; }
+
+    }
+    public class DatabaseExecutionResult
+    {
+        public bool Success { get; init; }
+        public long ElapsedMilliseconds { get; init; }
     }
 }

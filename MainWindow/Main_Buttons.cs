@@ -124,7 +124,6 @@ namespace DigitalProductionProgram.MainWindow
                         ORDER BY ColumnIndex";
 
                         using var cmd = new SqlCommand(query, con);
-                        ServerStatus.Add_Sql_Counter();
                         cmd.Parameters.AddWithValue("@workoperationid", Order.WorkoperationID);
 
                         using var reader = cmd.ExecuteReader();
@@ -379,18 +378,18 @@ namespace DigitalProductionProgram.MainWindow
                 var br = new BinaryReader(fs);
                 var img = br.ReadBytes((int)fs.Length);
 
-                using (var con = new SqlConnection(Database.cs_Protocol))
+                Database.ExecuteSafe(con =>
                 {
                     var query = @"INSERT INTO [Order].Pictures
                                    VALUES (@orderid, @picture, @index)";
-                    con.Open();
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                    var cmd = new SqlCommand(query, con);
                     cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                     cmd.Parameters.AddWithValue("@picture", img);
                     cmd.Parameters.AddWithValue("@index", Pictures.Total_Pictures);
 
                     cmd.ExecuteNonQuery();
-                }
+                    return true;
+                });
 
                 InfoText.Show(LanguageManager.GetString("uploadPicture_3"), CustomColors.InfoText_Color.Info, null);
 

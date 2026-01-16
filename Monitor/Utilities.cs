@@ -202,7 +202,7 @@ namespace DigitalProductionProgram.Monitor
 
             }
         }
-       // [DebuggerStepThrough]
+        [DebuggerStepThrough]
         public static T GetOneFromMonitor<T>(params string[] queryOptions) where T : DTO, new()
         {
             Cursor previous = Cursor.Current;

@@ -163,8 +163,8 @@ namespace DigitalProductionProgram.MainWindow
             {
                 if (!string.IsNullOrEmpty(Person.Name))
                 {
-                    tips.AddTip($"{LanguageManager.GetString("rollingTips_1")} {Person.Antal_Mätningar_Operatör} {LanguageManager.GetString("rollingTips_2")}");
-                    tips.AddTip($"{LanguageManager.GetString("rollingTips_3")} {Person.Antal_Inloggningar} {LanguageManager.GetString("rollingTips_4")}");
+                    tips.AddTip($"{LanguageManager.GetString("rollingTips_1")} {Person.TotalMeasurementsByUser} {LanguageManager.GetString("rollingTips_2")}");
+                    tips.AddTip($"{LanguageManager.GetString("rollingTips_3")} {Person.TotalLoginsByUser} {LanguageManager.GetString("rollingTips_4")}");
                 }
             }
         }

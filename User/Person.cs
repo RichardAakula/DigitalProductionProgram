@@ -16,81 +16,90 @@ namespace DigitalProductionProgram.User
     public abstract class Person
     {
         public static string? Role = null!;
-        
+
 
         public static List<string?> List_Users(bool IsShowInactiveUsers)
         {
-            var list = new List<string?>();
+            return Database.ExecuteSafe(con =>
+            {
+                var list = new List<string?>();
+                const string query = @"
+                SELECT Name
+                FROM [User].Person
+                WHERE IsActive = 'True'
+                ORDER BY Name";
 
-            using var con = new SqlConnection(Database.cs_Protocol);
-            const string query = @"
-                    SELECT Name FROM [User].Person
-                    WHERE IsActive = 'True'
-                    ORDER BY Name";
+                using var cmd = new SqlCommand(query, con);
+                using var reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    var name = reader[0]?.ToString();
+                    if (!string.IsNullOrEmpty(name))
+                        list.Add(name);
+                }
 
-            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-               
-
-            con.Open();
-            var reader = cmd.ExecuteReader();
-            while (reader.Read())
-                list.Add(reader[0].ToString());
-            return list;
+                return list;
+            });
         }
+
 
         public static List<string> List_Roles
         {
             get
             {
-                var list = new List<string>();
-                using var con = new SqlConnection(Database.cs_Protocol);
-                con.Open();
-                var query = @"
-                        SELECT RoleName FROM [User].Roles 
+                var roles = Database.ExecuteSafe(con =>
+                {
+                    var list = new List<string>();
+
+                    const string query = @"
+                        SELECT RoleName
+                        FROM [User].Roles
                         WHERE RoleName != 'SuperAdmin'
                         ORDER BY
-                        CASE WHEN RoleName = 'Operator' 
-                        THEN 0 
-                        ELSE 1
-                        END, RoleName";
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                var reader = cmd.ExecuteReader();
+                        CASE WHEN RoleName = 'Operator' THEN 0 ELSE 1 END,
+                        RoleName";
 
-                while (reader.Read())
-                {
-                    var role =  reader[0].ToString();
-                    list.Add(role);
-                }
-                if (Role == "SuperAdmin")
-                    list.Add("SuperAdmin");
-                return list;
+                    using var cmd = new SqlCommand(query, con);
+                    using var reader = cmd.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        var role = reader[0]?.ToString();
+                        if (!string.IsNullOrEmpty(role))
+                            list.Add(role);
+                    }
+                    return list;
+                });
+
+                // Lägg till SuperAdmin om nuvarande användare är SuperAdmin
+                if (Role == "SuperAdmin" && !roles.Contains("SuperAdmin"))
+                    roles.Add("SuperAdmin");
+
+                return roles;
             }
         }
         public static List<MailAddress> List_MailAddress
         {
             get
             {
-                var list = new List<MailAddress>();
-
-                using var con = new SqlConnection(Database.cs_Protocol);
-                var query = "SELECT DISTINCT Mail FROM [User].Person";
-
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                con.Open();
-                var reader = cmd.ExecuteReader();
-                while (reader.Read())
+                var list = Database.ExecuteSafe(con =>
                 {
-                    var email = reader[0].ToString();
-                    if (eMail.Mail.IsValidEmail(email))
-                    {
-                        var mail = new MailAddress(email);
-                        list.Add(mail);
-                    }
-                }
+                    var tempList = new List<MailAddress>();
+                    const string query = "SELECT DISTINCT Mail FROM [User].Person";
+                    using var cmd = new SqlCommand(query, con);
 
+                    using var reader = cmd.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        var email = reader[0]?.ToString();
+                        if (!string.IsNullOrEmpty(email) && eMail.Mail.IsValidEmail(email))
+                            tempList.Add(new MailAddress(email));
+                    }
+                    return tempList;
+                });
                 return list;
             }
         }
+
         public static Image ProfilePicture(string? name)
         {
             if (string.IsNullOrEmpty(name))
@@ -107,16 +116,12 @@ namespace DigitalProductionProgram.User
                         WHERE Name = @name)";
 
                 using var cmd = new SqlCommand(query, con);
-                ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@name", name);
-
                 var value = cmd.ExecuteScalar();
-
                 if (value == null || value == DBNull.Value)
                     return Properties.Resources.anonym;
 
                 var imgData = (byte[])value;
-
                 try
                 {
                     using var ms = new MemoryStream(imgData);
@@ -132,24 +137,7 @@ namespace DigitalProductionProgram.User
             }) ?? Properties.Resources.anonym; // Om ExecuteSafe returnerar null
         }
 
-
-        //public static Image ProfilePicture(string? name)
-        //{
-        //    if (string.IsNullOrEmpty(name))
-        //        return Properties.Resources.anonym;
-        //    using var con = new SqlConnection(Database.cs_Protocol);
-        //    const string query = "SELECT Picture FROM [User].Picture WHERE UserID = (SELECT UserID FROM [User].Person WHERE Name = @name)";
-        //    con.Open();
-        //    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-        //    cmd.Parameters.AddWithValue("@name", name);
-        //    var value = cmd.ExecuteScalar();
-        //    if (value is null)
-        //        return Properties.Resources.anonym;
-        //    var img = (byte[])value;
-        //    var ms = new MemoryStream(img);
-        //    return Image.FromStream(ms);
-        //}
-
+       
         public static int UserID { get; set; }
         public static string? Name { get; set; }
         public static string? Sign { get; set; }
@@ -179,153 +167,202 @@ namespace DigitalProductionProgram.User
 
         }
 
-        
+
         public static bool IsOperatorReadMyAnalysis
         {
             get
             {
-                using var con = new SqlConnection(Database.cs_Protocol);
-                const string query = @"
-                    SELECT * 
-                    FROM [User].TimeReadChangeLog as time
-                        JOIN [User].Person as person
+                var result = Database.ExecuteSafe(con =>
+                {
+                    const string query = @"
+                        SELECT 1
+                        FROM [User].TimeReadChangeLog AS time
+                        JOIN [User].Person AS person
                             ON person.UserID = time.UserID
-                    WHERE month = @month 
-                        AND Year = @year 
-                        AND Name = @namn";
-                con.Open();
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@month", DateTime.Now.Month.ToString());
-                cmd.Parameters.AddWithValue("@year", DateTime.Now.Year.ToString());
-                cmd.Parameters.AddWithValue("@namn", Name);
-                var reader = cmd.ExecuteReader();
-                return reader.HasRows;
+                        WHERE month = @month 
+                            AND Year = @year 
+                            AND Name = @namn";
+
+                    using var cmd = new SqlCommand(query, con);
+                    cmd.Parameters.AddWithValue("@month", DateTime.Now.Month.ToString());
+                    cmd.Parameters.AddWithValue("@year", DateTime.Now.Year.ToString());
+                    cmd.Parameters.AddWithValue("@namn", Name);
+                    using var reader = cmd.ExecuteReader();
+                    return reader.HasRows;
+                });
+                return result;
             }
         }
 
-        public static int Antal_Inloggningar
-        {
-            get
-            {
-                using var con = new SqlConnection(Database.cs_Protocol);
-                const string query = "SELECT COUNT(*) FROM Log.ActivityLog  WHERE Info = @info";
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@info", $"Logging in: {Name}");
-                con.Open();
-                return (int)cmd.ExecuteScalar();
-            }
-        }
-        public static int Antal_Mätningar_Operatör
-        {
-            get
-            {
-                using var con = new SqlConnection(Database.cs_Protocol);
-                var query = @"SELECT (SELECT COUNT(*) FROM Measureprotocol.MainData WHERE AnstNr = @employeenumber)";
 
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@employeenumber", EmployeeNr);
-                con.Open();
-                return (int)cmd.ExecuteScalar();
+        public static int TotalLoginsByUser
+        {
+            get
+            {
+                var result = Database.ExecuteSafe(con =>
+                {
+                    const string query = "SELECT COUNT(*) FROM Log.ActivityLog WHERE Info = @info";
+                    using var cmd = new SqlCommand(query, con);
+                    cmd.Parameters.AddWithValue("@info", $"Logging in: {Name}");
+                    var scalar = cmd.ExecuteScalar();
+                    return scalar != null ? Convert.ToInt32(scalar) : 0; // null-säker och typ-säker
+                });
+                return result;
             }
         }
+
+        public static int TotalMeasurementsByUser
+        {
+            get
+            {
+                var result = Database.ExecuteSafe(con =>
+                {
+                    const string query = @"SELECT COUNT(*) FROM Measureprotocol.MainData WHERE AnstNr = @employeenumber";
+                    using var cmd = new SqlCommand(query, con);
+                    cmd.Parameters.AddWithValue("@employeenumber", EmployeeNr);
+                    var scalar = cmd.ExecuteScalar();
+                    return scalar != null ? Convert.ToInt32(scalar) : 0; // null-säker och typ-säker
+                });
+
+                return result;
+            }
+        }
+
         public static int User_Points
         {
             get
             {
-                using var con = new SqlConnection(Database.cs_Protocol);
-                const string query = "SELECT Points FROM [User].Person WHERE EmployeeNumber = @employeenumber";
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@employeenumber", EmployeeNr);
-                con.Open();
-                return (int)cmd.ExecuteScalar();
+                var result = Database.ExecuteSafe(con =>
+                {
+                    const string query = "SELECT Points FROM [User].Person WHERE EmployeeNumber = @employeenumber";
+                    using var cmd = new SqlCommand(query, con);
+                    cmd.Parameters.AddWithValue("@employeenumber", EmployeeNr);
+
+                    var scalar = cmd.ExecuteScalar();
+                    return scalar != null ? Convert.ToInt32(scalar) : 0;
+                });
+
+                return result;
             }
         }
-       
+
+
         public static string? Get_SignWithName(string? namn)
         {
             if (string.IsNullOrEmpty(namn))
                 return null;
-            using var con = new SqlConnection(Database.cs_Protocol);
-            const string query = "SELECT Signature FROM [User].Person WHERE Name = @name";
-            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-            cmd.Parameters.AddWithValue("@name", namn);
-            con.Open();
-            return (string)cmd.ExecuteScalar();
+
+            var result = Database.ExecuteSafe(con =>
+            {
+                const string query = "SELECT Signature FROM [User].Person WHERE Name = @name";
+                using var cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@name", namn);
+                var scalar = cmd.ExecuteScalar();
+                return scalar?.ToString();
+            });
+
+            return result;
         }
         public static string? Get_NameWithAnstNr(string anstNr)
         {
-            using var con = new SqlConnection(Database.cs_Protocol);
-            const string query = "SELECT Name FROM [User].Person WHERE EmployeeNumber = @employeenumber";
+            var result = Database.ExecuteSafe(con =>
+            {
+                const string query = "SELECT Name FROM [User].Person WHERE EmployeeNumber = @employeenumber";
+                using var cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@employeenumber", anstNr);
+                var scalar = cmd.ExecuteScalar();
+                return scalar?.ToString();
+            });
 
-            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-            cmd.Parameters.AddWithValue("@employeenumber", anstNr);
-            con.Open();
-            var name = cmd.ExecuteScalar();
-            return name?.ToString();
+            return result;
         }
-        public static string? Get_AnstNrWithName(string? name)
+
+        public static string? Get_EmployeeNrWithName(string? name)
         {
             if (string.IsNullOrEmpty(name) || name == "Klicka här för godkännande...")
                 return null;
-            using var con = new SqlConnection(Database.cs_Protocol);
-            const string query = "SELECT EmployeeNumber FROM [User].Person WHERE Name = @name";
 
-            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-            cmd.Parameters.AddWithValue("@name", name);
-            con.Open();
-            var value = cmd.ExecuteScalar();
-            return value?.ToString();
+            var result = Database.ExecuteSafe(con =>
+            {
+                const string query = "SELECT EmployeeNumber FROM [User].Person WHERE Name = @name";
+                using var cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@name", name);
+                var value = cmd.ExecuteScalar();
+                return value?.ToString(); // null-säker konvertering
+            });
+
+            return result;
         }
         public static int Get_EmployeeID(string employeeNr)
         {
-            using var con = new SqlConnection(Database.cs_Protocol);
-            const string query = "SELECT UserID FROM [User].Person WHERE EmployeeNumber = @employeenumber";
+            var result = Database.ExecuteSafe(con =>
+            {
+                const string query = "SELECT UserID FROM [User].Person WHERE EmployeeNumber = @employeenumber";
 
-            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-            cmd.Parameters.AddWithValue("@employeenumber", employeeNr);
-            con.Open();
-            return (int)cmd.ExecuteScalar();
+                using var cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@employeenumber", employeeNr);
+
+                var value = cmd.ExecuteScalar();
+                return value != null ? Convert.ToInt32(value) : 0; // null-säker och typ-säker
+            });
+
+            return result;
         }
+
         public static async Task<Version?> LastReadChangeLogVersion(string name)
         {
-            await using var con = new SqlConnection(Database.cs_Protocol);
-            const string query = "SELECT LastReadChangeLogVersion FROM [User].Person WHERE Name = @name";
+            if (string.IsNullOrEmpty(name))
+                return null;
+            var result = await Database.ExecuteSafeAsync(async con =>
+            {
+                const string query = "SELECT LastReadChangeLogVersion FROM [User].Person WHERE Name = @name";
+                await using var cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@name", name);
 
-            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-            con.Open();
-            cmd.Parameters.AddWithValue("@name", name);
-            var result = await cmd.ExecuteScalarAsync();
-            return Version.TryParse(result?.ToString(), out var ver) ? ver : null;
+                var scalar = await cmd.ExecuteScalarAsync();
+                return Version.TryParse(scalar?.ToString(), out var ver) ? ver : null;
+            });
+            return result;
         }
+
 
 
         public static void Load_EmployeeNumber(string? namn)
         {
             if (string.IsNullOrEmpty(namn))
-                return ;
-            using var con = new SqlConnection(Database.cs_Protocol);
-            // int anstNr;
-            var query = "SELECT EmployeeNumber FROM [User].Person WHERE Name = @name";
+                return;
 
-            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-            cmd.Parameters.AddWithValue("@name", namn);
-            con.Open();
-            var value = cmd.ExecuteScalar();
+            var value = Database.ExecuteSafe(con =>
+            {
+                var query = "SELECT EmployeeNumber FROM [User].Person WHERE Name = @name";
+                using var cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@name", namn);
+                return cmd.ExecuteScalar();
+            });
+
             if (value != null)
                 EmployeeNr = value.ToString();
         }
+
         public static void Fill_ContextMenu_Name(ContextMenuStrip cm)
         {
             cm.Items.Clear();
-            using var con = new SqlConnection(Database.cs_Protocol);
-            const string query = "SELECT Name FROM [User].Person ORDER BY Name";
-              
-            con.Open();
-            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-            var reader = cmd.ExecuteReader();
-            while (reader.Read())
-                cm.Items.Add(reader[0].ToString());
+
+            Database.ExecuteSafe(con =>
+            {
+                const string query = "SELECT Name FROM [User].Person ORDER BY Name";
+
+                using var cmd = new SqlCommand(query, con);
+                using var reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    var name = reader[0]?.ToString();
+                    if (!string.IsNullOrEmpty(name))
+                        cm.Items.Add(name);
+                }
+            });
         }
+
         public static void Clear()
         {
             EmployeeNr = string.Empty;
@@ -339,7 +376,7 @@ namespace DigitalProductionProgram.User
         }
         public static void Add(string name, string sign, string anstNr, string password, string roleName, string mail, byte[]? img)
         {
-            using (var con = new SqlConnection(Database.cs_Protocol))
+            Database.ExecuteSafe(con =>
             {
                 const string query = @"
                 IF NOT EXISTS 
@@ -380,7 +417,7 @@ namespace DigitalProductionProgram.User
                     'True', 
                     'True'
                 )";
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                var cmd = new SqlCommand(query, con);
                 cmd.Parameters.AddWithValue("@name", name);
                 cmd.Parameters.AddWithValue("@signature", sign);
                 cmd.Parameters.AddWithValue("@employeenumber", anstNr);
@@ -395,29 +432,30 @@ namespace DigitalProductionProgram.User
                 if (value < 0)
                 {
                     InfoText.Show($"{name} {LanguageManager.GetString("user_AlreadyInSystem")}", CustomColors.InfoText_Color.Bad, null);
-                    return;
                 }
+
                 if (img != null)
                     Save_ProfilePicture(img, name);
-            }
+            });
            
             InfoText.Show($"{name} {LanguageManager.GetString("user_AddedInSystem")}", CustomColors.InfoText_Color.Ok, null);
         }
         public static void UpdatePassword( string newPassword)
         {
-            using var con = new SqlConnection(Database.cs_Protocol);
-            const string query = @"
+            Database.ExecuteSafe(con =>
+            {
+                const string query = @"
                 UPDATE [User].Person
                 SET Password = @password
                 WHERE UserID = @userid";
 
-            using var cmd = new SqlCommand(query, con);
-            ServerStatus.Add_Sql_Counter();
+                using var cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@userid", Person.UserID);
+                cmd.Parameters.AddWithValue("@password", PasswordManager.ConvertToHashedPassword(newPassword));
 
-            cmd.Parameters.AddWithValue("@userid", Person.UserID);
-            cmd.Parameters.AddWithValue("@password", PasswordManager.ConvertToHashedPassword(newPassword));
-
-            con.Open();
+                cmd.ExecuteNonQuery();
+            });
+            
         }
 
         public static async Task UpdateLastReadChangelogVersion(string? username)
@@ -430,74 +468,57 @@ namespace DigitalProductionProgram.User
 
             if (currentVersion == null || newVersion > currentVersion)
             {
-                await using var con = new SqlConnection(Database.cs_Protocol);
-                const string query = @"
+                await Database.ExecuteSafeAsync(async con =>
+                {
+                    const string query = @"
                 UPDATE [User].Person
                 SET LastReadChangeLogVersion = @lastreadchangelogversion
                 WHERE Name = @name";
 
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@name", username);
-                cmd.Parameters.AddWithValue("@lastreadchangelogversion", newVersion.ToString());
+                    var cmd = new SqlCommand(query, con);
+                    cmd.Parameters.AddWithValue("@name", username);
+                    cmd.Parameters.AddWithValue("@lastreadchangelogversion", newVersion.ToString());
+                    await cmd.ExecuteNonQueryAsync();
+                    return true;
 
-                con.Open();
-                await cmd.ExecuteNonQueryAsync();
+                });
             }
         }
 
         public static void Save_ProfilePicture(byte[]? img, string name)
         {
-            using var con = new SqlConnection(Database.cs_Protocol);
-            const string query = @"
-        IF NOT EXISTS (
-            SELECT 1 FROM [User].Picture 
-            WHERE UserID = (SELECT UserID FROM [User].Person WHERE Name = @name)
-        )
-        BEGIN
-            INSERT INTO [User].Picture (UserID, Picture)
-            SELECT UserID, @picture 
-            FROM [User].Person 
-            WHERE Name = @name
-        END
-        ELSE
-        BEGIN
-            UPDATE [User].Picture
-            SET Picture = @picture 
-            WHERE UserID = (SELECT UserID FROM [User].Person WHERE Name = @name)
-        END";
+            Database.ExecuteSafe(con =>
+            {
+                const string query = @"
+                IF NOT EXISTS 
+                (
+                    SELECT 1 FROM [User].Picture 
+                    WHERE UserID = (SELECT UserID FROM [User].Person WHERE Name = @name)
+                )
+                BEGIN
+                    INSERT INTO [User].Picture (UserID, Picture)
+                    SELECT UserID, @picture 
+                    FROM [User].Person 
+                    WHERE Name = @name
+                END
+                ELSE
+                BEGIN
+                    UPDATE [User].Picture
+                    SET Picture = @picture 
+                    WHERE UserID = (SELECT UserID FROM [User].Person WHERE Name = @name)
+                END";
 
-            using var cmd = new SqlCommand(query, con);
-            ServerStatus.Add_Sql_Counter();
+                using var cmd = new SqlCommand(query, con);
 
-            // 🔹 Ange explicit datatyp
-            cmd.Parameters.Add("@picture", SqlDbType.VarBinary, -1).Value =
-                img ?? (object)DBNull.Value;
+                cmd.Parameters.Add("@picture", SqlDbType.VarBinary, -1).Value = img ?? (object)DBNull.Value;
+                cmd.Parameters.Add("@name", SqlDbType.NVarChar, 100).Value = name;
 
-            cmd.Parameters.Add("@name", SqlDbType.NVarChar, 100).Value = name;
-
-            con.Open();
-            cmd.ExecuteNonQuery();
+                cmd.ExecuteNonQuery();
+            });
+            
         }
 
-        //  public static void Save_ProfilePicture(byte[]? img, string name)
-        //  {
-        //      using var con = new SqlConnection(Database.cs_Protocol);
-        //      const string query = @"
-        //              IF NOT EXISTS (SELECT * FROM [User].Picture WHERE UserID = (SELECT UserID FROM [User].Person WHERE Name = @name)) 
-        //                  INSERT INTO [User].Picture (UserID, Picture)
-        //                  SELECT UserID, @picture 
-        //FROM [User].Person 
-        //WHERE Name = @name
-        //              ELSE
-        //                  UPDATE [User].Picture
-        //                  SET Picture = @picture WHERE UserID = (SELECT UserID FROM [User].Person WHERE Name = @name)";
-        //      con.Open();
-        //      var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-        //      cmd.Parameters.AddWithValue("@picture", img);
-        //      cmd.Parameters.AddWithValue("@name", name);
-        //      if (img != null)
-        //          cmd.ExecuteNonQuery();
-        //  }
+        
     }
     public class Grade
     {
@@ -599,47 +620,52 @@ namespace DigitalProductionProgram.User
         {
             get
             {
-                if (Person.EmployeeNr is null || string.IsNullOrEmpty(Person.EmployeeNr))
+                if (string.IsNullOrEmpty(Person.EmployeeNr))
                     return false;
-                DateTime last_Point;
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    var query = "SELECT Last_Point_Time FROM [User].Person WHERE EmployeeNumber = @employeenumber";
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    cmd.Parameters.AddWithValue("@employeenumber", Person.EmployeeNr);
-                    con.Open();
-                    DateTime.TryParse(cmd.ExecuteScalar().ToString(), out last_Point);
-                }
-                var span = DateTime.Now - last_Point;
 
-                if (span.TotalSeconds > 20)
-                    return true;
-                return false;
+                var last_Point = Database.ExecuteSafe(con =>
+                {
+                    const string query = "SELECT Last_Point_Time FROM [User].Person WHERE EmployeeNumber = @employeenumber";
+                    using var cmd = new SqlCommand(query, con);
+                    cmd.Parameters.AddWithValue("@employeenumber", Person.EmployeeNr);
+                    var scalar = cmd.ExecuteScalar();
+                    return scalar != null && DateTime.TryParse(scalar.ToString(), out var dt) ? dt : DateTime.MinValue;
+                });
+                var span = DateTime.Now - last_Point;
+                return span.TotalSeconds > 20;
             }
         }
+
         public static void Add_Points(int point, string Text)
         {
-            if (Is_Ok_Add_Points)
+            if (!Is_Ok_Add_Points)
+                return;
+
+            if (!Person.IsUserSignedIn(false))
+                return;
+            Activity.Start();
+            Database.ExecuteSafe(con =>
             {
-                if (Person.IsUserSignedIn(false) == false)
-                    return;
-                Activity.Start();
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    var query = "UPDATE [User].Person SET Points = Points + @points, Last_Point_Time = @time WHERE EmployeeNumber = @employeenumber";
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    cmd.Parameters.AddWithValue("@employeenumber", Person.EmployeeNr);
-                    cmd.Parameters.AddWithValue("@points", point);
-                    cmd.Parameters.AddWithValue("@time", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
-                    con.Open();
-                    cmd.ExecuteScalar();
-                }
-                _ = Activity.Stop($"{point} points. Totally: {TotalPoints} points: ({Text})");
-            }
+                const string query = @"
+                    UPDATE [User].Person
+                    SET Points = Points + @points,
+                        Last_Point_Time = @time
+                    WHERE EmployeeNumber = @employeenumber";
+
+                using var cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@employeenumber", Person.EmployeeNr);
+                cmd.Parameters.AddWithValue("@points", point);
+                cmd.Parameters.AddWithValue("@time", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+                cmd.ExecuteNonQuery(); 
+                
+            });
+
+            _ = Activity.Stop($"{point} points. Totally: {TotalPoints} points: ({Text})");
         }
+
     }
 
-   
+
 
 
 }

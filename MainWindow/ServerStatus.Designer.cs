@@ -54,19 +54,19 @@ namespace DigitalProductionProgram.MainWindow
             panel_DPP_ServerStatus.Margin = new Padding(0);
             panel_DPP_ServerStatus.Name = "panel_DPP_ServerStatus";
             tlp_Main.SetRowSpan(panel_DPP_ServerStatus, 2);
-            panel_DPP_ServerStatus.Size = new Size(33, 40);
+            panel_DPP_ServerStatus.Size = new Size(40, 40);
             panel_DPP_ServerStatus.TabIndex = 896;
             // 
             // lbl_DPP_Status
             // 
             lbl_DPP_Status.BackColor = Color.Transparent;
             lbl_DPP_Status.Dock = DockStyle.Fill;
-            lbl_DPP_Status.Font = new Font("Mongolian Baiti", 9F, FontStyle.Bold);
+            lbl_DPP_Status.Font = new Font("Mongolian Baiti", 12F, FontStyle.Bold);
             lbl_DPP_Status.ForeColor = Color.FromArgb(156, 0, 6);
             lbl_DPP_Status.Location = new Point(0, 0);
             lbl_DPP_Status.Margin = new Padding(4, 0, 4, 0);
             lbl_DPP_Status.Name = "lbl_DPP_Status";
-            lbl_DPP_Status.Size = new Size(33, 40);
+            lbl_DPP_Status.Size = new Size(40, 40);
             lbl_DPP_Status.TabIndex = 895;
             lbl_DPP_Status.Text = "DPP";
             lbl_DPP_Status.TextAlign = ContentAlignment.MiddleCenter;
@@ -77,23 +77,23 @@ namespace DigitalProductionProgram.MainWindow
             panel_MonitorStatus.BackgroundImageLayout = ImageLayout.Stretch;
             panel_MonitorStatus.Controls.Add(lbl_MonitorStatus);
             panel_MonitorStatus.Dock = DockStyle.Fill;
-            panel_MonitorStatus.Location = new Point(99, 0);
+            panel_MonitorStatus.Location = new Point(106, 0);
             panel_MonitorStatus.Margin = new Padding(0);
             panel_MonitorStatus.Name = "panel_MonitorStatus";
             tlp_Main.SetRowSpan(panel_MonitorStatus, 2);
-            panel_MonitorStatus.Size = new Size(36, 40);
+            panel_MonitorStatus.Size = new Size(29, 40);
             panel_MonitorStatus.TabIndex = 895;
             // 
             // lbl_MonitorStatus
             // 
             lbl_MonitorStatus.BackColor = Color.Transparent;
             lbl_MonitorStatus.Dock = DockStyle.Fill;
-            lbl_MonitorStatus.Font = new Font("Mongolian Baiti", 9F, FontStyle.Bold);
+            lbl_MonitorStatus.Font = new Font("Mongolian Baiti", 14F, FontStyle.Bold);
             lbl_MonitorStatus.ForeColor = Color.FromArgb(156, 0, 6);
             lbl_MonitorStatus.Location = new Point(0, 0);
             lbl_MonitorStatus.Margin = new Padding(6);
             lbl_MonitorStatus.Name = "lbl_MonitorStatus";
-            lbl_MonitorStatus.Size = new Size(36, 40);
+            lbl_MonitorStatus.Size = new Size(29, 40);
             lbl_MonitorStatus.TabIndex = 895;
             lbl_MonitorStatus.Text = "M";
             lbl_MonitorStatus.TextAlign = ContentAlignment.MiddleCenter;
@@ -105,8 +105,8 @@ namespace DigitalProductionProgram.MainWindow
             tlp_Main.ColumnCount = 4;
             tlp_Main.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25F));
             tlp_Main.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25F));
-            tlp_Main.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25F));
-            tlp_Main.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25F));
+            tlp_Main.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 30.37037F));
+            tlp_Main.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 20.74074F));
             tlp_Main.Controls.Add(lbl_Memory, 0, 1);
             tlp_Main.Controls.Add(label_Memory, 0, 0);
             tlp_Main.Controls.Add(label_Queries, 1, 0);

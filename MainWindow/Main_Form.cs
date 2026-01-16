@@ -3,6 +3,7 @@
 //Projekt   : Digitala mät&kör Protokoll
 
 using System;
+using System.CodeDom.Compiler;
 using System.Diagnostics;
 using Microsoft.Data.SqlClient;
 using DigitalProductionProgram.ControlsManagement;
@@ -102,9 +103,11 @@ namespace DigitalProductionProgram.MainWindow
                 cp.ExStyle |= 0x02000000; // Turn on WS_EX_COMPOSITED
                 return cp;
             }
-        } 
+        }
 
         //UPPSNABBNING AV PROGRAMMET VID UTVECKLING
+        public static bool IsZumbachÖppet = false;
+        public static bool IsBetaMode = false;
         public static bool IsLoadingPriorityPlan;
         private static bool IsLoadingMeasurePoints = true;
         private const bool IsOpenRandomOrder = false;
@@ -332,8 +335,9 @@ namespace DigitalProductionProgram.MainWindow
                 foreach (var ctrl in controls)
                     ctrl.Visible = false;
 
-                using var con = new SqlConnection(Database.cs_Protocol);
-                const string query = @"
+                Database.ExecuteSafe(con =>
+                {
+                    const string query = @"
                     SELECT Name
                     FROM Workoperation.ControlVisibiltySettings  as visibility
 	                    JOIN Workoperation.ApplicationControls as controls
@@ -341,19 +345,19 @@ namespace DigitalProductionProgram.MainWindow
                     WHERE WorkOperationID = (SELECT ID FROM Workoperation.Names WHERE Name = @workoperation AND ID IS NOT NULL) 
 	                    AND ColumnIndex IS NULL
                     ORDER BY ColumnIndex";
-                con.Open();
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@workoperation", Order.WorkOperation.ToString());
-                var reader = cmd.ExecuteReader();
-                while (reader.Read())
-                {
-                    var name = reader[0].ToString();
-                    foreach (var control in controls)
+                    var cmd = new SqlCommand(query, con);
+                    cmd.Parameters.AddWithValue("@workoperation", Order.WorkOperation.ToString());
+                    var reader = cmd.ExecuteReader();
+                    while (reader.Read())
                     {
-                        if (control.Name == name)
-                            control.Visible = true;
+                        var name = reader[0].ToString();
+                        foreach (var control in controls)
+                        {
+                            if (control.Name == name)
+                                control.Visible = true;
+                        }
                     }
-                }
+                });
             }
         }
         private void Set_GUI_Theme_Krympslang()

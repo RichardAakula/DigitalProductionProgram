@@ -1,12 +1,14 @@
-﻿using DigitalProductionProgram.Help;
+﻿using DigitalProductionProgram.ControlsManagement;
+using DigitalProductionProgram.Help;
+using DigitalProductionProgram.Log;
+using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.PrintingServices;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
+using System.Diagnostics;
 using System.Security.Cryptography;
 using System.Text;
-using DigitalProductionProgram.ControlsManagement;
-using DigitalProductionProgram.Log;
 
 
 namespace DigitalProductionProgram.DatabaseManagement
@@ -80,18 +82,24 @@ namespace DigitalProductionProgram.DatabaseManagement
 
         private bool mouseDown;
         private Point lastLocation;
-        
-        
+
+
         public static Type? DataType(string kolumn, string register)
         {
-            using var con = new SqlConnection(Database.cs_Protocol);
-            var cmd = new SqlCommand($"SELECT TOP(1) {kolumn} FROM {register}", con);
-            con.Open();
-            var reader = cmd.ExecuteReader();
-            while (reader.Read())
-                return reader.GetFieldType(0);
-            return null;
+            if (string.IsNullOrEmpty(kolumn) || string.IsNullOrEmpty(register))
+                return null;
+
+            return Database.ExecuteSafe(con =>
+            {
+                var query = $"SELECT TOP(1) {kolumn} FROM {register}";
+                using var cmd = new SqlCommand(query, con);
+                using var reader = cmd.ExecuteReader();
+                if (reader.Read())
+                    return reader.GetFieldType(0);
+                return null;
+            });
         }
+
 
         private void IsOkSave()
         {
@@ -139,39 +147,80 @@ namespace DigitalProductionProgram.DatabaseManagement
             InitializeComponent();
             Load_Databases();
         }
-
+        [DebuggerStepThrough]
+        public static void ExecuteSafe(Action<SqlConnection> action)
+        {
+            ExecuteSafe<int>(con =>
+            {
+                action(con);
+                return 0;
+            });
+        }
+        [DebuggerStepThrough]
         public static T ExecuteSafe<T>(Func<SqlConnection, T> action)
         {
+            var sw = Stopwatch.StartNew();
+
             try
             {
                 using var con = new SqlConnection(Database.cs_Protocol);
                 con.Open();
-                return action(con);
+                ServerStatus.Add_Sql_Counter();
+                T result = action(con);
+
+                return result;
             }
             catch (Exception)
             {
-                // Här kan du logga, visa fel, eller slå på en SQL-counter
-                InfoText.Show(LanguageManager.GetString("errorConnectingDatabase"),
-                    CustomColors.InfoText_Color.Bad, "Error!");
+                InfoText.Show(LanguageManager.GetString("errorConnectingDatabase"), CustomColors.InfoText_Color.Bad, "Error!");
+
                 return default!;
+            }
+            finally
+            {
+                sw.Stop();
+
+                DatabaseConnectionStatus.Report(
+                    new DatabaseExecutionResult
+                    {
+                        Success = sw.ElapsedMilliseconds > 0, // se not nedan
+                        ElapsedMilliseconds = sw.ElapsedMilliseconds
+                    });
             }
         }
         public static async Task<T> ExecuteSafeAsync<T>(Func<SqlConnection, Task<T>> action)
         {
+            var sw = Stopwatch.StartNew();
+            bool success = false;
+
             try
             {
                 await using var con = new SqlConnection(Database.cs_Protocol);
                 await con.OpenAsync();
-                return await action(con);
+                ServerStatus.Add_Sql_Counter();
+                T result = await action(con);
+                success = true;
+                return result;
             }
             catch (Exception)
             {
-                // Logga eller räkna
-                InfoText.Show(LanguageManager.GetString("errorConnectingDatabase" + $" - ({action.Method.Name})"),
-                    CustomColors.InfoText_Color.Bad, "Error!");
+                InfoText.Show(
+                    LanguageManager.GetString("errorConnectingDatabase" + $" - ({action.Method.Name})"), CustomColors.InfoText_Color.Bad, "Error!");
+
                 return default!;
             }
+            finally
+            {
+                sw.Stop();
+
+                DatabaseConnectionStatus.Report(new DatabaseExecutionResult
+                {
+                    Success = success,
+                    ElapsedMilliseconds = sw.ElapsedMilliseconds
+                });
+            }
         }
+
         public static void Load_DatabaseSettings()
         {
             cs_Protocol = null;

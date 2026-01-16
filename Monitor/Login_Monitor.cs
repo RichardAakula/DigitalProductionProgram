@@ -1,14 +1,15 @@
-﻿using System;
+﻿using DigitalProductionProgram.ControlsManagement;
+using DigitalProductionProgram.DatabaseManagement;
+using DigitalProductionProgram.Help;
+using DigitalProductionProgram.MainWindow;
+using DigitalProductionProgram.PrintingServices;
+using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using DigitalProductionProgram.ControlsManagement;
-using DigitalProductionProgram.DatabaseManagement;
-using DigitalProductionProgram.Help;
-using DigitalProductionProgram.MainWindow;
-using DigitalProductionProgram.PrintingServices;
+using static DigitalProductionProgram.MainWindow.ServerStatus;
 
 namespace DigitalProductionProgram.Monitor
 {
@@ -44,49 +45,55 @@ namespace DigitalProductionProgram.Monitor
         }
 
         //[DebuggerStepThrough]
-        public static void Login_API(bool forceRelogin = false)
+        public static LoginResult Login_API(bool forceRelogin = false)
         {
-            Stopwatch sw = Stopwatch.StartNew();
+            var sw = Stopwatch.StartNew();
+            LoginResult result;
 
-            if (forceRelogin)
-                sessionId = null;
-            // ✔ Om vi redan har session → gör inget
-            if (sessionId != null)
-                return;
-
-            var credentials = Database.LoadCredentials();
-            var authJson =
-                $"{{\"Username\":\"{credentials.Username}\",\"Password\":\"{credentials.Password}\",\"ForceRelogin\":true}}";
-
-            string url = $"https://{Database.MonitorHost}:8001/{Login_Monitor.LanguageCode}/{Database.MonitorCompany}/login";
-
-            var request = (HttpWebRequest)WebRequest.Create(url);
-            request.Method = "POST";
-            request.ContentType = "application/json";
-            request.Accept = "application/json";
-
-            // ✔ Tillåt self-signed cert (samma som i HttpClientHandler)
-            request.ServerCertificateValidationCallback += (sender, cert, chain, sslPolicyErrors) => true;
-
-            // Skicka body synkront
-            using (var writer = new StreamWriter(request.GetRequestStream()))
-            {
-                writer.Write(authJson);
-            }
-
-            // Synkront svar
             try
             {
+                if (forceRelogin)
+                    sessionId = null;
+
+                if (sessionId != null)
+                {
+                    result = new LoginResult
+                    {
+                        Success = true,
+                        ElapsedMilliseconds = 0
+                    };
+
+                    return result;
+                }
+
+                var credentials = Database.LoadCredentials();
+                var authJson =
+                    $"{{\"Username\":\"{credentials.Username}\",\"Password\":\"{credentials.Password}\",\"ForceRelogin\":true}}";
+
+                string url =
+                    $"https://{Database.MonitorHost}:8001/{Login_Monitor.LanguageCode}/{Database.MonitorCompany}/login";
+
+                var request = (HttpWebRequest)WebRequest.Create(url);
+                request.Method = "POST";
+                request.ContentType = "application/json";
+                request.Accept = "application/json";
+
+                request.ServerCertificateValidationCallback +=
+                    (sender, cert, chain, sslPolicyErrors) => true;
+
+                using (var writer = new StreamWriter(request.GetRequestStream()))
+                {
+                    writer.Write(authJson);
+                }
+
                 using (var response = (HttpWebResponse)request.GetResponse())
                 {
                     if (response.StatusCode != HttpStatusCode.OK)
                         throw new Exception("Monitor login failed (sync).");
 
-                    // ✔ Hämta SessionId från headers
-                    sessionId = response.Headers["X-Monitor-SessionId"];
-
-                    if (sessionId == null)
-                        sessionId = response.Headers.AllKeys
+                    sessionId =
+                        response.Headers["X-Monitor-SessionId"]
+                        ?? response.Headers.AllKeys
                             .Where(k => k.Contains("SessionId"))
                             .Select(k => response.Headers[k])
                             .FirstOrDefault();
@@ -95,16 +102,44 @@ namespace DigitalProductionProgram.Monitor
                         throw new Exception("Monitor login failed: No SessionId returned.");
                 }
 
-                sw.Stop();
+                result = new LoginResult
+                {
+                    Success = true,
+                    ElapsedMilliseconds = sw.ElapsedMilliseconds
+                };
+
                 Debug.WriteLine("======== SYNC LOGIN ========");
-                Debug.WriteLine($"Time: {sw.ElapsedMilliseconds} ms");
+                Debug.WriteLine($"Time: {result.ElapsedMilliseconds} ms");
+
+                return result;
             }
-            catch (WebException ex)
+            catch (WebException)
             {
                 InfoText.Show(LanguageManager.GetString("error_Monitor"), CustomColors.InfoText_Color.Bad, "Error Monitor");
-                return;
+
+                result = new LoginResult
+                {
+                    Success = false,
+                    ElapsedMilliseconds = sw.ElapsedMilliseconds
+                };
+
+                return result;
+            }
+            finally
+            {
+                sw.Stop();
+
+                // ENDA stället där status rapporteras
+                ServerStatus.Report(
+                    new LoginResult
+                    {
+                        Success = sessionId != null,
+                        ElapsedMilliseconds = sw.ElapsedMilliseconds
+                    });
             }
         }
+
+
 
         public static int TotalLoginAttemps;
 

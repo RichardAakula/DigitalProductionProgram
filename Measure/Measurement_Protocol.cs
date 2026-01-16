@@ -821,14 +821,13 @@ namespace DigitalProductionProgram.Measure
                 Database.ExecuteSafe(_ =>
                  {
                      const string query = @"
-                INSERT INTO MeasureProtocol.Data
-                VALUES (@orderid, @descriptionid, @value, @textvalue, @boolvalue, @datevalue, 
-                COALESCE((SELECT MAX(rowindex) + 1 
+                        INSERT INTO MeasureProtocol.Data
+                        VALUES (@orderid, @descriptionid, @value, @textvalue, @boolvalue, @datevalue, 
+                        COALESCE((SELECT MAX(rowindex) + 1 
                           FROM MeasureProtocol.MainData 
                           WHERE OrderID = @orderid), 1))";
 
                      using var cmd = new SqlCommand(query, _);
-                     ServerStatus.Add_Sql_Counter();
 
                      cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                      cmd.Parameters.AddWithValue("@descriptionid", descriptionID);

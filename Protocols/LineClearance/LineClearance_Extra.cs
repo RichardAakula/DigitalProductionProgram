@@ -257,7 +257,7 @@ namespace DigitalProductionProgram.Protocols.LineClearance
                     if (!string.IsNullOrEmpty(reader["LC_Name"].ToString()))
                     {
                         LC_Name.Text = reader["LC_Name"].ToString();
-                        lbl_LC_Performed_AnstNr.Text = Person.Get_AnstNrWithName(LC_Name.Text);
+                        lbl_LC_Performed_AnstNr.Text = Person.Get_EmployeeNrWithName(LC_Name.Text);
                         foreach (var dgv in flp_Checkboxes.Controls.OfType<DataGridView>())
                         {
                             foreach (DataGridViewRow row in dgv.Rows)
@@ -278,7 +278,7 @@ namespace DigitalProductionProgram.Protocols.LineClearance
                     if (!string.IsNullOrEmpty(reader["LC_Approved_Name"].ToString()))
                     {
                         LC_Approved_Name.Text = reader["LC_Approved_Name"].ToString();
-                        lbl_LC_Approved_AnstNr.Text = Person.Get_AnstNrWithName(LC_Approved_Name.Text);
+                        lbl_LC_Approved_AnstNr.Text = Person.Get_EmployeeNrWithName(LC_Approved_Name.Text);
                         ChangeFont_Label_Approved_LC();
                     }
                 }
@@ -364,7 +364,7 @@ namespace DigitalProductionProgram.Protocols.LineClearance
             choose_Item.ShowDialog();
 
             Person.Name = LC_Approved_Name.Text;
-            Person.EmployeeNr = Person.Get_AnstNrWithName(Person.Name);
+            Person.EmployeeNr = Person.Get_EmployeeNrWithName(Person.Name);
             if (Person.EmployeeNr != null)
             {
                 if (Person.IsPasswordOk("Bekräfta LineClearance med ditt lösenord."))

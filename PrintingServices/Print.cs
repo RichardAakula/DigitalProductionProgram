@@ -979,9 +979,9 @@ namespace DigitalProductionProgram.PrintingServices
                         DateTime.TryParse(reader["LC_Date"].ToString(), out LC_Date);
                         DateTime.TryParse(reader["LC_Approved_Date"].ToString(), out LC_Approved_Date);
                         if (!string.IsNullOrEmpty(LC_Name))
-                            LC_AnstNr = Person.Get_AnstNrWithName(LC_Name);
+                            LC_AnstNr = Person.Get_EmployeeNrWithName(LC_Name);
                         if (!string.IsNullOrEmpty(LC_Approved_Name))
-                            LC_Approved_AnstNr = Person.Get_AnstNrWithName(LC_Approved_Name);
+                            LC_Approved_AnstNr = Person.Get_EmployeeNrWithName(LC_Approved_Name);
                     }
                 }
 

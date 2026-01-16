@@ -94,13 +94,10 @@ namespace DigitalProductionProgram.Processcards
                                 )
                         )";
                     using var cmd = new SqlCommand(query, con);
-                    ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@maintemplateid", Templates_Protocol.MainTemplate.ID);
                     using var reader = cmd.ExecuteReader();
                     while (reader.Read())
-                    {
                         MessageBox.Show(reader["CodeText"].ToString());
-                    }
 
                     return false;
                 });
@@ -183,97 +180,111 @@ namespace DigitalProductionProgram.Processcards
             {
                 if (string.IsNullOrEmpty(Order.PartNumber))
                     return false;
-                using var con = new SqlConnection(Database.cs_Protocol);
-                var query = "SELECT * FROM [Order].MainData WHERE PartID = @artID ";
-                if (Processcard.IsMultipleProcesscard(Order.WorkOperation, Order.PartNumber))
-                    query += $"AND ProdLine = '{Order.ProdLine}' AND ProdType = '{Order.ProdType}'";
 
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                SQL_Parameter.NullableINT(cmd.Parameters, "@artID", Order.PartID);
-                con.Open();
-                var reader = cmd.ExecuteReader();
-                if (reader.HasRows)
+                var hasRows = Database.ExecuteSafe(con =>
                 {
+                    var query = "SELECT 1 FROM [Order].MainData WHERE PartID = @artID";
+
+                    if (Processcard.IsMultipleProcesscard(Order.WorkOperation, Order.PartNumber))
+                        query += " AND ProdLine = @prodLine AND ProdType = @prodType";
+                    using var cmd = new SqlCommand(query, con);
+                    SQL_Parameter.NullableINT(cmd.Parameters, "@artID", Order.PartID);
+                    if (Processcard.IsMultipleProcesscard(Order.WorkOperation, Order.PartNumber))
+                    {
+                        cmd.Parameters.AddWithValue("@prodLine", Order.ProdLine);
+                        cmd.Parameters.AddWithValue("@prodType", Order.ProdType);
+                    }
+                    using var reader = cmd.ExecuteReader();
+                    return reader.HasRows;
+                });
+
+                if (hasRows)
                     InfoText.Show($"{LanguageManager.GetString("saveProcesscard_Info_2_1")} ({tb_NewPartNr.Text}: {ProcesscardBasedOn.lbl_RevNr.Text})\n" +
                                   $"{LanguageManager.GetString("saveProcesscard_Info_2_2")}", CustomColors.InfoText_Color.Bad, "Warning", this);
-                    return true;
-                }
-                return false;
+                return hasRows;
             }
         }
+
         private bool IsPartRevisionNrExist
         {
             get
             {
                 if (string.IsNullOrEmpty(tb_NewPartNr.Text) || string.IsNullOrEmpty(ProcesscardBasedOn.lbl_RevNr.Text))
                     return true;
-                using var con = new SqlConnection(Database.cs_Protocol);
-                var query = "SELECT * FROM Processcard.MainData WHERE PartNr = @partnr AND RevNr = @revNr AND WorkOperationID = (SELECT ID FROM Workoperation.Names WHERE Name = @workoperation AND ID IS NOT NULL)";
 
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@partnr", Order.PartNumber);
-                cmd.Parameters.AddWithValue("@revNr", ProcesscardBasedOn.lbl_RevNr.Text);
-                cmd.Parameters.AddWithValue("@workoperation", Order.WorkOperation);
-                con.Open();
-                var reader = cmd.ExecuteReader();
-                if (reader.HasRows)
+                var exists = Database.ExecuteSafe(con =>
                 {
+                    const string query = @"
+                        SELECT 1 
+                        FROM Processcard.MainData 
+                        WHERE PartNr = @partnr 
+                            AND RevNr = @revNr 
+                            AND WorkOperationID = 
+                            (
+                                SELECT ID 
+                                FROM Workoperation.Names 
+                                WHERE Name = @workoperation 
+                                    AND ID IS NOT NULL
+                            )";
+                    using var cmd = new SqlCommand(query, con);
+                    cmd.Parameters.AddWithValue("@partnr", Order.PartNumber);
+                    cmd.Parameters.AddWithValue("@revNr", ProcesscardBasedOn.lbl_RevNr.Text);
+                    cmd.Parameters.AddWithValue("@workoperation", Order.WorkOperation);
+                    using var reader = cmd.ExecuteReader();
+                    return reader.HasRows;
+                });
+
+                if (exists)
                     InfoText.Show(LanguageManager.GetString("processCard_Info_2"), CustomColors.InfoText_Color.Bad, "Warning", this);
-                    return true;
-                }
-                return false;
+                return exists;
             }
         }
+
 
         private int FormTemplateID { get; set; }
 
         private void LoadFormTemplateID()
         {
-            using var con = new SqlConnection(Database.cs_Protocol);
-
-            string query;
-            var cmd = new SqlCommand();
-            cmd.Connection = con;
-
-            if (Templates_Protocol.MainTemplate.ID > 0)
+            Database.ExecuteSafe(con =>
             {
-                // Vi har redan MainTemplateID → använd det direkt
-                query = @"SELECT DISTINCT FormTemplateID, MainTemplateID 
-                  FROM Protocol.FormTemplate 
-                  WHERE MainTemplateID = @mainTemplateId";
-                cmd.Parameters.AddWithValue("@mainTemplateId", Templates_Protocol.MainTemplate.ID);
-            }
-            else
-            {
-                // Vi har inte MainTemplateID → hämta det via WorkoperationID
-                query = @"SELECT DISTINCT FormTemplateID, MainTemplateID 
-                  FROM Protocol.FormTemplate 
-                  WHERE MainTemplateID = (
-                        SELECT MainTemplateID 
-                        FROM Workoperation.Names 
-                        WHERE ID = @workoperationid)";
-                cmd.Parameters.AddWithValue("@workoperationid", Order.WorkoperationID);
-            }
+                string query;
+                using var cmd = new SqlCommand();
+                cmd.Connection = con;
 
-            cmd.CommandText = query;
-            ServerStatus.Add_Sql_Counter();
-
-            con.Open();
-            using var reader = cmd.ExecuteReader();
-            while (reader.Read())
-            {
-                if (int.TryParse(reader["FormTemplateID"]?.ToString(), out var formTemplateID))
-                    FormTemplateID = formTemplateID;
-
-                // Endast uppdatera MainTemplateID om vi inte hade det från början
-                if (Templates_Protocol.MainTemplate.ID <= 0 &&
-                    int.TryParse(reader["MainTemplateID"]?.ToString(), out var mainTemplateID))
+                if (Templates_Protocol.MainTemplate.ID > 0)
                 {
-                    Templates_Protocol.MainTemplate.ID = mainTemplateID;
+                    query = @"
+                        SELECT DISTINCT FormTemplateID, MainTemplateID 
+                        FROM Protocol.FormTemplate 
+                        WHERE MainTemplateID = @mainTemplateId"; 
+                    cmd.Parameters.AddWithValue("@mainTemplateId", Templates_Protocol.MainTemplate.ID);
                 }
-            }
-        }
+                else
+                {
+                    query = @"
+                        SELECT DISTINCT FormTemplateID, MainTemplateID 
+                        FROM Protocol.FormTemplate 
+                        WHERE MainTemplateID = 
+                        (
+                            SELECT MainTemplateID 
+                            FROM Workoperation.Names 
+                            WHERE ID = @workoperationid
+                        )";
+                    cmd.Parameters.AddWithValue("@workoperationid", Order.WorkoperationID);
+                }
+                cmd.CommandText = query;
+                using var reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    if (int.TryParse(reader["FormTemplateID"]?.ToString(), out var formTemplateID))
+                        FormTemplateID = formTemplateID;
 
+                    // Endast uppdatera MainTemplateID om vi inte hade det från början
+                    if (Templates_Protocol.MainTemplate.ID <= 0 && int.TryParse(reader["MainTemplateID"]?.ToString(), out var mainTemplateID))
+                        Templates_Protocol.MainTemplate.ID = mainTemplateID;
+                }
+            });
+        }
 
 
 
@@ -374,44 +385,48 @@ namespace DigitalProductionProgram.Processcards
             if (Person.Role == "SuperAdmin")
                 btn_CopyPartNr.Visible = true;
         }
-        private void FillComboBox(ComboBox comboBox, string query, Dictionary<string, object> parameters, EventHandler selectedIndexChangedHandler = null, bool setLastSelected = false)
+        private void FillComboBox(
+            ComboBox comboBox,
+            string query,
+            Dictionary<string, object> parameters,
+            EventHandler? selectedIndexChangedHandler = null,
+            bool setLastSelected = false)
         {
-            // Optionally detach event handler if provided
+            // Optionally detach event handler
             if (selectedIndexChangedHandler != null)
                 comboBox.SelectedIndexChanged -= selectedIndexChangedHandler;
 
             comboBox.Items.Clear();
 
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            using (var cmd = new SqlCommand(query, con))
+            Database.ExecuteSafe(con =>
             {
-                // Add parameters
-                foreach (var param in parameters)
-                {
-                    cmd.Parameters.AddWithValue(param.Key, param.Value);
-                }
-                con.Open();
+                using var cmd = new SqlCommand(query, con);
 
-                using (var reader = cmd.ExecuteReader())
+                // Add parameters safely
+                if (parameters != null)
                 {
-                    while (reader.Read())
+                    foreach (var param in parameters)
                     {
-                        // Assumes the first column is what you need (you can adjust as needed)
-                        comboBox.Items.Add(reader[0].ToString());
+                        cmd.Parameters.AddWithValue(param.Key, param.Value ?? DBNull.Value);
                     }
                 }
-            }
+                using var reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    var value = reader[0]?.ToString();
+                    if (!string.IsNullOrEmpty(value))
+                        comboBox.Items.Add(value);
+                }
+            });
 
             // Optionally set the last item as selected
             if (setLastSelected && comboBox.Items.Count > 0)
-            {
                 comboBox.SelectedIndex = comboBox.Items.Count - 1;
-            }
-
-            // Reattach event handler if provided
+            // Reattach event handler
             if (selectedIndexChangedHandler != null)
                 comboBox.SelectedIndexChanged += selectedIndexChangedHandler;
         }
+
 
 
         private void Fill_cb_ProtocolTemplateRevision(string name)
@@ -653,9 +668,10 @@ namespace DigitalProductionProgram.Processcards
         private void Load_ProcessCard_MainData()
         {
             tb_ProdLine.TextChanged -= ProdLinje_TextChanged;
-           // cb_TemplateRevision.SelectedIndexChanged -= ProtocolTemplateRevision_SelectedIndexChanged;
+            // cb_TemplateRevision.SelectedIndexChanged -= ProtocolTemplateRevision_SelectedIndexChanged;
             suppressTemplateRevisionSelectionChanged = true;
-            using (var con = new SqlConnection(Database.cs_Protocol))
+
+            Database.ExecuteSafe(con =>
             {
                 const string query = @"
                     SELECT *, protocoltemplate.Name as ProtocolName, measuretemplate.Name as MeasureTemplateName, measuretemplate.Revision
@@ -666,74 +682,81 @@ namespace DigitalProductionProgram.Processcards
                         ON maindata.MeasureProtocolMainTemplateID = measuretemplate.MeasureProtocolMainTemplateID
                     WHERE PartID = @partid";
 
-                con.Open();
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                using var cmd = new SqlCommand(query, con);
                 SQL_Parameter.NullableINT(cmd.Parameters, "@partid", Order.PartID);
-
-                var reader = cmd.ExecuteReader();
+                using var reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
-                    Order.PartID = (int?)reader["PartID"];
-                    tb_NewPartNr.Text = reader["PartNr"].ToString();
-                    tb_ProdLine.Text = Order.ProdLine = reader["ProdLine"].ToString();
-                    tb_ProdType.Text = Order.ProdType = reader["ProdType"].ToString();
-                    int.TryParse(reader["ProtocolMainTemplateID"].ToString(), out var maintemplateID);
-                    cb_TemplateRevision.Text = Templates_Protocol.MainTemplate.Revision = reader["Revision"].ToString();
+                    Order.PartID = reader["PartID"] as int? ?? Order.PartID;
+                    tb_NewPartNr.Text = reader["PartNr"]?.ToString() ?? string.Empty;
+                    tb_ProdLine.Text = Order.ProdLine = reader["ProdLine"]?.ToString() ?? string.Empty;
+                    tb_ProdType.Text = Order.ProdType = reader["ProdType"]?.ToString() ?? string.Empty;
+
+                    int.TryParse(reader["ProtocolMainTemplateID"]?.ToString(), out var maintemplateID);
                     Templates_Protocol.MainTemplate.ID = maintemplateID;
-                    num_NumberOfLayers.Value = int.TryParse(reader["NumberOfLayers"].ToString(), out var Layers) ? Layers : 0;
-                    var test = reader["ProtocolName"].ToString();
-                    cb_ProtocolTemplateName.Text = reader["ProtocolName"].ToString();
-                    cb_MeasureProtocolTemplateName.Text = reader["MeasureTemplateName"].ToString();
-                    tb_RevInfo.Text = reader["RevInfo"].ToString();
-                    tb_ExtraInfo.Text = reader["Extra_Info"].ToString();
-                    bool.TryParse(reader["Aktiv"].ToString(), out IsActive);
+                    cb_TemplateRevision.Text = Templates_Protocol.MainTemplate.Revision = reader["Revision"]?.ToString() ?? string.Empty;
+
+                    num_NumberOfLayers.Value = int.TryParse(reader["NumberOfLayers"]?.ToString(), out var layers) ? layers : 0;
+
+                    cb_ProtocolTemplateName.Text = reader["ProtocolName"]?.ToString() ?? string.Empty;
+                    cb_MeasureProtocolTemplateName.Text = reader["MeasureTemplateName"]?.ToString() ?? string.Empty;
+
+                    tb_RevInfo.Text = reader["RevInfo"]?.ToString() ?? string.Empty;
+                    tb_ExtraInfo.Text = reader["Extra_Info"]?.ToString() ?? string.Empty;
+
+                    bool.TryParse(reader["Aktiv"]?.ToString(), out IsActive);
                 }
-            }
+            });
+
             if (IsActive)
                 Change_UI_Active_ArtikelNr();
             else
                 Change_UI_Inactive_ArtikelNr();
 
             tb_ProdLine.TextChanged += ProdLinje_TextChanged;
-           // cb_TemplateRevision.SelectedIndexChanged += ProtocolTemplateRevision_SelectedIndexChanged;
             suppressTemplateRevisionSelectionChanged = false;
         }
+
         private void Load_Processcard_Info()
         {
             Part.Load_PartGroup_ID(Order.PartID);
             if (Order.PartGroupID is null)
                 return;
-            
+
             // 🔥 Reset DataGridView before adding new data
             dgv_Revision.EndEdit();
             dgv_Revision.ClearSelection();
             dgv_Revision.Rows.Clear();
             dgv_Revision.CellEnter -= Revision_CellEnter;
-            using (var con = new SqlConnection(Database.cs_Protocol))
+
+            Database.ExecuteSafe(con =>
             {
-                con.Open();
-                var query = "SELECT RevNr, RevInfo, RevÄndratDatum, UpprättatAv_Sign_AnstNr, PartID FROM Processcard.MainData WHERE PartGroupID = @partgroupid ORDER BY RevNr DESC";
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                const string query = @"
+                    SELECT RevNr, RevInfo, RevÄndratDatum, UpprättatAv_Sign_AnstNr, PartID 
+                    FROM Processcard.MainData 
+                    WHERE PartGroupID = @partgroupid 
+                    ORDER BY RevNr DESC";
+
+                using var cmd = new SqlCommand(query, con);
                 cmd.Parameters.AddWithValue("@partgroupid", Order.PartGroupID);
 
-                using (var reader = cmd.ExecuteReader())
+                using var reader = cmd.ExecuteReader();
+                while (reader.Read())
                 {
-                    while (reader.Read())
-                    {
-                        var partID = reader.GetInt32(4);
-                        var totalOrders = Part.TotalOrders_WithProcesscard(partID); // Get total orders
-                        DateTime.TryParse(reader["RevÄndratDatum"].ToString(), out DateTime date);
-
-                        // 🔥 Add row directly to DataGridView
-                        dgv_Revision.Rows.Add(reader["RevNr"],
-                            reader["RevInfo"],
-                            date.ToShortDateString(),
-                            reader["UpprättatAv_Sign_AnstNr"],
-                            partID,
-                            totalOrders); // Computed Total Orders column
-                    }
+                    var partID = reader["PartID"] as int? ?? 0;
+                    var totalOrders = Part.TotalOrders_WithProcesscard(partID); // Get total orders
+                    DateTime.TryParse(reader["RevÄndratDatum"]?.ToString(), out DateTime date);
+                    dgv_Revision.Rows.Add(
+                        reader["RevNr"]?.ToString() ?? string.Empty,
+                        reader["RevInfo"]?.ToString() ?? string.Empty,
+                        date != DateTime.MinValue ? date.ToShortDateString() : string.Empty,
+                        reader["UpprättatAv_Sign_AnstNr"]?.ToString() ?? string.Empty,
+                        partID,
+                        totalOrders
+                    );
                 }
-            }
+            });
+
             if (Person.Role == "QA")
                 dgv_Revision.Columns["col_TotalOrders"].Visible = false;
 
@@ -741,22 +764,11 @@ namespace DigitalProductionProgram.Processcards
         }
 
 
+
         private void ClearTemplate()
         {
             // 1. Rensa alla kontroller
             flp_Machines.Controls.Clear();
-
-            // 2. Rensa alla rader och kolumnstilar
-            //tlp_Machines.RowStyles.Clear();
-            //tlp_Machines.ColumnStyles.Clear();
-
-            //// 3. Återställ layouten till exakt 1 kolumn och 1 rad (om du vill)
-            //tlp_Machines.ColumnCount = 1;
-            //tlp_Machines.RowCount = 1;
-
-            //// 4. Lägg till default style (valfritt)
-            //tlp_Machines.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
-            //tlp_Machines.RowStyles.Add(new RowStyle(SizeType.AutoSize));
         }
 
         private bool IsOkAskQuestionCopyData = true;
@@ -1097,22 +1109,23 @@ namespace DigitalProductionProgram.Processcards
         {
             if (IsData_Loading)
                 return;
-            if (IsUpdateProcesscard == false)
+
+            if (!IsUpdateProcesscard)
             {
                 InfoText.Show(LanguageManager.GetString("saveProcesscard_Info_5"), CustomColors.InfoText_Color.Warning, "Warning", this);
                 num_NumberOfLayers.Value = 0;
                 return;
             }
-
-            using var con = new SqlConnection(Database.cs_Protocol);
-            var query = @"UPDATE Processcard.MainData SET NumberOfLayers = @layers WHERE PartID = @partid";
-
-            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-            cmd.Parameters.AddWithValue("@partid", Order.PartID);
-            SQL_Parameter.Int(cmd.Parameters, "@layers", num_NumberOfLayers.Value.ToString(CultureInfo.InvariantCulture));
-            con.Open();
-            cmd.ExecuteNonQuery();
+            Database.ExecuteSafe(con =>
+            {
+                const string query = @"UPDATE Processcard.MainData SET NumberOfLayers = @layers WHERE PartID = @partid";
+                using var cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@partid", Order.PartID);
+                SQL_Parameter.Int(cmd.Parameters, "@layers", num_NumberOfLayers.Value.ToString(CultureInfo.InvariantCulture));
+                cmd.ExecuteNonQuery();
+            });
         }
+
         public static void Execute_cmd(IDbCommand cmd, ref bool IsOk)
         {
             try
@@ -1165,31 +1178,48 @@ namespace DigitalProductionProgram.Processcards
         {
             var artikelNr_Aktiv = chb_HideInactive_PartNr.Checked;
             var list = new List<string?>();
-            using (var con = new SqlConnection(Database.cs_Protocol))
+
+            Database.ExecuteSafe(con =>
             {
-                con.Open();
                 string query;
+
                 if (string.IsNullOrEmpty(cb_ProtocolTemplateName.Text))
-                    query = "SELECT DISTINCT PartNr FROM Processcard.MainData WHERE WorkOperationID IN (SELECT ID FROM Workoperation.Names WHERE Name = @workoperation AND ID IS NOT NULL) AND Aktiv = @aktiv ORDER BY PartNr DESC";
+                {
+                    query = @"
+                        SELECT DISTINCT PartNr 
+                        FROM Processcard.MainData 
+                        WHERE WorkOperationID IN (SELECT ID FROM Workoperation.Names WHERE Name = @workoperation AND ID IS NOT NULL)
+                            AND Aktiv = @aktiv
+                        ORDER BY PartNr DESC";
+                }
                 else
-                    query = "SELECT DISTINCT PartNr FROM Processcard.MainData WHERE ProtocolMainTemplateID IN (SELECT ID FROM Protocol.MainTemplate WHERE Name = @templatename) AND Aktiv = @aktiv ORDER BY PartNr DESC";
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                {
+                    query = @"
+                        SELECT DISTINCT PartNr 
+                        FROM Processcard.MainData 
+                        WHERE ProtocolMainTemplateID IN (SELECT ID FROM Protocol.MainTemplate WHERE Name = @templatename)
+                            AND Aktiv = @aktiv
+                        ORDER BY PartNr DESC";
+                }
+
+                using var cmd = new SqlCommand(query, con);
                 cmd.Parameters.AddWithValue("@aktiv", artikelNr_Aktiv);
                 SQL_Parameter.String(cmd.Parameters, "@workoperation", Order.WorkOperation.ToString());
                 SQL_Parameter.String(cmd.Parameters, "@templatename", cb_ProtocolTemplateName.SelectedItem?.ToString());
-                var reader = cmd.ExecuteReader();
 
+                using var reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
-                    if (reader[0].ToString() != "1234567")    //PartNr 1234567 används när man förhandsgranskar ett tomt processkort och bör inte visas i listan
-                        list.Add(reader[0].ToString());
+                    var partNr = reader[0]?.ToString();
+                    if (!string.IsNullOrEmpty(partNr) && partNr != "1234567") // Filtera bort test-PartNr
+                        list.Add(partNr);
                 }
-                reader.Close();
-            }
+            });
 
             using var choose_Item = new Choose_Item(list, new Control[] { tb_PartNr }, false);
             choose_Item.ShowDialog();
         }
+
         private void PartNr_TextChanged(object sender, EventArgs e)
         {
             ProcesscardBasedOn.lbl_RevNr.Text = string.Empty;
@@ -1373,6 +1403,7 @@ HS-Machine = {Equipment.Equipment.HS_Machine}", CustomColors.InfoText_Color.Info
         private void CopyPartNr_Click(object sender, EventArgs e)
         {
             var Parts = new List<string>();
+
             if (string.IsNullOrEmpty(tb_ProdLine.Text))
             {
                 InfoText.Show("Du måste först välja en Prodlinje som du vill kopiera artiklar ifrån.", CustomColors.InfoText_Color.Bad, "Warning", this);
@@ -1384,166 +1415,171 @@ HS-Machine = {Equipment.Equipment.HS_Machine}", CustomColors.InfoText_Color.Info
                 InfoText.Show("Du måste fylla i Revisionsinfo före du kopierar processkort.", CustomColors.InfoText_Color.Bad, "Warning", this);
                 return;
             }
+
             InfoText.PromptForText("Välj här vilken Produktionslinje du vill kopiera till.", CustomColors.InfoText_Color.Info, "Välj ProduktionsLinje", this, Equipment.Equipment.List_ProdLines);
             Order.ProdLine = InfoText.return_Text;
             if (string.IsNullOrEmpty(tb_ProdLine.Text))
                 return;
-            var ActiveProdLines = new List<string>
-            {
-                "R5",
-                "R6",
-                "OPEX08",
-                "OPEX09",
-                "OPEX13"
-            };
 
-            //using (var con = new SqlConnection(Database.cs_Protocol))
-            //{
-            //    con.Open();
-            //    var query = @"
-            //       SELECT DISTINCT PartNr FROM Processcard.MainData WHERE PartNr LIKE '358%' AND Aktiv = 'True'";
-
-            //    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-            //    cmd.Parameters.AddWithValue("@prodline", tb_ProdLine.Text);
-            //    var reader = cmd.ExecuteReader();
-            //    while (reader.Read())
-            //        Parts.Add(reader[0].ToString());
-            //}
+            var ActiveProdLines = new List<string> { "R5", "R6", "OPEX08", "OPEX09", "OPEX13" };
 
             foreach (var prodline in ActiveProdLines)
             {
-                using (var con = new SqlConnection(Database.cs_Protocol))
+                // Hämta nya PartNr som inte finns på den här prodlinjen
+                Database.ExecuteSafe(con =>
                 {
-                    con.Open();
-                    var query = @"
-                        WITH RankedData AS 
-                        (
-                            SELECT PartID, PartNr, RevNr, ROW_NUMBER() OVER (PARTITION BY PartNr ORDER BY RevNr DESC) AS rn
-                            FROM Processcard.MainData
-                            WHERE PartNr NOT IN 
-                            (
-                                SELECT PartNr
-                                FROM Processcard.MainData
-                                WHERE ProdLine = @prodline
-                            )
-                            AND PartNr LIKE '358%'
-                            AND Aktiv = 'True'
-                        )
-                        SELECT PartID, PartNr, RevNr
-                        FROM RankedData
-                        WHERE rn = 1
-                        ORDER BY PartNr;";
+                    const string query = @"
+                WITH RankedData AS 
+                (
+                    SELECT PartID, PartNr, RevNr, ROW_NUMBER() OVER (PARTITION BY PartNr ORDER BY RevNr DESC) AS rn
+                    FROM Processcard.MainData
+                    WHERE PartNr NOT IN 
+                    (
+                        SELECT PartNr
+                        FROM Processcard.MainData
+                        WHERE ProdLine = @prodline
+                    )
+                    AND PartNr LIKE '358%'
+                    AND Aktiv = 'True'
+                )
+                SELECT PartID, PartNr, RevNr
+                FROM RankedData
+                WHERE rn = 1
+                ORDER BY PartNr;";
 
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                    using var cmd = new SqlCommand(query, con);
                     cmd.Parameters.AddWithValue("@prodline", prodline);
-                    var reader = cmd.ExecuteReader();
-                    while (reader.Read())
-                        Parts.Add(reader[1].ToString());
-                }
 
-                foreach (var partNr in Parts)
-                {
-                    using var con = new SqlConnection(Database.cs_Protocol);
-                    con.Open();
-                    var query = @"
-                        SELECT TOP(1) m.PartID, m.MainTemplateID, m.ProtocolTemplateRevision, m.PartGroupID, m.PartNr, m.RevNr, m.ProdType,
-                            (SELECT TextValue FROM Processcard.Data WHERE PartID = m.PartID AND TemplateID = 1024) AS MunstyckeTyp,
-                            (SELECT TextValue FROM Processcard.Data WHERE PartID = m.PartID AND TemplateID = 1025) AS Munstycke,
-	                        (SELECT Value FROM Processcard.Data WHERE PartID = m.PartID AND TemplateID = 1026) AS Munstycke_LL,
-	                        (SELECT TextValue FROM Processcard.Data WHERE PartID = m.PartID AND TemplateID = 1027) AS KärnaTyp,
-                            (SELECT TextValue FROM Processcard.Data WHERE PartID = m.PartID AND TemplateID = 1028) AS Kärna,
-	                        (SELECT Value FROM Processcard.Data WHERE PartID = m.PartID AND TemplateID = 1029) AS Kärna_LL,
-                            (SELECT MachineIndex FROM Processcard.Data WHERE PartID = m.PartID AND TemplateID = 1029) AS MachineIndex
-                        FROM Processcard.MainData m
-                        WHERE m.PartNr = @partnr
-                        ORDER BY m.RevNr DESC";
-
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    cmd.Parameters.AddWithValue("@partnr", partNr);
-                    var reader = cmd.ExecuteReader();
+                    using var reader = cmd.ExecuteReader();
                     while (reader.Read())
                     {
-                        var result = 0;
-                        var maintemplateid = reader["MainTemplateID"].ToString();
-                        SaveCopiedPartNr_MainData(reader["PartNr"].ToString(), reader["ProdType"].ToString(), prodline, maintemplateid, ref result);
-                        if (result == 0)
-                            continue;
-                        int.TryParse(reader["MachineIndex"].ToString(), out var machineindex);
-                        SaveCopiedPartNr_Data(1024, machineindex, 0, reader["MunstyckeTyp"].ToString(), 1);
-                        SaveCopiedPartNr_Data(1025, machineindex, 0, reader["Munstycke"].ToString(), 1);
-                        double.TryParse(reader["Munstycke_LL"].ToString(), out var munstycke_ll);
-                        SaveCopiedPartNr_Data(1026, machineindex, munstycke_ll, null, 0);
-
-                        SaveCopiedPartNr_Data(1027, machineindex, 0, reader["KärnaTyp"].ToString(), 1);
-                        SaveCopiedPartNr_Data(1028, machineindex, 0, reader["Kärna"].ToString(), 1);
-                        double.TryParse(reader["Kärna_LL"].ToString(), out var kärna_ll);
-                        SaveCopiedPartNr_Data(1029, machineindex, kärna_ll, null, 0);
+                        var partNr = reader[1]?.ToString();
+                        if (!string.IsNullOrEmpty(partNr))
+                            Parts.Add(partNr);
                     }
+
+                });
+
+                // Kopiera alla PartNr
+                foreach (var partNr in Parts)
+                {
+                    Database.ExecuteSafe(con =>
+                    {
+                        const string query = @"
+                    SELECT TOP(1) m.PartID, m.MainTemplateID, m.ProtocolTemplateRevision, m.PartGroupID, m.PartNr, m.RevNr, m.ProdType,
+                        (SELECT TextValue FROM Processcard.Data WHERE PartID = m.PartID AND TemplateID = 1024) AS MunstyckeTyp,
+                        (SELECT TextValue FROM Processcard.Data WHERE PartID = m.PartID AND TemplateID = 1025) AS Munstycke,
+                        (SELECT Value FROM Processcard.Data WHERE PartID = m.PartID AND TemplateID = 1026) AS Munstycke_LL,
+                        (SELECT TextValue FROM Processcard.Data WHERE PartID = m.PartID AND TemplateID = 1027) AS KärnaTyp,
+                        (SELECT TextValue FROM Processcard.Data WHERE PartID = m.PartID AND TemplateID = 1028) AS Kärna,
+                        (SELECT Value FROM Processcard.Data WHERE PartID = m.PartID AND TemplateID = 1029) AS Kärna_LL,
+                        (SELECT MachineIndex FROM Processcard.Data WHERE PartID = m.PartID AND TemplateID = 1029) AS MachineIndex
+                    FROM Processcard.MainData m
+                    WHERE m.PartNr = @partnr
+                    ORDER BY m.RevNr DESC";
+
+                        using var cmd = new SqlCommand(query, con);
+                        cmd.Parameters.AddWithValue("@partnr", partNr);
+
+                        using var reader = cmd.ExecuteReader();
+                        while (reader.Read())
+                        {
+                            var result = 0;
+                            var maintemplateid = reader["MainTemplateID"]?.ToString();
+                            SaveCopiedPartNr_MainData(reader["PartNr"]?.ToString(), reader["ProdType"]?.ToString(), prodline, maintemplateid, ref result);
+                            if (result == 0)
+                                continue;
+
+                            int.TryParse(reader["MachineIndex"]?.ToString(), out var machineindex);
+                            SaveCopiedPartNr_Data(1024, machineindex, 0, reader["MunstyckeTyp"]?.ToString(), 1);
+                            SaveCopiedPartNr_Data(1025, machineindex, 0, reader["Munstycke"]?.ToString(), 1);
+                            double.TryParse(reader["Munstycke_LL"]?.ToString(), out var munstycke_ll);
+                            SaveCopiedPartNr_Data(1026, machineindex, munstycke_ll, null, 0);
+
+                            SaveCopiedPartNr_Data(1027, machineindex, 0, reader["KärnaTyp"]?.ToString(), 1);
+                            SaveCopiedPartNr_Data(1028, machineindex, 0, reader["Kärna"]?.ToString(), 1);
+                            double.TryParse(reader["Kärna_LL"]?.ToString(), out var kärna_ll);
+                            SaveCopiedPartNr_Data(1029, machineindex, kärna_ll, null, 0);
+                        }
+                    });
                 }
             }
-
             InfoText.Show($"{Parts.Count} st nya processkort har skapats för Prodlinje {Order.ProdLine}", CustomColors.InfoText_Color.Ok, "Info", this);
         }
+
 
         private void SaveCopiedPartNr_MainData(string partnr, string prodtype, string prodline, string maintemplateid, ref int result)
         {
             Order.PartID = Part.Get_NewPartID;
             Part.Create_NewPartGroup_ID();
 
-            using var con = new SqlConnection(Database.cs_Protocol);
-            con.Open();
-            var query = @"
-                    IF NOT EXISTS (SELECT * FROM Processcard.MainData WHERE PartNr = @partnr AND RevNr = 'A' AND ProdLine = @prodline AND ProdType = @prodtype)
+            result = Database.ExecuteSafe(con =>
+            {
+                const string query = @"
+                    IF NOT EXISTS 
+                    (
+                        SELECT * 
+                        FROM Processcard.MainData 
+                        WHERE PartNr = @partnr 
+                            AND RevNr = 'A' 
+                            AND ProdLine = @prodline 
+                            AND ProdType = @prodtype
+                    )
                     BEGIN
-                    INSERT INTO Processcard.MainData 
-                        VALUES (@partid, @partgroupid, @partnr, 'A', @prodline, @prodtype,@templaterevision, @workoperationid, 'False', @numberoflayers, NULL, NULL, @revdatum, NULL, @upprättatsig, @revinfo, 'False', 'False', 'True', NULL, 'True')
+                        INSERT INTO Processcard.MainData 
+                        VALUES 
+                        (
+                            @partid, @partgroupid, @partnr, 'A', @prodline, @prodtype, @templaterevision, @workoperationid,
+                            'False', @numberoflayers, NULL, NULL, @revdatum, NULL, @upprättatsig, @revinfo, 
+                            'False', 'False', 'True', NULL, 'True'
+                        )
                     SELECT 1
                     END
                     ELSE
-                        BEGIN
+                    BEGIN
                     SELECT 0
                     END";
 
-            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-            cmd.Parameters.AddWithValue("@partid", Order.PartID);
-            cmd.Parameters.AddWithValue("@templaterevision", Processcard.Latest_Processcard_Revision(FormTemplateID));
-            cmd.Parameters.AddWithValue("@partgroupid", Order.PartGroupID);
-            cmd.Parameters.AddWithValue("@partnr", partnr);
-            cmd.Parameters.AddWithValue("@prodline", prodline);
-            cmd.Parameters.AddWithValue("@prodtype", prodtype);
-            cmd.Parameters.AddWithValue("@workoperationid", Order.WorkoperationID);
-            cmd.Parameters.AddWithValue("@numberoflayers", num_NumberOfLayers.Value);
-            cmd.Parameters.AddWithValue("@revdatum", DateTime.Now.ToString("yyyy-MM-dd"));
-            cmd.Parameters.AddWithValue("@upprättatsig", $"{Person.Sign}/{Person.EmployeeNr}");
-            cmd.Parameters.AddWithValue("@revinfo", tb_RevInfo.Text);
-            result = Convert.ToInt32(cmd.ExecuteScalar());
+                using var cmd = new SqlCommand(query, con);
+
+                cmd.Parameters.AddWithValue("@partid", Order.PartID);
+                cmd.Parameters.AddWithValue("@templaterevision", Processcard.Latest_Processcard_Revision(FormTemplateID));
+                cmd.Parameters.AddWithValue("@partgroupid", Order.PartGroupID);
+                cmd.Parameters.AddWithValue("@partnr", partnr);
+                cmd.Parameters.AddWithValue("@prodline", prodline);
+                cmd.Parameters.AddWithValue("@prodtype", prodtype);
+                cmd.Parameters.AddWithValue("@workoperationid", Order.WorkoperationID);
+                cmd.Parameters.AddWithValue("@numberoflayers", num_NumberOfLayers.Value);
+                cmd.Parameters.AddWithValue("@revdatum", DateTime.Now.ToString("yyyy-MM-dd"));
+                cmd.Parameters.AddWithValue("@upprättatsig", $"{Person.Sign}/{Person.EmployeeNr}");
+                cmd.Parameters.AddWithValue("@revinfo", tb_RevInfo.Text);
+
+                return Convert.ToInt32(cmd.ExecuteScalar());
+            });
         }
+
         private static void SaveCopiedPartNr_Data(int templateid, int machineindex, double value, string textvalue, int type)
         {
-
-            using (var con = new SqlConnection(Database.cs_Protocol))
+            Database.ExecuteSafe(con =>
             {
-                con.Open();
-                var query = @"
-                        INSERT INTO Processcard.Data 
-                        VALUES (@partid, @templateid, @machineindex, @value, @textvalue, @type)";
+                const string query = @"
+                    INSERT INTO Processcard.Data 
+                    VALUES (@partid, @templateid, @machineindex, @value, @textvalue, @type)";
 
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                using var cmd = new SqlCommand(query, con);
+
                 cmd.Parameters.AddWithValue("@partid", Order.PartID);
                 cmd.Parameters.AddWithValue("@templateid", templateid);
                 cmd.Parameters.AddWithValue("@machineindex", machineindex);
-                if (value > 0)
-                    cmd.Parameters.AddWithValue("@value", value);
-                else
-                    cmd.Parameters.AddWithValue("@value", DBNull.Value);
-                if (!string.IsNullOrEmpty(textvalue))
-                    cmd.Parameters.AddWithValue("@textvalue", textvalue);
-                else
-                    cmd.Parameters.AddWithValue("@textvalue", DBNull.Value);
+                cmd.Parameters.AddWithValue("@value", value > 0 ? (object)value : DBNull.Value);
+                cmd.Parameters.AddWithValue("@textvalue", !string.IsNullOrEmpty(textvalue) ? (object)textvalue : DBNull.Value);
                 cmd.Parameters.AddWithValue("@type", type);
+
                 cmd.ExecuteScalar();
-            }
+                return 0;
+            });
         }
+
 
 
 

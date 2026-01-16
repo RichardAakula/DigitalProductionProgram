@@ -412,8 +412,7 @@ namespace DigitalProductionProgram.Monitor
 
             // Hämta delen i bakgrundstråd
             Part = Task.Run(() =>
-                Utilities.GetOneFromMonitor<Inventory.Parts>($"filter=Id Eq'{Order.PartId}'")
-            ).Result;
+                Utilities.GetOneFromMonitor<Inventory.Parts>($"filter=Id Eq'{Order.PartId}'")).Result;
         }
         public static void Load_PartMaterial(int operation = 0)
         {
@@ -458,8 +457,7 @@ namespace DigitalProductionProgram.Monitor
 
             // Hämta listan av WorkCenters i bakgrundstråd
             var listWorkcenter = Task.Run(() =>
-                Utilities.GetFromMonitor<Manufacturing.WorkCenters>("select=Number,Description", "orderby=Number")
-            ).Result;
+                Utilities.GetFromMonitor<Manufacturing.WorkCenters>("select=Number,Description", "orderby=Number")).Result;
 
             if (listWorkcenter is null)
                 return;

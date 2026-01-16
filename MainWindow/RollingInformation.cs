@@ -272,7 +272,17 @@ namespace DigitalProductionProgram.MainWindow
             if (tips != null && Total_Tips > CounterTips)
             {
                 CounterTips++;
-                lbl_Tips.Invoke((MethodInvoker)(() => lbl_Tips.Text = tips.GetRandomTip()));
+
+                // UI-uppdatering
+                if (lbl_Tips.InvokeRequired)
+                    lbl_Tips.Invoke((MethodInvoker)(() => lbl_Tips.Text = tips.GetRandomTip()));
+                else
+                    lbl_Tips.Text = tips.GetRandomTip();
+            }
+            else
+            {
+                // Kör tung init i bakgrundstråd
+                await Task.Run(() => Load_list_Tips());
             }
 
             else
@@ -280,6 +290,7 @@ namespace DigitalProductionProgram.MainWindow
 
             timer_MoveLabel.Start();
         }
+
 
         private void timer_MoveLabel_Tick(object sender, EventArgs e)
         {

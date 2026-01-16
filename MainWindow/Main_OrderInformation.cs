@@ -165,7 +165,11 @@ namespace DigitalProductionProgram.MainWindow
             if (Monitor.Monitor.Operations is null)
                 cb_Operation.Text = $"{Order.Operation}";
             else
+            {
+                bool test = cb_Operation.Enabled;
                 cb_Operation.Text = $"{Order.Operation} - {Monitor.Monitor.Operations.Description}";
+            }
+                
         }
         public void Customer_Click(object sender, EventArgs e)
         {

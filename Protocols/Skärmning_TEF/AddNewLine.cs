@@ -1,12 +1,13 @@
-﻿using System;
-using Microsoft.Data.SqlClient;
-using System.Windows.Forms;
-using DigitalProductionProgram.ControlsManagement;
+﻿using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.MainWindow;
-using DigitalProductionProgram.Processcards;
 using DigitalProductionProgram.Övrigt;
+using DigitalProductionProgram.Processcards;
 using DigitalProductionProgram.Settings;
+using Microsoft.Data.SqlClient;
+using System;
+using System.Data;
+using System.Windows.Forms;
 
 namespace DigitalProductionProgram.Protocols.Skärmning_TEF
 {
@@ -26,16 +27,33 @@ namespace DigitalProductionProgram.Protocols.Skärmning_TEF
 
         private void Fill_ComboBox()
         {
-            using (var con = new SqlConnection(Database.cs_Protocol))
+            cb_Machine.Items.Clear();
+
+            Database.ExecuteSafe(con =>
             {
-                const string query = "SELECT DISTINCT(TextValue) FROM [Order].Data WHERE ProtocolDescriptionID = (SELECT ID FROM Protocol.Description WHERE CodeText = 'Machine')"; //Maskin
-                con.Open();
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                var reader = cmd.ExecuteReader();
+                const string query = @"
+                    SELECT DISTINCT TextValue 
+                    FROM [Order].Data 
+                    WHERE ProtocolDescriptionID = 
+                    (
+                        SELECT ID 
+                        FROM Protocol.Description 
+                        WHERE CodeText = @codetext
+                    )";
+
+                using var cmd = new SqlCommand(query, con);
+                cmd.Parameters.Add("@codetext", SqlDbType.NVarChar, 50).Value = "Machine";
+                using var reader = cmd.ExecuteReader();
                 while (reader.Read())
-                    cb_Linje.Items.Add(reader[0].ToString());
-            }
+                {
+                    var value = reader.IsDBNull(reader.GetOrdinal("TextValue")) ? string.Empty : reader["TextValue"].ToString();
+
+                    if (!string.IsNullOrEmpty(value))
+                        cb_Machine.Items.Add(value);
+                }
+            });
         }
+
         public static void Ask()
         {
             using var addNewLine = new AddNewLine();
@@ -51,7 +69,7 @@ namespace DigitalProductionProgram.Protocols.Skärmning_TEF
         }
         private void Back_Click(object sender, EventArgs e)
         {
-            linje = cb_Linje.Text;
+            linje = cb_Machine.Text;
             sida = lbl_Side.Text;
             Close();
         }

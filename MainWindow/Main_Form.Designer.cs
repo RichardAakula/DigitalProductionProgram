@@ -866,7 +866,6 @@ namespace DigitalProductionProgram.MainWindow
             WindowState = FormWindowState.Maximized;
             FormClosing += MainForm_FormClosing;
             FormClosed += MainForm_FormClosed;
-            Load += MainForm_Load;
             ((ISupportInitialize)pb_Info_UserPoints).EndInit();
             tlp_ExtraInfo.ResumeLayout(false);
             tlp_ExtraInfo.PerformLayout();

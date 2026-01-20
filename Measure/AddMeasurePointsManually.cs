@@ -33,30 +33,6 @@ namespace DigitalProductionProgram.Measure
         }
 
 
-        private void Load_CodeNames()
-        {
-            //using (var con = new SqlConnection(Database.cs_Protocol))
-            //{
-            //    const string query = @"
-            //        SELECT CodeText FROM MeasureProtocol.Template
-            //        WHERE FormTemplateID = (SELECT ID FROM MeasureProtocol.FormTemplate WHERE WorkoperationID = @workoperationid) 
-            //            AND Revision = (SELECT MeasureprotocolTemplateRevision FROM [Order].MainData WHERE OrderID = @orderid)
-            //        ORDER BY ColumnIndex";
-            //    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-            //    cmd.Parameters.AddWithValue("@workoperationid", Order.WorkoperationID);
-            //    cmd.Parameters.AddWithValue("@orderid", Order.ID);
-            //    cmd.CommandTimeout = 1800;
-            //    con.Open();
-            //    var reader = cmd.ExecuteReader();
-            //    while (reader.Read())
-            //    {
-            //        dgv_Measurepoints.Rows.Add();
-            //        dgv_Measurepoints.Rows[dgv_Measurepoints.Rows.Count - 1].Cells[0].Value = reader.GetString(0);
-            //    }
-               
-            //}
-        }
-
         private void AddMeasurePointsManually_MouseDown(object sender, MouseEventArgs e)
         {
             mouseDown = true;

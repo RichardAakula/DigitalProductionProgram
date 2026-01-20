@@ -13,7 +13,7 @@ namespace DigitalProductionProgram.ControlsManagement
         public static string? GetString(string key)
         {
             var value = resource.GetString(key, selectedCulture);
-            return !string.IsNullOrEmpty(value) ? value : "Error: Missing text, please contact Admin.";
+            return !string.IsNullOrEmpty(value) ? value : $"Error: Missing text for {key}, please contact Admin.";
         }
 
         public static class TranslationHelper

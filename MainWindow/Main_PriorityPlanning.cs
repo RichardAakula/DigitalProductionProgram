@@ -44,8 +44,6 @@ namespace DigitalProductionProgram.MainWindow
         public Main_Priorityplanning()
         {
             InitializeComponent();
-
-
         }
 
 
@@ -103,7 +101,7 @@ namespace DigitalProductionProgram.MainWindow
         private readonly Dictionary<string, int?> dictPartID = new();
         private Dictionary<int, Part.ProcesscardStatus> dictPartStatus = new();
 
-        public static Dictionary<string, (bool IsStarted, int? OrderID)> LoadOrderExistCache(List<(string OrderNumber, string OperationNumber)> neededChecks)
+        private static Dictionary<string, (bool IsStarted, int? OrderID)> LoadOrderExistCache(List<(string OrderNumber, string OperationNumber)> neededChecks)
         {
             var result = new Dictionary<string, (bool, int?)>();
 
@@ -331,9 +329,9 @@ namespace DigitalProductionProgram.MainWindow
                 rowObj.DefaultCellStyle.ForeColor = CustomColors.Ok_Front;
             }
         }
-       
 
-        public void Load_PriorityPlanning_QA_NotApprovedProcesscards(DataGridView dgv)
+
+        private void Load_PriorityPlanning_QA_NotApprovedProcesscards(DataGridView dgv)
         {
             dgv_PriorityPlanning.Columns.Clear();
 

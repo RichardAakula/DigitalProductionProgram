@@ -851,42 +851,7 @@ namespace DigitalProductionProgram.MainWindow
             Developer_Clear_Sql_Queries.Size = new Size(271, 22);
             Developer_Clear_Sql_Queries.Text = "Töm SQL Queries";
             Developer_Clear_Sql_Queries.Click += Menu_Developer_ClearSqlQueries_Click;
-            // 
-            // testaChartToolStripMenuItem
-            // 
-            testaChartToolStripMenuItem.Name = "testaChartToolStripMenuItem";
-            testaChartToolStripMenuItem.Size = new Size(271, 22);
-            testaChartToolStripMenuItem.Text = "Kolla medelvärden!";
-            testaChartToolStripMenuItem.Click += testaChartToolStripMenuItem_Click;
-            // 
-            // flyttaDataFrånSvetsnigToolStripMenuItem
-            // 
-            flyttaDataFrånSvetsnigToolStripMenuItem.Name = "flyttaDataFrånSvetsnigToolStripMenuItem";
-            flyttaDataFrånSvetsnigToolStripMenuItem.Size = new Size(271, 22);
-            flyttaDataFrånSvetsnigToolStripMenuItem.Text = "Flytta data från Svetsning";
-            flyttaDataFrånSvetsnigToolStripMenuItem.Click += flyttaDataFrånSvetsnigToolStripMenuItem_Click;
-            // 
-            // flyttaMätdataFrånSvetsningToolStripMenuItem
-            // 
-            flyttaMätdataFrånSvetsningToolStripMenuItem.Name = "flyttaMätdataFrånSvetsningToolStripMenuItem";
-            flyttaMätdataFrånSvetsningToolStripMenuItem.Size = new Size(271, 22);
-            flyttaMätdataFrånSvetsningToolStripMenuItem.Text = "Flytta Mätdata från Svetsning";
-            flyttaMätdataFrånSvetsningToolStripMenuItem.Click += flyttaMätDataFrånSvetsnigToolStripMenuItem_Click;
-            // 
-            // ettToolStripMenuItem
-            // 
-            ettToolStripMenuItem.Name = "ettToolStripMenuItem";
-            ettToolStripMenuItem.Size = new Size(271, 22);
-            ettToolStripMenuItem.Text = "Med Expand";
-            ettToolStripMenuItem.Click += menu_MedExpand;
-            // 
-            // tvåToolStripMenuItem
-            // 
-            tvåToolStripMenuItem.Name = "tvåToolStripMenuItem";
-            tvåToolStripMenuItem.Size = new Size(271, 22);
-            tvåToolStripMenuItem.Text = "Utan Expand";
-            tvåToolStripMenuItem.Click += utanExpand;
-            // 
+            //
             // Menu_Developer_EasterEggPsycho
             // 
             Menu_Developer_EasterEggPsycho.Name = "Menu_Developer_EasterEggPsycho";

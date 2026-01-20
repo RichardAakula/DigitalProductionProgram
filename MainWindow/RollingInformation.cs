@@ -132,14 +132,15 @@ namespace DigitalProductionProgram.MainWindow
 
             public static void AddTips_FutureInfo(Tips? tips)
             {
-                using var con = new SqlConnection(Database.cs_Protocol);
                 //ID > 200 är pga av att jag missat att läggga in ReleasDatum på dom allra första releaserna
-                const string query = "SELECT Tags, Description FROM Log.ChangeLog WHERE ReleaseDate IS NULL AND VisibleToUser = 'True' AND ID > 200";
-                con.Open();
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                var reader = cmd.ExecuteReader();
-                while (reader.Read())
-                    tips.AddTip($"{LanguageManager.GetString("rollingTips_FutureUpdate")} {reader["Tags"]}: {reader["Description"]}");
+                Database.ExecuteSafe(con =>
+                {
+                    const string query = "SELECT Tags, Description FROM Log.ChangeLog WHERE ReleaseDate IS NULL AND VisibleToUser = 'True' AND ID > 200";
+                    var cmd = new SqlCommand(query, con);
+                    var reader = cmd.ExecuteReader();
+                    while (reader.Read())
+                        tips.AddTip($"{LanguageManager.GetString("rollingTips_FutureUpdate")} {reader["Tags"]}: {reader["Description"]}");
+                });
             }
             public static void AddTips_OrderStartDays(Tips? tips)
             {
@@ -169,6 +170,7 @@ namespace DigitalProductionProgram.MainWindow
             }
         }
 
+        
 
 
 
@@ -176,15 +178,30 @@ namespace DigitalProductionProgram.MainWindow
         {
             InitializeComponent();
         }
-        private void Main_RollingInformation_Load(object sender, EventArgs e)
+
+        private bool _loaded = false;
+
+        //protected override void OnVisibleChanged(EventArgs e)
+        //{
+        //    base.OnVisibleChanged(e);
+
+        //    if (!_loaded && this.Visible)
+        //    {
+        //        _loaded = true;
+        //        _ = LoadStatsAsync();
+        //    }
+        //}
+
+
+
+
+
+
+        public static void LoadStats()
         {
-            if (DesignMode || Program.IsInDesignMode())
-                return;
             Zumbach.Zumbach.Load_MeasureStats();
             Load_MinYear_OrderStart();
         }
-
-
 
         public void Load_list_Tips()
         {

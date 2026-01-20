@@ -26,34 +26,38 @@ namespace DigitalProductionProgram.Measure
         private readonly Measure_ControlManagement controls;
         public static int Max_Bag_Value()
         {
-            using var con = new SqlConnection(Database.cs_Protocol);
-            var query = @"
+            if (Order.OrderID is null)
+                return 0;
+
+            return Database.ExecuteSafe(con =>
+            {
+                const string query = @"
                     SELECT MAX(data.Value)
                     FROM MeasureProtocol.Data AS data
-                        JOIN MeasureProtocol.Description AS description
-                            ON data.DescriptionId = description.Id
-                        LEFT JOIN MeasureProtocol.MainData AS maindata
-                            ON data.OrderID = maindata.OrderID
+                    JOIN MeasureProtocol.Description AS description
+                        ON data.DescriptionId = description.Id
+                    LEFT JOIN MeasureProtocol.MainData AS maindata
+                        ON data.OrderID = maindata.OrderID
                     WHERE data.OrderID = @orderid
-                        AND description.CodeName IN ('Bag')
+                        AND description.CodeName = 'Bag'
                         AND (maindata.Discarded IS NULL OR maindata.Discarded = 'False')
-                        AND data.RowIndex NOT IN (
+                        AND data.RowIndex NOT IN 
+                        (
                             SELECT RowIndex 
                             FROM MeasureProtocol.MainData 
-                            WHERE Discarded = 'True' AND OrderID = @orderid)";
+                            WHERE Discarded = 'True' 
+                            AND OrderID = @orderid
+                        )";
+                using var cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
 
-            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-            con.Open();
-            cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
-            var value = cmd.ExecuteScalar();
-            var maxValue = 0;
-            if (value != null)
-                int.TryParse(value.ToString(), out maxValue);
-            return maxValue;
+                var value = cmd.ExecuteScalar();
+                return value != null && int.TryParse(value.ToString(), out var maxValue) ? maxValue : 0;
+            });
         }
 
 
-        public bool IsSomeValueBad
+        private bool IsSomeValueBad
         {
             get
             {
@@ -265,20 +269,19 @@ namespace DigitalProductionProgram.Measure
             if (Templates_MeasureProtocol.MainTemplate.ID == 0)
                 return;
 
-            var rowsBuffer = new List<object[]>(); // mellanlagra alla rader i RAM
+            var rowsBuffer = new List<object[]>();
 
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            using (var cmd = new SqlCommand())
+            Database.ExecuteSafe(con =>
             {
+                using var cmd = new SqlCommand();
                 cmd.Connection = con;
                 cmd.CommandText = @"
             SELECT 
                 Parameter_UserText, 
                 Parameter_Monitor,
-                Data.Value, 
+                data.Value, 
                 TextValue,  
                 BoolValue, 
-                DateValue, 
                 Date, 
                 Discarded, 
                 ErrorCode, 
@@ -287,69 +290,69 @@ namespace DigitalProductionProgram.Measure
                 main.TempID, 
                 ColumnIndex, 
                 Decimals, 
-                data.RowIndex, 
                 template.DataType, 
-                template.ControlType, 
-                bag.value as Bag
-            FROM MeasureProtocol.Data as data
-            JOIN MeasureProtocol.Template as template
+                template.ControlType
+            FROM MeasureProtocol.Data AS data
+            JOIN MeasureProtocol.Template AS template
                 ON data.DescriptionId = template.DescriptionID
-            JOIN MeasureProtocol.MainData as main
-                ON data.RowIndex = main.RowIndex AND data.OrderID = main.OrderID
+            JOIN MeasureProtocol.MainData AS main
+                ON data.RowIndex = main.RowIndex 
+               AND data.OrderID = main.OrderID
             JOIN (
                 SELECT 
                     OrderID, 
-                    Rowindex, 
-                    MAX(Value) as Value 
-                FROM MeasureProtocol.Data 
-                JOIN MeasureProtocol.Description as description 
-                    ON data.DescriptionId = description.ID 
-                WHERE CodeName = 'Bag' 
-                GROUP BY orderid, rowindex
-            ) bag ON bag.orderid = main.orderid AND main.rowindex = bag.rowindex
-            WHERE data.OrderID = @orderid 
+                    RowIndex, 
+                    MAX(Value) AS Value
+                FROM MeasureProtocol.Data
+                JOIN MeasureProtocol.Description AS description
+                    ON data.DescriptionId = description.ID
+                WHERE CodeName = 'Bag'
+                GROUP BY OrderID, RowIndex
+            ) bag 
+                ON bag.OrderID = main.OrderID 
+               AND bag.RowIndex = main.RowIndex
+            WHERE data.OrderID = @orderid
               AND MeasureProtocolMainTemplateID = @maintemplateid ";
 
                 if (CheckAuthority.IsWorkoperationAuthorized(CheckAuthority.TemplateWorkoperation.SortMeasurementsDESC))
-                    cmd.CommandText += $"ORDER BY Bag {SortingOrder}, RowIndex, ColumnIndex";
+                    cmd.CommandText += $"ORDER BY bag.Value {SortingOrder}, main.RowIndex, ColumnIndex";
                 else
-                    cmd.CommandText += $"ORDER BY Date {SortingOrder}, Bag, RowIndex, ColumnIndex";
+                    cmd.CommandText += $"ORDER BY Date {SortingOrder}, bag.Value, main.RowIndex, ColumnIndex";
 
                 cmd.Parameters.Add("@orderid", SqlDbType.Int).Value = Order.OrderID;
                 cmd.Parameters.Add("@maintemplateid", SqlDbType.Int).Value = Templates_MeasureProtocol.MainTemplate.ID;
 
-                ServerStatus.Add_Sql_Counter();
-                con.Open();
-
-                using (var reader = cmd.ExecuteReader(CommandBehavior.SequentialAccess))
+                using var reader = cmd.ExecuteReader(CommandBehavior.SequentialAccess);
+                while (reader.Read())
                 {
-                    while (reader.Read())
+                    rowsBuffer.Add(new object[]
                     {
-                        rowsBuffer.Add([
-                            reader["Parameter_UserText"],
-                            reader["Parameter_Monitor"],
-                            reader["Value"],
-                            reader["TextValue"],
-                            reader["BoolValue"],
-                            reader["Date"],
-                            reader["Discarded"],
-                            reader["ErrorCode"],
-                            reader["AnstNr"],
-                            reader["Sign"],
-                            reader["TempID"],
-                            reader["ColumnIndex"],
-                            reader["Decimals"],
-                            reader["DataType"],
-                            reader["ControlType"]
-                        ]);
-                    }
+                reader["Parameter_UserText"],
+                reader["Parameter_Monitor"],
+                reader["Value"],
+                reader["TextValue"],
+                reader["BoolValue"],
+                reader["Date"],
+                reader["Discarded"],
+                reader["ErrorCode"],
+                reader["AnstNr"],
+                reader["Sign"],
+                reader["TempID"],
+                reader["ColumnIndex"],
+                reader["Decimals"],
+                reader["DataType"],
+                reader["ControlType"]
+                    });
                 }
-            }
+            });
 
+            // =========================
             // Bearbeta data i minnet
+            // =========================
+
             var dateTimeFormat = CultureInfo.CurrentCulture.DateTimeFormat;
             DataGridViewRow currentRow = null;
-            int currentRowIndex = -1;
+            var currentRowIndex = -1;
 
             foreach (var rowObj in rowsBuffer)
             {
@@ -360,7 +363,8 @@ namespace DigitalProductionProgram.Measure
                 int.TryParse(rowObj[13]?.ToString(), out var dataType);
                 bool.TryParse(rowObj[6]?.ToString(), out var isDiscarded);
                 var tempId = Convert.ToInt32(rowObj[10]);
-                string text = "";
+
+                var text = "";
 
                 switch (controlType)
                 {
@@ -388,15 +392,15 @@ namespace DigitalProductionProgram.Measure
                         break;
                 }
 
-                // Starta ny rad om colIndex == 0
                 if (colIndex == 0)
                 {
                     currentRowIndex = dgv_Measurements.Rows.Add();
                     currentRow = dgv_Measurements.Rows[currentRowIndex];
 
                     var date = DateTime.TryParse(rowObj[5]?.ToString(), out var dt) ? dt : DateTime.MinValue;
-                    var formattedDate = date.ToString($"{dateTimeFormat.ShortDatePattern} {dateTimeFormat.ShortTimePattern}", CultureInfo.CurrentCulture);
-                    formattedDate = formattedDate.Replace(":ss", "");
+                    var formattedDate = date.ToString(
+                        $"{dateTimeFormat.ShortDatePattern} {dateTimeFormat.ShortTimePattern}",
+                        CultureInfo.CurrentCulture);
 
                     Add_Text_DatagridCell(currentRowIndex, currentRow.Cells["Date"], formattedDate, isDiscarded);
                     Add_Text_DatagridCell(currentRowIndex, currentRow.Cells["ErrorCode"], rowObj[7]?.ToString(), isDiscarded);
@@ -417,6 +421,7 @@ namespace DigitalProductionProgram.Measure
             dgv_Measurements.Visible = true;
             dgv_Measurements.ResumeLayout();
         }
+
 
         private void Count_Measurements()
         {
@@ -661,17 +666,23 @@ namespace DigitalProductionProgram.Measure
                 black.Close();
 
                 var errorCode = chooseErrorCode.ErrorCode.Substring(0, 3);
-                var tempid = dgv_Measurements.Rows[row].Cells["TempID"].Value.ToString();
-                using (var con = new SqlConnection(Database.cs_Protocol))
+                var tempId = dgv_Measurements.Rows[row].Cells["TempID"].Value.ToString();
+                Database.ExecuteSafe(con =>
                 {
-                    const string query = "UPDATE Measureprotocol.MainData SET Discarded = 'True', ErrorCode = @errorcode WHERE OrderID = @orderid AND TempID = @tempid";
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                    const string query = @"
+                        UPDATE MeasureProtocol.MainData
+                        SET Discarded = 'True',
+                            ErrorCode = @errorcode
+                        WHERE OrderID = @orderid
+                            AND TempID = @tempid";
+
+                    using var cmd = new SqlCommand(query, con);
                     cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                     cmd.Parameters.AddWithValue("@errorcode", errorCode);
-                    cmd.Parameters.AddWithValue("@tempid", tempid);
-                    con.Open();
+                    cmd.Parameters.AddWithValue("@tempid", tempId);
+
                     cmd.ExecuteNonQuery();
-                }
+                });
 
                 var comment = $"{LanguageManager.GetString("discardedMeasurement_Info_1")} {errorCode} - {chooseErrorCode.Comment}";
                 var bag = dgv_Measurements.Rows[row].Cells["Bag"].Value.ToString();
@@ -773,19 +784,36 @@ namespace DigitalProductionProgram.Measure
 
         private void INSERT_MeasureProtocol_Main()
         {
-            using (var con = new SqlConnection(Database.cs_Protocol))
+            Database.ExecuteSafe(con =>
             {
                 const string query = @"
                     INSERT INTO MeasureProtocol.MainData
-                    VALUES (@orderID, NULL, @date, NULL, @employeenumber, @sign, COALESCE((SELECT MAX(rowindex) + 1 FROM MeasureProtocol.MainData WHERE OrderID = @orderid), 1))";
-                con.Open();
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                    VALUES 
+                    (
+                        @orderID,
+                        NULL,
+                        @date,
+                        NULL,
+                        @employeenumber,
+                        @sign,
+                        COALESCE
+                        (
+                            (
+                                SELECT MAX(RowIndex) + 1
+                                FROM MeasureProtocol.MainData
+                                WHERE OrderID = @orderID
+                            ),
+                        1
+                        )
+                    )";
+                using var cmd = new SqlCommand(query, con);
                 cmd.Parameters.AddWithValue("@orderID", Order.OrderID);
                 cmd.Parameters.AddWithValue("@date", DateTime.Now);
                 cmd.Parameters.AddWithValue("@employeenumber", Person.EmployeeNr);
                 cmd.Parameters.AddWithValue("@sign", Person.Sign);
+
                 cmd.ExecuteNonQuery();
-            }
+            });
         }
         private void INSERT_MeasureProtocol_Values(ref bool IsTransferOk)
         {
@@ -883,33 +911,39 @@ namespace DigitalProductionProgram.Measure
                         dataType = textBox.DataType;
                         break;
                 }
-                
-                using var con = new SqlConnection(Database.cs_Protocol);
-                var query = @"
-                        UPDATE MeasureProtocol.Data
-                        SET Value = IsNull(@value, Value), TextValue = IsNull(@textvalue, TextValue)
-                        WHERE OrderID = @orderid 
-                            AND DescriptionId = @descriptionid 
-                            AND RowIndex = @rowindex";
 
-                con.Open();
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
-                cmd.Parameters.AddWithValue("@descriptionid", descriptionID);
-                SQL_Parameter.Int(cmd.Parameters, "@rowIndex", dgv_Measurements.CurrentCell.RowIndex + 1);
-                switch (dataType)
+                Database.ExecuteSafe(con =>
                 {
-                    case 0:
-                        SQL_Parameter.Double(cmd.Parameters, "@value", ctrl.Text);
-                        cmd.Parameters.AddWithValue("@textvalue", DBNull.Value);
-                        break;
-                    case 1:
-                        SQL_Parameter.String(cmd.Parameters, "@textvalue", ctrl.Text);
-                        cmd.Parameters.AddWithValue("@value", DBNull.Value);
-                        break;
-                }
+                    const string query = @"
+                UPDATE MeasureProtocol.Data
+                SET 
+                    Value     = ISNULL(@value, Value),
+                    TextValue = ISNULL(@textvalue, TextValue)
+                WHERE OrderID = @orderid
+                  AND DescriptionId = @descriptionid
+                  AND RowIndex = @rowindex";
 
-                cmd.ExecuteNonQuery();
+                    using var cmd = new SqlCommand(query, con);
+
+                    cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
+                    cmd.Parameters.AddWithValue("@descriptionid", descriptionID);
+                    SQL_Parameter.Int(cmd.Parameters, "@rowindex", dgv_Measurements.CurrentCell.RowIndex + 1);
+
+                    switch (dataType)
+                    {
+                        case 0:
+                            SQL_Parameter.Double(cmd.Parameters, "@value", ctrl.Text);
+                            cmd.Parameters.AddWithValue("@textvalue", DBNull.Value);
+                            break;
+
+                        case 1:
+                            SQL_Parameter.String(cmd.Parameters, "@textvalue", ctrl.Text);
+                            cmd.Parameters.AddWithValue("@value", DBNull.Value);
+                            break;
+                    }
+
+                    cmd.ExecuteNonQuery(); // korrekt och meningsfullt returvärde
+                });
             }
         }
 

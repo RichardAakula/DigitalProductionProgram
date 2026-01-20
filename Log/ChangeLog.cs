@@ -164,50 +164,49 @@ namespace DigitalProductionProgram.Log
 
         private void Load_VersionInfo(Version? currentVersion)
         {
-            using var con = new SqlConnection(Database.cs_Protocol);
-            const string query = @"
-                    SELECT Tags, Version, DescriptionHeader, Description, HowToDo, ReleaseDate,  VisibleToUser
+            versions.Clear();
+
+            Database.ExecuteSafe(con =>
+            {
+                const string query = @"
+                    SELECT 
+                        Tags, 
+                        Version, 
+                        DescriptionHeader, 
+                        Description, 
+                        HowToDo, 
+                        ReleaseDate
                     FROM [Log].ChangeLog
-                    --WHERE VisibleToUser = 'True'
-                    WHERE ReleaseDate IS NOT NULL
+                    WHERE VisibleToUser = 1
+                        AND ReleaseDate IS NOT NULL
                     ORDER BY ID";
 
-            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-            cmd.Parameters.AddWithValue("@version", labelVersion.Text);
-            con?.Open();
+                using var cmd = new SqlCommand(query, con);
+                using var reader = cmd.ExecuteReader();
 
-            var reader = cmd.ExecuteReader();
-
-            while (reader.Read())
-            {
-                bool.TryParse(reader["VisibleToUser"].ToString(), out bool IsOkShowInfo);
-                var text = reader.IsDBNull(3) ? "N/A" : reader.GetString(3);
-                if (IsOkShowInfo == false)
-                    text = "N/A";
-
-                versions.Add(new VersionInfo
+                while (reader.Read())
                 {
-                    Tag = reader.IsDBNull(0) ? "Info" : reader.GetString(0),
-                    VersionNr = reader.IsDBNull(1) ? new Version(0, 0, 0, 0) : Version.Parse(reader.GetString(1)),
-                    DescriptionHeader = reader.IsDBNull(2) ? "" : reader.GetString(2),
-                    Description = text,
-                    HowTo = reader.IsDBNull(4) ? "" : reader.GetString(4),
-                    ReleaseDate = reader.IsDBNull(5) ? default : reader.GetDateTime(5)
+                    versions.Add(new VersionInfo
+                    {
+                        Tag = reader.IsDBNull(0) ? "Info" : reader.GetString(0),
+                        VersionNr = reader.IsDBNull(1)
+                            ? new Version(0, 0, 0, 0)
+                            : Version.Parse(reader.GetString(1)),
+                        DescriptionHeader = reader.IsDBNull(2) ? string.Empty : reader.GetString(2),
+                        Description = reader.IsDBNull(3) ? "N/A" : reader.GetString(3),
+                        HowTo = reader.IsDBNull(4) ? string.Empty : reader.GetString(4),
+                        ReleaseDate = reader.GetDateTime(5)
+                    });
+                }
+            });
 
-                });
-            }
+            if (!versions.Any())
+                return;
 
-            if (versions.Any() && currentVersion is null)
-            {
-                selectedVersion = versions.Last().VersionNr;
-                labelVersion.Text = selectedVersion?.ToString(); // Assign string to label
-            }
-            else
-            {
-                selectedVersion = currentVersion; // Assign Version to Version
-                labelVersion.Text = selectedVersion?.ToString(); // Then assign string to label
-            }
+            selectedVersion = currentVersion ?? versions.Last().VersionNr;
+            labelVersion.Text = selectedVersion.ToString();
         }
+
         private void Show_VersionDetails()
         {
             if (!Version.TryParse(labelVersion?.Text, out var currentVersion))

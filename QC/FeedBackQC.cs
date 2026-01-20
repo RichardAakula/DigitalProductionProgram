@@ -28,20 +28,19 @@ namespace DigitalProductionProgram.QC
         {
             if (Order.OrderID is null)
                 return;
-            using (var con = new SqlConnection(Database.cs_Protocol))
+            Database.ExecuteSafe(con =>
             {
                 const string query = @"
                     SELECT Text, Ppk_OrderNr, Ppk_History, DateTime
                     FROM Parts.FeedBackQC 
                     WHERE PartNumber = @partnumber AND IsDone = 'False'";
-                con.Open();
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                var cmd = new SqlCommand(query, con);
                 cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                 cmd.Parameters.AddWithValue("@partnumber", Order.PartNumber);
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
                     label_Text.Text = reader["Text"].ToString();
-            }
+            });
         }
         private void Text_Click(object sender, EventArgs e)
         {

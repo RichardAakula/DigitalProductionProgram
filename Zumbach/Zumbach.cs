@@ -1,10 +1,10 @@
-﻿using DigitalProductionProgram.DatabaseManagement;
-
-using System.Data;
-using DigitalProductionProgram.ControlsManagement;
+﻿using DigitalProductionProgram.ControlsManagement;
+using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.MainWindow;
-using Microsoft.Data.SqlClient;
 using DigitalProductionProgram.OrderManagement;
+using DigitalProductionProgram.User;
+using Microsoft.Data.SqlClient;
+using System.Data;
 
 namespace DigitalProductionProgram.Zumbach
 {
@@ -60,22 +60,35 @@ namespace DigitalProductionProgram.Zumbach
 
         public static void Load_MeasureStats()
         {
-            using var con = new SqlConnection(Database.cs_Protocol);
-            const string query = @"
-                    SELECT 
-                        (SELECT COUNT(*) FROM Zumbach.Measurements) AS TotalMeasurements,
-                        (SELECT COUNT(*) FROM Zumbach.Data) AS TotalMeasurePoints";
-            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-            con.Open();
-            using var reader = cmd.ExecuteReader();
-            if (reader.Read())
+            Database.ExecuteSafe(con =>
             {
-                TotalMeasurements = ConvertToReadableValue(reader.GetInt32(reader.GetOrdinal("TotalMeasurements")));
-                TotalMeasurePoints = ConvertToReadableValue(reader.GetInt32(reader.GetOrdinal("TotalMeasurePoints")));
-            }
+                const string query = @"
+                    SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED; -- eller WITH (NOLOCK)
+                    SELECT 
+                        (SELECT COUNT_BIG(*) FROM Zumbach.Measurements WITH (NOLOCK)) AS TotalMeasurements,
+                        (SELECT COUNT_BIG(*) FROM Zumbach.[Data]      WITH (NOLOCK)) AS TotalMeasurePoints";
+
+                using var cmd = new SqlCommand(query, con); 
+                using var reader = cmd.ExecuteReader();    
+                if (reader.Read())
+                {
+
+                    var ordTotalMeasurements = reader.GetOrdinal("TotalMeasurements");
+                    var ordTotalMeasurePoints = reader.GetOrdinal("TotalMeasurePoints");
+
+                    long totalMeasurements = reader.GetInt64(ordTotalMeasurements);
+                    long totalMeasurePoints = reader.GetInt64(ordTotalMeasurePoints);
+
+                    TotalMeasurements = ConvertToReadableValue(totalMeasurements);
+                    TotalMeasurePoints = ConvertToReadableValue(totalMeasurePoints);
+
+
+                }
+            });
         }
 
-        private static string ConvertToReadableValue(int value)
+
+        private static string ConvertToReadableValue(long value)
         {
             if (value < 1000000)
                 return value.ToString();

@@ -1,20 +1,21 @@
 using DigitalProductionProgram.DatabaseManagement;
+using DigitalProductionProgram.EasterEggs;
 using DigitalProductionProgram.Help;
 using DigitalProductionProgram.Log;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.Övrigt;
 using DigitalProductionProgram.Processcards;
+using DigitalProductionProgram.User;
 using Microsoft.Data.SqlClient;
 using System.ComponentModel;
+using System.Data;
 using System.Data.Odbc;
 using System.Diagnostics;
-using DigitalProductionProgram.EasterEggs;
-using DigitalProductionProgram.User;
 using static DigitalProductionProgram.DatabaseManagement.Database;
 
 namespace DigitalProductionProgram.MainWindow
 {
-    internal class Program
+    internal static class Program
     {
         /// <summary>
         ///     The main entry point for the application.
@@ -29,61 +30,51 @@ namespace DigitalProductionProgram.MainWindow
 
         public static string RelaseDate(string vers)
         {
-            var datum = string.Empty;
-            try
+            var datum = ExecuteSafe(con =>
             {
-                using var con = new SqlConnection(Database.cs_Protocol);
-                var query = @"SELECT ReleaseDate FROM Log.ChangeLog WHERE Version = @vers";
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@vers", vers);
-                con.Open();
-                var reader = cmd.ExecuteReader();
-                if (reader.Read())
-                    datum = reader["ReleaseDate"].ToString();
-                if (DateTime.TryParse(datum, out DateTime date))
-                    return date.ToShortDateString();
-            }
-            catch
-            {
-                return "N/A";
-            }
-            return "N/A";
+                const string query = @"SELECT ReleaseDate FROM Log.ChangeLog WHERE Version = @version";
+
+                using var cmd = new SqlCommand(query, con);
+                cmd.Parameters.Add("@version", SqlDbType.NVarChar).Value = vers;
+
+                using var reader = cmd.ExecuteReader();
+                if (reader.Read() && !reader.IsDBNull(reader.GetOrdinal("ReleaseDate")))
+                    return reader["ReleaseDate"].ToString();
+
+                return null;
+            });
+            return DateTime.TryParse(datum, out var date) ? date.ToShortDateString() : "N/A";
         }
         public static bool IsComputerOnlyForMeasurements
         {
             get
             {
-                try
+                return Database.ExecuteSafe(con =>
                 {
-                    using var con = new SqlConnection(Database.cs_Protocol);
-                    const string query = "SELECT MeasureOnly FROM [Settings].General WHERE HostName = @computerName";
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    con.Open();
-                    cmd.Parameters.AddWithValue("@computerName", Environment.MachineName);
+                    const string query = @"
+                SELECT MeasureOnly 
+                FROM [Settings].General 
+                WHERE HostName = @computerName";
 
-                    if (cmd.ExecuteScalar() != null)
-                        return (bool)cmd.ExecuteScalar();
-                    return false;
-                }
-                catch (Exception exception)
-                {
-                    ErrorHandler.Allmänt_Fel(exception, "is_DatorMätdator");
-                    return false;
-                }
+                    using var cmd = new SqlCommand(query, con);
+                    cmd.Parameters.Add("@computerName", SqlDbType.NVarChar).Value = Environment.MachineName;
 
+                    var result = cmd.ExecuteScalar();
+                    return result is bool b && b;
+                });
             }
         }
         public static bool IsUpdateCritical
         {
             get
             {
-                using var con = new SqlConnection(Database.cs_Protocol);
-                var query = $"SELECT * FROM Log.ChangeLog WHERE Version = '{ChangeLog.LatestVersion}' AND IsCritical = 'True'";
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-
-                con.Open();
-                var reader = cmd.ExecuteReader();
-                return reader.HasRows;
+                return Database.ExecuteSafe(con =>
+                {
+                    var query = $"SELECT * FROM Log.ChangeLog WHERE Version = '{ChangeLog.LatestVersion}' AND IsCritical = 'True'";
+                    var cmd = new SqlCommand(query, con);
+                    var reader = cmd.ExecuteReader();
+                    return reader.HasRows;
+                });
             }
         }
 
@@ -93,55 +84,38 @@ namespace DigitalProductionProgram.MainWindow
             string.IsNullOrEmpty(Database.cs_ToolRegister) ||
             string.IsNullOrEmpty(Database.MonitorCompany) ||
             string.IsNullOrEmpty(Database.MonitorHost);
+        public static SplashScreen splashScreen;
 
-        [STAThread]
+        private static void ShowSplash()
+        {
+            Thread t = new Thread(() =>
+            {
+                splashScreen = new SplashScreen();
+                Application.Run(splashScreen);
+            });
+
+            t.SetApartmentState(ApartmentState.STA);
+            t.IsBackground = true;
+            t.Start();
+        }
+        
+
+        [STAThread] 
         private static void Main(string[] args)
         {
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-           
-            
+            ShowSplash();
             //Kontrollerar att alla databaskopplingar är ok, annars får användaren välja  
             Load_DatabaseSettings();
 
-            //WhoIsLoggedIn who = new WhoIsLoggedIn();
-            //who.ShowDialog();
-            //return;
-            //Test test = new Test("Test", "Testar att ladda en testform med en graf");
-            //test.ShowDialog();
-            //return;
-            //if (IsDatabaseConnectionMissing)
-            //{
-            //    var cs = new Database();
-            //    cs.ShowDialog();
-            //}
-
-            //Order.WorkOperation = Manage_WorkOperation.WorkOperations.Extrudering_Termo;
-
-            //User.Person.Name = "Richard Aakula";
-            //User.Person.Role = "SuperAdmin";
-            //Application.Run(new Manage_Processcards());
-            //return;
-            //Nedanstående är originalkoden som skall laddas
-            //var back = new BlackBackground("Initialising Digital Production Program.\nConnecting to Monitor and loading data from server, please wait.", 98, true)
-            //{
-            //    TopMost = false,
-            //    WindowState = FormWindowState.Normal,
-            //    Width = 600,
-            //    Height = 300,
-            //    KeyPreview = true,
-
-            //};
-            //back.ShowDialog();
-            //using var calender = new LoggedInUsers();
-            //calender.ShowDialog();
-            Application.Run(new Main_Form());
-            //Application.Run(new Main_Form(back));
+            var main = new Main_Form();
+            Application.Run(main);
 
         }
-
-
         
+
+
     }
 }

@@ -17,36 +17,37 @@ namespace DigitalProductionProgram.MainWindow
 {
     public partial class Main_AQL : UserControl
     {
-        public static double Påsar_mellan_prov(string startpåse, string slutpåse, string antal, string antalProver)
+        private static double Påsar_mellan_prov(string startpåse, string slutpåse, string antal, string antalProver)
         {
             return Antal_Påsar(startpåse, slutpåse, antal) / (Antal_Prover(antalProver) - 1);
         }
 
-        public static int Antal_Mätningar_OrderNr
+        private static int Antal_Mätningar_OrderNr
         {
             get
             {
-                using var con = new SqlConnection(Database.cs_Protocol);
-                var query = @"
+                return Database.ExecuteSafe(con =>
+                {
+                    var query = @"
                         SELECT TOP(1) Påse_Spole FROM  WHERE OrderID = @orderid
                         ORDER BY Påse_Spole DESC";
 
-                con.Open();
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
+                    var cmd = new SqlCommand(query, con);
+                    cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
 
-                var value = cmd.ExecuteScalar();
-                if (value != null)
-                    return (int)cmd.ExecuteScalar();
-                return 1;
+                    var value = cmd.ExecuteScalar();
+                    if (value != null)
+                        return (int)cmd.ExecuteScalar();
+                    return 1;
+                });
             }
         }
-        public static int Antal_Totalt(string antal)
+        private static int Antal_Totalt(string antal)
         {
             int.TryParse(antal, out var antal_Totalt);
             return antal_Totalt;
         }
-        public static int AQL_Provuttag
+        private static int AQL_Provuttag
         {
             get
             {
@@ -55,11 +56,11 @@ namespace DigitalProductionProgram.MainWindow
                 return Order.Amount < 35001 ? 13 : 50;
             }
         }
-        public static double Antal_Påsar(string startpåse, string slutpåse, string antal)
+        private static double Antal_Påsar(string startpåse, string slutpåse, string antal)
         {
             return SlutPåse(slutpåse, antal) - StartPåse(startpåse) + 1;
         }
-        public static double StartPåse(string startPåse)
+        private static double StartPåse(string startPåse)
         {
             if (string.IsNullOrEmpty(startPåse))
             {
@@ -68,7 +69,7 @@ namespace DigitalProductionProgram.MainWindow
 
             return double.Parse(startPåse);
         }
-        public static double SlutPåse(string slutpåse, string antal)
+        private static double SlutPåse(string slutpåse, string antal)
         {
             if (string.IsNullOrEmpty(slutpåse))
             {
@@ -83,11 +84,11 @@ namespace DigitalProductionProgram.MainWindow
             double.TryParse(slutpåse, out var slutPåse);
             return slutPåse;
         }
-        public static int Antal_Prover(string antalProver)
+        private static int Antal_Prover(string antalProver)
         {
             return string.IsNullOrEmpty(antalProver) ? AQL_Provuttag : int.Parse(antalProver);
         }
-        public static int TotalAmountPerSpoolBag
+        private static int TotalAmountPerSpoolBag
         {
             get
             {
@@ -190,7 +191,7 @@ namespace DigitalProductionProgram.MainWindow
         }
 
 
-        public static int Get_Row_dgv_ProvInfo(DataGridView dgv)
+        private static int Get_Row_dgv_ProvInfo(DataGridView dgv)
         {
             var antal_Mätningar = Antal_Mätningar_OrderNr;
             for (var i = 0; i < dgv.Rows.Count; i++)
@@ -205,7 +206,7 @@ namespace DigitalProductionProgram.MainWindow
             return 0;
         }
 
-        public Main_OrderInformation orderInformation;
+        private Main_OrderInformation orderInformation;
 
 
         public Main_AQL()

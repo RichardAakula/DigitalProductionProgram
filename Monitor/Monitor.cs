@@ -576,23 +576,23 @@ namespace DigitalProductionProgram.Monitor
             //if (list_Operations.Count == 0)
             if (ops.Count == 0)
             {
-                using var con = new SqlConnection(Database.cs_Protocol);
-                const string query = @"SELECT Operation, ProdLine AS Description, ProdGroup FROM [Order].MainData WHERE OrderNr = @orderNr";
-
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@orderNr", ordernr);
-                con.Open();
-                var reader = cmd.ExecuteReader();
-                while (reader.Read())
+                Database.ExecuteSafe(con =>
                 {
-                    int.TryParse(reader["Operation"].ToString(), out int operation);
-                    string description = reader["Description"]?.ToString() ?? "";
-                    ops.Add(new Main_OrderInformation.Operation_Description{Operation = operation, Description = description});
+                    const string query = @"SELECT Operation, ProdLine AS Description, ProdGroup FROM [Order].MainData WHERE OrderNr = @orderNr";
 
-                    //list_Operations.Add($"{reader["Operation"]} - {reader["Description"]}");
-                    if (Main_OrderInformation.List_ProdGroup != null)
-                        Main_OrderInformation.List_ProdGroup.Add(reader["ProdGroup"].ToString());
-                }
+                    var cmd = new SqlCommand(query, con);
+                    cmd.Parameters.AddWithValue("@orderNr", ordernr);
+                    var reader = cmd.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        int.TryParse(reader["Operation"].ToString(), out int operation);
+                        string description = reader["Description"]?.ToString() ?? "";
+                        ops.Add(new Main_OrderInformation.Operation_Description { Operation = operation, Description = description });
+
+                        if (Main_OrderInformation.List_ProdGroup != null)
+                            Main_OrderInformation.List_ProdGroup.Add(reader["ProdGroup"].ToString());
+                    }
+                });
             }
 
             return ops;

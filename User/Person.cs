@@ -427,12 +427,9 @@ namespace DigitalProductionProgram.User
                 cmd.Parameters.AddWithValue("@createddate", DateTime.Now);
                 cmd.Parameters.AddWithValue("@lastreadchangelogversion", "0.0.0.0");
                 cmd.Parameters.AddWithValue("@utbildadVerktyg", "0.0.0.0");
-                con.Open();
                 var value = cmd.ExecuteNonQuery();
                 if (value < 0)
-                {
                     InfoText.Show($"{name} {LanguageManager.GetString("user_AlreadyInSystem")}", CustomColors.InfoText_Color.Bad, null);
-                }
 
                 if (img != null)
                     Save_ProfilePicture(img, name);

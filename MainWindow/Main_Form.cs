@@ -123,63 +123,70 @@ namespace DigitalProductionProgram.MainWindow
 
         // Denna rad måste finnas för utskrifterna
         private readonly Manage_PrintOuts? print;
-        private readonly BlackBackground black;
         //public Main_Form(BlackBackground back)
         public Main_Form()
         {
-            var blackback = new BlackBackground("Initialising Digital Production Program.\n" +
-                                                "" +
-                                                "Connecting to Monitor and loading data from server, please wait.", 98, true)
-            {
-                TopMost = true,
-                WindowState = FormWindowState.Maximized,
-                KeyPreview = true,
-            };
-
-            if (Debugger.IsAttached)
-            {
-                blackback.TopMost = false;
-                blackback.FormBorderStyle = FormBorderStyle.FixedToolWindow;
-                blackback.StartPosition = FormStartPosition.CenterScreen; // gör den mindre och central
-            }
-
-            blackback.Show(); this.Visible = false;
-
-            black = blackback;
-            Settings.Settings.LoadData.Load_Settings();
-            Activity.Start(); 
-            InitializeComponent(); 
-            Translate_MainForm();
-            MainMenu.mainForm = this; OrderInformation.mainForm = this;
-            print = new Manage_PrintOuts(); Monitor.Monitor.lbl_Monitorstatus = Serverstatus.lbl_MonitorStatus;
-            Monitor.Monitor.panel_Monitorstatus = Serverstatus.panel_MonitorStatus;
-            Login_Monitor.Login_API();
-            if ((Environment.MachineName == "THAI-DPP-TEST01" || Environment.MachineName == "OH-ID61") && IsAutoLoginSuperAdmin)
-                AUTOLOGIN_SUPERADMIN();
-            else
-            {
-                IsLoadingPriorityPlan = true;
-                IsLoadingMeasurePoints = true;
-            }
-            Login_Monitor.GiveUserWarningMonitorOnStageServer();
+            startTime = DateTime.Now;
+            this.Visible = false;
+            Activity.Start();
+            InitializeComponent();
+            RollingInformation.LoadStats();
+            MainMenu.mainForm = this;
+            OrderInformation.mainForm = this;
             Serverstatus.SetMainForm(this);
             PriorityPlanning.dgv_PriorityPlanning.CellClick += PriorityPlanning_OrderNr_CellClick;
             OrderInformation.cb_Operation.SelectedIndexChanged += Operation_SelectedIndexChanged;
             lbl_Company.Text = Monitor.Monitor.factory.ToString();
-            if (IsAutoOpenOrder == false)
-            {
-                Enum.TryParse(Settings.Settings.Tema, out Teman.Theme); Teman.Choose_Theme(); if (!Program.IsComputerOnlyForMeasurements && IsAutoOpenOrder == false) OrderInformation.tb_OrderNr.AutoCompleteCustomSource = Monitor.Monitor.AutoFillOrdernr; _ = Main_FilterQuickOpen.Load_ListAsync(dgv_QuickOpen);
-            }
             OrderInformation.tb_OrderNr.Focus();
-            dgv_QuickOpen.ClearSelection();
-            if (Database.cs_Protocol.Contains("GOD_DPP_DEV"))
-                IsBetaMode = true;
-            Text = "Digital Production Program - " + ChangeLog.CurrentVersion; Refresh();
-            Mail.AutoTestJira(); 
-            
+
+            this.Visible = false;
+            print = new Manage_PrintOuts();
         }
-        private async void MainForm_Load(object sender, EventArgs e)
+        protected override async void OnShown(EventArgs e)
         {
+            base.OnShown(e);
+
+            await Task.Delay(1000); // ger UI-tråden tid att börja rendera splash
+
+            await Task.Run(() =>
+            {
+                Settings.Settings.LoadData.Load_Settings();
+                Activity.Start();
+                Login_Monitor.Login_API();
+                Mail.AutoTestJira();
+                Login_Monitor.GiveUserWarningMonitorOnStageServer();
+               
+                if (!IsAutoOpenOrder)
+                {
+                    Enum.TryParse(Settings.Settings.Tema, out Teman.Theme);
+                    // UI → tillbaka till huvudtråden
+                    this.Invoke(() =>
+                    {
+                        Teman.Choose_Theme();
+
+                        if (!Program.IsComputerOnlyForMeasurements)
+                            OrderInformation.tb_OrderNr.AutoCompleteCustomSource = Monitor.Monitor.AutoFillOrdernr;
+
+                        _ = Main_FilterQuickOpen.Load_ListAsync(dgv_QuickOpen);
+                    });
+                }
+
+            });
+            
+            Translate_MainForm();
+            Change_GUI_StandardColor();
+            await InitializeUIAsync();
+
+            CloseSplash();
+        }
+        private async Task InitializeUIAsync()
+        {
+            MainMenu.mainForm = this;
+            OrderInformation.mainForm = this;
+
+            Monitor.Monitor.lbl_Monitorstatus = Serverstatus.lbl_MonitorStatus;
+            Monitor.Monitor.panel_Monitorstatus = Serverstatus.panel_MonitorStatus;
+
             if (IsAutoOpenOrder == false)
             {
                 Monitor.Monitor.Load_WorkCenters();
@@ -189,28 +196,38 @@ namespace DigitalProductionProgram.MainWindow
                 await Task.Run(() => RollingInformation.Change_Tips());
                 RollingInformation.Change_Tips();
             }
-            //Detta räknar hur många instanser av programmet som är öppna
+
+            if ((Environment.MachineName == "THAI-DPP-TEST01" ||
+                 Environment.MachineName == "OH-ID61") && IsAutoLoginSuperAdmin)
+            {
+                AUTOLOGIN_SUPERADMIN();
+            }
+            else
+            {
+                IsLoadingPriorityPlan = true;
+                IsLoadingMeasurePoints = true;
+            }
+            if (Database.cs_Protocol.Contains("GOD_DPP_DEV"))
+                IsBetaMode = true;
             var processes = Process.GetProcessesByName("DigitalProductionProgram");
             await Activity.Stop($"Application startup # {processes.Length}");
             _scheduler = new ApplicationScheduler(UpdateMeasureInformationAsync, UpdateGuiGrade, Statistics_DPP, Serverstatus);
             _scheduler.Start();
+            Text = "Digital Production Program - " + ChangeLog.CurrentVersion;
+        }
+        private void CloseSplash()
+        {
+            if (Program.splashScreen == null) return;
 
-            startTime = DateTime.Now;
-            Change_GUI_StandardColor();
-            if (black != null)
-            {
-                if (black.InvokeRequired) black.Invoke(() => black.Close());
-                else
-                    black.Close();
-            }
-
-            
+            if (Program.splashScreen.InvokeRequired)
+                Program.splashScreen.Invoke(Program.splashScreen.Close);
+            else
+                Program.splashScreen.Close();
 
             this.Visible = true;
-            this.Invoke((MethodInvoker)(this.BringToFront));
-            _scheduler.CheckForMaintenanceWork();
-            _scheduler.CheckForUpdate();
+            BringToFront();
         }
+      
 
 
         protected override void SetVisibleCore(bool value)
@@ -378,17 +395,33 @@ namespace DigitalProductionProgram.MainWindow
 
         private void Translate_MainForm()
         {
-            var controls = new Control[] { TipsAndTrix.label_Tips_Trix, label_EmpNr, label_Sign, label_Role, label_Filter, label_QuickOpenOrder };
+            if (InvokeRequired)
+            {
+                Invoke(Translate_MainForm);
+                return;
+            }
+
+            var controls = new Control[]
+            {
+                TipsAndTrix.label_Tips_Trix,
+                label_EmpNr,
+                label_Sign,
+                label_Role,
+                label_Filter,
+                label_QuickOpenOrder
+            };
+
             LanguageManager.TranslationHelper.TranslateControls(controls);
             LanguageManager.TranslationHelper.TranslateMainMenu(MainMenu.menuStrip);
+
             Buttons.Translate_Form();
             OrderInformation.Translate_Form();
             ActiveOrdersUser.Translate_Form();
             PriorityPlanning.Translate_Form();
             measurePoints.Translate_Form();
             measureStats.Translate_Form();
-
         }
+
 
         public void Change_GUI_OrderKlar()
         {

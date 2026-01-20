@@ -93,74 +93,74 @@ namespace DigitalProductionProgram.User
         //[DebuggerStepThrough]
         public static bool IsRoleAuthorized(Enum templateAuthority, bool IsOkWarnUser = true)
         {
-            bool isAuthorized;
             var val = Convert.ChangeType(templateAuthority, templateAuthority.GetTypeCode());
-            using ( var con = new SqlConnection(Database.cs_Protocol))
+
+            // Använder ExecuteSafe för SQL
+            bool isAuthorized = Database.ExecuteSafe(con =>
             {
-                const string query = "SELECT * FROM Authorities.CustomRoles WHERE TemplateID = @id AND Role = @role";
+                const string query = "SELECT 1 FROM Authorities.CustomRoles WHERE TemplateID = @id AND Role = @role";
 
-                using (var cmd = new SqlCommand(query, con))
-                {
-                    cmd.Parameters.AddWithValue("@id", (int)val);
-                    SQL_Parameter.String(cmd.Parameters, "@role", Person.Role);
-                    con.Open();
-                    using (var reader = cmd.ExecuteReader())
-                    {
-                        isAuthorized = reader.HasRows;
-                    }
-                }
-            }
+                using var cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@id", (int)val);
+                cmd.Parameters.AddWithValue("@role", Person.Role);
+                using var reader = cmd.ExecuteReader();
+                return reader.HasRows;
+            });
 
-
-            if (isAuthorized == false && IsOkWarnUser)
+            // Om inte auktoriserad, visa varning
+            if (!isAuthorized && IsOkWarnUser)
             {
                 try
                 {
                     InfoText.Show($"{LanguageManager.GetString("authority_Check_1")}:\n" +
                                   $"{Authorities_Template[(int)val]}\n" +
-                                  $"{LanguageManager.GetString("authority_Check_2")}", CustomColors.InfoText_Color.Warning, null);
+                                  $"{LanguageManager.GetString("authority_Check_2")}",
+                        CustomColors.InfoText_Color.Warning,
+                        null);
                 }
-                catch (Exception e)
+                catch
                 {
+                    // ignore, returnerar false ändå
                     return false;
                 }
-               
             }
-                
+
             return isAuthorized;
         }
+
         [DebuggerStepThrough]
         public static bool IsWorkoperationAuthorized(Enum templateWorkoperation)
         {
             var val = Convert.ChangeType(templateWorkoperation, templateWorkoperation.GetTypeCode());
-            using var con = new SqlConnection(Database.cs_Protocol);
-            const string query = "SELECT * FROM Authorities.CustomWorkoperation WHERE TemplateID = @id AND Workoperation = @workoperation";
+            return Database.ExecuteSafe(con =>
+            {
+                const string query = "SELECT * FROM Authorities.CustomWorkoperation WHERE TemplateID = @id AND Workoperation = @workoperation";
+                var cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@id", (int)val);
+                cmd.Parameters.AddWithValue("@workoperation", Order.WorkOperation.ToString());
+                var reader = cmd.ExecuteReader();
+                if (reader.HasRows)
+                    return true;
 
-            con.Open();
-            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-            cmd.Parameters.AddWithValue("@id", (int)val);
-            cmd.Parameters.AddWithValue("@workoperation", Order.WorkOperation.ToString());
-            var reader = cmd.ExecuteReader();
-            if (reader.HasRows)
-                return true;
-
-            return false;
+                return false;
+            });
         }
         public static bool IsFactoryAuthorized(Enum templateFactory)
         {
             var val = Convert.ChangeType(templateFactory, templateFactory.GetTypeCode());
-            using var con = new SqlConnection(Database.cs_Protocol);
-            const string query = "SELECT * FROM Authorities.CustomFactory WHERE TemplateID = @id AND Factory = @factory";
 
-            con.Open();
-            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-            cmd.Parameters.AddWithValue("@id", (int)val);
-            cmd.Parameters.AddWithValue("@factory", Monitor.Monitor.factory.ToString());
-            var reader = cmd.ExecuteReader();
-            if (reader.HasRows)
-                return true;
-            return false;
+            return Database.ExecuteSafe(con =>
+            {
+                const string query = "SELECT 1 FROM Authorities.CustomFactory WHERE TemplateID = @id AND Factory = @factory";
+
+                using var cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@id", (int)val);
+                cmd.Parameters.AddWithValue("@factory", Monitor.Monitor.factory.ToString());
+                using var reader = cmd.ExecuteReader();
+                return reader.HasRows;
+            });
         }
+
 
         public static bool IsOkManageAuthorization
         {

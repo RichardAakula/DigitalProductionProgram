@@ -7,8 +7,10 @@ using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text;
+using DigitalProductionProgram.User;
 
 
 namespace DigitalProductionProgram.DatabaseManagement
@@ -148,38 +150,39 @@ namespace DigitalProductionProgram.DatabaseManagement
             Load_Databases();
         }
         [DebuggerStepThrough]
-        public static void ExecuteSafe(Action<SqlConnection> action)
+        public static void ExecuteSafe(Action<SqlConnection> action, [CallerMemberName] string callerMember = "")
         {
             ExecuteSafe<int>(con =>
             {
                 action(con);
                 return 0;
-            });
+            }, callerMember);
         }
         [DebuggerStepThrough]
-        public static T ExecuteSafe<T>(Func<SqlConnection, T> action)
+        public static T ExecuteSafe<T>(Func<SqlConnection, T> action, [CallerMemberName] string callerMember = "")
         {
             var sw = Stopwatch.StartNew();
-
             try
             {
                 using var con = new SqlConnection(Database.cs_Protocol);
                 con.Open();
                 ServerStatus.Add_Sql_Counter();
                 T result = action(con);
-
+                sw.Stop();
                 return result;
             }
-            catch (Exception)
+            catch (Exception exc)
             {
-                InfoText.Show(LanguageManager.GetString("errorConnectingDatabase"), CustomColors.InfoText_Color.Bad, "Error!");
+              // if (Person.Role == "SuperAdmin")
+                    InfoText.Show($"An error occurred while connecting to the database.\nPlease contact Admin if the issue persists.\n\n{exc}\n\n{callerMember}", CustomColors.InfoText_Color.Bad, "Error!");
+               // else
+               //     InfoText.Show($"An error occurred while connecting to the database.\nPlease contact Admin if the issue persists.\n\n{exc}", CustomColors.InfoText_Color.Bad, "Error!");
 
                 return default!;
             }
             finally
             {
-                sw.Stop();
-
+                
                 DatabaseConnectionStatus.Report(
                     new DatabaseExecutionResult
                     {
@@ -188,7 +191,7 @@ namespace DigitalProductionProgram.DatabaseManagement
                     });
             }
         }
-        public static async Task<T> ExecuteSafeAsync<T>(Func<SqlConnection, Task<T>> action)
+        public static async Task<T> ExecuteSafeAsync<T>(Func<SqlConnection, Task<T>> action, [CallerMemberName] string callerMember = "")
         {
             var sw = Stopwatch.StartNew();
             bool success = false;
@@ -198,15 +201,17 @@ namespace DigitalProductionProgram.DatabaseManagement
                 await using var con = new SqlConnection(Database.cs_Protocol);
                 await con.OpenAsync();
                 ServerStatus.Add_Sql_Counter();
+                sw.Stop();
                 T result = await action(con);
                 success = true;
                 return result;
             }
-            catch (Exception)
+            catch (Exception exc)
             {
-                InfoText.Show(
-                    LanguageManager.GetString("errorConnectingDatabase" + $" - ({action.Method.Name})"), CustomColors.InfoText_Color.Bad, "Error!");
-
+              //  if (Person.Role == "SuperAdmin")
+                    InfoText.Show($"An error occurred while connecting to the database.\nPlease contact Admin if the issue persists.\n\n{exc}\n\n{callerMember}", CustomColors.InfoText_Color.Bad, "Error!");
+               // else
+                //    InfoText.Show($"An error occurred while connecting to the database.\nPlease contact Admin if the issue persists.\n\n{exc}", CustomColors.InfoText_Color.Bad, "Error!");
                 return default!;
             }
             finally

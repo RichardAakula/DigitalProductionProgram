@@ -1,11 +1,12 @@
-﻿using System;
+﻿using DigitalProductionProgram.DatabaseManagement;
+using DigitalProductionProgram.OrderManagement;
 using Microsoft.Data.SqlClient;
+using System;
+using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Threading;
 using System.Windows.Forms;
-using DigitalProductionProgram.DatabaseManagement;
-using DigitalProductionProgram.OrderManagement;
 
 
 namespace DigitalProductionProgram.MainWindow
@@ -23,46 +24,50 @@ namespace DigitalProductionProgram.MainWindow
             cb_Theme.DataSource = Enum.GetValues(typeof(Teman.Themes));
         }
 
-       
+
 
         private void btn_AddProfilePicture_Click(object sender, EventArgs e)
         {
             using var dlg = new OpenFileDialog
             {
-                // Filter = "JPG Files(*.jpg)|*.jpg|GIF Files(*.gif)|*.gif|All Files(*.*)|*.*|PNG Files(*.png|*.png)",
                 Filter = "All Files(*.*)|*.*",
-                Title = $"Välj en bild som du vill använda till temat {cb_Theme.Text}"
+                Title = $"Välj en bild som du vill använda till temat {cb_Theme.Text}",
+                Multiselect = true
             };
-            dlg.Multiselect = true;
-            if (dlg.ShowDialog() == DialogResult.OK)
+
+            if (dlg.ShowDialog() != DialogResult.OK)
+                return;
+
+            var pictures = dlg.FileNames;
+
+            foreach (var picture in pictures)
             {
-                var pictures = dlg.FileNames;
+                // Läs filen som byte-array
+                var profilePicture = File.ReadAllBytes(picture);
 
-                foreach (var picture in pictures)
+                // Visa bilden i UI
+                using var ms = new MemoryStream(profilePicture);
+                BackgroundImage?.Dispose(); // frigör eventuell tidigare bild
+                BackgroundImage = Image.FromStream(ms);
+                Refresh();
+
+                // Spara i databasen med ExecuteSafe
+                Database.ExecuteSafe(con =>
                 {
-                    var fs = new FileStream(picture, FileMode.Open, FileAccess.Read);
-                    var br = new BinaryReader(fs);
-                    var ProfilePicture = br.ReadBytes((int)fs.Length);
-
-                    var ms = new MemoryStream(ProfilePicture);
-                    BackgroundImage = Image.FromStream(ms);
-                    Thread.Sleep(1000);
-                    Refresh();
-                    using var con = new SqlConnection(Database.cs_Protocol);
-                    var query = @"
-                   
+                    const string query = @"
                         INSERT INTO [Settings].Themes (Theme, Image)
                         VALUES (@theme, @image)";
-                    con.Open();
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    cmd.Parameters.AddWithValue("@image", ProfilePicture);
-                    cmd.Parameters.AddWithValue("@theme", cb_Theme.Text);
+
+                    using var cmd = new SqlCommand(query, con);
+                    cmd.Parameters.Add("@theme", SqlDbType.NVarChar, 50).Value = cb_Theme.Text;
+                    cmd.Parameters.Add("@image", SqlDbType.VarBinary, profilePicture.Length).Value = profilePicture;
 
                     cmd.ExecuteNonQuery();
-                }
-
-                MessageBox.Show("Alla bilder är uppladdade.");
+                });
             }
+
+            MessageBox.Show("Alla bilder är uppladdade.");
         }
+
     }
 }

@@ -83,7 +83,6 @@ namespace DigitalProductionProgram.MainWindow
             Margin = new Padding(4, 3, 4, 3);
             Name = "Main_RollingInformation";
             Size = new Size(1156, 46);
-            Load += Main_RollingInformation_Load;
             panel_Information.ResumeLayout(false);
             panel_Information.PerformLayout();
             ResumeLayout(false);

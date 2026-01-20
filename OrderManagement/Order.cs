@@ -102,34 +102,29 @@ namespace DigitalProductionProgram.OrderManagement
         {
             get
             {
-                var list = new List<string?>();
-                using var con = new SqlConnection(Database.cs_Protocol);
-                var query = @"SELECT DISTINCT OrderNr FROM [Order].MainData WHERE WorkOperationID = (SELECT ID FROM Workoperation.Names WHERE Name = @workoperation AND ID IS NOT NULL) ORDER BY OrderNr";
+                return Database.ExecuteSafe(con =>
+                {
+                    var list = new List<string?>();
+                    const string query = @"
+                        SELECT DISTINCT OrderNr
+                        FROM [Order].MainData
+                        WHERE WorkOperationID = 
+                        (
+                            SELECT ID
+                            FROM Workoperation.Names
+                            WHERE Name = @workoperation
+                                AND ID IS NOT NULL
+                        )
+                        ORDER BY OrderNr";
+                    using var cmd = new SqlCommand(query, con);
+                    SQL_Parameter.String(cmd.Parameters, "@workoperation", WorkOperation.ToString());
 
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                SQL_Parameter.String(cmd.Parameters, "@workoperation", WorkOperation.ToString());
-                con.Open();
-                var reader = cmd.ExecuteReader();
-                while (reader.Read())
-                    list.Add(reader[0].ToString());
-                return list;
-            }
-        }
-        public static List<string> List_OrderNrPrefix
-        {
-            get
-            {
-                var list = new List<string>();
+                    using var reader = cmd.ExecuteReader();
+                    while (reader.Read())
+                        list.Add(reader[0]?.ToString());
 
-                using var con = new SqlConnection(Database.cs_Protocol);
-                var query = @"SELECT DISTINCT LEFT ([Order].MainData.OrderNr, 1) FROM [Order].MainData";
-
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                con.Open();
-                var reader = cmd.ExecuteReader();
-                while (reader.Read())
-                    list.Add(reader[0].ToString());
-                return list;
+                    return list;
+                });
             }
         }
         public static List<string?> List_ProdType
@@ -196,10 +191,8 @@ namespace DigitalProductionProgram.OrderManagement
             SELECT Operation, ProdLine AS Description
             FROM [Order].MainData
             WHERE OrderNr = @orderNr";
-
                 using var cmd = new SqlCommand(query, con);
                 cmd.Parameters.AddWithValue("@orderNr", Order.OrderNumber);
-
                 using var reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
@@ -241,7 +234,6 @@ namespace DigitalProductionProgram.OrderManagement
                 using var cmd = new SqlCommand(query, con);
                 ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@id", OrderID);
-
                 var value = cmd.ExecuteScalar();
                 ProdLine = value != null ? value.ToString() : string.Empty;
             });
@@ -1275,7 +1267,7 @@ namespace DigitalProductionProgram.OrderManagement
                             return ShowMessage("Fyll i Produktionsparametrarna i Körprotokollet", main);
                     }
 
-                    return true;
+                    return false;
                 });
             }
             private static bool IsCommentsDone(Main_Form main)
@@ -1299,71 +1291,90 @@ namespace DigitalProductionProgram.OrderManagement
 
             private static bool Is_Value_Exist_In_Korprotokoll(string codetext, int protocolDescriptionID, string valueType, string machine, int totalStartups)
             {
-                var IsOk = false;
-                for (var startUp = 1; startUp < totalStartups + 1; startUp++)
+                return Database.ExecuteSafe(con =>
                 {
-                    using var con = new SqlConnection(Database.cs_Protocol);
-                    var query = $@"
-                        SELECT {valueType}, Uppstart, MachineIndex
-                        FROM [Order].Data WHERE OrderID = @orderid 
-                            AND ProtocolDescriptionID = @protocoldescriptionid
-                            AND Uppstart = @startup ";
-                    if (!string.IsNullOrEmpty(machine))
-                        query += "AND (MachineIndex = @machineindex OR (MachineIndex IS NULL AND @machineindex IS NULL))";
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    cmd.Parameters.AddWithValue("@orderid", OrderID);
-                    cmd.Parameters.AddWithValue("@protocoldescriptionid", protocolDescriptionID);
-                    cmd.Parameters.AddWithValue("@codetext", codetext);
-                    cmd.Parameters.AddWithValue("@startup", startUp);
-                    cmd.Parameters.AddWithValue("@machineindex", machine);
-                    con.Open();
-                    var reader = cmd.ExecuteReader();
-
-                    while (reader.Read())
+                    for (var startUp = 1; startUp <= totalStartups; startUp++)
                     {
-                        int.TryParse(reader["Uppstart"].ToString(), out var uppstart);
-                        var value = reader[0].ToString();
-                        if (Is_Korprotokoll_Value_Discarded(uppstart))
+                        var query = $@"
+                            SELECT {valueType}, Uppstart, MachineIndex
+                            FROM [Order].Data
+                            WHERE OrderID = @orderid
+                                AND ProtocolDescriptionID = @protocoldescriptionid
+                                AND Uppstart = @startup";
+
+                        if (!string.IsNullOrEmpty(machine))
+                            query += " AND (MachineIndex = @machineindex OR (MachineIndex IS NULL AND @machineindex IS NULL))";
+
+                        using var cmd = new SqlCommand(query, con);
+                        cmd.Parameters.AddWithValue("@orderid", OrderID);
+                        cmd.Parameters.AddWithValue("@protocoldescriptionid", protocolDescriptionID);
+                        cmd.Parameters.AddWithValue("@codetext", codetext);
+                        cmd.Parameters.AddWithValue("@startup", startUp);
+                        cmd.Parameters.AddWithValue("@machineindex", machine ?? (object)DBNull.Value);
+
+                        using var reader = cmd.ExecuteReader();
+                        if (!reader.HasRows)
                             continue;
-                        if (Is_ValueReportedAndOkToLeaveEmpty(protocolDescriptionID))
-                            return true;
-                        IsOk = !string.IsNullOrEmpty(value);
+
+                        while (reader.Read())
+                        {
+                            int.TryParse(reader["Uppstart"]?.ToString(), out var uppstart);
+                            var value = reader[0]?.ToString();
+
+                            if (Is_Korprotokoll_Value_Discarded(uppstart))
+                                continue;
+
+                            if (Is_ValueReportedAndOkToLeaveEmpty(protocolDescriptionID))
+                                return true;
+
+                            if (!string.IsNullOrEmpty(value))
+                                return true;
+                        }
                     }
-                    if (reader.HasRows == false)
-                        IsOk = false;
-                }
-                return IsOk;
+
+                    return false;
+                });
             }
+
             private static bool Is_ValueReportedAndOkToLeaveEmpty(int protocolDescriptionID)
             {
-                using var con = new SqlConnection(Database.cs_Protocol);
-                var query = @"
+                return Database.ExecuteSafe(con =>
+                {
+                    const string query = @"
                         SELECT 1 
                         FROM [Processcard].ProposedChanges 
                         WHERE OrderID = @orderid 
                             AND ProtocolDescriptionID = @protocoldescriptionid";
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@orderid", OrderID);
-                cmd.Parameters.AddWithValue("@protocoldescriptionid", protocolDescriptionID);
-                con.Open();
-                var value = cmd.ExecuteScalar();
-                return value != null;
+                    using var cmd = new SqlCommand(query, con);
+                    cmd.Parameters.AddWithValue("@orderid", OrderID);
+                    cmd.Parameters.AddWithValue("@protocoldescriptionid", protocolDescriptionID);
+                    var value = cmd.ExecuteScalar();
+                    return value != null;
+                });
             }
+
             private static bool Is_Korprotokoll_Value_Discarded(int uppstart)
             {
-                using var con = new SqlConnection(Database.cs_Protocol);
-                var query = @"SELECT BoolValue FROM [Order].Data WHERE OrderID = @orderid AND uppstart = @row AND ProtocolDescriptionID = @protocoldescriptionid";
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@orderid", OrderID);
-                cmd.Parameters.AddWithValue("@protocoldescriptionid", 174);//174 = Kasserad
-                cmd.Parameters.AddWithValue("@row", uppstart);
-                con.Open();
-                var value = cmd.ExecuteScalar();
-                if (value != null)
-                    return bool.TryParse(value.ToString(), out var IsDiscarded) && IsDiscarded;
+                return Database.ExecuteSafe(con =>
+                {
+                    const string query = @"
+                    SELECT BoolValue 
+                    FROM [Order].Data 
+                    WHERE OrderID = @orderid 
+                        AND Uppstart = @row 
+                        AND ProtocolDescriptionID = @protocoldescriptionid";
 
-                return false;
+                    using var cmd = new SqlCommand(query, con);
+                    ServerStatus.Add_Sql_Counter();
+                    cmd.Parameters.AddWithValue("@orderid", OrderID);
+                    cmd.Parameters.AddWithValue("@row", uppstart);
+                    cmd.Parameters.AddWithValue("@protocoldescriptionid", 174); // 174 = Kasserad
+
+                    var value = cmd.ExecuteScalar();
+                    return value != null && bool.TryParse(value.ToString(), out var isDiscarded) && isDiscarded;
+                });
             }
+
 
             private static bool ShowMessage(string? Text, Main_Form main)
             {

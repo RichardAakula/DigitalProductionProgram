@@ -856,34 +856,32 @@ namespace DigitalProductionProgram.Settings
             public static void Load_Settings()
             {
                 try
-                { 
-                    using var con = new SqlConnection(Database.cs_Protocol);
-                    const string query = @"
+                {
+                    Database.ExecuteSafe(con =>
+                    {
+                        const string query = @"
                         SELECT * FROM [Settings].General
                         WHERE general.HostName = @hostname";
 
-                    using var cmd = new SqlCommand(query, con);
-                    cmd.CommandTimeout = 5;
+                        using var cmd = new SqlCommand(query, con);
+                        cmd.CommandTimeout = 5;
+                        cmd.Parameters.AddWithValue("@hostname", Environment.MachineName);
+                        using var reader = cmd.ExecuteReader();
 
-                    ServerStatus.Add_Sql_Counter();
-                    cmd.Parameters.AddWithValue("@hostname", Environment.MachineName);
+                        if (!reader.HasRows)
+                        {
+                            SaveData.SaveNewProfile();
+                            _ = Activity.Stop($"Save new profile for Computer # {Environment.MachineName}");
+                        }
 
-                    con.Open(); // ⏱️ max 5 sek väntan
-                    using var reader = cmd.ExecuteReader();
-
-                    if (!reader.HasRows)
-                    {
-                        SaveData.SaveNewProfile();
-                        _ = Activity.Stop($"Save new profile for Computer # {Environment.MachineName}");
-                    }
-
-                    while (reader.Read())
-                    {
-                        MeasuringComputerOnly = bool.Parse(reader["MeasureOnly"].ToString());
-                        ProdLine_LoadingPLan = reader["ProdLine_LoadingPLan"].ToString();
-                        Tema = reader["Theme"].ToString();
-                        LanguageManager.selectedCulture = new CultureInfo($"{reader["CultureInfo"]}");
-                    }
+                        while (reader.Read())
+                        {
+                            MeasuringComputerOnly = bool.Parse(reader["MeasureOnly"].ToString());
+                            ProdLine_LoadingPLan = reader["ProdLine_LoadingPLan"].ToString();
+                            Tema = reader["Theme"].ToString();
+                            LanguageManager.selectedCulture = new CultureInfo($"{reader["CultureInfo"]}");
+                        }
+                    });
                 }
                 catch (Exception)
                 {

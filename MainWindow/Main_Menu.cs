@@ -33,7 +33,6 @@ namespace DigitalProductionProgram.MainWindow
         public Main_Menu()
         {
             InitializeComponent();
-
         }
 
         public void Change_Theme()
@@ -90,7 +89,6 @@ namespace DigitalProductionProgram.MainWindow
                 Menu_Equipment_UseSilpaket.Enabled = false;
             }
         }
-
         public void Change_GUI_Mätdator()
         {
             Menu_Order.Enabled = false;
@@ -128,10 +126,10 @@ namespace DigitalProductionProgram.MainWindow
             mainForm.measurePoints.ClearMeasurePoints();
             mainForm.measureStats.ClearData();
             mainForm.OrderInformation.tb_OrderNr.Enabled = true;
-           // mainForm.Change_Theme();
+            // mainForm.Change_Theme();
             mainForm.tlp_Left.BackColor = Color.Transparent;
             mainForm.BackColor = Color.FromArgb(25, 25, 25);
-            
+
             mainForm.Change_GUI_StandardColor();
             _ = Log.Activity.Stop("User Click New Order");
         }
@@ -279,8 +277,9 @@ namespace DigitalProductionProgram.MainWindow
                 return;
             }
 
-            using var con = new SqlConnection(Database.cs_Protocol);
-            const string query = @"
+            Database.ExecuteSafe(con =>
+            {
+                const string query = @"
                 SELECT 
                     Rubrik, 
                     Meddelande, 
@@ -289,27 +288,27 @@ namespace DigitalProductionProgram.MainWindow
                 FROM Processcard.ProposedChanges
                 WHERE OrderID = @orderid
                 ORDER BY Datum DESC";
-            var cmd = new SqlCommand(query, con);
-            cmd.Parameters.Add("@orderid", SqlDbType.Int).Value = Order.OrderID;
-            con.Open();
-            var reader = cmd.ExecuteReader();
-            var text = new StringBuilder("\n");
-            var brRegex = new Regex(@"<br\s*/?>", RegexOptions.IgnoreCase | RegexOptions.Compiled);
-            while (reader.Read())
-            {
-                var rubrik = reader["Rubrik"].ToString()?.Replace("<br />", "\n  ");
+                var cmd = new SqlCommand(query, con);
+                cmd.Parameters.Add("@orderid", SqlDbType.Int).Value = Order.OrderID;
+                var reader = cmd.ExecuteReader();
+                var text = new StringBuilder("\n");
+                var brRegex = new Regex(@"<br\s*/?>", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+                while (reader.Read())
+                {
+                    var rubrik = reader["Rubrik"].ToString()?.Replace("<br />", "\n  ");
 
-                var meddelande = reader["Meddelande"]?.ToString() ?? string.Empty;
-                meddelande = brRegex.Replace(meddelande, "\n").Replace("\r\n", "\n").Replace("\r", "").Trim('\n');
+                    var meddelande = reader["Meddelande"]?.ToString() ?? string.Empty;
+                    meddelande = brRegex.Replace(meddelande, "\n").Replace("\r\n", "\n").Replace("\r", "").Trim('\n');
 
-                var namn = reader["Namn"].ToString();
-                var datum = reader["Datum"].ToString();
+                    var namn = reader["Namn"].ToString();
+                    var datum = reader["Datum"].ToString();
 
-                text.AppendLine($"[{datum}]\n{rubrik} \n        ({meddelande}) \n-{namn}\n\n");
-            }
-            _ = Activity.Stop("User checks suggested changes for the  Process card");
-            InfoText.Show(text.ToString(), CustomColors.InfoText_Color.Info, LanguageManager.GetString("processcard_SuggestedChanges"), this); 
+                    text.AppendLine($"[{datum}]\n{rubrik} \n        ({meddelande}) \n-{namn}\n\n");
+                }
 
+                _ = Activity.Stop("User checks suggested changes for the  Process card");
+                InfoText.Show(text.ToString(), CustomColors.InfoText_Color.Info, LanguageManager.GetString("processcard_SuggestedChanges"), this);
+            });
         }
         private void Menu_Order_CreateTestOrder_Click(object sender, EventArgs e)
         {
@@ -358,26 +357,21 @@ namespace DigitalProductionProgram.MainWindow
             using var chooseProcesscard_ChangeProcesscard = new ProcesscardTemplateSelector(true, true, false, false);
             chooseProcesscard_ChangeProcesscard.ShowDialog();
 
-            using (var con = new SqlConnection(Database.cs_Protocol))
+            Database.ExecuteSafe(con =>
             {
                 var query = @"
                         UPDATE [Order].MainData
                             SET PartID = @partID, RevNr = @revNr, ProdLine = @prodline, ProdType = @prodtyp
                         WHERE OrderID = @orderid";
                 var cmd = new SqlCommand(query, con);
-                ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                 SQL_Parameter.NullableINT(cmd.Parameters, "@partID", Order.PartID);
                 SQL_Parameter.String(cmd.Parameters, "@revNr", Order.RevNr);
                 SQL_Parameter.String(cmd.Parameters, "@prodline", Order.ProdLine);
                 SQL_Parameter.String(cmd.Parameters, "@prodtyp", Order.ProdType);
 
-
-                con.Open();
                 cmd.ExecuteNonQuery();
-            }
-
-
+            });
             mainForm.OrderInformation.lbl_RevNr.Text = Order.RevNr;
         }
         private void Menu_Order_RelinkProtocol_Click(object sender, EventArgs e)
@@ -396,18 +390,17 @@ namespace DigitalProductionProgram.MainWindow
 
             using var changeTemplate = new ProcesscardTemplateSelector(ProcesscardTemplateSelector.TemplateType.TemplateProtocol);
             changeTemplate.ShowDialog();
-            using var con = new SqlConnection(Database.cs_Protocol);
-            var query = @"
+            Database.ExecuteSafe(con =>
+            {
+                var query = @"
                         UPDATE [Order].MainData
                             SET ProtocolMainTemplateID = @protocolmaintemplateid
                         WHERE OrderID = @orderid";
-            var cmd = new SqlCommand(query, con);
-            ServerStatus.Add_Sql_Counter();
-            cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
-            cmd.Parameters.AddWithValue("@protocolmaintemplateid", Templates_Protocol.MainTemplate.ID);
-
-            con.Open();
-            cmd.ExecuteNonQuery();
+                var cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
+                cmd.Parameters.AddWithValue("@protocolmaintemplateid", Templates_Protocol.MainTemplate.ID);
+                cmd.ExecuteNonQuery();
+            });
         }
         private void Menu_Order_RelinkMeasureProtocol_Click(object sender, EventArgs e)
         {
@@ -425,73 +418,18 @@ namespace DigitalProductionProgram.MainWindow
 
             using var changeTemplate = new ProcesscardTemplateSelector(ProcesscardTemplateSelector.TemplateType.TemplateMeasureProtocol);
             changeTemplate.ShowDialog();
-            using var con = new SqlConnection(Database.cs_Protocol);
-            var query = @"
+            Database.ExecuteSafe(con =>
+            {
+                var query = @"
                         UPDATE [Order].MainData
                             SET MeasureProtocolMainTemplateID = @measureprotocolmaintemplateid
                         WHERE OrderID = @orderid";
-            var cmd = new SqlCommand(query, con);
-            ServerStatus.Add_Sql_Counter();
-            ServerStatus.Add_Sql_Counter();
-            cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
-            cmd.Parameters.AddWithValue("@measureprotocolmaintemplateid", Templates_MeasureProtocol.MainTemplate.ID);
-
-            con.Open();
-            cmd.ExecuteNonQuery();
+                var cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
+                cmd.Parameters.AddWithValue("@measureprotocolmaintemplateid", Templates_MeasureProtocol.MainTemplate.ID);
+                cmd.ExecuteNonQuery();
+            });
         }
-        //private void Menu_Order_OrderLog_Click(object sender, EventArgs e)
-        //{
-        //    if (string.IsNullOrEmpty(Order.OrderNumber))
-        //        return;
-        //    Activity.Start();
-        //    StringBuilder sb = new StringBuilder();
-        //    sb.AppendLine($"--- Order Log for OrderNr: {Order.OrderNumber} ---\n\n");
-        //    using var con = new SqlConnection(Database.cs_Protocol);
-        //    const string query = $@"
-        //        SELECT
-        //            log.Date,
-        //            log.Info,
-        //            log.HostID,
-        //            log.UserID,
-        //            g.HostName,
-        //            p.Name AS UserName
-        //        FROM [Log].ActivityLog AS log
-        //        LEFT JOIN [Settings].General AS g
-        //            ON g.HostID = log.HostID
-        //        LEFT JOIN [User].Person AS p
-        //            ON p.UserID = log.UserID
-        //        WHERE log.OrderID = @orderid    
-        //            AND Program NOT IN 
-        //            (
-        //                'AddMachine', 
-        //                'Add_Points', 
-        //                'Http_response', 
-        //                'CopyRow_CellMouseDoubleClick', 
-        //                'ResetMainForm', 
-        //                'Menu_Order_OrderLog_Click', 
-        //                'CheckIfEquipmentIsConfirmed'
-        //            )
-        //            AND Info NOT LIKE '%Felsökning%'
-        //        ORDER BY log.Date DESC;";
-        //    var cmd = new SqlCommand(query, con);
-        //    ServerStatus.Add_Sql_Counter();
-        //    cmd.Parameters.Add("@orderid", SqlDbType.Int).Value = Order.OrderID;
-        //    con.Open();
-        //    var reader = cmd.ExecuteReader();
-        //    while (reader.Read())
-        //    {
-        //        sb.AppendLine($"[{reader["Date"].ToString()}] - {reader["UserName"].ToString()} @ {reader["HostName"].ToString()}");
-        //        sb.AppendLine($"     {reader["Info"].ToString()}\n\n");
-        //    }
-        //    sb.AppendLine($"--- End of Order Log for OrderNr: {Order.OrderNumber} ---");
-        //    InfoText.Show(sb.ToString(), CustomColors.InfoText_Color.Info, "Order Log", this);
-        //    _ = Activity.Stop("User Checks OrderLog");
-        //}
-
-
-
-
-        //----------PROTOKOLL/PROTOCOL----------
         private void Menu_Order_OrderLog_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(Order.OrderNumber))
@@ -499,92 +437,92 @@ namespace DigitalProductionProgram.MainWindow
 
             Activity.Start();
 
-            StringBuilder sb = new StringBuilder();
-
-            // Starta RTF och definiera färger: 1=blå, 2=grå, 3=grön
-            sb.Append(@"{\rtf1\ansi\deff0");
-            sb.AppendLine(@"{\colortbl ;");
-            sb.AppendLine(@"\red250\green250\blue250;");   // ParmesanFont  --Datum
-            sb.AppendLine(@"\red216\green109\blue205;");      // Name+HostName
-            sb.AppendLine(@"\red184\green220\blue231;");  // LightBlue  --Info
-            sb.AppendLine(@"\red239\green228\blue177;");  // Parmesan   --Rubrik
-            sb.AppendLine(@"}");
-
-            // Rubrik i grön
-            sb.Append(@"\cf4\b\fs32 --- Order Log for OrderNr: " + EscapeRtf(Order.OrderNumber) + @" ---\b0\fs20\line\line");
-
-            using var con = new SqlConnection(Database.cs_Protocol);
-            const string query = @"
-        SELECT
-            log.Date,
-            log.Info,
-            log.HostID,
-            log.UserID,
-            g.HostName,
-            p.Name AS UserName
-        FROM [Log].ActivityLog AS log
-        LEFT JOIN [Settings].General AS g
-            ON g.HostID = log.HostID
-        LEFT JOIN [User].Person AS p
-            ON p.UserID = log.UserID
-        WHERE log.OrderID = @orderid    
-            AND Program NOT IN 
-            (
-                'AddMachine', 
-                'Add',
-                'Add_Points', 
-                'Http_response', 
-                'CopyRow_CellMouseDoubleClick', 
-                'ResetMainForm', 
-                'Menu_Order_OrderLog_Click', 
-                'CheckIfEquipmentIsConfirmed',
-                'MainForm_FormClosing',
-                'Inledande_LotNr_Enter' ,
-                'SavePrefabFromMonitor',
-                'AutoTestJira',
-                'Looping_ThroughMeasurements'       
-            )
-            AND Info NOT LIKE '%Felsökning%'
-            AND Info NOT LIKE '%Error%'
-        ORDER BY log.Date DESC;";
-
-            var cmd = new SqlCommand(query, con);
-            ServerStatus.Add_Sql_Counter();
-            cmd.Parameters.Add("@orderid", SqlDbType.Int).Value = Order.OrderID;
-
-            con.Open();
-            var reader = cmd.ExecuteReader();
-
-            while (reader.Read())
+            var rtfContent = Database.ExecuteSafe(con =>
             {
-                var date = EscapeRtf(reader["Date"].ToString());
-                var user = EscapeRtf(reader["UserName"].ToString());
-                var host = EscapeRtf(reader["HostName"].ToString());
-                var info = EscapeRtf(reader["Info"].ToString());
+                StringBuilder sb = new StringBuilder();
 
-                // Datum + användare + HostName
-                sb.Append(
-                    @"\cf1\fs20 " + date +
-                    @"\cf2\b   " + user + @" @ " + host +
-                    @"\line"
-                );
+                // Starta RTF och definiera färger: 1=blå, 2=grå, 3=grön
+                sb.Append(@"{\rtf1\ansi\deff0");
+                sb.AppendLine(@"{\colortbl ;");
+                sb.AppendLine(@"\red250\green250\blue250;"); // ParmesanFont  --Datum
+                sb.AppendLine(@"\red216\green109\blue205;"); // Name+HostName
+                sb.AppendLine(@"\red184\green220\blue231;"); // LightBlue  --Info
+                sb.AppendLine(@"\red239\green228\blue177;"); // Parmesan   --Rubrik
+                sb.AppendLine(@"}");
 
-                // Info
-                sb.Append(@"\cf3\pard\li360\fi-360\bullet\tab ");
-                sb.Append(EscapeRtf(info));
-                sb.Append(@"\par\line");
-            }
+                // Rubrik i grön
+                sb.Append(@"\cf4\b\fs32 --- Order Log for OrderNr: " + EscapeRtf(Order.OrderNumber) + @" ---\b0\fs20\line\line");
 
-            // Sluttext i grön
-            sb.Append(@"\cf4\b\fs32 --- End of Order Log for OrderNr: " + EscapeRtf(Order.OrderNumber) + @" ---\line");
+                const string query = @"
+                    SELECT
+                        log.Date,
+                        log.Info,
+                        log.HostID,
+                        log.UserID,
+                        g.HostName,
+                        p.Name AS UserName
+                    FROM [Log].ActivityLog AS log
+                    LEFT JOIN [Settings].General AS g
+                        ON g.HostID = log.HostID
+                    LEFT JOIN [User].Person AS p
+                        ON p.UserID = log.UserID
+                    WHERE log.OrderID = @orderid    
+                        AND Program NOT IN 
+                        (
+                            'AddMachine', 
+                            'Add',
+                            'Add_Points', 
+                            'Http_response', 
+                            'CopyRow_CellMouseDoubleClick', 
+                            'ResetMainForm', 
+                            'Menu_Order_OrderLog_Click', 
+                            'CheckIfEquipmentIsConfirmed',
+                            'MainForm_FormClosing',
+                            'Inledande_LotNr_Enter' ,
+                            'SavePrefabFromMonitor',
+                            'AutoTestJira',
+                            'Looping_ThroughMeasurements'       
+                        )
+                        AND Info NOT LIKE '%Felsökning%'
+                        AND Info NOT LIKE '%Error%'
+                    ORDER BY log.Date DESC;";
 
-            sb.Append("}"); // avsluta RTF
+                using var cmd = new SqlCommand(query, con);
+                cmd.Parameters.Add("@orderid", SqlDbType.Int).Value = Order.OrderID;
 
-            // Skicka in till InfoText
-            InfoText.Show(sb.ToString(), CustomColors.InfoText_Color.Info, "Order Log", this);
+                using var reader = cmd.ExecuteReader();
 
-            _ = Activity.Stop("User Checks OrderLog");
+                while (reader.Read())
+                {
+                    var date = EscapeRtf(reader["Date"].ToString());
+                    var user = EscapeRtf(reader["UserName"].ToString());
+                    var host = EscapeRtf(reader["HostName"].ToString());
+                    var info = EscapeRtf(reader["Info"].ToString());
+                    // Datum + användare + HostName
+                    sb.Append(
+                        @"\cf1\fs20 " + date +
+                        @"\cf2\b   " + user + @" @ " + host +
+                        @"\line"
+                    );
+
+                    // Info
+                    sb.Append(@"\cf3\pard\li360\fi-360\bullet\tab ");
+                    sb.Append(info);
+                    sb.Append(@"\par\line");
+                }
+
+                // Sluttext i grön
+                sb.Append(@"\cf4\b\fs32 --- End of Order Log for OrderNr: " + EscapeRtf(Order.OrderNumber) + @" ---\line");
+                sb.Append("}"); // avsluta RTF
+                return sb.ToString();
+            });
+
+            if (!string.IsNullOrEmpty(rtfContent))
+                InfoText.Show(rtfContent, CustomColors.InfoText_Color.Info, "Order Log", this);
+
+             Activity.Stop("User Checks OrderLog");
         }
+
 
         // Hjälpmetod för att escapera RTF-specialtecken
         private string EscapeRtf(string text)
@@ -594,7 +532,6 @@ namespace DigitalProductionProgram.MainWindow
 
             return text.Replace(@"\", @"\\").Replace("{", @"\{").Replace("}", @"\}");
         }
-
         private void Menu_Protocol_ManageProcesscards_Click(object sender, EventArgs e)
         {
             if (Order.OrderID != null && Person.Role != "SuperAdmin")
@@ -758,7 +695,7 @@ namespace DigitalProductionProgram.MainWindow
             Points.Add_Points(1, menu.Text);
             Task.Run(mainForm.Change_Theme);
         }
-
+        
         //----------HJÄLP----------
         private void Menu_Help_RapporteraFel_Click(object sender, EventArgs e)
         {
@@ -807,7 +744,7 @@ namespace DigitalProductionProgram.MainWindow
                     UseShellExecute = true
                 });
         }
-
+        
         //----------UVECKLING----------
         private void Menu_Utvecklare_GetOrderInfo(object sender, EventArgs e)
         {
@@ -897,34 +834,53 @@ Protocol.MainTemplate.Revision = {Templates_Protocol.MainTemplate.Revision}"
         }
         private void Menu_Developer_OpenRandomOrder_Click(string? artikelNr)
         {
-            mainForm.Clear_Mainform();
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query =
-                    @"SELECT TOP(1) OrderNr, Operation FROM [Order].MainData WHERE ArtikelNr = @partnr AND RevNr IS NOT NULL ORDER BY NEWID()";
-                var cmd = new SqlCommand(query, con);
-                ServerStatus.Add_Sql_Counter();
+            if (string.IsNullOrEmpty(artikelNr))
+                return;
 
-                con.Open();
+            mainForm.Clear_Mainform();
+
+            // Hämta slumpmässig order via ExecuteSafe
+            var result = Database.ExecuteSafe(con =>
+            {
+                const string query = @"
+                    SELECT TOP(1) OrderNr, Operation 
+                    FROM [Order].MainData 
+                    WHERE ArtikelNr = @partnr AND RevNr IS NOT NULL 
+                    ORDER BY NEWID()";
+                using var cmd = new SqlCommand(query, con);
                 cmd.Parameters.AddWithValue("@partnr", artikelNr);
-                var reader = cmd.ExecuteReader();
-                while (reader.Read())
+                using var reader = cmd.ExecuteReader();
+                if (reader.Read())
                 {
-                    Order.OrderNumber = reader[0].ToString();
-                    Order.Operation = reader[2].ToString();
-                    Order.PartNumber = artikelNr;
+                    return new
+                    {
+                        OrderNr = reader["OrderNr"].ToString(),
+                        Operation = reader["Operation"].ToString()
+                    };
                 }
 
-                Order.WorkOperation = Manage_WorkOperation.WorkOperations.Extrudering_Termo;
+                return null;
+            });
+
+            if (result == null)
+            {
+                InfoText.Show($"Ingen order hittades för artikelNr: {artikelNr}", CustomColors.InfoText_Color.Info, "Info");
+                return;
             }
 
+            // Sätt order-info
+            Order.OrderNumber = result.OrderNr;
+            Order.Operation = result.Operation;
+            Order.PartNumber = artikelNr;
+            Order.WorkOperation = Manage_WorkOperation.WorkOperations.Extrudering_Termo;
+
+            // Uppdatera UI utan att trigga SelectedIndexChanged
             mainForm.OrderInformation.cb_Operation.SelectedIndexChanged -= mainForm.Operation_SelectedIndexChanged;
             mainForm.OrderInformation.tb_OrderNr.Text = Order.OrderNumber;
-
-            mainForm.OrderInformation.cb_Operation.SelectedIndex = -1; //Detta görs för att inte Order.Operation skall ändras vid metoden StartaOrder()
+            mainForm.OrderInformation.cb_Operation.SelectedIndex = -1;
             mainForm.OrderInformation.cb_Operation.SelectedIndexChanged += mainForm.Operation_SelectedIndexChanged;
 
-
+            // Starta eller ladda order
             _ = mainForm.StartOrLoadOrder(true);
         }
         private void Menu_Developer_WhosIsLoggedIn_Click(object sender, EventArgs e)
@@ -966,43 +922,40 @@ Protocol.MainTemplate.Revision = {Templates_Protocol.MainTemplate.Revision}"
 
 
 
-        private void INSERT_DATA_Korprotokoll_Value(int orderid, int descrId, string? value, int uppstart, int MachineIndex)
+        private static void INSERT_DATA_Korprotokoll_Value(int orderid, int descrId, string? value, int uppstart, int machineIndex)
         {
-            using (var con = new SqlConnection(Database.cs_Protocol))
+            Database.ExecuteSafe(con =>
             {
-                var query = @"
-                BEGIN
-                        IF NOT EXISTS 
-                            (SELECT * FROM [Order].Data
-                                WHERE OrderID = @orderid AND ProtocolDescriptionID = @descrId AND (COALESCE(Uppstart, 0) = COALESCE(@uppstart, 0)) AND (COALESCE(MachineIndex, 0) = COALESCE(@machineindex, 0)))
-                        
-                            INSERT INTO [Order].Data (OrderID, ProtocolDescriptionID, Uppstart, MachineIndex, Value)     
-                            VALUES (@orderid, @descrId, @uppstart, @machineindex, @value)
-                END";
+                const string query = @"
+        IF NOT EXISTS 
+        (
+            SELECT 1 
+            FROM [Order].Data
+            WHERE OrderID = @orderid
+                AND ProtocolDescriptionID = @descrId
+                AND COALESCE(Uppstart, 0) = COALESCE(@uppstart, 0)
+                AND COALESCE(MachineIndex, 0) = COALESCE(@machineindex, 0)
+        )
+        INSERT INTO [Order].Data (OrderID, ProtocolDescriptionID, Uppstart, MachineIndex, Value)     
+        VALUES (@orderid, @descrId, @uppstart, @machineindex, @value);";
 
-                var cmd = new SqlCommand(query, con);
-                ServerStatus.Add_Sql_Counter();
+                using var cmd = new SqlCommand(query, con);
+
                 cmd.Parameters.AddWithValue("@orderid", orderid);
                 cmd.Parameters.AddWithValue("@descrId", descrId);
                 SQL_Parameter.Double(cmd.Parameters, "@value", value);
-                //if (uppstart == 0)
-                //    cmd.Parameters.AddWithValue("@uppstart", DBNull.Value);
-                //else
-                cmd.Parameters.AddWithValue("@uppstart", uppstart);
-                if (MachineIndex == 0)
-                    cmd.Parameters.AddWithValue("@machineindex", DBNull.Value);
-                else
-                    cmd.Parameters.AddWithValue("@machineindex", MachineIndex);
 
-                con.Open();
+                cmd.Parameters.AddWithValue("@uppstart", uppstart);
+                cmd.Parameters.AddWithValue("@machineindex", machineIndex == 0 ? DBNull.Value : machineIndex);
+
                 cmd.ExecuteNonQuery();
-            }
+            });
         }
         private void INSERT_DATA_Korprotokoll_TextValue(int orderid, int descrId, string? textvalue, int uppstart, int MachineIndex = 0)
         {
             //if (string.IsNullOrEmpty(value))
             //    return;
-            using (var con = new SqlConnection(Database.cs_Protocol))
+            Database.ExecuteSafe(con =>
             {
                 var query = @"
                 BEGIN
@@ -1019,7 +972,6 @@ Protocol.MainTemplate.Revision = {Templates_Protocol.MainTemplate.Revision}"
                     END";
 
                 var cmd = new SqlCommand(query, con);
-                ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", orderid);
                 cmd.Parameters.AddWithValue("@descrId", descrId);
                 SQL_Parameter.String(cmd.Parameters, "@textvalue", textvalue);
@@ -1031,13 +983,12 @@ Protocol.MainTemplate.Revision = {Templates_Protocol.MainTemplate.Revision}"
                     cmd.Parameters.AddWithValue("@machineindex", DBNull.Value);
                 else
                     cmd.Parameters.AddWithValue("@machineindex", MachineIndex);
-                con.Open();
                 cmd.ExecuteNonQuery();
-            }
+            });
         }
         private void INSERT_DATA_Korprotokoll_BoolValue(int orderid, int descrId, bool boolvalue, int uppstart, int MachineIndex)
         {
-            using (var con = new SqlConnection(Database.cs_Protocol))
+            Database.ExecuteSafe(con =>
             {
                 var query = @"
                 BEGIN
@@ -1052,11 +1003,7 @@ Protocol.MainTemplate.Revision = {Templates_Protocol.MainTemplate.Revision}"
 			                SET BoolValue = @boolvalue
 			                WHERE OrderID = @orderid AND uppstart = @uppstart AND (COALESCE(MachineIndex, 0) = COALESCE(@machineindex, 0)) AND ProtocolDescriptionID = @descrId
                     END";
-
-
-
                 var cmd = new SqlCommand(query, con);
-                ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", orderid);
                 cmd.Parameters.AddWithValue("@descrId", descrId);
                 SQL_Parameter.Boolean(cmd.Parameters, "@boolvalue", boolvalue);
@@ -1068,16 +1015,12 @@ Protocol.MainTemplate.Revision = {Templates_Protocol.MainTemplate.Revision}"
                     cmd.Parameters.AddWithValue("@machineindex", DBNull.Value);
                 else
                     cmd.Parameters.AddWithValue("@machineindex", MachineIndex);
-
-                con.Open();
                 cmd.ExecuteNonQuery();
-            }
+            });
         }
         private void INSERT_DATA_Korprotokoll_DateValue(int orderid, int descrId, DateTime date, int uppstart, int MachineIndex)
         {
-            //if (string.IsNullOrEmpty(value))
-            //    return;
-            using (var con = new SqlConnection(Database.cs_Protocol))
+            Database.ExecuteSafe(con =>
             {
                 var query = @"
                     BEGIN
@@ -1092,73 +1035,66 @@ Protocol.MainTemplate.Revision = {Templates_Protocol.MainTemplate.Revision}"
 			                SET DateValue = @datevalue
 			                WHERE OrderID = @orderid AND uppstart = @uppstart AND (COALESCE(MachineIndex, 0) = COALESCE(@machineindex, 0)) AND ProtocolDescriptionID = @descrId
                     END";
-
                 var cmd = new SqlCommand(query, con);
-                ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", orderid);
                 cmd.Parameters.AddWithValue("@descrId", descrId);
                 if (date < DateTime.Parse("1950-01-01"))
                     cmd.Parameters.AddWithValue("@datevalue", DBNull.Value);
                 else
                     cmd.Parameters.AddWithValue("@datevalue", date);
-                //if (uppstart == 0)
-                //    cmd.Parameters.AddWithValue("@uppstart", DBNull.Value);
-                //else
                 cmd.Parameters.AddWithValue("@uppstart", uppstart);
                 if (MachineIndex == 0)
                     cmd.Parameters.AddWithValue("@machineindex", DBNull.Value);
                 else
                     cmd.Parameters.AddWithValue("@machineindex", MachineIndex);
-
-                con.Open();
                 cmd.ExecuteNonQuery();
-            }
+            });
         }
         private void INSERT_MätMainData(int orderid, bool discarded, DateTime date, string anstnr, string sign, int rowindex)
         {
-            using var con = new SqlConnection(Database.cs_Protocol);
-            var query = @"
+            Database.ExecuteSafe(con =>
+            {
+                var query = @"
                         IF NOT EXISTS 
                             (SELECT * FROM [MeasureProtocol].[MainData]
                                 WHERE OrderID = @orderid AND [Date] = @date)
                         INSERT INTO [MeasureProtocol].[MainData] (OrderID, Discarded, [Date], AnstNr, Sign, RowIndex)     
                             VALUES (@orderid, @discarded, @date, @anstnr, @sign, @row)";
 
-            var cmd = new SqlCommand(query, con);
-            ServerStatus.Add_Sql_Counter();
-            cmd.Parameters.AddWithValue("@orderid", orderid);
-            cmd.Parameters.AddWithValue("@discarded", discarded);
-            cmd.Parameters.AddWithValue("@date", date);
-            cmd.Parameters.AddWithValue("@anstnr", anstnr);
-            cmd.Parameters.AddWithValue("@sign", sign);
-            cmd.Parameters.AddWithValue("@row", rowindex);
-            con.Open();
-            cmd.ExecuteNonQuery();
+                var cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@orderid", orderid);
+                cmd.Parameters.AddWithValue("@discarded", discarded);
+                cmd.Parameters.AddWithValue("@date", date);
+                cmd.Parameters.AddWithValue("@anstnr", anstnr);
+                cmd.Parameters.AddWithValue("@sign", sign);
+                cmd.Parameters.AddWithValue("@row", rowindex);
+                cmd.ExecuteNonQuery();
+            });
         }
         private void INSERT_MätDataTextValue(int orderid, int descrid, string? textvalue, int rowindex)
         {
-            using var con = new SqlConnection(Database.cs_Protocol);
-            var query = @"
+            Database.ExecuteSafe(con =>
+            {
+                var query = @"
                         IF NOT EXISTS 
                             (SELECT * FROM [MeasureProtocol].Data
                                 WHERE OrderID = @orderid AND DescriptionID = @descrid AND RowIndex = @rowindex)
                         
                             INSERT INTO [MeasureProtocol].Data (OrderID, DescriptionID, TextValue, RowIndex)     
                             VALUES (@orderid, @descrid, @textvalue, @rowindex)";
-
-            var cmd = new SqlCommand(query, con);
-            ServerStatus.Add_Sql_Counter();
-            cmd.Parameters.AddWithValue("@orderid", orderid);
-            cmd.Parameters.AddWithValue("@descrId", descrid);
-            cmd.Parameters.AddWithValue("@textvalue", textvalue);
-            cmd.Parameters.AddWithValue("@rowindex", rowindex);
-            con.Open();
-            cmd.ExecuteNonQuery();
+                var cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@orderid", orderid);
+                cmd.Parameters.AddWithValue("@descrId", descrid);
+                cmd.Parameters.AddWithValue("@textvalue", textvalue);
+                cmd.Parameters.AddWithValue("@rowindex", rowindex);
+                cmd.ExecuteNonQuery();
+            });
         }
         private void INSERT_MätDataValue(int orderid, int descrid, string? value, int rowindex)
         {
-            using var con = new SqlConnection(Database.cs_Protocol);
-            var query = @"
+            Database.ExecuteSafe(con =>
+            {
+                var query = @"
                         IF NOT EXISTS 
                             (SELECT * FROM [MeasureProtocol].Data
                                 WHERE OrderID = @orderid AND DescriptionID = @descrid AND RowIndex = @rowindex)
@@ -1166,40 +1102,36 @@ Protocol.MainTemplate.Revision = {Templates_Protocol.MainTemplate.Revision}"
                             INSERT INTO [MeasureProtocol].Data (OrderID, DescriptionID, Value, RowIndex)     
                             VALUES (@orderid, @descrid, @value, @rowindex)";
 
-            var cmd = new SqlCommand(query, con);
-            ServerStatus.Add_Sql_Counter();
-            cmd.Parameters.AddWithValue("@orderid", orderid);
-            cmd.Parameters.AddWithValue("@descrId", descrid);
-            SQL_Parameter.Double(cmd.Parameters, "@value", value);
-            cmd.Parameters.AddWithValue("@rowindex", rowindex);
-            con.Open();
-            cmd.ExecuteNonQuery();
+                var cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@orderid", orderid);
+                cmd.Parameters.AddWithValue("@descrId", descrid);
+                SQL_Parameter.Double(cmd.Parameters, "@value", value);
+                cmd.Parameters.AddWithValue("@rowindex", rowindex);
+                cmd.ExecuteNonQuery();
+            });
         }
         private void INSERT_MätDataBoolValue(int orderid, int descrid, bool boolvalue, int rowindex)
         {
-            using var con = new SqlConnection(Database.cs_Protocol);
-            var query = @"
+            Database.ExecuteSafe(con =>
+            {
+                var query = @"
                         IF NOT EXISTS 
                             (SELECT * FROM [MeasureProtocol].Data
                                 WHERE OrderID = @orderid AND DescriptionID = @descrid AND RowIndex = @rowindex)
                         
                             INSERT INTO [MeasureProtocol].Data (OrderID, DescriptionID, BoolValue, RowIndex)     
                             VALUES (@orderid, @descrid, @boolvalue, @rowindex)";
-
-            var cmd = new SqlCommand(query, con);
-            ServerStatus.Add_Sql_Counter();
-            cmd.Parameters.AddWithValue("@orderid", orderid);
-            cmd.Parameters.AddWithValue("@descrId", descrid);
-            SQL_Parameter.Boolean(cmd.Parameters, "@boolvalue", boolvalue);
-            cmd.Parameters.AddWithValue("@rowindex", rowindex);
-            con.Open();
-            cmd.ExecuteNonQuery();
+                var cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@orderid", orderid);
+                cmd.Parameters.AddWithValue("@descrId", descrid);
+                SQL_Parameter.Boolean(cmd.Parameters, "@boolvalue", boolvalue);
+                cmd.Parameters.AddWithValue("@rowindex", rowindex);
+                cmd.ExecuteNonQuery();
+            });
         }
-
-
         private void INSERT_DATA_Processcard_Value(int PartID, int templateID, string? value, byte machineindex, int type)
         {
-            using (var con = new SqlConnection(Database.cs_Protocol))
+            Database.ExecuteSafe(con =>
             {
                 var query = @"
                         BEGIN
@@ -1216,7 +1148,6 @@ Protocol.MainTemplate.Revision = {Templates_Protocol.MainTemplate.Revision}"
                         END";
 
                 var cmd = new SqlCommand(query, con);
-                ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@partid", PartID);
                 cmd.Parameters.AddWithValue("@templateid", templateID);
                 if (machineindex == 0)
@@ -1226,13 +1157,12 @@ Protocol.MainTemplate.Revision = {Templates_Protocol.MainTemplate.Revision}"
                 cmd.Parameters.AddWithValue("@type", type);
                 SQL_Parameter.Double(cmd.Parameters, "@value", value);
 
-                con.Open();
                 cmd.ExecuteNonQuery();
-            }
+            });
         }
         private void INSERT_DATA_Processcard_TextValue(int PartID, int templateID, string textvalue, byte machineindex, int type)
         {
-            using (var con = new SqlConnection(Database.cs_Protocol))
+            Database.ExecuteSafe(con =>
             {
                 var query = @"
                         BEGIN
@@ -1249,7 +1179,6 @@ Protocol.MainTemplate.Revision = {Templates_Protocol.MainTemplate.Revision}"
                         END";
 
                 var cmd = new SqlCommand(query, con);
-                ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@partid", PartID);
                 cmd.Parameters.AddWithValue("@templateid", templateID);
                 if (machineindex == 0)
@@ -1261,16 +1190,14 @@ Protocol.MainTemplate.Revision = {Templates_Protocol.MainTemplate.Revision}"
                     cmd.Parameters.AddWithValue("@textvalue", DBNull.Value);
                 else
                     cmd.Parameters.AddWithValue("@textvalue", textvalue);
-
-                con.Open();
                 cmd.ExecuteNonQuery();
-            }
+            });
         }
         private void INSERT_DATA_WithoutUppstart_Korprotokoll_TextValue(int orderid, int descrId, string? value)
         {
             if (string.IsNullOrEmpty(value))
                 return;
-            using (var con = new SqlConnection(Database.cs_Protocol))
+            Database.ExecuteSafe(con =>
             {
                 var query = @"
                     BEGIN
@@ -1287,7 +1214,6 @@ Protocol.MainTemplate.Revision = {Templates_Protocol.MainTemplate.Revision}"
                     END";
 
                 var cmd = new SqlCommand(query, con);
-                ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", orderid);
                 cmd.Parameters.AddWithValue("@descrId", descrId);
                 SQL_Parameter.String(cmd.Parameters, "@textvalue", value);
@@ -1295,9 +1221,8 @@ Protocol.MainTemplate.Revision = {Templates_Protocol.MainTemplate.Revision}"
                 cmd.Parameters.AddWithValue("@uppstart", DBNull.Value);
                 cmd.Parameters.AddWithValue("@ugn", DBNull.Value);
 
-                con.Open();
                 cmd.ExecuteNonQuery();
-            }
+            });
         }
 
 
@@ -1316,7 +1241,6 @@ Protocol.MainTemplate.Revision = {Templates_Protocol.MainTemplate.Revision}"
         }
 
 
-
         private void testaMailToolStripMenuItem_Click(object sender, EventArgs e)
         {
             InfoText.Question("Vill du skicka mail till alla användare", CustomColors.InfoText_Color.Info, "Skicka Mail?", this);
@@ -1326,13 +1250,11 @@ Protocol.MainTemplate.Revision = {Templates_Protocol.MainTemplate.Revision}"
             }
         }
 
-
         private void Menu_Order_QC_Feedback_Click(object sender, EventArgs e)
         {
             using var qc = new QC_Feedback(true, false, false);
             qc.ShowDialog();
         }
-
 
         private void påskäggToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -1340,274 +1262,61 @@ Protocol.MainTemplate.Revision = {Templates_Protocol.MainTemplate.Revision}"
             easterEgg.ShowDialog();
         }
 
-        private void testaChartToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            MainMeasureStatistics.ValidateMeasurements.AverageValues();
-        }
-
-
-
-
-        private void flyttaDataFrånSvetsnigToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            return;
-            List<int> listOrderId = new List<int>();
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query = @"
-                   SELECT OrderID FROM [Order].MainData WHERE WorkoperationID = 14";
-
-                var cmd = new SqlCommand(query, con);
-                ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@uppstart", DBNull.Value);
-                cmd.Parameters.AddWithValue("@ugn", DBNull.Value);
-
-                con.Open();
-                var reader = cmd.ExecuteReader();
-                while (reader.Read())
-                {
-                    int.TryParse(reader[0].ToString(), out var orderid);
-                    listOrderId.Add(orderid);
-                }
-            }
-
-            foreach (var orderid in listOrderId)
-            {
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    var query = @"
-                        SELECT 
-                            [OrderID]
-                            ,[Svets]
-                            ,[Tid_Förvärme]
-                            ,[Svetsförflyttning]
-                            ,[Tid_Bindvärme]
-                            ,[Tid_Kylluft]
-                            ,[Temperatur]
-                            ,[Pinne_OD_Stål]
-                            ,[Pinne_OD_PTFE]              
-                            ,[Värmebackar_Bredd]
-                            ,[Värmebackar_Hål],
-                            TRY_CAST(
-                                CONVERT(varchar(10), TRY_CAST([Datum] AS date), 120) + ' ' + 
-                                CONVERT(varchar(8), TRY_CAST([Tid] AS time), 108)
-                                AS datetime
-                            ) AS [DatumTid]
-                            ,[AnstNr]
-                            ,[Sign]
-                        FROM Korprotokoll_Svetsning_Maskinparametrar
-                        WHERE OrderID = @orderid
-                        ORDER BY  [DatumTid]";
-                    var cmd = new SqlCommand(query, con);
-                    ServerStatus.Add_Sql_Counter();
-                    cmd.Parameters.AddWithValue("@orderid", orderid);
-                    con.Open();
-                    var reader = cmd.ExecuteReader();
-                    var uppstart = 1;
-                    while (reader.Read())
-                    {
-                        var svets = reader["Svets"].ToString();
-                        var tid_Förvärme = reader["Tid_Förvärme"].ToString();
-                        var svetsförflyttning = reader["Svetsförflyttning"].ToString();
-                        var tid_Bindvärme = reader["Tid_Bindvärme"].ToString();
-                        var tid_Kylluft = reader["Tid_Kylluft"].ToString();
-                        var temperatur = reader["Temperatur"].ToString();
-                        var pinne_OD_Stål = reader["Pinne_OD_Stål"].ToString();
-                        var pinne_OD_PTFE = reader["Pinne_OD_PTFE"].ToString();
-                        var värmebackar_Bredd = reader["Värmebackar_Bredd"].ToString();
-                        var värmebackar_Hål = reader["Värmebackar_Hål"].ToString();
-                        DateTime.TryParse(reader["DatumTid"].ToString(), out var datum);
-                        var anstNr = reader["AnstNr"].ToString();
-                        var sign = reader["Sign"].ToString();
-                        var name = Person.Get_NameWithAnstNr(anstNr);
-
-                        INSERT_DATA_Korprotokoll_TextValue(orderid, 404, svets, uppstart, 1);
-                        INSERT_DATA_Korprotokoll_Value(orderid, 405, tid_Förvärme, uppstart, 1);
-                        INSERT_DATA_Korprotokoll_Value(orderid, 406, svetsförflyttning, uppstart, 1);
-                        INSERT_DATA_Korprotokoll_Value(orderid, 407, tid_Bindvärme, uppstart, 1);
-                        INSERT_DATA_Korprotokoll_Value(orderid, 408, tid_Kylluft, uppstart, 1);
-                        INSERT_DATA_Korprotokoll_Value(orderid, 276, temperatur, uppstart, 1);
-
-                        INSERT_DATA_Korprotokoll_Value(orderid, 409, pinne_OD_Stål, uppstart, 1);
-                        INSERT_DATA_Korprotokoll_TextValue(orderid, 410, pinne_OD_PTFE, uppstart, 1);
-                        INSERT_DATA_Korprotokoll_Value(orderid, 411, värmebackar_Bredd, uppstart, 1);
-                        INSERT_DATA_Korprotokoll_Value(orderid, 412, värmebackar_Hål, uppstart, 1);
-                        INSERT_DATA_Korprotokoll_TextValue(orderid, 158, anstNr, uppstart, 1);
-                        INSERT_DATA_Korprotokoll_TextValue(orderid, 157, sign, uppstart, 1);
-                        INSERT_DATA_Korprotokoll_DateValue(orderid, 171, datum, uppstart, 1);
-                        INSERT_DATA_Korprotokoll_TextValue(orderid, 322, name, uppstart, 1);
-                        uppstart++;
-                    }
-                }
-            }
-
-            MessageBox.Show("Klart");
-
-        }
-
-        private void flyttaMätDataFrånSvetsnigToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            return;
-            List<int> listOrderId = new List<int>();
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query = @"
-                SELECT DISTINCT m.OrderID
-FROM [Order].MainData m
-INNER JOIN Korprotokoll_Svetsning_Parametrar k
-    ON m.OrderID = k.OrderID
-LEFT JOIN MeasureProtocol.Data d
-    ON m.OrderID = d.OrderID
-WHERE m.WorkoperationID = 14
-  AND d.OrderID IS NULL
-
-  ORDER BY OrderID;
-";
-
-                var cmd = new SqlCommand(query, con);
-                ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@uppstart", DBNull.Value);
-                cmd.Parameters.AddWithValue("@ugn", DBNull.Value);
-
-                con.Open();
-                var reader = cmd.ExecuteReader();
-                while (reader.Read())
-                {
-                    int.TryParse(reader[0].ToString(), out var orderid);
-                    listOrderId.Add(orderid);
-                }
-            }
-
-            foreach (var orderid in listOrderId)
-            {
-                using var con = new SqlConnection(Database.cs_Protocol);
-                var query = @"
-                        SELECT 
-                            [Kasserad]
-                            ,[Inledande_OrderNr]
-                            ,[Inledande_Påse]
-                            ,[Inledande_UppmättPinne]
-                            ,[Inledande_ID]
-                            ,[Inledande_OD]
-                            ,[Inledande_Längd]
-                            ,[Inspektion_Utsida]
-                            ,[Inspektion_Insida]
-                             ,TRY_CAST(
-                                CONVERT(varchar(10), TRY_CAST([Datum] AS date), 120) + ' ' + 
-                                CONVERT(varchar(8), TRY_CAST([Tid] AS time), 108)
-                                AS datetime
-                            ) AS [DatumTid]
-                            ,[AnstNr]
-                            ,[Sign]
-                            
-                        FROM [Korprotokoll_Svetsning_Parametrar]
-                        WHERE OrderID = @orderid
-                        ORDER BY  [DatumTid]";
-                var cmd = new SqlCommand(query, con);
-                ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@orderid", orderid);
-                con.Open();
-                var reader = cmd.ExecuteReader();
-                var row = 1;
-                while (reader.Read())
-                {
-                    var kasserad = bool.Parse(reader["Kasserad"].ToString());
-                    var inledandeOrderNr = reader["Inledande_OrderNr"].ToString();
-                    var inledandePåse = reader["Inledande_Påse"].ToString();
-                    var inledandePinne = reader["Inledande_UppmättPinne"].ToString();
-                    var inledandeID = reader["Inledande_ID"].ToString();
-                    var inledandeOD = reader["Inledande_OD"].ToString();
-                    var inledandeLängd = reader["Inledande_Längd"].ToString();
-                    var inspektion_Ut = bool.Parse(reader["Inspektion_Utsida"].ToString());
-                    var inspektion_In = bool.Parse(reader["Inspektion_Insida"].ToString());
-
-                    DateTime.TryParse(reader["DatumTid"].ToString(), out var datum);
-                    var anstNr = reader["AnstNr"].ToString();
-                    var sign = reader["Sign"].ToString();
-
-                    INSERT_MätMainData(orderid, kasserad, datum, anstNr, sign, row);
-                    INSERT_MätDataTextValue(orderid, 68, inledandeOrderNr, row);
-                    INSERT_MätDataValue(orderid, 37, inledandePåse, row);
-                    INSERT_MätDataValue(orderid, 69, inledandePinne, row);
-                    INSERT_MätDataValue(orderid, 1, inledandeID, row);
-                    INSERT_MätDataValue(orderid, 11, inledandeOD, row);
-                    INSERT_MätDataValue(orderid, 34, inledandeLängd, row);
-                    INSERT_MätDataBoolValue(orderid, 40, inspektion_Ut, row);
-                    INSERT_MätDataBoolValue(orderid, 70, inspektion_In, row);
-                    row++;
-                }
-            }
-
-            MessageBox.Show("Klart");
-
-        }
-
-
-        private void menu_MedExpand(object sender, EventArgs e)
-        {
-            List<string> list = Monitor.Monitor.List_All_WithExpand();
-        }
-
-        private void utanExpand(object sender, EventArgs e)
-        {
-            List<string> list = Monitor.Monitor.List_All_Tools_WithOutExpand();
-        }
-
         private void fixaChangeLogListaToolStripMenuItem_Click(object sender, EventArgs e)
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine("-----ChangeLog for DigitalProductionProgram-----");
             sb.AppendLine();
-            using var con = new SqlConnection(Database.cs_Protocol);
-            var query = @"
-                       SELECT ReleaseDate, Version, Tags, DescriptionHeader, Description, HowToDo, VisibleToUser, IsCritical FROM Log.ChangeLog";
-            var cmd = new SqlCommand(query, con);
-            ServerStatus.Add_Sql_Counter();
-            con.Open();
-            var reader = cmd.ExecuteReader();
-            while (reader.Read())
+            Database.ExecuteSafe(con =>
             {
-                var releaseDate = reader["ReleaseDate"].ToString() ?? "";
-                var version = reader["Version"].ToString() ?? "";
-                var tags = reader["Tags"].ToString() ?? "";
-                var header = reader["DescriptionHeader"].ToString() ?? "Info";
-                var description = reader["Description"].ToString() ?? "";
-                var howToDo = reader["HowToDo"].ToString() ?? "";
-                bool.TryParse(reader["VisibleToUser"].ToString(), out var isVisibleToUser);
-                bool.TryParse(reader["IsCritical"].ToString(), out var isCritical);
+                var query = @"
+                       SELECT ReleaseDate, Version, Tags, DescriptionHeader, Description, HowToDo, VisibleToUser, IsCritical FROM Log.ChangeLog";
+                var cmd = new SqlCommand(query, con);
+                var reader = cmd.ExecuteReader();
+                while (reader.Read())
                 {
-                    sb.AppendLine($"## Version: {version}");
-                    sb.AppendLine($"Release Date: {releaseDate}");
-                    switch (tags)
+                    var releaseDate = reader["ReleaseDate"].ToString() ?? "";
+                    var version = reader["Version"].ToString() ?? "";
+                    var tags = reader["Tags"].ToString() ?? "";
+                    var header = reader["DescriptionHeader"].ToString() ?? "Info";
+                    var description = reader["Description"].ToString() ?? "";
+                    var howToDo = reader["HowToDo"].ToString() ?? "";
+                    bool.TryParse(reader["VisibleToUser"].ToString(), out var isVisibleToUser);
+                    bool.TryParse(reader["IsCritical"].ToString(), out var isCritical);
                     {
-                        case "Nytt":
-                            tags = "New Feature";
-                            break;
-                        case "Fix":
-                            tags = "Small bugfix";
-                            break;
-                        case "Bugfix":
-                            tags = "Bug Fix";
-                            break;
-                        default:
-                            tags = "ℹ Info";
-                            break;
+                        sb.AppendLine($"## Version: {version}");
+                        sb.AppendLine($"Release Date: {releaseDate}");
+                        switch (tags)
+                        {
+                            case "Nytt":
+                                tags = "New Feature";
+                                break;
+                            case "Fix":
+                                tags = "Small bugfix";
+                                break;
+                            case "Bugfix":
+                                tags = "Bug Fix";
+                                break;
+                            default:
+                                tags = "ℹ Info";
+                                break;
+                        }
+
+                        sb.AppendLine($"### {tags}");
+                        sb.AppendLine($"-Header: {header}");
+                        sb.AppendLine($"  {description}");
+                        sb.AppendLine($"How To Do: {howToDo}");
+                        sb.AppendLine($"Is Critical: {isCritical}");
+                        sb.AppendLine($"IsVisibleToUser: {isVisibleToUser}");
+                        sb.AppendLine();
                     }
-
-                    sb.AppendLine($"### {tags}");
-                    sb.AppendLine($"-Header: {header}");
-                    sb.AppendLine($"  {description}");
-                    sb.AppendLine($"How To Do: {howToDo}");
-                    sb.AppendLine($"Is Critical: {isCritical}");
-                    sb.AppendLine($"IsVisibleToUser: {isVisibleToUser}");
-                    sb.AppendLine();
                 }
-            }
 
-            MessageBox.Show("Klart");
-            Clipboard.SetText(sb.ToString());
+                MessageBox.Show("Klart");
+                Clipboard.SetText(sb.ToString());
+            });
+
+
         }
-
-        
     }
 }

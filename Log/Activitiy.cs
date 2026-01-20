@@ -87,8 +87,6 @@ internal class Activity
             var totalMemoryMB = (long)(ci.TotalPhysicalMemory / (1024 * 1024));
             var usedMemoryMB = totalMemoryMB - (long)(ci.AvailablePhysicalMemory / (1024 * 1024));
 
-            ServerStatus.Add_Sql_Counter();
-
             // Kör SQL via ExecuteSafeAsync så vi får statusrapportering
             await Database.ExecuteSafeAsync(async con =>
             {
@@ -157,8 +155,6 @@ internal class Activity
                 END";
 
                 await using var cmd = new SqlCommand(query, con);
-                ServerStatus.Add_Sql_Counter();
-
                 cmd.Parameters.AddWithValue("@userid", Person.UserID);
                 cmd.Parameters.AddWithValue("@version", version);
                 cmd.Parameters.AddWithValue("@time", duration.TotalSeconds);

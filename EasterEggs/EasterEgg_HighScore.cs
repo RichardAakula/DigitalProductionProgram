@@ -44,7 +44,8 @@ namespace DigitalProductionProgram.EasterEggs
                 return 0;
             return (int)value;
         }
-        public static int TotalPlayers(string game)
+
+        private static int TotalPlayers(string game)
         {
             var ctr = 0;
             using var con = new SqlConnection(Database.cs_Protocol);

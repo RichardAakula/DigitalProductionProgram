@@ -1,15 +1,16 @@
-﻿using System;
-using System.Configuration;
-using System.Diagnostics;
+﻿using DigitalProductionProgram.ControlsManagement;
+using DigitalProductionProgram.DatabaseManagement;
+using DigitalProductionProgram.EasterEggs;
+using DigitalProductionProgram.User;
 using Microsoft.Data.SqlClient;
+using System;
+using System.Configuration;
+using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
-using System.Windows.Forms;
-using DigitalProductionProgram.DatabaseManagement;
-using DigitalProductionProgram.User;
-using DigitalProductionProgram.EasterEggs;
 using System.Reflection;
-using DigitalProductionProgram.ControlsManagement;
+using System.Windows.Forms;
 using static Azure.Core.HttpHeader;
 
 namespace DigitalProductionProgram.MainWindow
@@ -55,64 +56,73 @@ namespace DigitalProductionProgram.MainWindow
         }
         public void Load_OrderNr(Main_OrderInformation? OrderInformation)
         {
-
             Clear_OrderNr();
             var ctr = 0;
             orderInformation = OrderInformation;
-            using var con = new SqlConnection(Database.cs_Protocol);
-            const string query = @"
-                    SELECT DISTINCT TOP(5) OrderNr, Operation, mp.OrderID,  Back_Red, Back_Green, Back_Blue, Fore_Red, Fore_Green, Fore_Blue
-                    FROM Measureprotocol.MainData AS mp
-                JOIN[Order].MainData as main
-                    ON mp.OrderID = main.OrderID
-                JOIN[Settings].QuickStart_Color as color
-                    ON main.WorkoperationID = color.WorkoperationID
 
-                WHERE AnstNr = @employeenumber AND main.IsOrderDone = 'False'
-                AND mp.Date > @thisyear
-                UNION
-                    SELECT DISTINCT TOP(5) OrderNr, Operation, slipning.OrderID,  Back_Red, Back_Green, Back_Blue, Fore_Red, Fore_Green, Fore_Blue
-                    FROM Korprotokoll_Slipning_Produktion as slipning
-                JOIN[Order].MainData as main
-                    ON slipning.OrderID = main.OrderID
-
-                JOIN[Settings].QuickStart_Color as color
-                    ON main.WorkoperationID = color.WorkoperationID
-
-                JOIN Workoperation.Names as workoperation
-                    ON main.WorkoperationID = workoperation.ID
-                WHERE AnstNr = @employeenumber AND main.IsOrderDone = 'False'";
-
-            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-            con.Open();
-            cmd.Parameters.AddWithValue("@employeenumber", Person.EmployeeNr);
-            var thisyear = DateTime.Now.ToString("yyyy");
-            cmd.Parameters.AddWithValue("@thisyear", DateTime.Now.ToString("yyyy"));
-            var reader = cmd.ExecuteReader();
-            while (reader.Read())
+            Database.ExecuteSafe(con =>
             {
-                var lbl = new OrderLabel
-                {
-                    ForeColor = Color.FromArgb(int.Parse(reader["Fore_Red"].ToString() ?? string.Empty), int.Parse(reader["Fore_Green"].ToString() ?? string.Empty), int.Parse(reader["Fore_Blue"].ToString() ?? string.Empty)),
-                    BackColor = Color.FromArgb(int.Parse(reader["Back_Red"].ToString() ?? string.Empty), int.Parse(reader["Back_Green"].ToString() ?? string.Empty), int.Parse(reader["Back_Blue"].ToString() ?? string.Empty)),
-                    Text = $@"{reader["OrderNr"]} - {reader["Operation"]}",
-                    OrderID = reader.GetInt32(reader.GetOrdinal("OrderID")),
-                    TextAlign = ContentAlignment.MiddleLeft,
-                    Padding = new Padding(5, 0, 0, 0),
-                    Margin = new Padding(25, 0, 0, 1),
-                    AutoSize = false,
-                    Width = 120,
-                    Cursor = Cursors.Hand,
-                    Font = new Font("Arial", 10),
+                const string query = @"
+            SELECT DISTINCT TOP(5) OrderNr, Operation, mp.OrderID,
+                   Back_Red, Back_Green, Back_Blue, Fore_Red, Fore_Green, Fore_Blue
+            FROM Measureprotocol.MainData AS mp
+            JOIN [Order].MainData AS main ON mp.OrderID = main.OrderID
+            JOIN [Settings].QuickStart_Color AS color ON main.WorkoperationID = color.WorkoperationID
+            WHERE AnstNr = @employeenumber AND main.IsOrderDone = 0
+              AND mp.Date > @thisyear
 
-                };
-                lbl.Click += OpenOrder_Click;
-                flp_Main.Invoke(new Action(() => flp_Main.Controls.Add(lbl)));
-                ctr++;
-                if (ctr == 5)
-                    return;
-            }
+            UNION
+
+            SELECT DISTINCT TOP(5) OrderNr, Operation, slipning.OrderID,
+                   Back_Red, Back_Green, Back_Blue, Fore_Red, Fore_Green, Fore_Blue
+            FROM Korprotokoll_Slipning_Produktion AS slipning
+            JOIN [Order].MainData AS main ON slipning.OrderID = main.OrderID
+            JOIN [Settings].QuickStart_Color AS color ON main.WorkoperationID = color.WorkoperationID
+            JOIN Workoperation.Names AS workoperation ON main.WorkoperationID = workoperation.ID
+            WHERE AnstNr = @employeenumber AND main.IsOrderDone = 0";
+
+                using var cmd = new SqlCommand(query, con);
+                cmd.Parameters.Add("@employeenumber", SqlDbType.Int).Value = Person.EmployeeNr;
+                cmd.Parameters.Add("@thisyear", SqlDbType.NVarChar, 4).Value = DateTime.Now.Year.ToString();
+
+                using var reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    int orderID = reader.GetInt32(reader.GetOrdinal("OrderID"));
+
+                    int backR = reader.IsDBNull(reader.GetOrdinal("Back_Red")) ? 255 : reader.GetInt32(reader.GetOrdinal("Back_Red"));
+                    int backG = reader.IsDBNull(reader.GetOrdinal("Back_Green")) ? 255 : reader.GetInt32(reader.GetOrdinal("Back_Green"));
+                    int backB = reader.IsDBNull(reader.GetOrdinal("Back_Blue")) ? 255 : reader.GetInt32(reader.GetOrdinal("Back_Blue"));
+
+                    int foreR = reader.IsDBNull(reader.GetOrdinal("Fore_Red")) ? 0 : reader.GetInt32(reader.GetOrdinal("Fore_Red"));
+                    int foreG = reader.IsDBNull(reader.GetOrdinal("Fore_Green")) ? 0 : reader.GetInt32(reader.GetOrdinal("Fore_Green"));
+                    int foreB = reader.IsDBNull(reader.GetOrdinal("Fore_Blue")) ? 0 : reader.GetInt32(reader.GetOrdinal("Fore_Blue"));
+
+                    var lbl = new OrderLabel
+                    {
+                        ForeColor = Color.FromArgb(foreR, foreG, foreB),
+                        BackColor = Color.FromArgb(backR, backG, backB),
+                        Text = $"{reader["OrderNr"]} - {reader["Operation"]}",
+                        OrderID = orderID,
+                        TextAlign = ContentAlignment.MiddleLeft,
+                        Padding = new Padding(5, 0, 0, 0),
+                        Margin = new Padding(25, 0, 0, 1),
+                        AutoSize = false,
+                        Width = 120,
+                        Cursor = Cursors.Hand,
+                        Font = new Font("Arial", 10)
+                    };
+
+                    lbl.Click += OpenOrder_Click;
+                    flp_Main.Invoke(() => flp_Main.Controls.Add(lbl));
+
+                    ctr++;
+                    if (ctr == 5)
+                        break;
+                }
+            });
         }
+
         public void OpenOrder_Click(object? sender, EventArgs e)
         {
             var lbl = (OrderLabel)sender;

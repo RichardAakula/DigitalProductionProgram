@@ -54,12 +54,10 @@ namespace DigitalProductionProgram.MainWindow
         
         public void Start()
         {
-           
             if (Environment.MachineName == Main_Form.adminHostName && Main_Form.IsAutoLoginSuperAdmin)
                 _masterTimer.Interval = develop_MainTimer;
             else
                 _masterTimer.Interval = 60000; // 1 minut
-            _masterTimer.Tick += MasterTimer_Tick;
             _masterTimer.Start();
         }
 

@@ -232,7 +232,6 @@ namespace DigitalProductionProgram.OrderManagement
             {
                 const string query = "SELECT ProdLine FROM [Order].MainData WHERE OrderID = @id";
                 using var cmd = new SqlCommand(query, con);
-                ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@id", OrderID);
                 var value = cmd.ExecuteScalar();
                 ProdLine = value != null ? value.ToString() : string.Empty;
@@ -444,9 +443,7 @@ namespace DigitalProductionProgram.OrderManagement
                     const string query = "SELECT 1 FROM [Order].MainData WHERE OrderID = @orderid AND Points IS NOT NULL";
 
                     using var cmd = new SqlCommand(query, con);
-                    ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@orderid", OrderID);
-
                     using var reader = cmd.ExecuteReader();
                     return reader.HasRows;
                 });
@@ -534,7 +531,7 @@ namespace DigitalProductionProgram.OrderManagement
             using var con = new SqlConnection(Database.cs_Protocol);
             var query = @"SELECT TOP(1) OrderNr, Operation, Date_Start FROM [Order].MainData WHERE IsOrderDone = 'False' AND Date_Start < @datum AND Name_Start = @namn";
             con.Open();
-            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            var cmd = new SqlCommand(query, con); 
             cmd.Parameters.AddWithValue("@datum", DateTime.Now.AddMonths(-3));
             cmd.Parameters.AddWithValue("@namn", Person.Name);
             var reader = cmd.ExecuteReader();
@@ -646,7 +643,7 @@ namespace DigitalProductionProgram.OrderManagement
 
         public static class Start
         {
-            public static bool IsOrderOkToStart
+            private static bool IsOrderOkToStart
             {
                 get
                 {
@@ -709,7 +706,8 @@ namespace DigitalProductionProgram.OrderManagement
                     }
                 }
             }
-            public static bool IsUserNotLoggedIn(Control form)
+
+            private static bool IsUserNotLoggedIn(Control form)
             {
                 if (string.IsNullOrEmpty(Person.Name))
                 {
@@ -1365,7 +1363,6 @@ namespace DigitalProductionProgram.OrderManagement
                         AND ProtocolDescriptionID = @protocoldescriptionid";
 
                     using var cmd = new SqlCommand(query, con);
-                    ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@orderid", OrderID);
                     cmd.Parameters.AddWithValue("@row", uppstart);
                     cmd.Parameters.AddWithValue("@protocoldescriptionid", 174); // 174 = Kasserad

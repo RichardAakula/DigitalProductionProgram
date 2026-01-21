@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using DigitalProductionProgram.PrintingServices;
+using Timer = System.Threading.Timer;
 
 namespace DigitalProductionProgram.MainWindow
 {
@@ -33,7 +34,8 @@ namespace DigitalProductionProgram.MainWindow
         private const float LineSpacing = 80;
         private bool _allTextsWritten = false;
         private Color _currentActiveColor = CustomColors.LightBlue;
-
+        private readonly System.Windows.Forms.Timer fadeTimer = new();
+        public event Action FadeCompleted;
 
         private readonly List<Color> _activeColors =
         [
@@ -57,6 +59,30 @@ namespace DigitalProductionProgram.MainWindow
         {
             _cts = new CancellationTokenSource();
             _ = AnimateTextAsync(_cts.Token);
+        }
+
+        public void StartFadeOut()
+        {
+            fadeTimer.Interval = 60; // 50 FPS
+            fadeTimer.Tick += FadeTimer_Tick;
+            fadeTimer.Start();
+        }
+
+        private void FadeTimer_Tick(object sender, EventArgs e)
+        {
+            this.Opacity -= 0.05;  // fade ut på ~400 ms
+
+
+            if (this.Opacity <= 0)
+            {
+                fadeTimer.Stop();
+                this.Hide(); // Snyggare än Close direkt
+
+                FadeCompleted?.Invoke(); // 🔥 SIGNALERA ATT FADEN ÄR KLAR
+
+                this.Close(); // Stäng efter att mainform fått chans att visa sig
+            }
+
         }
 
         public void StopAnimation()

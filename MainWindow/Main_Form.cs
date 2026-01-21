@@ -130,8 +130,10 @@ namespace DigitalProductionProgram.MainWindow
             this.Visible = false;
             Activity.Start();
             InitializeComponent();
-            RollingInformation.LoadStats();
-            
+            //RollingInformation.LoadStats();
+
+            if (Database.cs_Protocol.Contains("GOD_DPP_DEV"))
+                IsBetaMode = true;
             MainMenu.mainForm = this;
             OrderInformation.mainForm = this;
             Serverstatus.SetMainForm(this);
@@ -140,15 +142,14 @@ namespace DigitalProductionProgram.MainWindow
             lbl_Company.Text = Monitor.Monitor.factory.ToString();
             OrderInformation.tb_OrderNr.Focus();
 
-            this.Visible = false;
             print = new Manage_PrintOuts();
-            this.BringToFront();
+           
         }
         protected override async void OnShown(EventArgs e)
         {
             base.OnShown(e);
 
-            await Task.Delay(1000); // ger UI-tråden tid att börja rendera splash
+            await Task.Delay(5000); // ger UI-tråden tid att börja rendera splash
 
             await Task.Run(() =>
             {
@@ -183,8 +184,10 @@ namespace DigitalProductionProgram.MainWindow
         }
         private async Task InitializeUIAsync()
         {
+            //-- Här görst tyngre initialiseringar som inte behöver göras på UI-tråden --
             Change_GUI_StandardColor();
 
+            RollingInformation.LoadStats();
             if (IsAutoOpenOrder == false)
             {
                 Monitor.Monitor.Load_WorkCenters();
@@ -205,8 +208,7 @@ namespace DigitalProductionProgram.MainWindow
                 IsLoadingPriorityPlan = true;
                 IsLoadingMeasurePoints = true;
             }
-            if (Database.cs_Protocol.Contains("GOD_DPP_DEV"))
-                IsBetaMode = true;
+           
             var processes = Process.GetProcessesByName("DigitalProductionProgram");
             await Activity.Stop($"Application startup # {processes.Length}");
             _scheduler = new ApplicationScheduler(UpdateMeasureInformationAsync, UpdateGuiGrade, Statistics_DPP, Serverstatus);
@@ -216,14 +218,26 @@ namespace DigitalProductionProgram.MainWindow
         private void CloseSplash()
         {
             if (Program.splashScreen.InvokeRequired)
-                Program.splashScreen.Invoke(Program.splashScreen.Close);
+                Program.splashScreen.Invoke((Action)(() =>
+                {
+                    Program.splashScreen.StartFadeOut();
+                }));
             else
-                Program.splashScreen.Close();
+                Program.splashScreen.StartFadeOut();
+            this.Invoke(this.Show);
+            Program.splashScreen.FadeCompleted += () =>
+            {
+                // ✨ Detta körs när splash är HELT faded out ✨
+                this.Invoke(() =>
+                {
+                    this.BringToFront();
+                    this.Activate();
+                });
+            };
 
-            this.Visible = true;
-            this.BringToFront();
+
         }
-      
+
 
 
         protected override void SetVisibleCore(bool value)

@@ -45,18 +45,36 @@ namespace DigitalProductionProgram.Protocols.Protocol
             {
                 if (Order.OrderID is null)
                     return 0;
-                using var con = new SqlConnection(Database.cs_Protocol);
-                const string query = "SELECT MAX(Uppstart) FROM [Order].Data WHERE OrderID = @orderid";
-                con.Open();
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
-                var total = cmd.ExecuteScalar();
-                if (total != null)
-                    if (short.TryParse(total.ToString(), out var result))
-                        return result;
-                return 1;
+                return Database.ExecuteSafe(con =>
+                {
+                    const string query = @"SELECT MAX(Uppstart) 
+                                   FROM [Order].Data 
+                                   WHERE OrderID = @orderid";
+
+                    using var cmd = new SqlCommand(query, con);
+                    cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
+
+                    var scalar = cmd.ExecuteScalar();
+
+                    // MAX kan bli NULL → tolkas som 1 enligt din ursprungslogik
+                    if (scalar == null || scalar == DBNull.Value)
+                        return 1;
+
+                    // Hantera alla typer (int16/int32/long/decimal/string)
+                    // TryParse på string är ok men Convert är robustare mot olika typer
+                    try
+                    {
+                        return Convert.ToInt32(scalar);
+                    }
+                    catch
+                    {
+                        // Om något udda kommer tillbaka – behåll din fallback = 1
+                        return 1;
+                    }
+                });
             }
         }
+
 
 
         private string HeaderText_StartUp(int startup, int oven)
@@ -90,18 +108,19 @@ namespace DigitalProductionProgram.Protocols.Protocol
 
         public static bool IsOkAddStartUp(int startUp)
         {
-            using var con = new SqlConnection(Database.cs_Protocol);
-            var query = $@"
+            return Database.ExecuteSafe(con =>
+            {
+                var query = $@"
                     SELECT * FROM [Order].Data WHERE OrderID = @orderid AND Uppstart = @startup";
-            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-            cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
-            cmd.Parameters.AddWithValue("@startup", startUp);
-            con.Open();
-            var reader = cmd.ExecuteReader();
-            if (reader.HasRows)
-                return true;
+                var cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
+                cmd.Parameters.AddWithValue("@startup", startUp);
+                var reader = cmd.ExecuteReader();
+                if (reader.HasRows)
+                    return true;
 
-            return false;
+                return false;
+            });
         }
 
         private static string? DieType;
@@ -252,7 +271,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
             dgv_Module.Columns["col_MAX"].Width = processcardMaxWidth;
             dgv_Module.Columns["col_StartUp_1"].Width = runProtocolColWidth;
 
-            using (var con = new SqlConnection(Database.cs_Protocol))
+            Database.ExecuteSafe(con =>
             {
                 var query = $@"
                 SELECT
@@ -284,10 +303,9 @@ namespace DigitalProductionProgram.Protocols.Protocol
                     AND formtemplate.MainTemplateID = @maintemplateid
                     AND template.RowIndex IS NOT NULL
                 ORDER BY template.RowIndex, template.ColumnIndex";
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                var cmd = new SqlCommand(query, con);
                 cmd.Parameters.AddWithValue("@formtemplateid", FormTemplateID);
                 cmd.Parameters.AddWithValue("@maintemplateid", Templates_Protocol.MainTemplate.ID);
-                con.Open();
                 var reader = cmd.ExecuteReader();
 
                 while (reader.Read())
@@ -337,13 +355,14 @@ namespace DigitalProductionProgram.Protocols.Protocol
                         dgv_Module.Rows[row].Cells["col_ProtocolDescriptionID"].Value = protocoldescriptionID;
                         dgv_Module.Rows[row].Cells["col_DataType"].Value = type;
                     }
+
                     if (col != null && isUsedInProcesscard)
                         UnLockCell(row, col);
 
                     SetColorCodeText(isValueCritical, dgv_Module.Rows[row].Cells["col_CodeText"]);
                 }
 
-            }
+            });
 
             if (CheckIfOnlyNomValue_ColIndex.Contains(0) == false && CheckIfOnlyNomValue_ColIndex.Contains(2) == false)
                 dgv_Module.Columns["col_MIN"].Visible = dgv_Module.Columns["col_MAX"].Visible = false;
@@ -393,7 +412,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
         {
             Load_StartUps();
 
-            using (var con = new SqlConnection(Database.cs_Protocol))
+            Database.ExecuteSafe(con =>
             {
                 const string query = @"
                         SELECT DISTINCT Value, TextValue, DateValue, MachineIndex, Uppstart, Ugn, template.RowIndex, template.Decimals, template.Type
@@ -408,8 +427,8 @@ namespace DigitalProductionProgram.Protocols.Protocol
                             AND template.RowIndex IS NOT NULL
                             AND Uppstart > 0
                        ORDER BY Uppstart, Ugn, template.RowIndex";
-                con.Open();
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                var cmd = new SqlCommand(query, con);
+                
                 SQL_Parameter.NullableINT(cmd.Parameters, "@orderid", Order.OrderID);
                 cmd.Parameters.AddWithValue("@formtemplateid", formTemplateID);
                 cmd.Parameters.AddWithValue("@machineindex", MachineIndex);
@@ -439,12 +458,12 @@ namespace DigitalProductionProgram.Protocols.Protocol
                             else
                                 value = Processcard.Format_Value(NumberValue, decimals);
                             break;
-                        case 1://TextValue
+                        case 1: //TextValue
                             value = reader["TextValue"].ToString();
                             break;
-                        case 2://BoolValue
+                        case 2: //BoolValue
                             break;
-                        case 3://DateValue
+                        case 3: //DateValue
                             if (DateTime.TryParse(reader["DateValue"].ToString(), out var date))
                             {
                                 var dateTimeFormat = CultureInfo.CurrentCulture.DateTimeFormat;
@@ -473,7 +492,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                     cell.Value = value;
 
                 }
-            }
+            });
 
             if (IsAuthenticationNeeded)
                 for (int col = ColIndex_StartUp1; col < dgv_Module.Columns.Count; col++)
@@ -486,32 +505,34 @@ namespace DigitalProductionProgram.Protocols.Protocol
         }
         private void Load_StartUps()
         {
-            using var con = new SqlConnection(Database.cs_Protocol);
-            const string query = @"SELECT MAX(Uppstart) FROM [Order].Data WHERE OrderID = @orderid";
-            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-            cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
-            con.Open();
-            var value = cmd.ExecuteScalar();
-            if (value == null)
-                return;
-            int.TryParse(value.ToString(), out int startups);
-            //Detta lägger till kolumner för Ugn 2 för första Uppstarten
-            if (IsModuleUsedWithMultipleColumnsStartup)
+            Database.ExecuteSafe(con =>
             {
-                dgv_Module.Columns["col_StartUp_1"].HeaderText = "1-Ugn# 1";
-                var totalColumns = SinteringOven.TotalOvens(1);
-                for (int oven = 2; oven < totalColumns + 1; oven++)
-                    AddStartup(1, oven);
-            }
-            //Lägger till kolumner för Ugn för resterande uppstarter
-            for (var startup = 2; startup < startups + 1; startup++)
-            {
+                const string query = @"SELECT MAX(Uppstart) FROM [Order].Data WHERE OrderID = @orderid";
+                var cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
+                var value = cmd.ExecuteScalar();
+                if (value == null)
+                    return;
+                int.TryParse(value.ToString(), out int startups);
+                //Detta lägger till kolumner för Ugn 2 för första Uppstarten
                 if (IsModuleUsedWithMultipleColumnsStartup)
-                    for (int oven = 1; oven < SinteringOven.TotalOvens(startup) + 1; oven++)
-                        AddStartup(startup, oven);
-                else
-                    AddStartup(startup);
-            }
+                {
+                    dgv_Module.Columns["col_StartUp_1"].HeaderText = "1-Ugn# 1";
+                    var totalColumns = SinteringOven.TotalOvens(1);
+                    for (int oven = 2; oven < totalColumns + 1; oven++)
+                        AddStartup(1, oven);
+                }
+
+                //Lägger till kolumner för Ugn för resterande uppstarter
+                for (var startup = 2; startup < startups + 1; startup++)
+                {
+                    if (IsModuleUsedWithMultipleColumnsStartup)
+                        for (int oven = 1; oven < SinteringOven.TotalOvens(startup) + 1; oven++)
+                            AddStartup(startup, oven);
+                    else
+                        AddStartup(startup);
+                }
+            });
         }
 
         public void AddStartup(int startUp, int oven = 0)
@@ -1092,22 +1113,22 @@ namespace DigitalProductionProgram.Protocols.Protocol
         {
             public static void Delete_StartUp(int startup)
             {
-                using var con = new SqlConnection(Database.cs_Protocol);
-                var query = @"
+                Database.ExecuteSafe(con =>
+                {
+                    var query = @"
                     IF EXISTS (SELECT * FROM [Order].Data WHERE OrderID = @orderid AND Uppstart = @uppstart)
                         DELETE FROM [Order].Data 
                         WHERE OrderID = @orderid 
                             AND Uppstart = @uppstart";
-
-                con.Open();
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
-                cmd.Parameters.AddWithValue("@uppstart", startup);
-                cmd.ExecuteNonQuery();
+                    var cmd = new SqlCommand(query, con);
+                    cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
+                    cmd.Parameters.AddWithValue("@uppstart", startup);
+                    cmd.ExecuteNonQuery();
+                });
             }
             public static void Delete_Oven(int startup, int oven)
             {
-                using (var con = new SqlConnection(Database.cs_Protocol))
+                Database.ExecuteSafe(con =>
                 {
                     var query = @"
                     IF EXISTS (SELECT * FROM [Order].Data WHERE OrderID = @orderid AND Uppstart = @uppstart AND Ugn = @oven)
@@ -1115,86 +1136,14 @@ namespace DigitalProductionProgram.Protocols.Protocol
                         WHERE OrderID = @orderid 
                             AND Uppstart = @uppstart
                             AND Ugn = @oven";
-
-                    con.Open();
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
+                    var cmd = new SqlCommand(query, con);
+                    
                     cmd.Parameters.AddWithValue("@uppstart", startup);
                     cmd.Parameters.AddWithValue("@oven", oven);
                     cmd.ExecuteNonQuery();
-                }
+                });
             }
-            //public static void Save_Data(DataGridView dgv, int row, int formtemplateid, int OvenIndex = 0, int machineindex = 0)
-            //{
-            //    if (Module.IsOkToSave == false)
-            //        return;
-            //    var cell = dgv.CurrentCell;
-
-            //    var protocol_Description_ID = Protocol_Description.Protocol_Description_ID_Row(row, formtemplateid);
-            //    _ = int.Parse(dgv.Rows[row].Cells["col_DataType"].Value.ToString());
-            //    int type = ValueType(protocol_Description_ID, formtemplateid);
-
-            //    using var con = new SqlConnection(Database.cs_Protocol);
-            //    var query = OvenIndex > 0 ? @"
-            //        IF NOT EXISTS (SELECT * FROM [Order].Data WHERE OrderID = @orderid AND ProtocolDescriptionID = @protocoldescriptionid AND uppstart = @uppstart AND ugn = @ugn)
-            //            INSERT INTO [Order].Data (OrderID, ProtocolDescriptionID, MachineIndex, Uppstart, Ugn, Value, TextValue, BoolValue)
-            //            VALUES (@orderid, @protocoldescriptionid, @machineindex, @uppstart, @ugn, @value, @textvalue, @boolvalue)
-            //        ELSE
-            //            UPDATE [Order].Data 
-            //                SET value = @value, textvalue = @textvalue, BoolValue = @boolvalue
-            //            WHERE OrderID = @orderid AND ProtocolDescriptionID = @protocoldescriptionid AND uppstart = @uppstart AND ugn = @ugn" : @"
-            //        IF NOT EXISTS (SELECT * FROM [Order].Data WHERE OrderID = @orderid AND ProtocolDescriptionID = @protocoldescriptionid AND (COALESCE(Uppstart, 0) = COALESCE(@uppstart, 0)) AND (COALESCE(MachineIndex, 0) = COALESCE(@machineindex, 0)))
-            //            INSERT INTO [Order].Data (OrderID, ProtocolDescriptionID, MachineIndex, Uppstart, Ugn, Value, TextValue, BoolValue, datevalue)
-            //            VALUES (@orderid, @protocoldescriptionid, @machineindex, @uppstart, @ugn, @value, @textvalue, @boolvalue, @datevalue)
-            //        ELSE
-            //            UPDATE [Order].Data 
-            //                SET value = @value, textvalue = @textvalue, BoolValue = @boolvalue, datevalue = @datevalue
-            //            WHERE OrderID = @orderid AND ProtocolDescriptionID = @protocoldescriptionid AND (COALESCE(Uppstart, 0) = COALESCE(@uppstart, 0)) AND (COALESCE(MachineIndex, 0) = COALESCE(@machineindex, 0))";
-            //    con.Open();
-            //    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-            //    cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
-            //    cmd.Parameters.AddWithValue("@protocoldescriptionid", protocol_Description_ID);
-            //    SQL_Parameter.Int(cmd.Parameters, "@machineindex", machineindex);
-            //    cmd.Parameters.AddWithValue("@uppstart", Module.StartUp(dgv.Columns[cell.ColumnIndex].HeaderText)); //dgv.Columns[cell.ColumnIndex].HeaderText);
-            //    if (OvenIndex > 0)
-            //        cmd.Parameters.AddWithValue("@ugn", OvenIndex);
-            //    else
-            //        cmd.Parameters.AddWithValue("@ugn", DBNull.Value);
-
-            //    switch (type)
-            //    {
-            //        case 0://NumberValue
-            //            SQL_Parameter.Double(cmd.Parameters, "@value", cell.Value);
-            //            cmd.Parameters.AddWithValue("@textvalue", DBNull.Value);
-            //            cmd.Parameters.AddWithValue("@boolvalue", DBNull.Value);
-            //            cmd.Parameters.AddWithValue("@datevalue", DBNull.Value);
-            //            break;
-            //        case 1://TextValue
-            //            if (cell.Value != null)
-            //                SQL_Parameter.String(cmd.Parameters, "@textvalue", cell.Value.ToString());
-            //            else
-            //                cmd.Parameters.AddWithValue("@textvalue", DBNull.Value);
-            //            cmd.Parameters.AddWithValue("@value", DBNull.Value);
-            //            cmd.Parameters.AddWithValue("@boolvalue", DBNull.Value);
-            //            cmd.Parameters.AddWithValue("@datevalue", DBNull.Value);
-            //            break;
-            //        case 2://BoolValue
-            //            SQL_Parameter.Boolean(cmd.Parameters, "@boolean", cell.Value);
-            //            cmd.Parameters.AddWithValue("@textvalue", DBNull.Value);
-            //            cmd.Parameters.AddWithValue("@value", DBNull.Value);
-            //            cmd.Parameters.AddWithValue("@datevalue", DBNull.Value);
-            //            break;
-            //        case 3://DateValue
-            //            if (DateTime.TryParse(cell.Value.ToString(), out var dateValue))
-            //                cmd.Parameters.AddWithValue("@datevalue", dateValue);
-            //            cmd.Parameters.AddWithValue("@textvalue", DBNull.Value);
-            //            cmd.Parameters.AddWithValue("@value", DBNull.Value);
-            //            cmd.Parameters.AddWithValue("@boolvalue", DBNull.Value);
-            //            break;
-            //    }
-
-            //    cmd.ExecuteNonQuery();
-            //}
+            
             public static void Save_Data(DataGridView dgv, int row, int formtemplateid, int OvenIndex = 0, int machineindex = 0)
             {
                 if (Module.IsOkToSave == false)
@@ -1206,14 +1155,14 @@ namespace DigitalProductionProgram.Protocols.Protocol
                 _ = int.Parse(dgv.Rows[row].Cells["col_DataType"].Value.ToString());
                 int type = ValueType(protocolDescriptionID, formtemplateid);
 
-                using var con = new SqlConnection(Database.cs_Protocol);
-                con.Open();
+                Database.ExecuteSafe(con =>
+                {
+                    using var tran = con.BeginTransaction();
 
-                using var tran = con.BeginTransaction();
-
-                // En gemensam batch som först gör upsert i [Order].Data och sedan loggar i Log.ActivityLog
-                // Vi använder en "flagga" via TABLE VARIABLE för att veta om det blev INSERT eller UPDATE.
-                var query = (OvenIndex > 0) ? @"
+                    // En gemensam batch som först gör upsert i [Order].Data och sedan loggar i Log.ActivityLog
+                    // Vi använder en "flagga" via TABLE VARIABLE för att veta om det blev INSERT eller UPDATE.
+                    var query = (OvenIndex > 0)
+                        ? @"
                     DECLARE @action NVARCHAR(10);
 
                     IF NOT EXISTS 
@@ -1267,7 +1216,8 @@ namespace DigitalProductionProgram.Protocols.Protocol
                                 ' - Value = ', @value,
                                 ' - StartUp = ', @uppstart,
                                 ', Machine = ', @machineindex));
-                    " : @"
+                    "
+                        : @"
         
                     DECLARE @action NVARCHAR(10);
 
@@ -1323,111 +1273,110 @@ namespace DigitalProductionProgram.Protocols.Protocol
                                 ' - StartUp = ', @uppstart,
                                 ', Machine = ', @machineindex));";
 
-                using var cmd = new SqlCommand(query, con, tran);
-                ServerStatus.Add_Sql_Counter();
+                    using var cmd = new SqlCommand(query, con, tran);
 
-                // Gemensamma parametrar
-                cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
-                cmd.Parameters.AddWithValue("@protocoldescriptionid", protocolDescriptionID);
+                    // Gemensamma parametrar
+                    cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
+                    cmd.Parameters.AddWithValue("@protocoldescriptionid", protocolDescriptionID);
 
-                // machineindex kan vara null/0: använd din hjälpfunktion för korrekt null-hantering
-                SQL_Parameter.Int(cmd.Parameters, "@machineindex", machineindex);
+                    // machineindex kan vara null/0: använd din hjälpfunktion för korrekt null-hantering
+                    SQL_Parameter.Int(cmd.Parameters, "@machineindex", machineindex);
 
-                // Uppstart beror på kolumnhuvudet (din befintliga logik)
-                cmd.Parameters.AddWithValue("@uppstart", startUp);
+                    // Uppstart beror på kolumnhuvudet (din befintliga logik)
+                    cmd.Parameters.AddWithValue("@uppstart", startUp);
 
-                // Ugn (OvenIndex), null om inte angiven
-                if (OvenIndex > 0)
-                    cmd.Parameters.AddWithValue("@ugn", OvenIndex);
-                else
-                    cmd.Parameters.AddWithValue("@ugn", DBNull.Value);
+                    // Ugn (OvenIndex), null om inte angiven
+                    if (OvenIndex > 0)
+                        cmd.Parameters.AddWithValue("@ugn", OvenIndex);
+                    else
+                        cmd.Parameters.AddWithValue("@ugn", DBNull.Value);
 
-                // Miljö: användarnamn och klientinfo (justera efter din miljö)
-                SQL_Parameter.Int(cmd.Parameters, "@userid", Person.UserID);
-                cmd.Parameters.AddWithValue("@hostname", Activity.HostName);
-                cmd.Parameters.AddWithValue("@date", DateTime.Now);
-                cmd.Parameters.AddWithValue("@program", "SaveData");
-                cmd.Parameters.AddWithValue("@version", ChangeLog.CurrentVersion.ToString());
-               // cmd.Parameters.AddWithValue("@info", $"Save data ProtocolDescriptionId = {protocolDescriptionID} - Value = {cell.Value} - StartUp = {startUp}, Machine = {machineindex}");
+                    // Miljö: användarnamn och klientinfo (justera efter din miljö)
+                    SQL_Parameter.Int(cmd.Parameters, "@userid", Person.UserID);
+                    cmd.Parameters.AddWithValue("@hostname", Activity.HostName);
+                    cmd.Parameters.AddWithValue("@date", DateTime.Now);
+                    cmd.Parameters.AddWithValue("@program", "SaveData");
+                    cmd.Parameters.AddWithValue("@version", ChangeLog.CurrentVersion.ToString());
 
-                // Sätt värdeparametrar baserat på 'type'
-                switch (type)
-                {
-                    case 0: // NumberValue
-                        SQL_Parameter.Double(cmd.Parameters, "@value", cell.Value);
-                        cmd.Parameters.AddWithValue("@textvalue", DBNull.Value);
-                        cmd.Parameters.AddWithValue("@boolvalue", DBNull.Value);
-                        cmd.Parameters.AddWithValue("@datevalue", DBNull.Value);
-                        break;
-
-                    case 1: // TextValue
-                        if (cell.Value != null)
-                            SQL_Parameter.String(cmd.Parameters, "@textvalue", cell.Value.ToString());
-                        else
+                    // Sätt värdeparametrar baserat på 'type'
+                    switch (type)
+                    {
+                        case 0: // NumberValue
+                            SQL_Parameter.Double(cmd.Parameters, "@value", cell.Value);
                             cmd.Parameters.AddWithValue("@textvalue", DBNull.Value);
-
-                        cmd.Parameters.AddWithValue("@value", DBNull.Value);
-                        cmd.Parameters.AddWithValue("@boolvalue", DBNull.Value);
-                        cmd.Parameters.AddWithValue("@datevalue", DBNull.Value);
-                        break;
-
-                    case 2: // BoolValue
-                            // BUGFIX: använd @boolvalue (inte @boolean)
-                        SQL_Parameter.Boolean(cmd.Parameters, "@boolvalue", cell.Value);
-                        cmd.Parameters.AddWithValue("@textvalue", DBNull.Value);
-                        cmd.Parameters.AddWithValue("@value", DBNull.Value);
-                        cmd.Parameters.AddWithValue("@datevalue", DBNull.Value);
-                        break;
-
-                    case 3: // DateValue
-                        if (cell?.Value != null && DateTime.TryParse(cell.Value.ToString(), out var dateValue))
-                            cmd.Parameters.AddWithValue("@datevalue", dateValue);
-                        else
+                            cmd.Parameters.AddWithValue("@boolvalue", DBNull.Value);
                             cmd.Parameters.AddWithValue("@datevalue", DBNull.Value);
+                            break;
 
-                        cmd.Parameters.AddWithValue("@textvalue", DBNull.Value);
-                        cmd.Parameters.AddWithValue("@value", DBNull.Value);
-                        cmd.Parameters.AddWithValue("@boolvalue", DBNull.Value);
-                        break;
+                        case 1: // TextValue
+                            if (cell.Value != null)
+                                SQL_Parameter.String(cmd.Parameters, "@textvalue", cell.Value.ToString());
+                            else
+                                cmd.Parameters.AddWithValue("@textvalue", DBNull.Value);
 
-                    default:
-                        // Fallback: sätt alla till NULL
-                        cmd.Parameters.AddWithValue("@value", DBNull.Value);
-                        cmd.Parameters.AddWithValue("@textvalue", DBNull.Value);
-                        cmd.Parameters.AddWithValue("@boolvalue", DBNull.Value);
-                        cmd.Parameters.AddWithValue("@datevalue", DBNull.Value);
-                        break;
-                }
+                            cmd.Parameters.AddWithValue("@value", DBNull.Value);
+                            cmd.Parameters.AddWithValue("@boolvalue", DBNull.Value);
+                            cmd.Parameters.AddWithValue("@datevalue", DBNull.Value);
+                            break;
 
-                try
-                {
-                    cmd.ExecuteNonQuery();
-                    tran.Commit();
-                }
-                catch (Exception ex)
-                {
-                    tran.Rollback();
-                    Activity.Stop($"Error while saving data in Module.DatabaseManagement.Save_Data: {ex.Message}");
-                    throw;
-                }
+                        case 2: // BoolValue
+                            // BUGFIX: använd @boolvalue (inte @boolean)
+                            SQL_Parameter.Boolean(cmd.Parameters, "@boolvalue", cell.Value);
+                            cmd.Parameters.AddWithValue("@textvalue", DBNull.Value);
+                            cmd.Parameters.AddWithValue("@value", DBNull.Value);
+                            cmd.Parameters.AddWithValue("@datevalue", DBNull.Value);
+                            break;
+
+                        case 3: // DateValue
+                            if (cell?.Value != null && DateTime.TryParse(cell.Value.ToString(), out var dateValue))
+                                cmd.Parameters.AddWithValue("@datevalue", dateValue);
+                            else
+                                cmd.Parameters.AddWithValue("@datevalue", DBNull.Value);
+
+                            cmd.Parameters.AddWithValue("@textvalue", DBNull.Value);
+                            cmd.Parameters.AddWithValue("@value", DBNull.Value);
+                            cmd.Parameters.AddWithValue("@boolvalue", DBNull.Value);
+                            break;
+
+                        default:
+                            // Fallback: sätt alla till NULL
+                            cmd.Parameters.AddWithValue("@value", DBNull.Value);
+                            cmd.Parameters.AddWithValue("@textvalue", DBNull.Value);
+                            cmd.Parameters.AddWithValue("@boolvalue", DBNull.Value);
+                            cmd.Parameters.AddWithValue("@datevalue", DBNull.Value);
+                            break;
+                    }
+
+                    try
+                    {
+                        cmd.ExecuteNonQuery();
+                        tran.Commit();
+                    }
+                    catch (Exception ex)
+                    {
+                        tran.Rollback();
+                        Activity.Stop($"Error while saving data in Module.DatabaseManagement.Save_Data: {ex.Message}");
+                        throw;
+                    }
+                });
             }
-
 
             public static int ValueType(int? id, int FormTemplateID)
             {
-                using var con = new SqlConnection(Database.cs_Protocol);
-                var query = @"
+                return Database.ExecuteSafe(con =>
+                {
+                    var query = @"
                     SELECT Type FROM Protocol.Template
                     WHERE ProtocolDescriptionID = @descrid
                         AND FormTemplateID = @formtemplateid";
 
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@descrid", id);
-                cmd.Parameters.AddWithValue("@formtemplateid", FormTemplateID);
-                cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
-                con.Open();
-                var value = cmd.ExecuteScalar();
-                return int.Parse(value.ToString());
+                    var cmd = new SqlCommand(query, con);
+                    cmd.Parameters.AddWithValue("@descrid", id);
+                    cmd.Parameters.AddWithValue("@formtemplateid", FormTemplateID);
+                    cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
+                    var value = cmd.ExecuteScalar();
+                    return int.Parse(value.ToString());
+                });
             }
         }
 
@@ -1445,41 +1394,38 @@ namespace DigitalProductionProgram.Protocols.Protocol
             {
                 if (Order.OrderID is null)
                     return 0;
-                using (var con = new SqlConnection(Database.cs_Protocol))
+                return Database.ExecuteSafe(con =>
                 {
                     var query = $@"
                     SELECT MAX(Ugn) FROM [Order].Data WHERE OrderID = @orderid AND Uppstart = @startup";
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                    var cmd = new SqlCommand(query, con);
                     cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                     cmd.Parameters.AddWithValue("@startup", startUp);
-                    con.Open();
                     var value = cmd.ExecuteScalar();
                     if (value != null)
                     {
                         if (int.TryParse(value.ToString(), out var result))
                             return result;
                     }
-
-                }
-                return 1;
+                    return 1;
+                });
+                
             }
             public static bool IsOkAddOven(int startUp, int oven)
             {
-                using (var con = new SqlConnection(Database.cs_Protocol))
+                return Database.ExecuteSafe(con =>
                 {
                     var query = $@"
                     SELECT * FROM [Order].Data WHERE OrderID = @orderid AND Uppstart = @startup AND Ugn = @oven";
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                    var cmd = new SqlCommand(query, con);
                     cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                     cmd.Parameters.AddWithValue("@startup", startUp);
                     cmd.Parameters.AddWithValue("@oven", oven);
-                    con.Open();
                     var reader = cmd.ExecuteReader();
                     if (reader.HasRows)
                         return true;
-                }
-
-                return false;
+                    return false;
+                });
             }
 
             public static void RemoveOven(Module module)
@@ -1556,20 +1502,20 @@ namespace DigitalProductionProgram.Protocols.Protocol
             private static void Delete_LastStartup(int startup, int formtemplateid, DataGridView dgv)
             {
                 //Om Användare stänger ner Körprotokollet utan att ha fyllt i hela utrustningen så raderas utrustningen från senaste uppstart
-                using var con = new SqlConnection(Database.cs_Protocol);
-                const string query = @"
+                Database.ExecuteSafe(con =>
+                {
+                    const string query = @"
                             DELETE FROM [Order].Data
                             WHERE OrderID = @orderid
                                 AND Uppstart = @startup
                                 AND ProtocolDescriptionID IN (SELECT ProtocolDescriptionID FROM Protocol.Template WHERE FormTemplateID = @formtemplateid)";
-                con.Open();
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
-                cmd.Parameters.AddWithValue("@startup", startup);
-                // cmd.Parameters.AddWithValue("@machineindex", machine);
-                cmd.Parameters.AddWithValue("@formtemplateid", formtemplateid);
+                    var cmd = new SqlCommand(query, con);
+                    cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
+                    cmd.Parameters.AddWithValue("@startup", startup);
+                    cmd.Parameters.AddWithValue("@formtemplateid", formtemplateid);
 
-                cmd.ExecuteNonQuery();
+                    cmd.ExecuteNonQuery();
+                });
             }
             public bool IsEquipmentOkToConfirm(DataGridView dgv, int machineIndex)
             {
@@ -1599,12 +1545,11 @@ namespace DigitalProductionProgram.Protocols.Protocol
 
                 var rowIndex_Start = 0;
                 var rowIndex_Stop = 0;
-                using (var con = new SqlConnection(Database.cs_Protocol))
+                Database.ExecuteSafe(con =>
                 {
                     const string query = @"
                         SELECT RowIndex FROM Protocol.Template WHERE FormTemplateID = @formtemplateID AND Type = 3 ORDER BY RowIndex";
-                    con.Open();
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                    var cmd = new SqlCommand(query, con);
                     cmd.Parameters.AddWithValue("@formtemplateid", FormTemplateID);
                     var reader = cmd.ExecuteReader();
                     var ctr = 0;
@@ -1618,7 +1563,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
 
                         ctr++;
                     }
-                }
+                });
 
                 var date = DateTime.Now;
                 var dateTimeFormat = CultureInfo.CurrentCulture.DateTimeFormat;
@@ -1678,7 +1623,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                 {
                     case "Ja":
                     case "Yes":
-                        using (var con = new SqlConnection(Database.cs_Protocol))
+                        Database.ExecuteSafe(con =>
                         {
                             var query = @"
                                 SELECT RowIndex
@@ -1690,8 +1635,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                                     FROM Protocol.Description
                                     WHERE CodeText IN ('Munstycke', 'KÄRNA', 'MUNSTYCKE - LANDLÄNGD', 'KÄRNA - LANDLÄNGD')
                                 )";
-                            con.Open();
-                            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                            var cmd = new SqlCommand(query, con);
                             cmd.Parameters.AddWithValue("@formtemplateid", formtemplateid);
                             var reader = cmd.ExecuteReader();
                             while (reader.Read())
@@ -1699,7 +1643,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                                 if (int.TryParse(reader["RowIndex"].ToString(), out var row))
                                     RowsToDelete.Add(row);
                             }
-                        }
+                        });
 
                         foreach (var row in RowsToDelete)
                             dgv_Protocol.Rows[row].Cells[dgv_Protocol.Columns.Count - 1].Value = string.Empty;
@@ -1720,8 +1664,9 @@ namespace DigitalProductionProgram.Protocols.Protocol
             private static void Copy_FromLastOrder(DataGridView dgv_Protocol, int formtemplateid, int machineindex)
             {
                 var lastOrderID = Order.LastOrderID;
-                using var con = new SqlConnection(Database.cs_Protocol);
-                const string query = @"
+                Database.ExecuteSafe(con =>
+                {
+                    const string query = @"
                                 SELECT DISTINCT Value, TextValue, DateValue, MachineIndex, Uppstart, Ugn, RowIndex, template.Decimals, template.Type
                                 FROM [Order].Data AS protocol
 	                                JOIN Protocol.Template as template
@@ -1735,49 +1680,49 @@ namespace DigitalProductionProgram.Protocols.Protocol
                                     AND RowIndex > 1
                                     AND Uppstart = 1
                                 ORDER BY RowIndex";
-                con.Open();
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                SQL_Parameter.NullableINT(cmd.Parameters, "@orderid", lastOrderID);
-                cmd.Parameters.AddWithValue("@formtemplateid", formtemplateid);
-                cmd.Parameters.AddWithValue("@machineindex", machineindex);
-                var reader = cmd.ExecuteReader();
-                while (reader.Read())
-                {
-                    int.TryParse(reader["type"].ToString(), out var type);
-                    int.TryParse(reader["RowIndex"].ToString(), out var row);
-                    if (row == dgv_Protocol.Rows.Count - 2)
-                        return;
-                    var value = string.Empty;
-                    switch (type)
+                    var cmd = new SqlCommand(query, con);
+                    SQL_Parameter.NullableINT(cmd.Parameters, "@orderid", lastOrderID);
+                    cmd.Parameters.AddWithValue("@formtemplateid", formtemplateid);
+                    cmd.Parameters.AddWithValue("@machineindex", machineindex);
+                    var reader = cmd.ExecuteReader();
+                    while (reader.Read())
                     {
-                        case 0: //NumberValue
-                            int.TryParse(reader["Decimals"].ToString(), out var decimals);
-                            if (double.TryParse(reader["Value"].ToString(), out var NumberValue) == false)
-                                value = string.Empty;
-                            else
-                                value = Processcard.Format_Value(NumberValue, decimals);
-                            break;
-                        case 1: //TextValue
-                            value = reader["TextValue"].ToString();
-                            break;
-                        case 2: //BoolValue
-                            break;
-                        case 3: //DateValue
-                            if (DateTime.TryParse(reader["datevalue"].ToString(), out var date))
-                                value = date.ToString("yyyy-MM-dd HH:mm");
-                            break;
-                    }
+                        int.TryParse(reader["type"].ToString(), out var type);
+                        int.TryParse(reader["RowIndex"].ToString(), out var row);
+                        if (row == dgv_Protocol.Rows.Count - 2)
+                            return;
+                        var value = string.Empty;
+                        switch (type)
+                        {
+                            case 0: //NumberValue
+                                int.TryParse(reader["Decimals"].ToString(), out var decimals);
+                                if (double.TryParse(reader["Value"].ToString(), out var NumberValue) == false)
+                                    value = string.Empty;
+                                else
+                                    value = Processcard.Format_Value(NumberValue, decimals);
+                                break;
+                            case 1: //TextValue
+                                value = reader["TextValue"].ToString();
+                                break;
+                            case 2: //BoolValue
+                                break;
+                            case 3: //DateValue
+                                if (DateTime.TryParse(reader["datevalue"].ToString(), out var date))
+                                    value = date.ToString("yyyy-MM-dd HH:mm");
+                                break;
+                        }
 
-                    if (string.IsNullOrEmpty(value))
-                        value = "N/A";
+                        if (string.IsNullOrEmpty(value))
+                            value = "N/A";
 
-                    var cell = dgv_Protocol.Rows[row].Cells[dgv_Protocol.Columns.Count - 1];
-                    if (Browse_Protocols.Browse_Protocols.Is_BrowsingProtocols == false && cell.Visible)
-                    {
-                        cell.Selected = true;
-                        cell.Value = value;
+                        var cell = dgv_Protocol.Rows[row].Cells[dgv_Protocol.Columns.Count - 1];
+                        if (Browse_Protocols.Browse_Protocols.Is_BrowsingProtocols == false && cell.Visible)
+                        {
+                            cell.Selected = true;
+                            cell.Value = value;
+                        }
                     }
-                }
+                });
             }
             private static void Delete_Equipment(DataGridView dgv_Protocol)
             {
@@ -1786,7 +1731,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
             }
             public static void Load_DryingUnderExtrusion(DataGridView dgv_Protocol, int ExtruderIndex)
             {
-                using (var con = new SqlConnection(Database.cs_Protocol))
+                Database.ExecuteSafe(con =>
                 {
                     var query = @"
                         SELECT DISTINCT BoolValue, Uppstart
@@ -1795,8 +1740,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                             AND ProtocolDescriptionID = 317
                             AND (COALESCE(MachineIndex, 0) = COALESCE(@machineindex, 0))
                        ORDER BY uppstart";
-                    con.Open();
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                    var cmd = new SqlCommand(query, con);
                     SQL_Parameter.NullableINT(cmd.Parameters, "@orderid", Order.OrderID);
                     cmd.Parameters.AddWithValue("@machineindex", ExtruderIndex);
                     var reader = cmd.ExecuteReader();
@@ -1815,7 +1759,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
 
                         col++;
                     }
-                }
+                });
             }
             public static void Change_DryTimeUnderProduction(DataGridViewCell cell, DataGridView dgv_Protocol, int MachineIndex)
             {

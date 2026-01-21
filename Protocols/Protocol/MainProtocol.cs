@@ -1,5 +1,4 @@
-﻿using Microsoft.Data.SqlClient;
-using DigitalProductionProgram.ControlsManagement;
+﻿using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Equipment;
 using DigitalProductionProgram.Help;
@@ -10,72 +9,65 @@ using DigitalProductionProgram.PrintingServices;
 using DigitalProductionProgram.Protocols.ExtraProtocols;
 using DigitalProductionProgram.Templates;
 using DigitalProductionProgram.User;
+using Microsoft.Data.SqlClient;
+using System.Data;
 
 namespace DigitalProductionProgram.Protocols.Protocol
 {
     public partial class MainProtocol : Form
     {
-        public static string FormTemplateName(int formTemplateID)
+
+        private static string? FormTemplateName(int formTemplateID)
         {
-            using var con = new SqlConnection(Database.cs_Protocol);
-            const string query = @"
-                    SELECT ModuleName 
-                    FROM Protocol.FormTemplate WHERE FormTemplateID = @formtemplateid";
+            return Database.ExecuteSafe(con =>
+            {
+                const string query = @"
+                    SELECT ModuleName
+                    FROM Protocol.FormTemplate 
+                    WHERE FormTemplateID = @formtemplateid";
 
-            con.Open();
-            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-            cmd.Parameters.AddWithValue("@formtemplateid", formTemplateID);
-            var value = cmd.ExecuteScalar();
-            if (value != DBNull.Value)
-                return (string)value;
+                using var cmd = new SqlCommand(query, con);
+                cmd.Parameters.Add("@formtemplateid", SqlDbType.Int).Value = formTemplateID;
+                var value = cmd.ExecuteScalar();
+                if (value == null || value == DBNull.Value)
+                    return null;
 
-            return null;
+                return value.ToString(); // safe: alltid string
+            });
         }
+
 
         private readonly int TotalMachines;
-        public static bool IsUsingMultipleColumnsStartUp
-        {
-            get
+
+        public static bool IsUsingMultipleColumnsStartUp =>
+            Database.ExecuteSafe(con =>
             {
-                using var con = new SqlConnection(Database.cs_Protocol);
                 const string query = @"
-                    SELECT IsMultipleColumnsStartup FROM Protocol.FormTemplate WHERE MainTemplateID = @maintemplateID";
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@maintemplateID", Templates_Protocol.MainTemplate.ID);
-                con.Open();
-                var reader = cmd.ExecuteReader();
-                while (reader.Read())
-                {
-                    if (bool.TryParse(reader["IsMultipleColumnsStartup"].ToString(), out var isUsingMultipleColumnsStartUp))
-                        if (isUsingMultipleColumnsStartUp)
-                            return true;
-                }
+                    SELECT IsMultipleColumnsStartup 
+                    FROM Protocol.FormTemplate 
+                    WHERE MainTemplateID = @id";
+                using var cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@id", Templates_Protocol.MainTemplate.ID);
+                var value = cmd.ExecuteScalar();
 
-                return false;
-            }
-        }
-
-        public static bool IsUsingStartUpDates
-        {
-            get
+                return value != null && value != DBNull.Value && Convert.ToBoolean(value);
+            });
+        public static bool IsUsingStartUpDates =>
+            Database.ExecuteSafe(con =>
             {
-                using var con = new SqlConnection(Database.cs_Protocol);
                 const string query = @"
-                    SELECT IsStartUpDates FROM Protocol.FormTemplate WHERE MainTemplateID = @maintemplateID";
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@maintemplateID", Templates_Protocol.MainTemplate.ID);
-                con.Open();
-                var reader = cmd.ExecuteReader();
-                while (reader.Read())
-                {
-                    if (bool.TryParse(reader["IsStartUpDates"].ToString(), out var isUsingStartUpDates))
-                        if (isUsingStartUpDates)
-                            return true;
-                }
+            SELECT IsStartUpDates 
+            FROM Protocol.FormTemplate 
+            WHERE MainTemplateID = @id";
 
-                return false;
-            }
-        }
+                using var cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@id", Templates_Protocol.MainTemplate.ID);
+
+                var value = cmd.ExecuteScalar();
+
+                return value != null && value != DBNull.Value && Convert.ToBoolean(value);
+            });
+
 
         private bool IsOkAddStartUp
         {
@@ -203,65 +195,54 @@ namespace DigitalProductionProgram.Protocols.Protocol
 
         }
 
+
         private void AddMainInfo()
         {
-            string MainInfoTemplate = null;
-            using (var con = new SqlConnection(Database.cs_Protocol))
+            string? templateLetter = Database.ExecuteSafe(con =>
             {
-                const string query = @"SELECT MainInfo_Template FROM Protocol.MainTemplate WHERE ID = @maintemplateid";
-
-                con.Open();
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@maintemplateid", Templates_Protocol.MainTemplate.ID);
+                const string query = @"
+                    SELECT MainInfo_Template 
+                    FROM Protocol.MainTemplate 
+                    WHERE ID = @id";
+                using var cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@id", Templates_Protocol.MainTemplate.ID);
                 var value = cmd.ExecuteScalar();
-                if (value != DBNull.Value)
-                    MainInfoTemplate = (string)value;
-            }
+                return value == null || value == DBNull.Value ? null : value.ToString();
+            });
 
-            switch (MainInfoTemplate)
+            Control control = templateLetter switch
             {
-                case "A":
-                    var mainInfo_A = new MainInfo.MainInfo_A
-                    {
-                        Dock = DockStyle.Fill,
-                        Margin = new Padding(0, 0, 0, 1)
-                    };
-                    panel_MainInfo.Controls.Add(mainInfo_A);
-                    mainInfo_A.Load_Data(Order.OrderID);
+                "A" => new MainInfo.MainInfo_A { Dock = DockStyle.Fill, Margin = new Padding(0, 0, 0, 1) },
+                "B" => new MainInfo.MainInfo_B { Dock = DockStyle.Fill, Margin = new Padding(0, 0, 0, 1) },
+                "C" => new MainInfo.MainInfo_C { Dock = DockStyle.Fill, Margin = new Padding(0, 0, 0, 1) },
+                _ => new Label
+                {
+                    Text = LanguageManager.GetString("mainInfo_Missing"),
+                    ForeColor = CustomColors.Bad_Back,
+                    Font = new Font("Arial", 24),
+                    Dock = DockStyle.Fill
+                }
+            };
+
+            panel_MainInfo.Controls.Add(control);
+
+            // Om control är en MainInfo_X: ladda data
+            switch (control)
+            {
+                case MainInfo.MainInfo_A a:
+                    a.Load_Data(Order.OrderID);
                     break;
-                case "B":
-                    var mainInfo_B = new MainInfo.MainInfo_B
-                    {
-                        Dock = DockStyle.Fill,
-                        Margin = new Padding(0, 0, 0, 1)
-                    };
-                    panel_MainInfo.Controls.Add(mainInfo_B);
-                    mainInfo_B.Load_Data(Order.OrderID);
+
+                case MainInfo.MainInfo_B b:
+                    b.Load_Data(Order.OrderID);
                     break;
-                case "C":
-                    var mainInfo_C = new MainInfo.MainInfo_C
-                    {
-                        Dock = DockStyle.Fill,
-                        Margin = new Padding(0, 0, 0, 1)
-                    };
-                    panel_MainInfo.Controls.Add(mainInfo_C);
-                    mainInfo_C.Load_Data(Order.OrderID);
-                    break;
-                default:
-                    var lbl_Error = new Label
-                    {
-                        Text = LanguageManager.GetString("mainInfo_Missing"),
-                        ForeColor = CustomColors.Bad_Back,
-                        Font = new Font("Arial", 24),
-                        Dock = DockStyle.Fill,
-                    };
-                    panel_MainInfo.Controls.Add(lbl_Error);
+
+                case MainInfo.MainInfo_C c:
+                    c.Load_Data(Order.OrderID);
                     break;
             }
-
-
-
         }
+
 
 
         private void LC_Name_Click(object? sender, EventArgs e)

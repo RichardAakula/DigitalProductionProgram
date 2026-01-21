@@ -524,6 +524,8 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
             var activeBatchNr = dgv.Rows[dgv.CurrentCell.RowIndex].Cells[columnPartNumber].Value.ToString();
             var tempID = (int)dgv.Rows[dgv.CurrentCell.RowIndex].Cells["TempID"].Value;
             var IsOkDeleteRow = false;
+            //--Kontrollera att det finns minst ett artikelnr kvar efter radering
+            //--Det måste finnas minst en rad kvar av alla artikelnr
             foreach (DataGridViewRow row in dgv.Rows)
                 if (row.Cells[columnPartNumber].Value.ToString() == activeBatchNr && row != dgv.CurrentRow)
                     IsOkDeleteRow = true;

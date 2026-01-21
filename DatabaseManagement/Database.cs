@@ -172,8 +172,9 @@ namespace DigitalProductionProgram.DatabaseManagement
                 T result = action(con);
                 sw.Stop();
                 Debug.WriteLine("----ExecuteSafe----");
-                Debug.WriteLine($"{DateTime.Now}");
-                Debug.WriteLine($"{callerMember} - Time: {sw.ElapsedMilliseconds}");
+                Debug.WriteLine($"---{DateTime.Now}");
+                Debug.WriteLine($"---{callerMember} - Time: {sw.ElapsedMilliseconds}");
+                Debug.WriteLine("-------------------\n");
                 return result;
             }
             catch (Exception exc)
@@ -208,7 +209,9 @@ namespace DigitalProductionProgram.DatabaseManagement
                 T result = await action(con);
                 success = true;
                 Debug.WriteLine("----ExecuteSafeAsync----");
-                Debug.WriteLine($"{callerMember} - Time: {sw.ElapsedMilliseconds}");
+                Debug.WriteLine($"---{DateTime.Now}");
+                Debug.WriteLine($"---{callerMember} - Time: {sw.ElapsedMilliseconds}");
+                Debug.WriteLine("------------------------\n");
                 return result;
             }
             catch (Exception exc)

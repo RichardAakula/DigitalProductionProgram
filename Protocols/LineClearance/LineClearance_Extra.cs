@@ -118,7 +118,7 @@ namespace DigitalProductionProgram.Protocols.LineClearance
 
         private void Change_UI_Workoperation()
         {
-            using (var con = new SqlConnection(Database.cs_Protocol))
+            Database.ExecuteSafe(con =>
             {
                 const string query = @"
                     SELECT  CenturiLink, IsApprovalRequired, LineClearance_Revision, Name
@@ -127,9 +127,8 @@ namespace DigitalProductionProgram.Protocols.LineClearance
                         ON lc.ProtocolMainTemplateID = protocol.ID
                     WHERE MainTemplateID = @maintemplateid";
 
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                var cmd = new SqlCommand(query, con);
                 cmd.Parameters.AddWithValue("@maintemplateid", Templates_LineClearance.MainTemplate.LineClearance_MainTemplateID);
-                con.Open();
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
@@ -137,7 +136,7 @@ namespace DigitalProductionProgram.Protocols.LineClearance
                     lbl_InstructionLink.Text = CenturiLink.Substring(CenturiLink.LastIndexOf('/') + 1);
                     label_LineClearanceTemplate.Text = $"{reader["Name"]} - Revision: {reader["LineClearance_Revision"]}";
                 }
-            }
+            });
 
 
 
@@ -183,48 +182,51 @@ namespace DigitalProductionProgram.Protocols.LineClearance
             //}
         }
 
+
         public static void Fill_Tasks(int formTemplateid, out string[] tasks)
         {
-            using (var con = new SqlConnection(Database.cs_Protocol))
+            string[] result = Array.Empty<string>();
+
+            Database.ExecuteSafe(con =>
             {
                 const string query = @"
                     SELECT Tasks
-                    FROM LineClearance.Template as template
-                        JOIN LineClearance.Description as description
-	                        ON template.DescriptionID = description.DescriptionID
+                    FROM LineClearance.Template AS template
+                    JOIN LineClearance.Description AS description
+                        ON template.DescriptionID = description.DescriptionID
                     WHERE FormTemplateID = @formtemplateid
                     ORDER BY RowIndex";
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+
+                using var cmd = new SqlCommand(query, con);
                 cmd.Parameters.AddWithValue("@formtemplateid", formTemplateid);
-                con.Open();
-                var reader = cmd.ExecuteReader();
+                using var reader = cmd.ExecuteReader();
                 var tasksList = new List<string>();
                 while (reader.Read())
-                {
                     tasksList.Add(reader["Tasks"].ToString());
-                }
-                tasks = tasksList.ToArray();
-            }
+
+                result = tasksList.ToArray();
+            });
+
+            tasks = result; 
         }
+
         private void Add_DataGridView()
         {
-            using (var con = new SqlConnection(Database.cs_Protocol))
+            Database.ExecuteSafe(con =>
             {
                 const string query = @"SELECT FormTemplateID, Category FROM LineClearance.FormTemplate WHERE MainTemplateID = @maintemplateid ORDER BY TemplateOrder";
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                var cmd = new SqlCommand(query, con);
                 cmd.Parameters.AddWithValue("@maintemplateid", Templates_LineClearance.MainTemplate.LineClearance_MainTemplateID);
-                con.Open();
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
-                    //_ = Array.Empty<string>();
                     if (int.TryParse(reader["FormTemplateID"].ToString(), out var formtemplateID))
                     {
                         Fill_Tasks(formtemplateID, out var checkboxes);
                         flp_Checkboxes.Controls.Add(DataGridView_Checkboxes(reader["Category"].ToString(), checkboxes));
                     }
                 }
-            }
+            });
         }
         private void Load_LineClearance()
         {
@@ -233,17 +235,15 @@ namespace DigitalProductionProgram.Protocols.LineClearance
             lbl_Customer.Text = Order.Customer;
             lbl_ID.Text = $@"{MeasurePoints.Value(MeasurePoints.CodeTextMonitor.MainBodyID, "NOM")}";
 
-            using (var con = new SqlConnection(Database.cs_Protocol))
+            Database.ExecuteSafe(con =>
             {
-                //var query = @"                    SELECT Rum_Temp, Rum_Fukt, FORMAT(LC_Date, 'yyyy-MM-dd HH:mm') AS LC_Date, LC_Name, FORMAT(LC_Approved_Date, 'yyyy-MM-dd HH:mm') AS LC_Approved_Date, LC_Approved_Name, LC_Rengjort_Extrudern_Ja, LC_Rengjort_Extrudern_Nej_Samma_Mtrl, LC_Rengjort_Extrudern_Mjukt_Hårt, LC_Rengjort_Extrudern_Ljus_Mörk, LC_Comments\r\nFROM [Order].MainData\r\nWHERE OrderID = @orderid";
                 var query = @"
                     SELECT Rum_Temp, Rum_Fukt, LC_Date, LC_Name, LC_Approved_Date, LC_Approved_Name,  LC_Comments
                     FROM [Order].MainData
                     WHERE OrderID = @orderid";
-                con.Open();
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                var cmd = new SqlCommand(query, con);
                 cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
-                var reader = cmd.ExecuteReader();
+                using var reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
                     tb_Comments.Text = reader["LC_Comments"].ToString();
@@ -253,7 +253,6 @@ namespace DigitalProductionProgram.Protocols.LineClearance
                         var formattedDate = date.ToString($"{dateTimeFormat.ShortDatePattern} {dateTimeFormat.ShortTimePattern}", CultureInfo.CurrentCulture);
                         LC_Date.Text = formattedDate;
                     }
-
                     if (!string.IsNullOrEmpty(reader["LC_Name"].ToString()))
                     {
                         LC_Name.Text = reader["LC_Name"].ToString();
@@ -263,7 +262,6 @@ namespace DigitalProductionProgram.Protocols.LineClearance
                             foreach (DataGridViewRow row in dgv.Rows)
                                 row.Cells[1].Value = 1;
                         }
-
                         ChangeFont_Label_Performed_LC();
                     }
 
@@ -274,7 +272,6 @@ namespace DigitalProductionProgram.Protocols.LineClearance
                         LC_Approved_Date.Text = formattedDate;
                     }
 
-
                     if (!string.IsNullOrEmpty(reader["LC_Approved_Name"].ToString()))
                     {
                         LC_Approved_Name.Text = reader["LC_Approved_Name"].ToString();
@@ -282,38 +279,10 @@ namespace DigitalProductionProgram.Protocols.LineClearance
                         ChangeFont_Label_Approved_LC();
                     }
                 }
-            }
+            });
         }
-        private void Save_LC()
-        {
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query =
-                    "UPDATE [Order].MainData SET LC_Date = @date, LC_Name = @name WHERE OrderID = @orderid";
-                con.Open();
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
-                cmd.Parameters.AddWithValue("@date", LC_Date.Text);
-                cmd.Parameters.AddWithValue("@name", LC_Name.Text);
-
-                cmd.ExecuteNonQuery();
-            }
-        }
-        private void Save_Approved_LC()
-        {
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query =
-                    "UPDATE [Order].MainData SET LC_Approved_Date = @date, LC_Approved_Name = @name WHERE OrderID = @orderid";
-                con.Open();
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
-                cmd.Parameters.AddWithValue("@date", LC_Approved_Date.Text);
-                cmd.Parameters.AddWithValue("@name", LC_Approved_Name.Text);
-
-                cmd.ExecuteNonQuery();
-            }
-        }
+       
+        
 
         private void LC_Performed_Click(object sender, EventArgs e)
         {
@@ -322,7 +291,7 @@ namespace DigitalProductionProgram.Protocols.LineClearance
                 lbl_LC_Performed_AnstNr.Text = Person.EmployeeNr;
                 LC_Name.Text = Person.Name;
                 LC_Date.Text = DateTime.Now.ToString("yyyy-MM-dd HH:mm");
-                Save_LC();
+                LineClearance.SaveLineClearance(LC_Name.Text, LC_Date.Text);
                 ChangeFont_Label_Performed_LC();
             }
         }
@@ -341,13 +310,11 @@ namespace DigitalProductionProgram.Protocols.LineClearance
                 return;
             }
             var List_AuthorizedUsers = new List<string?>();
-            using (var con = new SqlConnection(Database.cs_Protocol))
+            Database.ExecuteSafe(con =>
             {
                 const int id = (int)CheckAuthority.TemplateAuthorities.ApproveLineClearancePTFE_Kragning;
                 const string query = "SELECT UserName FROM Authorities.CustomNames WHERE TemplateID = @id";
-
-                con.Open();
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                var cmd = new SqlCommand(query, con);
                 cmd.Parameters.AddWithValue("@id", id);
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
@@ -355,12 +322,12 @@ namespace DigitalProductionProgram.Protocols.LineClearance
                     if (reader["UserName"].ToString() != LC_Name.Text)
                         List_AuthorizedUsers.Add(reader[0].ToString());
                 }
-            }
+            });
 
             var org_Name = Person.Name;
             var org_UserAnstNr = Person.EmployeeNr;
 
-            using var choose_Item = new Choose_Item(List_AuthorizedUsers, new Control[] { LC_Approved_Name }, false);
+            using var choose_Item = new Choose_Item(List_AuthorizedUsers, [LC_Approved_Name], false);
             choose_Item.ShowDialog();
 
             Person.Name = LC_Approved_Name.Text;
@@ -372,7 +339,7 @@ namespace DigitalProductionProgram.Protocols.LineClearance
                     lbl_LC_Approved_AnstNr.Text = Person.EmployeeNr;
                     LC_Approved_Name.Text = Person.Name;
                     LC_Approved_Date.Text = DateTime.Now.ToString("yyyy-MM-dd HH:mm");
-                    Save_Approved_LC();
+                    LineClearance.SaveApprovedLineClearance(LC_Name.Text, LC_Date.Text);
                     ChangeFont_Label_Approved_LC();
                 }
                 else
@@ -394,15 +361,16 @@ namespace DigitalProductionProgram.Protocols.LineClearance
 
         private void LineClearance_Save_Comments_FormClosed(object sender, FormClosedEventArgs e)
         {
-            using var con = new SqlConnection(Database.cs_Protocol);
-            con.Open();
-            var query =
-                $@"UPDATE [Order].MainData SET LC_Comments = @comments {Queries.WHERE_OrderID}";
-            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-            cmd.Parameters.AddWithValue("@id", Order.OrderID);
-            cmd.Parameters.AddWithValue("@comments", tb_Comments.Text);
+            Database.ExecuteSafe(con =>
+            {
+                var query =
+                    $@"UPDATE [Order].MainData SET LC_Comments = @comments {Queries.WHERE_OrderID}";
+                var cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@id", Order.OrderID);
+                cmd.Parameters.AddWithValue("@comments", tb_Comments.Text);
 
-            cmd.ExecuteNonQuery();
+                cmd.ExecuteNonQuery();
+            });
         }
 
         private void InstructionLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)

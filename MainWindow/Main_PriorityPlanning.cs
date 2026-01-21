@@ -159,7 +159,7 @@ namespace DigitalProductionProgram.MainWindow
         }
         public void Load_PriorityPlanning()
         {
-            workOperation = Manage_WorkOperation.Load_WorkOperationProdLine(false, tb_ProdBenämning.Text);
+            workOperation = Load_WorkOperationProdLine(false, tb_ProdBenämning.Text);
 
             var dt = dt_PriorityPlan;
             dgv_PriorityPlanning.Invoke(new Action(() => dgv_PriorityPlanning.DataSource = null));

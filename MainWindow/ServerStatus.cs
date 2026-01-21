@@ -71,8 +71,7 @@ namespace DigitalProductionProgram.MainWindow
             if (!result.Success)
             {
                 lbl_MonitorStatus.ForeColor = Color.DarkRed;
-               
-                MonitorTime = Monitor.Monitor.MonitorStatus;
+                MonitorTime = Monitor.Monitor.status.ToString();    //Kolla om denna funkar samt vad den visar
             }
 
             MonitorTime = $"{result.ElapsedMilliseconds} ms";

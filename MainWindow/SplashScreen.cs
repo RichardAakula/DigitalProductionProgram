@@ -15,16 +15,17 @@ namespace DigitalProductionProgram.MainWindow
     {
         private readonly List<string> _splashTexts =
         [
-            "Initializing Digital Production Program...",
-            "Connecting to Monitor API and Loading Production Plan...",
-            "Loading User Settings and Preferences...",
-            "Synchronizing Order Data and Resources...",
-            "Finalizing Startup Procedures..."
+            "Initializing Digital Production Program",
+            "Connecting to Monitor API and Loading Production Plan",
+            "Loading User Settings and Preferences",
+            "Synchronizing Order Data and Resources",
+            "Finalizing Startup Procedures"
         ];
         private int _currentTextIndex = 0;
-        private string _currentText => _splashTexts[_currentTextIndex];
+        private string _currentText => _currentTextIndex >= 0 ? _splashTexts[_currentTextIndex] : string.Empty;
         private readonly List<(string Text, Color Color)> _finishedTexts = new();
         private int _activeIndex = -1;
+        private bool _isAnimating = false;
         private int _colorIndex = 1;
         private const int PauseLength = 2; // antal iterationer att pausa efter full text
         private int _pauseTicks = 0;
@@ -32,6 +33,7 @@ namespace DigitalProductionProgram.MainWindow
         private const float LineSpacing = 80;
         private bool _allTextsWritten = false;
         private Color _currentActiveColor = CustomColors.LightBlue;
+
 
         private readonly List<Color> _activeColors =
         [
@@ -47,11 +49,11 @@ namespace DigitalProductionProgram.MainWindow
         public SplashScreen()
         {
             InitializeComponent();
-            StartAnimation();
+            StartAnimation_Initializing();
         }
 
-     
-        private void StartAnimation()
+
+        private void StartAnimation_Initializing()
         {
             _cts = new CancellationTokenSource();
             _ = AnimateTextAsync(_cts.Token);
@@ -99,7 +101,7 @@ namespace DigitalProductionProgram.MainWindow
                 }
 
                 Invalidate();
-                await Task.Delay(30, token);
+                await Task.Delay(40, token);
             }
         }
 
@@ -120,6 +122,8 @@ namespace DigitalProductionProgram.MainWindow
             }
             return width;
         }
+
+
         protected override void OnPaint(PaintEventArgs e)
         {
             e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;

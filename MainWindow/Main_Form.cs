@@ -108,7 +108,7 @@ namespace DigitalProductionProgram.MainWindow
         //UPPSNABBNING AV PROGRAMMET VID UTVECKLING
         public static bool IsZumbachÖppet = false;
         public static bool IsBetaMode = false;
-        public static bool IsLoadingPriorityPlan;
+        public static bool IsLoadingPriorityPlan = true;
         private static bool IsLoadingMeasurePoints = true;
         private const bool IsOpenRandomOrder = false;
         private const bool IsAutoOpenOrder = false;
@@ -131,6 +131,7 @@ namespace DigitalProductionProgram.MainWindow
             Activity.Start();
             InitializeComponent();
             RollingInformation.LoadStats();
+            
             MainMenu.mainForm = this;
             OrderInformation.mainForm = this;
             Serverstatus.SetMainForm(this);
@@ -141,6 +142,7 @@ namespace DigitalProductionProgram.MainWindow
 
             this.Visible = false;
             print = new Manage_PrintOuts();
+            this.BringToFront();
         }
         protected override async void OnShown(EventArgs e)
         {
@@ -174,18 +176,14 @@ namespace DigitalProductionProgram.MainWindow
             });
             
             Translate_MainForm();
-            Change_GUI_StandardColor();
+            //Change_GUI_StandardColor();
             await InitializeUIAsync();
 
             CloseSplash();
         }
         private async Task InitializeUIAsync()
         {
-            MainMenu.mainForm = this;
-            OrderInformation.mainForm = this;
-
-            Monitor.Monitor.lbl_Monitorstatus = Serverstatus.lbl_MonitorStatus;
-            Monitor.Monitor.panel_Monitorstatus = Serverstatus.panel_MonitorStatus;
+            Change_GUI_StandardColor();
 
             if (IsAutoOpenOrder == false)
             {
@@ -217,15 +215,13 @@ namespace DigitalProductionProgram.MainWindow
         }
         private void CloseSplash()
         {
-            if (Program.splashScreen == null) return;
-
             if (Program.splashScreen.InvokeRequired)
                 Program.splashScreen.Invoke(Program.splashScreen.Close);
             else
                 Program.splashScreen.Close();
 
             this.Visible = true;
-            BringToFront();
+            this.BringToFront();
         }
       
 
@@ -251,7 +247,6 @@ namespace DigitalProductionProgram.MainWindow
 
             base.SetVisibleCore(value);
         }
-
         private void AUTOLOGIN_SUPERADMIN()
         {
             IsLoadingPriorityPlan = true;

@@ -88,6 +88,7 @@ namespace DigitalProductionProgram.MainWindow
 
         private static void ShowSplash()
         {
+
             Thread t = new Thread(() =>
             {
                 splashScreen = new SplashScreen();
@@ -97,13 +98,13 @@ namespace DigitalProductionProgram.MainWindow
             t.SetApartmentState(ApartmentState.STA);
             t.IsBackground = true;
             t.Start();
+
         }
         
 
         [STAThread] 
         private static void Main(string[] args)
         {
-
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             ShowSplash();

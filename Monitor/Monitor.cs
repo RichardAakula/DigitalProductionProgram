@@ -41,8 +41,6 @@ namespace DigitalProductionProgram.Monitor
             Warning,
             Bad
         }
-        public static Label? lbl_Monitorstatus;
-        public static Panel? panel_Monitorstatus;
         public static string? MonitorStatus;
         public static List<string>? List_PartNr;
 
@@ -316,39 +314,6 @@ namespace DigitalProductionProgram.Monitor
             if (order is null)
                 return 0;
             return order.Id;
-        }
-
-        public static void Set_Monitorstatus(Status Status, string text)
-        {
-
-           // Log.Activity.Start();
-            switch(Status)
-            {
-                case Status.Ok:
-                {
-                    status = Status.Ok;
-                    MonitorStatus = $"Connection to Monitor ok: Responsetime = {text} ms";
-                    if (lbl_Monitorstatus != null) 
-                        lbl_Monitorstatus.ForeColor = Color.FromArgb(198, 239, 206);
-                    break;
-                }
-                case Status.Warning:
-                    status = Status.Warning;
-                    MonitorStatus = $"Connection to Monitor is bad, but working: Responsetime = {text} ms";
-                    if (lbl_Monitorstatus != null) lbl_Monitorstatus.ForeColor = Color.FromArgb(156, 101, 0);
-                    break;
-                case Status.Bad:
-                {
-                    status = Status.Bad;
-                    MonitorStatus = $"Connection to Monitor is not working, please contact Admin.\n\n{text}";
-                    if (lbl_Monitorstatus != null) 
-                        lbl_Monitorstatus.ForeColor = Color.FromArgb(156, 0, 6);
-                   // Main_Form.timer_ReloginMonitor = 10; // Börjar logga in automatiskt efter 10 sekunder om anslutningen till Monitor är dålig
-                        break;
-                }
-           }
-           // _ = Log.Activity.Stop($"ResponseTime to Monitor: {text}");
-
         }
 
         public void Load_OrderInformation()

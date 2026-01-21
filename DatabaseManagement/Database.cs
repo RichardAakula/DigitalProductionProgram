@@ -161,6 +161,8 @@ namespace DigitalProductionProgram.DatabaseManagement
         [DebuggerStepThrough]
         public static T ExecuteSafe<T>(Func<SqlConnection, T> action, [CallerMemberName] string callerMember = "")
         {
+            if (string.IsNullOrEmpty(cs_Protocol))
+                return default;
             var sw = Stopwatch.StartNew();
             try
             {
@@ -169,15 +171,14 @@ namespace DigitalProductionProgram.DatabaseManagement
                 ServerStatus.Add_Sql_Counter();
                 T result = action(con);
                 sw.Stop();
+                Debug.WriteLine("----ExecuteSafe----");
+                Debug.WriteLine($"{DateTime.Now}");
+                Debug.WriteLine($"{callerMember} - Time: {sw.ElapsedMilliseconds}");
                 return result;
             }
             catch (Exception exc)
             {
-              // if (Person.Role == "SuperAdmin")
-                    InfoText.Show($"An error occurred while connecting to the database.\nPlease contact Admin if the issue persists.\n\n{exc}\n\n{callerMember}", CustomColors.InfoText_Color.Bad, "Error!");
-               // else
-               //     InfoText.Show($"An error occurred while connecting to the database.\nPlease contact Admin if the issue persists.\n\n{exc}", CustomColors.InfoText_Color.Bad, "Error!");
-
+                InfoText.Show($"An error occurred while connecting to the database.\nPlease contact Admin if the issue persists.\n\n{exc}\n\n{callerMember}", CustomColors.InfoText_Color.Bad, "Error!");
                 return default!;
             }
             finally
@@ -193,6 +194,8 @@ namespace DigitalProductionProgram.DatabaseManagement
         }
         public static async Task<T> ExecuteSafeAsync<T>(Func<SqlConnection, Task<T>> action, [CallerMemberName] string callerMember = "")
         {
+            if (string.IsNullOrEmpty(cs_Protocol))
+                return default;
             var sw = Stopwatch.StartNew();
             bool success = false;
 
@@ -204,6 +207,8 @@ namespace DigitalProductionProgram.DatabaseManagement
                 sw.Stop();
                 T result = await action(con);
                 success = true;
+                Debug.WriteLine("----ExecuteSafeAsync----");
+                Debug.WriteLine($"{callerMember} - Time: {sw.ElapsedMilliseconds}");
                 return result;
             }
             catch (Exception exc)

@@ -12,21 +12,39 @@ namespace DigitalProductionProgram.Log
     {
         private bool isMouseDown;
         private Point mouseOffset;
-        public static string News
+        public static string? News
         {
             get
             {
                 string news = null;
-                using var con = new SqlConnection(Database.cs_Protocol);
-                const string query = "SELECT Version, Description From Log.ChangeLog WHERE VisibleToUser = 'True' AND ID > (SELECT TOP(1) ID FROM Log.ChangeLog WHERE Version = @activeVersion ORDER BY ID DESC) ORDER BY ID DESC";
+                return Database.ExecuteSafe(con =>
+                {
+                    const string query = @"
+                        SELECT cl.Version, cl.Description
+                        FROM Log.ChangeLog AS cl
+                        INNER JOIN Log.ClientPolicy AS cp
+                            ON cl.Version = cp.Version
+                        WHERE cl.VisibleToUser = 'True'
+                            AND cl.ID > 
+                            (
+                                SELECT TOP(1) ID 
+                                FROM Log.ChangeLog 
+                                WHERE Version = @activeVersion 
+                                ORDER BY ID DESC
+                            )
+                            AND cp.HostID = @hostID
+                            AND cp.AllowUpdate = 1
+                        ORDER BY cl.ID DESC";
 
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@activeVersion", CurrentVersion.ToString());
-                con?.Open();
-                var reader = cmd.ExecuteReader();
-                while (reader.Read())
-                    news += $"{reader[0]} - {reader[1]} \n";
-                return news;
+                    var cmd = new SqlCommand(query, con);
+                    ServerStatus.Add_Sql_Counter();
+                    cmd.Parameters.AddWithValue("@activeVersion", CurrentVersion.ToString());
+                    con?.Open();
+                    var reader = cmd.ExecuteReader();
+                    while (reader.Read())
+                        news += $"{reader[0]} - {reader[1]} \n";
+                    return news;
+                });
             }
         }
         public static Version CurrentVersion
@@ -42,7 +60,7 @@ namespace DigitalProductionProgram.Log
 
        
 
-    public static Version? LatestVersion
+        public static Version? LatestVersion
     {
         get
         {

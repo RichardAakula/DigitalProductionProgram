@@ -58,6 +58,9 @@
     <Compile Update="Log\ChangeLog.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Update="Log\ClientUpdateManager.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="MainWindow\ActiveOrdersUser.cs">
       <SubType>UserControl</SubType>
     </Compile>

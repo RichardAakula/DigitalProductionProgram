@@ -245,7 +245,7 @@ ORDER BY v.Major DESC, v.Minor DESC, v.Patch DESC, v.Build DESC;";
         }
 
 
-        public async Task CreateChartAsync(string legendText, string query)
+        private async Task CreateChartAsync(string legendText, string query)
         {
             foreach (Control ctrl in this.Controls)
             {
@@ -300,12 +300,10 @@ ORDER BY v.Major DESC, v.Minor DESC, v.Patch DESC, v.Build DESC;";
             }));
         }
 
-
         private void panelStatistics_Click(object sender, MouseEventArgs e)
         {
             //EasterEgg_Code.HandleStatisticsClick(this, e.Location);
         }
-
 
         private async void chart_Statistics_MouseDown(object sender, MouseEventArgs e)
         {

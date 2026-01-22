@@ -107,7 +107,7 @@ namespace DigitalProductionProgram.MainWindow
 
         //UPPSNABBNING AV PROGRAMMET VID UTVECKLING
         public static bool IsZumbachÖppet = false;
-        public static bool IsBetaMode = false;
+        private static bool IsBetaMode = false;
         public static bool IsLoadingPriorityPlan = true;
         private static bool IsLoadingMeasurePoints = true;
         private const bool IsOpenRandomOrder = false;
@@ -123,14 +123,12 @@ namespace DigitalProductionProgram.MainWindow
 
         // Denna rad måste finnas för utskrifterna
         private readonly Manage_PrintOuts? print;
-        //public Main_Form(BlackBackground back)
         public Main_Form()
         {
             startTime = DateTime.Now;
             this.Visible = false;
             Activity.Start();
             InitializeComponent();
-            //RollingInformation.LoadStats();
 
             if (Database.cs_Protocol.Contains("GOD_DPP_DEV"))
                 IsBetaMode = true;
@@ -149,7 +147,7 @@ namespace DigitalProductionProgram.MainWindow
         {
             base.OnShown(e);
 
-            await Task.Delay(5000); // ger UI-tråden tid att börja rendera splash
+            await Task.Delay(500); // ger UI-tråden tid att börja rendera splash
 
             await Task.Run(() =>
             {
@@ -177,7 +175,6 @@ namespace DigitalProductionProgram.MainWindow
             });
             
             Translate_MainForm();
-            //Change_GUI_StandardColor();
             await InitializeUIAsync();
 
             CloseSplash();
@@ -198,8 +195,7 @@ namespace DigitalProductionProgram.MainWindow
                 //RollingInformation.Change_Tips();
             }
 
-            if ((Environment.MachineName == "THAI-DPP-TEST01" ||
-                 Environment.MachineName == "OH-ID61") && IsAutoLoginSuperAdmin)
+            if ((Environment.MachineName == "THAI-DPP-TEST01" || Environment.MachineName == "OH-ID61") && IsAutoLoginSuperAdmin)
             {
                 AUTOLOGIN_SUPERADMIN();
             }

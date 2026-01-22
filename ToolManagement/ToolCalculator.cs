@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Equipment;
+using DigitalProductionProgram.Help;
 using DigitalProductionProgram.Log;
 using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.Measure;
@@ -62,6 +63,8 @@ namespace DigitalProductionProgram.ToolManagement
 
         private void Fill_MainOrderInformation()
         {
+            if (string.IsNullOrEmpty(Person.Name))
+                return;
             tb_OrderNr.Text = Order.OrderNumber;
             if (string.IsNullOrEmpty(Order.Operation) == false)
                 tb_Operation.Text = $"{Order.Operation} - {Order.ProdLine}";
@@ -395,6 +398,8 @@ namespace DigitalProductionProgram.ToolManagement
 
         private async Task PerformCalculationAsync(Calculation calc, List<(double Dimension, double LandLength)> dieValues, List<(double Dimension, double LandLength)> pinValues, bool useTheoretical, CancellationToken cancellationToken)
         {
+            if (dgv_Combinations.IsDisposed)
+                return;
             int progress = 0;
             var newRows = new List<DataGridViewRow>();
 
@@ -522,15 +527,15 @@ namespace DigitalProductionProgram.ToolManagement
 
         public class Calculation
         {
-            public double ID { get; set; }
-            public double OD { get; set; }
+            private double ID { get; set; }
+            private double OD { get; set; }
             public double Wall { get; set; }
-            public double DDR_min { get; set; }
-            public double DDR_max { get; set; }
-            public double PullerSpeed { get; set; }
-            public double Density { get; set; }
-            public double Balance_min { get; set; }
-            public double Balance_max { get; set; }
+            private double DDR_min { get; set; }
+            private double DDR_max { get; set; }
+            private double PullerSpeed { get; set; }
+            private double Density { get; set; }
+            private double Balance_min { get; set; }
+            private double Balance_max { get; set; }
             public double Die { get; set; }
             public double Pin { get; set; }
 

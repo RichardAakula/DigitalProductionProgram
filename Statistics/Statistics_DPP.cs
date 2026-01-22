@@ -207,10 +207,7 @@ ORDER BY v.Major DESC, v.Minor DESC, v.Patch DESC, v.Build DESC;";
             return await Database.ExecuteSafeAsync(async con =>
             {
                 var data = new List<(string Label, int Value)>();
-
                 await using var cmd = new SqlCommand(query, con);
-                ServerStatus.Add_Sql_Counter();
-
                 await using var reader = await cmd.ExecuteReaderAsync();
                 while (await reader.ReadAsync())
                 {

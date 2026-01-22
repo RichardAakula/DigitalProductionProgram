@@ -144,14 +144,16 @@ namespace DigitalProductionProgram.MainWindow
             }
             public static void AddTips_OrderStartDays(Tips? tips)
             {
-                if (!string.IsNullOrEmpty(Order.OrderNumber) || Order.List_Orders != null)
+                List<string> list = Order.List_Orders;
+
+                if (!string.IsNullOrEmpty(Order.OrderNumber) || list != null)
                 {
                     var antal = TotalOrdersSpecificWeekDay();
                     double percent;
-                    if (Order.List_Orders == null)
-                        percent = double.NaN;
-                    else
-                        percent = antal / (double)Order.List_Orders.Count * 100;
+                    //if (list == null)
+                    //    percent = double.NaN;
+                    //else
+                    percent = antal / (double)list.Count * 100;
                     tips.AddTip($"På {WeekDayName}ar startas {percent:0.0}% av alla ordrar för {Order.WorkOperation}");
                 }
             }

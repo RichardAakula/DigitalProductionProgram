@@ -6,12 +6,8 @@ using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.PrintingServices;
 using DigitalProductionProgram.Statistics;
 using DigitalProductionProgram.User;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+using System.Diagnostics;
+using Activity = DigitalProductionProgram.Log.Activity;
 
 namespace DigitalProductionProgram.MainWindow
 {
@@ -20,14 +16,15 @@ namespace DigitalProductionProgram.MainWindow
         private readonly System.Windows.Forms.Timer _masterTimer;
 
         // Counters
-        private int _changeGrade;
-        private int _planeratStopp;
-        private int _checkForUpdate;
-        private int _checkMätpunkter;
-        private int _updateChart;
+        private int minutes_UpdateGrade;
+        private int minutes_CheckMaintenanceWork;
+        private int minutes_CheckForUpdate;
+        private int minutes_CheckMeasurementValues;
+        private int minutes_UpdateChart;
+
         private int timer_counterPlaneratStopp = 60;  // 1 timme
-        private int timer_CheckForUpdate = 10; //10 minut
-        private const int develop_MainTimer = 30000; // 10 sekunder
+        //private int timer_CheckForUpdate = 10; //10 minut
+        private const int develop_MainTimer = 30000; // 30 sekunder
 
         private readonly Func<Task> _updateMeasureInfo;
         private readonly Action _updateGuiGrade;
@@ -42,7 +39,7 @@ namespace DigitalProductionProgram.MainWindow
             _serverStatus = serverStatus;
             _masterTimer = new System.Windows.Forms.Timer
             {
-                Interval = 1000 // 1 sekund
+                Interval = 60000 // 1 sekund
             };
 
             _masterTimer.Tick += MasterTimer_Tick;
@@ -80,11 +77,11 @@ namespace DigitalProductionProgram.MainWindow
         }
         private void TickCounters()
         {
-            _changeGrade++;
-            _planeratStopp++;
-            _checkForUpdate++;
-            _checkMätpunkter++;
-            _updateChart++;
+            minutes_UpdateGrade++;
+            minutes_CheckMaintenanceWork++;
+            minutes_CheckForUpdate++;
+            minutes_CheckMeasurementValues++;
+            minutes_UpdateChart++;
         }
         private void UpdateServerStatus()
         {
@@ -96,46 +93,71 @@ namespace DigitalProductionProgram.MainWindow
 
         private async Task RunScheduledTasksAsync()
         {
-            if (_planeratStopp >= timer_counterPlaneratStopp)
-            {
-                _planeratStopp = 0;
-                CheckForMaintenanceWork();
-            }
+            Debug.WriteLine("");
+            Debug.WriteLine("------------------------------------------------------");
+            Debug.WriteLine("-------------------MasterTimer Start-------------------");
+            Debug.WriteLine($"--{DateTime.Now}");
+            Debug.WriteLine($"Check Mätpunkter:  {minutes_CheckMeasurementValues}");
+            Debug.WriteLine($"Uppdatera Chart:   {minutes_UpdateChart}");
+            Debug.WriteLine($"Kolla Uppdatering: {minutes_CheckForUpdate}");
+            Debug.WriteLine($"Uppdatera Grade:   {minutes_UpdateGrade}");
+            Debug.WriteLine($"Check Maintenance: {minutes_CheckMaintenanceWork}");
+            Debug.WriteLine("");
 
-            if (_checkForUpdate >= timer_CheckForUpdate)
+            //----5 minuter----
+            //----Kontrollerar att mätningarna inte ligger för nära gränser. OBS! Endast under utveckling ännu----
+            if (minutes_CheckMeasurementValues >= 5 && Person.Role == "SuperAdmin" && Main_Form.IsZumbachÖppet == false)
             {
-                _checkForUpdate = 0;
-                CheckForUpdate();
-            }
-
-            if (_checkMätpunkter >= 5 &&
-                Person.Role == "SuperAdmin" &&
-                Main_Form.IsZumbachÖppet == false)
-            {
-                _checkMätpunkter = 0;
+                Debug.WriteLine("----Check Mätpunkter----");
+                minutes_CheckMeasurementValues = 0;
                 MainMeasureStatistics.ValidateMeasurements.AverageValues();
             }
 
-            if (_updateChart >= 1 && Main_Form.IsZumbachÖppet == false)
+            //----5 minuter----
+            //----Uppdaterar mätvärden i MainForm samt Chart----
+            //----Denna ligger i Main_Form.Task UpdateMeasureInformationAsync()
+            if (minutes_UpdateChart >= 5 && Main_Form.IsZumbachÖppet == false)
             {
-                _updateChart = 0;
+                Debug.WriteLine("----Uppdatera Chart----");
+                minutes_UpdateChart = 0;
 
                 if (!string.IsNullOrEmpty(Order.OrderNumber))
-                {
                     await RunUpdateChartAsync();
-                }
 
                 await _statistics.Load_StatisticsAsync();
             }
 
-            if (_changeGrade >= 10 && Main_Form.IsZumbachÖppet == false)
+            //----10 minuter----
+            //----Kollar om det finns en ny version av programmet och uppdaterar vid behov----
+            if (minutes_CheckForUpdate >= 10)
             {
-                _changeGrade = 0;
+                Debug.WriteLine("----Kolla Uppdatering----");
+                minutes_CheckForUpdate = 0;
+                CheckForUpdate();
+            }
+
+            //----10 minuter----
+            //----Uppdatera GUI Grade----
+            //----Denna ligger i Main_Form.Change_GUI_Grade()
+            if (minutes_UpdateGrade >= 10 && Main_Form.IsZumbachÖppet == false)
+            {
+                Debug.WriteLine("----Uppdatera Grade----");
+                minutes_UpdateGrade = 0;
                 _updateGuiGrade();
             }
+
+            //----60 minuter----
+            if (minutes_CheckMaintenanceWork >= timer_counterPlaneratStopp)
+            {
+                Debug.WriteLine("----Check Maintenance----");
+                minutes_CheckMaintenanceWork = 0;
+                CheckForMaintenanceWork();
+            }
+            Debug.WriteLine("-------------------MasterTimer Stop--------------------");
+            Debug.WriteLine("------------------------------------------------------\n");
         }
 
-        public void CheckForUpdate()
+        private void CheckForUpdate()
         {
             if (ChangeLog.LatestVersion is null)
                 return;
@@ -148,7 +170,7 @@ namespace DigitalProductionProgram.MainWindow
                 InfoText.Show(LanguageManager.GetString("update_Info_1"), CustomColors.InfoText_Color.Bad, "Warning!");
 
                 Maintenance.StartInstallation();
-                _checkForUpdate = 1; // 1 minut mellan försöken
+                minutes_CheckForUpdate = 1; // 1 minut mellan försöken
                 return;
             }
 
@@ -163,7 +185,7 @@ namespace DigitalProductionProgram.MainWindow
             if (InfoText.answer == InfoText.Answer.No)
             {
                 _ = Activity.Stop($"User {Person.Name} did NOT update the application");
-                timer_CheckForUpdate = 120; // 2 timmar
+                minutes_CheckForUpdate = 120; // 2 timmar
             }
             else
             {
@@ -171,7 +193,8 @@ namespace DigitalProductionProgram.MainWindow
                 Maintenance.StartInstallation();
             }
         }
-        public void CheckForMaintenanceWork()
+
+        private void CheckForMaintenanceWork()
         {
             if (Person.Role == "SuperAdmin")
                 return;

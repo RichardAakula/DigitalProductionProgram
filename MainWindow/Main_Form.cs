@@ -195,7 +195,7 @@ namespace DigitalProductionProgram.MainWindow
                 if (Settings.Settings.MeasuringComputerOnly)
                     Change_GUI_Mätdator();
                 await Task.Run(() => RollingInformation.Change_Tips());
-                RollingInformation.Change_Tips();
+                //RollingInformation.Change_Tips();
             }
 
             if ((Environment.MachineName == "THAI-DPP-TEST01" ||
@@ -217,13 +217,20 @@ namespace DigitalProductionProgram.MainWindow
         }
         private void CloseSplash()
         {
+            
             if (Program.splashScreen.InvokeRequired)
                 Program.splashScreen.Invoke((Action)(() =>
                 {
+                    Program.splashScreen.ClearAllText();
                     Program.splashScreen.StartFadeOut();
                 }));
             else
+            {
+                Program.splashScreen.ClearAllText();
                 Program.splashScreen.StartFadeOut();
+            }
+                
+            Thread.Sleep(500);
             this.Invoke(this.Show);
             Program.splashScreen.FadeCompleted += () =>
             {

@@ -197,6 +197,7 @@ namespace DigitalProductionProgram.Protocols.Skärmning_TEF
             PreFab.Location = new Point(3, 82);
             PreFab.Margin = new Padding(3, 0, 0, 0);
             PreFab.Name = "PreFab";
+            PreFab.ParentProtocol = null;
             PreFab.Size = new Size(1455, 130);
             PreFab.TabIndex = 1036;
             // 
@@ -1319,6 +1320,7 @@ namespace DigitalProductionProgram.Protocols.Skärmning_TEF
             label_Produktion_MIN.TabIndex = 1031;
             label_Produktion_MIN.Text = "MIN";
             label_Produktion_MIN.TextAlign = ContentAlignment.MiddleCenter;
+            label_Produktion_MIN.Click += label_Produktion_MIN_Click;
             // 
             // lbl_VerktygsID_min
             // 

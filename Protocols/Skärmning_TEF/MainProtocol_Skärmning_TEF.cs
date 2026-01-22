@@ -33,7 +33,7 @@ namespace DigitalProductionProgram.Protocols.Skärmning_TEF
                 return true;
             }
         }
-        
+
         private string? MIN_Value(string name)
         {
             switch (name)
@@ -70,7 +70,7 @@ namespace DigitalProductionProgram.Protocols.Skärmning_TEF
         }
 
         private readonly List<DataGridView> list_dgv = new List<DataGridView>();
-      
+
         private List<int>? List_ProtocolDescriptionID { get; set; }
         private List<int>? List_Type { get; set; }
         private void Load_Lists()
@@ -191,10 +191,10 @@ namespace DigitalProductionProgram.Protocols.Skärmning_TEF
 		                        ON descr.id = template.ProtocolDescriptionID
                         WHERE OrderID = @orderid
                             AND FormTemplateID = @formtemplateid
-                        ORDER BY ColumnIndex"; 
+                        ORDER BY ColumnIndex";
                 var cmd = new SqlCommand(query, con);
                 SQL_Parameter.NullableINT(cmd.Parameters, "@orderid", Order.OrderID);
-                cmd.Parameters.AddWithValue("@formtemplateid",11);
+                cmd.Parameters.AddWithValue("@formtemplateid", 11);
                 cmd.Parameters.AddWithValue("@revision", Korprotokoll.ProtocolTemplateRevision.OrderNr(Order.OrderID));
                 var reader = cmd.ExecuteReader();
 
@@ -280,7 +280,7 @@ namespace DigitalProductionProgram.Protocols.Skärmning_TEF
                 lbl_Produktion_OD1_min, lbl_Produktion_OD1_nom, lbl_Produktion_OD1_max,
                 lbl_Produktion_ODs_min, lbl_Produktion_ODs_nom, lbl_Produktion_ODs_max,
                 lbl_VerktygsID_min, lbl_VerktygsID_nom, lbl_VerktygsID_max,
-                
+
             };
 
             Database.ExecuteSafe(con =>
@@ -453,7 +453,7 @@ namespace DigitalProductionProgram.Protocols.Skärmning_TEF
             {
                 var colIndex = tlp_Maskinparametrar.GetColumn(tb) - 1;
                 var protocol_Description_ID = Protocol_Description.Protocol_Description_ID_Col(colIndex, 11);
-                
+
                 var type = Module.DatabaseManagement.ValueType(protocol_Description_ID, 11);
                 Database.ExecuteSafe(con =>
                 {
@@ -484,12 +484,12 @@ namespace DigitalProductionProgram.Protocols.Skärmning_TEF
                 });
             }
 
-            Validate_Data.Value_CellOrControl(true, tb.Name, 0,MIN_Value(tb.Name), MAX_Value(tb.Name), tb.Text, null, null, tb);
+            Validate_Data.Value_CellOrControl(true, tb.Name, 0, MIN_Value(tb.Name), MAX_Value(tb.Name), tb.Text, null, null, tb);
         }
         private void ValidateData_TextLeave(object sender, EventArgs e)
         {
             var tb = (TextBox)sender;
-            Validate_Data.Value_CellOrControl( true, tb.Name, 0,MIN_Value(tb.Name), MAX_Value(tb.Name), tb.Text, null, null, tb);
+            Validate_Data.Value_CellOrControl(true, tb.Name, 0, MIN_Value(tb.Name), MAX_Value(tb.Name), tb.Text, null, null, tb);
         }
         private void Date_MouseDown(object sender, MouseEventArgs e)
         {
@@ -518,13 +518,14 @@ namespace DigitalProductionProgram.Protocols.Skärmning_TEF
                 Save_Korprotokoll_Main("Name_Start", Name_Start.Text);
             }
         }
-       
+
 
         private void Add_New_Card(string card_Name)
         {
             DrawingControl.SuspendDrawing(tab_ctrl_Arbetskort);
             tab_ctrl_Arbetskort.TabPages.Insert(tab_ctrl_Arbetskort.TabPages.Count, card_Name);
-            var page = tab_ctrl_Arbetskort.TabPages[tab_ctrl_Arbetskort.TabPages.Count - 1];
+            var page = tab_ctrl_Arbetskort.TabPages[^1];
+            
             var dgv = new DataGridView
             {
                 RowHeadersVisible = false,
@@ -542,7 +543,8 @@ namespace DigitalProductionProgram.Protocols.Skärmning_TEF
             dgv.DefaultCellStyle.ForeColor = Color.DarkSlateGray;
 
             list_dgv.Add(dgv);
-         
+            tab_ctrl_Arbetskort.SelectedTab = tab_ctrl_Arbetskort.TabPages[^1]; // C# 8+
+            tab_ctrl_Arbetskort.SelectedTab.Tag = list_dgv.Count;
             page.Controls.Add(dgv);
             Enable_Controls();
             DrawingControl.SuspendDrawing(tab_ctrl_Arbetskort);
@@ -609,10 +611,10 @@ namespace DigitalProductionProgram.Protocols.Skärmning_TEF
                     }
                     else
                     {
-                        Validate_Data.Value_CellOrControl(true, "Temp L1", 0,lbl_Produktion_Temp_min.Text, lbl_Produktion_Temp_max.Text, dgv.Rows[i].Cells[3].Value.ToString(), null, dgv.Rows[i].Cells[3]);
-                        Validate_Data.Value_CellOrControl(true, "Temp L2",0, lbl_Produktion_Temp_min.Text, lbl_Produktion_Temp_max.Text, dgv.Rows[i].Cells[4].Value.ToString(), null, dgv.Rows[i].Cells[4]);
+                        Validate_Data.Value_CellOrControl(true, "Temp L1", 0, lbl_Produktion_Temp_min.Text, lbl_Produktion_Temp_max.Text, dgv.Rows[i].Cells[3].Value.ToString(), null, dgv.Rows[i].Cells[3]);
+                        Validate_Data.Value_CellOrControl(true, "Temp L2", 0, lbl_Produktion_Temp_min.Text, lbl_Produktion_Temp_max.Text, dgv.Rows[i].Cells[4].Value.ToString(), null, dgv.Rows[i].Cells[4]);
                         Validate_Data.Value_CellOrControl(true, "ID L1", 0, lbl_Produktion_ID_min.Text, lbl_Produktion_ID_max.Text, dgv.Rows[i].Cells[5].Value.ToString(), null, dgv.Rows[i].Cells[5]);
-                        Validate_Data.Value_CellOrControl( true, "ID L2", 0, lbl_Produktion_ID_min.Text, lbl_Produktion_ID_max.Text, dgv.Rows[i].Cells[6].Value.ToString(), null, dgv.Rows[i].Cells[6]);
+                        Validate_Data.Value_CellOrControl(true, "ID L2", 0, lbl_Produktion_ID_min.Text, lbl_Produktion_ID_max.Text, dgv.Rows[i].Cells[6].Value.ToString(), null, dgv.Rows[i].Cells[6]);
                         Validate_Data.Value_CellOrControl(true, "OD L1", 0, lbl_Produktion_OD1_min.Text, lbl_Produktion_OD1_max.Text, dgv.Rows[i].Cells[7].Value.ToString(), null, dgv.Rows[i].Cells[7]);
                         Validate_Data.Value_CellOrControl(true, "OD L2", 0, lbl_Produktion_OD1_min.Text, lbl_Produktion_OD1_max.Text, dgv.Rows[i].Cells[8].Value.ToString(), null, dgv.Rows[i].Cells[8]);
                         Validate_Data.Value_CellOrControl(true, "ODs L1", 0, lbl_Produktion_ODs_min.Text, lbl_Produktion_ODs_max.Text, dgv.Rows[i].Cells[9].Value.ToString(), null, dgv.Rows[i].Cells[9]);
@@ -664,13 +666,14 @@ namespace DigitalProductionProgram.Protocols.Skärmning_TEF
             var values = new[]
             {
                 machineName[0], machineName[1], "False", tb_Produktion_Mätare.Text, tb_Produktion_Temp_L1.Text, tb_Produktion_Temp_L2.Text, tb_Produktion_ID_L1.Text, tb_Produktion_ID_L2.Text, tb_Produktion_OD1_L1.Text, tb_Produktion_OD1_L2.Text,
-                tb_Produktion_ODs_L1.Text, tb_Produktion_ODs_L2.Text, tb_Verktygs_ID.Text, chb_Tråd_slut.Checked.ToString(), chb_Tråd_av.Checked.ToString(), chb_Trasig_carrier.Checked.ToString(), chb_Skarv.Checked.ToString(), 
+                tb_Produktion_ODs_L1.Text, tb_Produktion_ODs_L2.Text, tb_Verktygs_ID.Text, chb_Tråd_slut.Checked.ToString(), chb_Tråd_av.Checked.ToString(), chb_Trasig_carrier.Checked.ToString(), chb_Skarv.Checked.ToString(),
                 chb_Spole_slut.Checked.ToString(), chb_Avslut_linje.Checked.ToString(), chb_Avrapporterat.Checked.ToString(),
                 tb_Produktion_Kommentar.Text, DateTime.Now.ToString("yyyy-MM-dd HH:mm"), Person.EmployeeNr, Person.Sign
             };
 
             Database.ExecuteSafe(con =>
             {
+
                 for (var i = 0; i < values.Length; i++)
                 {
                     const string query = @"
@@ -707,7 +710,7 @@ namespace DigitalProductionProgram.Protocols.Skärmning_TEF
                                 ', Machine = ', @machineindex)
                         )
                     END";
-                    var cmd = new SqlCommand(query, con);
+                    using var cmd = new SqlCommand(query, con);
                     var value = values[i];
                     SQL_Parameter.Int(cmd.Parameters, "@userid", Person.UserID);
                     cmd.Parameters.AddWithValue("@hostname", Activity.HostName);
@@ -716,7 +719,7 @@ namespace DigitalProductionProgram.Protocols.Skärmning_TEF
                     cmd.Parameters.AddWithValue("@version", ChangeLog.CurrentVersion.ToString());
                     cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                     cmd.Parameters.AddWithValue("@protocoldescriptionid", List_ProtocolDescriptionID[i]);
-                    cmd.Parameters.AddWithValue("@machineindex", tab_ctrl_Arbetskort.SelectedTab.TabIndex + 1);
+                    cmd.Parameters.AddWithValue("@machineindex", tab_ctrl_Arbetskort.SelectedTab.Tag);
                     cmd.Parameters.AddWithValue("@uppstart", RowIndex_Active_dgv);
                     switch (List_Type[i])
                     {
@@ -758,7 +761,7 @@ namespace DigitalProductionProgram.Protocols.Skärmning_TEF
         {
             var dgv = list_dgv[tab_ctrl_Arbetskort.SelectedIndex];
             var row = dgv.CurrentCell.RowIndex;
-            InfoText.Question($"Vill du kassera rad nr {row + 1}?", CustomColors.InfoText_Color.Info, "Warning!",this);
+            InfoText.Question($"Vill du kassera rad nr {row + 1}?", CustomColors.InfoText_Color.Info, "Warning!", this);
             if (InfoText.answer == InfoText.Answer.Yes)
             {
                 Database.ExecuteSafe(con =>
@@ -793,6 +796,9 @@ namespace DigitalProductionProgram.Protocols.Skärmning_TEF
                 e.Handled = true;
         }
 
-
+        private void label_Produktion_MIN_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show(tab_ctrl_Arbetskort.SelectedTab.Tag.ToString());
+        }
     }
 }

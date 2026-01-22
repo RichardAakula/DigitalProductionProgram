@@ -1,14 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using DigitalProductionProgram.PrintingServices;
-using Timer = System.Threading.Timer;
 
 namespace DigitalProductionProgram.MainWindow
 {
@@ -60,14 +54,33 @@ namespace DigitalProductionProgram.MainWindow
             _cts = new CancellationTokenSource();
             _ = AnimateTextAsync(_cts.Token);
         }
+        public void ClearAllText()
+        {
+            // Stoppa eventuell pågående animation
+            _cts?.Cancel();
+            _cts = null;
 
+            // Rensa all visuell state
+            _finishedTexts.Clear();
+
+            _currentTextIndex = 0;
+            _activeIndex = -1;
+            _pauseTicks = 0;
+
+            _allTextsWritten = false;
+            _isAnimating = false;
+
+            _currentActiveColor = CustomColors.LightBlue;
+
+            // Tvinga omritning
+            Invalidate();
+        }
         public void StartFadeOut()
         {
             fadeTimer.Interval = 60; // 50 FPS
             fadeTimer.Tick += FadeTimer_Tick;
             fadeTimer.Start();
         }
-
         private void FadeTimer_Tick(object sender, EventArgs e)
         {
             this.Opacity -= 0.05;  // fade ut på ~400 ms

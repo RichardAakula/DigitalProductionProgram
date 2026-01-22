@@ -31,7 +31,7 @@ namespace DigitalProductionProgram.Protocols.Skärmning_TEF
 
             Database.ExecuteSafe(con =>
             {
-                const string query = @"
+                const string query = $@"
                     SELECT DISTINCT TextValue 
                     FROM [Order].Data 
                     WHERE ProtocolDescriptionID = 

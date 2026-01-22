@@ -140,8 +140,8 @@ namespace DigitalProductionProgram.MainWindow
 
                 Order.RevNr = lbl_RevNr.Text = reader["RevNr"]?.ToString();
 
-                if (TryParse(reader["PartID"]?.ToString(), out var partId))
-                    Order.PartID = partId;
+                TryParse(reader["PartID"].ToString(), out var partid);
+                Order.PartID = partid;
 
                 if (TryParse(reader["ProtocolMainTemplateID"]?.ToString(), out var protocolTemplateId))
                     Templates_Protocol.MainTemplate.ID = protocolTemplateId;

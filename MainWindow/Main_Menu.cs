@@ -520,7 +520,7 @@ namespace DigitalProductionProgram.MainWindow
             if (!string.IsNullOrEmpty(rtfContent))
                 InfoText.Show(rtfContent, CustomColors.InfoText_Color.Info, "Order Log", this);
 
-             Activity.Stop("User Checks OrderLog");
+            Activity.Stop("User Checks OrderLog");
         }
 
 
@@ -695,7 +695,7 @@ namespace DigitalProductionProgram.MainWindow
             Points.Add_Points(1, menu.Text);
             Task.Run(mainForm.Change_Theme);
         }
-        
+
         //----------HJÄLP----------
         private void Menu_Help_RapporteraFel_Click(object sender, EventArgs e)
         {
@@ -744,7 +744,7 @@ namespace DigitalProductionProgram.MainWindow
                     UseShellExecute = true
                 });
         }
-        
+
         //----------UVECKLING----------
         private void Menu_Utvecklare_GetOrderInfo(object sender, EventArgs e)
         {
@@ -887,6 +887,11 @@ Protocol.MainTemplate.Revision = {Templates_Protocol.MainTemplate.Revision}"
         {
             using var calender = new LoggedInUsers();
             calender.ShowDialog();
+        }
+        private void Menu_Developer_BlockClients_Click(object sender, EventArgs e)
+        {
+            ClientUpdateManager blockClients = new ClientUpdateManager();
+            blockClients.ShowDialog();
         }
         private void Menu_Developer_CountSqlQueries_Click(object sender, EventArgs e)
         {
@@ -1318,5 +1323,7 @@ Protocol.MainTemplate.Revision = {Templates_Protocol.MainTemplate.Revision}"
 
 
         }
+
+        
     }
 }

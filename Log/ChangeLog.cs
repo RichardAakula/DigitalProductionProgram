@@ -61,41 +61,52 @@ namespace DigitalProductionProgram.Log
        
 
         public static Version? LatestVersion
-    {
-        get
         {
-            const string appInstallerPath = @"\\optifil\dpp\Install DPP.appinstaller";
-
-            // ✅ Kontrollera att filen finns innan vi försöker läsa
-            if (File.Exists(appInstallerPath))
+            get
             {
-                var doc = XDocument.Load(appInstallerPath);
-                var versionStr = doc.Root?.Attribute("Version")?.Value;
-                Version.TryParse(versionStr, out var latestVersion);
-                if (latestVersion != null)
-                    return latestVersion;
-            }
+                // const string appInstallerPath = @"\\optifil\dpp\Install DPP.appinstaller";
 
-            try
-            {
-                using var con = new SqlConnection(Database.cs_Protocol);
-                const string query = "SELECT TOP(1) Version FROM Log.ChangeLog WHERE ReleaseDate IS NOT NULL ORDER BY ID DESC";
+                // ✅ Kontrollera att filen finns innan vi försöker läsa
+                //if (File.Exists(appInstallerPath))
+                //{
+                //    var doc = XDocument.Load(appInstallerPath);
+                //    var versionStr = doc.Root?.Attribute("Version")?.Value;
+                //    Version.TryParse(versionStr, out var latestVersion);
+                //    if (latestVersion != null)
+                //        return latestVersion;
+                //}
 
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                con?.Open();
-                Version.TryParse((string)cmd.ExecuteScalar(), out var vers);
-                return vers;
-            }
-            catch
-            {
-                Debug.WriteLine("Försöker hämta senaste version från databas");
-                return null;
+                try
+                {
+                    return Database.ExecuteSafe(con =>
+                    {
+                        const string query = @"
+                            SELECT TOP(1) Version
+                            FROM Log.ChangeLog
+                            WHERE ReleaseDate IS NOT NULL
+                                AND Version NOT IN 
+                                (
+                                    SELECT Version
+                                    FROM Log.ClientPolicy
+                                    WHERE HostID = (SELECT TOP(1) HostID FROM Settings.General WHERE HostName = @hostname)
+                                )
+                            ORDER BY ID DESC;";
+                        var cmd = new SqlCommand(query, con);
+                        cmd.Parameters.AddWithValue("@hostname", Environment.MachineName);
+                        Version.TryParse((string)cmd.ExecuteScalar(), out var vers);
+                        return vers;
+                    });
+                }
+                catch
+                {
+                    Debug.WriteLine("Försöker hämta senaste version från databas");
+                    return null;
+                }
             }
         }
-    }
 
         private readonly List<VersionInfo> versions = new();
-        public static Version? selectedVersion;
+        private static Version? selectedVersion;
         public static Version? HighestSelectedVersion;
         private LabelPreText? labelVersion;
 

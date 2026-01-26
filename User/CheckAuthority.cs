@@ -94,18 +94,22 @@ namespace DigitalProductionProgram.User
         public static bool IsRoleAuthorized(Enum templateAuthority, bool IsOkWarnUser = true)
         {
             var val = Convert.ChangeType(templateAuthority, templateAuthority.GetTypeCode());
+            bool isAuthorized = false;
 
             // Använder ExecuteSafe för SQL
-            bool isAuthorized = Database.ExecuteSafe(con =>
+            if (!string.IsNullOrWhiteSpace(Person.Role))
             {
-                const string query = "SELECT 1 FROM Authorities.CustomRoles WHERE TemplateID = @id AND Role = @role";
+                isAuthorized = Database.ExecuteSafe(con =>
+                {
+                    const string query = "SELECT 1 FROM Authorities.CustomRoles WHERE TemplateID = @id AND Role = @role";
 
-                using var cmd = new SqlCommand(query, con);
-                cmd.Parameters.AddWithValue("@id", (int)val);
-                cmd.Parameters.AddWithValue("@role", Person.Role);
-                using var reader = cmd.ExecuteReader();
-                return reader.HasRows;
-            });
+                    using var cmd = new SqlCommand(query, con);
+                    cmd.Parameters.AddWithValue("@id", (int)val);
+                    cmd.Parameters.AddWithValue("@role", Person.Role);
+                    using var reader = cmd.ExecuteReader();
+                    return reader.HasRows;
+                });
+            }
 
             // Om inte auktoriserad, visa varning
             if (!isAuthorized && IsOkWarnUser)
@@ -115,8 +119,7 @@ namespace DigitalProductionProgram.User
                     InfoText.Show($"{LanguageManager.GetString("authority_Check_1")}:\n" +
                                   $"{Authorities_Template[(int)val]}\n" +
                                   $"{LanguageManager.GetString("authority_Check_2")}",
-                        CustomColors.InfoText_Color.Warning,
-                        null);
+                        CustomColors.InfoText_Color.Warning, null);
                 }
                 catch
                 {

@@ -9,7 +9,7 @@ using Microsoft.Data.SqlClient;
 
 namespace DigitalProductionProgram.Equipment
 {
-    public class Tools
+    public abstract class Tools
     {
         public class PreviousOrders
         {
@@ -32,7 +32,7 @@ namespace DigitalProductionProgram.Equipment
             }
         }
 
-        public class RegisterList
+        public abstract class RegisterList
         {
             public static string? NomID_HS_Pipe(string? id_Number)
             {

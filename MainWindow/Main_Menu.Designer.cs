@@ -128,7 +128,7 @@ namespace DigitalProductionProgram.MainWindow
             Developer_CountSql_Queries = new ToolStripMenuItem();
             Developer_Clear_Sql_Queries = new ToolStripMenuItem();
             Menu_Developer_BlockClients = new ToolStripMenuItem();
-            flyttaDataFrånSvetsnigToolStripMenuItem = new ToolStripMenuItem();
+            Menu_Developer_CheckForUpdate = new ToolStripMenuItem();
             flyttaMätdataFrånSvetsningToolStripMenuItem = new ToolStripMenuItem();
             ettToolStripMenuItem = new ToolStripMenuItem();
             tvåToolStripMenuItem = new ToolStripMenuItem();
@@ -703,7 +703,7 @@ namespace DigitalProductionProgram.MainWindow
             // 
             // Menu_Developer
             // 
-            Menu_Developer.DropDownItems.AddRange(new ToolStripItem[] { Menu_Developer_GetOrderInfo, Menu_Developer_SendMailToAllUsers, Menu_Developer_AddGallup, Menu_Developer_CheckGallup, Menu_Developer_OpenRandomOrder, Menu_Developer_Timer_test, Menu_Developer_ExportHS_Data, Menu_Developer_GetDataForQuoting, testaNAntalKörningarPåArtikelNrToolStripMenuItem, Menu_Developer_AddThemePicture, Menu_Developer_TestNewProtocol, testCalendarToolStripMenuItem, påskäggToolStripMenuItem, Developer_CountSql_Queries, Developer_Clear_Sql_Queries, Menu_Developer_BlockClients, flyttaDataFrånSvetsnigToolStripMenuItem, flyttaMätdataFrånSvetsningToolStripMenuItem, ettToolStripMenuItem, tvåToolStripMenuItem, Menu_Developer_EasterEggPsycho, fixaChangeLogListaToolStripMenuItem });
+            Menu_Developer.DropDownItems.AddRange(new ToolStripItem[] { Menu_Developer_GetOrderInfo, Menu_Developer_SendMailToAllUsers, Menu_Developer_AddGallup, Menu_Developer_CheckGallup, Menu_Developer_OpenRandomOrder, Menu_Developer_Timer_test, Menu_Developer_ExportHS_Data, Menu_Developer_GetDataForQuoting, testaNAntalKörningarPåArtikelNrToolStripMenuItem, Menu_Developer_AddThemePicture, Menu_Developer_TestNewProtocol, testCalendarToolStripMenuItem, påskäggToolStripMenuItem, Developer_CountSql_Queries, Developer_Clear_Sql_Queries, Menu_Developer_BlockClients, Menu_Developer_CheckForUpdate, flyttaMätdataFrånSvetsningToolStripMenuItem, ettToolStripMenuItem, tvåToolStripMenuItem, Menu_Developer_EasterEggPsycho, fixaChangeLogListaToolStripMenuItem });
             Menu_Developer.ForeColor = Color.DeepSkyBlue;
             Menu_Developer.Name = "Menu_Developer";
             Menu_Developer.Size = new Size(81, 32);
@@ -859,10 +859,12 @@ namespace DigitalProductionProgram.MainWindow
             Menu_Developer_BlockClients.Text = "Blockera Klienter";
             Menu_Developer_BlockClients.Click += Menu_Developer_BlockClients_Click;
             // 
-            // flyttaDataFrånSvetsnigToolStripMenuItem
+            // Menu_Developer_CheckForUpdate
             // 
-            flyttaDataFrånSvetsnigToolStripMenuItem.Name = "flyttaDataFrånSvetsnigToolStripMenuItem";
-            flyttaDataFrånSvetsnigToolStripMenuItem.Size = new Size(271, 22);
+            Menu_Developer_CheckForUpdate.Name = "Menu_Developer_CheckForUpdate";
+            Menu_Developer_CheckForUpdate.Size = new Size(271, 22);
+            Menu_Developer_CheckForUpdate.Text = "Check For Update";
+            Menu_Developer_CheckForUpdate.Click += Menu_Developer_CheckForUpdate_Click;
             // 
             // flyttaMätdataFrånSvetsningToolStripMenuItem
             // 
@@ -1060,7 +1062,7 @@ namespace DigitalProductionProgram.MainWindow
         private ToolStripMenuItem Developer_Clear_Sql_Queries;
         private ToolStripMenuItem Menu_Developer_BlockClients;
         private ToolStripMenuItem Menu_Arkiv_UpdateDPP;
-        private ToolStripMenuItem flyttaDataFrånSvetsnigToolStripMenuItem;
+        private ToolStripMenuItem Menu_Developer_CheckForUpdate;
         private ToolStripMenuItem flyttaMätdataFrånSvetsningToolStripMenuItem;
         private ToolStripMenuItem ettToolStripMenuItem;
         private ToolStripMenuItem tvåToolStripMenuItem;

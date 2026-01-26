@@ -135,18 +135,18 @@ namespace DigitalProductionProgram.MainWindow
         }
         private void Menu_File_UpdateDPP_Click(object sender, EventArgs e)
         {
+
             if (File.Exists(Database.UpdatePath))
             {
                 _ = Activity.Stop("User updated DPP via the menu");
-                Process.Start(Database.UpdatePath);
+                Maintenance.StartInstallation(false);
             }
             else
             {
                 MessageBox.Show("Updater could not be found, please contact Admin.", "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
-            Application.Exit(); // Closing DPP
-
+           // Application.Exit(); // Closing DPP
         }
         private async void Menu_File_Öppna_Click(object sender, EventArgs e)
         {
@@ -707,7 +707,7 @@ namespace DigitalProductionProgram.MainWindow
         }
         private void Menu_Help_Versionshistorik_Click(object sender, EventArgs e)
         {
-            using var changeLog = new ChangeLog(ChangeLog.LatestVersion);
+            using var changeLog = new ChangeLog(ChangeLog.LatestAllowedVersion);
             changeLog.ShowDialog();
         }
         private void Menu_Help_InstructionVideos_OpenVideo_Click(object sender, EventArgs e)
@@ -892,6 +892,10 @@ Protocol.MainTemplate.Revision = {Templates_Protocol.MainTemplate.Revision}"
         {
             ClientUpdateManager blockClients = new ClientUpdateManager();
             blockClients.ShowDialog();
+        }
+        private void Menu_Developer_CheckForUpdate_Click(object sender, EventArgs e)
+        {
+            mainForm._scheduler.CheckForUpdate();
         }
         private void Menu_Developer_CountSqlQueries_Click(object sender, EventArgs e)
         {
@@ -1316,8 +1320,6 @@ Protocol.MainTemplate.Revision = {Templates_Protocol.MainTemplate.Revision}"
                         sb.AppendLine();
                     }
                 }
-
-                MessageBox.Show("Klart");
                 Clipboard.SetText(sb.ToString());
             });
 

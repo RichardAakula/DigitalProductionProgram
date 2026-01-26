@@ -4,7 +4,7 @@ using DigitalProductionProgram.PrintingServices;
 using Microsoft.Data.SqlClient;
 using System.Diagnostics;
 using System.Reflection;
-using System.Xml.Linq;
+using System.Xml.Linq;  
 
 namespace DigitalProductionProgram.Log
 {
@@ -22,24 +22,25 @@ namespace DigitalProductionProgram.Log
                     const string query = @"
                         SELECT cl.Version, cl.Description
                         FROM Log.ChangeLog AS cl
-                        INNER JOIN Log.ClientPolicy AS cp
-                            ON cl.Version = cp.Version
                         WHERE cl.VisibleToUser = 'True'
-                            AND cl.ID > 
+                            AND cl.ID >
                             (
-                                SELECT TOP(1) ID 
-                                FROM Log.ChangeLog 
-                                WHERE Version = @activeVersion 
+                                SELECT TOP(1) ID
+                                FROM Log.ChangeLog
+                                WHERE Version = @currentversion
                                 ORDER BY ID DESC
                             )
-                            AND cp.HostID = @hostID
-                            AND cp.AllowUpdate = 1
+                            AND cl.Version NOT IN
+                            (
+                                SELECT Version
+                                FROM Log.ClientPolicy
+                                WHERE HostID = (SELECT TOP(1) HostID FROM Settings.General WHERE HostName = @hostname)
+                            )
                         ORDER BY cl.ID DESC";
 
                     var cmd = new SqlCommand(query, con);
-                    ServerStatus.Add_Sql_Counter();
-                    cmd.Parameters.AddWithValue("@activeVersion", CurrentVersion.ToString());
-                    con?.Open();
+                    cmd.Parameters.AddWithValue("@hostname", Environment.MachineName);
+                    cmd.Parameters.AddWithValue("@currentversion", CurrentVersion.ToString());
                     var reader = cmd.ExecuteReader();
                     while (reader.Read())
                         news += $"{reader[0]} - {reader[1]} \n";
@@ -51,6 +52,7 @@ namespace DigitalProductionProgram.Log
         {
             get
             {
+                return new Version(4, 3, 14, 23);
                 // För att hämta versionen från den aktuella exekverbara filen
                 var versionInfo = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location);
                 if (versionInfo.FileVersion != null) return new Version(versionInfo.FileVersion);
@@ -58,9 +60,46 @@ namespace DigitalProductionProgram.Log
             }
         }
 
-       
 
-        public static Version? LatestVersion
+        public static Version LatestVersion
+        {
+            get
+            {
+                const string appInstallerPath = @"\\optifil\dpp\Install DPP.appinstaller";
+
+                // ✅ Kontrollera att filen finns innan vi försöker läsa
+                if (File.Exists(appInstallerPath))
+                {
+                    var doc = XDocument.Load(appInstallerPath);
+                    var versionStr = doc.Root?.Attribute("Version")?.Value;
+                    Version.TryParse(versionStr, out var latestVersion);
+                    if (latestVersion != null)
+                        return latestVersion;
+                }
+
+                try
+                {
+                    return Database.ExecuteSafe(con =>
+                    {
+                        const string query = @"
+                            SELECT TOP(1) Version
+                            FROM Log.ChangeLog
+                            WHERE ReleaseDate IS NOT NULL
+                            ORDER BY ID DESC;";
+                        var cmd = new SqlCommand(query, con);
+                        cmd.Parameters.AddWithValue("@hostname", Environment.MachineName);
+                        Version.TryParse((string)cmd.ExecuteScalar(), out var vers);
+                        return vers;
+                    });
+                }
+                catch
+                {
+                    Debug.WriteLine("Försöker hämta senaste version från databas");
+                    return null;
+                }
+            }
+        }
+        public static Version LatestAllowedVersion
         {
             get
             {
@@ -175,7 +214,7 @@ namespace DigitalProductionProgram.Log
         private void InitializeVersionLabel(Version? currentVersion)
         {
             if (currentVersion == null)
-                currentVersion = LatestVersion;
+                currentVersion = LatestAllowedVersion;
 
             labelVersion = new LabelPreText
             {
@@ -208,11 +247,17 @@ namespace DigitalProductionProgram.Log
                     FROM [Log].ChangeLog
                     WHERE VisibleToUser = 1
                         AND ReleaseDate IS NOT NULL
+                        AND Version NOT IN
+                        (
+                            SELECT Version
+                            FROM Log.ClientPolicy
+                            WHERE HostID = (SELECT TOP(1) HostID FROM Settings.General WHERE HostName = @hostname)
+                        )
                     ORDER BY ID";
 
                 using var cmd = new SqlCommand(query, con);
                 using var reader = cmd.ExecuteReader();
-
+                cmd.Parameters.AddWithValue("@hostname", Environment.MachineName);
                 while (reader.Read())
                 {
                     versions.Add(new VersionInfo

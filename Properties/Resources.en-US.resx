@@ -2401,4 +2401,10 @@ Please try again later. If the problem persists, contact support.</value>
   <data name="processcard_SuggestedChanges" xml:space="preserve">
     <value>Suggested changes for the process card</value>
   </data>
+  <data name="update_Info" xml:space="preserve">
+    <value>A newer version is available, but this client is not yet authorized to update.</value>
+  </data>
+  <data name="update_Info_2" xml:space="preserve">
+    <value>There is currently no newer version available.</value>
+  </data>
 </root>

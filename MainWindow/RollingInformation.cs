@@ -135,7 +135,14 @@ namespace DigitalProductionProgram.MainWindow
                 //ID > 200 är pga av att jag missat att läggga in ReleasDatum på dom allra första releaserna
                 Database.ExecuteSafe(con =>
                 {
-                    const string query = "SELECT Tags, Description FROM Log.ChangeLog WHERE ReleaseDate IS NULL AND VisibleToUser = 'True' AND ID > 200";
+                    const string query = @"
+                        SELECT 
+                            Tags, 
+                            Description 
+                        FROM Log.ChangeLog 
+                        WHERE ReleaseDate IS NULL 
+                            AND VisibleToUser = 'True' 
+                            AND ID > 200";
                     var cmd = new SqlCommand(query, con);
                     var reader = cmd.ExecuteReader();
                     while (reader.Read())

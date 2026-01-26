@@ -34,7 +34,7 @@ namespace DigitalProductionProgram.MainWindow
     public partial class Main_Form : Form
     {
         private static readonly Timer Timer_UpdateSQL_Counter = new Timer();
-        private ApplicationScheduler _scheduler;
+        public ApplicationScheduler _scheduler;
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
             Control ctrl;
@@ -209,6 +209,7 @@ namespace DigitalProductionProgram.MainWindow
             await Activity.Stop($"Application startup # {processes.Length}");
             _scheduler = new ApplicationScheduler(UpdateMeasureInformationAsync, UpdateGuiGrade, Statistics_DPP, Serverstatus);
             _scheduler.Start();
+            _scheduler.CheckForUpdate();
             Text = "Digital Production Program - " + ChangeLog.CurrentVersion;
         }
         private void CloseSplash()

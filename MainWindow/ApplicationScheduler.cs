@@ -157,19 +157,22 @@ namespace DigitalProductionProgram.MainWindow
             Debug.WriteLine("------------------------------------------------------\n");
         }
 
-        private void CheckForUpdate()
+        public void CheckForUpdate()
         {
-            if (ChangeLog.LatestVersion is null)
+            Version currentVersion = ChangeLog.CurrentVersion;
+            Version latestAllowedtVersion = ChangeLog.LatestAllowedVersion;
+
+            if (latestAllowedtVersion is null)
                 return;
 
-            if (ChangeLog.LatestVersion.CompareTo(ChangeLog.CurrentVersion) <= 0)
+            if (latestAllowedtVersion.CompareTo(currentVersion) <= 0)
                 return;
 
             if (Program.IsUpdateCritical)
             {
                 InfoText.Show(LanguageManager.GetString("update_Info_1"), CustomColors.InfoText_Color.Bad, "Warning!");
 
-                Maintenance.StartInstallation();
+                Maintenance.StartInstallation(true);
                 minutes_CheckForUpdate = 1; // 1 minut mellan försöken
                 return;
             }
@@ -184,13 +187,13 @@ namespace DigitalProductionProgram.MainWindow
 
             if (InfoText.answer == InfoText.Answer.No)
             {
-                _ = Activity.Stop($"User {Person.Name} did NOT update the application");
+                _ = Activity.Stop($"User {Person.Name} did NOT update the application. CurrentVersion = {currentVersion} - LatestVersion = {latestAllowedtVersion}");
                 minutes_CheckForUpdate = 120; // 2 timmar
             }
             else
             {
-                _ = Activity.Stop($"User {Person.Name} updated the Application");
-                Maintenance.StartInstallation();
+                _ = Activity.Stop($"User {Person.Name} updated the Application. CurrentVersion = {currentVersion} - LatestVersion = {latestAllowedtVersion}");
+                Maintenance.StartInstallation(false);
             }
         }
 

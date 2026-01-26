@@ -2397,4 +2397,10 @@ Försök igen om en stund. Om problemet kvarstår, kontakta support.</value>
   <data name="processcard_SuggestedChanges" xml:space="preserve">
     <value>Föreslagna ändringar för processkort</value>
   </data>
+  <data name="update_Info" xml:space="preserve">
+    <value>Det finns en nyare version, men denna klient är ännu inte behörig att uppdatera.</value>
+  </data>
+  <data name="update_Info_2" xml:space="preserve">
+    <value>Det finns för närvarande ingen nyare version tillgänglig.</value>
+  </data>
 </root>

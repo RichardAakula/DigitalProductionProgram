@@ -49,6 +49,7 @@
             // 
             // lb_Clients
             // 
+            lb_Clients.BackColor = SystemColors.Window;
             tlp_Main.SetColumnSpan(lb_Clients, 3);
             lb_Clients.Dock = DockStyle.Fill;
             lb_Clients.FormattingEnabled = true;
@@ -261,7 +262,9 @@
             // 
             // lv_UsersOnClient
             // 
+            lv_UsersOnClient.BackColor = Color.FromArgb(81, 85, 92);
             lv_UsersOnClient.Dock = DockStyle.Fill;
+            lv_UsersOnClient.ForeColor = Color.FromArgb(147, 146, 153);
             lv_UsersOnClient.Location = new Point(457, 73);
             lv_UsersOnClient.Name = "lv_UsersOnClient";
             lv_UsersOnClient.Size = new Size(212, 699);

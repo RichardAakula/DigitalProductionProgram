@@ -84,7 +84,17 @@ namespace DigitalProductionProgram.Log
             var clients = Database.ExecuteSafe(con =>
             {
                 var list = new List<HostItem>();
-                const string query = "SELECT HostID, HostName FROM [Settings].General ORDER BY HostName";
+                const string query = @"
+                    SELECT g.HostID, g.HostName
+                    FROM [Settings].General g
+                    WHERE EXISTS
+                    (
+                        SELECT 1
+                        FROM Log.ActivityLog     al
+                        WHERE al.HostID = g.HostID
+                        AND al.Date >= DATEADD(YEAR, -1, GETDATE())
+                    )
+                    ORDER BY g.HostName";
                 using var cmd = new SqlCommand(query, con);
                 using var reader = cmd.ExecuteReader();
                 while (reader.Read())

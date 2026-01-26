@@ -107,16 +107,16 @@ namespace DigitalProductionProgram.MainWindow
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-           // ShowSplash();
+            ShowSplash();
             //Kontrollerar att alla databaskopplingar är ok, annars får användaren välja  
             Load_DatabaseSettings();
 
-            Person.Name = "Richard Aakula";
-            Application.Run(new ClientUpdateManager());
-            return;
+            //Person.Name = "Richard Aakula";
+            //Application.Run(new ClientUpdateManager());
+           // return;
 
-            //var main = new Main_Form();
-           //Application.Run(main);
+            var main = new Main_Form();
+           Application.Run(main);
 
         }
         

@@ -36,42 +36,42 @@ namespace DigitalProductionProgram.Equipment
         {
             public static string? NomID_HS_Pipe(string? id_Number)
             {
-                return Database.ExecuteSafe(con =>
-                {
-                    var query = @"SELECT Nom_ID FROM Register_Krympslangsrör WHERE ID_Nummer = @id";
-                    var cmd = new SqlCommand(query, con);
-                    SQL_Parameter.String(cmd.Parameters, "@id", id_Number);
-                    var value = cmd.ExecuteScalar();
-                    return value?.ToString();
-                });
+                using SqlConnection con = new SqlConnection(Database.cs_ToolRegister);
+                var query = @"SELECT Nom_ID FROM Register_Krympslangsrör WHERE ID_Nummer = @id";
+                var cmd = new SqlCommand(query, con);
+                con.Open();
+                ServerStatus.Add_Sql_Counter();
+                SQL_Parameter.String(cmd.Parameters, "@id", id_Number);
+                var value = cmd.ExecuteScalar();
+                return value?.ToString();
             }
             public static List<string?> List_HS_PipeID(bool IsNomID)
             {
                 var list = new List<string>();
-                return Database.ExecuteSafe(con =>
-                {
-                    var query = IsNomID ? "SELECT Nom_ID FROM Register_Krympslangsrör WHERE Inaktiv != 'True' OR Inaktiv IS NULL GROUP BY Nom_ID ORDER BY min(ID)" : @"SELECT ID_Nummer FROM Register_Krympslangsrör WHERE Inaktiv != 'True' OR Inaktiv IS NULL GROUP BY ID_Nummer ORDER BY min(ID)";
-                    var cmd = new SqlCommand(query, con);
-                    var reader = cmd.ExecuteReader();
-                    while (reader.Read())
-                        list.Add(reader[0].ToString());
-                    return list;
-                });
+                using SqlConnection con = new SqlConnection(Database.cs_ToolRegister);
+                var query = IsNomID ? "SELECT Nom_ID FROM Register_Krympslangsrör WHERE Inaktiv != 'True' OR Inaktiv IS NULL GROUP BY Nom_ID ORDER BY min(ID)" : @"SELECT ID_Nummer FROM Register_Krympslangsrör WHERE Inaktiv != 'True' OR Inaktiv IS NULL GROUP BY ID_Nummer ORDER BY min(ID)";
+                var cmd = new SqlCommand(query, con);
+                con.Open();
+                ServerStatus.Add_Sql_Counter();
+                var reader = cmd.ExecuteReader();
+                while (reader.Read())
+                    list.Add(reader[0].ToString());
+                return list;
             }
             public static List<string?> List_HS_Hackhylsa
             {
                 get
                 {
                     var list = new List<string>();
-                    return Database.ExecuteSafe(con =>
-                    {
-                        var query = @"SELECT DISTINCT ID_Nummer FROM Register_Hackhylsor ORDER BY ID_Nummer DESC";
-                        var cmd = new SqlCommand(query, con);
-                        var reader = cmd.ExecuteReader();
-                        while (reader.Read())
-                            list.Add(reader[0].ToString());
-                        return list;
-                    });
+                    using SqlConnection con = new SqlConnection(Database.cs_ToolRegister);
+                    var query = @"SELECT DISTINCT ID_Nummer FROM Register_Hackhylsor ORDER BY ID_Nummer DESC";
+                    var cmd = new SqlCommand(query, con);
+                    con.Open();
+                    ServerStatus.Add_Sql_Counter();
+                    var reader = cmd.ExecuteReader();
+                    while (reader.Read())
+                        list.Add(reader[0].ToString());
+                    return list;
                 }
             }
 
@@ -80,20 +80,20 @@ namespace DigitalProductionProgram.Equipment
                 var dt = new DataTable();
                 dt.Columns.Add("Item1", typeof(string));
                 dt.Columns.Add("Item2", typeof(string));
-                return Database.ExecuteSafe(con =>
-                {
-                    var query = "SELECT DISTINCT ID_Nummer, Landlängd_nom, Dimension_nom FROM Register_Verktyg WHERE Typ = '" + typ + "' AND (Kasserad IS NULL OR Kasserad = '') ";
-                    if (min != null)
+                using SqlConnection con = new SqlConnection(Database.cs_ToolRegister);
+                var query = "SELECT DISTINCT ID_Nummer, Landlängd_nom, Dimension_nom FROM Register_Verktyg WHERE Typ = '" + typ + "' AND (Kasserad IS NULL OR Kasserad = '') ";
+                if (min != null)
                         query += "AND Dimension_nom >= @min AND Dimension_nom <= @max ";
-                    query += "ORDER BY Dimension_nom";
-                    var cmd = new SqlCommand(query, con);
-                    SQL_Parameter.Double(cmd.Parameters, "@min", min);
-                    SQL_Parameter.Double(cmd.Parameters, "@max", max);
-                    var reader = cmd.ExecuteReader();
-                    while (reader.Read())
-                        dt.Rows.Add($"{reader[0]}", $"{reader[1]}");
-                    return dt;
-                });
+                query += "ORDER BY Dimension_nom";
+                var cmd = new SqlCommand(query, con);
+                con.Open();
+                ServerStatus.Add_Sql_Counter();
+                SQL_Parameter.Double(cmd.Parameters, "@min", min);
+                SQL_Parameter.Double(cmd.Parameters, "@max", max);
+                var reader = cmd.ExecuteReader();
+                while (reader.Read())
+                    dt.Rows.Add($"{reader[0]}", $"{reader[1]}");
+                return dt;
             }
         }
         

@@ -36,42 +36,48 @@ namespace DigitalProductionProgram.Equipment
         {
             public static string? NomID_HS_Pipe(string? id_Number)
             {
-                return Database.ExecuteSafe(con =>
+                using var con = new SqlConnection(Database.cs_ToolRegister);
                 {
                     var query = @"SELECT Nom_ID FROM Register_Krympslangsrör WHERE ID_Nummer = @id";
+                    con.Open();
+                    ServerStatus.Add_Sql_Counter();
                     var cmd = new SqlCommand(query, con);
                     SQL_Parameter.String(cmd.Parameters, "@id", id_Number);
                     var value = cmd.ExecuteScalar();
                     return value?.ToString();
-                });
+                }
             }
             public static List<string?> List_HS_PipeID(bool IsNomID)
             {
                 var list = new List<string>();
-                return Database.ExecuteSafe(con =>
+                using var con = new SqlConnection(Database.cs_ToolRegister);
                 {
                     var query = IsNomID ? "SELECT Nom_ID FROM Register_Krympslangsrör WHERE Inaktiv != 'True' OR Inaktiv IS NULL GROUP BY Nom_ID ORDER BY min(ID)" : @"SELECT ID_Nummer FROM Register_Krympslangsrör WHERE Inaktiv != 'True' OR Inaktiv IS NULL GROUP BY ID_Nummer ORDER BY min(ID)";
+                    con.Open();
+                    ServerStatus.Add_Sql_Counter();
                     var cmd = new SqlCommand(query, con);
                     var reader = cmd.ExecuteReader();
                     while (reader.Read())
                         list.Add(reader[0].ToString());
                     return list;
-                });
+                }
             }
             public static List<string?> List_HS_Hackhylsa
             {
                 get
                 {
                     var list = new List<string>();
-                    return Database.ExecuteSafe(con =>
+                    using var con = new SqlConnection(Database.cs_ToolRegister);
                     {
                         var query = @"SELECT DISTINCT ID_Nummer FROM Register_Hackhylsor ORDER BY ID_Nummer DESC";
                         var cmd = new SqlCommand(query, con);
+                        con.Open();
+                        ServerStatus.Add_Sql_Counter();
                         var reader = cmd.ExecuteReader();
                         while (reader.Read())
                             list.Add(reader[0].ToString());
                         return list;
-                    });
+                    }
                 }
             }
 
@@ -110,7 +116,7 @@ namespace DigitalProductionProgram.Equipment
         {
             if (string.IsNullOrEmpty(Person.Name))
                 return string.Empty;
-            return Database.ExecuteSafe(con =>
+            using var con = new SqlConnection(Database.cs_ToolRegister);
             {
                 var query = @"
                     SELECT TOP(1) Typ as Type, COUNT(*) Ctr
@@ -121,25 +127,29 @@ namespace DigitalProductionProgram.Equipment
                     ORDER BY Ctr DESC";
 
                 using var cmd = new SqlCommand(query, con);
+                con.Open();
+                ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@user", Person.Name); // Adjust as needed
                 cmd.Parameters.AddWithValue("@type", type);
                 var result = cmd.ExecuteScalar(); // Get the first value from the first row
                 return result?.ToString() ?? string.Empty; // Return Type or empty string if null
-            });
+            }
         }
         public static void AddRegularUsedToolTypeForUser(string typ)
         {
-            Database.ExecuteSafe(con =>
+            using var con = new SqlConnection(Database.cs_ToolRegister);
             {
                 const string query = @"INSERT INTO RegularUsed_VerktygsTyp_Användare (Användare, Typ, Datum) 
                                     VALUES (@user, @typ, @date)";
 
                 using var cmd = new SqlCommand(query, con);
+                con.Open();
+                ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@user", Person.Name);
                 cmd.Parameters.AddWithValue("@typ", typ);
                 cmd.Parameters.AddWithValue("@date", DateTime.Now);
                 cmd.ExecuteNonQuery();
-            });
+            }
         }
     }
 }

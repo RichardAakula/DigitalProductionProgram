@@ -13,6 +13,7 @@ namespace DigitalProductionProgram.Log
     {
         // --- Masterlista för alla klienter ---
         private List<HostItem> _allClients = new();
+        private readonly List<string> _allProdLines = new();
 
         // --- Flagga för att undvika SelectedIndexChanged under listuppdatering ---
         private bool _suppressSelectionChanged = false;
@@ -23,6 +24,7 @@ namespace DigitalProductionProgram.Log
             InitializeUsersOnClientListView();
 
             LoadClients();
+            LoadProdLines();
             LoadVersions();
             LoadAllUsers();
 
@@ -75,7 +77,7 @@ namespace DigitalProductionProgram.Log
 
             lv_UsersOnClient.Columns.Clear();
             lv_UsersOnClient.Columns.Add("UserID", 50, HorizontalAlignment.Left);
-            lv_UsersOnClient.Columns.Add("Name", 200, HorizontalAlignment.Left);
+            lv_UsersOnClient.Columns.Add("Name", 150, HorizontalAlignment.Left);
         }
         private void LoadClients()
         {
@@ -114,6 +116,48 @@ namespace DigitalProductionProgram.Log
 
             RefreshClientList();
         }
+        private void LoadProdLines()
+        {
+            _allProdLines.Clear();
+            lb_ProdLines.BeginUpdate();
+            try
+            {
+                lb_ProdLines.Items.Clear();
+
+                // Hämta alla unika ProdLines från Order.MainData
+                var prodLines = Database.ExecuteSafe(con =>
+                {
+                    var list = new List<string>();
+                    const string query = @"
+                        SELECT DISTINCT ProdLine
+                        FROM [Order].MainData
+                        WHERE ProdLine IS NOT NULL
+                            AND ProdLine <> ''
+                        ORDER BY ProdLine";
+
+                    using var cmd = new SqlCommand(query, con);
+                    using var reader = cmd.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        var prodLine = reader.GetString(reader.GetOrdinal("ProdLine"));
+                        list.Add(prodLine);
+                    }
+                    return list;
+                });
+
+                _allProdLines.AddRange(prodLines);
+
+                foreach (var pl in _allProdLines)
+                {
+                    lb_ProdLines.Items.Add(pl);
+                }
+            }
+            finally
+            {
+                lb_ProdLines.EndUpdate();
+            }
+        }
+
         private void LoadVersions()
         {
             var versions = Database.ExecuteSafe(con =>
@@ -201,6 +245,83 @@ namespace DigitalProductionProgram.Log
                 lv_UsersOnClient.EndUpdate();
             }
         }
+        private void lb_ProdLines_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_suppressSelectionChanged)
+                return;
+
+            _suppressSelectionChanged = true;
+            lb_Clients.BeginUpdate();
+            try
+            {
+                lb_Clients.Items.Clear();
+
+                IEnumerable<HostItem> filtered = _allClients;
+
+                // Kolla om några ProductionLines är markerade
+                var selectedProdLines = lb_ProdLines.SelectedItems.Cast<string>().ToList();
+
+                if (selectedProdLines.Any())
+                {
+                    var hostIdsForProdLines = new HashSet<int>();
+
+                    foreach (var prodLine in selectedProdLines)
+                    {
+                        // Hämta top 50 HostID som använts med denna ProductionLine senaste året
+                        var hostIds = Database.ExecuteSafe(con =>
+                        {
+                            var list = new List<int>();
+                            const string query = @"
+                        SELECT TOP(50) al.HostID, COUNT(*) AS WorkCount
+                        FROM Log.ActivityLog al
+                        INNER JOIN [Order].MainData o ON al.OrderID = o.OrderID
+                        WHERE o.ProdLine = @prodline
+                            AND al.Date >= DATEADD(YEAR, -1, GETDATE())
+                        GROUP BY al.HostID
+                        ORDER BY WorkCount DESC";
+
+                            using var cmd = new SqlCommand(query, con);
+                            cmd.Parameters.AddWithValue("@prodline", prodLine);
+                            using var reader = cmd.ExecuteReader();
+                            while (reader.Read())
+                                list.Add(reader.GetInt32(reader.GetOrdinal("HostID")));
+                            return list;
+                        });
+
+                        foreach (var h in hostIds)
+                            hostIdsForProdLines.Add(h);
+                    }
+
+                    // Filtrera masterlistan baserat på alla valda ProductionLines
+                    filtered = filtered.Where(c => hostIdsForProdLines.Contains(c.HostID));
+                }
+
+                // Kombinera med tb_Filter om text finns
+                string textFilter = tb_Filter.Text.Trim();
+                if (!string.IsNullOrWhiteSpace(textFilter))
+                {
+                    filtered = filtered.Where(c =>
+                        c.HostName.Contains(textFilter, StringComparison.OrdinalIgnoreCase));
+                }
+
+                foreach (var client in filtered)
+                    lb_Clients.Items.Add(client);
+
+                // Om CheckAll är ikryssad, markera alla synliga
+                if (chk_CheckAllClients.Checked)
+                {
+                    lb_Clients.SelectedIndices.Clear();
+                    for (int i = 0; i < lb_Clients.Items.Count; i++)
+                        lb_Clients.SelectedIndices.Add(i);
+                }
+            }
+            finally
+            {
+                _suppressSelectionChanged = false;
+                lb_Clients.EndUpdate();
+            }
+        }
+
         private void lb_Versions_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (lb_Versions.SelectedItem is not string version)
@@ -575,6 +696,6 @@ namespace DigitalProductionProgram.Log
             public override string ToString() => HostName;
         }
 
-        
+       
     }
 }

@@ -30,6 +30,7 @@
         {
             lb_Clients = new ListBox();
             tlp_Main = new TableLayoutPanel();
+            label_ProdLines = new Label();
             lb_AllUsers = new ListBox();
             label_AllUsers = new Label();
             label_Versions = new Label();
@@ -44,6 +45,7 @@
             chk_CheckAllBlockedClients = new CheckBox();
             tb_Filter = new TextBox();
             lv_UsersOnClient = new ListView();
+            lb_ProdLines = new ListBox();
             tlp_Main.SuspendLayout();
             SuspendLayout();
             // 
@@ -54,7 +56,7 @@
             lb_Clients.Dock = DockStyle.Fill;
             lb_Clients.FormattingEnabled = true;
             lb_Clients.ItemHeight = 15;
-            lb_Clients.Location = new Point(153, 73);
+            lb_Clients.Location = new Point(333, 73);
             lb_Clients.Name = "lb_Clients";
             lb_Clients.SelectionMode = SelectionMode.MultiExtended;
             lb_Clients.Size = new Size(298, 699);
@@ -63,8 +65,9 @@
             // 
             // tlp_Main
             // 
-            tlp_Main.ColumnCount = 8;
+            tlp_Main.ColumnCount = 9;
             tlp_Main.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 150F));
+            tlp_Main.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 180F));
             tlp_Main.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 83F));
             tlp_Main.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 124F));
             tlp_Main.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 97F));
@@ -72,21 +75,23 @@
             tlp_Main.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 136F));
             tlp_Main.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 87F));
             tlp_Main.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 91F));
+            tlp_Main.Controls.Add(label_ProdLines, 1, 0);
             tlp_Main.Controls.Add(lb_AllUsers, 0, 2);
             tlp_Main.Controls.Add(label_AllUsers, 0, 0);
-            tlp_Main.Controls.Add(label_Versions, 5, 0);
-            tlp_Main.Controls.Add(label_BlockedClients, 6, 0);
-            tlp_Main.Controls.Add(label_UsersOnClient, 4, 0);
-            tlp_Main.Controls.Add(lb_Clients, 1, 2);
-            tlp_Main.Controls.Add(label_Clients, 1, 0);
-            tlp_Main.Controls.Add(lb_Versions, 5, 2);
-            tlp_Main.Controls.Add(lb_BlockedClients, 6, 2);
-            tlp_Main.Controls.Add(chk_CheckAllClients, 1, 1);
-            tlp_Main.Controls.Add(btn_BlockClient, 3, 1);
-            tlp_Main.Controls.Add(btn_UnBlockClient, 7, 1);
-            tlp_Main.Controls.Add(chk_CheckAllBlockedClients, 6, 1);
-            tlp_Main.Controls.Add(tb_Filter, 2, 1);
-            tlp_Main.Controls.Add(lv_UsersOnClient, 4, 2);
+            tlp_Main.Controls.Add(label_Versions, 6, 0);
+            tlp_Main.Controls.Add(label_BlockedClients, 7, 0);
+            tlp_Main.Controls.Add(label_UsersOnClient, 5, 0);
+            tlp_Main.Controls.Add(lb_Clients, 2, 2);
+            tlp_Main.Controls.Add(label_Clients, 2, 0);
+            tlp_Main.Controls.Add(lb_Versions, 6, 2);
+            tlp_Main.Controls.Add(lb_BlockedClients, 7, 2);
+            tlp_Main.Controls.Add(chk_CheckAllClients, 2, 1);
+            tlp_Main.Controls.Add(btn_BlockClient, 4, 1);
+            tlp_Main.Controls.Add(btn_UnBlockClient, 8, 1);
+            tlp_Main.Controls.Add(chk_CheckAllBlockedClients, 7, 1);
+            tlp_Main.Controls.Add(tb_Filter, 3, 1);
+            tlp_Main.Controls.Add(lv_UsersOnClient, 5, 2);
+            tlp_Main.Controls.Add(lb_ProdLines, 1, 2);
             tlp_Main.Dock = DockStyle.Fill;
             tlp_Main.Location = new Point(0, 0);
             tlp_Main.Name = "tlp_Main";
@@ -94,9 +99,21 @@
             tlp_Main.RowStyles.Add(new RowStyle(SizeType.Absolute, 40F));
             tlp_Main.RowStyles.Add(new RowStyle(SizeType.Absolute, 30F));
             tlp_Main.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            tlp_Main.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
-            tlp_Main.Size = new Size(1364, 775);
+            tlp_Main.Size = new Size(1665, 775);
             tlp_Main.TabIndex = 2;
+            // 
+            // label_ProdLines
+            // 
+            label_ProdLines.AutoSize = true;
+            label_ProdLines.Dock = DockStyle.Fill;
+            label_ProdLines.Font = new Font("Segoe UI", 14F);
+            label_ProdLines.ForeColor = Color.FromArgb(239, 228, 177);
+            label_ProdLines.Location = new Point(153, 0);
+            label_ProdLines.Name = "label_ProdLines";
+            label_ProdLines.Size = new Size(174, 40);
+            label_ProdLines.TabIndex = 16;
+            label_ProdLines.Text = "Production Lines";
+            label_ProdLines.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // lb_AllUsers
             // 
@@ -129,7 +146,7 @@
             label_Versions.Dock = DockStyle.Fill;
             label_Versions.Font = new Font("Segoe UI", 14F);
             label_Versions.ForeColor = Color.FromArgb(239, 228, 177);
-            label_Versions.Location = new Point(675, 0);
+            label_Versions.Location = new Point(855, 0);
             label_Versions.Name = "label_Versions";
             label_Versions.Size = new Size(130, 40);
             label_Versions.TabIndex = 11;
@@ -143,9 +160,9 @@
             label_BlockedClients.Dock = DockStyle.Fill;
             label_BlockedClients.Font = new Font("Segoe UI", 14F);
             label_BlockedClients.ForeColor = Color.FromArgb(239, 228, 177);
-            label_BlockedClients.Location = new Point(811, 0);
+            label_BlockedClients.Location = new Point(991, 0);
             label_BlockedClients.Name = "label_BlockedClients";
-            label_BlockedClients.Size = new Size(550, 40);
+            label_BlockedClients.Size = new Size(671, 40);
             label_BlockedClients.TabIndex = 10;
             label_BlockedClients.Text = "Blocked Clients";
             label_BlockedClients.TextAlign = ContentAlignment.MiddleCenter;
@@ -156,7 +173,7 @@
             label_UsersOnClient.Dock = DockStyle.Fill;
             label_UsersOnClient.Font = new Font("Segoe UI", 14F);
             label_UsersOnClient.ForeColor = Color.FromArgb(239, 228, 177);
-            label_UsersOnClient.Location = new Point(457, 0);
+            label_UsersOnClient.Location = new Point(637, 0);
             label_UsersOnClient.Name = "label_UsersOnClient";
             label_UsersOnClient.Size = new Size(212, 40);
             label_UsersOnClient.TabIndex = 3;
@@ -170,7 +187,7 @@
             label_Clients.Dock = DockStyle.Fill;
             label_Clients.Font = new Font("Segoe UI", 14F);
             label_Clients.ForeColor = Color.FromArgb(239, 228, 177);
-            label_Clients.Location = new Point(153, 0);
+            label_Clients.Location = new Point(333, 0);
             label_Clients.Name = "label_Clients";
             label_Clients.Size = new Size(298, 40);
             label_Clients.TabIndex = 2;
@@ -182,7 +199,7 @@
             lb_Versions.Dock = DockStyle.Fill;
             lb_Versions.FormattingEnabled = true;
             lb_Versions.ItemHeight = 15;
-            lb_Versions.Location = new Point(675, 73);
+            lb_Versions.Location = new Point(855, 73);
             lb_Versions.Name = "lb_Versions";
             lb_Versions.Size = new Size(130, 699);
             lb_Versions.TabIndex = 4;
@@ -194,17 +211,17 @@
             lb_BlockedClients.Dock = DockStyle.Fill;
             lb_BlockedClients.FormattingEnabled = true;
             lb_BlockedClients.ItemHeight = 15;
-            lb_BlockedClients.Location = new Point(811, 73);
+            lb_BlockedClients.Location = new Point(991, 73);
             lb_BlockedClients.Name = "lb_BlockedClients";
             lb_BlockedClients.SelectionMode = SelectionMode.MultiSimple;
-            lb_BlockedClients.Size = new Size(550, 699);
+            lb_BlockedClients.Size = new Size(671, 699);
             lb_BlockedClients.TabIndex = 5;
             // 
             // chk_CheckAllClients
             // 
             chk_CheckAllClients.AutoSize = true;
             chk_CheckAllClients.ForeColor = Color.FromArgb(184, 220, 231);
-            chk_CheckAllClients.Location = new Point(153, 43);
+            chk_CheckAllClients.Location = new Point(333, 43);
             chk_CheckAllClients.Name = "chk_CheckAllClients";
             chk_CheckAllClients.Size = new Size(76, 19);
             chk_CheckAllClients.TabIndex = 6;
@@ -218,7 +235,7 @@
             btn_BlockClient.Dock = DockStyle.Fill;
             btn_BlockClient.FlatStyle = FlatStyle.Flat;
             btn_BlockClient.ForeColor = Color.FromArgb(156, 0, 6);
-            btn_BlockClient.Location = new Point(360, 43);
+            btn_BlockClient.Location = new Point(540, 43);
             btn_BlockClient.Name = "btn_BlockClient";
             btn_BlockClient.Size = new Size(91, 24);
             btn_BlockClient.TabIndex = 7;
@@ -232,7 +249,7 @@
             btn_UnBlockClient.Dock = DockStyle.Left;
             btn_UnBlockClient.FlatStyle = FlatStyle.Flat;
             btn_UnBlockClient.ForeColor = Color.FromArgb(0, 97, 0);
-            btn_UnBlockClient.Location = new Point(898, 43);
+            btn_UnBlockClient.Location = new Point(1078, 43);
             btn_UnBlockClient.Name = "btn_UnBlockClient";
             btn_UnBlockClient.Size = new Size(155, 24);
             btn_UnBlockClient.TabIndex = 8;
@@ -244,7 +261,7 @@
             // 
             chk_CheckAllBlockedClients.AutoSize = true;
             chk_CheckAllBlockedClients.ForeColor = Color.FromArgb(184, 220, 231);
-            chk_CheckAllBlockedClients.Location = new Point(811, 43);
+            chk_CheckAllBlockedClients.Location = new Point(991, 43);
             chk_CheckAllBlockedClients.Name = "chk_CheckAllBlockedClients";
             chk_CheckAllBlockedClients.Size = new Size(76, 19);
             chk_CheckAllBlockedClients.TabIndex = 9;
@@ -255,7 +272,7 @@
             // tb_Filter
             // 
             tb_Filter.Dock = DockStyle.Fill;
-            tb_Filter.Location = new Point(236, 43);
+            tb_Filter.Location = new Point(416, 43);
             tb_Filter.Name = "tb_Filter";
             tb_Filter.Size = new Size(118, 23);
             tb_Filter.TabIndex = 12;
@@ -265,18 +282,31 @@
             lv_UsersOnClient.BackColor = Color.FromArgb(81, 85, 92);
             lv_UsersOnClient.Dock = DockStyle.Fill;
             lv_UsersOnClient.ForeColor = Color.FromArgb(147, 146, 153);
-            lv_UsersOnClient.Location = new Point(457, 73);
+            lv_UsersOnClient.Location = new Point(637, 73);
+            lv_UsersOnClient.MultiSelect = false;
             lv_UsersOnClient.Name = "lv_UsersOnClient";
             lv_UsersOnClient.Size = new Size(212, 699);
             lv_UsersOnClient.TabIndex = 15;
             lv_UsersOnClient.UseCompatibleStateImageBehavior = false;
+            // 
+            // lb_ProdLines
+            // 
+            lb_ProdLines.Dock = DockStyle.Fill;
+            lb_ProdLines.FormattingEnabled = true;
+            lb_ProdLines.ItemHeight = 15;
+            lb_ProdLines.Location = new Point(153, 73);
+            lb_ProdLines.Name = "lb_ProdLines";
+            lb_ProdLines.SelectionMode = SelectionMode.MultiSimple;
+            lb_ProdLines.Size = new Size(174, 699);
+            lb_ProdLines.TabIndex = 17;
+            lb_ProdLines.SelectedIndexChanged += lb_ProdLines_SelectedIndexChanged;
             // 
             // ClientUpdateManager
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(6, 81, 87);
-            ClientSize = new Size(1364, 775);
+            ClientSize = new Size(1665, 775);
             Controls.Add(tlp_Main);
             Name = "ClientUpdateManager";
             Text = "ClientUpdateManager";
@@ -303,5 +333,7 @@
         private ListBox lb_AllUsers;
         private Label label_AllUsers;
         private ListView lv_UsersOnClient;
+        private Label label_ProdLines;
+        private ListBox lb_ProdLines;
     }
 }

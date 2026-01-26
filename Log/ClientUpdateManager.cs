@@ -16,7 +16,7 @@ namespace DigitalProductionProgram.Log
         private readonly List<string> _allProdLines = new();
 
         // --- Flagga för att undvika SelectedIndexChanged under listuppdatering ---
-        private bool _suppressSelectionChanged = false;
+        private bool _suppressSelectionChanged;
 
         public ClientUpdateManager()
         {
@@ -119,28 +119,34 @@ namespace DigitalProductionProgram.Log
         private void LoadProdLines()
         {
             _allProdLines.Clear();
+
             lb_ProdLines.BeginUpdate();
             try
             {
                 lb_ProdLines.Items.Clear();
 
-                // Hämta alla unika ProdLines från Order.MainData
                 var prodLines = Database.ExecuteSafe(con =>
                 {
                     var list = new List<string>();
                     const string query = @"
-                        SELECT DISTINCT ProdLine
-                        FROM [Order].MainData
-                        WHERE ProdLine IS NOT NULL
-                            AND ProdLine <> ''
-                        ORDER BY ProdLine";
+                        SELECT DISTINCT o.ProdLine
+                        FROM [Order].MainData o
+                        WHERE o.ProdLine IS NOT NULL
+                            AND EXISTS
+                            (
+                                SELECT 1
+                                FROM Log.ActivityLog al
+                                WHERE al.OrderID = o.OrderID
+                                    AND al.HostID IS NOT NULL
+                                    AND al.Date >= DATEADD(MONTH, -2, GETDATE())
+                            )
+                        ORDER BY o.ProdLine";
 
                     using var cmd = new SqlCommand(query, con);
                     using var reader = cmd.ExecuteReader();
                     while (reader.Read())
                     {
-                        var prodLine = reader.GetString(reader.GetOrdinal("ProdLine"));
-                        list.Add(prodLine);
+                        list.Add(reader.GetString(reader.GetOrdinal("ProdLine")));
                     }
                     return list;
                 });
@@ -148,15 +154,14 @@ namespace DigitalProductionProgram.Log
                 _allProdLines.AddRange(prodLines);
 
                 foreach (var pl in _allProdLines)
-                {
                     lb_ProdLines.Items.Add(pl);
-                }
             }
             finally
             {
                 lb_ProdLines.EndUpdate();
             }
         }
+
 
         private void LoadVersions()
         {
@@ -276,7 +281,8 @@ namespace DigitalProductionProgram.Log
                         FROM Log.ActivityLog al
                         INNER JOIN [Order].MainData o ON al.OrderID = o.OrderID
                         WHERE o.ProdLine = @prodline
-                            AND al.Date >= DATEADD(YEAR, -1, GETDATE())
+                            AND al.Date >= DATEADD(MONTH, -2, GETDATE())
+                            AND al.HostID IS NOT NULL
                         GROUP BY al.HostID
                         ORDER BY WorkCount DESC";
 
@@ -376,12 +382,13 @@ namespace DigitalProductionProgram.Log
                         {
                             var list = new List<int>();
                             const string query = @"
-                        SELECT TOP(50) HostID, COUNT(*) AS WorkCount
-                        FROM Log.ActivityLog
-                        WHERE UserID = @userid
-                          AND Date >= DATEADD(YEAR, -1, GETDATE())
-                        GROUP BY HostID
-                        ORDER BY WorkCount DESC";
+                                SELECT TOP(50) HostID, COUNT(*) AS WorkCount
+                                FROM Log.ActivityLog
+                                WHERE UserID = @userid
+                                    AND Date >= DATEADD(YEAR, -1, GETDATE())
+                                    AND HistID IS NOT NULL
+                                GROUP BY HostID
+                                ORDER BY WorkCount DESC";
 
                             using var cmd = new SqlCommand(query, con);
                             cmd.Parameters.AddWithValue("@userid", user.Key);
@@ -389,7 +396,7 @@ namespace DigitalProductionProgram.Log
                             while (reader.Read())
                                 list.Add(reader.GetInt32(reader.GetOrdinal("HostID")));
                             return list;
-                        }) ?? new List<int>();
+                        });
 
                         // Lägg till i en HashSet för union
                         foreach (var h in userHostIds)

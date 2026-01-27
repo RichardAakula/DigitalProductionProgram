@@ -179,7 +179,8 @@ namespace DigitalProductionProgram.DatabaseManagement
             }
             catch (Exception exc)
             {
-                InfoText.Show($"An error occurred while connecting to the database.\nPlease contact Admin if the issue persists.\n\n{exc}\n\n{callerMember}", CustomColors.InfoText_Color.Bad, "Error!");
+                InfoText.Show($"An error occurred while connecting to the database.\n" +
+                              $"Please contact Admin if the issue persists.\n\n{exc}\n\n{callerMember}", CustomColors.InfoText_Color.Bad, "Error!");
                 return default!;
             }
             finally

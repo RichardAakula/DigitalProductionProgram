@@ -52,7 +52,6 @@ namespace DigitalProductionProgram.Log
         {
             get
             {
-                return new Version(4, 3, 14, 23);
                 // För att hämta versionen från den aktuella exekverbara filen
                 var versionInfo = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location);
                 if (versionInfo.FileVersion != null) return new Version(versionInfo.FileVersion);
@@ -280,7 +279,6 @@ namespace DigitalProductionProgram.Log
             selectedVersion = currentVersion ?? versions.Last().VersionNr;
             labelVersion.Text = selectedVersion.ToString();
         }
-
         private void Show_VersionDetails()
         {
             if (!Version.TryParse(labelVersion?.Text, out var currentVersion))

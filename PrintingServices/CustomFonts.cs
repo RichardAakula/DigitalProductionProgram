@@ -8,7 +8,7 @@ using DigitalProductionProgram.MainWindow;
 
 namespace DigitalProductionProgram.PrintingServices
 {
-    internal class CustomFonts
+    internal abstract class CustomFonts
     {
         public static void change_To_NA(Control ctrl)
         {

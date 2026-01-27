@@ -3,7 +3,10 @@ using DigitalProductionProgram.DatabaseManagement;
 using Microsoft.Data.SqlClient;
 using System;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
+using DigitalProductionProgram.Help;
 using DigitalProductionProgram.MainWindow;
+using DigitalProductionProgram.PrintingServices;
 
 namespace DigitalProductionProgram.Log
 {
@@ -125,11 +128,39 @@ namespace DigitalProductionProgram.Log
         }
 
 
-        public static void StartInstallation()
+        public static void StartInstallation(bool isForceUpdate)
         {
+            var currentVersion = ChangeLog.CurrentVersion;
+            var latestAllowedVersion = ChangeLog.LatestAllowedVersion;
+            var latestVersion = ChangeLog.LatestVersion;
+
+            // 1️⃣ Force update – alltid uppdatera
+            if (isForceUpdate)
+            {
+                Process.Start(Database.UpdatePath);
+                Application.Exit();
+                return;
+            }
+
+            // 2️⃣ Det finns en nyare version, men klienten får inte uppdatera
+            if (latestAllowedVersion < latestVersion && currentVersion >= latestAllowedVersion)
+            {
+                InfoText.Show(LanguageManager.GetString("update_Info"), CustomColors.InfoText_Color.Info, "Information");
+                return;
+            }
+
+            // 3️⃣ Klienten är redan uppdaterad till senaste tillåtna version
+            if (currentVersion >= latestAllowedVersion)
+            {
+                InfoText.Show(LanguageManager.GetString("update_Info_2"), CustomColors.InfoText_Color.Info, "Information");
+                return;
+            }
+
+            // 4️⃣ ✅ currentVersion < latestAllowedVersion → uppdatera
             Process.Start(Database.UpdatePath);
-            Application.Exit();  // Stänger huvudprogrammet för uppdatering
+            Application.Exit();
         }
+
 
     }
 }

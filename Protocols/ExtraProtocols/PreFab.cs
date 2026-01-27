@@ -3,8 +3,6 @@ using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Equipment;
 using DigitalProductionProgram.Help;
 using DigitalProductionProgram.Log;
-using DigitalProductionProgram.MainWindow;
-using DigitalProductionProgram.Measure;
 using DigitalProductionProgram.Monitor;
 using DigitalProductionProgram.Monitor.GET;
 using DigitalProductionProgram.OrderManagement;
@@ -13,14 +11,7 @@ using DigitalProductionProgram.PrintingServices;
 using DigitalProductionProgram.Protocols.Protocol;
 using DigitalProductionProgram.User;
 using Microsoft.Data.SqlClient;
-using Microsoft.Extensions.FileSystemGlobbing;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Data;
-using System.Globalization;
-using System.Linq;
-using System.Windows.Forms;
 
 namespace DigitalProductionProgram.Protocols.ExtraProtocols
 {

@@ -70,7 +70,7 @@ namespace DigitalProductionProgram.MainWindow
             {
                 return Database.ExecuteSafe(con =>
                 {
-                    var query = $"SELECT * FROM Log.ChangeLog WHERE Version = '{ChangeLog.LatestVersion}' AND IsCritical = 'True'";
+                    var query = $"SELECT * FROM Log.ChangeLog WHERE Version = '{ChangeLog.LatestAllowedVersion}' AND IsCritical = 'True'";
                     var cmd = new SqlCommand(query, con);
                     var reader = cmd.ExecuteReader();
                     return reader.HasRows;
@@ -110,6 +110,10 @@ namespace DigitalProductionProgram.MainWindow
             ShowSplash();
             //Kontrollerar att alla databaskopplingar är ok, annars får användaren välja  
             Load_DatabaseSettings();
+
+            //Person.Name = "Richard Aakula";
+            //Application.Run(new ClientUpdateManager());
+            //return;
 
             var main = new Main_Form();
             Application.Run(main);

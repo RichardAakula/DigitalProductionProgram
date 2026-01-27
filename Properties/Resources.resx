@@ -1952,4 +1952,10 @@
   <data name="processcard_SuggestedChanges" xml:space="preserve">
     <value></value>
   </data>
+  <data name="update_Info" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="update_Info_2" xml:space="preserve">
+    <value></value>
+  </data>
 </root>

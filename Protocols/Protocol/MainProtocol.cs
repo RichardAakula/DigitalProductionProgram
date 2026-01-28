@@ -1,9 +1,7 @@
 ﻿using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.DatabaseManagement;
-using DigitalProductionProgram.Equipment;
 using DigitalProductionProgram.Help;
 using DigitalProductionProgram.Log;
-using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.PrintingServices;
 using DigitalProductionProgram.Protocols.ExtraProtocols;

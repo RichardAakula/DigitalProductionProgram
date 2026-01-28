@@ -566,7 +566,7 @@ namespace DigitalProductionProgram.MainWindow
                 BeginInvoke(() => OrderInformation.Change_Theme());
             }
 
-            measurementChart.BackColor = Teman.backColor_Chart;
+            cf_MeasurementChart.BackColor = Teman.backColor_Chart;
             tlp_ExtraInfo.BackColor = TipsAndTrix.label_Tips_Trix.BackColor = TipsAndTrix.pb_Info_Tips_Trix.BackColor = Teman.backColor_ExtraInfo;
             lbl_ExtraInfo.ForeColor = Teman.foreColor_ExtraInfo;
 
@@ -590,7 +590,7 @@ namespace DigitalProductionProgram.MainWindow
             if (string.IsNullOrEmpty(Order.OrderNumber))
                 return;
 
-            await measureStats.Add_MeasureInformation_MainForm(measurementChart, tlp_MainWindow);
+            await measureStats.Add_MeasureInformation_MainForm(cf_MeasurementChart, tlp_MainWindow);
         }
 
         //---------------------------------------------STARTA ORDER---------------------------------------------
@@ -656,7 +656,7 @@ namespace DigitalProductionProgram.MainWindow
             MeasurementChart.LoadAvgValuesForLastOrder();
             MeasurementChart.LoadAvgValuesForPart();
 
-            await measureStats.Add_MeasureInformation_MainForm(measurementChart, tlp_MainWindow);
+            await measureStats.Add_MeasureInformation_MainForm(cf_MeasurementChart, tlp_MainWindow);
 
             //Task.Factory.StartNew(() => measureStats.Add_MeasureInformation_MainForm(panelChart, tlp_MainWindow));
 
@@ -749,7 +749,7 @@ namespace DigitalProductionProgram.MainWindow
             measurePoints.Visible = false;
             measureStats.Visible = false;
             
-            measurementChart.Visible = false;
+            cf_MeasurementChart.Visible = false;
             tlp_ExtraInfo.Visible = false;
             Buttons.Change_GUI_Buttons();
             Order.Clear_Order();

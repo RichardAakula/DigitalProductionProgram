@@ -231,9 +231,6 @@ ORDER BY v.Major DESC, v.Minor DESC, v.Patch DESC, v.Build DESC;";
             if (DesignMode || Program.IsInDesignMode())
                 return;
 
-            if (DesignMode || Program.IsInDesignMode())
-                return;
-
             await Load_StatisticsAsync();
         }
         public async Task Load_StatisticsAsync()
@@ -267,12 +264,15 @@ ORDER BY v.Major DESC, v.Minor DESC, v.Patch DESC, v.Build DESC;";
                 Name = legendText,
                 Stroke = new SolidColorPaint(SKColors.SteelBlue, 1),
             };
+            var color = Teman.backColor_ChartStats;
+            if (color != Color.FromArgb(35,35,35))
+                color = Color.FromArgb(35, 35,35);
             var chart_Stats = new CartesianChart
             {
                 Dock = DockStyle.Fill,
                 Name = "chart_Stats",
                 Text = legendText,
-                BackColor = Teman.backColor_ChartStats,
+                BackColor = color, //Teman.backColor_ChartStats,
                 LegendPosition = LiveChartsCore.Measure.LegendPosition.Top,
                 LegendTextPaint = new SolidColorPaint(SKColors.White, 1),
                 LegendTextSize = 12,

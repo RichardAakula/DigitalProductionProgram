@@ -1265,7 +1265,7 @@ namespace DigitalProductionProgram.OrderManagement
                             return ShowMessage("Fyll i Produktionsparametrarna i Körprotokollet", main);
                     }
 
-                    return false;
+                    return true;
                 });
             }
             private static bool IsCommentsDone(Main_Form main)

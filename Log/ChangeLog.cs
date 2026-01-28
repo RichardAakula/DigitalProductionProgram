@@ -243,8 +243,8 @@ namespace DigitalProductionProgram.Log
                     ORDER BY ID";
 
                 using var cmd = new SqlCommand(query, con);
-                using var reader = cmd.ExecuteReader();
                 cmd.Parameters.AddWithValue("@hostname", Environment.MachineName);
+                using var reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
                     versions.Add(new VersionInfo

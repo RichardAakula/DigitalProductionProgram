@@ -831,7 +831,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                 _ = Activity.Stop($"Felsökning: ModuleRightMouseDown - ColumnIndex.ReadOnly: Row= {e.RowIndex}, Col = {e.ColumnIndex}, Button = {e.Button}");
                 return;
             }
-            if (IsAuthenticationNeeded)
+            if (IsAuthenticationNeeded && e.RowIndex > dgv_Module.Rows.Count - 3)
             {
                 _ = Activity.Stop($"Felsökning: ModuleRightMouseDown - IsAuthenticationNeeded: Row= {e.RowIndex}, Col = {e.ColumnIndex}, Button = {e.Button}");
                 return;

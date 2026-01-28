@@ -253,25 +253,8 @@ namespace DigitalProductionProgram.MainWindow
 
             switch (Order.WorkOperation)
             {
-                case Manage_WorkOperation.WorkOperations.Blandning_PTFE:
-                case Manage_WorkOperation.WorkOperations.Extrudering_FEP:
-                case Manage_WorkOperation.WorkOperations.Extrudering_PTFE:
-                case Manage_WorkOperation.WorkOperations.Extrudering_Grov_PTFE:
-                case Manage_WorkOperation.WorkOperations.Extrudering_Termo:
-                case Manage_WorkOperation.WorkOperations.Extrudering_Tryck:
-                case Manage_WorkOperation.WorkOperations.Extrusion_HS:
-                case Manage_WorkOperation.WorkOperations.Hackning_PTFE:
-                case Manage_WorkOperation.WorkOperations.Hackning_TEF:
-                case Manage_WorkOperation.WorkOperations.Krympslangsblåsning:
-                case Manage_WorkOperation.WorkOperations.HeatShrink:
-                case Manage_WorkOperation.WorkOperations.Kragning_TEF:
-                case Manage_WorkOperation.WorkOperations.Kragning_PTFE:
-                case Manage_WorkOperation.WorkOperations.Kragning_K22_PTFE:
-                case Manage_WorkOperation.WorkOperations.Skärmning:
-                case Manage_WorkOperation.WorkOperations.Slipning:
-                case Manage_WorkOperation.WorkOperations.Spolning_PTFE:
-                case Manage_WorkOperation.WorkOperations.Svetsning:
-                case Manage_WorkOperation.WorkOperations.Synergy_PTFE_K18:
+                default:
+
                     Browse_Protocols.Browse_Protocols.Is_BrowsingProtocols = true;
                     var bp = new Browse_Protocols.Browse_Protocols(Order.PartNumber);
                     var cs = Screen.FromControl(this);
@@ -279,16 +262,11 @@ namespace DigitalProductionProgram.MainWindow
                     bp.ShowDialog();
                     bp.Dispose();
                     break;
-                
                 case Manage_WorkOperation.WorkOperations.Nothing:
                     var välj = new Choose_WorkOperation_BrowseProtocols_ManageProcesscards( false, false, true,LanguageManager.GetString("browseProtocols"));
                     välj.ShowDialog();
                     välj.Dispose();
                     break;
-
-                default:
-                    return;
-
             }
 
             Order.Restore_TempOrderInfo();

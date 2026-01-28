@@ -4,7 +4,8 @@ using DigitalProductionProgram.PrintingServices;
 using Microsoft.Data.SqlClient;
 using System.Diagnostics;
 using System.Reflection;
-using System.Xml.Linq;  
+using System.Xml.Linq;
+using DigitalProductionProgram.Help;
 
 namespace DigitalProductionProgram.Log
 {
@@ -59,7 +60,6 @@ namespace DigitalProductionProgram.Log
             }
         }
 
-
         public static Version LatestVersion
         {
             get
@@ -102,18 +102,6 @@ namespace DigitalProductionProgram.Log
         {
             get
             {
-                // const string appInstallerPath = @"\\optifil\dpp\Install DPP.appinstaller";
-
-                // ✅ Kontrollera att filen finns innan vi försöker läsa
-                //if (File.Exists(appInstallerPath))
-                //{
-                //    var doc = XDocument.Load(appInstallerPath);
-                //    var versionStr = doc.Root?.Attribute("Version")?.Value;
-                //    Version.TryParse(versionStr, out var latestVersion);
-                //    if (latestVersion != null)
-                //        return latestVersion;
-                //}
-
                 try
                 {
                     return Database.ExecuteSafe(con =>
@@ -131,13 +119,13 @@ namespace DigitalProductionProgram.Log
                             ORDER BY ID DESC;";
                         var cmd = new SqlCommand(query, con);
                         cmd.Parameters.AddWithValue("@hostname", Environment.MachineName);
-                        Version.TryParse((string)cmd.ExecuteScalar(), out var vers);
+                        Version.TryParse((string)cmd.ExecuteScalar(), out Version? vers);
                         return vers;
                     });
                 }
                 catch
                 {
-                    Debug.WriteLine("Försöker hämta senaste version från databas");
+                    InfoText.Show("Error with Versionnumber, please contact Admin", CustomColors.InfoText_Color.Bad, "Warning!");
                     return null;
                 }
             }

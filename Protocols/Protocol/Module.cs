@@ -815,11 +815,29 @@ namespace DigitalProductionProgram.Protocols.Protocol
         private void Module_ShowSpecialItems_CellRightMouseDown(object sender, DataGridViewCellMouseEventArgs e)
         {
             if (Browse_Protocols.Browse_Protocols.Is_BrowsingProtocols)
+            {
+                _ = Activity.Stop($"Felsökning: ModuleRightMouseDown - IsBrowsingProtocol: Row= {e.RowIndex}, Col = {e.ColumnIndex}, Button = {e.Button}");
                 return;
-            if (IsOkShowList == false || dgv_Module.Columns[e.ColumnIndex].ReadOnly)
+            }
+
+            if (IsOkShowList == false) 
+            {
+                _ =Activity.Stop($"Felsökning: ModuleRightMouseDown - IsOkShowList = false:  Row= {e.RowIndex}, Col = {e.ColumnIndex}, Button = {e.Button}");
                 return;
-            if (IsAuthenticationNeeded && e.RowIndex > dgv_Module.Rows.Count - 3)
+            }
+
+            if (dgv_Module.Columns[e.ColumnIndex].ReadOnly)
+            {
+                _ = Activity.Stop($"Felsökning: ModuleRightMouseDown - ColumnIndex.ReadOnly: Row= {e.RowIndex}, Col = {e.ColumnIndex}, Button = {e.Button}");
                 return;
+            }
+            if (IsAuthenticationNeeded)
+            {
+                _ = Activity.Stop($"Felsökning: ModuleRightMouseDown - IsAuthenticationNeeded: Row= {e.RowIndex}, Col = {e.ColumnIndex}, Button = {e.Button}");
+                return;
+            }
+
+
             var isProcesscardUnderManagement = Manage_Processcards.IsProcesscardUnderManagement;
             dgv_Module.Focus();
             var row = e.RowIndex;

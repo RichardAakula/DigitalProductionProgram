@@ -121,11 +121,11 @@ namespace DigitalProductionProgram.MainWindow
         {
             Order.Clear_Order();
             mainForm.Clear_Mainform();
-            mainForm.OrderInformation.Clear();
-            mainForm.OrderInformation.tb_OrderNr.Focus();
-            mainForm.measurePoints.ClearMeasurePoints();
-            mainForm.measureStats.ClearData();
-            mainForm.OrderInformation.tb_OrderNr.Enabled = true;
+            mainForm.cf_OrderInformation.Clear();
+            mainForm.cf_OrderInformation.tb_OrderNr.Focus();
+            mainForm.cf_MeasurePoints.ClearMeasurePoints();
+            mainForm.cf_MeasureStats.ClearData();
+            mainForm.cf_OrderInformation.tb_OrderNr.Enabled = true;
             // mainForm.Change_Theme();
             mainForm.tlp_Left.BackColor = Color.Transparent;
             mainForm.BackColor = Color.FromArgb(25, 25, 25);
@@ -168,11 +168,11 @@ namespace DigitalProductionProgram.MainWindow
             frmÖppna.ShowDialog();
             if (Order.OrderNumber != null & frmÖppna.svarÖppna)
             {
-                mainForm.OrderInformation.cb_Operation.SelectedIndexChanged -= mainForm.Operation_SelectedIndexChanged;
-                mainForm.OrderInformation.tb_OrderNr.Text = Order.OrderNumber;
-                mainForm.OrderInformation.cb_Operation.Text = $"{Order.Operation} - {Order.Description}";
-                mainForm.OrderInformation.cb_Operation.SelectedIndex = -1; //Detta görs för att inte Order.Operation skall ändras vid metoden StartaOrder()
-                mainForm.OrderInformation.cb_Operation.SelectedIndexChanged += mainForm.Operation_SelectedIndexChanged;
+                mainForm.cf_OrderInformation.cb_Operation.SelectedIndexChanged -= mainForm.Operation_SelectedIndexChanged;
+                mainForm.cf_OrderInformation.tb_OrderNr.Text = Order.OrderNumber;
+                mainForm.cf_OrderInformation.cb_Operation.Text = $"{Order.Operation} - {Order.Description}";
+                mainForm.cf_OrderInformation.cb_Operation.SelectedIndex = -1; //Detta görs för att inte Order.Operation skall ändras vid metoden StartaOrder()
+                mainForm.cf_OrderInformation.cb_Operation.SelectedIndexChanged += mainForm.Operation_SelectedIndexChanged;
 
                 Menu_Order_OrderDone.Enabled = true;
                 _ = mainForm.StartOrLoadOrder(true);
@@ -252,7 +252,7 @@ namespace DigitalProductionProgram.MainWindow
                 InfoText.Show(LanguageManager.GetString("deleteOrder_Info_1"), CustomColors.InfoText_Color.Bad, "Warning", this);
 
             _ = Main_FilterQuickOpen.Load_ListAsync(mainForm.dgv_QuickOpen);
-            mainForm.PriorityPlanning.Load_PriorityPlanning();
+            mainForm.cf_PriorityPlanning.Load_PriorityPlanning();
 
         }
         private void Menu_Order_ReportToJira_Click(object sender, EventArgs e)
@@ -321,8 +321,8 @@ namespace DigitalProductionProgram.MainWindow
 
             Log.Activity.Start();
 
-            mainForm.OrderInformation.tb_OrderNr.Text = Order.OrderNumber;
-            mainForm.OrderInformation.cb_Operation.Text = Order.Operation;
+            mainForm.cf_OrderInformation.tb_OrderNr.Text = Order.OrderNumber;
+            mainForm.cf_OrderInformation.cb_Operation.Text = Order.Operation;
 
             //Order.Start.Save_MainInfo();
             _ = mainForm.StartOrLoadOrder(true);
@@ -332,7 +332,7 @@ namespace DigitalProductionProgram.MainWindow
         }
         private void Menu_Order_OpenRandomOrder_Click(object sender, EventArgs e)
         {
-            Order.Start.OpenRandomOrder(mainForm.OrderInformation);
+            Order.Start.OpenRandomOrder(mainForm.cf_OrderInformation);
         }
         private void Menu_Order_RelinkProcesscard_Click(object sender, EventArgs e)
         {
@@ -372,7 +372,7 @@ namespace DigitalProductionProgram.MainWindow
 
                 cmd.ExecuteNonQuery();
             });
-            mainForm.OrderInformation.lbl_RevNr.Text = Order.RevNr;
+            mainForm.cf_OrderInformation.lbl_RevNr.Text = Order.RevNr;
         }
         private void Menu_Order_RelinkProtocol_Click(object sender, EventArgs e)
         {
@@ -681,7 +681,7 @@ namespace DigitalProductionProgram.MainWindow
         }
         private void Menu_Settings_ToolsCalculator_Click(object sender, EventArgs e)
         {
-            ToolCalculator toolCalculator = new ToolCalculator(mainForm.OrderInformation.tb_OrderNr.AutoCompleteCustomSource);
+            ToolCalculator toolCalculator = new ToolCalculator(mainForm.cf_OrderInformation.tb_OrderNr.AutoCompleteCustomSource);
             toolCalculator.Show();
 
         }
@@ -875,10 +875,10 @@ Protocol.MainTemplate.Revision = {Templates_Protocol.MainTemplate.Revision}"
             Order.WorkOperation = Manage_WorkOperation.WorkOperations.Extrudering_Termo;
 
             // Uppdatera UI utan att trigga SelectedIndexChanged
-            mainForm.OrderInformation.cb_Operation.SelectedIndexChanged -= mainForm.Operation_SelectedIndexChanged;
-            mainForm.OrderInformation.tb_OrderNr.Text = Order.OrderNumber;
-            mainForm.OrderInformation.cb_Operation.SelectedIndex = -1;
-            mainForm.OrderInformation.cb_Operation.SelectedIndexChanged += mainForm.Operation_SelectedIndexChanged;
+            mainForm.cf_OrderInformation.cb_Operation.SelectedIndexChanged -= mainForm.Operation_SelectedIndexChanged;
+            mainForm.cf_OrderInformation.tb_OrderNr.Text = Order.OrderNumber;
+            mainForm.cf_OrderInformation.cb_Operation.SelectedIndex = -1;
+            mainForm.cf_OrderInformation.cb_Operation.SelectedIndexChanged += mainForm.Operation_SelectedIndexChanged;
 
             // Starta eller ladda order
             _ = mainForm.StartOrLoadOrder(true);

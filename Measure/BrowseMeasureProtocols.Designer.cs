@@ -203,13 +203,13 @@ namespace DigitalProductionProgram.Measure
             // 
             // measurePoints
             // 
-            measurePoints.BackColor = Color.Black;
-            measurePoints.Dock = DockStyle.Fill;
-            measurePoints.Location = new Point(5, 3);
-            measurePoints.Margin = new Padding(5, 3, 5, 3);
-            measurePoints.Name = "measurePoints";
-            measurePoints.Size = new Size(466, 767);
-            measurePoints.TabIndex = 2;
+            cf_MeasurePoints.BackColor = Color.Black;
+            cf_MeasurePoints.Dock = DockStyle.Fill;
+            cf_MeasurePoints.Location = new Point(5, 3);
+            cf_MeasurePoints.Margin = new Padding(5, 3, 5, 3);
+            cf_MeasurePoints.Name = "measurePoints";
+            cf_MeasurePoints.Size = new Size(466, 767);
+            cf_MeasurePoints.TabIndex = 2;
             // 
             // panel_TopRight
             // 

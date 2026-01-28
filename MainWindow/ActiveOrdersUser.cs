@@ -54,11 +54,11 @@ namespace DigitalProductionProgram.MainWindow
             foreach (var lbl in labels.Where(lbl => lbl != label_Header_ActiveOrders))
                 lbl.Invoke(new Action(() => DisposeControl(lbl)));
         }
-        public void Load_OrderNr(Main_OrderInformation? OrderInformation)
+        public void Load_OrderNr(Main_OrderInformation? cf_OrderInformation)
         {
             Clear_OrderNr();
             var ctr = 0;
-            orderInformation = OrderInformation;
+            orderInformation = cf_OrderInformation;
 
             Database.ExecuteSafe(con =>
             {

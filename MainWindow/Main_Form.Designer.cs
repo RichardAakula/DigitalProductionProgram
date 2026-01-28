@@ -46,16 +46,16 @@ namespace DigitalProductionProgram.MainWindow
             lbl_ExtraInfo = new Label();
             label_ExtraInfo = new Label();
             this.cf_MeasurePoints = new MeasurePoints();
-            measureStats = new MainMeasureStatistics();
+            cf_MeasureStats = new MainMeasureStatistics();
             this.cf_OrderInformation = new Main_OrderInformation();
-            AQL = new Main_AQL();
+            cf_AQL = new Main_AQL();
             panel_Right = new Panel();
             this.cf_FeedBackQC = new DigitalProductionProgram.QC.FeedBackQC();
             this.cf_TipsAndTrix = new DigitalProductionProgram.Övrigt.TipsAndTrix();
             tlp_Top = new TableLayoutPanel();
-            MainMenu = new Main_Menu();
-            Serverstatus = new ServerStatus();
-            RollingInformation = new RollingInformation();
+            cf_MainMenu = new Main_Menu();
+            cf_Serverstatus = new ServerStatus();
+            cf_RollingInformation = new RollingInformation();
             tlp_Left = new TableLayoutPanel();
             panel_Profile = new Panel();
             tlp_UserInfo = new TableLayoutPanel();
@@ -214,16 +214,16 @@ namespace DigitalProductionProgram.MainWindow
             this.cf_MeasurePoints.TabIndex = 915;
             this.cf_MeasurePoints.Visible = false;
             // 
-            // measureStats
+            // cf_MeasureStats
             // 
-            measureStats.BackColor = Color.Transparent;
-            measureStats.Dock = DockStyle.Fill;
-            measureStats.Location = new Point(549, 195);
-            measureStats.Margin = new Padding(12, 0, 0, 0);
-            measureStats.Name = "measureStats";
-            measureStats.Size = new Size(385, 164);
-            measureStats.TabIndex = 916;
-            measureStats.Visible = false;
+            cf_MeasureStats.BackColor = Color.Transparent;
+            cf_MeasureStats.Dock = DockStyle.Fill;
+            cf_MeasureStats.Location = new Point(549, 195);
+            cf_MeasureStats.Margin = new Padding(12, 0, 0, 0);
+            cf_MeasureStats.Name = "cf_MeasureStats";
+            cf_MeasureStats.Size = new Size(385, 164);
+            cf_MeasureStats.TabIndex = 916;
+            cf_MeasureStats.Visible = false;
             // 
             // cf_OrderInformation
             // 
@@ -238,15 +238,15 @@ namespace DigitalProductionProgram.MainWindow
             // 
             // AQL
             // 
-            AQL.BackColor = Color.FromArgb(60, 60, 60);
-            AQL.Dock = DockStyle.Left;
-            AQL.Location = new Point(1104, 3);
-            AQL.Margin = new Padding(0, 3, 4, 23);
-            AQL.Name = "AQL";
-            tlp_MainWindow.SetRowSpan(AQL, 3);
-            AQL.Size = new Size(211, 169);
-            AQL.TabIndex = 919;
-            AQL.Visible = false;
+            cf_AQL.BackColor = Color.FromArgb(60, 60, 60);
+            cf_AQL.Dock = DockStyle.Left;
+            cf_AQL.Location = new Point(1104, 3);
+            cf_AQL.Margin = new Padding(0, 3, 4, 23);
+            cf_AQL.Name = "AQL";
+            tlp_MainWindow.SetRowSpan(cf_AQL, 3);
+            cf_AQL.Size = new Size(211, 169);
+            cf_AQL.TabIndex = 919;
+            cf_AQL.Visible = false;
             // 
             // panel_Right
             // 
@@ -289,9 +289,9 @@ namespace DigitalProductionProgram.MainWindow
             tlp_Top.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 665F));
             tlp_Top.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
             tlp_Top.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 169F));
-            tlp_Top.Controls.Add(MainMenu, 0, 0);
-            tlp_Top.Controls.Add(Serverstatus, 2, 0);
-            tlp_Top.Controls.Add(RollingInformation, 1, 0);
+            tlp_Top.Controls.Add(cf_MainMenu, 0, 0);
+            tlp_Top.Controls.Add(cf_Serverstatus, 2, 0);
+            tlp_Top.Controls.Add(cf_RollingInformation, 1, 0);
             tlp_Top.Dock = DockStyle.Top;
             tlp_Top.Location = new Point(0, 0);
             tlp_Top.Margin = new Padding(0);
@@ -303,33 +303,33 @@ namespace DigitalProductionProgram.MainWindow
             // 
             // MainMenu
             // 
-            MainMenu.AutoSize = true;
-            MainMenu.BackColor = Color.Transparent;
-            MainMenu.Dock = DockStyle.Fill;
-            MainMenu.Location = new Point(0, 0);
-            MainMenu.Margin = new Padding(0);
-            MainMenu.Name = "MainMenu";
-            MainMenu.Size = new Size(665, 43);
-            MainMenu.TabIndex = 894;
+            cf_MainMenu.AutoSize = true;
+            cf_MainMenu.BackColor = Color.Transparent;
+            cf_MainMenu.Dock = DockStyle.Fill;
+            cf_MainMenu.Location = new Point(0, 0);
+            cf_MainMenu.Margin = new Padding(0);
+            cf_MainMenu.Name = "cf_MainMenu";
+            cf_MainMenu.Size = new Size(665, 43);
+            cf_MainMenu.TabIndex = 894;
             // 
             // Serverstatus
             // 
-            Serverstatus.Dock = DockStyle.Fill;
-            Serverstatus.Location = new Point(1760, 3);
-            Serverstatus.Margin = new Padding(5, 3, 5, 3);
-            Serverstatus.Name = "Serverstatus";
-            Serverstatus.Size = new Size(159, 37);
-            Serverstatus.TabIndex = 895;
+            cf_Serverstatus.Dock = DockStyle.Fill;
+            cf_Serverstatus.Location = new Point(1760, 3);
+            cf_Serverstatus.Margin = new Padding(5, 3, 5, 3);
+            cf_Serverstatus.Name = "cf_Serverstatus";
+            cf_Serverstatus.Size = new Size(159, 37);
+            cf_Serverstatus.TabIndex = 895;
             // 
             // RollingInformation
             // 
-            RollingInformation.BackColor = Color.Transparent;
-            RollingInformation.Dock = DockStyle.Fill;
-            RollingInformation.Location = new Point(669, 3);
-            RollingInformation.Margin = new Padding(4, 3, 4, 3);
-            RollingInformation.Name = "RollingInformation";
-            RollingInformation.Size = new Size(1082, 37);
-            RollingInformation.TabIndex = 896;
+            cf_RollingInformation.BackColor = Color.Transparent;
+            cf_RollingInformation.Dock = DockStyle.Fill;
+            cf_RollingInformation.Location = new Point(669, 3);
+            cf_RollingInformation.Margin = new Padding(4, 3, 4, 3);
+            cf_RollingInformation.Name = "cf_RollingInformation";
+            cf_RollingInformation.Size = new Size(1082, 37);
+            cf_RollingInformation.TabIndex = 896;
             // 
             // tlp_Left
             // 
@@ -800,10 +800,10 @@ namespace DigitalProductionProgram.MainWindow
             tlp_MainWindow.Controls.Add(pb_Info_UserPoints, 2, 1);
             tlp_MainWindow.Controls.Add(tlp_ExtraInfo, 4, 3);
             tlp_MainWindow.Controls.Add(lbl_Rating, 2, 2);
-            tlp_MainWindow.Controls.Add(AQL, 4, 0);
+            tlp_MainWindow.Controls.Add(cf_AQL, 4, 0);
             tlp_MainWindow.Controls.Add(this.cf_OrderInformation, 0, 0);
             tlp_MainWindow.Controls.Add(this.cf_MeasurePoints, 0, 3);
-            tlp_MainWindow.Controls.Add(measureStats, 1, 3);
+            tlp_MainWindow.Controls.Add(cf_MeasureStats, 1, 3);
             tlp_MainWindow.Controls.Add(this.cf_Statistics_DPP, 3, 4);
             tlp_MainWindow.Controls.Add(cf_MeasurementChart, 0, 4);
             tlp_MainWindow.Dock = DockStyle.Fill;
@@ -912,11 +912,11 @@ namespace DigitalProductionProgram.MainWindow
         private System.Windows.Forms.Timer timer_Check_MeasurePoints;
         private System.Windows.Forms.Timer timer_Check_If_Maintenance_Has_Started;
        
-        public MainMeasureStatistics measureStats;
-        public MeasurePoints measurePoints;
-        public Main_OrderInformation OrderInformation;
-        public Main_AQL AQL;
-        public Main_Buttons Buttons;
+        public MainMeasureStatistics cf_MeasureStats;
+        public MeasurePoints cf_MeasurePoints;
+        public Main_OrderInformation cf_OrderInformation;
+        public Main_AQL cf_AQL;
+        public Main_Buttons cf_Buttons;
         public Panel panel_Profile;
         private PictureBox pbOperatör;
         private PictureBox pb_Grade;
@@ -932,11 +932,11 @@ namespace DigitalProductionProgram.MainWindow
         private Label lbl_Company;
         private Panel panel_Background_OptinovaLogo;
         private PictureBox pBox_OptinovaLogo;
-        public Main_Menu MainMenu;
+        public Main_Menu cf_MainMenu;
         private TableLayoutPanel tlp_UserInfo;
         private System.Windows.Forms.Timer timer_ReLogin_Monitor;
-        public ServerStatus Serverstatus;
-        private QC.FeedBackQC FeedBackQC;
+        public ServerStatus cf_Serverstatus;
+        private QC.FeedBackQC cf_FeedBackQC;
         private Panel panel_Right;
         public TableLayoutPanel tlp_QuickOpen;
         private Label label_Filter;
@@ -944,14 +944,14 @@ namespace DigitalProductionProgram.MainWindow
         public DataGridView dgv_QuickOpen;
         private Label label_QuickOpenOrder;
         private Panel panel_Bottom;
-        public Main_Priorityplanning PriorityPlanning;
+        public Main_Priorityplanning cf_PriorityPlanning;
         private SplitContainer spitContainer_Bottom;
         private SplitContainer splitContainer_Right;
-        private ActiveOrdersUser ActiveOrdersUser;
-        private Statistics_DPP Statistics_DPP;
-        public Övrigt.TipsAndTrix TipsAndTrix;
+        private ActiveOrdersUser cf_ActiveOrdersUser;
+        private Statistics_DPP cf_Statistics_DPP;
+        public Övrigt.TipsAndTrix cf_TipsAndTrix;
         private MeasurementChart cf_MeasurementChart;
-        private RollingInformation RollingInformation;
+        private RollingInformation cf_RollingInformation;
         public TableLayoutPanel tlp_Left;
     }
 }

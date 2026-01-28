@@ -785,17 +785,15 @@ namespace DigitalProductionProgram.Templates
         }
         private void LoadRevisions()
         {
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                const string query =
-                    @"SELECT DISTINCT Revision FROM Protocol.Template WHERE FormTemplateID IN (SELECT FormTemplateID FROM Protocol.FormTemplate WHERE MainTemplateID = @maintemplate) ORDER BY Revision DESC";
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@maintemplate", MainTemplate.ID);
-                con.Open();
-                var value = cmd.ExecuteScalar();
-                if (value != null)
-                    cb_TemplateRevision.Text = value.ToString();
-            }
+            using var con = new SqlConnection(Database.cs_Protocol);
+            const string query =
+                @"SELECT DISTINCT Revision FROM Protocol.Template WHERE FormTemplateID IN (SELECT FormTemplateID FROM Protocol.FormTemplate WHERE MainTemplateID = @maintemplate) ORDER BY Revision DESC";
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            cmd.Parameters.AddWithValue("@maintemplate", MainTemplate.ID);
+            con.Open();
+            var value = cmd.ExecuteScalar();
+            if (value != null)
+                cb_TemplateRevision.Text = value.ToString();
         }
         private void Manage_Templates_FormClosed(object sender, FormClosedEventArgs e)
         {
@@ -810,7 +808,7 @@ namespace DigitalProductionProgram.Templates
 
 
 
-        public class CodeText
+        public abstract class CodeText
         {
             public static void LoadData(DataGridView dgv)
             {

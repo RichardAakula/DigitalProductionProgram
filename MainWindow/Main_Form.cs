@@ -43,48 +43,48 @@ namespace DigitalProductionProgram.MainWindow
             {
                 case Keys.F1:
                     Activity.Start();
-                    ctrl = Buttons.Measureprotocol;
-                    Buttons.F1_MeasureProtocol_Click(ctrl, null);
+                    ctrl = cf_Buttons.Measureprotocol;
+                    cf_Buttons.F1_MeasureProtocol_Click(ctrl, null);
                     return true; // indicate that you handled this keystroke
                 case Keys.F2:
                     Log.Activity.Start();
-                    ctrl = Buttons.Protocol;
-                    Buttons.F2_Protocol_Click(ctrl, null);
+                    ctrl = cf_Buttons.Protocol;
+                    cf_Buttons.F2_Protocol_Click(ctrl, null);
                     return true;
                 case Keys.F3:
                     Activity.Start();
-                    ctrl = Buttons.BrowseOldMeasureprotocol;
-                    Buttons.F3_SearchOldMeasureProtocols_Click(ctrl, null);
+                    ctrl = cf_Buttons.BrowseOldMeasureprotocol;
+                    cf_Buttons.F3_SearchOldMeasureProtocols_Click(ctrl, null);
                     return true;
                 case Keys.F4:
                     Activity.Start();
-                    ctrl = Buttons.BrowseOldOrders;
-                    Buttons.F4_SearchOldProtocols(ctrl, null);
+                    ctrl = cf_Buttons.BrowseOldOrders;
+                    cf_Buttons.F4_SearchOldProtocols(ctrl, null);
                     return true;
                 case Keys.F5:
                     Activity.Start();
-                    ctrl = Buttons.Compound;
-                    Buttons.F5_Compund_Click(ctrl, null);
+                    ctrl = cf_Buttons.Compound;
+                    cf_Buttons.F5_Compund_Click(ctrl, null);
                     return true;
                 case Keys.F6:
                     Activity.Start();
-                    ctrl = Buttons.Zumbach;
-                    Buttons.F6_Zumbach_Click(ctrl, null);
+                    ctrl = cf_Buttons.Zumbach;
+                    cf_Buttons.F6_Zumbach_Click(ctrl, null);
                     break;
                 case Keys.F7:
                     Activity.Start();
-                    ctrl = Buttons.OverviewProdlines;
-                    Buttons.F7_OverviewProdLines_Click(ctrl, null);
+                    ctrl = cf_Buttons.OverviewProdlines;
+                    cf_Buttons.F7_OverviewProdLines_Click(ctrl, null);
                     return true;
                 case Keys.F8:
                     Activity.Start();
-                    ctrl = Buttons.Statistics;
-                    Buttons.F8_Statistics_Click(ctrl, null);
+                    ctrl = cf_Buttons.Statistics;
+                    cf_Buttons.F8_Statistics_Click(ctrl, null);
                     return true;
                 case Keys.F9:
                     Activity.Start();
-                    ctrl = Buttons.Frequency_Marking;
-                    Buttons.F9_FrequencyMarking_Click(ctrl, null);
+                    ctrl = cf_Buttons.Frequency_Marking;
+                    cf_Buttons.F9_FrequencyMarking_Click(ctrl, null);
                     return true;
                 case Keys.F12:
                     //black.Close();
@@ -132,13 +132,13 @@ namespace DigitalProductionProgram.MainWindow
 
             if (Database.cs_Protocol.Contains("GOD_DPP_DEV"))
                 IsBetaMode = true;
-            MainMenu.mainForm = this;
-            OrderInformation.mainForm = this;
-            Serverstatus.SetMainForm(this);
-            PriorityPlanning.dgv_PriorityPlanning.CellClick += PriorityPlanning_OrderNr_CellClick;
-            OrderInformation.cb_Operation.SelectedIndexChanged += Operation_SelectedIndexChanged;
+            cf_MainMenu.mainForm = this;
+            cf_OrderInformation.mainForm = this;
+            cf_Serverstatus.SetMainForm(this);
+            cf_PriorityPlanning.dgv_PriorityPlanning.CellClick += PriorityPlanning_OrderNr_CellClick;
+            cf_OrderInformation.cb_Operation.SelectedIndexChanged += Operation_SelectedIndexChanged;
             lbl_Company.Text = Monitor.Monitor.factory.ToString();
-            OrderInformation.tb_OrderNr.Focus();
+            cf_OrderInformation.tb_OrderNr.Focus();
 
             print = new Manage_PrintOuts();
            
@@ -166,7 +166,7 @@ namespace DigitalProductionProgram.MainWindow
                         Teman.Choose_Theme();
 
                         if (!Program.IsComputerOnlyForMeasurements)
-                            OrderInformation.tb_OrderNr.AutoCompleteCustomSource = Monitor.Monitor.AutoFillOrdernr;
+                            cf_OrderInformation.tb_OrderNr.AutoCompleteCustomSource = Monitor.Monitor.AutoFillOrdernr;
 
                         _ = Main_FilterQuickOpen.Load_ListAsync(dgv_QuickOpen);
                     });
@@ -188,10 +188,10 @@ namespace DigitalProductionProgram.MainWindow
             if (IsAutoOpenOrder == false)
             {
                 Monitor.Monitor.Load_WorkCenters();
-                PriorityPlanning.Load_ProdGrupp();
+                cf_PriorityPlanning.Load_ProdGrupp();
                 if (Settings.Settings.MeasuringComputerOnly)
                     Change_GUI_Mätdator();
-                await Task.Run(() => RollingInformation.Change_Tips());
+                await Task.Run(() => cf_RollingInformation.Change_Tips());
                 //RollingInformation.Change_Tips();
             }
 
@@ -207,7 +207,7 @@ namespace DigitalProductionProgram.MainWindow
            
             var processes = Process.GetProcessesByName("DigitalProductionProgram");
             await Activity.Stop($"Application startup # {processes.Length}");
-            _scheduler = new ApplicationScheduler(UpdateMeasureInformationAsync, UpdateGuiGrade, Statistics_DPP, Serverstatus);
+            _scheduler = new ApplicationScheduler(UpdateMeasureInformationAsync, UpdateGuiGrade, cf_Statistics_DPP, cf_Serverstatus);
             _scheduler.Start();
             _scheduler.CheckForUpdate();
             Text = "Digital Production Program - " + ChangeLog.CurrentVersion;
@@ -270,13 +270,13 @@ namespace DigitalProductionProgram.MainWindow
             IsLoadingPriorityPlan = true;
             Timer_UpdateSQL_Counter.Start();
             Timer_UpdateSQL_Counter.Interval = 1000; // 1 sekund
-            Timer_UpdateSQL_Counter.Tick += (s, e) => Serverstatus.Set_Sql_Counter();
+            Timer_UpdateSQL_Counter.Tick += (s, e) => cf_Serverstatus.Set_Sql_Counter();
            
 
-            Serverstatus.lbl_SQL_Queries.Visible = true;
-            Serverstatus.lbl_Memory.Visible = true;
-            Serverstatus.label_Queries.Visible = true;
-            Serverstatus.label_Memory.Visible = true;
+            cf_Serverstatus.lbl_SQL_Queries.Visible = true;
+            cf_Serverstatus.lbl_Memory.Visible = true;
+            cf_Serverstatus.label_Queries.Visible = true;
+            cf_Serverstatus.label_Memory.Visible = true;
 
             Person.Name = "Richard Aakula";
             Person.Sign = "RA";
@@ -285,7 +285,7 @@ namespace DigitalProductionProgram.MainWindow
             Person.Role = "SuperAdmin";
             pbOperatör.Image = Person.ProfilePicture(Person.Name);
             Person.Mail = "richard.aakula@optinova.com";
-            ActiveOrdersUser.Visible = true;
+            cf_ActiveOrdersUser.Visible = true;
 
             lbl_EmpNr.Text = Person.EmployeeNr;
             lbl_Sign.Text = Person.Sign;
@@ -293,14 +293,14 @@ namespace DigitalProductionProgram.MainWindow
             lbl_Role.Text = "SuperAdmin";
             panel_Profile.Visible = true;
             Change_GUI_Grade();
-            MainMenu.Menu_Developer.Visible = true;
-            MainMenu.Menu_Order_DeleteOrder.Enabled = true;
-            MainMenu.Unlock_Menu();
+            cf_MainMenu.Menu_Developer.Visible = true;
+            cf_MainMenu.Menu_Order_DeleteOrder.Enabled = true;
+            cf_MainMenu.Unlock_Menu();
             SaveData.UPDATE_User_Online(true, lbl_EmpNr.Text);
             if (IsOpenRandomOrder && Person.Role == "SuperAdmin")
             {
-                OrderInformation.cb_Operation.SelectedIndexChanged += Operation_SelectedIndexChanged;
-                Order.Start.OpenRandomOrder((OrderInformation));
+                cf_OrderInformation.cb_Operation.SelectedIndexChanged += Operation_SelectedIndexChanged;
+                Order.Start.OpenRandomOrder((cf_OrderInformation));
                 Order.Set_NumberOfLayers();
             }
             if (IsAutoOpenOrder && Person.Role == "SuperAdmin")
@@ -310,7 +310,7 @@ namespace DigitalProductionProgram.MainWindow
                 Order.CheckIfOldOrderNotDoneExists(ref ordernr, ref operation);
                 if (!string.IsNullOrEmpty(ordernr))
                 {
-                    Order.OrderNumber = OrderInformation.tb_OrderNr.Text = ordernr;
+                    Order.OrderNumber = cf_OrderInformation.tb_OrderNr.Text = ordernr;
                     Order.Operation = operation;
                     Order.Load_OrderID(Order.OrderNumber, Order.Operation);
                     Order.Load_ProdLine();
@@ -318,23 +318,23 @@ namespace DigitalProductionProgram.MainWindow
                     _ = StartOrLoadOrder(true);
                     //Open();
                     Order.Set_NumberOfLayers();
-                    //Task.Factory.StartNew(() => measureStats.Add_MeasureInformation_MainForm(panelChart, tlp_MainWindow));
-                    Task.Run(Buttons.Change_GUI_Buttons);
+                    //Task.Factory.StartNew(() => cf_MeasureStats.Add_MeasureInformation_MainForm(panelChart, tlp_MainWindow));
+                    Task.Run(cf_Buttons.Change_GUI_Buttons);
 
                 }
             }
 
             WindowState = FormWindowState.Normal;
             Size = new Size(1920, 1080);
-            Statistics_DPP.Visible = true;
+            cf_Statistics_DPP.Visible = true;
             //Calender.Fill_OnlineMonitorUsers();
 
-            Task.Run(() => { ActiveOrdersUser.Load_OrderNr(OrderInformation); });
+            Task.Run(() => { cf_ActiveOrdersUser.Load_OrderNr(cf_OrderInformation); });
             _ = EasterEgg_Code.IsGameStarted;
 
 
-            MainMenu.Visible = true;
-            MainMenu.menuStrip.Visible = true;
+            cf_MainMenu.Visible = true;
+            cf_MainMenu.menuStrip.Visible = true;
         }
 
         
@@ -346,13 +346,13 @@ namespace DigitalProductionProgram.MainWindow
                 Invoke(new Action(Change_GUI_MainForm));
             else
             {
-                MainMenu.Menu_Order_OrderDone.Enabled = true;
-                Task.Run(Buttons.Change_GUI_Buttons);
+                cf_MainMenu.Menu_Order_OrderDone.Enabled = true;
+                Task.Run(cf_Buttons.Change_GUI_Buttons);
                 Task.Run(Change_GUI_Form);
-                OrderInformation.cb_Operation.Enabled = false;
-                AQL.Visible = CheckAuthority.IsWorkoperationAuthorized(CheckAuthority.TemplateWorkoperation.IsUsingAQL_Module);
-                TipsAndTrix.Visible = CheckAuthority.IsWorkoperationAuthorized(CheckAuthority.TemplateWorkoperation.TipsAndTrix);
-                Task.Factory.StartNew(RollingInformation.Load_list_Tips);
+                cf_OrderInformation.cb_Operation.Enabled = false;
+                cf_AQL.Visible = CheckAuthority.IsWorkoperationAuthorized(CheckAuthority.TemplateWorkoperation.IsUsingAQL_Module);
+                cf_TipsAndTrix.Visible = CheckAuthority.IsWorkoperationAuthorized(CheckAuthority.TemplateWorkoperation.TipsAndTrix);
+                Task.Factory.StartNew(cf_RollingInformation.Load_list_Tips);
             }
         }
         private void Change_GUI_Form()
@@ -361,7 +361,7 @@ namespace DigitalProductionProgram.MainWindow
                 Invoke(Change_GUI_Form);
             else
             {
-                Control[] controls = {  measurePoints, measureStats };
+                Control[] controls = { cf_MeasurePoints, cf_MeasureStats };
                 foreach (var ctrl in controls)
                     ctrl.Visible = false;
 
@@ -392,13 +392,13 @@ namespace DigitalProductionProgram.MainWindow
         }
         private void Set_GUI_Theme_Krympslang()
         {
-            Control[] textLabels = { lbl_Company, label_EmpNr, lbl_EmpNr, label_Sign, lbl_Sign, label_Role, lbl_Role, lbl_Percent, ActiveOrdersUser.label_Header_ActiveOrders };//Weather.lbl_Location, Weather.lbl_Temp, Weather.lbl_Wind,
+            Control[] textLabels = { lbl_Company, label_EmpNr, lbl_EmpNr, label_Sign, lbl_Sign, label_Role, lbl_Role, lbl_Percent, cf_ActiveOrdersUser.label_Header_ActiveOrders };//Weather.lbl_Location, Weather.lbl_Temp, Weather.lbl_Wind,
             if (string.IsNullOrEmpty(Equipment.Equipment.HS_Machine) == false)
             {
                 MachineColor.Set_HeatShrink_Color();
                 Invoke((MethodInvoker)delegate
                 {
-                    tlp_Left.BackColor = Buttons.BackColor = MachineColor.Theme_BackColor;
+                    tlp_Left.BackColor = cf_Buttons.BackColor = MachineColor.Theme_BackColor;
                 });
                 foreach (var control in textLabels)
                     control.ForeColor = MachineColor.Theme_ForeColor;
@@ -416,7 +416,7 @@ namespace DigitalProductionProgram.MainWindow
 
             var controls = new Control[]
             {
-                TipsAndTrix.label_Tips_Trix,
+                cf_TipsAndTrix.label_Tips_Trix,
                 label_EmpNr,
                 label_Sign,
                 label_Role,
@@ -425,24 +425,24 @@ namespace DigitalProductionProgram.MainWindow
             };
 
             LanguageManager.TranslationHelper.TranslateControls(controls);
-            LanguageManager.TranslationHelper.TranslateMainMenu(MainMenu.menuStrip);
+            LanguageManager.TranslationHelper.TranslateMainMenu(cf_MainMenu.menuStrip);
 
-            Buttons.Translate_Form();
-            OrderInformation.Translate_Form();
-            ActiveOrdersUser.Translate_Form();
-            PriorityPlanning.Translate_Form();
-            measurePoints.Translate_Form();
-            measureStats.Translate_Form();
+            cf_Buttons.Translate_Form();
+            cf_OrderInformation.Translate_Form();
+            cf_ActiveOrdersUser.Translate_Form();
+            cf_PriorityPlanning.Translate_Form();
+            cf_MeasurePoints.Translate_Form();
+            cf_MeasureStats.Translate_Form();
         }
 
 
         public void Change_GUI_OrderKlar()
         {
-            AQL.Visible = false;
-            TipsAndTrix.Visible = false;
+            cf_AQL.Visible = false;
+            cf_TipsAndTrix.Visible = false;
             tlp_MainWindow.BackgroundImage = null;
 
-            //measurePoints.tlp_Main.BackColor = measureStats.BackColor = tlp_ExtraInfo.BackColor = Color.Transparent;
+            //cf_MeasurePoints.tlp_Main.BackColor = cf_MeasureStats.BackColor = tlp_ExtraInfo.BackColor = Color.Transparent;
 
             tlp_Left.BackColor = Color.FromArgb(100, 20, 44, 20);
             BackColor = Color.FromArgb(20, 44, 20);
@@ -450,8 +450,8 @@ namespace DigitalProductionProgram.MainWindow
             tlp_ExtraInfo.Visible = true;
             Change_GUI_ExtraInfo();
            // MainMenu.Change_GUI_OrderFinished();
-            PriorityPlanning.Visible = false;
-            //Buttons.Change_GUI_OrderFinished();
+            cf_PriorityPlanning.Visible = false;
+            //cf_Buttons.Change_GUI_OrderFinished();
 
             if (!string.IsNullOrEmpty(Order.Rating))
             {
@@ -467,9 +467,9 @@ namespace DigitalProductionProgram.MainWindow
         }
         public void Change_GUI_StandardColor()
         {
-            PriorityPlanning.Change_GUI_OrderNotFinished();
-            MainMenu.Change_GUI_OrderNotFinished();
-            Buttons.Change_GUI_OrderNotFinished();
+            cf_PriorityPlanning.Change_GUI_OrderNotFinished();
+            cf_MainMenu.Change_GUI_OrderNotFinished();
+            cf_Buttons.Change_GUI_OrderNotFinished();
 
             label_ExtraInfo.Visible = true;
             lbl_Rating.Visible = false;
@@ -481,9 +481,9 @@ namespace DigitalProductionProgram.MainWindow
         }
         private void Change_GUI_Mätdator()
         {
-            Buttons.Change_GUI_Mätdator();
-            MainMenu.Change_GUI_Mätdator();
-            PriorityPlanning.Visible = false;
+            cf_Buttons.Change_GUI_Mätdator();
+            cf_MainMenu.Change_GUI_Mätdator();
+            cf_PriorityPlanning.Visible = false;
 
             Size = new Size(1250, 600);
         }
@@ -542,7 +542,7 @@ namespace DigitalProductionProgram.MainWindow
         {
             if (Environment.MachineName != "OH-ID61")
                 InfoText.Show(LanguageManager.GetString("warning_Testdatabase"), CustomColors.InfoText_Color.Bad, "Warning");
-            tlp_Left.BackColor =  panel_Right.BackColor = Color.Pink;//OrderInformation.BackColor =
+            tlp_Left.BackColor =  panel_Right.BackColor = Color.Pink;//cf_OrderInformation.BackColor =
             if (Environment.MachineName == "THAI-DPP-TEST01" || Environment.MachineName == "OH-ID61")
                 return;
             var betaOverlay = new BetaOverlayForm(this);
@@ -563,23 +563,23 @@ namespace DigitalProductionProgram.MainWindow
             {
                 panel_Right.BackColor = Teman.backColor_RightPanel;
                 tlp_Left.BackColor = Teman.backColor_LeftPanel;
-                BeginInvoke(() => OrderInformation.Change_Theme());
+                BeginInvoke(() => cf_OrderInformation.Change_Theme());
             }
 
             cf_MeasurementChart.BackColor = Teman.backColor_Chart;
-            tlp_ExtraInfo.BackColor = TipsAndTrix.label_Tips_Trix.BackColor = TipsAndTrix.pb_Info_Tips_Trix.BackColor = Teman.backColor_ExtraInfo;
+            tlp_ExtraInfo.BackColor = cf_TipsAndTrix.label_Tips_Trix.BackColor = cf_TipsAndTrix.pb_Info_Tips_Trix.BackColor = Teman.backColor_ExtraInfo;
             lbl_ExtraInfo.ForeColor = Teman.foreColor_ExtraInfo;
 
             BeginInvoke(() => panel_Bottom.BackColor = Teman.backColor_Panels);
 
-            BeginInvoke(() => MainMenu.Change_Theme());
-            BeginInvoke(() => Buttons.Change_Theme());
-            BeginInvoke(() => measureStats.Change_Theme());
-            BeginInvoke(() => measurePoints.Change_Theme());
-            BeginInvoke(() => RollingInformation.Change_Theme());
-            BeginInvoke(() => PriorityPlanning.Change_Theme());
-            BeginInvoke(() => AQL.Change_Theme());
-            BeginInvoke(() => ActiveOrdersUser.Change_Theme());
+            BeginInvoke(() => cf_MainMenu.Change_Theme());
+            BeginInvoke(() => cf_Buttons.Change_Theme());
+            BeginInvoke(() => cf_MeasureStats.Change_Theme());
+            BeginInvoke(() => cf_MeasurePoints.Change_Theme());
+            BeginInvoke(() => cf_RollingInformation.Change_Theme());
+            BeginInvoke(() => cf_PriorityPlanning.Change_Theme());
+            BeginInvoke(() => cf_AQL.Change_Theme());
+            BeginInvoke(() => cf_ActiveOrdersUser.Change_Theme());
 
 
             Set_GUI_Theme_Krympslang();
@@ -590,7 +590,7 @@ namespace DigitalProductionProgram.MainWindow
             if (string.IsNullOrEmpty(Order.OrderNumber))
                 return;
 
-            await measureStats.Add_MeasureInformation_MainForm(cf_MeasurementChart, tlp_MainWindow);
+            await cf_MeasureStats.Add_MeasureInformation_MainForm(cf_MeasurementChart, tlp_MainWindow);
         }
 
         //---------------------------------------------STARTA ORDER---------------------------------------------
@@ -606,15 +606,15 @@ namespace DigitalProductionProgram.MainWindow
             // Stoppa MainTimer eventuellt om det blir problem
             if (IsOperationOk == false) //Om Ordern har blivit öppnad från Öppna-menyn så skippas detta steg
             {
-                if (OrderInformation.cb_Operation.Text.Contains("-"))
-                    Order.Operation = OrderInformation.cb_Operation.Text.Substring(0, OrderInformation.cb_Operation.Text.IndexOf('-') - 1);
+                if (cf_OrderInformation.cb_Operation.Text.Contains("-"))
+                    Order.Operation = cf_OrderInformation.cb_Operation.Text.Substring(0, cf_OrderInformation.cb_Operation.Text.IndexOf('-') - 1);
                 else
-                    Order.Operation = OrderInformation.cb_Operation.Text;
-                var start = OrderInformation.cb_Operation.Text.IndexOf('-') + 2;
-                var length = OrderInformation.cb_Operation.Text.Length - start;
-                Order.ProdLine = OrderInformation.cb_Operation.Text.Substring(start, length);
+                    Order.Operation = cf_OrderInformation.cb_Operation.Text;
+                var start = cf_OrderInformation.cb_Operation.Text.IndexOf('-') + 2;
+                var length = cf_OrderInformation.cb_Operation.Text.Length - start;
+                Order.ProdLine = cf_OrderInformation.cb_Operation.Text.Substring(start, length);
 
-                Order.ProdGroup = Main_OrderInformation.List_ProdGroup[OrderInformation.cb_Operation.SelectedIndex];
+                Order.ProdGroup = Main_OrderInformation.List_ProdGroup[cf_OrderInformation.cb_Operation.SelectedIndex];
             }
 
             Order.Load_OrderInformation();
@@ -633,15 +633,15 @@ namespace DigitalProductionProgram.MainWindow
             Order.IsUsingBioBurdenSamples = Part.IsPartNrSpecial;
 
             Load_MainForm();
-            PriorityPlanning.tb_ProdGrupp.Text = OrderInformation.lbl_ProdGroup.Text;
+            cf_PriorityPlanning.tb_ProdGrupp.Text = cf_OrderInformation.lbl_ProdGroup.Text;
 
             if (QC_Feedback.IsOperationHaveQCFeedback)
             {
-                FeedBackQC.Visible = true;
-                FeedBackQC.LoadData();
+                cf_FeedBackQC.Visible = true;
+                cf_FeedBackQC.LoadData();
             }
             else
-                FeedBackQC.Visible = false;
+                cf_FeedBackQC.Visible = false;
             Close_Open_Forms();
 
             lbl_ExtraInfo.Text = Part.ExtraInfo_Part;
@@ -656,9 +656,9 @@ namespace DigitalProductionProgram.MainWindow
             MeasurementChart.LoadAvgValuesForLastOrder();
             MeasurementChart.LoadAvgValuesForPart();
 
-            await measureStats.Add_MeasureInformation_MainForm(cf_MeasurementChart, tlp_MainWindow);
+            await cf_MeasureStats.Add_MeasureInformation_MainForm(cf_MeasurementChart, tlp_MainWindow);
 
-            //Task.Factory.StartNew(() => measureStats.Add_MeasureInformation_MainForm(panelChart, tlp_MainWindow));
+            //Task.Factory.StartNew(() => cf_MeasureStats.Add_MeasureInformation_MainForm(panelChart, tlp_MainWindow));
 
             Tools.Load_HSPipes();
 
@@ -667,15 +667,15 @@ namespace DigitalProductionProgram.MainWindow
             else
                 Change_GUI_StandardColor();
 
-            MainMenu.Unlock_Korprotokoll_Menu();
+            cf_MainMenu.Unlock_Korprotokoll_Menu();
         }
         public async void Operation_SelectedIndexChanged(object? sender, EventArgs e)
         {
-            if (OrderInformation.cb_Operation.SelectedIndex > -1 & !string.IsNullOrEmpty(OrderInformation.cb_Operation.Text) & !string.IsNullOrEmpty(OrderInformation.tb_OrderNr.Text))
+            if (cf_OrderInformation.cb_Operation.SelectedIndex > -1 & !string.IsNullOrEmpty(cf_OrderInformation.cb_Operation.Text) & !string.IsNullOrEmpty(cf_OrderInformation.tb_OrderNr.Text))
             {
-                OrderInformation.cb_Operation.BackColor = Color.White;
+                cf_OrderInformation.cb_Operation.BackColor = Color.White;
                 await StartOrLoadOrder(false);
-                OrderInformation.tb_OrderNr.Enabled = false;
+                cf_OrderInformation.tb_OrderNr.Enabled = false;
             }
         }
 
@@ -690,32 +690,32 @@ namespace DigitalProductionProgram.MainWindow
 
             Order.Is_PrintOutCopy = true;
 
-            OrderInformation.tb_OrderNr.Enabled = false;
+            cf_OrderInformation.tb_OrderNr.Enabled = false;
             //Stänger eventuella öppna Körprotokoll
             Close_Open_Forms();
 
 
-            Buttons.panel_Pictures.Visible = true;
+            cf_Buttons.panel_Pictures.Visible = true;
 
             CustomProgressBar.close();
             Activate();
-            //OrderInformation.tb_OrderNr.SelectionLength = 0;
+            //cf_OrderInformation.tb_OrderNr.SelectionLength = 0;
             Cursor = Cursors.Arrow;
 
             _ = Activity.Stop("Opening Order:");
         }
         private void Load_MainForm()
         {
-            OrderInformation.Load_Data();
+            cf_OrderInformation.Load_Data();
             Equipment.Equipment.HS_Machine = Machines.Active_HS_Machine;
 
             Order.Load_ProdType();
 
             lbl_ExtraInfo.Text = Part.ExtraInfo_Part;
 
-            AQL.ClearData();
-            TipsAndTrix.LoadData();
-            AQL.Initialize_QC_ProvuttagInfo();
+            cf_AQL.ClearData();
+            cf_TipsAndTrix.LoadData();
+            cf_AQL.Initialize_QC_ProvuttagInfo();
         }
 
         private void Öppna_Gallup()
@@ -737,7 +737,7 @@ namespace DigitalProductionProgram.MainWindow
             if (IsLoadingMeasurePoints == false)
                 return;
             Monitor.Monitor.Load_DataTable_Measurpoints(Order.OrderNumber, Order.Operation, true);
-            measurePoints.AddMeasurePointsMainForm();
+            cf_MeasurePoints.AddMeasurePointsMainForm();
         }
 
 
@@ -746,22 +746,22 @@ namespace DigitalProductionProgram.MainWindow
         public void Clear_Mainform()
         {
             Cursor = Cursors.Arrow;
-            measurePoints.Visible = false;
-            measureStats.Visible = false;
+            cf_MeasurePoints.Visible = false;
+            cf_MeasureStats.Visible = false;
             
             cf_MeasurementChart.Visible = false;
             tlp_ExtraInfo.Visible = false;
-            Buttons.Change_GUI_Buttons();
+            cf_Buttons.Change_GUI_Buttons();
             Order.Clear_Order();
-            TipsAndTrix.ClearData();
-            AQL.ClearData();
-            FeedBackQC.Visible = false;
+            cf_TipsAndTrix.ClearData();
+            cf_AQL.ClearData();
+            cf_FeedBackQC.Visible = false;
 
-            OrderInformation.cb_Operation.SelectedIndexChanged -= Operation_SelectedIndexChanged;
-            OrderInformation.tb_OrderNr.TextChanged -= Operation_SelectedIndexChanged;
-            OrderInformation.Clear();
-            OrderInformation.tb_OrderNr.TextChanged += Operation_SelectedIndexChanged;
-            OrderInformation.cb_Operation.SelectedIndexChanged += Operation_SelectedIndexChanged;
+            cf_OrderInformation.cb_Operation.SelectedIndexChanged -= Operation_SelectedIndexChanged;
+            cf_OrderInformation.tb_OrderNr.TextChanged -= Operation_SelectedIndexChanged;
+            cf_OrderInformation.Clear();
+            cf_OrderInformation.tb_OrderNr.TextChanged += Operation_SelectedIndexChanged;
+            cf_OrderInformation.cb_Operation.SelectedIndexChanged += Operation_SelectedIndexChanged;
         }
         private static void Close_Open_Forms()
         {
@@ -774,7 +774,7 @@ namespace DigitalProductionProgram.MainWindow
         //---------------------------------------------KÖRPLANERING-------------------------------------------
         private void PriorityPlanning_OrderNr_CellClick(object? sender, DataGridViewCellEventArgs e)
         {
-            if (PriorityPlanning.dgv_PriorityPlanning.Columns[0].Name != "OrderNr" || e.RowIndex < 0)
+            if (cf_PriorityPlanning.dgv_PriorityPlanning.Columns[0].Name != "OrderNr" || e.RowIndex < 0)
                 return;
             if (IsZumbachÖppet)
             {
@@ -784,19 +784,19 @@ namespace DigitalProductionProgram.MainWindow
             }
             Clear_Mainform();
 
-            OrderInformation.tb_OrderNr.Enabled = true;
-            OrderInformation.tb_OrderNr.Text = PriorityPlanning.dgv_PriorityPlanning.Rows[e.RowIndex].Cells["OrderNr"].Value.ToString();
-            OrderInformation.cb_Operation.Focus();
-            OrderInformation.Fill_cb_Operation();
+            cf_OrderInformation.tb_OrderNr.Enabled = true;
+            cf_OrderInformation.tb_OrderNr.Text = cf_PriorityPlanning.dgv_PriorityPlanning.Rows[e.RowIndex].Cells["OrderNr"].Value.ToString();
+            cf_OrderInformation.cb_Operation.Focus();
+            cf_OrderInformation.Fill_cb_Operation();
 
-            Order.Operation = PriorityPlanning.dgv_PriorityPlanning.Rows[e.RowIndex].Cells["Operation"].Value.ToString();
+            Order.Operation = cf_PriorityPlanning.dgv_PriorityPlanning.Rows[e.RowIndex].Cells["Operation"].Value.ToString();
 
             int.TryParse(Order.Operation, out int operation);
-            OrderInformation.Set_Operation(operation);
+            cf_OrderInformation.Set_Operation(operation);
 
-            OrderInformation.tb_OrderNr.Enabled = false;
-            OrderInformation.cb_Operation.Enabled = true;
-            PriorityPlanning.dgv_PriorityPlanning.ClearSelection();
+            cf_OrderInformation.tb_OrderNr.Enabled = false;
+            cf_OrderInformation.cb_Operation.Enabled = true;
+            cf_PriorityPlanning.dgv_PriorityPlanning.ClearSelection();
         }
 
 
@@ -809,8 +809,8 @@ namespace DigitalProductionProgram.MainWindow
             Clear_Mainform();
             Order.WorkOperation = Manage_WorkOperation.WorkOperations.Nothing;
             var dgv = (DataGridView)sender;
-            OrderInformation.cb_Operation.SelectedIndexChanged -= Operation_SelectedIndexChanged;
-            OrderInformation.tb_OrderNr.Validated -= OrderInformation.OrderNr_Validated;
+            cf_OrderInformation.cb_Operation.SelectedIndexChanged -= Operation_SelectedIndexChanged;
+            cf_OrderInformation.tb_OrderNr.Validated -= cf_OrderInformation.OrderNr_Validated;
 
             if (IsZumbachÖppet)
             {
@@ -819,7 +819,7 @@ namespace DigitalProductionProgram.MainWindow
             }
 
             Order.OrderID = (int)dgv.Rows[e.RowIndex].Cells[0].Value;
-            Order.OrderNumber = OrderInformation.tb_OrderNr.Text = dgv.Rows[e.RowIndex].Cells[1].Value.ToString();
+            Order.OrderNumber = cf_OrderInformation.tb_OrderNr.Text = dgv.Rows[e.RowIndex].Cells[1].Value.ToString();
             Order.Load_Operation(Order.OrderID);
             Order.PartNumber = dgv.Rows[dgv.CurrentCell.RowIndex].Cells[2].Value.ToString();
             if (int.TryParse(dgv.Rows[dgv.CurrentCell.RowIndex].Cells[3].Value.ToString(), out var artID))
@@ -835,8 +835,8 @@ namespace DigitalProductionProgram.MainWindow
             dgv.ClearSelection();
 
 
-            OrderInformation.cb_Operation.SelectedIndexChanged += Operation_SelectedIndexChanged;
-            OrderInformation.tb_OrderNr.Validated += OrderInformation.OrderNr_Validated;
+            cf_OrderInformation.cb_Operation.SelectedIndexChanged += Operation_SelectedIndexChanged;
+            cf_OrderInformation.tb_OrderNr.Validated += cf_OrderInformation.OrderNr_Validated;
         }
         private void FilterWorkoperations_Click(object sender, EventArgs e)
         {
@@ -890,7 +890,7 @@ namespace DigitalProductionProgram.MainWindow
             lbl_Namn.Text = Person.Name;
 
             panel_Profile.Visible = true;
-            ActiveOrdersUser.Visible = true;
+            cf_ActiveOrdersUser.Visible = true;
 
             Change_GUI_Grade();
 
@@ -919,7 +919,7 @@ namespace DigitalProductionProgram.MainWindow
             Order.CheckIfOldOrderNotDoneExists(ref ordernr, ref operation);
             if (!string.IsNullOrEmpty(ordernr))
             {
-                Order.OrderNumber = OrderInformation.tb_OrderNr.Text = ordernr;
+                Order.OrderNumber = cf_OrderInformation.tb_OrderNr.Text = ordernr;
                 Order.Operation = operation;
                 Order.Load_OrderID(ordernr, operation);
                 Order.Load_ProdLine();
@@ -941,10 +941,10 @@ namespace DigitalProductionProgram.MainWindow
             }
 
 
-            MainMenu.Unlock_Menu();
-            RollingInformation.Load_list_Tips();
+            cf_MainMenu.Unlock_Menu();
+            cf_RollingInformation.Load_list_Tips();
 
-            Task.Run(() => { ActiveOrdersUser.Load_OrderNr(OrderInformation); });
+            Task.Run(() => { cf_ActiveOrdersUser.Load_OrderNr(cf_OrderInformation); });
             _ = EasterEgg_Code.IsGameStarted;
         }
         public void SignOut()
@@ -961,11 +961,11 @@ namespace DigitalProductionProgram.MainWindow
             lbl_Percent.Text = string.Empty;
 
             panel_Profile.Visible = false;
-            ActiveOrdersUser.Visible = false;
+            cf_ActiveOrdersUser.Visible = false;
 
             Person.Clear();
             ControlManager.Close_All_Körprotokoll();
-            MainMenu.Lock_Menu();
+            cf_MainMenu.Lock_Menu();
         }
         private void SignIn_Click(object sender, EventArgs e)
         {

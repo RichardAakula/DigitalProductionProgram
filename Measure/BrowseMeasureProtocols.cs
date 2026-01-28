@@ -604,7 +604,7 @@ namespace DigitalProductionProgram.Measure
                 Monitor.Monitor.Load_DataTable_Measurpoints(ordernr, operation, false);
                 //Set_MeasurePoints();
                 //if (IsMeasurePointSet)
-                //    measurePoints.AddMeasurePointsMainForm();
+                //    cf_MeasurePoints.AddMeasurePointsMainForm();
                 rowIndex++;
                 activeOrderNr = ordernr;
             } while (IsMeasurePointSet == false);
@@ -835,7 +835,7 @@ namespace DigitalProductionProgram.Measure
             }
             Set_MeasurePoints();
             if (IsMeasurePointSet)
-                measurePoints.AddMeasurePointsMainForm();
+                cf_MeasurePoints.AddMeasurePointsMainForm();
             Initialize_Chart_MainForm(codeName, codeText);
 
             var ctr = dgv_MeasureProtocol.Rows.Count - 1;

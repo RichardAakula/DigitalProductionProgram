@@ -739,7 +739,7 @@ namespace DigitalProductionProgram.OrderManagement
             private static void ResetOrder(Main_Form main)
             {
                 main.Clear_Mainform();
-                main.OrderInformation.tb_OrderNr.Focus();
+                main.cf_OrderInformation.tb_OrderNr.Focus();
                 CustomProgressBar.close();
                 //IsOkStartOrder = false;
             }
@@ -768,8 +768,8 @@ namespace DigitalProductionProgram.OrderManagement
                     ResetOrder(main);
                     return;
                 }
-                main.OrderInformation.LoadMainForm_NewOrder();
-                main.OrderInformation.lbl_Version.Text = ChangeLog.CurrentVersion.ToString();
+                main.cf_OrderInformation.LoadMainForm_NewOrder();
+                main.cf_OrderInformation.lbl_Version.Text = ChangeLog.CurrentVersion.ToString();
 
 
                 if (IsChosen_ProcesscardOk == false || IsOrderOkToStart == false)
@@ -812,7 +812,7 @@ namespace DigitalProductionProgram.OrderManagement
             }
 
 
-            public static void OpenRandomOrder(Main_OrderInformation OrderInformation)
+            public static void OpenRandomOrder(Main_OrderInformation cf_OrderInformation)
             {
                 // Hämta en slumpmässig OrderID via ExecuteSafe som returnerar värde
                 var orderid = Database.ExecuteSafe(con =>
@@ -834,8 +834,8 @@ namespace DigitalProductionProgram.OrderManagement
                 }
                 // Logga in via API och starta order
                 Login_Monitor.Login_API();
-                OrderInformation.tb_OrderNr.Text = orderid.ToString();
-                OrderInformation.StartOrder();
+                cf_OrderInformation.tb_OrderNr.Text = orderid.ToString();
+                cf_OrderInformation.StartOrder();
             }
 
 
@@ -1431,7 +1431,7 @@ namespace DigitalProductionProgram.OrderManagement
                 {
                     var dateTimeFormat = CultureInfo.CurrentCulture.DateTimeFormat;
                     var formattedDate = DateTime.Now.ToString($"{dateTimeFormat.ShortDatePattern} {dateTimeFormat.ShortTimePattern}", CultureInfo.CurrentCulture);
-                    main.OrderInformation.lbl_Stopp.Text = formattedDate;
+                    main.cf_OrderInformation.lbl_Stopp.Text = formattedDate;
 
                     SaveData.UPDATE_Order_EndTime(DateTime.Now);
                     _ = Activity.Stop("FinishOrder: Update EndTime [Order].MainData");
@@ -1451,8 +1451,8 @@ namespace DigitalProductionProgram.OrderManagement
                 SaveData.UPDATE_OrderKlar();
                 IsOrderDone = true;
                 _ = Activity.Stop("Order Finished");
-                main.MainMenu.Menu_Order_OrderDone.Enabled = false;
-                main.MainMenu.Menu_User.Enabled = false;
+                main.cf_MainMenu.Menu_Order_OrderDone.Enabled = false;
+                main.cf_MainMenu.Menu_User.Enabled = false;
                 main.Change_GUI_OrderKlar();
 
                 //Meddelar processtekniker om eventuella uppdateringar av Processkort

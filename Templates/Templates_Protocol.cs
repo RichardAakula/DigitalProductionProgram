@@ -15,7 +15,7 @@ namespace DigitalProductionProgram.Templates
     {
         private static int totalConnectedProcesscardsToTemplate;
 
-        public static int TotalConnectedProcesscardsToTemplate
+        private static int TotalConnectedProcesscardsToTemplate
         {
             get
             {

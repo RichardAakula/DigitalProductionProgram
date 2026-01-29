@@ -386,7 +386,7 @@ namespace DigitalProductionProgram.Log
                                 FROM Log.ActivityLog
                                 WHERE UserID = @userid
                                     AND Date >= DATEADD(YEAR, -1, GETDATE())
-                                    AND HistID IS NOT NULL
+                                    AND HostID IS NOT NULL
                                 GROUP BY HostID
                                 ORDER BY WorkCount DESC";
 

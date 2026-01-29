@@ -1,12 +1,8 @@
 ﻿using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Help;
-
 using DigitalProductionProgram.PrintingServices;
-using System;
 using Microsoft.Data.SqlClient;
-using System.Windows.Forms;
 using DigitalProductionProgram.ControlsManagement;
-using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 
 namespace DigitalProductionProgram.Övrigt

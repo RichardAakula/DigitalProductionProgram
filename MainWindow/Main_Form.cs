@@ -167,7 +167,6 @@ namespace DigitalProductionProgram.MainWindow
 
                         if (!Program.IsComputerOnlyForMeasurements)
                             cf_OrderInformation.tb_OrderNr.AutoCompleteCustomSource = Monitor.Monitor.AutoFillOrdernr;
-
                         _ = Main_FilterQuickOpen.Load_ListAsync(dgv_QuickOpen);
                     });
                 }

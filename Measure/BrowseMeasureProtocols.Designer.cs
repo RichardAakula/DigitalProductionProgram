@@ -43,7 +43,7 @@ namespace DigitalProductionProgram.Measure
             label_PartNumber = new Label();
             dgv_MeasureProtocol = new DataGridView();
             label_Info = new Label();
-            measurePoints = new MeasurePoints();
+            cf_MeasurePoints = new MeasurePoints();
             panel_TopRight = new Panel();
             panelInfo = new Panel();
             dgv_TopList = new DataGridView();
@@ -207,7 +207,7 @@ namespace DigitalProductionProgram.Measure
             cf_MeasurePoints.Dock = DockStyle.Fill;
             cf_MeasurePoints.Location = new Point(5, 3);
             cf_MeasurePoints.Margin = new Padding(5, 3, 5, 3);
-            cf_MeasurePoints.Name = "measurePoints";
+            cf_MeasurePoints.Name = "cf_MeasurePoints";
             cf_MeasurePoints.Size = new Size(466, 767);
             cf_MeasurePoints.TabIndex = 2;
             // 
@@ -490,7 +490,7 @@ namespace DigitalProductionProgram.Measure
             tlp_Bottom.ColumnCount = 2;
             tlp_Bottom.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 476F));
             tlp_Bottom.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
-            tlp_Bottom.Controls.Add(measurePoints, 0, 0);
+            tlp_Bottom.Controls.Add(cf_MeasurePoints, 0, 0);
             tlp_Bottom.Dock = DockStyle.Fill;
             tlp_Bottom.Location = new Point(3, 752);
             tlp_Bottom.Name = "tlp_Bottom";
@@ -537,7 +537,7 @@ namespace DigitalProductionProgram.Measure
         private Label label_Info;
         private Label label_MeasureTemplateName;
         private ComboBox cb_MeasureprotocolTemplateName;
-        private MeasurePoints measurePoints;
+        private MeasurePoints cf_MeasurePoints;
         private Panel panel_TopRight;
         private Panel panelInfo;
         private ComboBox cb_Workoperations;

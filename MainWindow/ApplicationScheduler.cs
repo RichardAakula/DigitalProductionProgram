@@ -22,7 +22,8 @@ namespace DigitalProductionProgram.MainWindow
         private int minutes_CheckMeasurementValues;
         private int minutes_UpdateChart;
 
-        private int timer_counterPlaneratStopp = 60;  // 1 timme
+        private int timer_counterCheckForMaintenanceWork = 60;    // 1 timme
+        private int timer_counterCheckForUpdate = 10;   // 10 minuter som standard
         //private int timer_CheckForUpdate = 10; //10 minut
         private const int develop_MainTimer = 30000; // 30 sekunder
 
@@ -127,9 +128,9 @@ namespace DigitalProductionProgram.MainWindow
                 await _statistics.Load_StatisticsAsync();
             }
 
-            //----10 minuter----
+            //----10 minuter---- Ändras till 120 minuter om användaren väljer att inte uppdatera
             //----Kollar om det finns en ny version av programmet och uppdaterar vid behov----
-            if (minutes_CheckForUpdate >= 10)
+            if (minutes_CheckForUpdate >= timer_counterCheckForUpdate)
             {
                 Debug.WriteLine("----Kolla Uppdatering----");
                 minutes_CheckForUpdate = 0;
@@ -147,7 +148,7 @@ namespace DigitalProductionProgram.MainWindow
             }
 
             //----60 minuter----
-            if (minutes_CheckMaintenanceWork >= timer_counterPlaneratStopp)
+            if (minutes_CheckMaintenanceWork >= timer_counterCheckForMaintenanceWork)
             {
                 Debug.WriteLine("----Check Maintenance----");
                 minutes_CheckMaintenanceWork = 0;
@@ -156,7 +157,6 @@ namespace DigitalProductionProgram.MainWindow
             Debug.WriteLine("-------------------MasterTimer Stop--------------------");
             Debug.WriteLine("------------------------------------------------------\n");
         }
-
         public void CheckForUpdate()
         {
             Version currentVersion = ChangeLog.CurrentVersion;
@@ -188,7 +188,7 @@ namespace DigitalProductionProgram.MainWindow
             if (InfoText.answer == InfoText.Answer.No)
             {
                 _ = Activity.Stop($"User {Person.Name} did NOT update the application. CurrentVersion = {currentVersion} - LatestVersion = {latestAllowedtVersion}");
-                minutes_CheckForUpdate = 120; // 2 timmar
+                timer_counterCheckForUpdate = 120; // 2 timmar
             }
             else
             {
@@ -196,7 +196,6 @@ namespace DigitalProductionProgram.MainWindow
                 Maintenance.StartInstallation(false);
             }
         }
-
         private void CheckForMaintenanceWork()
         {
             if (Person.Role == "SuperAdmin")
@@ -218,21 +217,21 @@ namespace DigitalProductionProgram.MainWindow
             //Mellan 8 timmar och 2 dygn kvar till planerat stopp
             if (Maintenance.Time_Left_Stop.TotalHours > 8)
             {
-                timer_counterPlaneratStopp = 60; // 1 timme
+                timer_counterCheckForMaintenanceWork = 60; // 1 timme
                 clr = CustomColors.InfoText_Color.Warning;
             }
 
             //Mer än 2 dygn kvar till planerat stopp
             if (Maintenance.Time_Left_Stop.TotalDays > 2)
             {
-                timer_counterPlaneratStopp = 420; // 7 timmar
+                timer_counterCheckForMaintenanceWork = 420; // 7 timmar
                 clr = CustomColors.InfoText_Color.Ok;
             }
 
             //Mindre än 8 timmar kvar till planerat stopp
             if (Maintenance.Time_Left_Stop.TotalHours < 8)
             {
-                timer_counterPlaneratStopp = 30; // 30 minuter
+                timer_counterCheckForMaintenanceWork = 30; // 30 minuter
                 clr = CustomColors.InfoText_Color.Bad;
             }
 

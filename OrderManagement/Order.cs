@@ -917,14 +917,7 @@ namespace DigitalProductionProgram.OrderManagement
                     case WorkOperations.Skärmning:
                     case WorkOperations.Svetsning:
                         PreFab.SaveData.SavePrefabFromMonitor();
-                        //PreFab.SaveData.INSERT_Skärmning();
                         break;
-
-                    //case WorkOperations.Kragning_TEF:
-                    //case WorkOperations.Slipning:
-                    //case WorkOperations.Svetsning:
-                    //    SaveData.UPDATE_Korprotokoll_Main_From_Processkort_Main();
-                    //    break;
 
                     case WorkOperations.Synergy_PTFE_K18:
                         MainInfo_B.INSERT_Measurepoints_Korprotokoll();

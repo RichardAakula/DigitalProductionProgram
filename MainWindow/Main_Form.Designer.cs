@@ -45,13 +45,13 @@ namespace DigitalProductionProgram.MainWindow
             tlp_ExtraInfo = new TableLayoutPanel();
             lbl_ExtraInfo = new Label();
             label_ExtraInfo = new Label();
-            this.cf_MeasurePoints = new MeasurePoints();
+            cf_MeasurePoints = new MeasurePoints();
             cf_MeasureStats = new MainMeasureStatistics();
-            this.cf_OrderInformation = new Main_OrderInformation();
+            cf_OrderInformation = new Main_OrderInformation();
             cf_AQL = new Main_AQL();
             panel_Right = new Panel();
-            this.cf_FeedBackQC = new DigitalProductionProgram.QC.FeedBackQC();
-            this.cf_TipsAndTrix = new DigitalProductionProgram.Övrigt.TipsAndTrix();
+            cf_FeedBackQC = new DigitalProductionProgram.QC.FeedBackQC();
+            cf_TipsAndTrix = new DigitalProductionProgram.Övrigt.TipsAndTrix();
             tlp_Top = new TableLayoutPanel();
             cf_MainMenu = new Main_Menu();
             cf_Serverstatus = new ServerStatus();
@@ -78,17 +78,17 @@ namespace DigitalProductionProgram.MainWindow
             lbl_Company = new Label();
             panel_Background_OptinovaLogo = new Panel();
             pBox_OptinovaLogo = new PictureBox();
-            this.cf_ActiveOrdersUser = new ActiveOrdersUser();
+            cf_ActiveOrdersUser = new ActiveOrdersUser();
             timer_Check_MeasurePoints = new System.Windows.Forms.Timer(components);
             timer_Check_If_Maintenance_Has_Started = new System.Windows.Forms.Timer(components);
             timer_ReLogin_Monitor = new System.Windows.Forms.Timer(components);
-            this.cf_Buttons = new Main_Buttons();
-            this.cf_PriorityPlanning = new Main_Priorityplanning();
+            cf_Buttons = new Main_Buttons();
+            cf_PriorityPlanning = new Main_Priorityplanning();
             panel_Bottom = new Panel();
             spitContainer_Bottom = new SplitContainer();
             splitContainer_Right = new SplitContainer();
             tlp_MainWindow = new TableLayoutPanel();
-            this.cf_Statistics_DPP = new Statistics_DPP();
+            cf_Statistics_DPP = new Statistics_DPP();
             cf_MeasurementChart = new MeasurementChart();
             ((ISupportInitialize)pb_Info_UserPoints).BeginInit();
             tlp_ExtraInfo.SuspendLayout();
@@ -205,14 +205,14 @@ namespace DigitalProductionProgram.MainWindow
             // 
             // cf_MeasurePoints
             // 
-            this.cf_MeasurePoints.BackColor = Color.Transparent;
-            this.cf_MeasurePoints.Dock = DockStyle.Fill;
-            this.cf_MeasurePoints.Location = new Point(6, 195);
-            this.cf_MeasurePoints.Margin = new Padding(6, 0, 0, 0);
-            this.cf_MeasurePoints.Name = "cf_MeasurePoints";
-            this.cf_MeasurePoints.Size = new Size(531, 164);
-            this.cf_MeasurePoints.TabIndex = 915;
-            this.cf_MeasurePoints.Visible = false;
+            cf_MeasurePoints.BackColor = Color.Transparent;
+            cf_MeasurePoints.Dock = DockStyle.Fill;
+            cf_MeasurePoints.Location = new Point(6, 195);
+            cf_MeasurePoints.Margin = new Padding(6, 0, 0, 0);
+            cf_MeasurePoints.Name = "cf_MeasurePoints";
+            cf_MeasurePoints.Size = new Size(531, 164);
+            cf_MeasurePoints.TabIndex = 915;
+            cf_MeasurePoints.Visible = false;
             // 
             // cf_MeasureStats
             // 
@@ -227,22 +227,22 @@ namespace DigitalProductionProgram.MainWindow
             // 
             // cf_OrderInformation
             // 
-            this.cf_OrderInformation.BackColor = Color.FromArgb(60, 60, 60);
-            tlp_MainWindow.SetColumnSpan(this.cf_OrderInformation, 2);
-            this.cf_OrderInformation.Location = new Point(6, 6);
-            this.cf_OrderInformation.Margin = new Padding(6, 6, 0, 3);
-            this.cf_OrderInformation.Name = "cf_OrderInformation";
-            tlp_MainWindow.SetRowSpan(this.cf_OrderInformation, 3);
-            this.cf_OrderInformation.Size = new Size(928, 186);
-            this.cf_OrderInformation.TabIndex = 918;
+            cf_OrderInformation.BackColor = Color.FromArgb(60, 60, 60);
+            tlp_MainWindow.SetColumnSpan(cf_OrderInformation, 2);
+            cf_OrderInformation.Location = new Point(6, 6);
+            cf_OrderInformation.Margin = new Padding(6, 6, 0, 3);
+            cf_OrderInformation.Name = "cf_OrderInformation";
+            tlp_MainWindow.SetRowSpan(cf_OrderInformation, 3);
+            cf_OrderInformation.Size = new Size(928, 186);
+            cf_OrderInformation.TabIndex = 918;
             // 
-            // AQL
+            // cf_AQL
             // 
             cf_AQL.BackColor = Color.FromArgb(60, 60, 60);
             cf_AQL.Dock = DockStyle.Left;
             cf_AQL.Location = new Point(1104, 3);
             cf_AQL.Margin = new Padding(0, 3, 4, 23);
-            cf_AQL.Name = "AQL";
+            cf_AQL.Name = "cf_AQL";
             tlp_MainWindow.SetRowSpan(cf_AQL, 3);
             cf_AQL.Size = new Size(211, 169);
             cf_AQL.TabIndex = 919;
@@ -250,8 +250,8 @@ namespace DigitalProductionProgram.MainWindow
             // 
             // panel_Right
             // 
-            panel_Right.Controls.Add(this.cf_FeedBackQC);
-            panel_Right.Controls.Add(this.cf_TipsAndTrix);
+            panel_Right.Controls.Add(cf_FeedBackQC);
+            panel_Right.Controls.Add(cf_TipsAndTrix);
             panel_Right.Dock = DockStyle.Fill;
             panel_Right.Location = new Point(0, 0);
             panel_Right.Margin = new Padding(2, 3, 4, 3);
@@ -261,26 +261,26 @@ namespace DigitalProductionProgram.MainWindow
             // 
             // cf_FeedBackQC
             // 
-            this.cf_FeedBackQC.BackColor = Color.FromArgb(120, 20, 20);
-            this.cf_FeedBackQC.Dock = DockStyle.Fill;
-            this.cf_FeedBackQC.Location = new Point(0, 324);
-            this.cf_FeedBackQC.Margin = new Padding(0);
-            this.cf_FeedBackQC.MinimumSize = new Size(350, 0);
-            this.cf_FeedBackQC.Name = "cf_FeedBackQC";
-            this.cf_FeedBackQC.Size = new Size(350, 382);
-            this.cf_FeedBackQC.TabIndex = 913;
-            this.cf_FeedBackQC.Visible = false;
+            cf_FeedBackQC.BackColor = Color.FromArgb(120, 20, 20);
+            cf_FeedBackQC.Dock = DockStyle.Fill;
+            cf_FeedBackQC.Location = new Point(0, 324);
+            cf_FeedBackQC.Margin = new Padding(0);
+            cf_FeedBackQC.MinimumSize = new Size(350, 0);
+            cf_FeedBackQC.Name = "cf_FeedBackQC";
+            cf_FeedBackQC.Size = new Size(350, 382);
+            cf_FeedBackQC.TabIndex = 913;
+            cf_FeedBackQC.Visible = false;
             // 
             // cf_TipsAndTrix
             // 
-            this.cf_TipsAndTrix.BackColor = Color.Transparent;
-            this.cf_TipsAndTrix.Dock = DockStyle.Top;
-            this.cf_TipsAndTrix.Location = new Point(0, 0);
-            this.cf_TipsAndTrix.Margin = new Padding(5, 3, 5, 3);
-            this.cf_TipsAndTrix.Name = "cf_TipsAndTrix";
-            this.cf_TipsAndTrix.Size = new Size(280, 324);
-            this.cf_TipsAndTrix.TabIndex = 914;
-            this.cf_TipsAndTrix.Visible = false;
+            cf_TipsAndTrix.BackColor = Color.Transparent;
+            cf_TipsAndTrix.Dock = DockStyle.Top;
+            cf_TipsAndTrix.Location = new Point(0, 0);
+            cf_TipsAndTrix.Margin = new Padding(5, 3, 5, 3);
+            cf_TipsAndTrix.Name = "cf_TipsAndTrix";
+            cf_TipsAndTrix.Size = new Size(280, 324);
+            cf_TipsAndTrix.TabIndex = 914;
+            cf_TipsAndTrix.Visible = false;
             // 
             // tlp_Top
             // 
@@ -301,7 +301,7 @@ namespace DigitalProductionProgram.MainWindow
             tlp_Top.Size = new Size(1924, 43);
             tlp_Top.TabIndex = 912;
             // 
-            // MainMenu
+            // cf_MainMenu
             // 
             cf_MainMenu.AutoSize = true;
             cf_MainMenu.BackColor = Color.Transparent;
@@ -312,7 +312,7 @@ namespace DigitalProductionProgram.MainWindow
             cf_MainMenu.Size = new Size(665, 43);
             cf_MainMenu.TabIndex = 894;
             // 
-            // Serverstatus
+            // cf_Serverstatus
             // 
             cf_Serverstatus.Dock = DockStyle.Fill;
             cf_Serverstatus.Location = new Point(1760, 3);
@@ -321,7 +321,7 @@ namespace DigitalProductionProgram.MainWindow
             cf_Serverstatus.Size = new Size(159, 37);
             cf_Serverstatus.TabIndex = 895;
             // 
-            // RollingInformation
+            // cf_RollingInformation
             // 
             cf_RollingInformation.BackColor = Color.Transparent;
             cf_RollingInformation.Dock = DockStyle.Fill;
@@ -340,7 +340,7 @@ namespace DigitalProductionProgram.MainWindow
             tlp_Left.Controls.Add(tlp_QuickOpen, 0, 4);
             tlp_Left.Controls.Add(lbl_Company, 0, 1);
             tlp_Left.Controls.Add(panel_Background_OptinovaLogo, 0, 0);
-            tlp_Left.Controls.Add(this.cf_ActiveOrdersUser, 0, 3);
+            tlp_Left.Controls.Add(cf_ActiveOrdersUser, 0, 3);
             tlp_Left.Dock = DockStyle.Left;
             tlp_Left.Location = new Point(0, 43);
             tlp_Left.Margin = new Padding(0);
@@ -710,38 +710,38 @@ namespace DigitalProductionProgram.MainWindow
             // 
             // cf_ActiveOrdersUser
             // 
-            this.cf_ActiveOrdersUser.BackColor = Color.FromArgb(60, 60, 60);
-            this.cf_ActiveOrdersUser.Dock = DockStyle.Fill;
-            this.cf_ActiveOrdersUser.Location = new Point(4, 474);
-            this.cf_ActiveOrdersUser.Margin = new Padding(4, 3, 4, 3);
-            this.cf_ActiveOrdersUser.Name = "cf_ActiveOrdersUser";
-            this.cf_ActiveOrdersUser.Size = new Size(310, 209);
-            this.cf_ActiveOrdersUser.TabIndex = 866;
+            cf_ActiveOrdersUser.BackColor = Color.FromArgb(60, 60, 60);
+            cf_ActiveOrdersUser.Dock = DockStyle.Fill;
+            cf_ActiveOrdersUser.Location = new Point(4, 474);
+            cf_ActiveOrdersUser.Margin = new Padding(4, 3, 4, 3);
+            cf_ActiveOrdersUser.Name = "cf_ActiveOrdersUser";
+            cf_ActiveOrdersUser.Size = new Size(310, 209);
+            cf_ActiveOrdersUser.TabIndex = 866;
             // 
             // cf_Buttons
             // 
-            this.cf_Buttons.BackColor = Color.FromArgb(60, 60, 60);
-            this.cf_Buttons.Dock = DockStyle.Top;
-            this.cf_Buttons.Location = new Point(318, 43);
-            this.cf_Buttons.Margin = new Padding(0);
-            this.cf_Buttons.Name = "cf_Buttons";
-            this.cf_Buttons.Size = new Size(1606, 45);
-            this.cf_Buttons.TabIndex = 917;
+            cf_Buttons.BackColor = Color.FromArgb(60, 60, 60);
+            cf_Buttons.Dock = DockStyle.Top;
+            cf_Buttons.Location = new Point(318, 43);
+            cf_Buttons.Margin = new Padding(0);
+            cf_Buttons.Name = "cf_Buttons";
+            cf_Buttons.Size = new Size(1606, 45);
+            cf_Buttons.TabIndex = 917;
             // 
             // cf_PriorityPlanning
             // 
-            this.cf_PriorityPlanning.BackColor = Color.FromArgb(60, 60, 60);
-            this.cf_PriorityPlanning.Dock = DockStyle.Fill;
-            this.cf_PriorityPlanning.Location = new Point(0, 0);
-            this.cf_PriorityPlanning.Margin = new Padding(0);
-            this.cf_PriorityPlanning.Name = "cf_PriorityPlanning";
-            this.cf_PriorityPlanning.Padding = new Padding(0, 0, 10, 0);
-            this.cf_PriorityPlanning.Size = new Size(1606, 260);
-            this.cf_PriorityPlanning.TabIndex = 14;
+            cf_PriorityPlanning.BackColor = Color.FromArgb(60, 60, 60);
+            cf_PriorityPlanning.Dock = DockStyle.Fill;
+            cf_PriorityPlanning.Location = new Point(0, 0);
+            cf_PriorityPlanning.Margin = new Padding(0);
+            cf_PriorityPlanning.Name = "cf_PriorityPlanning";
+            cf_PriorityPlanning.Padding = new Padding(0, 0, 10, 0);
+            cf_PriorityPlanning.Size = new Size(1606, 260);
+            cf_PriorityPlanning.TabIndex = 14;
             // 
             // panel_Bottom
             // 
-            panel_Bottom.Controls.Add(this.cf_PriorityPlanning);
+            panel_Bottom.Controls.Add(cf_PriorityPlanning);
             panel_Bottom.Dock = DockStyle.Fill;
             panel_Bottom.Location = new Point(0, 0);
             panel_Bottom.Margin = new Padding(4, 3, 4, 3);
@@ -801,10 +801,10 @@ namespace DigitalProductionProgram.MainWindow
             tlp_MainWindow.Controls.Add(tlp_ExtraInfo, 4, 3);
             tlp_MainWindow.Controls.Add(lbl_Rating, 2, 2);
             tlp_MainWindow.Controls.Add(cf_AQL, 4, 0);
-            tlp_MainWindow.Controls.Add(this.cf_OrderInformation, 0, 0);
-            tlp_MainWindow.Controls.Add(this.cf_MeasurePoints, 0, 3);
+            tlp_MainWindow.Controls.Add(cf_OrderInformation, 0, 0);
+            tlp_MainWindow.Controls.Add(cf_MeasurePoints, 0, 3);
             tlp_MainWindow.Controls.Add(cf_MeasureStats, 1, 3);
-            tlp_MainWindow.Controls.Add(this.cf_Statistics_DPP, 3, 4);
+            tlp_MainWindow.Controls.Add(cf_Statistics_DPP, 3, 4);
             tlp_MainWindow.Controls.Add(cf_MeasurementChart, 0, 4);
             tlp_MainWindow.Dock = DockStyle.Fill;
             tlp_MainWindow.Location = new Point(0, 0);
@@ -821,14 +821,14 @@ namespace DigitalProductionProgram.MainWindow
             // 
             // cf_Statistics_DPP
             // 
-            this.cf_Statistics_DPP.BackColor = Color.Transparent;
-            tlp_MainWindow.SetColumnSpan(this.cf_Statistics_DPP, 2);
-            this.cf_Statistics_DPP.Dock = DockStyle.Fill;
-            this.cf_Statistics_DPP.Location = new Point(1000, 362);
-            this.cf_Statistics_DPP.Margin = new Padding(4, 3, 4, 3);
-            this.cf_Statistics_DPP.Name = "cf_Statistics_DPP";
-            this.cf_Statistics_DPP.Size = new Size(315, 341);
-            this.cf_Statistics_DPP.TabIndex = 920;
+            cf_Statistics_DPP.BackColor = Color.Transparent;
+            tlp_MainWindow.SetColumnSpan(cf_Statistics_DPP, 2);
+            cf_Statistics_DPP.Dock = DockStyle.Fill;
+            cf_Statistics_DPP.Location = new Point(1000, 362);
+            cf_Statistics_DPP.Margin = new Padding(4, 3, 4, 3);
+            cf_Statistics_DPP.Name = "cf_Statistics_DPP";
+            cf_Statistics_DPP.Size = new Size(315, 341);
+            cf_Statistics_DPP.TabIndex = 920;
             // 
             // cf_MeasurementChart
             // 
@@ -850,7 +850,7 @@ namespace DigitalProductionProgram.MainWindow
             BackgroundImageLayout = ImageLayout.Stretch;
             ClientSize = new Size(1924, 1061);
             Controls.Add(spitContainer_Bottom);
-            Controls.Add(this.cf_Buttons);
+            Controls.Add(cf_Buttons);
             Controls.Add(tlp_Left);
             Controls.Add(tlp_Top);
             DoubleBuffered = true;

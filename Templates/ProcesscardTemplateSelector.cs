@@ -442,7 +442,7 @@ ORDER BY ROW_NUMBER() OVER (PARTITION BY PartGroupID ORDER BY TRY_CAST(RevNr AS 
         private void Add_Button_Workoperations(string? workoperation, int workoperationID)
         {
             totalLabels++;
-            var btn = CreateButton(workoperation, Button_Workoperation_MouseClick, workoperationID);
+            var btn = CreateButton(workoperation, Button_Workoperation_MouseClick, workoperationID, workoperation);
 
             flp_Buttons.Controls.Add(btn);
             Height += btn.Height + 3;

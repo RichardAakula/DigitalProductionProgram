@@ -107,7 +107,7 @@ namespace DigitalProductionProgram.MainWindow
 
         //UPPSNABBNING AV PROGRAMMET VID UTVECKLING
         public static bool IsZumbachÖppet = false;
-        private static bool IsBetaMode = false;
+        public static bool IsBetaMode = false;
         public static bool IsLoadingPriorityPlan = true;
         private static bool IsLoadingMeasurePoints = true;
         private const bool IsOpenRandomOrder = false;
@@ -541,11 +541,11 @@ namespace DigitalProductionProgram.MainWindow
         {
             if (Environment.MachineName != "OH-ID61")
                 InfoText.Show(LanguageManager.GetString("warning_Testdatabase"), CustomColors.InfoText_Color.Bad, "Warning");
-            tlp_Left.BackColor =  panel_Right.BackColor = Color.Pink;//cf_OrderInformation.BackColor =
-            if (Environment.MachineName == "THAI-DPP-TEST01" || Environment.MachineName == "OH-ID61")
-                return;
-            var betaOverlay = new BetaOverlayForm(this);
-            betaOverlay.Show();
+                //tlp_Left.BackColor =  panel_Right.BackColor = Color.Pink;//cf_OrderInformation.BackColor =
+                //if (Environment.MachineName == "THAI-DPP-TEST01" || Environment.MachineName == "OH-ID61")
+                //    return;
+                // var betaOverlay = new BetaOverlayForm(this);
+                // betaOverlay.Show();
         }
         public void Change_Theme()
         {
@@ -579,7 +579,6 @@ namespace DigitalProductionProgram.MainWindow
             BeginInvoke(() => cf_PriorityPlanning.Change_Theme());
             BeginInvoke(() => cf_AQL.Change_Theme());
             BeginInvoke(() => cf_ActiveOrdersUser.Change_Theme());
-
 
             Set_GUI_Theme_Krympslang();
             _ = Activity.Stop($"Choosing Theme {Teman.Theme.ToString()}");
@@ -737,6 +736,7 @@ namespace DigitalProductionProgram.MainWindow
                 return;
             Monitor.Monitor.Load_DataTable_Measurpoints(Order.OrderNumber, Order.Operation, true);
             cf_MeasurePoints.AddMeasurePointsMainForm();
+            cf_MeasurePoints.Visible = true;
         }
 
 

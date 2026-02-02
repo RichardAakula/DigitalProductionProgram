@@ -9,13 +9,14 @@ using DigitalProductionProgram.Equipment;
 using DigitalProductionProgram.Measure;
 
 using DigitalProductionProgram.OrderManagement;
+using DigitalProductionProgram.PrintingServices;
 using DigitalProductionProgram.User;
 
 namespace DigitalProductionProgram.MainWindow
 {
     public partial class RollingInformation : UserControl
     {
-        internal static int TotalOrdersPerYear(string årtal)
+        private static int TotalOrdersPerYear(string årtal)
         {
             using var con = new SqlConnection(Database.cs_Protocol);
             var query = @"SELECT COUNT(*) FROM [Order].MainData WHERE YEAR(Date_Start) = @year";
@@ -24,7 +25,7 @@ namespace DigitalProductionProgram.MainWindow
             con.Open();
             return (int)cmd.ExecuteScalar();
         }
-        internal static int TotalOrdersSpecificWeekDay()
+        private static int TotalOrdersSpecificWeekDay()
         {
             using var con = new SqlConnection(Database.cs_Protocol);
             var query = "SELECT COUNT(*) FROM [Order].MainData WHERE WorkOperationID = (SELECT ID FROM Workoperation.Names WHERE Name = @workoperation AND ID IS NOT NULL) AND DATENAME(DW, Date_Start) = @weekdayname";
@@ -35,8 +36,8 @@ namespace DigitalProductionProgram.MainWindow
             con.Open();
             return (int)cmd.ExecuteScalar();
         }
-        internal static int MinYear_OrderStart { get; set; }
-        internal static void Load_MinYear_OrderStart()
+        private static int MinYear_OrderStart { get; set; }
+        private static void Load_MinYear_OrderStart()
         {
             using var con = new SqlConnection(Database.cs_Protocol);
             var query = @"SELECT YEAR(Date_Start) FROM [Order].MainData ORDER BY YEAR(Date_Start)";
@@ -51,7 +52,7 @@ namespace DigitalProductionProgram.MainWindow
         private static int Total_Tips;
         private static int CounterTips;
 
-        public static Dictionary<string, double> AverageCommentLengthsPerOperation()
+        private static Dictionary<string, double> AverageCommentLengthsPerOperation()
         {
             using var con = new SqlConnection(Database.cs_Protocol);
             const string query = @"
@@ -218,6 +219,15 @@ namespace DigitalProductionProgram.MainWindow
                 return;
             Tips.Load_WeekDay();
             CounterTips = 0;
+            if (Main_Form.IsBetaMode)
+            {
+                tips = new Tips();
+                tips.AddTip("WARNING! You are running Digital Production Program in Beta mode.");
+                lbl_Tips.ForeColor = CustomColors.Bad_Front;
+                panel_Information.BackColor = CustomColors.Bad_Back;
+                return;
+            }
+
             switch (Monitor.Monitor.factory)
             {
                 case Monitor.Monitor.Factory.Godby:

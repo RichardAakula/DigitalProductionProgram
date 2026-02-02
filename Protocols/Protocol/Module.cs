@@ -170,9 +170,9 @@ namespace DigitalProductionProgram.Protocols.Protocol
 
         private static bool IsOk_CellValueChanged;
         public static bool IsOkShowList;
-        public Equipment equipment;
-        public Processcard.Save save_processcard;
-        public Processcard.Load load_processcard;
+        public readonly Equipment equipment;
+        public readonly Processcard.Save save_processcard;
+        public readonly Processcard.Load load_processcard;
         public Processcard processcard;
 
 

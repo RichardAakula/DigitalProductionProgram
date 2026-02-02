@@ -150,47 +150,127 @@ namespace DigitalProductionProgram.Statistics
             ORDER BY ti.IntervalStart";
         private const string Query_DeploymentByVersion = @"
           -- Steg 1: Hämta senaste loggpost per HostID
-WITH LatestLogPerHost AS (
-    SELECT HostID, Version, Date
-    FROM (
-        SELECT 
-            HostID, 
+WITH LatestLogPerHost AS
+(
+    SELECT HostID, Version
+    FROM
+    (
+        SELECT
+            HostID,
             Version,
-            Date,
             ROW_NUMBER() OVER (PARTITION BY HostID ORDER BY Date DESC) AS rn
         FROM [Log].ActivityLog
-        WHERE Date >= DATEADD(DAY, -7, GETDATE()) -- Begränsa till de senaste 7 dagarna
-    ) AS ranked
+        WHERE Date >= DATEADD(DAY, -7, GETDATE())
+    ) x
     WHERE rn = 1
 ),
--- Steg 2: Lägg till versionkomponenter för jämförelse
-VersionComponents AS (
-    SELECT 
-        HostID, 
-        Version,
-        Date,
-        CAST(PARSENAME(Version, 4) AS INT) AS Major,
-        CAST(PARSENAME(Version, 3) AS INT) AS Minor,
-        CAST(PARSENAME(Version, 2) AS INT) AS Patch,
-        CAST(PARSENAME(Version, 1) AS INT) AS Build
+Top8Versions AS
+(
+    SELECT TOP (8) Version
     FROM LatestLogPerHost
-),
--- Steg 3: Begränsa till de 8 senaste versionerna
-Top8Versions AS (
-    SELECT TOP 8 Version
-    FROM VersionComponents
-    GROUP BY Version, Major, Minor, Patch, Build
-    ORDER BY Major DESC, Minor DESC, Patch DESC, Build DESC
+    GROUP BY Version
+    ORDER BY
+        CAST(PARSENAME(Version, 4) AS INT) DESC,
+        CAST(PARSENAME(Version, 3) AS INT) DESC,
+        CAST(PARSENAME(Version, 2) AS INT) DESC,
+        CAST(PARSENAME(Version, 1) AS INT) DESC
 )
--- Steg 4: Räkna hur många hostar som har varje av de versionerna + visa senaste datum
-SELECT 
+SELECT
     COUNT(*) AS HostCount,
-    v.Version
-   
-FROM VersionComponents v
-JOIN Top8Versions t ON v.Version = t.Version
-GROUP BY v.Version, v.Major, v.Minor, v.Patch, v.Build
-ORDER BY v.Major DESC, v.Minor DESC, v.Patch DESC, v.Build DESC;";
+    l.Version
+FROM LatestLogPerHost l
+JOIN Top8Versions t
+    ON l.Version = t.Version
+GROUP BY l.Version
+ORDER BY
+    CAST(PARSENAME(l.Version, 4) AS INT) DESC,
+    CAST(PARSENAME(l.Version, 3) AS INT) DESC,
+    CAST(PARSENAME(l.Version, 2) AS INT) DESC,
+    CAST(PARSENAME(l.Version, 1) AS INT) DESC;";
+
+        private const string Query_OrdersLastWeek = @"
+WITH TimeIntervals AS 
+(
+    SELECT 
+        DATEADD(DAY, -6, CAST(GETDATE() AS DATE)) AS IntervalStart,
+        DATEADD(DAY, -5, CAST(GETDATE() AS DATE)) AS IntervalEnd
+    UNION ALL
+    SELECT 
+        IntervalEnd,
+        DATEADD(DAY, 1, IntervalEnd)
+    FROM TimeIntervals
+    WHERE IntervalEnd < DATEADD(DAY, 1, CAST(GETDATE() AS DATE))
+)
+SELECT 
+    COUNT(o.OrderID) AS total_count,
+    FORMAT(ti.IntervalStart, 'dddd') AS day
+FROM TimeIntervals ti
+LEFT JOIN [Order].MainData o
+    ON o.Date_Stop >= ti.IntervalStart
+   AND o.Date_Stop <  ti.IntervalEnd
+GROUP BY ti.IntervalStart
+ORDER BY ti.IntervalStart;";
+        private const string Query_OrdersLastMonth = @"
+            
+WITH TimeIntervals AS 
+(
+    SELECT 
+        DATEADD(MONTH, -5, DATEFROMPARTS(YEAR(GETDATE()), MONTH(GETDATE()), 1)) AS IntervalStart,
+        DATEADD(MONTH, -4, DATEFROMPARTS(YEAR(GETDATE()), MONTH(GETDATE()), 1)) AS IntervalEnd
+    UNION ALL
+    SELECT 
+        IntervalEnd,
+        DATEADD(MONTH, 1, IntervalEnd)
+    FROM TimeIntervals
+    WHERE IntervalEnd < DATEADD(MONTH, 1, DATEFROMPARTS(YEAR(GETDATE()), MONTH(GETDATE()), 1))
+)
+SELECT 
+    COUNT(DISTINCT md.OrderID) AS total_count,
+    FORMAT(ti.IntervalStart, 'MMM') AS [MONTH]
+FROM TimeIntervals ti
+LEFT JOIN [Order].MainData md
+    ON md.Date_Stop >= ti.IntervalStart
+   AND md.Date_Stop <  ti.IntervalEnd
+GROUP BY ti.IntervalStart
+ORDER BY ti.IntervalStart;";
+        private const string Query_OrdersPerYear = @"
+            SELECT
+        YEAR(md.Date_Stop) AS[Year],
+        COUNT(DISTINCT md.OrderID) AS total_orders
+        FROM[Order].MainData md
+        WHERE md.Date_Stop >= DATEADD(YEAR, -5, CAST(GETDATE() AS DATE))
+        GROUP BY YEAR(md.Date_Stop)
+        ORDER BY[Year]";
+        private const string Query_LastMonth_Orders = @"
+WITH TimeIntervals AS
+(
+    -- Första dagen i förra månaden
+    SELECT
+        DATEADD(MONTH, DATEDIFF(MONTH, 0, GETDATE()) - 1, 0) AS IntervalStart,
+        DATEADD(DAY, 1, DATEADD(MONTH, DATEDIFF(MONTH, 0, GETDATE()) - 1, 0)) AS IntervalEnd
+
+    UNION ALL
+
+    SELECT
+        IntervalEnd,
+        DATEADD(DAY, 1, IntervalEnd)
+    FROM TimeIntervals
+    WHERE IntervalEnd < DATEADD(MONTH, DATEDIFF(MONTH, 0, GETDATE()), 0)
+)
+SELECT
+    COUNT(o.OrderID) AS total_count,
+    FORMAT(ti.IntervalStart, 'dd') AS [day]
+FROM TimeIntervals ti
+LEFT JOIN [Order].MainData o
+    ON o.Date_Stop >= ti.IntervalStart
+   AND o.Date_Stop <  ti.IntervalEnd
+GROUP BY ti.IntervalStart
+ORDER BY ti.IntervalStart;
+";
+
+
+
+
 
         private readonly List<(string Title, string Query)> chartQueries = new()
         {
@@ -199,8 +279,12 @@ ORDER BY v.Major DESC, v.Minor DESC, v.Patch DESC, v.Build DESC;";
             ("Activity DPP - Last Hour", Query_LastHour),
             ("Activity DPP - Last Month", Query_LastMonth),
             ("Activity DPP - Last 6 Months", Query_LastMonths),
-            ("Activity DPP - Last 5 Years", Query_LastYears),
-            ("Deployment by Version", Query_DeploymentByVersion)
+            ("Activity DPP - Last 6 Years", Query_LastYears),
+            ("Deployment by Version", Query_DeploymentByVersion),
+            ("Total Orders - Last 6 Years", Query_OrdersPerYear),
+            ("Total Orders - Last 6 Months", Query_OrdersLastMonth),
+            ("Total Orders - Last Week", Query_OrdersLastWeek),
+            ("Total Orders - Last Month", Query_LastMonth_Orders),
         };
         private async Task<List<(string Label, int Value)>> LoadChartDataAsync(string query)
         {

@@ -861,7 +861,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
             {
                 bool.TryParse(dgv_Module.Rows[row].Cells["col_IsOkWriteText"].Value.ToString(), out var isOkWriteText);
                 bool.TryParse(dgv_Module.Rows[e.RowIndex].Cells["col_IsList_Protocol"].Value.ToString(), out var IsListProtocol);
-                int.TryParse(dgv_Module.Columns[e.ColumnIndex].HeaderText, out var startup);
+                int.TryParse(dgv_Module.Columns[e.ColumnIndex].HeaderText, out int startup);
                 if (IsListProtocol)
                 {
                     switch (protocolDescriptionID)

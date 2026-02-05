@@ -143,11 +143,7 @@ namespace DigitalProductionProgram.Templates
                         list_ProtocolDescriptionID.Add(protocolDescriptionID);
                     }
                 }
-                if (MainTemplate.IsTemplateExist(cb_TemplateName.Text, cb_TemplateRevision.Text))
-                {
-                    InfoText.Show("Denna Revision finns redan, om du vill spara en ny mall måste du ändra Revision först.", CustomColors.InfoText_Color.Bad, "Warning!", this);
-                    return false;
-                }
+                
 
                 if (string.IsNullOrEmpty(cb_TemplateRevision.Text))
                 {
@@ -339,6 +335,11 @@ namespace DigitalProductionProgram.Templates
 
         private void Save_Template_Click(object sender, EventArgs e)
         {
+            if (MainTemplate.IsTemplateExist(cb_TemplateName.Text, cb_TemplateRevision.Text))
+            {
+                InfoText.Show("Denna Revision finns redan, om du vill spara en ny mall måste du ändra Revision först.", CustomColors.InfoText_Color.Bad, "Warning!", this);
+                return;
+            }
             if (IsOkSaveTemplate == false)
                 return;
            

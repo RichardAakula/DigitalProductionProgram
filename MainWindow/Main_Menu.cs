@@ -746,7 +746,7 @@ namespace DigitalProductionProgram.MainWindow
         }
 
         //----------UVECKLING----------
-        private void Menu_Utvecklare_GetOrderInfo(object sender, EventArgs e)
+        private void Menu_Utvecklare_GetInfo(object sender, EventArgs e)
         {
             var workcenterDescription = "N/A";
             var workcenterProdGroup = "N/A";
@@ -757,47 +757,63 @@ namespace DigitalProductionProgram.MainWindow
             }
 
 
+            string message =
+@"{\rtf1\ansi
+{\fonttbl\f0\fnil\fcharset0 Consolas;}
+{\colortbl ;\red239\green228\blue177;\red184\green220\blue231;}
 
-            InfoText.Show(
-                $@"
-------ORDERINFO------
-OrderNr = {Order.OrderNumber} 
-OrderID = {Order.OrderID}
-Operation = {Order.Operation}
-PartNr = {Order.PartNumber} 
-PartID = {Order.PartID}
-RevNr = {Order.RevNr}
-ProdLinje = {Order.ProdLine}
-WorkCenterDescritpion = {workcenterDescription}
-ProduktTyp = {Order.ProdType}
-ProdGrupp = {Order.ProdGroup} 
-WorkCenterProdGroup = {workcenterProdGroup}
-Kund = {Order.Customer}
-Benämning = {Order.Description}
-HS-Machine = {Equipment.Equipment.HS_Machine}
+\f0
 
-------WORKOPERATION------
-WorkOperation = {Order.WorkOperation}
-WorkOperationID = {Order.WorkoperationID}
+\cf1\fs24 ==================== ORDERINFO ==================== \line
+\cf2\fs18 OrderNr                  = " + Order.OrderNumber + @"\line
+OrderID                  = " + Order.OrderID + @"\line
+Operation                = " + Order.Operation + @"\line
+PartNr                   = " + Order.PartNumber + @"\line
+PartID                   = " + Order.PartID + @"\line
+RevNr                    = " + Order.RevNr + @"\line
+ProdLinje                = " + Order.ProdLine + @"\line
+WorkCenterDescription    = " + workcenterDescription + @"\line
+ProduktTyp               = " + Order.ProdType + @"\line
+ProdGrupp                = " + Order.ProdGroup + @"\line
+WorkCenterProdGroup      = " + workcenterProdGroup + @"\line
+Kund                     = " + Order.Customer + @"\line
+Benämning                = " + Order.Description + @"\line
+HS-Machine               = " + Equipment.Equipment.HS_Machine + @"\line
+\cf1\fs24=================================================== \line\line
 
-------USER INFO------
-Theme = {Teman.Theme}
-Name = {Person.Name} - {Person.EmployeeNr}
-Befattning = {Person.Role}
-MonitorCompany = {Database.MonitorCompany}
+=================== WORKOPERATION ================= \line
+\cf2\fs18 WorkOperation            = " + Order.WorkOperation + @"\line
+WorkOperationID          = " + Order.WorkoperationID + @"\line
+\cf1\fs24=================================================== \line\line
 
-------MEASUREPROTOCOL TEMPLATE------
-Measureprotocol.MainTemplateID = {Templates_MeasureProtocol.MainTemplate.ID}
-Measureprotocol.Name = {Templates_MeasureProtocol.MainTemplate.Name}
+====================== USER INFO ================== \line
+\cf2\fs18 Theme                   = " + Teman.Theme + @"\line
+Name                    = " + Person.Name + " - " + Person.EmployeeNr + @"\line
+Befattning              = " + Person.Role + @"\line
+\cf1\fs24=================================================== \line\line
 
-------LINECLEARANCE TEMPLATE------
-LineClearance.MainTemplateID = {Templates_LineClearance.MainTemplate.LineClearance_MainTemplateID}
+======================= MONITOR =================== \line
+\cf2\fs18 MonitorCompany          = " + Database.MonitorCompany + @"\line
+MonitorHost             = " + Database.MonitorHost + @"\line
+\cf1\fs24=================================================== \line\line
 
-------MAINPROTOCOL TEMPLATE------
-Protocol.MainTemplate.ID = {Templates_Protocol.MainTemplate.ID}
-Protocol.MainTemplate.Name = {Templates_Protocol.MainTemplate.Name}
-Protocol.MainTemplate.Revision = {Templates_Protocol.MainTemplate.Revision}"
-                , CustomColors.InfoText_Color.Info, "Info", this);
+========= MEASUREPROTOCOL TEMPLATE ================ \line
+\cf2\fs18 MainTemplateID          = " + Templates_MeasureProtocol.MainTemplate.ID + @"\line
+MainTemplateName        = " + Templates_MeasureProtocol.MainTemplate.Name + @"\line
+\cf1\fs24=================================================== \line\line
+
+========= LINECLEARANCE TEMPLATE ================== \line
+\cf2\fs18 MainTemplateID          = " + Templates_LineClearance.MainTemplate.LineClearance_MainTemplateID + @"\line
+\cf1\fs24=================================================== \line\line
+
+\cf1\fs24 ========= MAINPROTOCOL TEMPLATE =================== \line
+\cf2\fs18 Protocol.TemplateID     = " + Templates_Protocol.MainTemplate.ID + @"\line
+Protocol.Name           = " + Templates_Protocol.MainTemplate.Name + @"\line
+Protocol.Revision       = " + Templates_Protocol.MainTemplate.Revision + @"\line
+\cf1\fs24=================================================== \line
+}";
+
+            InfoText.Show(message, CustomColors.InfoText_Color.Info, "Info", this);
         }
         private void Menu_Developer_Add_Gallup_Click(object sender, EventArgs e)
         {

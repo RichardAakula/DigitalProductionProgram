@@ -60,7 +60,7 @@ namespace DigitalProductionProgram.Protocols.LineClearance
         public void Translate_Form()
         {
             label_LC_Name_Date.Text = LanguageManager.GetString("print_LineClearance_1");
-            LanguageManager.TranslationHelper.TranslateControls(new Control[]{lbl_LC_Name });
+            LanguageManager.TranslationHelper.TranslateControls([lbl_LC_Name]);
         }
        
 
@@ -166,9 +166,40 @@ namespace DigitalProductionProgram.Protocols.LineClearance
         {
             Database.ExecuteSafe(con =>
             {
-                var query =
-                    "UPDATE [Order].MainData SET LC_Approved_Date = @date, LC_Approved_Name = @name WHERE OrderID = @orderid";
+                const string query = """
+                                     BEGIN
+                                         INSERT INTO Log.ActivityLog
+                                         (
+                                             HostID, 
+                                             UserID, 
+                                             OrderID, 
+                                             Program, 
+                                             Version, 
+                                             Date,   
+                                             Info
+                                         )
+                                         VALUES
+                                         (
+                                             (SELECT HostID FROM [Settings].General WHERE HostName = @hostname), 
+                                             @userid, 
+                                             @orderid, 
+                                             'SaveData', 
+                                             @version, 
+                                             @date,                            
+                                             'LineClearance Approved'
+                                         )
+                                     END;    
+                                     BEGIN
+                                        UPDATE [Order].MainData 
+                                        SET LC_Approved_Date = @date, LC_Approved_Name = @name 
+                                        WHERE OrderID = @orderid
+                                     END
+                                     """;
                 var cmd = new SqlCommand(query, con);
+
+                cmd.Parameters.AddWithValue("@hostname", Activity.HostName);
+                SQL_Parameter.Int(cmd.Parameters, "@userid", Person.UserID);
+                cmd.Parameters.AddWithValue("@version", ChangeLog.CurrentVersion.ToString());
                 cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                 cmd.Parameters.AddWithValue("@date", date);
                 cmd.Parameters.AddWithValue("@name", name);

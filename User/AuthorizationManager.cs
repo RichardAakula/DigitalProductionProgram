@@ -151,7 +151,8 @@ namespace DigitalProductionProgram.User
                 var query = @"
                     SELECT UserName 
                     FROM Authorities.CustomNames
-                    WHERE TemplateID = (SELECT ID FROM Authorities.TemplateAuthorities WHERE CodeText = @codetext)";
+                    WHERE TemplateID = (SELECT ID FROM Authorities.TemplateAuthorities WHERE CodeText = @codetext)
+                    ORDER BY UserName";
                 var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@codetext", dgv_Template.CurrentCell.Value.ToString());
                 con.Open();
@@ -293,13 +294,30 @@ namespace DigitalProductionProgram.User
         {
             if (btn_Add.Text == LanguageManager.GetString("btn_AuthoritiesAddUser"))
             {
-                using var choose_Item = new Choose_Item(Person.List_Users(false), new Control[] { btn_Add }, false);
+                using var choose_Item = new Choose_Item(Person.List_Users(false), [btn_Add], false);
                 choose_Item.ShowDialog();
                 using (var con = new SqlConnection(Database.cs_Protocol))
                 {
-                    const string query = @"
-                    INSERT INTO Authorities.CustomNames (TemplateID, UserName)
-                    VALUES ((SELECT ID FROM Authorities.TemplateAuthorities WHERE CodeText = @codetext), @name)";
+                    const string query = """
+                                         DECLARE @templateId INT = 
+                                         (
+                                             SELECT ID 
+                                             FROM Authorities.TemplateAuthorities 
+                                             WHERE CodeText = @codetext
+                                         );
+                                         
+                                         IF NOT EXISTS 
+                                         (
+                                             SELECT 1
+                                             FROM Authorities.CustomNames
+                                             WHERE TemplateID = @templateId
+                                               AND UserName = @name
+                                         )
+                                         BEGIN
+                                             INSERT INTO Authorities.CustomNames (TemplateID, UserName)
+                                             VALUES (@templateId, @name);
+                                         END
+                                         """;
                     var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@codetext", dgv_Template.CurrentCell.Value.ToString());
                     cmd.Parameters.AddWithValue("@name", btn_Add.Text);
@@ -433,7 +451,7 @@ namespace DigitalProductionProgram.User
                 {
                     var query = @"
                     DELETE FROM Authorities.CustomNames
-                    WHERE Name = @name AND TemplateID = (SELECT ID FROM Authorities.TemplateAuthorities WHERE CodeText = @codetext)";
+                    WHERE UserName = @name AND TemplateID = (SELECT ID FROM Authorities.TemplateAuthorities WHERE CodeText = @codetext)";
                     var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                     cmd.Parameters.AddWithValue("@codetext", dgv_Template.CurrentCell.Value.ToString());
                     cmd.Parameters.AddWithValue("@name", dgv_Details.CurrentCell.Value);

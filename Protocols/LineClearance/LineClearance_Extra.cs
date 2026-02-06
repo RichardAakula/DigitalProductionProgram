@@ -339,7 +339,7 @@ namespace DigitalProductionProgram.Protocols.LineClearance
                     lbl_LC_Approved_AnstNr.Text = Person.EmployeeNr;
                     LC_Approved_Name.Text = Person.Name;
                     LC_Approved_Date.Text = DateTime.Now.ToString("yyyy-MM-dd HH:mm");
-                    LineClearance.SaveApprovedLineClearance(LC_Name.Text, LC_Date.Text);
+                    LineClearance.SaveApprovedLineClearance(LC_Approved_Name.Text, LC_Approved_Date.Text);
                     ChangeFont_Label_Approved_LC();
                 }
                 else
@@ -375,7 +375,15 @@ namespace DigitalProductionProgram.Protocols.LineClearance
 
         private void InstructionLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Process.Start(CenturiLink);
+            try
+            {
+                Process.Start(CenturiLink);
+            }
+            catch
+            {
+
+            }
+            
         }
 
 

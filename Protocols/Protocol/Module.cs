@@ -3,7 +3,6 @@ using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Equipment;
 using DigitalProductionProgram.Help;
 using DigitalProductionProgram.Log;
-using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.Övrigt;
 using DigitalProductionProgram.PrintingServices;
@@ -11,18 +10,11 @@ using DigitalProductionProgram.Processcards;
 using DigitalProductionProgram.Templates;
 using DigitalProductionProgram.User;
 using Microsoft.Data.SqlClient;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.Globalization;
-using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
-using System.Windows.Forms;
 using Activity = DigitalProductionProgram.Log.Activity;
 
 namespace DigitalProductionProgram.Protocols.Protocol
@@ -1084,6 +1076,14 @@ namespace DigitalProductionProgram.Protocols.Protocol
                 return;
             }
 
+            if (Templates_LineClearance.MainTemplate.LineClearance_MainTemplateID > 0)
+            {
+                if (!LineClearance.LineClearance.IsLineClearanceApproved)
+                {
+                    InfoText.Show("Line Clearance är inte godkänt så du kan inte göra ändringar i Protokollet", CustomColors.InfoText_Color.Bad, "Warning", this);
+                    return;
+                }
+            }
             if (!Person.IsUserSignedIn(true))
                 InfoText.Show(LanguageManager.GetString("otherUserIsLoggedIn"), CustomColors.InfoText_Color.Warning, "Warning", this);
         }

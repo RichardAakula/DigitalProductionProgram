@@ -807,7 +807,12 @@ namespace DigitalProductionProgram.OrderManagement
                 IsOrderDone = false;
                 Load_ProdType();
                 Templates_Protocol.MainTemplate.Revision = Korprotokoll.ProtocolTemplateRevision.OrderNr(OrderID);
-                _ = Activity.Stop($"Starting Order: {Order.OrderNumber} - {Order.Operation} by {Person.Name}");
+                _ = Activity.Stop($"""
+                                   Starting Order: {Order.OrderNumber} - {Order.Operation} by {Person.Name} 
+                                   | ProtocolMainTemplateID = {Templates_Protocol.MainTemplate.ID} 
+                                   | MeasurementProtocolTemplateID = {Templates_MeasureProtocol.MainTemplate.ID}
+                                   | LineClearanceMainTemplateID = {Templates_LineClearance.MainTemplate.LineClearance_MainTemplateID}
+                                   """);
                 _ = Main_FilterQuickOpen.Load_ListAsync(main.dgv_QuickOpen);
             }
 

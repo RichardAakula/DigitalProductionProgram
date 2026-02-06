@@ -744,7 +744,7 @@ namespace DigitalProductionProgram.Templates
             Order.Restore_TempOrderInfo();
         }
 
-        public class MainTemplate
+        public abstract class MainTemplate
         {
             public static int? LineClearance_MainTemplateID { get; set; }
             public static string LineClearance_Revision { get; set; }
@@ -821,10 +821,7 @@ namespace DigitalProductionProgram.Templates
                 con.Open();
                 var value = cmd.ExecuteScalar();
                 if (value != DBNull.Value && value != null)
-                {
                     LineClearance_MainTemplateID = int.Parse(value.ToString());
-                    return;
-                }
 
                 return;
                 //Koden nedan behövs troligen inte, LineClearance bör alltid bli rätt laddad
@@ -881,7 +878,7 @@ namespace DigitalProductionProgram.Templates
                 }
             }
         }
-        public class Template
+        public abstract class Template
         {
 
             public static void AddColumns_dgv_Template(DataGridView dgv)
@@ -915,7 +912,8 @@ namespace DigitalProductionProgram.Templates
                     templateOrder++;
                 }
             }
-            public static void Save_Data(DataGridView dgv, int templateOrder, string lineClearanceRevision)
+
+            private static void Save_Data(DataGridView dgv, int templateOrder, string lineClearanceRevision)
             {
                 foreach (DataGridViewRow row in dgv.Rows)
                 {
@@ -970,7 +968,7 @@ namespace DigitalProductionProgram.Templates
                 }
             }
         }
-        public class FormTemplate
+        public abstract class FormTemplate
         {
             public static void Save_Data(string category, int templateOrder, string revision)
             {

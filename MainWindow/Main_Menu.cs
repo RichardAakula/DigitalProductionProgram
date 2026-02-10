@@ -209,6 +209,7 @@ namespace DigitalProductionProgram.MainWindow
             Application.Exit();
         }
 
+
         //----------ORDER----------
         private void Menu_Order_FinishOrder_Click(object sender, EventArgs e)
         {
@@ -481,7 +482,8 @@ namespace DigitalProductionProgram.MainWindow
                             'Inledande_LotNr_Enter' ,
                             'SavePrefabFromMonitor',
                             'AutoTestJira',
-                            'Looping_ThroughMeasurements'       
+                            'Looping_ThroughMeasurements',
+                            'Mätdata_Row_Click'
                         )
                         AND Info NOT LIKE '%Felsökning%'
                         AND Info NOT LIKE '%Error%'
@@ -603,6 +605,7 @@ namespace DigitalProductionProgram.MainWindow
             }
         }
 
+
         //----------USER----------
         private void Menu_User_SignIn_Click(object sender, EventArgs e)
         {
@@ -648,6 +651,7 @@ namespace DigitalProductionProgram.MainWindow
             authorities.ShowDialog();
         }
 
+
         //----------VERKTYG----------
         private void Menu_Verktyg_Inställningar_Click(object sender, EventArgs e)
         {
@@ -686,6 +690,7 @@ namespace DigitalProductionProgram.MainWindow
 
         }
 
+
         //----------TEMAN----------
         private void Menu_Theme_Click(object sender, EventArgs e)
         {
@@ -695,6 +700,7 @@ namespace DigitalProductionProgram.MainWindow
             Points.Add_Points(1, menu.Text);
             Task.Run(mainForm.Change_Theme);
         }
+
 
         //----------HJÄLP----------
         private void Menu_Help_RapporteraFel_Click(object sender, EventArgs e)

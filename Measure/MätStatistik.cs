@@ -20,10 +20,10 @@ namespace DigitalProductionProgram.Measure
         private Color clr;
         private Color clr_slMax;
         private Color clr_slMin;
-        private DataTable MätData = new DataTable();
-        private readonly ToolTip tooltip = new ToolTip();
-        private readonly StripLine slMax = new StripLine();
-        private readonly StripLine slMin = new StripLine();
+        private DataTable dt_MeasureData = new();
+        private readonly ToolTip tooltip = new ();
+        private readonly StripLine slMax = new ();
+        private readonly StripLine slMin = new ();
         private double? USL
         {
             get
@@ -114,12 +114,12 @@ namespace DigitalProductionProgram.Measure
                         if (MeasurePoints.Value(MeasurePoints.CodeTextMonitor.ExpOD, "USL") > 0)
                             return MeasurePoints.Value(MeasurePoints.CodeTextMonitor.ExpOD, "USL");
                         clr_slMax = Color.Orange; 
-                        return AVG + 0.1;
+                        return AVG(cb_Mått.Text) + 0.1;
                     case 2:  //Blåst W
                         if (MeasurePoints.Value(MeasurePoints.CodeTextMonitor.ExpWall, "USL") > 0)
                             return MeasurePoints.Value(MeasurePoints.CodeTextMonitor.ExpWall, "USL");
                         clr_slMax = Color.Orange;
-                        return AVG + 0.03;
+                        return AVG(cb_Mått.Text) + 0.03;
                     case 3:  //Krympt ID
                         return MeasurePoints.Value(MeasurePoints.CodeTextMonitor.RecID, "USL");
                     case 4:  
@@ -131,7 +131,7 @@ namespace DigitalProductionProgram.Measure
                         if (MeasurePoints.Value(MeasurePoints.CodeTextMonitor.RecWall, "USL") > 0)
                             return MeasurePoints.Value(MeasurePoints.CodeTextMonitor.RecWall, "USL");
                         clr_slMax = Color.Orange;
-                        return AVG + 0.02;
+                        return AVG(cb_Mått.Text) + 0.02;
                     case 6:  //Längd
                         return MeasurePoints.Value(MeasurePoints.CodeTextMonitor.Length, "USL");
                 }
@@ -200,12 +200,12 @@ namespace DigitalProductionProgram.Measure
                         if (MeasurePoints.Value(MeasurePoints.CodeTextMonitor.ExpOD, "LSL") > 0)
                             return MeasurePoints.Value(MeasurePoints.CodeTextMonitor.ExpOD, "LSL");
                         clr_slMin = Color.Orange;
-                        return AVG - 0.1;
+                        return AVG(cb_Mått.Text) - 0.1;
                     case 2:  //Blåst W
                         if (MeasurePoints.Value(MeasurePoints.CodeTextMonitor.ExpWall, "LSL") > 0)
                             return MeasurePoints.Value(MeasurePoints.CodeTextMonitor.ExpWall, "LSL");
                         clr_slMin = Color.Orange;
-                        return (AVG - 0.03);
+                        return (AVG(cb_Mått.Text) - 0.03);
                     case 3:  //Krympt ID
                         if (MeasurePoints.Value(MeasurePoints.CodeTextMonitor.RecID, "LSL") > 0)
                             return MeasurePoints.Value(MeasurePoints.CodeTextMonitor.RecID, "LSL");
@@ -231,82 +231,126 @@ namespace DigitalProductionProgram.Measure
 
             }
         }
-        private double? MIN
+        
+        private double? MIN(string codeName)
         {
-            get
-            {
-                try
-                {
-                    double? min = (double?)MätData.Compute($"min({cb_Mått.Text})", string.Empty);
-                    return min;
-                }
-                catch { return null; }
-            }
+            if (dt_MeasureData == null || dt_MeasureData.Rows.Count == 0 || string.IsNullOrWhiteSpace(codeName))
+                return null;
+
+            var values = dt_MeasureData.AsEnumerable()
+                .Where(r =>
+                    (r.IsNull("Discarded") || !r.Field<bool>("Discarded")) &&
+                    string.Equals(r.Field<string>("CodeName"), codeName, StringComparison.OrdinalIgnoreCase))
+                .Select(r => r["Value"])
+                .Where(v => v != null && v != DBNull.Value)
+                .Select(v => Convert.ToDouble(v));
+
+            return values.Any() ? values.Min() : (double?)null;
         }
-        private double? MAX
+        private double? MAX(string codeName)
         {
-            get
-            {
-                try
-                {
-                    double? max = (double?)MätData.Compute($"max({cb_Mått.Text})", string.Empty);
-                    return max;
-                }
-                catch { return null; }
-                
-            }
+            if (dt_MeasureData == null || dt_MeasureData.Rows.Count == 0 || string.IsNullOrWhiteSpace(codeName))
+                return null;
+
+            var values = dt_MeasureData.AsEnumerable()
+                .Where(r =>
+                    (r.IsNull("Discarded") || !r.Field<bool>("Discarded")) &&
+                    string.Equals(r.Field<string>("CodeName"), codeName, StringComparison.OrdinalIgnoreCase))
+                .Select(r => r["Value"])
+                .Where(v => v != null && v != DBNull.Value)
+                .Select(v => Convert.ToDouble(v));
+
+            return values.Any() ? values.Max() : (double?)null;
         }
-        private double? AVG
+        private double? AVG(string codeName)
         {
-            get
-            {
-                try
-                {
-                    double? avg = (double?)MätData.Compute($"avg({cb_Mått.Text})", string.Empty);
-                    return avg;
-                }
-                catch
-                {
-                    return null;
-                }
-            }
+            if (dt_MeasureData == null || dt_MeasureData.Rows.Count == 0 || string.IsNullOrWhiteSpace(codeName))
+                return null;
+
+            var values = dt_MeasureData.AsEnumerable()
+                .Where(r =>
+                    (r.IsNull("Discarded") || !r.Field<bool>("Discarded")) &&
+                    string.Equals(r.Field<string>("CodeName"), codeName, StringComparison.OrdinalIgnoreCase))
+                .Select(r => r["Value"])
+                .Where(v => v != null && v != DBNull.Value)
+                .Select(v => Convert.ToDouble(v));
+
+            return values.Any() ? values.Average() : (double?)null;
         }
-          
+        private double? GetValueByCodeName(DataTable table, string codeName)
+        {
+            if (table == null || table.Rows.Count == 0 || string.IsNullOrWhiteSpace(codeName))
+                return null;
+
+            // Hitta första raden där CodeName matchar
+            var row = table.AsEnumerable()
+                .FirstOrDefault(r => string.Equals(
+                    r.Field<string>("CodeName"),
+                    codeName,
+                    StringComparison.OrdinalIgnoreCase));
+
+            if (row == null)
+                return null;
+
+            var obj = row["Value"];
+
+            if (obj == null || obj == DBNull.Value)
+                return null;
+
+            // Konvertera alla rimliga typer
+            if (obj is double d) return d;
+            if (obj is float f) return f;
+            if (obj is int i) return i;
+            if (obj is long l) return l;
+            if (obj is decimal dec) return (double)dec;
+
+            if (double.TryParse(obj.ToString(), out var parsed))
+                return parsed;
+
+            return null;
+        }
+
+
         private DataTable LoadMätData()
         {
-            MätData.Clear();
-            string query = @" SELECT CodeName, Value, TextValue, BoolValue, DateValue, Date, Discarded, ErrorCode, AnstNr, Sign, ColumnIndex, Decimals, data.RowIndex, Type
-                    FROM MeasureProtocol.Data as data
-	                    JOIN MeasureProtocol.Description as description
-		                    ON data.DescriptionId = description.ID
-	                    JOIN MeasureProtocol.Template as template
-		                    ON data.DescriptionId = template.DescriptionID
-	                    JOIN MeasureProtocol.MainData as main
-		                    ON data.RowIndex = main.RowIndex AND data.OrderID = main.OrderID";
+            dt_MeasureData.Clear();
+            var query = """
+                        SELECT CodeName, Value, TextValue, BoolValue, DateValue, Date, Discarded, ErrorCode, AnstNr, Sign, ColumnIndex, Decimals, data.RowIndex, DataType
+                        FROM MeasureProtocol.Data as data
+                        JOIN MeasureProtocol.Description as description
+                            ON data.DescriptionId = description.ID
+                        JOIN MeasureProtocol.Template as template
+                            ON data.DescriptionId = template.DescriptionID
+                        JOIN MeasureProtocol.MainData as main
+                            ON data.RowIndex = main.RowIndex AND data.OrderID = main.OrderID 
+                        """;
             if (cB_visaAllaOrdrar.Checked)
-                query += @"
-                    WHERE EXISTS (SELECT * FROM [Order].MainData 
-                        WHERE korprotokoll.PartID = @partid
-                            AND data.OrderID = korprotokoll.OrderID AND Discarded = 'False') 
-                            ORDER BY data.OrderID, Påse_Spole";
+                query += """
+                         WHERE EXISTS 
+                         (
+                            SELECT * FROM [Order].MainData 
+                            WHERE korprotokoll.PartID = @partid
+                                AND data.OrderID = korprotokoll.OrderID AND Discarded = 'False'
+                         ) 
+                         ORDER BY data.OrderID, Påse_Spole
+                         """;
             else
-                query += @"
-                            WHERE data.OrderID = @orderid AND FormTemplateID = @formtemplateid
-                        AND template.Revision = (SELECT MeasureprotocolTemplateRevision FROM [Order].MainData WHERE OrderID = @orderid)
-                        AND Discarded = 'False'
-                    ORDER BY RowIndex, ColumnIndex";
+                query += """
+                         WHERE data.OrderID = @orderid AND FormTemplateID = @formtemplateid
+                            AND (Discarded = 'False' OR Discarded IS NULL)
+                         ORDER BY RowIndex, ColumnIndex
+                         """;
 
-            using (SqlConnection con = new SqlConnection(Database.cs_Protocol))
+            return Database.ExecuteSafe(con =>
             {
-                con.Open();
-                SqlCommand cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                SqlCommand cmd = new SqlCommand(query, con);
                 cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                 cmd.Parameters.AddWithValue("@formtemplateid", Templates_MeasureProtocol.MainTemplate.ID);
                 SQL_Parameter.NullableINT(cmd.Parameters, "@partid", Order.PartID);
 
-                MätData.Load(cmd.ExecuteReader());
-                return MätData;
-            }
+                dt_MeasureData.Load(cmd.ExecuteReader());
+                return dt_MeasureData;
+            });
         }
 
 
@@ -326,7 +370,7 @@ namespace DigitalProductionProgram.Measure
             //Opacity at Start = 20 %
             for (int i = 0; i < 180; i++)
             {
-                Opacity = Opacity + 0.004f;
+                Opacity += 0.004f;
                 Refresh();
             }
 
@@ -406,8 +450,8 @@ namespace DigitalProductionProgram.Measure
         }
         private void Load_Values()
         {
-            MätData = LoadMätData();
-            if (MätData.Rows.Count < 1)
+            dt_MeasureData = LoadMätData();
+            if (dt_MeasureData.Rows.Count < 1)
                 return;
 
             Initialize_SPC_Data();
@@ -417,11 +461,10 @@ namespace DigitalProductionProgram.Measure
 
             if (string.IsNullOrEmpty(cb_Mått.Text))
                 return;
-            for (int i = 0; i < MätData.Rows.Count; i++)
+            for (int i = 0; i < dt_MeasureData.Rows.Count; i++)
             {
-                    string str_value = MätData.Rows[i][cb_Mått.Text].ToString().Replace('.', ',');
-                    if (double.TryParse(str_value, out double value))
-                        chartData.Series[0].Points.Add(value);
+                    var value = GetValueByCodeName(dt_MeasureData, cb_Mått.Text);
+                    chartData.Series[0].Points.Add((double)value);
             }
 
             FärgläggPunkterIdiagram();
@@ -429,26 +472,25 @@ namespace DigitalProductionProgram.Measure
         }
         private void Initialize_SPC_Data()
         {
-            lbl_USL.Text = $"{USL:0.000}";
-            lbl_Max.Text = $"{MAX:0.000}";
-            lbl_Avg.Text = $"{AVG:0.000}";
-            lbl_Min.Text = $"{MIN:0.000}";
-            lbl_LSL.Text = $"{LSL:0.000}";
+            lbl_USL.Text = @$"{USL:0.000}";
+            lbl_Max.Text = @$"{MAX(cb_Mått.Text):0.000}";
+            lbl_Avg.Text = @$"{AVG(cb_Mått.Text):0.000}";
+            lbl_Min.Text = @$"{MIN(cb_Mått.Text):0.000}";
+            lbl_LSL.Text = @$"{LSL:0.000}";
             try
             {
-                lbl_HiLo.Text = $"{MAX - MIN:0.000}";
+                lbl_HiLo.Text = $@"{MAX(cb_Mått.Text) - MIN(cb_Mått.Text):0.000}";
             }
             catch { lbl_HiLo.Text = "N/A"; }
 
             var list_double = new List<double?>();
-            for (int i = 0; i < MätData.Rows.Count; i++)
+            for (int i = 0; i < dt_MeasureData.Rows.Count; i++)
             {
-                double.TryParse(MätData.Rows[i][cb_Mått.Text].ToString(), out var value);
-                //double? value = double.Parse(MätData.Rows[i][cb_Mått.Text].ToString());
+                var value = GetValueByCodeName(dt_MeasureData, cb_Mått.Text);
                 list_double.Add(value);
             }
-            lbl_Cp.Text = $"{Calculate.Cp(list_double, USL, LSL)}";
-            lbl_Cpk.Text = $"{Calculate.Cpk(list_double, USL, LSL)}";
+            lbl_Cp.Text = $@"{Calculate.Cp(list_double, USL, LSL)}";
+            lbl_Cpk.Text = $@"{Calculate.Cpk(list_double, USL, LSL)}";
         }
         private void Initialize_Striplines()
         {
@@ -483,22 +525,23 @@ namespace DigitalProductionProgram.Measure
        
         private void FärgläggPunkterIdiagram()
         {
-            for (int i = 0; i < MätData.Rows.Count; i++)
+            for (int i = 0; i < dt_MeasureData.Rows.Count; i++)
             {
                 if (i <= 0) 
                     continue;
-                Set_Color_Chart_Series(MätData.Rows[i][0].ToString(), MätData.Rows[i - 1][0].ToString());
+                Set_Color_Chart_Series(dt_MeasureData.Rows[i][0].ToString(), dt_MeasureData.Rows[i - 1][0].ToString());
                 chartData.Series[0].Points[i].Color = clr;
             }
         }
         private void Fill_dgv()
         {
+            return;
             List<string> values = new List<string>();
             dgv_OrderList.Rows.Clear();
-            for (int i = 0; i < MätData.Rows.Count; i++)
+            for (int i = 0; i < dt_MeasureData.Rows.Count; i++)
             {
-                if (!values.Contains($"{MätData.Rows[i]["OrderNr"]}"))
-                    values.Add($"{MätData.Rows[i]["OrderNr"]}");
+                if (!values.Contains($"{dt_MeasureData.Rows[i]["OrderNr"]}"))
+                    values.Add($"{dt_MeasureData.Rows[i]["OrderNr"]}");
             }
             for (int i = 0; i < values.Count; i++)
             {
@@ -525,7 +568,7 @@ namespace DigitalProductionProgram.Measure
             {
                 HitTestResult pos = chartData.HitTest(e.X, e.Y);
                 if (pos.ChartElementType == ChartElementType.DataPoint)
-                    tooltip.SetToolTip(chartData, chartData.Series[0].Points[pos.PointIndex].YValues[0] + " | " + MätData.Rows[pos.PointIndex]["OrderNr"]);
+                    tooltip.SetToolTip(chartData, chartData.Series[0].Points[pos.PointIndex].YValues[0] + " | " + dt_MeasureData.Rows[pos.PointIndex]["OrderNr"]);
             }
             //catch {Exception exc }
             
@@ -536,7 +579,7 @@ namespace DigitalProductionProgram.Measure
             int i = 0;
             foreach (DataPoint dp in chartData.Series[0].Points)
             {
-                if (MätData.Rows[i][1].ToString() + MätData.Rows[i][2] == dgv_OrderList.CurrentCell.Value.ToString())
+                if (dt_MeasureData.Rows[i][1].ToString() + dt_MeasureData.Rows[i][2] == dgv_OrderList.CurrentCell.Value.ToString())
                 {
                     dp.Color = Color.Goldenrod;
                     dp.BorderWidth = 3;

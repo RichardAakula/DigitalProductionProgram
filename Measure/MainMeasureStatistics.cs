@@ -4,23 +4,10 @@ using DigitalProductionProgram.Help;
 using DigitalProductionProgram.Log;
 using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
-using DigitalProductionProgram.Övrigt;
 using DigitalProductionProgram.PrintingServices;
-using DigitalProductionProgram.Protocols.Template_Management;
 using DigitalProductionProgram.Templates;
 using DigitalProductionProgram.User;
-using LiveChartsCore;
-using LiveChartsCore.Defaults;
-using LiveChartsCore.Measure;
-using LiveChartsCore.Measure;
-using LiveChartsCore.SkiaSharpView;
-using LiveChartsCore.SkiaSharpView.Painting;
-using LiveChartsCore.SkiaSharpView.SKCharts;
-using LiveChartsCore.SkiaSharpView.WinForms;
 using Microsoft.Data.SqlClient;
-using SkiaSharp;
-//using System.Windows.Forms.DataVisualization.Charting;
-using System.Collections.ObjectModel;
 
 namespace DigitalProductionProgram.Measure
 {
@@ -246,7 +233,7 @@ namespace DigitalProductionProgram.Measure
         {
             tlp.RowStyles[3].Height = Math.Max(MeasurePoints.MeasurePointsHeight, MeasureStatsHeight);
         }
-        public static void Add_Label(FlowLayoutPanel flp, string text, string? parameterName, int height, FontStyle fontStyle = FontStyle.Regular, ContentAlignment content = ContentAlignment.MiddleCenter)
+        private static void Add_Label(FlowLayoutPanel flp, string text, string? parameterName, int height, FontStyle fontStyle = FontStyle.Regular, ContentAlignment content = ContentAlignment.MiddleCenter)
         {
             var foreColor = Teman.foreColor_MeasureStats;
             var font = new Font("Segoe UI", 9, fontStyle);
@@ -276,13 +263,13 @@ namespace DigitalProductionProgram.Measure
             flp.Invoke(new Action(() => flp.Controls.Add(lbl)));
 
         }
-        public static async void Mätdata_Row_Click(object sender, EventArgs e)
+        private static async void Mätdata_Row_Click(object sender, EventArgs e)
         {
             var label = (Label)sender;
             var codeName = label.Name;
             if (string.IsNullOrEmpty(codeName))
                 Load_MätStatistik();
-            
+            _ = Activity.Stop($"User clicks {codeName} for MainMeasureStatistics");
             MeasurementChart.ActiveCodeName = codeName;
             MeasurementChart.ActiveCodeText = label.Text;
 
@@ -304,10 +291,10 @@ namespace DigitalProductionProgram.Measure
             stats.InitializeForm();
             stats.Fill_ComboBox_Mått();
 
-            _ = Activity.Stop($"Mätstatistik för order: {Order.OrderNumber}");
+            _ = Activity.Stop($"User looking att Measurestatistics:");
         }
 
-        public class ValidateMeasurements
+        public abstract class ValidateMeasurements
         {
             public static void AverageValues()
             {

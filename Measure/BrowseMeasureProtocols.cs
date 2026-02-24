@@ -28,9 +28,16 @@ namespace DigitalProductionProgram.Measure
         private double LCL;
         private double USL;
         private double UCL;
-
-        private static readonly Font ItalicFont = new Font("Courier New", 8, FontStyle.Italic);
+        private const double marginPercent = 0.5;
+        private bool IsLoading;
+        private readonly bool IsOkAddPoints;
         private string? activeOrderNr;
+        private string Column_Name => dgv_MeasureProtocol.Columns[activeCell.ColumnIndex].Name;
+        private DataGridViewCell? activeCell;
+        readonly List<string> listOrderNr = new();
+
+        //private static readonly Font ItalicFont = new Font("Courier New", 8, FontStyle.Italic);
+        
         private string Query_TopList
         {
             get
@@ -47,7 +54,6 @@ namespace DigitalProductionProgram.Measure
             }
 
         }
-        private readonly bool IsOkAddPoints;
         private static bool IsOutlier(double value, List<double> values, double pct)
         {
             // pct = hur aggressivt du filtrerar. Ex: pct = 3.5 är standard.
@@ -73,97 +79,6 @@ namespace DigitalProductionProgram.Measure
             // 4) Threshold styrs av pct
             return robustZ > pct;
         }
-        private const double marginPercent = 0.5;
-        private DataGridViewCell? activeCell;
-        private string Column_Name => dgv_MeasureProtocol.Columns[activeCell.ColumnIndex].Name;
-        readonly List<string> listOrderNr = new();
-
-        private List<RectangularSection> sections
-        {
-            get
-            {
-                var sections = new List<RectangularSection>();
-                if (USL > 0)
-                    sections.Add(new RectangularSection
-                    {
-                        Yi = USL,
-                        Yj = Max_Y_Value * (1 + marginPercent / 100),
-                        Fill = new SolidColorPaint(new SKColor(156, 0, 6, 230))
-                    }
-                    );
-                if (LSL > 0)
-                    sections.Add(new RectangularSection
-                    {
-                        Yi = Min_Y_Value * (1 - marginPercent / 100),
-                        Yj = LSL,
-                        Fill = new SolidColorPaint(new SKColor(156, 0, 6, 230))
-                    }
-                    );
-                if (UCL > 0)
-                    sections.Add(new RectangularSection
-                    {
-                        Yi = UCL,
-                        Yj = USL,
-                        Fill = new SolidColorPaint(new SKColor(156, 101, 0, 230))
-                    }
-                    );
-                if (LCL > 0)
-                    sections.Add(new RectangularSection
-                    {
-                        Yi = LCL,
-                        Yj = LSL,
-                        Fill = new SolidColorPaint(new SKColor(156, 101, 6, 230))
-                    });
-                return sections;
-            }
-
-        }
-        private CartesianChart chart(string codeText)
-        {
-            var chart = new CartesianChart
-            {
-                Dock = DockStyle.Fill,
-                XAxes =
-                [
-                    new Axis
-                    {
-                        Name = "OrderNr",
-                        TextSize = 12,
-                        LabelsPaint = new SolidColorPaint(SKColors.White),
-                        SeparatorsPaint = new SolidColorPaint(SKColors.Black),
-                        Labels = listOrderNr,
-                        LabelsRotation = 45,
-                        ShowSeparatorLines = false,
-                        MinLimit = null,
-                        MinStep = 1
-                    }
-                ],
-                YAxes =
-                [
-                    new Axis
-                    {
-                        Name = codeText,
-                        TextSize = 12,
-                        Labeler = value => $"{value:F3} mm",
-                        LabelsPaint = new SolidColorPaint(SKColors.White),
-                        SeparatorsPaint = new SolidColorPaint(SKColors.Black),
-                        MinLimit = Min_Y_Value * (1 - marginPercent / 100),
-                        MaxLimit = Max_Y_Value * (1 + marginPercent / 100),
-                        MinStep = 0.002, // Stegstorlek för y-axeln
-                    }
-                ],
-                LegendPosition = LiveChartsCore.Measure.LegendPosition.Right,
-                LegendTextPaint = new SolidColorPaint
-                {
-                    Color = SKColors.White,
-                    SKTypeface = SKTypeface.Default,
-                },
-                LegendTextSize = 12,
-                ZoomMode = LiveChartsCore.Measure.ZoomAndPanMode.X, // Aktivera zoomning och panorering på både X- och Y-axlar
-            };
-            return chart;
-        }
-
         private double Max_Y_Value
         {
             get
@@ -268,6 +183,91 @@ namespace DigitalProductionProgram.Measure
                 return minVal;
             }
         }
+        private List<RectangularSection> sections
+        {
+            get
+            {
+                var sections = new List<RectangularSection>();
+                if (USL > 0)
+                    sections.Add(new RectangularSection
+                    {
+                        Yi = USL,
+                        Yj = Max_Y_Value * (1 + marginPercent / 100),
+                        Fill = new SolidColorPaint(new SKColor(156, 0, 6, 230))
+                    }
+                    );
+                if (LSL > 0)
+                    sections.Add(new RectangularSection
+                    {
+                        Yi = Min_Y_Value * (1 - marginPercent / 100),
+                        Yj = LSL,
+                        Fill = new SolidColorPaint(new SKColor(156, 0, 6, 230))
+                    }
+                    );
+                if (UCL > 0)
+                    sections.Add(new RectangularSection
+                    {
+                        Yi = UCL,
+                        Yj = USL,
+                        Fill = new SolidColorPaint(new SKColor(156, 101, 0, 230))
+                    }
+                    );
+                if (LCL > 0)
+                    sections.Add(new RectangularSection
+                    {
+                        Yi = LCL,
+                        Yj = LSL,
+                        Fill = new SolidColorPaint(new SKColor(156, 101, 6, 230))
+                    });
+                return sections;
+            }
+
+        }
+        private CartesianChart chart(string codeText)
+        {
+            var chart = new CartesianChart
+            {
+                Dock = DockStyle.Fill,
+                XAxes =
+                [
+                    new Axis
+                    {
+                        Name = "OrderNr",
+                        TextSize = 12,
+                        LabelsPaint = new SolidColorPaint(SKColors.White),
+                        SeparatorsPaint = new SolidColorPaint(SKColors.Black),
+                        Labels = listOrderNr,
+                        LabelsRotation = 45,
+                        ShowSeparatorLines = false,
+                        MinLimit = null,
+                        MinStep = 1
+                    }
+                ],
+                YAxes =
+                [
+                    new Axis
+                    {
+                        Name = codeText,
+                        TextSize = 12,
+                        Labeler = value => $"{value:F3} mm",
+                        LabelsPaint = new SolidColorPaint(SKColors.White),
+                        SeparatorsPaint = new SolidColorPaint(SKColors.Black),
+                        MinLimit = Min_Y_Value * (1 - marginPercent / 100),
+                        MaxLimit = Max_Y_Value * (1 + marginPercent / 100),
+                        MinStep = 0.002, // Stegstorlek för y-axeln
+                    }
+                ],
+                LegendPosition = LiveChartsCore.Measure.LegendPosition.Right,
+                LegendTextPaint = new SolidColorPaint
+                {
+                    Color = SKColors.White,
+                    SKTypeface = SKTypeface.Default,
+                },
+                LegendTextSize = 12,
+                ZoomMode = LiveChartsCore.Measure.ZoomAndPanMode.X, // Aktivera zoomning och panorering på både X- och Y-axlar
+            };
+            return chart;
+        }
 
         private (string CountQuery, string SelectQuery, List<SqlParameter> Params) BuildMeasureQueries(List<string> orders)
         {
@@ -346,76 +346,7 @@ namespace DigitalProductionProgram.Measure
         }
 
 
-        private double Y_Interval
-        {
-            get
-            {
-                switch (Column_Name)
-                {
-                    case "ID":
-                    case "OD":
-                    case "Wall":
-                        return 0.04;
-                    case "Oval":
-                    case "RunOut":
-                        return 0.5;
-                }
-                return 0;
-            }
-        }
-        private bool isTemplateHaveMultipleRevisions { get; set; }
-        private bool IsTemplateHaveMultipleRevisions
-        {
-            get
-            {
-                if (string.IsNullOrEmpty(tb_PartNr.Text))
-                    return false;
-                IsLoading = true;
-
-                cb_MeasureprotocolTemplateName.Items.Clear();
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    var query = @"
-                        SELECT DISTINCT MeasureprotocolTemplateRevision 
-                        FROM [Order].MainData 
-                        WHERE PartNr = @partnr";
-
-                    con.Open();
-                    var cmd = new SqlCommand(query, con);
-                    cmd.Parameters.AddWithValue("@partnr", tb_PartNr.Text);
-
-                    var reader = cmd.ExecuteReader();
-                    while (reader.Read())
-                    {
-                        var revision = reader[0].ToString();
-                        // cb_MeasureMainTemplateID.Items.Add(revision);
-                    }
-
-                }
-
-                if (cb_MeasureprotocolTemplateName.Items.Count > 1)
-                {
-                    //label_MeasureTemplateRevision.Visible = true;
-                    cb_MeasureprotocolTemplateName.Visible = true;
-                    // InfoText.Show(LanguageManager.GetString("multipleRevisionsMeasureTemnplate"), CustomColors.InfoText_Color.Info, "Warning!", this);
-                    isTemplateHaveMultipleRevisions = true;
-                    cb_MeasureprotocolTemplateName.Select();
-                    IsLoading = false;
-                    cb_MeasureprotocolTemplateName.SelectedIndex = 0;
-                    return true;
-                }
-
-                // cb_MeasureMainTemplateID.SelectedIndex = 0;
-
-                // label_MeasureTemplateRevision.Visible = false;
-                // cb_MeasureMainTemplateID.Visible = false;
-                isTemplateHaveMultipleRevisions = false;
-                IsLoading = false;
-                return false;
-            }
-        }
-        private bool IsLoading;
-
+       
 
 
 
@@ -558,23 +489,29 @@ namespace DigitalProductionProgram.Measure
         private void PartNr_MouseClick(object sender, MouseEventArgs e)
         {
             List<string> partnumbers = new List<string>();
-            using (var con = new SqlConnection(Database.cs_Protocol))
+            Database.ExecuteSafe(con =>
             {
-                var query = $@"
-                    SELECT DISTINCT PartNr  
-                    FROM [Order].MainData
-                    WHERE WorkoperationID = (SELECT ID FROM Workoperation.Names WHERE Name = @workoperation)";
+                const string query = $"""
 
-                var cmd = new SqlCommand(query, con);
+                                                          SELECT
+                                          m.PartNr,
+                                          MAX(m.Date_Start) AS LatestDateStart
+                                      FROM [Order].MainData AS m
+                                      WHERE m.WorkoperationID = (
+                                          SELECT ID FROM Workoperation.Names WHERE Name = @workoperation
+                                      )
+                                      GROUP BY m.PartNr
+                                      ORDER BY LatestDateStart DESC
+                                      """;
+
+                using var cmd = new Microsoft.Data.SqlClient.SqlCommand(query, con);
                 cmd.Parameters.AddWithValue("@workoperation", cb_Workoperations.Text);
-
-                con.Open();
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
-                    partnumbers?.Add(reader[0].ToString());
-            }
+                    partnumbers?.Add($"{reader[0]}:{reader[1]}");
+            });
 
-            var partnr = new Choose_Item(partnumbers, new Control[] { tb_PartNr }, false);
+            var partnr = new Choose_Item(partnumbers, [tb_PartNr], true );
             partnr.ShowDialog();
             Load_Data();
         }

@@ -5,179 +5,78 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using DigitalProductionProgram.ControlsManagement;
+using DigitalProductionProgram.PrintingServices;
 using DigitalProductionProgram.Protocols;
 
 namespace DigitalProductionProgram.Equipment
 {
     public partial class Choose_Item : Form
     {
-        private readonly bool IsDataGridView;
-        private readonly DataTable DT;
-        private readonly Control[] controls;
-        private readonly DataGridViewCell[] Cells;
-        private readonly bool IsHideFilter;
-        private readonly bool IsOkReturnOwnText;          //Används om användare får skriva i egen text
+        private readonly DataTable DataTable;
+        private readonly Control?[]? Ctrls;
+        private readonly DataGridViewCell?[]? Cells;
+        private readonly bool IsOkReturnOwnText;        //Används om användare får skriva i egen text
         private readonly bool IsReturnMultipleValues;   //Används vid skapande av Processkort om användare vill ha t.ex. 2 st torkar med i Processkortet
-        private readonly bool IsLastColumnVisible;      //Döljer den sista kolumnen i dgv'n vid behov
-        private readonly string DividerChar;            //Anger vilket tecken som skall vara emellan två värden om IsReturnMultipleValues används. (t.ex. ',' '/' '-')
-        private readonly bool IsMultipleColumns;        //Används när programmet skall visa t.ex. typ av Tork i en kolumn bredvid Idnumret, programmet returnerar enbart den första kolumnens värde
-        private readonly string DataBaseColumnName;     //Används när Senaste 10 körningar skall visas
-        private readonly int Maskin;
-        private readonly int Uppstart;
+        private readonly bool IsListFromMonitor;
+        private readonly string? DividerChar;           //Anger vilket tecken som skall vara emellan två värden om IsReturnMultipleValues används. (t.ex. ',' '/' '-')
+        private readonly string? DataBaseColumnName;    //Används när Senaste 10 körningar skall visas
+        private readonly int Maskin;                    //Används som Information när Senaste 10 körningar skall visas
+        private readonly int Uppstart;                  //Används som Information när Senaste 10 körningar skall visas
 
-        public Choose_Item(DataTable dt, Control[] ctrl, bool isMultipleColumns, bool isReturnMultipleValues = false)
+
+
+        public Choose_Item(IEnumerable<string?>? items, Control?[]? ctrls = null, DataGridViewCell?[]? cells = null, bool isMultipleColumns = false, bool isOkReturnOwnText = false, bool isExtraColumnVisible = true, string? dataBaseColumnName = null, int maskin = 0, int uppstart = 0, bool isReturnMultipleValues = false, bool isListFromMonitor = false, string dividerChar = "/", List<string?>? headers = null)
         {
-            IsDataGridView = false;
-            InitializeComponent();
-            dgv_Items.CellClick += Items_MultipleColumns_Controls_CellClick;
-
-            Location = new Point(MousePosition.X, MousePosition.Y);
-            DT = dt;
-            //Detta tar bort tomma rader
-            if (dt.Rows.Count > 1)
-                dt = dt.Rows.Cast<DataRow>().Where(row => !row.ItemArray.All(field => field is DBNull || string.IsNullOrWhiteSpace(field as string))).CopyToDataTable();
-
-            controls = ctrl;
-            IsMultipleColumns = isMultipleColumns;
-            IsReturnMultipleValues = isReturnMultipleValues;
-            dgv_Items.DataSource = dt;
-            dgv_Items.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-
-            dgv_Items.Columns[0].ReadOnly = true;
-        }
-        public Choose_Item(DataTable dt, DataGridViewCell[] cells, bool isMultipleColumns, bool isReturnMultipleValues = false, bool isReturnOwnText = false)
-        {
-            IsDataGridView = true;
-            InitializeComponent();
-            Location = new Point(MousePosition.X, MousePosition.Y);
-            
-            dgv_Items.CellClick += Items_MultipleColumns_Controls_CellClick;
-
-            DT = dt;
-            Cells = cells;
-            IsMultipleColumns = isMultipleColumns;
-            IsReturnMultipleValues = isReturnMultipleValues;
-            IsOkReturnOwnText = isReturnOwnText;
-
-            //Detta tar bort tomma rader
-            if (dt.Rows.Count > 1)
-                dt = dt.Rows.Cast<DataRow>().Where(row => !row.ItemArray.All(field => field is DBNull || string.IsNullOrWhiteSpace(field as string))).CopyToDataTable();
-            if (IsOkReturnOwnText == false)
-                label_ChooseItemInfo_2.Visible = false;
-            else
-                label_ChooseItemInfo_2.Text = LanguageManager.GetString("infotext_Info_1");
-
-            dgv_Items.DataSource = dt;
-            dgv_Items.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-
-            dgv_Items.Columns[0].ReadOnly = true;
-            tb_Filter.Focus();
-        }
-
-        public Choose_Item(IEnumerable<string?> items, Control[] ctrl, bool isMultipleColumns, bool isOkReturnOwnText = false, bool isLastColumnVisible = true)
-        {
-            IsDataGridView = false;
             InitializeComponent();
             Location = new Point(MousePosition.X, MousePosition.Y);
 
-            IsMultipleColumns = isMultipleColumns;
             IsOkReturnOwnText = isOkReturnOwnText;
-            IsLastColumnVisible = isLastColumnVisible;
-
-            controls = ctrl;
-            if (IsMultipleColumns == false)
-                dgv_Items.CellClick += Items_CellClick;
-            else
-                dgv_Items.CellClick += Items_MultipleColumns_Controls_CellClick;
-
-            if (items != null)
-            {
-                DT = new DataTable();
-                AddItems(items);
-            }
-
-            //Detta tar bort tomma rader
-            if (DT.Rows.Count > 1)
-                DT = DT.Rows.Cast<DataRow>().Where(row => !row.ItemArray.All(field => field is DBNull || string.IsNullOrWhiteSpace(field as string))).CopyToDataTable();
-
-            controls = ctrl;
-
-            dgv_Items.DataSource = DT;
-            dgv_Items.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-            dgv_Items.Columns[0].ReadOnly = true;
-            if (IsLastColumnVisible == false)
-                dgv_Items.Columns[1].Visible = false;
-
-            if (dgv_Items.Rows.Count > 10)
-                return;
-            if (IsOkReturnOwnText == false)
-                label_ChooseItemInfo_2.Visible = false;
-            else
-                label_ChooseItemInfo_2.Text = LanguageManager.GetString("infotext_Info_1");
-
-            tb_Filter.Focus();
-
-        }
-        public Choose_Item(IEnumerable<string?> items, DataGridViewCell[] cells, string dataBaseColumnName = null, int maskin = 0, int uppstart = 0, bool isReturnOwnText = false, bool isReturnMultipleValues = false, bool isMultipleColumns = false, string dividerChar = "/")
-        {
-            IsDataGridView = true;
-            InitializeComponent();
-
-            Cells = cells;
-            DT = new DataTable();
-            IsMultipleColumns = isMultipleColumns;
-            IsOkReturnOwnText = isReturnOwnText;
             IsReturnMultipleValues = isReturnMultipleValues;
+            IsListFromMonitor = isListFromMonitor;
             DividerChar = dividerChar;
-
-            if (IsOkReturnOwnText == false)
-                label_ChooseItemInfo_2.Visible = false;
-
-            if (IsMultipleColumns == false)
-                dgv_Items.CellClick += Items_CellClick;
-            else
-                dgv_Items.CellClick += Items_MultipleColumns_Controls_CellClick;
-
             DataBaseColumnName = dataBaseColumnName;
             Maskin = maskin;
             Uppstart = uppstart;
-            Location = new Point(MousePosition.X, MousePosition.Y);
-            
-            AddItems(items);
+            Ctrls = ctrls;
+            Cells = cells;
 
+
+            DataTable = new DataTable();
+            if (items != null)
+                AddItems(items, isMultipleColumns, headers);
+
+            // Remove empty rows
+            if (DataTable.Rows.Count > 1)
+            {
+                DataTable = DataTable.Rows.Cast<DataRow>()
+                    .Where(r => !r.ItemArray.All(field =>
+                        field is DBNull || string.IsNullOrWhiteSpace(field?.ToString()))).CopyToDataTable();
+            }
+
+            dgv_Items.DataSource = DataTable;
             dgv_Items.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
             dgv_Items.Columns[0].ReadOnly = true;
-            if (IsOkReturnOwnText)
-                label_ChooseItemInfo_2.Text = LanguageManager.GetString("infotext_Info_1");
-            if (dgv_Items.Rows.Count < 10 && dgv_Items.Rows.Count > 0)
-                dgv_Items.CurrentCell = dgv_Items.Rows[0].Cells[0];
+
+            if (!isExtraColumnVisible && dgv_Items.Columns.Count > 1)
+                dgv_Items.Columns[1].Visible = false;
+
+            // ------------------------------
+            // EVENT WIRING
+            // ------------------------------
+            if (isMultipleColumns)
+                dgv_Items.CellClick += Items_MultipleColumns_Controls_CellClick;
+            else
+                dgv_Items.CellClick += Items_CellClick;
+
+            if (!isOkReturnOwnText)
+                label_ChooseItemInfo_2.Visible = false;
+
+            SetBackgroundColor();
             tb_Filter.Focus();
         }
 
-        public void AddItems(IEnumerable<string?> items)
-        {
-            DT.Columns.Add("Item");
-            if (IsMultipleColumns)
-            {
-                DT.Columns.Add("Item2");
-                foreach (var text in items)
-                {
-                    if (text.Contains(":"))
-                    {
-                        var parts = text.Split(':');
-                        DT.Rows.Add(parts[0], parts[1]);
-                    }
-                    else
-                        DT.Rows.Add(text, "");
-                }
-            }
-            else
-            {
-                foreach (var text in items)
-                    DT.Rows.Add(text);
-            }
-            dgv_Items.DataSource = DT;
-        }
+
+
         private void Choose_Item_Load(object sender, EventArgs e)
         {
             ChangeGUI();
@@ -188,6 +87,77 @@ namespace DigitalProductionProgram.Equipment
         {
             tb_Filter.Focus();
         }
+
+
+        private void SetBackgroundColor()
+        {
+            if (IsListFromMonitor)
+            {
+                dgv_Items.DefaultCellStyle.BackColor = CustomColors.Blue_Font;
+                dgv_Items.DefaultCellStyle.ForeColor = CustomColors.Blue;
+                this.Text = @"Items From Monitor";
+            }
+            else
+            {
+                dgv_Items.DefaultCellStyle.BackColor = CustomColors.Parmesan;
+                dgv_Items.DefaultCellStyle.ForeColor = CustomColors.CoolGrey;
+                this.Text = @"Internal Items from DPP";
+            }
+                
+        }
+
+        private void AddItems(IEnumerable<string?> items, bool isMultipleColumns, IList<string?>? headers = null)
+        {
+            // Säkerställ lista
+            var itemList = items?.ToList() ?? new List<string?>();
+            var headerList = headers?.ToList() ?? new List<string?>();
+
+            // MULTIPLE COLUMNS ---------------------------------------------
+            if (isMultipleColumns)
+            {
+                var h1 = headerList.Count > 0 && !string.IsNullOrWhiteSpace(headerList[0]) ? headerList[0] : "Primär";
+
+                var h2 = headerList.Count > 1 && !string.IsNullOrWhiteSpace(headerList[1]) ? headerList[1] : "Sekundär";
+
+                DataTable.Columns.Add(h1);
+                DataTable.Columns.Add(h2);
+
+                foreach (var text in itemList)
+                {
+                    if (string.IsNullOrWhiteSpace(text))
+                    {
+                        DataTable.Rows.Add("", "");
+                        continue;
+                    }
+
+                    if (text.Contains('|'))
+                    {
+                        var parts = text.Split('|');
+                        var p1 = parts.Length > 0 ? parts[0].Trim() : "";
+                        var p2 = parts.Length > 1 ? parts[1].Trim() : "";
+                        DataTable.Rows.Add(p1, p2);
+                    }
+                    else
+                    {
+                        DataTable.Rows.Add(text.Trim(), "");
+                    }
+                }
+            }
+
+            // SINGLE COLUMN -------------------------------------------------
+            else
+            {
+                var h = headerList.Count > 0 && !string.IsNullOrWhiteSpace(headerList[0]) ? headerList[0] : "List";
+
+                DataTable.Columns.Add(h);
+
+                foreach (var text in itemList)
+                    DataTable.Rows.Add(text?.Trim() ?? "");
+            }
+        }
+
+
+
 
         private void Translate_Form()
         {
@@ -214,7 +184,7 @@ namespace DigitalProductionProgram.Equipment
 
             
         }
-        private void Items_CellClick(object sender, DataGridViewCellEventArgs e)
+        private void Items_CellClick(object? sender, DataGridViewCellEventArgs e)
         {
             var TextValue = dgv_Items.Rows[e.RowIndex].Cells[0].Value.ToString();
 
@@ -223,7 +193,7 @@ namespace DigitalProductionProgram.Equipment
                 dgv_AddedItems.Rows.Add(TextValue);
                 return;
             }
-            if (Cells == null && controls == null)
+            if (Cells == null && Ctrls == null)
             {
                 Close();
                 return;
@@ -237,23 +207,25 @@ namespace DigitalProductionProgram.Equipment
                 return;
             }
 
-            if (IsDataGridView)
+            if (Ctrls is null)//Kolla om denna gör nåt nytta? den ändras aldrig så kontrollen kan tas bort kasnke
                 foreach (var cell in Cells)
                     cell.Value = TextValue;
             else
             {
                 if (Cells == null)
-                    controls[0].Text = TextValue;
+                    Ctrls[0].Text = TextValue;
                 else
                     for (var i = 0; i < dgv_Items.Columns.Count; i++)
-                        controls[i].Text = dgv_Items.Rows[e.RowIndex].Cells[i].Value.ToString();
+                        Ctrls[i].Text = dgv_Items.Rows[e.RowIndex].Cells[i].Value.ToString();
 
             }
 
             Close();
         }
-        private void Items_MultipleColumns_Controls_CellClick(object sender, DataGridViewCellEventArgs e)
+        private void Items_MultipleColumns_Controls_CellClick(object? sender, DataGridViewCellEventArgs e)
         {
+            if (e.RowIndex < 0)
+                return;
             var TextValue = dgv_Items.Rows[e.RowIndex].Cells[0].Value.ToString();
             if (TextValue == "Kolla 10 senaste körningar...")
             {
@@ -268,7 +240,7 @@ namespace DigitalProductionProgram.Equipment
                 return;
             }
 
-            if (controls is null)
+            if (Ctrls is null)
             {
                 for (var col = 0; col < Cells.Length; col++)
                 {
@@ -279,8 +251,8 @@ namespace DigitalProductionProgram.Equipment
             }
             else
             {
-                for (var col = 0; col < controls.Length; col++)
-                    controls[col].Text = dgv_Items.Rows[e.RowIndex].Cells[col].Value.ToString();
+                for (var col = 0; col < Ctrls.Length; col++)
+                    Ctrls[col].Text = dgv_Items.Rows[e.RowIndex].Cells[col].Value.ToString();
             }
 
             Close();
@@ -296,7 +268,8 @@ namespace DigitalProductionProgram.Equipment
                 }
 
                 var row = dgv_Items.CurrentCell.RowIndex;
-                if (IsDataGridView)
+                //if (IsDataGridView)
+                if (Ctrls is null)
                     for (var col = 0; col < Cells.Length; col++)
                         Cells[col].Value = dgv_Items.Rows[row].Cells[col].Value.ToString();
                 //foreach (DataGridViewCell cell in cells)
@@ -304,7 +277,7 @@ namespace DigitalProductionProgram.Equipment
                 else
                 {
                     for (var i = 0; i < dgv_Items.Columns.Count; i++)
-                        controls[i].Text = dgv_Items.Rows[row].Cells[i].Value.ToString();
+                        Ctrls[i].Text = dgv_Items.Rows[row].Cells[i].Value.ToString();
                 }
 
                 Close();
@@ -316,6 +289,8 @@ namespace DigitalProductionProgram.Equipment
         {
             if (e.KeyCode == Keys.Enter || e.KeyCode == Keys.Return)
             {
+                if (dgv_Items.Rows.Count < 1)
+                    return;
                 switch (IsOkReturnOwnText)
                 {
                     case false:
@@ -327,7 +302,7 @@ namespace DigitalProductionProgram.Equipment
                         {
                             if (Cells is null)
                             {
-                                foreach (var ctrl in controls)
+                                foreach (var ctrl in Ctrls)
                                     ctrl.Text = tb_Filter.Text;
                                 Close();
                                 return;
@@ -340,8 +315,8 @@ namespace DigitalProductionProgram.Equipment
                 }
 
                 for (var i = 0; i < dgv_Items.Columns.Count; i++)
-                    if (controls != null)
-                        controls[i].Text = dgv_Items.Rows[0].Cells[i].Value.ToString();
+                    if (Ctrls != null)
+                        Ctrls[i].Text = dgv_Items.Rows[0].Cells[i].Value.ToString();
 
                 Close();
             }
@@ -351,14 +326,22 @@ namespace DigitalProductionProgram.Equipment
         }
         private void Filter_TextChanged(object sender, EventArgs e)
         {
-            var dv = DT.DefaultView;
-            dv.RowFilter = $"{DT.Columns[0].ColumnName} LIKE '%{tb_Filter.Text}%' ";
-            if (DT.Columns.Count > 1)
-                dv.RowFilter += $"OR {DT.Columns[1].ColumnName} LIKE '%{tb_Filter.Text}%'";
+            var dv = DataTable.DefaultView;
+            var col1 = DataTable.Columns[0].ColumnName;
+            var col2 = DataTable.Columns.Count > 1 ? DataTable.Columns[1].ColumnName : null;
+
+            var filter = $"[{col1}] LIKE '%{tb_Filter.Text}%'";
+
+            if (col2 != null)
+                filter += $" OR [{col2}] LIKE '%{tb_Filter.Text}%'";
+
+            dv.RowFilter = filter;
             dgv_Items.DataSource = dv;
+
             if (dgv_Items.Rows.Count == 1)
                 dgv_Items.Rows[0].Selected = true;
         }
+
 
         private void Choose_Item_FormClosing(object sender, FormClosingEventArgs e)
         {
@@ -377,9 +360,9 @@ namespace DigitalProductionProgram.Equipment
                 foreach (var cell in Cells)
                     cell.Value = returnvalue;
             }
-            if (controls is null == false)
+            if (Ctrls is null == false)
             {
-                foreach (var ctrl in controls)
+                foreach (var ctrl in Ctrls)
                     ctrl.Text = returnvalue;
             }
         }

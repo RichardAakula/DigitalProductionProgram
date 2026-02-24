@@ -511,7 +511,7 @@ namespace DigitalProductionProgram.Measure
                     partnumbers?.Add($"{reader[0]}:{reader[1]}");
             });
 
-            var partnr = new Choose_Item(partnumbers, [tb_PartNr], true );
+            var partnr = new Choose_Item(partnumbers, [tb_PartNr], isMultipleColumns:true,headers:["PartNumber", "Date"] );
             partnr.ShowDialog();
             Load_Data();
         }

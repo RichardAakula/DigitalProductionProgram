@@ -410,7 +410,7 @@ namespace DigitalProductionProgram.Help
         private static void Items_Click(object sender, EventArgs e)
         {
             var ctrl = (Control)sender;
-            var choose_Item = new Choose_Item(InputTextList, new[] { ctrl }, false);
+            var choose_Item = new Choose_Item(InputTextList, ctrls: [ctrl]);
             choose_Item.ShowDialog();
         }
 

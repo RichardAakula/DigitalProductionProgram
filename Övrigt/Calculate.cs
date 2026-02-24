@@ -129,60 +129,99 @@ namespace DigitalProductionProgram.Övrigt
 
         public static double? StandardDeviation(List<double?> values)
         {
-            double? ctr = values.Count;
-            if (values.Count < 1)
-                return 0;
-            var avg = values.Average();
-            var sum = values.Sum(d => (d - avg) * (d - avg));
+            
+            var clean = values.Where(v => v.HasValue).Select(v => v.Value).ToList();
+            int n = clean.Count;
+            if (n < 2) return double.NaN;
 
-            double? std_Dev = Math.Sqrt((double)sum / (double)ctr);
-            return std_Dev;
+            double mean = clean.Average();
+            double sumSq = clean.Sum(v => Math.Pow(v - mean, 2));
+            double s2 = sumSq / (n - 1);         // ddof = 1  (sample)
+            return Math.Sqrt(s2);
         }
-        public static double? Cp(List<double?> values, double? USL, double? LSL)
+        public static double? Median(IList<double?> values)
         {
-            var stdDev = StandardDeviation(values);
-            var cp = (USL - LSL) / (6 * stdDev);
-            if (cp != null) 
-                return Math.Round(cp.Value, 2);
-            return null;
+            if (values == null || values.Count == 0) 
+                return double.NaN;
+            var arr = values.ToArray();
+            Array.Sort(arr);
+            int n = arr.Length;
+            if (n % 2 == 1) return arr[n / 2];
+            return 0.5 * (arr[n / 2 - 1] + arr[n / 2]);
         }
-        public static double? Cpk(List<double?> values, double? USL, double? LSL)
+        public static double? Pp(List<double?> values, double? USL, double? LSL)
         {
-            var cpl = Cpl(values, LSL);
-            var cpu = Cpu(values, USL);
-            if (USL == 0)
-                if (cpl != null)
-                    return Math.Round(cpl.Value, 2);
-            if (LSL == 0)
-                if (cpu != null)
-                    return Math.Round(cpu.Value, 2);
-            if (cpl != null)
-                if (cpu != null)
-                    return Math.Round(Math.Min(cpl.Value, cpu.Value), 2);
-            return null;
-        }
-        public static double? Cpl(List<double?> values, double? LSL)
-        {
-            if (values.Count > 0)
-            {
-                var avg = values.Average();
-                var cpl = (avg - LSL) / (3 * StandardDeviation(values));
-                return cpl;
-            }
+            if (values == null || !USL.HasValue || !LSL.HasValue)
+                return null;
 
-            return 0;
-        }
-        public static double? Cpu(List<double?> values, double? USL)
-        {
-            if (values.Count > 0)
-            {
-                var avg = values.Average();
-                var cpu = (USL - avg) / (3 * StandardDeviation(values));
-                return cpu;
-            }
+            var clean = values.Where(v => v.HasValue).Select(v => v.Value).ToList();
+            int n = clean.Count;
+            if (n < 2) return double.NaN;
 
-            return 0;
+            double mean = clean.Average();
+            double sumSq = clean.Sum(v => Math.Pow(v - mean, 2));
+            double s = Math.Sqrt(sumSq / (n - 1));
+            if (s == 0.0) return double.NaN;
+
+            double cp = (USL.Value - LSL.Value) / (6.0 * s);
+
+            return Math.Round(cp, 2);
         }
+        public static double? Ppk(List<double?> values, double? USL, double? LSL)
+        {
+            if (values == null) return null;
+
+            var clean = values.Where(v => v.HasValue).Select(v => v.Value).ToList();
+            int n = clean.Count;
+            if (n < 2) return double.NaN;
+
+            double mean = clean.Average();
+            double sumSq = clean.Sum(v => Math.Pow(v - mean, 2));
+            double s = Math.Sqrt(sumSq / (n - 1));
+            if (s == 0.0) return double.NaN;
+
+            double? cpu = USL.HasValue ? (USL.Value - mean) / (3.0 * s) : null;
+            double? cpl = LSL.HasValue ? (mean - LSL.Value) / (3.0 * s) : null;
+
+            if (cpu.HasValue && cpl.HasValue)
+                return Math.Min(cpu.Value, cpl.Value);
+
+            return cpu ?? cpl;
+        }
+        //public static double? Cpl(List<double?> values, double? LSL)
+        //{
+        //    if (values == null || !LSL.HasValue) return null;
+
+        //    var clean = values.Where(v => v.HasValue).Select(v => v.Value).ToList();
+        //    int n = clean.Count;
+        //    if (n < 2) return double.NaN;
+
+        //    double mean = clean.Average();
+        //    // sample standard deviation (ddof = 1)
+        //    double sumSq = clean.Sum(v => Math.Pow(v - mean, 2));
+        //    double s = Math.Sqrt(sumSq / (n - 1));
+        //    if (s == 0.0) return double.NaN;
+
+        //    return (mean - LSL.Value) / (3.0 * s);
+        //}
+        //public static double? Cpu(List<double?> values, double? USL)
+        //{
+        //    if (values == null || !USL.HasValue) return null;
+
+        //    var clean = values.Where(v => v.HasValue).Select(v => v.Value).ToList();
+        //    int n = clean.Count;
+        //    if (n < 2) return double.NaN;
+
+        //    var mean = clean.Average();
+        //    // sample standard deviation (ddof = 1)
+        //    double sumSq = clean.Sum(v => Math.Pow(v - mean, 2));
+        //    double s = Math.Sqrt(sumSq / (n - 1));
+        //    if (s == 0.0) return double.NaN;
+
+        //    return (USL.Value - mean) / (3.0 * s);
+        //}
+
+       
         public static double? UCL(double? avg, double? st_dev)
         {
             return avg + 2 * st_dev;
@@ -191,6 +230,67 @@ namespace DigitalProductionProgram.Övrigt
         {
             return avg - 2 * st_dev;
         }
+        
+        
+        public static double? Skewness(List<double?> values)
+        {
+            if (values == null) return null;
+
+            // Ta bort nulls
+            var clean = values.Where(v => v.HasValue).Select(v => v.Value).ToList();
+            int n = clean.Count;
+
+            if (n < 3)
+                return double.NaN;
+
+            double mean = clean.Average();
+
+            // Sample standard deviation (ddof = 1)
+            double s = Math.Sqrt(clean.Sum(v => Math.Pow(v - mean, 2)) / (n - 1));
+            if (s == 0.0)
+                return 0.0;
+
+            // Sum of standardized cubed deviations
+            double sumCubed = clean.Sum(v => Math.Pow((v - mean) / s, 3));
+
+            // Bias‑corrected skewness (same as Python SciPy / Excel)
+            double skew = (double)n * sumCubed / ((n - 1) * (n - 2));
+
+            return skew;
+        }
+        public static double? Kurtosis(List<double?> values)
+        {
+            int n = values?.Count ?? 0;
+            if (n < 4) return double.NaN;
+
+            // Två-pass: först mean, sen centrala moment
+            double? mean = 0.0;
+            for (int i = 0; i < n; i++) mean += values[i];
+            mean /= n;
+
+            double? m2 = 0.0, m4 = 0.0;
+            for (int i = 0; i < n; i++)
+            {
+                double? d = values[i] - mean;
+                double? d2 = d * d;
+                m2 += d2;
+                m4 += d2 * d2; // d^4
+            }
+
+            // Sample-varians (n-1)
+            double? s2 = m2 / (n - 1);
+            if (s2 <= 0.0) return 0.0; // alla lika => ingen toppighet (definierat som 0 här)
+
+            // "g2" = sample excess kurtosis utan bias-korrigering: g2 = (n*m4)/(m2^2) - 3
+            double? g2 = (n * m4) / (m2 * m2) - 3.0;
+
+            // Bias-korrigerad excess kurtosis (G2), kräver n >= 4:
+            // G2 = ((n-1)/((n-2)*(n-3))) * ( (n+1)*g2 + 6 )
+            double? G2 = ((n - 1.0) * ((n + 1.0) * g2 + 6.0)) / ((n - 2.0) * (n - 3.0));
+
+            return G2;
+        }
+
 
         public class Diagram
         {

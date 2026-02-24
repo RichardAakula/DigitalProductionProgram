@@ -11,6 +11,8 @@ using System.ComponentModel;
 using System.Data;
 using System.Data.Odbc;
 using System.Diagnostics;
+using DigitalProductionProgram.Measure;
+using DigitalProductionProgram.Templates;
 using static DigitalProductionProgram.DatabaseManagement.Database;
 
 namespace DigitalProductionProgram.MainWindow
@@ -114,6 +116,17 @@ namespace DigitalProductionProgram.MainWindow
             //Person.Name = "Richard Aakula";
             //Application.Run(new ClientUpdateManager());
             //return;
+
+            //Order.WorkOperation = Manage_WorkOperation.WorkOperations.Extrudering_FEP;
+            //Templates_Protocol.MainTemplate.ID = 22;
+            //Templates_MeasureProtocol.MainTemplate.ID = 29;
+            //Order.PartID = 4345;
+            //Order.PartNumber = "MLBX119968";
+            //Order.RevNr = "C";
+            //var browse = new BrowseMeasureProtocols();
+            //browse.ShowDialog();
+            //return;
+
 
             var main = new Main_Form();
             Application.Run(main);

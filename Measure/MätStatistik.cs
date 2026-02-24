@@ -10,6 +10,7 @@ using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.Övrigt;
+using DigitalProductionProgram.PrintingServices;
 using DigitalProductionProgram.Protocols.Template_Management;
 using DigitalProductionProgram.Templates;
 
@@ -22,215 +23,34 @@ namespace DigitalProductionProgram.Measure
         private Color clr_slMin;
         private DataTable dt_MeasureData = new();
         private readonly ToolTip tooltip = new ();
-        private readonly StripLine slMax = new ();
-        private readonly StripLine slMin = new ();
-        private double? USL
+        private readonly StripLine sl_USL = new ();
+        private readonly StripLine sl_UCL = new ();
+        private readonly StripLine sl_LSL = new ();
+        private readonly StripLine sl_LCL = new ();
+        public enum ToleranceType
         {
-            get
-            {
-                clr_slMax = Color.Red;
-                switch (Order.WorkOperation)
-                {
-                    case Manage_WorkOperation.WorkOperations.Extrudering_FEP:
-                    case Manage_WorkOperation.WorkOperations.Extrudering_Termo:
-                    case Manage_WorkOperation.WorkOperations.Extrudering_Tryck:
-                    case Manage_WorkOperation.WorkOperations.Hackning_TEF:
-                        return USL_Extrudering;
+            USL,
+            UCL,
+            NOM,
+            LCL,
+            LSL
+        }
+        private double? MeasurePoint(ToleranceType toleranceType)
+        {
+            var dt = Monitor.Monitor.DataTable_Measurepoints;
+            var codeName = cb_CodeName.SelectedValue?.ToString();
+            var rows = dt.Select($"Description = '{codeName}'");
+            if (rows.Length == 0)
+                return null;
 
-                    case Manage_WorkOperation.WorkOperations.Krympslangsblåsning:
-                        return USL_Krympslang;
-                }
-                return 0;
-            }
-        }
-        private double? USL_Extrudering
-        {
-            get
-            {
-                switch (cb_Mått.Text)
-                {
-                    case "ID":
-                        if (MeasurePoints.Value(MeasurePoints.CodeTextMonitor.ID, "USL") > 0)
-                            return MeasurePoints.Value(MeasurePoints.CodeTextMonitor.ID, "USL");
-                        clr_slMax = Color.Orange;
-                        return MeasurePoints.Value(MeasurePoints.CodeTextMonitor.ID, "NOM") + 0.03;
-                    case "OD":
-                        if (MeasurePoints.Value(MeasurePoints.CodeTextMonitor.OD, "USL") > 0)
-                            return MeasurePoints.Value(MeasurePoints.CodeTextMonitor.OD, "USL");
-                        clr_slMax = Color.Orange;
-                        return MeasurePoints.Value(MeasurePoints.CodeTextMonitor.OD, "NOM") + 0.03;
-                    case "Wall":
-                    {
-                        if (MeasurePoints.Value(MeasurePoints.CodeTextMonitor.Wall, "USL") > 0)
-                                return MeasurePoints.Value(MeasurePoints.CodeTextMonitor.Wall, "USL");
-                        clr_slMax = Color.Orange;
-                        return MeasurePoints.Value(MeasurePoints.CodeTextMonitor.Wall, "NOM") + 0.02;
-                    }
-                    case "Oval":
-                        {
-                            switch (Order.WorkOperation)
-                            {
-                                case Manage_WorkOperation.WorkOperations.Extrudering_FEP:
-                                    return MeasurePoints.Value(MeasurePoints.CodeTextMonitor.Ovality, "USL");
-                                case Manage_WorkOperation.WorkOperations.Extrudering_Termo:
-                                case Manage_WorkOperation.WorkOperations.Extrudering_Tryck:
-                                case Manage_WorkOperation.WorkOperations.Hackning_TEF:
-                                    return MeasurePoints.Value(MeasurePoints.CodeTextMonitor.Ovality, "USL");
-                            }
-                            break;
-                        }
-                    case "RunOut":
-                        {
-                            switch (Order.WorkOperation)
-                            {
-                                case Manage_WorkOperation.WorkOperations.Extrudering_FEP:
-                                    return MeasurePoints.Value(MeasurePoints.CodeTextMonitor.Runout, "USL");
-                                case Manage_WorkOperation.WorkOperations.Extrudering_Termo:
-                                case Manage_WorkOperation.WorkOperations.Extrudering_Tryck:
-                                case Manage_WorkOperation.WorkOperations.Hackning_TEF:
-                                    return MeasurePoints.Value(MeasurePoints.CodeTextMonitor.Runout, "USL");
-                            }
-                            break;
-                        }
-                    case "L":
-                    case "Length":
-                        return MeasurePoints.Value(MeasurePoints.CodeTextMonitor.Length, "LSL");
-                }
-                return 0;
-            }
-        }
-        private double? USL_Krympslang
-        {
-            get
-            {
-                switch (cb_Mått.SelectedIndex)
-                {
-                    case 0:  //Blåst ID
-                        if (MeasurePoints.Value(MeasurePoints.CodeTextMonitor.ExpID, "USL") > 0)
-                            return MeasurePoints.Value(MeasurePoints.CodeTextMonitor.ExpID, "USL");
-                        clr_slMax = Color.Orange;
-                        return MeasurePoints.Value(MeasurePoints.CodeTextMonitor.ExpID, "LSL") + 0.1;
-                    case 1: //Blåst OD
-                        if (MeasurePoints.Value(MeasurePoints.CodeTextMonitor.ExpOD, "USL") > 0)
-                            return MeasurePoints.Value(MeasurePoints.CodeTextMonitor.ExpOD, "USL");
-                        clr_slMax = Color.Orange; 
-                        return AVG(cb_Mått.Text) + 0.1;
-                    case 2:  //Blåst W
-                        if (MeasurePoints.Value(MeasurePoints.CodeTextMonitor.ExpWall, "USL") > 0)
-                            return MeasurePoints.Value(MeasurePoints.CodeTextMonitor.ExpWall, "USL");
-                        clr_slMax = Color.Orange;
-                        return AVG(cb_Mått.Text) + 0.03;
-                    case 3:  //Krympt ID
-                        return MeasurePoints.Value(MeasurePoints.CodeTextMonitor.RecID, "USL");
-                    case 4:  
-                        clr_slMax = Color.Orange;
-                        if (MeasurePoints.Value(MeasurePoints.CodeTextMonitor.RecID, "USL") > 0)
-                            return MeasurePoints.Value(MeasurePoints.CodeTextMonitor.RecID, "USL") + MeasurePoints.Value(MeasurePoints.CodeTextMonitor.RecWall, "USL") + MeasurePoints.Value(MeasurePoints.CodeTextMonitor.RecWall, "LSL");
-                        break;
-                    case 5:  //Krympt W
-                        if (MeasurePoints.Value(MeasurePoints.CodeTextMonitor.RecWall, "USL") > 0)
-                            return MeasurePoints.Value(MeasurePoints.CodeTextMonitor.RecWall, "USL");
-                        clr_slMax = Color.Orange;
-                        return AVG(cb_Mått.Text) + 0.02;
-                    case 6:  //Längd
-                        return MeasurePoints.Value(MeasurePoints.CodeTextMonitor.Length, "USL");
-                }
-                return 0;
-            }
-        }
-        private double? LSL
-        {
-            get
-            {
-                clr_slMin = Color.Red;
-                switch (Order.WorkOperation)
-                {
-                    case Manage_WorkOperation.WorkOperations.Extrudering_FEP:
-                    case Manage_WorkOperation.WorkOperations.Extrudering_Termo:
-                    case Manage_WorkOperation.WorkOperations.Extrudering_Tryck:
-                    case Manage_WorkOperation.WorkOperations.Hackning_TEF:
-                        return LSL_Extrudering;
+            var row = rows[0];
 
-                    case Manage_WorkOperation.WorkOperations.Krympslangsblåsning:
-                        return LSL_Krympslang;
-                }
-                return 0;
-            }
-        }
-        private double? LSL_Extrudering
-        {
-            get
-            {
-                switch (cb_Mått.Text)
-                {
-                    case "ID":
-                        if (MeasurePoints.Value(MeasurePoints.CodeTextMonitor.ID, "LSL") > 0)
-                            return MeasurePoints.Value(MeasurePoints.CodeTextMonitor.ID, "LSL");
-                        clr_slMin = Color.Orange;
-                        return MeasurePoints.Value(MeasurePoints.CodeTextMonitor.ID, "NOM") - 0.03;
-                    case "OD":
-                        if (MeasurePoints.Value(MeasurePoints.CodeTextMonitor.OD, "LSL") > 0)
-                            return MeasurePoints.Value(MeasurePoints.CodeTextMonitor.OD, "LSL");
-                        clr_slMin = Color.Orange;
-                        return MeasurePoints.Value(MeasurePoints.CodeTextMonitor.OD, "NOM") - 0.03;
-                    case "Wall":
-                        if (MeasurePoints.Value(MeasurePoints.CodeTextMonitor.Wall, "LSL") > 0)
-                            return MeasurePoints.Value(MeasurePoints.CodeTextMonitor.Wall, "LSL");
-                        clr_slMin = Color.Orange;
-                        return MeasurePoints.Value(MeasurePoints.CodeTextMonitor.Wall, "NOM") - 0.02;
-                    case "Oval":
-                    case "RunOut":
-                        return 0;
-                    case "L":
-                    case "Length":
-                        return MeasurePoints.Value(MeasurePoints.CodeTextMonitor.Length, "LSL");
-                }
-                return 0;
-            }
-        }
-        private double? LSL_Krympslang
-        {
-            get
-            {
-                switch (cb_Mått.SelectedIndex)
-                {
-                    case 0: 
-                        return MeasurePoints.Value(MeasurePoints.CodeTextMonitor.ExpID, "LSL");
-                    case 1: //Blåst OD
-                        if (MeasurePoints.Value(MeasurePoints.CodeTextMonitor.ExpOD, "LSL") > 0)
-                            return MeasurePoints.Value(MeasurePoints.CodeTextMonitor.ExpOD, "LSL");
-                        clr_slMin = Color.Orange;
-                        return AVG(cb_Mått.Text) - 0.1;
-                    case 2:  //Blåst W
-                        if (MeasurePoints.Value(MeasurePoints.CodeTextMonitor.ExpWall, "LSL") > 0)
-                            return MeasurePoints.Value(MeasurePoints.CodeTextMonitor.ExpWall, "LSL");
-                        clr_slMin = Color.Orange;
-                        return (AVG(cb_Mått.Text) - 0.03);
-                    case 3:  //Krympt ID
-                        if (MeasurePoints.Value(MeasurePoints.CodeTextMonitor.RecID, "LSL") > 0)
-                            return MeasurePoints.Value(MeasurePoints.CodeTextMonitor.RecID, "LSL");
-                        clr_slMin = Color.Orange;
-                        return MeasurePoints.Value(MeasurePoints.CodeTextMonitor.RecID, "USL") - 0.3;
-                    case 4:  //Krympt OD
-                        if (MeasurePoints.Value(MeasurePoints.CodeTextMonitor.RecID, "LSL") > 0)
-                        {
-                            clr_slMin = Color.Orange;
-                            return MeasurePoints.Value(MeasurePoints.CodeTextMonitor.RecID, "LSL") - (MeasurePoints.Value(MeasurePoints.CodeTextMonitor.RecWall, "LSL") + MeasurePoints.Value(MeasurePoints.CodeTextMonitor.RecWall, "USL"));
-                        }
+            // Returnera rätt kolumn
+            return row[toleranceType.ToString()] as double?;
 
-                        clr_slMin = Color.Orange;
-                        return MeasurePoints.Value(MeasurePoints.CodeTextMonitor.RecID, "USL") + MeasurePoints.Value(MeasurePoints.CodeTextMonitor.RecWall, "LSL") + MeasurePoints.Value(MeasurePoints.CodeTextMonitor.RecWall, "USL") - 0.3;
-                    case 5:  //Krympt W
-                        if (MeasurePoints.Value(MeasurePoints.CodeTextMonitor.RecWall, "LSL") > 0)
-                            return MeasurePoints.Value(MeasurePoints.CodeTextMonitor.RecWall, "LSL");
-                        break;
-                    case 6:  //Längd
-                        return MeasurePoints.Value(MeasurePoints.CodeTextMonitor.Length, "LSL");
-                    }
-                    return 0;
-
-            }
+            
         }
+     
         
         private double? MIN(string codeName)
         {
@@ -277,76 +97,146 @@ namespace DigitalProductionProgram.Measure
 
             return values.Any() ? values.Average() : (double?)null;
         }
-        private double? GetValueByCodeName(DataTable table, string codeName)
+        
+        //private readonly Dictionary<string, Color> _orderColors = new();
+        //private readonly Random _rand = new();
+        
+        //private Color GetColorForOrder(string orderNr)
+        //{
+        //    if (string.IsNullOrEmpty(orderNr))
+        //        return Color.LightGray; // fallback
+
+        //    if (_orderColors.TryGetValue(orderNr, out var c))
+        //        return c;
+
+        //    // Skapa en riktigt tydlig ljus färg via HSL
+        //    c = GenerateVisibleColor();
+
+        //    _orderColors[orderNr] = c;
+        //    return c;
+        //}
+        //private Color GenerateVisibleColor()
+        //{
+        //    // Hue 0–360
+        //    double h = _rand.NextDouble() * 360.0;
+
+        //    // Saturation & Lightness höga för tydlighet
+        //    double s = 0.75; // 75%
+        //    double l = 0.70; // 70%
+
+        //    return ColorFromHSL(h, s, l);
+        //}
+        //private Color ColorFromHSL(double h, double s, double l)
+        //{
+        //    // HSL → RGB (standardformel)
+        //    h /= 360.0;
+
+        //    double r = 0, g = 0, b = 0;
+
+        //    if (s == 0)
+        //    {
+        //        r = g = b = l;
+        //    }
+        //    else
+        //    {
+        //        double q = l < 0.5 ? l * (1 + s) : l + s - (l * s);
+        //        double p = 2 * l - q;
+
+        //        r = Hue2RGB(p, q, h + 1.0 / 3.0);
+        //        g = Hue2RGB(p, q, h);
+        //        b = Hue2RGB(p, q, h - 1.0 / 3.0);
+        //    }
+
+        //    return Color.FromArgb(
+        //        255,
+        //        (int)(r * 255),
+        //        (int)(g * 255),
+        //        (int)(b * 255));
+        //}
+        //private double Hue2RGB(double p, double q, double t)
+        //{
+        //    if (t < 0) t += 1;
+        //    if (t > 1) t -= 1;
+        //    if (t < 1.0 / 6.0) return p + (q - p) * 6 * t;
+        //    if (t < 1.0 / 2.0) return q;
+        //    if (t < 2.0 / 3.0) return p + (q - p) * (2.0 / 3.0 - t) * 6;
+
+        //    return p;
+        //}
+
+       
+        
+        private (string OrderNr, double? Value, int RowIndex) GetOrderNrAndValue(DataTable table, int tableRowIndex)
         {
-            if (table == null || table.Rows.Count == 0 || string.IsNullOrWhiteSpace(codeName))
-                return null;
+            var row = table.Rows[tableRowIndex];
 
-            // Hitta första raden där CodeName matchar
-            var row = table.AsEnumerable()
-                .FirstOrDefault(r => string.Equals(
-                    r.Field<string>("CodeName"),
-                    codeName,
-                    StringComparison.OrdinalIgnoreCase));
+            string orderNr = row["OrderNr"]?.ToString();
+            double? value = row["Value"] == DBNull.Value ? null : Convert.ToDouble(row["Value"]);
+            int rowIndex = Convert.ToInt32(row["RowIndex"]); // SQL RowIndex
 
-            if (row == null)
-                return null;
-
-            var obj = row["Value"];
-
-            if (obj == null || obj == DBNull.Value)
-                return null;
-
-            // Konvertera alla rimliga typer
-            if (obj is double d) return d;
-            if (obj is float f) return f;
-            if (obj is int i) return i;
-            if (obj is long l) return l;
-            if (obj is decimal dec) return (double)dec;
-
-            if (double.TryParse(obj.ToString(), out var parsed))
-                return parsed;
-
-            return null;
+            return (orderNr, value, rowIndex);
         }
+
+
 
 
         private DataTable LoadMätData()
         {
             dt_MeasureData.Clear();
             var query = """
-                        SELECT CodeName, Value, TextValue, BoolValue, DateValue, Date, Discarded, ErrorCode, AnstNr, Sign, ColumnIndex, Decimals, data.RowIndex, DataType
+                        SELECT 
+                            maindata.OrderNr,
+                            description.CodeName,
+                            data.Value,
+                            data.TextValue,
+                            data.BoolValue,
+                            data.DateValue,
+                            main.Date,
+                            main.Discarded,
+                            main.ErrorCode,
+                            main.AnstNr,
+                            main.Sign,
+                            template.ColumnIndex,
+                            template.Decimals,
+                            main.RowIndex,
+                            template.DataType
+                        
                         FROM MeasureProtocol.Data as data
                         JOIN MeasureProtocol.Description as description
                             ON data.DescriptionId = description.ID
                         JOIN MeasureProtocol.Template as template
                             ON data.DescriptionId = template.DescriptionID
+                        
                         JOIN MeasureProtocol.MainData as main
-                            ON data.RowIndex = main.RowIndex AND data.OrderID = main.OrderID 
+                            ON data.RowIndex = main.RowIndex AND data.OrderID = main.OrderId
+                        JOIN [Order].MainData as maindata
+                            ON maindata.OrderID = main.OrderID 
                         """;
             if (cB_visaAllaOrdrar.Checked)
                 query += """
-                         WHERE EXISTS 
+                         WHERE maindata.OrderID IN 
                          (
-                            SELECT * FROM [Order].MainData 
-                            WHERE korprotokoll.PartID = @partid
-                                AND data.OrderID = korprotokoll.OrderID AND Discarded = 'False'
+                             SELECT OrderID 
+                             FROM [Order].MainData
+                             WHERE PartID = @partid
                          ) 
-                         ORDER BY data.OrderID, Påse_Spole
                          """;
             else
                 query += """
-                         WHERE data.OrderID = @orderid AND FormTemplateID = @formtemplateid
-                            AND (Discarded = 'False' OR Discarded IS NULL)
-                         ORDER BY RowIndex, ColumnIndex
+                         WHERE data.OrderID = @orderid AND template.MeasureProtocolMainTemplateID = @maintemplateid 
                          """;
+            query += """
+                     AND CodeName = @codename
+                     ORDER BY maindata.OrderID, main.RowIndex, template.ColumnIndex
+                     """;
 
             return Database.ExecuteSafe(con =>
             {
-                SqlCommand cmd = new SqlCommand(query, con);
+                var cmd = new SqlCommand(query, con);
                 cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
-                cmd.Parameters.AddWithValue("@formtemplateid", Templates_MeasureProtocol.MainTemplate.ID);
+                cmd.Parameters.AddWithValue("@maintemplateid", Templates_MeasureProtocol.MainTemplate.ID);
                 SQL_Parameter.NullableINT(cmd.Parameters, "@partid", Order.PartID);
+                cmd.Parameters.AddWithValue("@codename", cb_CodeName.SelectedValue.ToString());
 
                 dt_MeasureData.Load(cmd.ExecuteReader());
                 return dt_MeasureData;
@@ -358,12 +248,12 @@ namespace DigitalProductionProgram.Measure
         public MätStatistik()
         {
             InitializeComponent();
-            
+            InitializeForm();
+            Fill_CodeName();
+            Load_Values();
             DoubleBuffered = true;
-            slMax.BorderWidth = 2;
-            slMin.BorderWidth = 2;
-            slMax.Interval = 0;
-            slMin.Interval = 0;
+            sl_USL.BorderWidth = sl_UCL.BorderWidth = sl_LCL.BorderWidth = sl_LSL.BorderWidth = 2;
+            sl_USL.Interval = sl_UCL.Interval = sl_LCL.Interval = sl_LSL.Interval = 0;
         }
         public void InitializeForm()
         {
@@ -376,78 +266,65 @@ namespace DigitalProductionProgram.Measure
 
             lblOrderNr.Text = Order.OrderNumber;
             lblOrderNr.Visible = true;
-            cb_Mått.Visible = true;
+            cb_CodeName.Visible = true;
             chartData.Visible = true;
             cB_visaAllaOrdrar.Visible = true;
             dgv_OrderList.Visible = true;
         
         }
-        public void Fill_ComboBox_Mått()
+        public void Fill_CodeName()
         {
-            switch(Order.WorkOperation)
-            {
-                
-                case Manage_WorkOperation.WorkOperations.Extrudering_FEP:
-                case Manage_WorkOperation.WorkOperations.Extrudering_PTFE:
-                case Manage_WorkOperation.WorkOperations.Extrudering_Termo:
-                case Manage_WorkOperation.WorkOperations.Extrudering_Tryck:
-                case Manage_WorkOperation.WorkOperations.Hackning_TEF:
-                    cb_Mått.Items.Add("ID");
-                    cb_Mått.Items.Add("OD");
-                    cb_Mått.Items.Add("Wall");
-                    cb_Mått.Items.Add("Oval");
-                    cb_Mått.Items.Add("RunOut");
-                    cb_Mått.Items.Add("Length");
-                    break;
-                case Manage_WorkOperation.WorkOperations.Krympslangsblåsning:
-                    cb_Mått.Items.Add("Exp_ID");
-                    cb_Mått.Items.Add("Exp_OD");
-                    cb_Mått.Items.Add("Exp_Wall");
-                    cb_Mått.Items.Add("Rec_ID");
-                    cb_Mått.Items.Add("Rec_OD");
-                    cb_Mått.Items.Add("Rec_Wall");
-                    cb_Mått.Items.Add("Length");
-                    break;
-                case Manage_WorkOperation.WorkOperations.Spolning_PTFE:
-                    cb_Mått.Items.Add("ID");
-                    cb_Mått.Items.Add("OD");
-                    cb_Mått.Items.Add("Wall");
-                    cb_Mått.Items.Add("Oval");
-                    cb_Mått.Items.Add("RunOut");
-                    break;
-                case Manage_WorkOperation.WorkOperations.Synergy_PTFE_K18:
-                    cb_Mått.Items.Add("MainBody_ID");
-                    cb_Mått.Items.Add("Tapered_ID");
-                    cb_Mått.Items.Add("Tapered_Length");
-                    cb_Mått.Items.Add("Gap_Overtube");
-                    cb_Mått.Items.Add("Tapered_Flared_OD");
-                    cb_Mått.Items.Add("Length_Overtube");
-                    cb_Mått.Items.Add("MainBody_Flared_OD");
-                    cb_Mått.Items.Add("Tapered_OD");
-                    cb_Mått.Items.Add("MainBody_OD");
-                    cb_Mått.Items.Add("Oval");
-                    cb_Mått.Items.Add("Ovality_Zumbach");
-                    break;
-            }
-            cb_Mått.SelectedIndex = 0;
+            // Koppla loss ev. tidigare binding för att undvika spökvärden
+            cb_CodeName.DataSource = null;
+            cb_CodeName.Items.Clear();
 
+            var dt = new DataTable();
+            dt.Columns.Add("UserText", typeof(string));
+            dt.Columns.Add("Monitor", typeof(string));
+
+            Database.ExecuteSafe(con =>
+            {
+                const string query = """
+                                     SELECT 
+                                        template.Parameter_UserText, 
+                                        template.Parameter_Monitor
+                                     FROM MeasureProtocol.Template AS template
+                                     JOIN MeasureProtocol.Description AS description
+                                        ON template.DescriptionID = description.ID
+                                     WHERE template.MeasureProtocolMainTemplateID = @measureprotocolmaintemplateid
+                                        AND description.IsMeasureValue = 'True';
+                                     """;
+
+                using var cmd = new SqlCommand(query, con);
+                cmd.Parameters.Add("@measureprotocolmaintemplateid", SqlDbType.Int)
+                    .Value = Templates_MeasureProtocol.MainTemplate.ID;
+
+                using var reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    // Skydda mot NULL i databasen
+                    var userText = !reader.IsDBNull(0) ? reader.GetString(0) : string.Empty;
+                    var monitor  = !reader.IsDBNull(1) ? reader.GetString(1) : string.Empty;
+
+                    dt.Rows.Add(userText, monitor);
+                }
+            });
+
+            // Binda comboboxen: visa UserText, använd Monitor som värde
+            cb_CodeName.DisplayMember = "UserText";
+            cb_CodeName.ValueMember   = "Monitor";
+            cb_CodeName.DataSource    = dt;
+
+            // Sätt vald post om det finns några
+            if (cb_CodeName.Items.Count > 0)
+                cb_CodeName.SelectedIndex = 0;
+            else
+                cb_CodeName.SelectedIndex = -1; // inget att välja
         }
+
 
         
 
-        private void Set_Color_Chart_Series(string ordernrAktiv, string orderNrFöregående)
-        {
-            if (ordernrAktiv != orderNrFöregående)
-                if (clr == Color.Green)
-                    clr = Color.RoyalBlue;
-                else
-                    clr = Color.Green;
-            else
-                if (clr == Color.Green)
-                    clr = Color.Green;
-                else
-                    clr = Color.RoyalBlue;
-        }
         private void Load_Values()
         {
             dt_MeasureData = LoadMätData();
@@ -455,84 +332,133 @@ namespace DigitalProductionProgram.Measure
                 return;
 
             Initialize_SPC_Data();
-            chartData.Series[0].Points.Clear();
+            
+            var s = chartData.Series[0];
+            s.Points.Clear();
+           // s.YValuesPerPoint = 1;
+
             Initialize_Chart();
             Initialize_Striplines();
 
-            if (string.IsNullOrEmpty(cb_Mått.Text))
+            if (string.IsNullOrEmpty(cb_CodeName.SelectedValue.ToString()))
                 return;
             for (int i = 0; i < dt_MeasureData.Rows.Count; i++)
             {
-                    var value = GetValueByCodeName(dt_MeasureData, cb_Mått.Text);
-                    chartData.Series[0].Points.Add((double)value);
+                var (orderNr, value, realRowIndex) = GetOrderNrAndValue(dt_MeasureData, i);
+                if (!value.HasValue)
+                    continue;
+
+                var label = $"{i + 1}: {orderNr}";
+                var idx = chartData.Series[0].Points.AddXY(i+1, value.Value);
+                // Här hämtar vi punkten
+                var p = chartData.Series[0].Points[idx];
+                // realRowIndex = Convert.ToInt32(dt_MeasureData.Rows[i]["RowIndex"]);
+                p.Tag = new
+                {
+                    Value = value.Value,
+                    RowIndex = realRowIndex,
+                    OrderNr = orderNr,
+                };
+                p.AxisLabel = label;
+                // Random färg för ordren
+                var color = CustomColors.GetColorForOrder(orderNr);
+
+                p.Color = color;
+                p.MarkerColor = color;
+                p.BorderColor = color;
             }
 
-            FärgläggPunkterIdiagram();
            
         }
         private void Initialize_SPC_Data()
         {
-            lbl_USL.Text = @$"{USL:0.000}";
-            lbl_Max.Text = @$"{MAX(cb_Mått.Text):0.000}";
-            lbl_Avg.Text = @$"{AVG(cb_Mått.Text):0.000}";
-            lbl_Min.Text = @$"{MIN(cb_Mått.Text):0.000}";
-            lbl_LSL.Text = @$"{LSL:0.000}";
+            var usl = MeasurePoint(ToleranceType.USL);
+            var lsl = MeasurePoint(ToleranceType.LSL);
+            lbl_USL.Text = @$"{usl:0.000}";
+            lbl_Max.Text = @$"{MAX(cb_CodeName.SelectedValue.ToString()):0.000}";
+            lbl_Avg.Text = @$"{AVG(cb_CodeName.SelectedValue.ToString()):0.000}";
+            lbl_Min.Text = @$"{MIN(cb_CodeName.SelectedValue.ToString()):0.000}";
+            lbl_LSL.Text = @$"{lsl:0.000}";
             try
             {
-                lbl_HiLo.Text = $@"{MAX(cb_Mått.Text) - MIN(cb_Mått.Text):0.000}";
+                lbl_HiLo.Text = $@"{MAX(cb_CodeName.SelectedValue.ToString()) - MIN(cb_CodeName.SelectedValue.ToString()):0.000}";
             }
             catch { lbl_HiLo.Text = "N/A"; }
 
             var list_double = new List<double?>();
-            for (int i = 0; i < dt_MeasureData.Rows.Count; i++)
+            for (var i = 0; i < dt_MeasureData.Rows.Count; i++)
             {
-                var value = GetValueByCodeName(dt_MeasureData, cb_Mått.Text);
-                list_double.Add(value);
+                var (_, value, _) = GetOrderNrAndValue(dt_MeasureData, i);
+                if (value.HasValue)
+                   list_double.Add(value.Value);
             }
-            lbl_Cp.Text = $@"{Calculate.Cp(list_double, USL, LSL)}";
-            lbl_Cpk.Text = $@"{Calculate.Cpk(list_double, USL, LSL)}";
+            lbl_Cp.Text = $@"{Calculate.Pp(list_double, usl, lsl)}";
+            lbl_Cpk.Text = $@"{Calculate.Ppk(list_double, usl, lsl)}";
         }
         private void Initialize_Striplines()
         {
-            slMax.BorderColor = slMax.ForeColor = clr_slMax;
-            slMin.BorderColor = slMin.ForeColor = clr_slMin;
-            slMax.IntervalOffset = (double)USL;
-            slMin.IntervalOffset = (double)LSL;
-            if (slMax.BorderColor == Color.Orange)
-                slMax.Text = "Uppskattad USL";
-            else
-                slMax.Text = "USL";
+            var usl = MeasurePoint(ToleranceType.USL);
+            var ucl = MeasurePoint(ToleranceType.UCL);
+            var lsl = MeasurePoint(ToleranceType.LSL);
+            var lcl = MeasurePoint(ToleranceType.LCL);
+            if (usl != null)
+            {
+                sl_USL.BorderColor = Color.Red;
+                sl_USL.IntervalOffset = (double)usl;
+                sl_USL.Text = "USL";
+                chartData.ChartAreas[0].AxisY.StripLines.Add(sl_USL);
+            }
+            if (ucl != null)
+            {
+                sl_UCL.BorderColor = Color.DarkOrange;
+                sl_UCL.IntervalOffset = (double)ucl;
+                sl_UCL.Text = "UCL";
+                chartData.ChartAreas[0].AxisY.StripLines.Add(sl_UCL);
+            }
 
-            if (slMin.BorderColor == Color.Orange)
-                slMin.Text = "Uppskattad LSL";
-            else
-                slMin.Text = "LSL";
+            if (lsl != null)
+            {
+                sl_LSL.BorderColor = Color.Red;
+                sl_LSL.IntervalOffset = (double)lsl;
+                sl_LSL.Text = "LSL";
+                chartData.ChartAreas[0].AxisY.StripLines.Add(sl_LSL);
+            }
+            if (lcl != null)
+            {
+                sl_LCL.BorderColor = Color.DarkOrange;
+                sl_LCL.IntervalOffset = (double)lcl;
+                sl_LCL.Text = "LCL";
+                chartData.ChartAreas[0].AxisY.StripLines.Add(sl_LCL);
+            }
+
+            
         }
         private void Initialize_Chart()
         {
-            double max = (double)USL + 0.02;
-            double min = (double)LSL - 0.02;
+            double? usl = MeasurePoint(ToleranceType.USL);
+            double? lsl = MeasurePoint(ToleranceType.LSL);
+
+            // Om USL saknas → använd maxvärdet i datan
+            var actualMax = usl ?? (double)MAX(cb_CodeName.SelectedValue.ToString());
+
+            // Om LSL saknas → använd minvärdet i datan
+            var actualMin = lsl ?? (double)MIN(cb_CodeName.SelectedValue.ToString());
+
+            // Lägg på margin
+            var max = actualMax + 0.02;
+            var min = actualMin - 0.02;
+
             if (min < 0)
                 min = 0;
+
             chartData.ChartAreas[0].AxisY.Maximum = Math.Ceiling(max * 100) / 100;
             chartData.ChartAreas[0].AxisY.Minimum = Math.Floor(min * 100) / 100;
 
-            chartData.Titles[0].Text = cb_Mått.Text;
-
+            chartData.Titles[0].Text = cb_CodeName.SelectedValue?.ToString();
             chartData.ChartAreas[0].AxisY.LabelStyle.Format = "{0:0.00}";
-
         }
        
-        private void FärgläggPunkterIdiagram()
-        {
-            for (int i = 0; i < dt_MeasureData.Rows.Count; i++)
-            {
-                if (i <= 0) 
-                    continue;
-                Set_Color_Chart_Series(dt_MeasureData.Rows[i][0].ToString(), dt_MeasureData.Rows[i - 1][0].ToString());
-                chartData.Series[0].Points[i].Color = clr;
-            }
-        }
+      
         private void Fill_dgv()
         {
             return;
@@ -550,32 +476,34 @@ namespace DigitalProductionProgram.Measure
             }
         }
 
-        private void Mått_SelectedIndexChanged(object sender, EventArgs e)
+        private void CodeName_SelectedIndexChanged(object sender, EventArgs e)
         {
-
             Load_Values();
             Fill_dgv();
 
-            if (slMax.IntervalOffset > 0)
-                chartData.ChartAreas[0].AxisY.StripLines.Add(slMax);
-            if (slMin.IntervalOffset > 0)
-                chartData.ChartAreas[0].AxisY.StripLines.Add(slMin);
         }
-        private void Chart_Data_MouseMove(object sender, MouseEventArgs e)
+        private void chartData_MouseMove(object sender, MouseEventArgs e)
         {
-            //För med musen på diagrammet så visas vilken order samt vilket värde punkten har
-           // try
+            var pos = chartData.HitTest(e.X, e.Y);
+
+            if (pos.ChartElementType == ChartElementType.DataPoint)
             {
-                HitTestResult pos = chartData.HitTest(e.X, e.Y);
-                if (pos.ChartElementType == ChartElementType.DataPoint)
-                    tooltip.SetToolTip(chartData, chartData.Series[0].Points[pos.PointIndex].YValues[0] + " | " + dt_MeasureData.Rows[pos.PointIndex]["OrderNr"]);
+                var p = chartData.Series[0].Points[pos.PointIndex];
+                dynamic tag = p.Tag;
+
+                tooltip.SetToolTip(chartData,
+                    $"Value: {tag.Value}\n" +
+                    $"OrderNr: {tag.OrderNr}\n" +
+                    $"RowIndex: {tag.RowIndex}"
+                );
             }
-            //catch {Exception exc }
-            
+            else
+            {
+                tooltip.SetToolTip(chartData, "");
+            }
         }
         private void DataGridView_Data_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-            FärgläggPunkterIdiagram();
             int i = 0;
             foreach (DataPoint dp in chartData.Series[0].Points)
             {
@@ -589,7 +517,7 @@ namespace DigitalProductionProgram.Measure
         }
         private void MätStatistik_Deactivate(object sender, EventArgs e)
         {
-            Close();
+         //   Close();
         }
     }
 }

@@ -1059,31 +1059,53 @@ namespace DigitalProductionProgram.MainWindow
                 CustomColors.InfoText_Color.Info, "Info", this);
         }
 
+        private bool _isShuttingDown = false;
 
-        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        private async void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            ControlManager.Close_All_Körprotokoll();
-            SaveData.Reset_Processcard_Open(false);
+            if (_isShuttingDown)
+                return;
 
-            var topMethod = ServerStatus.dictMethodsSqlCounter
-                .OrderByDescending(kv => kv.Value)
-                .FirstOrDefault();
+            e.Cancel = true;            // Stoppa stängningen temporärt
+            _isShuttingDown = true;
 
-            var stopTime = DateTime.Now;
-            var time = stopTime - startTime;
-            var totalTime = time.ToString(@"hh\:mm\:ss");
+            Debug.WriteLine("=== Controlled shutdown START ===");
 
-            // 👇 BLOCKERA tills async Stop() är helt klar
-            Activity.Stop(
-                $"Closing DPP: (Total SQL Queries: {Database.SQL_Counter}) " +
-                $"(Most Common Method: {topMethod.Key} - Total Queries for most common Method: {topMethod.Value}) " +
-                $"- Total Time: {totalTime}"
-            ).GetAwaiter().GetResult();
+            try
+            {
+                var shutdownSw = Stopwatch.StartNew();
+
+                await SaveData.Reset_Processcard_Open(false);
+                Debug.WriteLine("[Shutdown] Reset_Processcard_Open done");
+
+                var topMethod = ServerStatus.dictMethodsSqlCounter
+                    .OrderByDescending(kv => kv.Value)
+                    .FirstOrDefault();
+
+                var stopTime = DateTime.Now;
+                var totalTime = (stopTime - startTime).ToString(@"hh\:mm\:ss");
+
+                var activityInfo =
+                    $"Closing DPP: (Total SQL Queries: {Database.SQL_Counter}) " +
+                    $"(Most Common Method: {topMethod.Key} - Total Queries for most common Method: {topMethod.Value}) " +
+                    $"- Total Time: {totalTime}";
+
+                // Kör Activity.Stop med full text
+                await Activity.Stop(activityInfo);
+                Debug.WriteLine("[Shutdown] Activity.Stop done");
+
+                shutdownSw.Stop();
+                Debug.WriteLine($"=== Controlled shutdown DONE ({shutdownSw.ElapsedMilliseconds} ms) ===");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Shutdown error: " + ex);
+            }
+
+            // Nu stänger vi på riktigt
+            BeginInvoke(new Action(Close));
         }
-        private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            SignOut();
-        }
+
 
         
     }

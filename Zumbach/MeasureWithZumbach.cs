@@ -1159,7 +1159,7 @@ namespace DigitalProductionProgram.Zumbach
         private void Invoke_Cpk(Label lbl, int position)
         {
             var list = chartZumbach.Series[position].Points.Select(dataPoint => dataPoint.YValues[0]).Select(dummy => (double?)dummy).ToList();
-            lbl.Text = Calculate.Cpk(list, ExpOD_USL, ExpOD_LSL).ToString();
+            lbl.Text = Calculate.Ppk(list, ExpOD_USL, ExpOD_LSL).ToString();
         }
 
         private void Invoke_print_OD_chart(double od, int pos, int x, int bag)

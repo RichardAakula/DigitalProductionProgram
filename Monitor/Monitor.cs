@@ -462,24 +462,21 @@ namespace DigitalProductionProgram.Monitor
 
             // Hämta order i bakgrundstråd
             var order = Task.Run(() =>
-                Utilities.GetOneFromMonitor<Manufacturing.ManufacturingOrders>($"filter=OrderNumber Eq'{OrderNr}'")
-            ).Result;
+                Utilities.GetOneFromMonitor<Manufacturing.ManufacturingOrders>($"filter=OrderNumber Eq'{OrderNr}'")).Result;
 
             if (order is null)
                 return;
 
             // Hämta operationen i bakgrundstråd
             var operations = Task.Run(() =>
-                Utilities.GetOneFromMonitor<Manufacturing.ManufacturingOrderOperations>($"filter=ManufacturingOrderId Eq'{order.Id}' AND OperationNumber Eq'{Operation}'")
-            ).Result;
+                Utilities.GetOneFromMonitor<Manufacturing.ManufacturingOrderOperations>($"filter=ManufacturingOrderId Eq'{order.Id}' AND OperationNumber Eq'{Operation}'")).Result;
 
             if (operations is null)
                 return;
 
             // Hämta kontrollrader i bakgrundstråd
             var ManufacturingOrderOperationControlDataRows = Task.Run(() =>
-                Utilities.GetOneFromMonitor<Manufacturing.ManufacturingOrderOperationControlDataRows>($"filter=ManufacturingOrderOperationId Eq'{operations.Id}'")
-            ).Result;
+                Utilities.GetOneFromMonitor<Manufacturing.ManufacturingOrderOperationControlDataRows>($"filter=ManufacturingOrderOperationId Eq'{operations.Id}'")).Result;
 
             if (ManufacturingOrderOperationControlDataRows is null)
             {
@@ -495,6 +492,8 @@ namespace DigitalProductionProgram.Monitor
                 Utilities.GetOneFromMonitor<Common.FormTemplateSelectionRows>($"filter=FormTemplateId Eq'{ManufacturingOrderOperationControlDataRows.OverridenFormTemplateId}'")).Result;
 
             // Hämta Measurepoints i bakgrundstråd
+            if (FormTemplateSelectionRows is null)
+                return;
             var Measurepoints = Task.Run(() =>
                 Utilities.GetFromMonitor<Common.FormTemplateRows>($"filter=FormTemplateSelectionRowId eq'{FormTemplateSelectionRows.Id}' AND " +
                                                                   "(LowerBoundary gt'0' OR UpperBoundary gt'0' OR Value gt'0' OR MinValue gt'0' OR MaxValue gt'0') AND Description neq'Concentricity' AND Description neq 'Amount (per bag/spool)'", "orderby=RowIndex")).Result;

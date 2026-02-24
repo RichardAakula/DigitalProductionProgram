@@ -36,7 +36,7 @@ namespace DigitalProductionProgram.Measure
             Legend legend1 = new Legend();
             Series series1 = new Series();
             Title title1 = new Title();
-            panel1 = new Panel();
+            panel_Main = new Panel();
             tlp_SPC = new TableLayoutPanel();
             lbl_LSL = new Label();
             label_LSL = new Label();
@@ -57,34 +57,35 @@ namespace DigitalProductionProgram.Measure
             dgv_OrderList = new DataGridView();
             order = new DataGridViewTextBoxColumn();
             cB_visaAllaOrdrar = new CheckBox();
-            cb_Mått = new ComboBox();
+            cb_CodeName = new ComboBox();
             chartData = new Chart();
             lblOrderNr = new Label();
-            panel1.SuspendLayout();
+            panel_Main.SuspendLayout();
             tlp_SPC.SuspendLayout();
             ((ISupportInitialize)dgv_OrderList).BeginInit();
             ((ISupportInitialize)chartData).BeginInit();
             SuspendLayout();
             // 
-            // panel1
+            // panel_Main
             // 
-            panel1.BackColor = Color.FromArgb(24, 24, 24);
-            panel1.BorderStyle = BorderStyle.Fixed3D;
-            panel1.Controls.Add(tlp_SPC);
-            panel1.Controls.Add(dgv_OrderList);
-            panel1.Controls.Add(cB_visaAllaOrdrar);
-            panel1.Controls.Add(cb_Mått);
-            panel1.Controls.Add(chartData);
-            panel1.Controls.Add(lblOrderNr);
-            panel1.Dock = DockStyle.Fill;
-            panel1.Location = new Point(0, 0);
-            panel1.Margin = new Padding(4, 3, 4, 3);
-            panel1.Name = "panel1";
-            panel1.Size = new Size(1210, 576);
-            panel1.TabIndex = 0;
+            panel_Main.BackColor = Color.Transparent;
+            panel_Main.BorderStyle = BorderStyle.Fixed3D;
+            panel_Main.Controls.Add(tlp_SPC);
+            panel_Main.Controls.Add(dgv_OrderList);
+            panel_Main.Controls.Add(cB_visaAllaOrdrar);
+            panel_Main.Controls.Add(cb_CodeName);
+            panel_Main.Controls.Add(chartData);
+            panel_Main.Controls.Add(lblOrderNr);
+            panel_Main.Dock = DockStyle.Fill;
+            panel_Main.Location = new Point(0, 0);
+            panel_Main.Margin = new Padding(4, 3, 4, 3);
+            panel_Main.Name = "panel_Main";
+            panel_Main.Size = new Size(1482, 769);
+            panel_Main.TabIndex = 0;
             // 
             // tlp_SPC
             // 
+            tlp_SPC.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             tlp_SPC.ColumnCount = 2;
             tlp_SPC.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 40.95238F));
             tlp_SPC.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 59.04762F));
@@ -104,7 +105,7 @@ namespace DigitalProductionProgram.Measure
             tlp_SPC.Controls.Add(lbl_Avg, 1, 2);
             tlp_SPC.Controls.Add(label_Min, 0, 3);
             tlp_SPC.Controls.Add(lbl_Max, 1, 1);
-            tlp_SPC.Location = new Point(1071, 83);
+            tlp_SPC.Location = new Point(1337, 83);
             tlp_SPC.Margin = new Padding(4, 3, 4, 3);
             tlp_SPC.Name = "tlp_SPC";
             tlp_SPC.RowCount = 9;
@@ -330,11 +331,12 @@ namespace DigitalProductionProgram.Measure
             // 
             // dgv_OrderList
             // 
-            dgv_OrderList.BackgroundColor = Color.FromArgb(24, 24, 24);
+            dgv_OrderList.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            dgv_OrderList.BackgroundColor = Color.FromArgb(6, 81, 87);
             dgv_OrderList.BorderStyle = BorderStyle.None;
             dgv_OrderList.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgv_OrderList.Columns.AddRange(new DataGridViewColumn[] { order });
-            dgv_OrderList.Location = new Point(972, 83);
+            dgv_OrderList.Location = new Point(1238, 83);
             dgv_OrderList.Margin = new Padding(4, 3, 4, 3);
             dgv_OrderList.Name = "dgv_OrderList";
             dgv_OrderList.RowHeadersVisible = false;
@@ -351,9 +353,10 @@ namespace DigitalProductionProgram.Measure
             // 
             // cB_visaAllaOrdrar
             // 
+            cB_visaAllaOrdrar.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             cB_visaAllaOrdrar.AutoSize = true;
             cB_visaAllaOrdrar.ForeColor = Color.White;
-            cB_visaAllaOrdrar.Location = new Point(978, 57);
+            cB_visaAllaOrdrar.Location = new Point(1244, 57);
             cB_visaAllaOrdrar.Margin = new Padding(4, 3, 4, 3);
             cB_visaAllaOrdrar.Name = "cB_visaAllaOrdrar";
             cB_visaAllaOrdrar.Size = new Size(206, 19);
@@ -361,22 +364,24 @@ namespace DigitalProductionProgram.Measure
             cB_visaAllaOrdrar.Text = "Visa alla ordrar med detta artikelnr";
             cB_visaAllaOrdrar.UseVisualStyleBackColor = true;
             cB_visaAllaOrdrar.Visible = false;
-            cB_visaAllaOrdrar.CheckedChanged += Mått_SelectedIndexChanged;
+            cB_visaAllaOrdrar.CheckedChanged += CodeName_SelectedIndexChanged;
             // 
-            // cb_Mått
+            // cb_CodeName
             // 
-            cb_Mått.FormattingEnabled = true;
-            cb_Mått.Location = new Point(978, 12);
-            cb_Mått.Margin = new Padding(4, 3, 4, 3);
-            cb_Mått.Name = "cb_Mått";
-            cb_Mått.Size = new Size(162, 23);
-            cb_Mått.TabIndex = 2;
-            cb_Mått.Visible = false;
-            cb_Mått.SelectedIndexChanged += Mått_SelectedIndexChanged;
+            cb_CodeName.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            cb_CodeName.FormattingEnabled = true;
+            cb_CodeName.Location = new Point(1244, 12);
+            cb_CodeName.Margin = new Padding(4, 3, 4, 3);
+            cb_CodeName.Name = "cb_CodeName";
+            cb_CodeName.Size = new Size(162, 23);
+            cb_CodeName.TabIndex = 2;
+            cb_CodeName.Visible = false;
+            cb_CodeName.SelectionChangeCommitted += CodeName_SelectedIndexChanged;
             // 
             // chartData
             // 
-            chartData.BackColor = Color.FromArgb(24, 24, 24);
+            chartData.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            chartData.BackColor = Color.FromArgb(51, 55, 52);
             chartArea1.AxisX.LabelStyle.ForeColor = Color.White;
             chartArea1.AxisX.LineColor = Color.White;
             chartArea1.AxisX.MajorGrid.LineColor = Color.DimGray;
@@ -412,7 +417,7 @@ namespace DigitalProductionProgram.Measure
             series1.Name = "Value";
             series1.YValuesPerPoint = 6;
             chartData.Series.Add(series1);
-            chartData.Size = new Size(960, 519);
+            chartData.Size = new Size(1198, 656);
             chartData.TabIndex = 1;
             chartData.Text = "chart1";
             title1.Font = new Font("Lucida Bright", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
@@ -421,7 +426,7 @@ namespace DigitalProductionProgram.Measure
             title1.Text = "Blåst ID";
             chartData.Titles.Add(title1);
             chartData.Visible = false;
-            chartData.MouseMove += Chart_Data_MouseMove;
+            chartData.MouseMove += chartData_MouseMove;
             // 
             // lblOrderNr
             // 
@@ -439,10 +444,10 @@ namespace DigitalProductionProgram.Measure
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            BackColor = Color.FromArgb(45, 45, 45);
-            ClientSize = new Size(1210, 576);
-            Controls.Add(panel1);
-            FormBorderStyle = FormBorderStyle.None;
+            BackColor = Color.FromArgb(6, 81, 87);
+            ClientSize = new Size(1482, 769);
+            Controls.Add(panel_Main);
+            FormBorderStyle = FormBorderStyle.SizableToolWindow;
             Margin = new Padding(4, 3, 4, 3);
             Name = "MätStatistik";
             Opacity = 0.25D;
@@ -450,8 +455,8 @@ namespace DigitalProductionProgram.Measure
             Text = "TestStatistik";
             TransparencyKey = Color.FromArgb(45, 45, 45);
             Deactivate += MätStatistik_Deactivate;
-            panel1.ResumeLayout(false);
-            panel1.PerformLayout();
+            panel_Main.ResumeLayout(false);
+            panel_Main.PerformLayout();
             tlp_SPC.ResumeLayout(false);
             tlp_SPC.PerformLayout();
             ((ISupportInitialize)dgv_OrderList).EndInit();
@@ -462,9 +467,9 @@ namespace DigitalProductionProgram.Measure
 
         #endregion
 
-        private Panel panel1;
+        private Panel panel_Main;
         private Label lblOrderNr;
-        private ComboBox cb_Mått;
+        private ComboBox cb_CodeName;
         private Chart chartData;
         private CheckBox cB_visaAllaOrdrar;
         private DataGridView dgv_OrderList;

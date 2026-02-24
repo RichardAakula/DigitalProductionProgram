@@ -55,7 +55,7 @@ namespace DigitalProductionProgram.Measure
 
 
         //public static int Max_Bag => (int)GetMeasurementValue("MAX", "Bag");
-        public static int MeasureStatsHeight;
+        private static int MeasureStatsHeight;
         public static string? ChartCodename = string.Empty;
         public static string? ChartCodeText = string.Empty;
 
@@ -288,8 +288,6 @@ namespace DigitalProductionProgram.Measure
             Points.Add_Points(3, "Kollar mätstatistik");
             var stats = new MätStatistik();
             stats.Show();
-            stats.InitializeForm();
-            stats.Fill_ComboBox_Mått();
 
             _ = Activity.Stop($"User looking att Measurestatistics:");
         }

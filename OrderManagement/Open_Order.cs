@@ -29,7 +29,7 @@ namespace DigitalProductionProgram.OrderManagement
             InitializeComponent();
             date_From.Value = DateTime.Now.AddYears(-1);
             Translate_Form();
-            _ = Task.Run(Load_dt_Korprotokoll_MainDataAsync);
+            //_ = Task.Run(Load_dt_Korprotokoll_MainDataAsync);
             lastDateFromValue = date_From.Value;
             IsOkFilterData = true;
         }
@@ -40,7 +40,7 @@ namespace DigitalProductionProgram.OrderManagement
 
             // Small delay to ensure progress window paints before binding starts
             // await Task.Delay(150);
-
+            await Load_dt_Korprotokoll_MainDataAsync();
             // Perform the slow UI-thread binding (DataGridView must be updated on UI thread)
             Fill_dgv_OrderList();
 
@@ -56,6 +56,7 @@ namespace DigitalProductionProgram.OrderManagement
 
         private async Task Load_dt_Korprotokoll_MainDataAsync()
         {
+            await Log.Activity.Stop($"Open Order - {date_From.Value}");
             dt_Korprotokoll_MainData = new DataTable();
             try
             {
@@ -79,7 +80,6 @@ namespace DigitalProductionProgram.OrderManagement
                 var dt = new DataTable();
                
                 dt.Load(reader);
-                int test = dt.Rows.Count;
                 dt_Korprotokoll_MainData = dt;
             }
             catch (Exception ex)
@@ -94,13 +94,34 @@ namespace DigitalProductionProgram.OrderManagement
             ShowProgressOnNewThread("Laddar ordrar...");
             await Task.Delay(150);
 
+            // Säkerhetsvakter
+            if (dt_Korprotokoll_MainData == null || dt_Korprotokoll_MainData.Columns.Count == 0)
+            {
+                dgv_OrderList.DataSource = null;
+                CloseProgressbar();
+                return;
+            }
+
             dgv_OrderList.DataSource = dt_Korprotokoll_MainData;
-            dgv_OrderList.Columns[0].Visible = false;
-            dgv_OrderList.Columns[0].Width = 0;
-            date_From.Value = DateTime.Parse(dt_Korprotokoll_MainData.Rows[^1]["Date_Start"].ToString());
+
+            if (dgv_OrderList.Columns.Count > 0)
+            {
+                dgv_OrderList.Columns[0].Visible = false;
+                dgv_OrderList.Columns[0].Width = 0;
+            }
+
+            // Sätt bara date_From från sista raden om det faktiskt finns rader
+            if (dt_Korprotokoll_MainData.Rows.Count > 0)
+            {
+                var last = dt_Korprotokoll_MainData.Rows[^1]["Date_Start"];
+                if (last != DBNull.Value && DateTime.TryParse(last.ToString(), out var dt))
+                    date_From.Value = dt;
+            }
+
             OrderList_ChangeWidth();
             CloseProgressbar();
         }
+
         private void Öppna_Click(object sender, EventArgs e)
         {
             Order.OrderNumber = dgv_OrderList.Rows[dgv_OrderList.CurrentCell.RowIndex].Cells["OrderNr"].Value.ToString();

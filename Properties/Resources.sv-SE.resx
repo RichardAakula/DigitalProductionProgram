@@ -2403,4 +2403,85 @@ Försök igen om en stund. Om problemet kvarstår, kontakta support.</value>
   <data name="update_Info_2" xml:space="preserve">
     <value>Det finns för närvarande ingen nyare version tillgänglig.</value>
   </data>
+  <data name="spc_Totalmeasurements" xml:space="preserve">
+    <value>Antal mätningar som används i SPC‑beräkningen.
+Rader som filtrerats bort (kasserade/orealistiska värden) räknas inte med.</value>
+  </data>
+  <data name="spc_Mean" xml:space="preserve">
+    <value>Genomsnittet av alla mätvärden.
+Visar vart processen “ligger” i snitt.</value>
+  </data>
+  <data name="spc_Median" xml:space="preserve">
+    <value>Mittenvärdet när alla mätvärden sorteras.
+Mindre känsligt för extremvärden än medelvärde.</value>
+  </data>
+  <data name="spc_Min" xml:space="preserve">
+    <value>Det lägsta uppmätta värdet.</value>
+  </data>
+  <data name="spc_Max" xml:space="preserve">
+    <value>Det högsta uppmätta värdet.</value>
+  </data>
+  <data name="spc_Range" xml:space="preserve">
+    <value>Skillnaden mellan max och min.
+Ger en snabb bild av variationen i processen.</value>
+  </data>
+  <data name="spc_StandardDeviation" xml:space="preserve">
+    <value>Mäter hur mycket mätvärdena varierar kring medelvärdet.
+Låg standardavvikelse = stabil process.</value>
+  </data>
+  <data name="spc_Skewness" xml:space="preserve">
+    <value>Skewness (Snedhet)
+
+Skewness mäter om fördelningen av mätningarna är symmetrisk eller sned.
+
+Skewness = 0 → fördelningen är symmetrisk.
+Skewness &gt; 0 → höger-skevad: några slangar är större än genomsnittet, svansen sträcker sig åt höger.
+Skewness &lt; 0 → vänster-skevad: några slangar är mindre än genomsnittet, svansen sträcker sig åt vänster.
+
+Exempel:
+
+Om de flesta slangarna har ID runt 2,0 mm men några är 2,3 mm → fördelningen är höger-skevad.</value>
+  </data>
+  <data name="spc_Kurtosis" xml:space="preserve">
+    <value>Kurtosis (Toppighet / Excess kurtosis)
+
+Kurtosis mäter om fördelningen av mätningarna är spetsig eller platt jämfört med normalfördelning.
+
+Kurtosis &gt; 0 → fördelningen är spetsigare än normalfördelning (mer extrema ID-värden i svansarna).
+Kurtosis &lt; 0 → fördelningen är plattare än normalfördelning (mindre extrema värden i svansarna).
+Kurtosis = 0 → fördelningen har samma “toppighet” som normalfördelning
+
+Exempel:
+
+Om nästan alla slangar har ID runt 2,0 mm men några är 1,8 mm eller 2,3 mm → excess kurtosis är positiv → hög toppighet.</value>
+  </data>
+  <data name="spc_Pp" xml:space="preserve">
+    <value>Pp – Process Performance (Overall)
+
+Visar hur stor processens totala variation är i förhållande till toleransbredden (USL − LSL).
+Beräknas med overall standardavvikelse (long-term variation).
+Pp tar inte hänsyn till om processen är centrerad.
+Tolkning (typiska industrivärden, ej absoluta krav):
+
+Pp ≥ 1.33 → acceptabel kapabilitet
+Pp ≥ 1.67 → god kapabilitet
+Pp ≥ 2.00 → mycket hög kapabilitet
+
+Obs: Pp förutsätter att processen är statistiskt stabil.</value>
+  </data>
+  <data name="spc_Ppk" xml:space="preserve">
+    <value>Ppk – Process Performance Index (Overall, Centered)
+
+Visar hur väl processen presterar i förhållande till toleransgränserna, med hänsyn till både total variation och hur väl processen är centrerad.
+Beräknas med overall (long-term) standardavvikelse och processens medelvärde.
+Ppk tar hänsyn till om processen är förskjuten mot någon av specifikationsgränserna (USL eller LSL).
+Typisk tolkning (branschpraxis, ej absoluta krav):
+
+Ppk ≥ 1,33 → acceptabel prestanda
+Ppk ≥ 1,67 → god prestanda
+Ppk ≥ 2,00 → mycket hög prestanda
+
+Observera:
+Ppk förutsätter att processen är statistiskt stabil.</value>
+  </data>
 </root>

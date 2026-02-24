@@ -1958,4 +1958,37 @@
   <data name="update_Info_2" xml:space="preserve">
     <value></value>
   </data>
+  <data name="spc_Totalmeasurements" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="spc_Mean" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="spc_Median" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="spc_Min" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="spc_Max" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="spc_Range" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="spc_StandardDeviation" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="spc_Skewness" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="spc_Kurtosis" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="spc_Pp" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="spc_Ppk" xml:space="preserve">
+    <value></value>
+  </data>
 </root>

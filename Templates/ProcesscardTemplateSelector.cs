@@ -322,17 +322,22 @@ ORDER BY ROW_NUMBER() OVER (PARTITION BY PartGroupID ORDER BY TRY_CAST(RevNr AS 
         private void Add_ProtocolTemplates()
         {
             using var con = new SqlConnection(Database.cs_Protocol);
-            const string query = @"
-                WITH RankedRevisions AS (
-                    SELECT Name, Revision, ID,
-                    ROW_NUMBER() OVER (PARTITION BY Name ORDER BY Revision DESC) AS RevisionRank
-                FROM Protocol.MainTemplate
-                WHERE WorkoperationID = @workoperationid
-                )
-                SELECT Name, Revision, ID
-                FROM RankedRevisions
-                WHERE RevisionRank = 1
-                ORDER BY Name;";
+            const string query = """
+                                 WITH RankedRevisions AS 
+                                 (
+                                    SELECT 
+                                        Name, 
+                                        Revision, 
+                                        ID,
+                                        ROW_NUMBER() OVER (PARTITION BY Name ORDER BY Revision DESC) AS RevisionRank
+                                            FROM Protocol.MainTemplate
+                                            WHERE WorkoperationID = @workoperationid
+                                 )
+                                 SELECT Name, Revision, ID
+                                 FROM RankedRevisions
+                                 WHERE RevisionRank = 1
+                                 ORDER BY Name;
+                                 """;
 
             var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@workoperationid", Order.WorkoperationID);

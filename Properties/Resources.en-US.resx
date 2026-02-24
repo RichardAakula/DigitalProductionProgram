@@ -2407,4 +2407,80 @@ Please try again later. If the problem persists, contact support.</value>
   <data name="update_Info_2" xml:space="preserve">
     <value>There is currently no newer version available.</value>
   </data>
+  <data name="spc_Totalmeasurements" xml:space="preserve">
+    <value>The number of measurements included in the SPC calculation.
+Rows filtered out (discarded / unrealistic values) are not counted.</value>
+  </data>
+  <data name="spc_Mean" xml:space="preserve">
+    <value>The average of all measurement values.
+Shows where the process is centered “on average”.</value>
+  </data>
+  <data name="spc_Median" xml:space="preserve">
+    <value>The middle value when all measurements are sorted.
+Less sensitive to outliers than the mean.</value>
+  </data>
+  <data name="spc_Min" xml:space="preserve">
+    <value>The lowest measured value.</value>
+  </data>
+  <data name="spc_Max" xml:space="preserve">
+    <value>The highest measured value.</value>
+  </data>
+  <data name="spc_Range" xml:space="preserve">
+    <value>Difference between maximum and minimum.
+A quick indicator of process variation.</value>
+  </data>
+  <data name="spc_StandardDeviation" xml:space="preserve">
+    <value>Measures how much the data varies around the mean.
+Low standard deviation = stable process.</value>
+  </data>
+  <data name="spc_Skewness" xml:space="preserve">
+    <value>Shows if the distribution leans to one side.
+
+Positive = more values below mean
+Negative = more values above mean
+
+</value>
+  </data>
+  <data name="spc_Kurtosis" xml:space="preserve">
+    <value>Kurtosis
+
+Kurtosis measures whether the distribution of measurements is peaked or flat compared to a normal distribution.
+
+Kurtosis &gt; 0 → more peaked than normal (more extreme IDs in the tails).
+Kurtosis &lt; 0 → flatter than normal (fewer extremes).
+Kurtosis = 0 → same peakiness as a normal distribution.
+
+Example:
+
+Most tubes are ~2.0 mm, but a few are 1.8 mm or 2.3 mm → positive excess kurtosis → high peakiness.</value>
+  </data>
+  <data name="spc_Pp" xml:space="preserve">
+    <value>Pp – Process Performance (Overall)
+
+Indicates how large the total process variation is in relation to the tolerance width (USL − LSL).
+It is calculated using the overall (long-term) standard deviation.
+Pp does not take process centering into account.
+Typical industry interpretation (not absolute requirements):
+
+Pp ≥ 1.33 → acceptable capability
+Pp ≥ 1.67 → good capability
+Pp ≥ 2.00 → very high capability
+
+Note: Pp assumes the process is statistically stable.</value>
+  </data>
+  <data name="spc_Ppk" xml:space="preserve">
+    <value>Ppk – Process Performance Index (Overall, Centered)
+
+Indicates how well the process performs relative to the specification limits, taking both total variation and process centering into account.
+It is calculated using the overall (long-term) standard deviation and the process mean.
+Ppk reflects whether the process is shifted toward either specification limit (USL or LSL).
+Typical industry interpretation (not absolute requirements):
+
+Ppk ≥ 1.33 → acceptable performance
+Ppk ≥ 1.67 → good performance
+Ppk ≥ 2.00 → very high performance
+
+Note:
+Ppk assumes the process is statistically stable.</value>
+  </data>
 </root>

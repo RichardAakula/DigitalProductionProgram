@@ -389,16 +389,26 @@ namespace DigitalProductionProgram.MainWindow
                 return;
             }
 
+            //Väljer först Workoperation -> ProtocolTemplateID -> LineClearanceMainTemplateID
+            using var changeWorkoperation = new ProcesscardTemplateSelector(ProcesscardTemplateSelector.TemplateType.Workoperations);
+            changeWorkoperation.ShowDialog();
+
             using var changeTemplate = new ProcesscardTemplateSelector(ProcesscardTemplateSelector.TemplateType.TemplateProtocol);
             changeTemplate.ShowDialog();
+            Templates_LineClearance.MainTemplate.Set_MainTemplateID();
             Database.ExecuteSafe(con =>
             {
-                var query = @"
+                const string query = @"
                         UPDATE [Order].MainData
-                            SET ProtocolMainTemplateID = @protocolmaintemplateid
+                            SET 
+                                WorkoperationID = @workoperationid,
+                                LineClearanceMainTemplateID = @lineclearancemaintemplateid,
+                                ProtocolMainTemplateID = @protocolmaintemplateid
                         WHERE OrderID = @orderid";
                 var cmd = new SqlCommand(query, con);
                 cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
+                cmd.Parameters.AddWithValue("@workoperationid", Order.WorkoperationID);
+                cmd.Parameters.AddWithValue("@lineclearancemaintemplateid", Templates_LineClearance.MainTemplate.LineClearance_MainTemplateID);
                 cmd.Parameters.AddWithValue("@protocolmaintemplateid", Templates_Protocol.MainTemplate.ID);
                 cmd.ExecuteNonQuery();
             });
@@ -483,7 +493,8 @@ namespace DigitalProductionProgram.MainWindow
                             'SavePrefabFromMonitor',
                             'AutoTestJira',
                             'Looping_ThroughMeasurements',
-                            'Mätdata_Row_Click'
+                            'Mätdata_Row_Click',
+                            'Load_dt_Korprotokoll_MainDataAsync',   
                         )
                         AND Info NOT LIKE '%Felsökning%'
                         AND Info NOT LIKE '%Error%'

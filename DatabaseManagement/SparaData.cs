@@ -323,7 +323,7 @@ namespace DigitalProductionProgram.DatabaseManagement
         }
 
 
-        public static async void Reset_Processcard_Open(bool is_Ok_To_Reset)
+        public static async Task Reset_Processcard_Open(bool is_Ok_To_Reset)
         {
             if (Order.OrderID is null)
                 return;
@@ -332,12 +332,13 @@ namespace DigitalProductionProgram.DatabaseManagement
             {
                 await Activity.Stop($"User: {Person.Name} @: {Environment.MachineName} Logging out user: {Korprotokoll.Open_ByUser} from Computer: {Korprotokoll.Open_ByComputer}");
 
-                using var con = new SqlConnection(Database.cs_Protocol);
+                await using var con = new SqlConnection(Database.cs_Protocol);
                 var query = Queries.UPDATE_Reset_Processcard_Open;
                 var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@id", Order.OrderID);
-                con.Open();
-                cmd.ExecuteScalar();
+                cmd.CommandTimeout = 3;
+                await con.OpenAsync().ConfigureAwait(false);
+                await cmd.ExecuteScalarAsync().ConfigureAwait(false);
             }
         }
         public static void Set_Processcard_Open()

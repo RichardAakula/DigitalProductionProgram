@@ -21,16 +21,16 @@ namespace DigitalProductionProgram.Templates
 {
     public partial class Templates_LineClearance : Form
     {
-        public static DataGridView dgv_LineClearance_Active_Main;
-        public static Panel panel_Active;
+        private static DataGridView dgv_LineClearance_Active_Main;
+        private static Panel panel_Active;
         //public static Label label_Active_Category;
         public PreviewTemplate? preview;
 
-        public static List<string> List_TemplateNames = new List<string>();
-        public static List<string> List_RevisionNr = new List<string>();
-        public static List<int> List_ProtocolMainTemplateID = new List<int>();
+        private static List<string> List_TemplateNames = new();
+        private static List<string> List_RevisionNr = new();
+        private static readonly List<int> List_ProtocolMainTemplateID = new();
 
-        public static bool IsOkUpdateTemplate = true;
+        private static bool IsOkUpdateTemplate = true;
         private bool IsOkSaveTemplate()
         {
             if (string.IsNullOrEmpty(cb_TemplateRevision.Text))
@@ -52,7 +52,7 @@ namespace DigitalProductionProgram.Templates
             return true;
         }
 
-        public static Templates_LineClearance? manage_LineClearanceTemplates;
+        private static Templates_LineClearance? manage_LineClearanceTemplates;
 
         public Templates_LineClearance()
         {

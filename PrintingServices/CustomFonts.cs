@@ -168,6 +168,72 @@ namespace DigitalProductionProgram.PrintingServices
         public static Color Parametrar_Saknas_Back = Color.FromArgb(250, 250, 250);
         public static Color Parametrar_Saknas_Front = Color.Red;
 
+        private static readonly Dictionary<string, Color> _orderColors = new();
+        private static readonly Random _rand = new();
+
+        public static Color GetColorForOrder(string orderNr)
+        {
+            if (string.IsNullOrEmpty(orderNr))
+                return Color.LightGray; // fallback
+
+            if (_orderColors.TryGetValue(orderNr, out var c))
+                return c;
+
+            // Skapa en riktigt tydlig ljus färg via HSL
+            c = GenerateVisibleColor();
+
+            _orderColors[orderNr] = c;
+            return c;
+        }
+        private static Color GenerateVisibleColor()
+        {
+            // Hue 0–360
+            double h = _rand.NextDouble() * 360.0;
+
+            // Saturation & Lightness höga för tydlighet
+            double s = 0.75; // 75%
+            double l = 0.70; // 70%
+
+            return ColorFromHSL(h, s, l);
+        }
+        private static Color ColorFromHSL(double h, double s, double l)
+        {
+            // HSL → RGB (standardformel)
+            h /= 360.0;
+
+            double r = 0, g = 0, b = 0;
+
+            if (s == 0)
+            {
+                r = g = b = l;
+            }
+            else
+            {
+                double q = l < 0.5 ? l * (1 + s) : l + s - (l * s);
+                double p = 2 * l - q;
+
+                r = Hue2RGB(p, q, h + 1.0 / 3.0);
+                g = Hue2RGB(p, q, h);
+                b = Hue2RGB(p, q, h - 1.0 / 3.0);
+            }
+
+            return Color.FromArgb(
+                255,
+                (int)(r * 255),
+                (int)(g * 255),
+                (int)(b * 255));
+        }
+        private static double Hue2RGB(double p, double q, double t)
+        {
+            if (t < 0) t += 1;
+            if (t > 1) t -= 1;
+            if (t < 1.0 / 6.0) return p + (q - p) * 6 * t;
+            if (t < 1.0 / 2.0) return q;
+            if (t < 2.0 / 3.0) return p + (q - p) * (2.0 / 3.0 - t) * 6;
+
+            return p;
+        }
+
         public enum InfoText_Color
         {
             Info,

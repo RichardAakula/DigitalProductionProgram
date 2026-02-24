@@ -16,7 +16,7 @@ using DigitalProductionProgram.User;
 
 namespace DigitalProductionProgram.Protocols
 {
-    internal class Korprotokoll
+    internal static class Korprotokoll
     {
         public static bool IsProtocol_Open_By_AnotherUser(Form form)
         {
@@ -80,52 +80,8 @@ namespace DigitalProductionProgram.Protocols
         }
 
 
-        public class ProtocolTemplateRevision
+        public abstract class ProtocolTemplateRevision
         {
-            public static void SetActiveRevision(int FormTemplateID)
-            {
-                //Hämtar först TemplateRevision från Ordern,
-                //Om det inte finns där så hämtas det från Processkortet,
-                //Om det inte finns så hämtas senaste från Template
-                //Order.TemplateRevision = OrderNr(Order.OrderID)
-                //                                 ?? (Order.PartID != null ? PartNumber : null)
-                //                                 ?? Latest(FormTemplateID);
-                if (OrderNr(Order.OrderID) != null)
-                {
-                    Templates_Protocol.MainTemplate.Revision = OrderNr(Order.OrderID);
-                }
-                else if (Order.PartID != null)
-                {
-                    Templates_Protocol.MainTemplate.Revision = PartNumber;
-                }
-                else
-                {
-                    Templates_Protocol.MainTemplate.Revision = Latest(FormTemplateID);
-                }
-            }
-
-            public static string? NewOrder
-            {
-                get
-                {
-                    if (Order.PartID != null)
-                        return PartNumber;
-
-                    using var con = new SqlConnection(Database.cs_Protocol);
-                    var query = @"
-                        SELECT TOP(1) Revision 
-                        FROM Protocol.MainTemplate 	                    
-                        WHERE ID = @maintemplateid
-                        ORDER BY revision DESC";
-                    con.Open();
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                        
-                    cmd.Parameters.AddWithValue("@maintemplateid", Templates_Protocol.MainTemplate.ID);
-                    var value = cmd.ExecuteScalar();
-                    return value?.ToString();
-                }
-            }
-
             public static string? OrderNr(int? orderID)
             {
                 if (orderID == null)
@@ -141,53 +97,6 @@ namespace DigitalProductionProgram.Protocols
 
                 return cmd.ExecuteScalar().ToString();
             }
-            public static int MainTemplateID(int? orderID)
-            {
-                using var con = new SqlConnection(Database.cs_Protocol);
-                var query = @"
-                            SELECT ProtocolMainTemplateID 
-                            FROM [Order].MainData
-                            WHERE OrderID = @orderid";
-                con.Open();
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@orderid", orderID);
-                int.TryParse(cmd.ExecuteScalar().ToString(), out int maintemplateid);
-                return maintemplateid;
-            }
-            public static string? PartNumber
-            {
-                get
-                {
-                    using var con = new SqlConnection(Database.cs_Protocol);
-                    var query = @"
-                            SELECT ProtocolTemplateRevision 
-                            FROM Processcard.MainData
-                            WHERE PartID = @partid";
-                    con.Open();
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    cmd.Parameters.AddWithValue("@partid", Order.PartID);
-
-                    return cmd.ExecuteScalar().ToString();
-                }
-            }
-
-            public static string? Latest(int FormTemplateID)
-            {
-                if (FormTemplateID == 0)
-                    return null;
-                using var con = new SqlConnection(Database.cs_Protocol);
-                var query = @"
-                    SELECT TOP(1) Revision 
-                    FROM Protocol.Template 
-                    WHERE FormTemplateID = @formtemplateid
-                    ORDER BY Revision DESC";
-                con.Open();
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@formtemplateid", FormTemplateID);
-
-                return cmd.ExecuteScalar().ToString();
-            }
-
         }
 
 

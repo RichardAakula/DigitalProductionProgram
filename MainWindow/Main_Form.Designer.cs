@@ -865,7 +865,6 @@ namespace DigitalProductionProgram.MainWindow
             TransparencyKey = Color.Fuchsia;
             WindowState = FormWindowState.Maximized;
             FormClosing += MainForm_FormClosing;
-            FormClosed += MainForm_FormClosed;
             ((ISupportInitialize)pb_Info_UserPoints).EndInit();
             tlp_ExtraInfo.ResumeLayout(false);
             tlp_ExtraInfo.PerformLayout();

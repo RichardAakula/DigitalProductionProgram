@@ -95,7 +95,7 @@ internal class Activity
                 (HostID, UserID, OrderID, Program, Version, Date, LoadingTime, Info, Memory, DPPMemory, CPU, DPPCPU, Resolution, WindowsVersion)
                 VALUES 
                 ((SELECT HostID FROM [Settings].General WHERE HostName = @hostname), @userid, @orderid, @methodname, @version, @date, @loadingtime, @info, @memory, @dppmemory, @cpu, @dppcpu, @resolution, @windowsversion)", con);
-
+                //cmd.CommandTimeout = 3;
                 cmd.Parameters.AddWithValue("@hostname", HostName);
 
                 if (Environment.MachineName == Main_Form.adminHostName && Person.Name != "Richard Aakula")

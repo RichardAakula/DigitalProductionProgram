@@ -396,7 +396,7 @@ namespace DigitalProductionProgram.QC
 
         private void PartNr_LoadHistory_Click(object sender, EventArgs e)
         {
-            using var chooseItem = new Choose_Item(HistoryPartNumbers, [tb_PartNr, tb_OrderNr], true, false, false);
+            using var chooseItem = new Choose_Item(HistoryPartNumbers, ctrls: [tb_PartNr, tb_OrderNr], isMultipleColumns:true, isOkReturnOwnText: true);
             chooseItem.ShowDialog();
             var ordernr = tb_OrderNr.Text;
             int? orderid;

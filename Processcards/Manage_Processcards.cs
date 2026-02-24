@@ -1216,7 +1216,7 @@ namespace DigitalProductionProgram.Processcards
                 }
             });
 
-            using var choose_Item = new Choose_Item(list, new Control[] { tb_PartNr }, false);
+            using var choose_Item = new Choose_Item(list, ctrls:[tb_PartNr]);
             choose_Item.ShowDialog();
         }
 
@@ -1239,7 +1239,7 @@ namespace DigitalProductionProgram.Processcards
         private void ProdType_Click(object sender, EventArgs e)
         {
             var ctrl = (Control)sender;
-            using var choose_Item = new Choose_Item(MainInfo_B.List_ProdType("Processcard.MainData"), new[] { ctrl }, false, true);
+            using var choose_Item = new Choose_Item(MainInfo_B.List_ProdType("Processcard.MainData"), [ctrl], isMultipleColumns:true);
             choose_Item.ShowDialog();
         }
         private void ProdType_TextChanged(object sender, EventArgs e)
@@ -1260,7 +1260,7 @@ namespace DigitalProductionProgram.Processcards
         private void ProdLine_Click(object sender, EventArgs e)
         {
             var ctrl = (Control)sender;
-            using var choose_Item = new Choose_Item(Equipment.Equipment.List_ProdLines, new[] { ctrl }, false);
+            using var choose_Item = new Choose_Item(Equipment.Equipment.List_ProdLines, ctrls:[ctrl]);
             choose_Item.ShowDialog();
         }
         private void ProdLinje_TextChanged(object sender, EventArgs e)
@@ -1280,7 +1280,7 @@ namespace DigitalProductionProgram.Processcards
             if (Monitor.Monitor.List_PartNr is null)
                 return;
             using var ctrl = (Control)sender;
-            using var choose_Item = new Choose_Item(Monitor.Monitor.List_PartNr, new[] { ctrl }, false, true);
+            using var choose_Item = new Choose_Item(Monitor.Monitor.List_PartNr, ctrls: [ctrl],  isOkReturnOwnText: true);
             choose_Item.ShowDialog();
         }
 

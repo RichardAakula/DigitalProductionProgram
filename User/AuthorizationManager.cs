@@ -294,7 +294,7 @@ namespace DigitalProductionProgram.User
         {
             if (btn_Add.Text == LanguageManager.GetString("btn_AuthoritiesAddUser"))
             {
-                using var choose_Item = new Choose_Item(Person.List_Users(false), [btn_Add], false);
+                using var choose_Item = new Choose_Item(Person.List_Users(false), ctrls: [btn_Add]);
                 choose_Item.ShowDialog();
                 using (var con = new SqlConnection(Database.cs_Protocol))
                 {
@@ -332,7 +332,7 @@ namespace DigitalProductionProgram.User
             {
                 List<string?> roles = Person.List_Roles.Select(x => x.ToString()).ToList();
 
-                using var choose_Item = new Choose_Item(roles, new Control[] { btn_Add }, false);
+                using var choose_Item = new Choose_Item(roles, ctrls: [btn_Add]);
                 choose_Item.ShowDialog();
                 if (btn_Add.Text == LanguageManager.GetString("btn_AuthoritiesAddRole"))
                     return;
@@ -355,7 +355,7 @@ namespace DigitalProductionProgram.User
         private void Insert_Mail()
         {
             List<string?> emails = Person.List_MailAddress.Select(x => x.ToString()).ToList();
-            using var choose_Item = new Choose_Item(emails, new Control[] { btn_Add }, false, true);
+            using var choose_Item = new Choose_Item(emails, ctrls: [btn_Add], isOkReturnOwnText: true);
             choose_Item.ShowDialog();
             if (btn_Add.Text == LanguageManager.GetString("btn_AuthoritiesAddEmail"))
                 return;
@@ -378,7 +378,7 @@ namespace DigitalProductionProgram.User
         {
             List<string?> workoperations = Manage_WorkOperation.List_Workoperations.Select(x => x.ToString()).ToList();
 
-            using var choose_Item = new Choose_Item(workoperations, new Control[] { btn_Add }, false);
+            using var choose_Item = new Choose_Item(workoperations, ctrls: [btn_Add]);
             choose_Item.ShowDialog();
             if (btn_Add.Text == LanguageManager.GetString("btn_AuthoritiesAddWorkoperation"))
                 return;
@@ -401,7 +401,7 @@ namespace DigitalProductionProgram.User
         {
             var factories = new List<string?> { "Godby", "Thailand", "Holding"};
 
-            using var choose_Item = new Choose_Item(factories, new Control[] { btn_Add }, false);
+            using var choose_Item = new Choose_Item(factories, ctrls: [btn_Add]);
             choose_Item.ShowDialog();
             if (btn_Add.Text == LanguageManager.GetString("btn_AuthoritiesAddFactory"))
                 return;

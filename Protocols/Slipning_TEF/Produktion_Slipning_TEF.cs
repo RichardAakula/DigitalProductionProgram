@@ -413,7 +413,7 @@ namespace DigitalProductionProgram.Protocols.Slipning_TEF
                 if (list.Contains(dgv_Produktion.Rows[i].Cells[0].Value.ToString()) == false)
                     list.Add(dgv_Produktion.Rows[i].Cells[0].Value.ToString());
             }
-            using var choose_Item = new Choose_Item(list, new[] {ctrl}, false);
+            using var choose_Item = new Choose_Item(list, ctrls: [ctrl]);
             choose_Item.ShowDialog();
         }
 

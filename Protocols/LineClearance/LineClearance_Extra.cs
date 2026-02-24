@@ -327,7 +327,7 @@ namespace DigitalProductionProgram.Protocols.LineClearance
             var org_Name = Person.Name;
             var org_UserAnstNr = Person.EmployeeNr;
 
-            using var choose_Item = new Choose_Item(List_AuthorizedUsers, [LC_Approved_Name], false);
+            using var choose_Item = new Choose_Item(List_AuthorizedUsers, ctrls: [LC_Approved_Name]);
             choose_Item.ShowDialog();
 
             Person.Name = LC_Approved_Name.Text;

@@ -550,7 +550,7 @@ namespace DigitalProductionProgram.Templates
                     list.Add(reader.GetString(0));
             }
             Control[] controls = { tb_Workoperation };
-            var chooseWorkoperation = new Choose_Item(list, controls, false);
+            var chooseWorkoperation = new Choose_Item(list, ctrls:controls);
             chooseWorkoperation.ShowDialog();
         }
         private void CodeText_CellMouseDown(object sender, DataGridViewCellMouseEventArgs e)
@@ -561,9 +561,9 @@ namespace DigitalProductionProgram.Templates
             if (TemplateControls.IsCodeTextExistInModule(dgv_ProtocolsActive_Main, codetext))
                 return;
             dgv_ProtocolsActive_Main.Rows.Add();
-            dgv_ProtocolsActive_Main.Rows[dgv_ProtocolsActive_Main.Rows.Count - 1].Cells["col_CodeText"].Value = codetext;
-            dgv_ProtocolsActive_Main.Rows[dgv_ProtocolsActive_Main.Rows.Count - 1].Cells["col_ProtocolDescriptionID"].Value = int.Parse(dgv_CodeText.Rows[e.RowIndex].Cells[0].Value.ToString());
-            dgv_ProtocolsActive_Main.Rows[dgv_ProtocolsActive_Main.Rows.Count - 1].Cells["col_Unit"].Value = dgv_CodeText.Rows[e.RowIndex].Cells[2].Value.ToString();
+            dgv_ProtocolsActive_Main.Rows[^1].Cells["col_CodeText"].Value = codetext;
+            dgv_ProtocolsActive_Main.Rows[^1].Cells["col_ProtocolDescriptionID"].Value = int.Parse(dgv_CodeText.Rows[e.RowIndex].Cells[0].Value.ToString());
+            dgv_ProtocolsActive_Main.Rows[^1].Cells["col_Unit"].Value = dgv_CodeText.Rows[e.RowIndex].Cells[2].Value.ToString();
 
             TemplateButtons.IsOkUpdateTemplate = false;
             TemplateButtons.IsOkSaveTemplate = true;
@@ -667,7 +667,7 @@ namespace DigitalProductionProgram.Templates
                 .Distinct() // Ensure uniqueness
                 .ToList();
 
-            var choose_Item = new Choose_Item(listCodeText, new[] { tb_NewCodeText }, false, true);
+            var choose_Item = new Choose_Item(listCodeText, new[] { tb_NewCodeText }, isOkReturnOwnText: true);
             choose_Item.ShowDialog();
         }
         private void NewUnit_Enter(object sender, EventArgs e)
@@ -678,7 +678,7 @@ namespace DigitalProductionProgram.Templates
                 .Distinct() // Ensure uniqueness
                 .ToList();
 
-            var choose_Item = new Choose_Item(listUnit, new[] { tb_NewUnit }, false, true);
+            var choose_Item = new Choose_Item(listUnit, ctrls: [tb_NewUnit], isOkReturnOwnText: true);
             choose_Item.ShowDialog();
         }
 

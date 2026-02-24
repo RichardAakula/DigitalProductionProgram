@@ -582,7 +582,7 @@ namespace DigitalProductionProgram.Measure
 
             if (items is null || items.Count <= 0)
                 return;
-            using var chooseItem = new Choose_Item(items, new Control[] { tb }, false, true);
+            using var chooseItem = new Choose_Item(items, [tb], isOkReturnOwnText:true);
             chooseItem.ShowDialog();
         }
         private static void Validate_Value_TextChanged(object? sender, EventArgs e)

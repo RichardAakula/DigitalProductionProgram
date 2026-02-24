@@ -194,7 +194,7 @@ namespace DigitalProductionProgram.OrderManagement
                     list.Add(reader[0].ToString());
             }
 
-            using var item = new Choose_Item(list, new Control[] { tb_CodeText }, false, false, true);
+            using var item = new Choose_Item(list, ctrls:[tb_CodeText]);
             item.ShowDialog();
         }
         private void tb_TemplateName_Enter(object sender, EventArgs e)
@@ -210,7 +210,7 @@ namespace DigitalProductionProgram.OrderManagement
                     list.Add(reader[0].ToString());
             }
 
-            using var item = new Choose_Item(list, new Control[] { tb_TemplateName }, false, false, true);
+            using var item = new Choose_Item(list, ctrls: [tb_TemplateName]);
             item.ShowDialog();
         }
 

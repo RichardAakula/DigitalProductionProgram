@@ -106,7 +106,7 @@ namespace DigitalProductionProgram.OrderManagement
                 }
             }
 
-            using var choose_Item = new Choose_Item(list, new Control[] {tb_ArtikelNr}, false);
+            using var choose_Item = new Choose_Item(list, ctrls:[tb_ArtikelNr]);
             choose_Item.ShowDialog();
         }
         private void ArtikelNr_Leave(object sender, EventArgs e)

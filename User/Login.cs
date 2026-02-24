@@ -435,7 +435,7 @@ namespace DigitalProductionProgram.User
         private void Users_Click(object sender, EventArgs e)
         {
             var ctrl = (Control)sender;
-            using var choose_Item = new Choose_Item(Person.List_Users(false), new[] { ctrl }, false);
+            using var choose_Item = new Choose_Item(Person.List_Users(false), ctrls: [ ctrl ]);
             choose_Item.ShowDialog();
         }
         private void AnstNr_KeyPress(object sender, KeyPressEventArgs e)

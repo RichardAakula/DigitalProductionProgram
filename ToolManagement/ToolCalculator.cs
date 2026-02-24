@@ -148,7 +148,7 @@ namespace DigitalProductionProgram.ToolManagement
             Control[] controls = { tb_Operation };
             var ops = Monitor.Monitor.List_Operations(tb_OrderNr.Text, null);
             IEnumerable<string?> opsStrings = ops.Select(op => $"{op.Operation} - {op.Description}");
-            var chooseOperation = new Choose_Item(opsStrings, controls, false);
+            var chooseOperation = new Choose_Item(opsStrings, ctrls: controls);
             chooseOperation.ShowDialog();
 
         }
@@ -163,13 +163,13 @@ namespace DigitalProductionProgram.ToolManagement
         }
         private void DieType_MouseClick(object sender, MouseEventArgs e)
         {
-            var chooseDieType = new Choose_Item(List_DieType, new Control[]{ tb_DieType }, false);
+            var chooseDieType = new Choose_Item(List_DieType, ctrls: [tb_DieType]);
             chooseDieType.ShowDialog();
 
         }
         private void PinType_MouseClick(object sender, MouseEventArgs e)
         {
-            var chooseDieType = new Choose_Item(List_PinType, new Control[] { tb_PinType }, false);
+            var chooseDieType = new Choose_Item(List_PinType, ctrls: [tb_PinType]);
             chooseDieType.ShowDialog();
         }
         private void ID_OD_TextChanged(object sender, EventArgs e)

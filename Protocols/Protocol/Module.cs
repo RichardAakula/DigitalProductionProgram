@@ -1059,7 +1059,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                 items.Add(LanguageManager.GetString("checkLastOperations"));
                 if (CheckAuthority.IsRoleAuthorized(CheckAuthority.TemplateAuthorities.ChooseFreelyFromListsProtocol, false))
                     isOkWriteText = true;
-                using var choose_Item = new Choose_Item(items, cells, dgv_Module.Rows[row].Cells[0].Value.ToString(), MachineIndex, startup, isOkWriteText, false, IsItemsMultipleColumns);
+                using var choose_Item = new Choose_Item(items, cells:cells, dataBaseColumnName: dgv_Module.Rows[row].Cells[0].Value.ToString(), maskin:MachineIndex, uppstart: startup, isOkReturnOwnText: isOkWriteText, isMultipleColumns: IsItemsMultipleColumns);
                 choose_Item.ShowDialog();
             }
             if (IsOkToSave || isProcesscardUnderManagement)

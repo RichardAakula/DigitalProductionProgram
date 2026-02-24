@@ -196,7 +196,7 @@ namespace DigitalProductionProgram.Processcards
                 reader.Close();
             }
 
-            using var choose_Item = new Choose_Item(list, new Control[] { tb_PartNr }, false);
+            using var choose_Item = new Choose_Item(list, ctrls:[tb_PartNr]);
             choose_Item.ShowDialog();
 
             Order.PartNumber = tb_PartNr.Text;

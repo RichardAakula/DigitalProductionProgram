@@ -370,7 +370,7 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
             {
                 case "Extruder:":
                     items = Machines.Extruders("EXTRUDER", Order.OrderID);
-                    var choose_Item = new Choose_Item(items, new[] { dgv.Rows[e.RowIndex].Cells[e.ColumnIndex] });
+                    var choose_Item = new Choose_Item(items, cells: [dgv.Rows[e.RowIndex].Cells[e.ColumnIndex]]);
                     choose_Item.ShowDialog();
                     dgv.ClearSelection();
                     break;
@@ -398,14 +398,14 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
 
                     if (items != null)
                     {
-                        choose_Item = new Choose_Item(items, new[] { dgv.Rows[e.RowIndex].Cells[e.ColumnIndex] }, null, 0, 0, true);
+                        choose_Item = new Choose_Item(items, cells: [dgv.Rows[e.RowIndex].Cells[e.ColumnIndex]], isOkReturnOwnText:true);
                         choose_Item.ShowDialog();
                     }
 
                     dgv.ClearSelection();
                     break;
                 case "Slang:":
-                    choose_Item = new Choose_Item(new List<string?> { "Skärmad", "Mjuk", "Formar" }, new[] { dgv.Rows[e.RowIndex].Cells[e.ColumnIndex] }, null, 0, 0, false);
+                    choose_Item = new Choose_Item(new List<string?> { "Skärmad", "Mjuk", "Formar" }, cells: [dgv.Rows[e.RowIndex].Cells[e.ColumnIndex]]);
                     choose_Item.ShowDialog();
 
                     break;

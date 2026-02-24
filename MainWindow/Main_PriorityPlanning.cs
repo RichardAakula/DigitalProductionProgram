@@ -413,15 +413,18 @@ namespace DigitalProductionProgram.MainWindow
         }
         private void ProdGrupp_MouseDown(object sender, MouseEventArgs e)
         {
-            var dt = new DataTable();
-            dt.Columns.Add("Item1", typeof(string));
-            dt.Columns.Add("Item2", typeof(string));
+            List<string> headers =
+            [
+                "ProdGrupp",
+                "Benämning"
+            ];
 
+            var items = new List<string>();
             foreach (var kvp in Monitor.Monitor.WorkCenters)
-                dt.Rows.Add(kvp.Key, kvp.Value);
-            dt.Rows.Add(0, "Processkort Ej godkända av QA");
+                items.Add($"{kvp.Key}|{kvp.Value}");
+            items.Add($"0 | Processkort Ej godkända av QA");
 
-            using var choose_Item = new Choose_Item(dt, new Control[] { tb_ProdGrupp, tb_ProdBenämning }, false);
+            using var choose_Item = new Choose_Item(items, [tb_ProdGrupp, tb_ProdBenämning], isMultipleColumns: true, headers: headers);
             choose_Item.ShowDialog();
 
         }

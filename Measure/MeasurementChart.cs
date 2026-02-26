@@ -250,7 +250,7 @@ namespace DigitalProductionProgram.Measure
         private static LineSeries<ObservablePoint> serie_AvgLatestOrder(string codename) =>
             new()
             {
-                Name = $"{LanguageManager.GetString("legendAverageLastOrder")} - {AverageValueLastOrder(codename):F3}",
+                Name = $"{Properties.Resources.legendAverageLastOrder} - {AverageValueLastOrder(codename):F3}",
                 IsVisibleAtLegend = true,
                 Fill = null,
                 GeometryFill = new SolidColorPaint(SKColors.Green), 
@@ -259,7 +259,7 @@ namespace DigitalProductionProgram.Measure
         private static LineSeries<ObservablePoint> serie_AvgPart(string codename) =>
             new()
             {
-                Name = $"{LanguageManager.GetString("legendAverageValuePartNr")} - {AverageValuePartNr(codename):F3}",
+                Name = $"{Properties.Resources.legendAverageValuePartNr} - {AverageValuePartNr(codename):F3}",
                 IsVisibleAtLegend = true,
                 Fill = null,
                 GeometryFill = new SolidColorPaint(SKColors.DeepSkyBlue),
@@ -307,7 +307,7 @@ namespace DigitalProductionProgram.Measure
             {
                 Color = color,
                 StrokeThickness = 2,
-                PathEffect = new DashEffect(new float[] { 16, 1 })
+                PathEffect = new DashEffect([16, 1])
             };
             return stroke;
         }

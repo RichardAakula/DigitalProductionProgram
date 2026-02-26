@@ -192,8 +192,8 @@ namespace DigitalProductionProgram.Measure
         {
             if (IsOkDelete_Mätdon(MeasureInstrument))
             {
-                InfoText.Question($"{LanguageManager.GetString("measureinstrument_Delete_1")} ({MeasureInstrument})?\n" +
-                              $"{LanguageManager.GetString("measureinstrument_Delete_2")}", CustomColors.InfoText_Color.Warning, "Warning!", this);
+                InfoText.Question($"{Properties.Resources.measureinstrument_Delete_1} ({MeasureInstrument})?\n" +
+                              $"{Properties.Resources.measureinstrument_Delete_2}", CustomColors.InfoText_Color.Warning, "Warning!", this);
                 if (InfoText.answer == InfoText.Answer.No)
                     return;
                 using (var con = new SqlConnection(Database.cs_Protocol))
@@ -210,7 +210,7 @@ namespace DigitalProductionProgram.Measure
                 dgv_Mätdon.Rows.RemoveAt(dgv_Mätdon.CurrentCell.RowIndex);
             }
             else
-                InfoText.Show($"{LanguageManager.GetString("measureinstrument_Delete_3")} ({MeasureInstrument}) {LanguageManager.GetString("measureinstrument_Delete_4")}", CustomColors.InfoText_Color.Bad, "Warning", this);
+                InfoText.Show($"{Properties.Resources.measureinstrument_Delete_3} ({MeasureInstrument}) {Properties.Resources.measureinstrument_Delete_4}", CustomColors.InfoText_Color.Bad, "Warning", this);
         }
 
         private void Add_NewMeasureInstrument_Click(object sender, EventArgs e)
@@ -251,7 +251,7 @@ namespace DigitalProductionProgram.Measure
 
         private void Info_Click(object sender, EventArgs e)
         {
-            InfoText.Show($@"{LanguageManager.GetString("measureinstrument_Info").Replace("\\n", Environment.NewLine)}", CustomColors.InfoText_Color.Info, "Info", this);
+            InfoText.Show($@"{Properties.Resources.measureinstrument_Info.Replace("\\n", Environment.NewLine)}", CustomColors.InfoText_Color.Info, "Info", this);
         }
 
        

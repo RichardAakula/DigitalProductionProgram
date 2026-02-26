@@ -187,11 +187,11 @@ namespace DigitalProductionProgram.Protocols.Protocol
         {
             typeof(DataGridView).InvokeMember("DoubleBuffered",
                 BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.SetProperty,
-                null, dgv_Module, new object[] { true });
+                null, dgv_Module, [true]);
 
             dgv_Module.Columns["col_CodeText"].HeaderCell.Style.ForeColor = Color.Black;
             dgv_Module.Columns["col_CodeText"].HeaderCell.Style.Font = new Font("Arial", 8, FontStyle.Bold);
-            dgv_Module.Columns["col_CodeText"].HeaderText = LanguageManager.GetString("col_CodeText_Header");
+            dgv_Module.Columns["col_CodeText"].HeaderText = Properties.Resources.col_CodeText_Header;
         }
 
 
@@ -644,8 +644,8 @@ namespace DigitalProductionProgram.Protocols.Protocol
 
             string toolTipText = cell.Style.BackColor switch
             {
-                var c when c == CustomColors.Bad_Back => $"{LanguageManager.GetString("cell_Protocol_ToolTip_1")}\n{valueText}",
-                var c when c == CustomColors.Warning_Back => $"{LanguageManager.GetString("cell_Protocol_ToolTip_2")}\n{valueText}",
+                var c when c == CustomColors.Bad_Back => $"{Properties.Resources.cell_Protocol_ToolTip_1}\n{valueText}",
+                var c when c == CustomColors.Warning_Back => $"{Properties.Resources.cell_Protocol_ToolTip_2}\n{valueText}",
                 var c when c == CustomColors.Ok_Back => valueText,
                 _ => valueText
             };
@@ -879,8 +879,8 @@ namespace DigitalProductionProgram.Protocols.Protocol
                         case 292:   //OD REGLERING
                         case 326:   //RENGJORT UTRUSTNING
                         case 313:
-                            items.Add(LanguageManager.GetString("yes") ?? string.Empty);
-                            items.Add(LanguageManager.GetString("no") ?? string.Empty);
+                            items.Add(Properties.Resources.yes ?? string.Empty);
+                            items.Add(Properties.Resources.no ?? string.Empty);
                             break;
                         case 80:    //EXTRUDER
                             items = CheckAuthority.IsWorkoperationAuthorized(CheckAuthority.TemplateWorkoperation.ExtruderRegister) ? DigitalProductionProgram.Equipment.Equipment.List_From_Register("Extruder", "Extruder_Skruvar") : Machines.Extruders("EXTRUDER");
@@ -906,7 +906,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                             dgv_Module.Rows[row].Cells[col].Value = datePicker.OutGoingDate;
                             return;
                         case 277: //TORK-TID
-                            items.Add(LanguageManager.GetString("dryingMaterial_1") ?? string.Empty);
+                            items.Add(Properties.Resources.dryingMaterial_1 ?? string.Empty);
                             break;
                         case 301: //HACK/DRAGARE
                             items = DigitalProductionProgram.Equipment.Equipment.List_Equipment_Protocol("HACK/DRAGARE");
@@ -1056,7 +1056,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                     return;
                 if (items.Contains("N/A") == false)
                     items.Add("N/A");
-                items.Add(LanguageManager.GetString("checkLastOperations"));
+                items.Add(Properties.Resources.checkLastOperations);
                 if (CheckAuthority.IsRoleAuthorized(CheckAuthority.TemplateAuthorities.ChooseFreelyFromListsProtocol, false))
                     isOkWriteText = true;
                 using var choose_Item = new Choose_Item(items, cells:cells, dataBaseColumnName: dgv_Module.Rows[row].Cells[0].Value.ToString(), maskin:MachineIndex, uppstart: startup, isOkReturnOwnText: isOkWriteText, totalColumns: TotalColumns);
@@ -1072,7 +1072,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
 
             if (!LineClearance.LineClearance.IsLineClearanceDone)
             {
-                InfoText.Show(LanguageManager.GetString("lineClearance_Info_2"), CustomColors.InfoText_Color.Bad, "Warning", this);
+                InfoText.Show(Properties.Resources.lineClearance_Info_2, CustomColors.InfoText_Color.Bad, "Warning", this);
                 return;
             }
 
@@ -1085,7 +1085,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                 }
             }
             if (!Person.IsUserSignedIn(true))
-                InfoText.Show(LanguageManager.GetString("otherUserIsLoggedIn"), CustomColors.InfoText_Color.Warning, "Warning", this);
+                InfoText.Show(Properties.Resources.otherUserIsLoggedIn, CustomColors.InfoText_Color.Warning, "Warning", this);
         }
         private void SpecialItems(int row, int col, int protocolDescriptionID, bool isProcesscardUnderManagement)
         {
@@ -1500,7 +1500,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                         return;
                     }
                     if (isQuestionAnswered == false)
-                        InfoText.Question(LanguageManager.GetString("equipment_Info_1"), CustomColors.InfoText_Color.Warning, "Warning!", null);
+                        InfoText.Question(Properties.Resources.equipment_Info_1, CustomColors.InfoText_Color.Warning, "Warning!", null);
                     if (InfoText.answer == InfoText.Answer.Yes)
                     {
                         _ = Activity.Stop($"Latest equipment startup is cleared because operator {Person.Name} did not confirm the equipment. User are notified");
@@ -1545,7 +1545,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                     var cell = dgv.Rows[row].Cells[col];
                     if (cell?.Value == null || string.IsNullOrEmpty(cell.Value.ToString()))
                     {
-                        InfoText.Show($"{LanguageManager.GetString("equipment_Info_8")} #{machineIndex} {LanguageManager.GetString("equipment_Info_2")}", CustomColors.InfoText_Color.Warning, "Warning", dgv.Parent);
+                        InfoText.Show($"{Properties.Resources.equipment_Info_8} #{machineIndex} {Properties.Resources.equipment_Info_2}", CustomColors.InfoText_Color.Warning, "Warning", dgv.Parent);
                         if (cell != null)
                             cell.Selected = true;
                         return false;
@@ -1769,7 +1769,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                         {
                             if (IsTorkUK)
                             {
-                                dgv_Protocol.Rows[1].Cells[col].Value = LanguageManager.GetString("dryingMaterial_2");
+                                dgv_Protocol.Rows[1].Cells[col].Value = Properties.Resources.dryingMaterial_2;
                                 dgv_Protocol.Rows[1].Cells[col].Style.BackColor = Color.DimGray;
                                 dgv_Protocol.Rows[1].Cells[col].Style.ForeColor = Color.White;
                             }
@@ -1793,7 +1793,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                         break;
                     case "Torkar material under körningen (UK)":
                     case "Drying material During Extrusion (DE)":
-                        cell.Value = LanguageManager.GetString("dryingMaterial_2");
+                        cell.Value = Properties.Resources.dryingMaterial_2;
                         cell.Style.BackColor = Color.DimGray;
                         cell.Style.ForeColor = Color.White;
                         cell.ReadOnly = true;

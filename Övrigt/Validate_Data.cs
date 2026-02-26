@@ -47,13 +47,13 @@ namespace DigitalProductionProgram.Övrigt
             }
 
             if (maskin == 0)
-                text = $"{namn} - {LanguageManager.GetString("protocol_Info_2")}: {uppstart}";
+                text = $"{namn} - {Properties.Resources.protocol_Info_2}: {uppstart}";
             else
-                text = $"{namn} - {LanguageManager.GetString("machine")}: {maskin} - {LanguageManager.GetString("protocol_Info_2")}: {uppstart}";
+                text = $"{namn} - {Properties.Resources.machine}: {maskin} - {Properties.Resources.protocol_Info_2}: {uppstart}";
 
             //Används för att kontrollera att namn + maskin ej redan finns Meddela Processtekniker Mailet
             if (uppstart == 0 && maskin != 0)
-                text = $"{namn} - {LanguageManager.GetString("machine")}: {maskin}";
+                text = $"{namn} - {Properties.Resources.machine}: {maskin}";
 
             if (uppstart == 0 && maskin == 0)
                 text = $"{namn}";
@@ -560,18 +560,18 @@ namespace DigitalProductionProgram.Övrigt
             string? text;
             if (is_OnlyNomValue)
             {
-                text = $"{LanguageManager.GetString("validateData_Info_2_1")} {Codename} {LanguageManager.GetString("validateData_Info_2_2")}";
+                text = $"{Properties.Resources.validateData_Info_2_1} {Codename} {Properties.Resources.validateData_Info_2_2}";
 
-                rubrik = $"{LanguageManager.GetString("validateData_Info_3_1")} <br />" +
-                         $"{CodeText(codetext, uppstart, maskin)} {LanguageManager.GetString("validateData_Info_3_2")} <br />" +
-                         $"{LanguageManager.GetString("validateData_Info_3_3")}";
+                rubrik = $"{Properties.Resources.validateData_Info_3_1} <br />" +
+                         $"{CodeText(codetext, uppstart, maskin)} {Properties.Resources.validateData_Info_3_2} <br />" +
+                         $"{Properties.Resources.validateData_Info_3_3}";
             }
             else
             {
-                text = $"{LanguageManager.GetString("validateData_Info_4_1")} {Codename} {LanguageManager.GetString("validateData_Info_4_2")}";
-                rubrik = $"{LanguageManager.GetString("validateData_Info_5_1")} <br />" +
-                         $"{Codename} {LanguageManager.GetString("validateData_Info_5_2")} <br />" +
-                         $"{LanguageManager.GetString("validateData_Info_3_3")}";
+                text = $"{Properties.Resources.validateData_Info_4_1} {Codename} {Properties.Resources.validateData_Info_4_2}";
+                rubrik = $"{Properties.Resources.validateData_Info_5_1} <br />" +
+                         $"{Codename} {Properties.Resources.validateData_Info_5_2} <br />" +
+                         $"{Properties.Resources.validateData_Info_3_3}";
             }
 
             InfoText.Show(text, CustomColors.InfoText_Color.Warning,"Warning!", null);
@@ -589,16 +589,16 @@ namespace DigitalProductionProgram.Övrigt
             if (Module.IsOkToSave == false || IsFieldReportedTo_Processtekniker(CodeText(codetext, 0, maskin)) || Monitor.Monitor.factory == Monitor.Monitor.Factory.Holding)
             {
                 if (Module.IsOkToSave)
-                    InfoText.Show(LanguageManager.GetString("validateData_Info_6"), CustomColors.InfoText_Color.Bad, "Warning!");
+                    InfoText.Show(Properties.Resources.validateData_Info_6, CustomColors.InfoText_Color.Bad, "Warning!");
                 return;
             }
 
             if (CheckAuthority.IsRoleAuthorized(CheckAuthority.TemplateAuthorities.ExceedToleranceProcesscard, false))
             {
-                var text = string.Format($"{LanguageManager.GetString("validateData_Info_8")}", Person.Role);
-                var rubrik = $"{LanguageManager.GetString("validateData_Info_7_3")} <br />" +
-                                 $"{CodeText(codetext, uppstart, maskin)} {LanguageManager.GetString("validateData_Info_7_4")} <br />" +
-                                 $"{LanguageManager.GetString("validateData_Info_3_3")}";
+                var text = string.Format($"{Properties.Resources.validateData_Info_8}", Person.Role);
+                var rubrik = $"{Properties.Resources.validateData_Info_7_3} <br />" +
+                                 $"{CodeText(codetext, uppstart, maskin)} {Properties.Resources.validateData_Info_7_4} <br />" +
+                                 $"{Properties.Resources.validateData_Info_3_3}";
                 
                 InfoText.Question(text, CustomColors.InfoText_Color.Bad, "Warning");
                 if (InfoText.answer == InfoText.Answer.Yes)
@@ -613,10 +613,10 @@ namespace DigitalProductionProgram.Övrigt
             }
             else
             {
-                var text = $"{LanguageManager.GetString("validateData_Info_9_1")}";
-                var rubrik = $"{LanguageManager.GetString("validateData_Info_9_2")} <br />" +
-                                 $"{CodeText(codetext, uppstart, maskin)} {LanguageManager.GetString("validateData_Info_9_3")} <br />" +
-                                 $"{LanguageManager.GetString("validateData_Info_3_3")}";
+                var text = $"{Properties.Resources.validateData_Info_9_1}";
+                var rubrik = $"{Properties.Resources.validateData_Info_9_2} <br />" +
+                                 $"{CodeText(codetext, uppstart, maskin)} {Properties.Resources.validateData_Info_9_3} <br />" +
+                                 $"{Properties.Resources.validateData_Info_3_3}";
                
 
                 InfoText.Show(text, CustomColors.InfoText_Color.Bad, "Warning!");
@@ -710,7 +710,7 @@ namespace DigitalProductionProgram.Övrigt
             if (dgv.Parent != null)
                 control = dgv.Parent;
             
-            InfoText.Show(LanguageManager.GetString("validateData_Info_1"), CustomColors.InfoText_Color.Warning, "Warning!", control);
+            InfoText.Show(Properties.Resources.validateData_Info_1, CustomColors.InfoText_Color.Warning, "Warning!", control);
             if (dgv != null)
                 dgv.CurrentCell = dgv.Rows[row].Cells[dgv.CurrentCell.ColumnIndex];
             e.Handled = true;

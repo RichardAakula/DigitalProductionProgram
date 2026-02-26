@@ -1064,7 +1064,7 @@
     <value />
   </data>
   <data name="orderDone_2" xml:space="preserve">
-    <value />
+    <value>on Machine #</value>
   </data>
   <data name="label_Department" xml:space="preserve">
     <value />
@@ -1109,7 +1109,8 @@
     <value />
   </data>
   <data name="saveProcesscard_Info_2" xml:space="preserve">
-    <value />
+    <value>You can't save this revision because it's already signed by QA. 
+Change revision and try to save again. </value>
   </data>
   <data name="label_ChoosePC_Info_1" xml:space="preserve">
     <value />
@@ -2038,5 +2039,111 @@ Please contact IT support if the issue persists.</value>
   </data>
   <data name="label_Header_ActiveOrders" xml:space="preserve">
     <value>Your Active Orders</value>
+  </data>
+  <data name="Warning_OpenMeasureProtocol_1" xml:space="preserve">
+    <value>Close down, Browse old protocols, before opening new Protocol.</value>
+  </data>
+  <data name="Warning_OpenMeasureProtocol_2" xml:space="preserve">
+    <value>You cannot perform measurements until you have chosen HS-Machine in the Protocol.</value>
+  </data>
+  <data name="Warning_OpenMeasureProtocol_3" xml:space="preserve">
+    <value>You cannot perform measurements until Line Clearance is completed and approved by authorized personnel.</value>
+  </data>
+  <data name="Warning_OpenMeasureProtocol_4" xml:space="preserve">
+    <value>You cannot perform measurements until Line Clearance is completed.</value>
+  </data>
+  <data name="Warning_OpenMeasureProtocol_5" xml:space="preserve">
+    <value>You need to initiate an order before doing measurements.</value>
+  </data>
+  <data name="uploadPicture_1" xml:space="preserve">
+    <value>Start/Open an order before you try to upload a picture</value>
+  </data>
+  <data name="uploadPicture_2" xml:space="preserve">
+    <value>Select a picture you want to upload</value>
+  </data>
+  <data name="uploadPicture_3" xml:space="preserve">
+    <value>Picture is saved and can now be seen everytime this partnumber is run.</value>
+  </data>
+  <data name="label_Customer" xml:space="preserve">
+    <value>Customer:</value>
+  </data>
+  <data name="label_OrderNr" xml:space="preserve">
+    <value>OrderNr:</value>
+  </data>
+  <data name="label_OrderStartedBy" xml:space="preserve">
+    <value>Started By:</value>
+  </data>
+  <data name="label_PartNumber" xml:space="preserve">
+    <value>PartNr:</value>
+  </data>
+  <data name="StartOrder" xml:space="preserve">
+    <value>Do you want to start the order:</value>
+  </data>
+  <data name="finishOrder_1" xml:space="preserve">
+    <value>This order is finished, you can´t finish it again. 
+Contact Admin if necessary.</value>
+  </data>
+  <data name="finishOrder_2_1" xml:space="preserve">
+    <value>You have only made</value>
+  </data>
+  <data name="finishOrder_2_2" xml:space="preserve">
+    <value>measurements. QC demands that you do at least 13 measurements</value>
+  </data>
+  <data name="finishOrder_3_1" xml:space="preserve">
+    <value>before you finish the order.</value>
+  </data>
+  <data name="finishOrder_3_2" xml:space="preserve">
+    <value>You have as</value>
+  </data>
+  <data name="finishOrder_3_3" xml:space="preserve">
+    <value>authority to finish the order anyway.</value>
+  </data>
+  <data name="finishOrder_3_4" xml:space="preserve">
+    <value>Do you want to continue finishing the order?</value>
+  </data>
+  <data name="orderDone_1" xml:space="preserve">
+    <value>Fill in</value>
+  </data>
+  <data name="finishOrder_4" xml:space="preserve">
+    <value>Sign in before you finish an order.</value>
+  </data>
+  <data name="finishOrder_MeasureEq_1" xml:space="preserve">
+    <value>Fill in all the measurement equipment numbers in the Measurement protocol</value>
+  </data>
+  <data name="finishOrder_MeasureEq_2" xml:space="preserve">
+    <value>Fill in the measurement equipment number in the Measurement protocol</value>
+  </data>
+  <data name="finishOrder_Halvfabrikat_1" xml:space="preserve">
+    <value>Fill in the batch number for the PreFab in the Protocol</value>
+  </data>
+  <data name="finishOrder_Halvfabrikat_2_1" xml:space="preserve">
+    <value>Fill in which extruder is used for the PreFab with the partnumber</value>
+  </data>
+  <data name="finishOrder_Halvfabrikat_2_2" xml:space="preserve">
+    <value>in the protocol</value>
+  </data>
+  <data name="finishOrder_RoomTemp" xml:space="preserve">
+    <value>Fill in room temperature in Protocol</value>
+  </data>
+  <data name="finishOrder_RoomMoist" xml:space="preserve">
+    <value>Fill in moisture content of room in the Protocol</value>
+  </data>
+  <data name="finishOrder_Comments" xml:space="preserve">
+    <value>Fill in Comments in the protocol</value>
+  </data>
+  <data name="finishOrder_ExtruderCleaned" xml:space="preserve">
+    <value>tick in Cleaned Extruder in the protocol</value>
+  </data>
+  <data name="label_FinishOrder_Header" xml:space="preserve">
+    <value>Order is done</value>
+  </data>
+  <data name="chb_FinishOrder_PrintOrder" xml:space="preserve">
+    <value>Do you want to print the order?</value>
+  </data>
+  <data name="btn_FinishOrder" xml:space="preserve">
+    <value>Finish Order</value>
+  </data>
+  <data name="warningMessage" xml:space="preserve">
+    <value>Warning!</value>
   </data>
 </root>

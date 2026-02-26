@@ -118,7 +118,7 @@ namespace DigitalProductionProgram.MainWindow
             // Lägg till sista "Top10 latest orders"-checkbox
             Add_CheckBox(
                 null,
-                LanguageManager.GetString("top10LatestOrders"),
+                Properties.Resources.top10LatestOrders,
                 IsNoWorkoperationChecked,
                 ref total_height);
 

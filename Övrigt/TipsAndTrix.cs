@@ -16,7 +16,7 @@ namespace DigitalProductionProgram.Övrigt
 
         private void Info_Tips_Trix_Click(object sender, EventArgs e)
         {
-            InfoText.Show(LanguageManager.GetString("tips_Info_1"), CustomColors.InfoText_Color.Info, "Info", this);
+            InfoText.Show(Properties.Resources.tips_Info_1, CustomColors.InfoText_Color.Info, "Info", this);
         }
 
         private void Text_Tips_Trix_MouseDown(object sender, MouseEventArgs e)

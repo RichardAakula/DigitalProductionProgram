@@ -126,7 +126,7 @@ namespace DigitalProductionProgram.Statistics
                             // 🔹 3. Uppdatera progressbar baserat på totalCount
                             ctr++;
                             double progress = totalCount > 0 ? (ctr / (double)totalCount) * 100 : 0;
-                            pbar.Set_ValueProgressBar(ctr, LanguageManager.GetString("loadingProductionlines_1"), progress, true);
+                            pbar.Set_ValueProgressBar(ctr, Properties.Resources.loadingProductionlines_1, progress, true);
 
                             this.Refresh();
                         }
@@ -160,7 +160,7 @@ namespace DigitalProductionProgram.Statistics
                 newProgress = Math.Min(100.0, newProgress);
                 ctr_pBar = (int)newProgress;
 
-                pbar.Set_ValueProgressBar(ctr_pBar, LanguageManager.GetString("loadingProductionlines_2"), newProgress, true);
+                pbar.Set_ValueProgressBar(ctr_pBar, Properties.Resources.loadingProductionlines_2, newProgress, true);
 
                 this.Refresh();
 
@@ -267,7 +267,7 @@ namespace DigitalProductionProgram.Statistics
 
             var lbl2 = new Label
             {
-                Text = LanguageManager.GetString("orderRuntime"),
+                Text = Properties.Resources.orderRuntime,
                 ForeColor = Color.DodgerBlue,
                 Location = new Point(10, y)
             };

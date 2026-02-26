@@ -175,13 +175,13 @@ namespace DigitalProductionProgram.Templates
                     else
                     {
                         tlp_InfoLabels.Visible = false;
-                        label_Header.Text = LanguageManager.GetString("chooseProtocol_1");
+                        label_Header.Text = Properties.Resources.chooseProtocol_1;
                         Add_TemplateName();
                         //label_Green.Visible = label_Brown.Visible = label_Orange.Visible = label_Red.Visible = false;
                     }
                     break;
                 default:
-                    label_Header.Text = LanguageManager.GetString("chooseProtocol_3");
+                    label_Header.Text = Properties.Resources.chooseProtocol_3;
                     Add_MultipleProcesscards(IsOkSelectLatestRev);
                     break;
             }
@@ -477,7 +477,7 @@ ORDER BY ROW_NUMBER() OVER (PARTITION BY PartGroupID ORDER BY TRY_CAST(RevNr AS 
                 return;
             }
 
-            if (btn.Text == $"{LanguageManager.GetString("chooseProcesscard_Info_1")} / ")
+            if (btn.Text == $"{Properties.Resources.chooseProcesscard_Info_1} / ")
             {
                 btn.ForeColor = CustomColors.Ok_Front;
                 btn.BackColor = CustomColors.Ok_Back;

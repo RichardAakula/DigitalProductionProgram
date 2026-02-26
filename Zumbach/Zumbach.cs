@@ -46,11 +46,11 @@ namespace DigitalProductionProgram.Zumbach
 
                 // Steg 2: Uppdatera progress
                 var progress = 10 + (int)((double)(i + 1) / totalRows * 90);  // 10–100%
-                pbar.Set_ValueProgressBar(progress, LanguageManager.GetString("zumbach_Info_3"));
+                pbar.Set_ValueProgressBar(progress, Properties.Resources.zumbach_Info_3);
             }
 
             // Sista steg: Säkerställ att progressen är klar
-            pbar.Set_ValueProgressBar(100, LanguageManager.GetString("done"));
+            pbar.Set_ValueProgressBar(100, string.Empty);
         }
 
         public static DataTable DataTable_Measurements { get; set; } = null!;
@@ -98,10 +98,10 @@ namespace DigitalProductionProgram.Zumbach
                 case 7:
                 case 8:
                 case 9:
-                    return $"{value / 1000000.0:F2} {LanguageManager.GetString("zumbachCounter_1")}";
+                    return $"{value / 1000000.0:F2} {Properties.Resources.zumbachCounter_1}";
                 case 10:
                 case 11:
-                    return $"{value / 1000000000.0:F3}  {LanguageManager.GetString("zumbachCounter_2")}";
+                    return $"{value / 1000000000.0:F3}  {Properties.Resources.zumbachCounter_2}";
 
             }
 

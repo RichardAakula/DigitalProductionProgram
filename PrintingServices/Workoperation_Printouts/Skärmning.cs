@@ -1,18 +1,13 @@
-﻿using System;
-using System.Configuration;
-using System.Data;
-using Microsoft.Data.SqlClient;
-using System.Drawing;
+﻿using System.Data;
 using System.Drawing.Printing;
-using System.Windows.Forms;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.Processcards;
-using static DigitalProductionProgram.PrintingServices.Workoperation_Printouts.Print_Protocol.PrintOut;
 using DigitalProductionProgram.Protocols.Skärmning_TEF;
-using DigitalProductionProgram.Protocols.Template_Management;
 using DigitalProductionProgram.Templates;
+using Microsoft.Data.SqlClient;
+using static DigitalProductionProgram.PrintingServices.Workoperation_Printouts.Print_Protocol.PrintOut;
 
 namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
 {
@@ -30,7 +25,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                 var dt = new DataTable();
                 using var con = new SqlConnection(Database.cs_Protocol);
                 var query =
-                    $"SELECT TextValue AS Machine, MachineIndex FROM [Order].Data WHERE OrderID = @orderid AND ProtocolDescriptionID = 349 GROUP BY TextValue, MachineIndex";
+                    "SELECT TextValue AS Machine, MachineIndex FROM [Order].Data WHERE OrderID = @orderid AND ProtocolDescriptionID = 349 GROUP BY TextValue, MachineIndex";
                 con.Open();
                 var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
@@ -235,7 +230,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                     {
                         case 0://NumberValue
                             int.TryParse(reader["Decimals"].ToString(), out var decimals);
-                            if (double.TryParse(reader["Value"].ToString(), out var NumberValue) == false)
+                            if (!double.TryParse(reader["Value"].ToString(), out var NumberValue))
                                 value = string.Empty;
                             else
                                 value = Processcard.Format_Value(NumberValue, decimals);
@@ -281,7 +276,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                         {
                             case 0://NumberValue
                                 int.TryParse(reader["Decimals"].ToString(), out var decimals);
-                                if (double.TryParse(reader["value"].ToString(), out var NumberValue) == false)
+                                if (!double.TryParse(reader["value"].ToString(), out var NumberValue))
                                     value = string.Empty;
                                 else
                                     value = Processcard.Format_Value(NumberValue, decimals);
@@ -413,7 +408,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                     {
                         case 0://NumberValue
                             int.TryParse(reader["Decimals"].ToString(), out var decimals);
-                            if (double.TryParse(reader["Value"].ToString(), out var NumberValue) == false)
+                            if (!double.TryParse(reader["Value"].ToString(), out var NumberValue))
                                 value = string.Empty;
                             else
                                 value = Processcard.Format_Value(NumberValue, decimals);

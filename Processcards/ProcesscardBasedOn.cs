@@ -78,9 +78,9 @@ namespace DigitalProductionProgram.Processcards
                 if (IsOkShowMessage)
                 {
                     if (ok > 0)
-                        InfoText.Show(LanguageManager.GetString("approve_Processcard_Ok"), CustomColors.InfoText_Color.Ok, null);
+                        InfoText.Show(Properties.Resources.approve_Processcard_Ok, CustomColors.InfoText_Color.Ok, null);
                     else
-                        InfoText.Show(LanguageManager.GetString("approve_Processcard_Error"), CustomColors.InfoText_Color.Bad, "Warning");
+                        InfoText.Show(Properties.Resources.approve_Processcard_Error, CustomColors.InfoText_Color.Bad, "Warning");
                 }
             }
 
@@ -179,17 +179,17 @@ namespace DigitalProductionProgram.Processcards
                return;
             if(rb_FramtagningAvProcessfönster.Checked)
             {
-                InfoText.Show(LanguageManager.GetString("processcardNotNeedSigning"), CustomColors.InfoText_Color.Bad, "Warning!");
+                InfoText.Show(Properties.Resources.processcardNotNeedSigning, CustomColors.InfoText_Color.Bad, "Warning!");
                 return;
             }
             if (!string.IsNullOrEmpty(lbl_QA_Sign.Text))
             {
-                InfoText.Show(LanguageManager.GetString("processcardAlreadySigned"), CustomColors.InfoText_Color.Ok, "Warning!");
+                InfoText.Show(Properties.Resources.processcardAlreadySigned, CustomColors.InfoText_Color.Ok, "Warning!");
                 return;
             }
 
             using var black = new BlackBackground(string.Empty, 80);
-            using var password = new PasswordManager(LanguageManager.GetString("signProcesscardPassword"));
+            using var password = new PasswordManager(Properties.Resources.signProcesscardPassword);
             black.Show();
             password.ShowDialog();
             black.Close();
@@ -207,14 +207,14 @@ namespace DigitalProductionProgram.Processcards
         {
             if (string.IsNullOrEmpty(lbl_UpprättatAv_Sign_AnstNr.Text) == false)
             {               
-                InfoText.Show(LanguageManager.GetString("processcardAlreadyEstablished"), CustomColors.InfoText_Color.Ok, "Warning!");
+                InfoText.Show(Properties.Resources.processcardAlreadyEstablished, CustomColors.InfoText_Color.Ok, "Warning!");
                 return;
             }
             if (Manage_Processcards.IsProcesscardUnderManagement == false)
                 return;
             if (CheckAuthority.IsRoleAuthorized(CheckAuthority.TemplateAuthorities.ManageProcesscards) == false)
                 return;
-            using var password = new PasswordManager(LanguageManager.GetString("signProcesscardPassword"));
+            using var password = new PasswordManager(Properties.Resources.signProcesscardPassword);
             password.ShowDialog();
             if (password.IsOk == false)
                 return;

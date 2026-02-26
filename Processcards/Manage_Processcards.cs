@@ -148,7 +148,7 @@ namespace DigitalProductionProgram.Processcards
                 //Om specifik kontroll av data behövs, tex för FEP. Hämta från Version 3.8.11.2 eller tidigare
                 if (Monitor.Monitor.IsPartNumberExistInMonitor(tb_NewPartNr.Text) == false)
                 {
-                    InfoText.Show($"{LanguageManager.GetString("missingPartNumber_1")} ({tb_NewPartNr.Text}) {LanguageManager.GetString("missingPartNumber_2")}", CustomColors.InfoText_Color.Bad, "Warning!", this);
+                    InfoText.Show($"{Properties.Resources.missingPartNumber_1} ({tb_NewPartNr.Text}) {Properties.Resources.missingPartNumber_2}", CustomColors.InfoText_Color.Bad, "Warning!", this);
                     return false;
                 }
                 Control?[] control = { tb_NewPartNr, ProcesscardBasedOn.lbl_RevNr, ProcesscardBasedOn.lbl_UpprättatAv_Sign_AnstNr, tb_RevInfo };
@@ -157,13 +157,13 @@ namespace DigitalProductionProgram.Processcards
                     if (string.IsNullOrEmpty(ctrl.Text))
                     {
                         ControlValidator.SoftBlink(ctrl, Color.White, Color.Red, 400, 200);
-                        InfoText.Show($"{LanguageManager.GetString("processcard_MissingInfo")}", CustomColors.InfoText_Color.Bad, "Warning!", this);
+                        InfoText.Show($"{Properties.Resources.processcard_MissingInfo}", CustomColors.InfoText_Color.Bad, "Warning!", this);
                         return false;
                     }
                 }
                 if (string.IsNullOrEmpty(cb_MeasureProtocolTemplateName.Text))
                 {
-                    InfoText.Question(LanguageManager.GetString("processcard_MissingInfo_MeasurementTemplate"), CustomColors.InfoText_Color.Warning, "Warning!", this);
+                    InfoText.Question(Properties.Resources.processcard_MissingInfo_MeasurementTemplate, CustomColors.InfoText_Color.Warning, "Warning!", this);
                     if (InfoText.answer == InfoText.Answer.No)
                         return false;
 
@@ -199,8 +199,8 @@ namespace DigitalProductionProgram.Processcards
                 });
 
                 if (hasRows)
-                    InfoText.Show($"{LanguageManager.GetString("saveProcesscard_Info_2_1")} ({tb_NewPartNr.Text}: {ProcesscardBasedOn.lbl_RevNr.Text})\n" +
-                                  $"{LanguageManager.GetString("saveProcesscard_Info_2_2")}", CustomColors.InfoText_Color.Bad, "Warning", this);
+                    InfoText.Show($"{Properties.Resources.saveProcesscard_Info_2_1} ({tb_NewPartNr.Text}: {ProcesscardBasedOn.lbl_RevNr.Text})\n" +
+                                  $"{Properties.Resources.saveProcesscard_Info_2_2}", CustomColors.InfoText_Color.Bad, "Warning", this);
                 return hasRows;
             }
         }
@@ -235,7 +235,7 @@ namespace DigitalProductionProgram.Processcards
                 });
 
                 if (exists)
-                    InfoText.Show(LanguageManager.GetString("processCard_Info_2"), CustomColors.InfoText_Color.Bad, "Warning", this);
+                    InfoText.Show(Properties.Resources.saveProcesscard_Info_2, CustomColors.InfoText_Color.Bad, "Warning", this);
                 return exists;
             }
         }
@@ -369,14 +369,13 @@ namespace DigitalProductionProgram.Processcards
         //-------------------- INITIALIZE GUI --------------------
         private void Translate_Form()
         {
-            label_PartNumber.Text = LanguageManager.GetString("label_PartNumber");
-            label_ProductType.Text = LanguageManager.GetString("label_ProdType");
+            label_PartNumber.Text = Properties.Resources.label_PartNumber;
+            label_ProductType.Text = Properties.Resources.label_ProdType;
 
-            LanguageManager.TranslationHelper.TranslateControls(new Control[]
-            {
+            LanguageManager.TranslationHelper.TranslateControls([
                 btn_ReloadPartNr, chb_HideInactive_PartNr,label_List_PartNr, label_Inactive,  label_ProdLine, label_Info_Prodline, label_Info_TotalLayer, btn_Save_Processcard, btn_DeActivate_PartNr, btn_ClearProcessCard,
                 btn_DeleteProcesscard, label_ProcessCard_ExtraInfo, label_ProtocolTemplateName, label_ProtocolTemplateRevision, label_MeasureProtocolTemplateName
-            });
+            ]);
             ProcesscardBasedOn.Translate_Form();
 
         }
@@ -494,12 +493,12 @@ namespace DigitalProductionProgram.Processcards
         private void Change_UI_Inactive_ArtikelNr()
         {
             label_Inactive.Visible = true;
-            btn_DeActivate_PartNr.Text = LanguageManager.GetString("activatePartNr");
+            btn_DeActivate_PartNr.Text = Properties.Resources.activatePartNr;
         }
         private void Change_UI_Active_ArtikelNr()
         {
             label_Inactive.Visible = false;
-            btn_DeActivate_PartNr.Text = LanguageManager.GetString("deactivatePartNr");
+            btn_DeActivate_PartNr.Text = Properties.Resources.deactivatePartNr;
         }
 
         private void Change_UI_Kragning()
@@ -943,19 +942,19 @@ namespace DigitalProductionProgram.Processcards
 
                 if (Is_ProdlineChecked() == false)
                 {
-                    InfoText.Show(LanguageManager.GetString("saveProcesscard_Info_1"), CustomColors.InfoText_Color.Warning, "ProdLine", this);
+                    InfoText.Show(Properties.Resources.saveProcesscard_Info_1, CustomColors.InfoText_Color.Warning, "ProdLine", this);
                     ControlValidator.SoftBlink(tb_ProdLine, Color.Red, Color.Black);
                     return false;
                 }
                 if (Is_ProdTypeChecked == false)
                 {
-                    InfoText.Show(LanguageManager.GetString("saveProcesscard_Info_8"), CustomColors.InfoText_Color.Warning, "ProdType", this);
+                    InfoText.Show(Properties.Resources.saveProcesscard_Info_8, CustomColors.InfoText_Color.Warning, "ProdType", this);
                     ControlValidator.SoftBlink(tb_ProdType, Color.Red, Color.Black);
                     return false;
                 }
                 if (string.IsNullOrEmpty(cb_TemplateRevision.Text))
                 {
-                    InfoText.Show(LanguageManager.GetString("saveProcesscard_Info_9"), CustomColors.InfoText_Color.Warning, string.Empty, this);
+                    InfoText.Show(Properties.Resources.saveProcesscard_Info_9, CustomColors.InfoText_Color.Warning, string.Empty, this);
                     ControlValidator.SoftBlink(cb_TemplateRevision, Color.Red, Color.Black);
                     return false;
                 }
@@ -965,7 +964,7 @@ namespace DigitalProductionProgram.Processcards
 
                 if (!string.IsNullOrEmpty(ProcesscardBasedOn.lbl_QA_Sign.Text))
                 {
-                    InfoText.Show(LanguageManager.GetString("saveProcesscard_Info_2"), CustomColors.InfoText_Color.Warning, "Warning", this);
+                    InfoText.Show(Properties.Resources.saveProcesscard_Info_2, CustomColors.InfoText_Color.Warning, "Warning", this);
                     return false;
                 }
                 return true;
@@ -1049,8 +1048,8 @@ namespace DigitalProductionProgram.Processcards
             if (!IsOk)
                 return;
 
-            InfoText.Show($@"{LanguageManager.GetString("saveProcesscard_Info_3_1")} {tb_NewPartNr.Text}, Revision: {ProcesscardBasedOn.lbl_RevNr.Text}
-{LanguageManager.GetString("saveProcesscard_Info_3_2")}", CustomColors.InfoText_Color.Ok, null, this);
+            InfoText.Show($@"{Properties.Resources.saveProcesscard_Info_3_1} {tb_NewPartNr.Text}, Revision: {ProcesscardBasedOn.lbl_RevNr.Text}
+{Properties.Resources.saveProcesscard_Info_3_2}", CustomColors.InfoText_Color.Ok, null, this);
 
             Load_Processcard_Info();
             Order.PartGroupID = null;
@@ -1098,7 +1097,7 @@ namespace DigitalProductionProgram.Processcards
                 return;
 
 
-            InfoText.Show($"{LanguageManager.GetString("saveProcesscard_Info_4")} {tb_NewPartNr.Text}, revision: {ProcesscardBasedOn.lbl_RevNr.Text}", CustomColors.InfoText_Color.Ok, null, this);
+            InfoText.Show($"{Properties.Resources.saveProcesscard_Info_4} {tb_NewPartNr.Text}, revision: {ProcesscardBasedOn.lbl_RevNr.Text}", CustomColors.InfoText_Color.Ok, null, this);
 
             dgv_Revision.CellEnter -= Revision_CellEnter;
             Load_Processcard_Info();
@@ -1112,7 +1111,7 @@ namespace DigitalProductionProgram.Processcards
 
             if (!IsUpdateProcesscard)
             {
-                InfoText.Show(LanguageManager.GetString("saveProcesscard_Info_5"), CustomColors.InfoText_Color.Warning, "Warning", this);
+                InfoText.Show(Properties.Resources.saveProcesscard_Info_5, CustomColors.InfoText_Color.Warning, "Warning", this);
                 num_NumberOfLayers.Value = 0;
                 return;
             }
@@ -1136,7 +1135,7 @@ namespace DigitalProductionProgram.Processcards
             catch (Exception e)
             {
                 IsOk = false;
-                InfoText.Show(LanguageManager.GetString("saveProcesscard_Info_6"),
+                InfoText.Show(Properties.Resources.saveProcesscard_Info_6,
                     CustomColors.InfoText_Color.Bad, "Warning!");
 
                 if (Person.Role != "SuperAdmin")
@@ -1250,7 +1249,7 @@ namespace DigitalProductionProgram.Processcards
             ProcesscardBasedOn.Reset_ProcesscardStatus();
             IsUpdateProcesscard = false;
             if (Order.PartID > 0 && IsData_Loading == false)
-                InfoText.Show(LanguageManager.GetString("processcard_ChangeProdType"), CustomColors.InfoText_Color.Warning , "Warning", this);
+                InfoText.Show(Properties.Resources.processcard_ChangeProdType, CustomColors.InfoText_Color.Warning , "Warning", this);
         }
         private void ArtikelNr_TextChanged(object sender, EventArgs e)
         {
@@ -1376,16 +1375,16 @@ HS-Machine = {Equipment.Equipment.HS_Machine}", CustomColors.InfoText_Color.Info
             {
                 if (Part.TotalOrdersRun > 0)
                 {
-                    InfoText.Show(LanguageManager.GetString("delete_Processcard_1"), CustomColors.InfoText_Color.Bad, "Warning!", this);
+                    InfoText.Show(Properties.Resources.delete_Processcard_1, CustomColors.InfoText_Color.Bad, "Warning!", this);
                     return;
                 }
-                InfoText.Question($"{LanguageManager.GetString("saveProcesscard_Info_7_1")}\n\n" +
-                                  $"{LanguageManager.GetString("label_PartNumber")} {tb_NewPartNr.Text}\n" +
-                                  $"{LanguageManager.GetString("label_RevNr")} {ProcesscardBasedOn.lbl_RevNr.Text}\n" +
-                                  $"{LanguageManager.GetString("label_ProdLine")} {tb_ProdLine.Text}\n" +
-                                  $"{LanguageManager.GetString("label_ProdType")} {tb_ProdType.Text}\n" +
+                InfoText.Question($"{Properties.Resources.saveProcesscard_Info_7_1}\n\n" +
+                                  $"{Properties.Resources.label_PartNumber} {tb_NewPartNr.Text}\n" +
+                                  $"{Properties.Resources.label_RevNr} {ProcesscardBasedOn.lbl_RevNr.Text}\n" +
+                                  $"{Properties.Resources.label_ProdLine} {tb_ProdLine.Text}\n" +
+                                  $"{Properties.Resources.label_ProdType} {tb_ProdType.Text}\n" +
                                   $"{Order.WorkOperation}\n\n" +
-                                  $"{LanguageManager.GetString("saveProcesscard_Info_7_2")}", CustomColors.InfoText_Color.Warning, "WARNING!", this);
+                                  $"{Properties.Resources.saveProcesscard_Info_7_2}", CustomColors.InfoText_Color.Warning, "WARNING!", this);
                 if (InfoText.answer == InfoText.Answer.Yes)
                     Processcard.DeleteProcesscard(Order.PartID);
 

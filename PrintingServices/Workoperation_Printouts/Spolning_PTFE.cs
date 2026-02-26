@@ -1,15 +1,12 @@
-﻿using DigitalProductionProgram.DatabaseManagement;
+﻿using System.Drawing.Printing;
+using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.Processcards;
 using DigitalProductionProgram.Protocols.Protocol;
-using DigitalProductionProgram.Protocols.Template_Management;
 using DigitalProductionProgram.Templates;
 using DigitalProductionProgram.User;
 using Microsoft.Data.SqlClient;
-using System;
-using System.Drawing.Printing;
-using System.Windows.Forms;
 using static DigitalProductionProgram.PrintingServices.PrintVariables;
 
 namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
@@ -37,14 +34,14 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
         public static async Task PrintPreview_Order(bool IsPrinting)
         {
             Part.SetPartNrSpecial("Spolning Stripes");
-            Print_Protocol.totalPrintOuts = new PrintVariables.TotalPrintOuts
+            Print_Protocol.totalPrintOuts = new TotalPrintOuts
             {
                 PagesSpolning = (int)Math.Ceiling((double)Module.TotalStartUps / 24)
             };
             Print_Protocol.SetHeightMeasureInstruments();
             Print_Protocol.totalPrintOuts.PagesExtraMeasureInstruments = 1;
 
-            PrintVariables.CommentIndex = 0;
+            CommentIndex = 0;
 
             Measureprotocol.FirstRowMeasurment = 1;
             Measureprotocol.LastRowMeasurement = Measureprotocol.TotalRowsMeasureprotocolPrintOut;
@@ -54,7 +51,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
 
             Print_Protocol.Set_DefaultPaperSize(Print, true);
 
-            PrintVariables.Active_PrintOut = 1;
+            Active_PrintOut = 1;
             // Print Out Protocol
             Start = 0;
             var antal_Utskrifter = Print_Protocol.totalPrintOuts.PagesSpolning;
@@ -66,7 +63,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                     Preview_Protocol.ShowDialog();
                 Start += 24;
                 if (i < antal_Utskrifter)
-                    PrintVariables.Active_PrintOut ++;
+                    Active_PrintOut ++;
             }
             //Skrivet ut Mätdon
             if (Print_Protocol.Height_MeasureInstruments > 0)
@@ -140,7 +137,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                 {
                     int.TryParse(reader["ColumnIndex"].ToString(), out var ColumnIndex);
                     var codetext = reader["codetext"].ToString();
-                    if (Part.IsPartNrSpecial == false)
+                    if (!Part.IsPartNrSpecial)
                     {
                         if (ColumnIndex > 6 && ColumnIndex < 11)
                             continue;
@@ -195,7 +192,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                     {
                         case 0:
                             int.TryParse(reader["Decimals"].ToString(), out var decimals);
-                            if (double.TryParse(reader["Value"].ToString(), out var NumberValue) == false)
+                            if (!double.TryParse(reader["Value"].ToString(), out var NumberValue))
                                 value = string.Empty;
                             else
                                 value = Processcard.Format_Value(NumberValue, decimals);
@@ -207,7 +204,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                             value = "\u221A";
                             break;
                         case 3:
-                            if (DateTime.TryParse(reader["TextValue"].ToString(), out var date) == false)
+                            if (!DateTime.TryParse(reader["TextValue"].ToString(), out var date))
                                 break;
                             if (date.TimeOfDay.TotalSeconds == 0)
                                 value = date.ToString("yyyy-MM-dd");
@@ -216,7 +213,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                             break;
                     }
 
-                    if (Part.IsPartNrSpecial == false)
+                    if (!Part.IsPartNrSpecial)
                     {
                         if (ColumnIndex is > 6 and < 11)
                             continue;

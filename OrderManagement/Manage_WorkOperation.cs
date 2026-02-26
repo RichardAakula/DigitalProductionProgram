@@ -299,7 +299,7 @@ namespace DigitalProductionProgram.OrderManagement
             //Om Ordern ej finns tidigare laddas WorkOperation baserat på Prodlinje
             if (IsUserChooseArbOperation == false)
                 return WorkOperations.Nothing;
-            InfoText.Show($"{LanguageManager.GetString("workoperations_Info_1_1")} ({prodline}) {LanguageManager.GetString("workoperations_Info_1_2")}", CustomColors.InfoText_Color.Warning, "Warning!", null);
+            InfoText.Show($"{Properties.Resources.workoperations_Info_1_1} ({prodline}) {Properties.Resources.workoperations_Info_1_2}", CustomColors.InfoText_Color.Warning, "Warning!", null);
             using var WorkOperation = new Manage_WorkOperation();
             WorkOperation.ShowDialog();
             return Order.WorkOperation;

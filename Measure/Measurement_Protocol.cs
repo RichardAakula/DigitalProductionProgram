@@ -77,7 +77,7 @@ namespace DigitalProductionProgram.Measure
             {
                 if (IsSomeValueBad)
                 {
-                    InfoText.Question(LanguageManager.GetString("measureprotocol_Warning_1"), CustomColors.InfoText_Color.Bad, "Warning", this);
+                    InfoText.Question(Properties.Resources.measureprotocol_Warning_1, CustomColors.InfoText_Color.Bad, "Warning", this);
                     return InfoText.answer != InfoText.Answer.No;
                 }
                 if (IsTransferInEditMode)
@@ -86,7 +86,7 @@ namespace DigitalProductionProgram.Measure
                 Control? control = null;
                 foreach (Control? ctrl in flp_InputControls.Controls)
                 {
-                    if (Part.IsPartNrSpecial && (ctrl == InputControl(flp_InputControls, new[] { "ID" }) || ctrl == InputControl(flp_InputControls, new[] { "OD" }) || ctrl == InputControl(flp_InputControls, new[] { "Wall" })))
+                    if (Part.IsPartNrSpecial && (ctrl == InputControl(flp_InputControls, ["ID"]) || ctrl == InputControl(flp_InputControls, ["OD"]) || ctrl == InputControl(flp_InputControls, new[] { "Wall" })))
                         continue;
 
                     if (ctrl is IMandatoryControl isMandatoryControl)
@@ -106,7 +106,7 @@ namespace DigitalProductionProgram.Measure
 
                 if (IsOk)
                     return true;
-                InfoText.Show(LanguageManager.GetString("measureprotocol_Info_6").Replace("\\n", Environment.NewLine), CustomColors.InfoText_Color.Bad, "Error!");
+                InfoText.Show(Properties.Resources.measureprotocol_Info_6.Replace("\\n", Environment.NewLine), CustomColors.InfoText_Color.Bad, "Error!");
                 ControlValidator.SoftBlink(control, CustomColors.Bad_Front, Color.White, 200, 200);
                 return false;
             }
@@ -117,13 +117,13 @@ namespace DigitalProductionProgram.Measure
             {
                 if (InputControl(flp_InputControls, new[] { "Position" }).Text == "0")
                 {
-                    InfoText.Show(LanguageManager.GetString("measureprotocol_Info_7"), CustomColors.InfoText_Color.Bad, "Warning", this);
+                    InfoText.Show(Properties.Resources.measureprotocol_Info_7, CustomColors.InfoText_Color.Bad, "Warning", this);
                     ControlValidator.SoftBlink(InputControl(flp_InputControls, new[] { "Position" }), CustomColors.Warning_Back, CustomColors.Warning_Front, 200);
                     return false;
                 }
                 if (string.IsNullOrEmpty(InputControl(flp_InputControls, new[] { "Length" }).Text) || InputControl(flp_InputControls, new[] { "Length" }).Text == "N/A")
                 {
-                    InfoText.Show(LanguageManager.GetString("measureprotocol_Info_8"), CustomColors.InfoText_Color.Bad, "Warning", this);
+                    InfoText.Show(Properties.Resources.measureprotocol_Info_8, CustomColors.InfoText_Color.Bad, "Warning", this);
                     ControlValidator.SoftBlink(InputControl(flp_InputControls, new[] { "Length" }), CustomColors.Warning_Back, CustomColors.Warning_Front, 200);
                     return false;
                 }
@@ -132,11 +132,11 @@ namespace DigitalProductionProgram.Measure
                 {
                     if (!string.IsNullOrEmpty(control.Text))
                     {
-                        InfoText.Show(LanguageManager.GetString("measureprotocol_Info_9"), CustomColors.InfoText_Color.Bad, "Warning", this);
+                        InfoText.Show(Properties.Resources.measureprotocol_Info_9, CustomColors.InfoText_Color.Bad, "Warning", this);
                         return false;
                     }
                 }
-                if (!Person.IsPasswordOk(LanguageManager.GetString("measureprotocol_Info_10")))
+                if (!Person.IsPasswordOk(Properties.Resources.measureprotocol_Info_10))
                     return false;
                 return true;
             }
@@ -192,14 +192,14 @@ namespace DigitalProductionProgram.Measure
                 case Manage_WorkOperation.WorkOperations.Synergy_PTFE_K18:
                     if (LineClearance.IsLineClearanceApproved == false)
                     {
-                        InfoText.Show(LanguageManager.GetString("Warning_OpenMeasureProtocol_3"), CustomColors.InfoText_Color.Bad, null);
+                        InfoText.Show(Properties.Resources.Warning_OpenMeasureProtocol_3, CustomColors.InfoText_Color.Bad, null);
                         Lock_Protocol();
                     }
                     break;
                 default:
                     if (Order.IsOrderDone == false && LineClearance.IsLineClearanceDone == false)
                     {
-                        InfoText.Show(LanguageManager.GetString("Warning_OpenMeasureProtocol_4"), CustomColors.InfoText_Color.Bad, null);
+                        InfoText.Show(Properties.Resources.Warning_OpenMeasureProtocol_4, CustomColors.InfoText_Color.Bad, null);
                         Lock_Protocol();
                     }
                     break;
@@ -214,13 +214,12 @@ namespace DigitalProductionProgram.Measure
 
         private void Translate_Form()
         {
-            Text = LanguageManager.GetString("Measurement_Protocol");
+            Text = Properties.Resources.Measurement_Protocol;
 
-            LanguageManager.TranslationHelper.TranslateControls(new Control[]
-            {
+            LanguageManager.TranslationHelper.TranslateControls([
                 label_Customer, label_Description, label_OrderNr, label_PartNumber, label_Ok, label_Fail, label_Warning, label_Felskrivning, label_Discarded, btn_Clear_HelpInput_1,
                 btn_Clear_HelpInput_2, btn_TransferLengthMeasure, btn_TransferMeasurement, btn_EditBag, btn_EditAmount, btn_Discard, btn_TransferToExcel, label_TotalMeasureMents, label_DiscardedMeasurements
-            });
+            ]);
             measureInstrument.Translate_Form();
         }
         private void Load_FROM_Korprotokoll_Main()
@@ -592,7 +591,7 @@ namespace DigitalProductionProgram.Measure
 
             if (IsOkSaveData == false)
                 return;
-            if (!Person.IsPasswordOk(LanguageManager.GetString("measureprotocol_Info_2")))
+            if (!Person.IsPasswordOk(Properties.Resources.measureprotocol_Info_2))
                 return;
 
             
@@ -645,7 +644,7 @@ namespace DigitalProductionProgram.Measure
         {
             if (dgv_Measurements.SelectedRows.Count < 1)
             {
-                InfoText.Show(LanguageManager.GetString("measureprotocol_Info_3"), CustomColors.InfoText_Color.Bad, "Warning", this);
+                InfoText.Show(Properties.Resources.measureprotocol_Info_3, CustomColors.InfoText_Color.Bad, "Warning", this);
                 return;
             }
 
@@ -658,7 +657,7 @@ namespace DigitalProductionProgram.Measure
                 chooseErrorCode.ShowDialog();
                 if (string.IsNullOrEmpty(chooseErrorCode.ErrorCode) || string.IsNullOrEmpty(chooseErrorCode.Comment))
                 {
-                    InfoText.Show(LanguageManager.GetString("measureprotocol_Info_12"), CustomColors.InfoText_Color.Info, LanguageManager.GetString("Warning"));
+                    InfoText.Show(Properties.Resources.measureprotocol_Info_12, CustomColors.InfoText_Color.Info, Properties.Resources.warningMessage);
                     black.Close();
                     return;
                 }
@@ -684,7 +683,7 @@ namespace DigitalProductionProgram.Measure
                     cmd.ExecuteNonQuery();
                 });
 
-                var comment = $"{LanguageManager.GetString("discardedMeasurement_Info_1")} {errorCode} - {chooseErrorCode.Comment}";
+                var comment = $"{Properties.Resources.discardedMeasurement_Info_1} {errorCode} - {chooseErrorCode.Comment}";
                 var bag = dgv_Measurements.Rows[row].Cells["Bag"].Value.ToString();
                 Extra_Comments.Add(bag, comment, Person.EmployeeNr, true, Extra_Comments.Next_Row_ExtraComments);
             }
@@ -1182,7 +1181,7 @@ namespace DigitalProductionProgram.Measure
                     return;
             }
 
-            InfoText.Show(LanguageManager.GetString("measureprotocol_Info_5"), CustomColors.InfoText_Color.Warning, "Warning", this);
+            InfoText.Show(Properties.Resources.measureprotocol_Info_5, CustomColors.InfoText_Color.Warning, "Warning", this);
         }
         private void Calculate_Walls(DataGridView dgv, Type measurementType)
         {

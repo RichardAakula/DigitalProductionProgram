@@ -379,7 +379,7 @@ namespace DigitalProductionProgram.Övrigt
             if (saveFile.ShowDialog() == DialogResult.OK)
             {
                 File.WriteAllText(saveFile.FileName, sb.ToString());
-                InfoText.Question(LanguageManager.GetString("transferDataExcel_1"), CustomColors.InfoText_Color.Info, "Open file?");
+                InfoText.Question(Properties.Resources.transferDataExcel_1, CustomColors.InfoText_Color.Info, "Open file?");
                 if (InfoText.answer == InfoText.Answer.Yes)
                     Process.Start(new ProcessStartInfo
                     {

@@ -234,7 +234,7 @@ namespace DigitalProductionProgram.Zumbach
             Load_COM_Settings();
 
             position = 1;
-            pbar.Set_ValueProgressBar(30, LanguageManager.GetString("zumbach_Info_3"));
+            pbar.Set_ValueProgressBar(30, Properties.Resources.zumbach_Info_3);
             Initialize_Chart();
 
             InitializeGUI_Befattning();
@@ -263,7 +263,7 @@ namespace DigitalProductionProgram.Zumbach
             Control[] controls = { chb_LogData, label_Measurement, btn_DeleteSelectedData, btn_DiscardMeasurement, btn_GetDataOrder, btn_GetDataPartNr, btn_PrintZumbach, chb_AutoPosByte };
             LanguageManager.TranslationHelper.TranslateControls(controls);
 
-            chb_VisaPos1.Text = chb_VisaPos2.Text = chb_VisaPos3.Text = LanguageManager.GetString("zumbach_ShowPosition");
+            chb_VisaPos1.Text = chb_VisaPos2.Text = chb_VisaPos3.Text = Properties.Resources.zumbach_ShowPosition;
         }
         private void Load_COM_Settings()
         {
@@ -385,7 +385,7 @@ namespace DigitalProductionProgram.Zumbach
             int stepper = ZumbachData.Select("Discarded <> true").Length;
             int value = stepper / 90;
 
-            bar.Set_ValueProgressBar(10, $"{LanguageManager.GetString("zumbachLoadData")}");
+            bar.Set_ValueProgressBar(10, $"{Properties.Resources.zumbachLoadData}");
 
             List<(int x, int bag)> bagChangeX = new List<(int x, int bag)>();
 
@@ -426,7 +426,7 @@ namespace DigitalProductionProgram.Zumbach
                         //if (ctr % value == 0)
                         //{
                         //    ctr_step++;
-                        //    bar.Set_ValueProgressBar(ctr_step, $"{LanguageManager.GetString("zumbachLoadData")}");
+                        //    bar.Set_ValueProgressBar(ctr_step, $"{Properties.Resources.zumbachLoadData")}");
                         //}
                        // ctr++;
                   //  }
@@ -574,7 +574,7 @@ namespace DigitalProductionProgram.Zumbach
             ((Form)preview_Chart).WindowState = FormWindowState.Maximized;
 
 
-            Print_Protocol.PrintOut.PageHeader(e, LanguageManager.GetString("print_Header_ZumbachProtocol"), 1);
+            Print_Protocol.PrintOut.PageHeader(e, Properties.Resources.print_Header_ZumbachProtocol, 1);
             Print_Protocol.PrintOut.Order_INFO(e);
             PrintOut_Chart(sender, e);
         }
@@ -633,7 +633,7 @@ namespace DigitalProductionProgram.Zumbach
 
             if (Monitor.Monitor.status == Monitor.Monitor.Status.Bad || ExpOD_LSL == 0 || ExpOD_LSL is null)
             {
-                InfoText.Show(LanguageManager.GetString("missingMeasurePoints"), CustomColors.InfoText_Color.Warning, "Warning!", this);
+                InfoText.Show(Properties.Resources.missingMeasurePoints, CustomColors.InfoText_Color.Warning, "Warning!", this);
 
                 using var addMeasurePoints = new AddMeasurePointsManually();
                 addMeasurePoints.ShowDialog();
@@ -1255,7 +1255,7 @@ namespace DigitalProductionProgram.Zumbach
             Order.Set_IsOrderDone();
             if (Order.IsOrderDone)
             {
-                InfoText.Show(LanguageManager.GetString("zumbach_Info_12"), CustomColors.InfoText_Color.Bad, "Warning!", this);
+                InfoText.Show(Properties.Resources.zumbach_Info_12, CustomColors.InfoText_Color.Bad, "Warning!", this);
                 chb_LogData.Enabled = false;
                 return;
             }
@@ -1267,7 +1267,7 @@ namespace DigitalProductionProgram.Zumbach
                     StartLogData();
                 else
                 {
-                    InfoText.Show(LanguageManager.GetString("zumbach_Info_13"), CustomColors.InfoText_Color.Warning, "Warning!", this);
+                    InfoText.Show(Properties.Resources.zumbach_Info_13, CustomColors.InfoText_Color.Warning, "Warning!", this);
                     Close();
                 }
             }
@@ -1307,7 +1307,7 @@ namespace DigitalProductionProgram.Zumbach
             {
                 IsSaved = true;
                 chb_LogData.Checked = false;
-                InfoText.Show(LanguageManager.GetString("zumbach_Info_5"), CustomColors.InfoText_Color.Warning, "Warning!");
+                InfoText.Show(Properties.Resources.zumbach_Info_5, CustomColors.InfoText_Color.Warning, "Warning!");
                 return;
             }
             Points.Add_Points(1, "Loggar ZumbachData");
@@ -1362,7 +1362,7 @@ namespace DigitalProductionProgram.Zumbach
                 if (totalRows < 50)
                 {
                     InfoText.Question(
-                        $"{LanguageManager.GetString("zumbach_Info_6_1")} {totalRows} {LanguageManager.GetString("zumbach_Info_6_2")}\n{LanguageManager.GetString("zumbach_Info_6_3")}",
+                        $"{Properties.Resources.zumbach_Info_6_1} {totalRows} {Properties.Resources.zumbach_Info_6_2}\n{Properties.Resources.zumbach_Info_6_3}",
                         CustomColors.InfoText_Color.Warning, "Warning!", this);
 
                     IsOkSaveData = InfoText.answer == InfoText.Answer.Yes;
@@ -1532,7 +1532,7 @@ namespace DigitalProductionProgram.Zumbach
                
                 if (IsSeriesEmpty == false && IsSeriesContainsValues == false && int.Parse(lbl_Measurement.Text) > Zumbach.DataTable_Measurements.Rows.Count)
                 {
-                    InfoText.Question(LanguageManager.GetString("zumbach_Info_7"), CustomColors.InfoText_Color.Info, "Warning!", this);
+                    InfoText.Question(Properties.Resources.zumbach_Info_7, CustomColors.InfoText_Color.Info, "Warning!", this);
                     if (InfoText.answer == InfoText.Answer.No)
                         return;
                 }
@@ -1583,7 +1583,7 @@ namespace DigitalProductionProgram.Zumbach
             var max_TempID = int.Parse(foundRows[(int)min_Chart + totalMeasurements - 1]["ID"].ToString());
 
 
-            InfoText.Question($"{LanguageManager.GetString("delete")} {totalMeasurements} {LanguageManager.GetString("zumbach_Info_9_2")} {position} / {LanguageManager.GetString("zumbach_Info_9_3")} {Measurement}?", CustomColors.InfoText_Color.Info, "Warning!", this);
+            InfoText.Question($"{Properties.Resources.delete} {totalMeasurements} {Properties.Resources.zumbach_Info_9_2} {position} / {Properties.Resources.zumbach_Info_9_3} {Measurement}?", CustomColors.InfoText_Color.Info, "Warning!", this);
             if (InfoText.answer == InfoText.Answer.Yes)
             {
                 SaveData.DELETE_Value_Zumbach_Multiple(min_TempID, max_TempID, Measurement, position);
@@ -1596,7 +1596,7 @@ namespace DigitalProductionProgram.Zumbach
         }
         private void DiscardMeasurement_Click(object sender, EventArgs e)
         {
-            InfoText.Question(LanguageManager.GetString("zumbach_DeleteMeasurement"), CustomColors.InfoText_Color.Warning, "Warning!", this);
+            InfoText.Question(Properties.Resources.zumbach_DeleteMeasurement, CustomColors.InfoText_Color.Warning, "Warning!", this);
             if (InfoText.answer == InfoText.Answer.Yes)
                 DiscardMeasureMent(int.Parse(lbl_Measurement.Text));
             Load_Data();
@@ -1624,7 +1624,7 @@ namespace DigitalProductionProgram.Zumbach
         }
         private void Print_Click(object sender, EventArgs e)
         {
-            InfoText.Show(LanguageManager.GetString("zumbach_Info_10"), CustomColors.InfoText_Color.Info, "Info", this);
+            InfoText.Show(Properties.Resources.zumbach_Info_10, CustomColors.InfoText_Color.Info, "Info", this);
             btn_Down_Full.PerformClick();
             TuningZumbachMeasurements.TuneOrder(this);
 

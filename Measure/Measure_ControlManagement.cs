@@ -562,7 +562,7 @@ namespace DigitalProductionProgram.Measure
                 case "PreFab":
                     if (PreFab.DataTable_PreFab(Order.OrderID).Rows.Count <= 0)
                         return;
-                    items = Monitor.Monitor.PreFab_BatchNr(PreFab.DataTable_PreFab(Order.OrderID).Rows[0][LanguageManager.GetString("label_PartNumber")].ToString());
+                    items = Monitor.Monitor.PreFab_BatchNr(PreFab.DataTable_PreFab(Order.OrderID).Rows[0][Properties.Resources.label_PartNumber].ToString());
                     break;
                 case "BatchNr_Skärmad":
                     var partNr = string.Empty;
@@ -570,7 +570,7 @@ namespace DigitalProductionProgram.Measure
                     {
                         if (row["Slang:"].ToString()== "Skärmad")
                         {
-                            partNr = row[$"{LanguageManager.GetString("label_PartNumber")}"].ToString();
+                            partNr = row[$"{Properties.Resources.label_PartNumber}"].ToString();
                             break;
                         }
                     }
@@ -694,7 +694,7 @@ namespace DigitalProductionProgram.Measure
                     var reader = cmd.ExecuteReader();
                     if (reader.HasRows == false)
                     {
-                        InfoText.Show(LanguageManager.GetString("measureprotocol_Info_1"), CustomColors.InfoText_Color.Bad, "Warning!", mp);
+                        InfoText.Show(Properties.Resources.measureprotocol_Info_1, CustomColors.InfoText_Color.Bad, "Warning!", mp);
                         mp.Close();
                         return;
                     }
@@ -747,17 +747,17 @@ namespace DigitalProductionProgram.Measure
                         TotalWidth += width + 1;
                     }
 
-                    Add_Header(mp.flp_Headers, LanguageManager.GetString("empNr"), true, columnIndex + 3, 50);
+                    Add_Header(mp.flp_Headers, Properties.Resources.empNr, true, columnIndex + 3, 50);
                     Add_Label(mp.flp_InputControls, Person.EmployeeNr, columnIndex + 3, 50);
 
                     Add_Header(mp.flp_Headers, "Sign", true, columnIndex + 4, 40);
                     Add_Label(mp.flp_InputControls, Person.Sign, columnIndex + 4, 40);
 
-                    Add_Column_DatagridView(mp.dgv_Measurements, "Date", LanguageManager.GetString("dateTime"), columnIndex + 1, 160);
+                    Add_Column_DatagridView(mp.dgv_Measurements, "Date", Properties.Resources.dateTime, columnIndex + 1, 160);
                     TotalWidth += 161;
-                    Add_Column_DatagridView(mp.dgv_Measurements, "ErrorCode", LanguageManager.GetString("errorCode"), columnIndex + 2, 55);
+                    Add_Column_DatagridView(mp.dgv_Measurements, "ErrorCode", Properties.Resources.errorCode, columnIndex + 2, 55);
                     TotalWidth += 55;
-                    Add_Column_DatagridView(mp.dgv_Measurements, "AnstNr", LanguageManager.GetString("empNr"), columnIndex + 3, 70);
+                    Add_Column_DatagridView(mp.dgv_Measurements, "AnstNr", Properties.Resources.empNr, columnIndex + 3, 70);
                     TotalWidth += 70;
                     Add_Column_DatagridView(mp.dgv_Measurements, "Sign", "Sign", columnIndex + 4, 50);
                     TotalWidth += 51;

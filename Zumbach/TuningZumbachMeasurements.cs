@@ -136,8 +136,8 @@ namespace DigitalProductionProgram.Zumbach
                     {
                         if (MaxMeasurePoints_Measurement(chartZumbach) - MinMeasurePoints_Measurement(chartZumbach) > 150 && MinMeasurePoints_Measurement(chartZumbach) < 100)
                         {
-                            InfoText.Question($"{LanguageManager.GetString("tuneZumbachData_Measurement")}: #{measurement}\n" +
-                                          $"{LanguageManager.GetString("tuneZumbachData_7")} {MaxMeasurePoints_Measurement(chartZumbach) - MinMeasurePoints_Measurement(chartZumbach)} {LanguageManager.GetString("tuneZumbachData_8")}",
+                            InfoText.Question($"{Properties.Resources.tuneZumbachData_Measurement}: #{measurement}\n" +
+                                          $"{Properties.Resources.tuneZumbachData_7} {MaxMeasurePoints_Measurement(chartZumbach) - MinMeasurePoints_Measurement(chartZumbach)} {Properties.Resources.tuneZumbachData_8}",
                                 CustomColors.InfoText_Color.Warning, "Warning!", null);
                             if (InfoText.answer == InfoText.Answer.No)
                                 IsOkTuneData = false;
@@ -225,7 +225,7 @@ namespace DigitalProductionProgram.Zumbach
                 }
                 if (Problem_Iterations > 15000)
                 {
-                    InfoText.Show($"{LanguageManager.GetString("tuneZumbachData_9")}", CustomColors.InfoText_Color.Bad, "Info", chartZumbach);
+                    InfoText.Show($"{Properties.Resources.tuneZumbachData_9}", CustomColors.InfoText_Color.Bad, "Info", chartZumbach);
                     break;
                 }
             } while (chartZumbach.Series[serie].Points.Count > min_Points);
@@ -311,11 +311,11 @@ namespace DigitalProductionProgram.Zumbach
                 //Skrotar mätning om det saknas för mycket data på någon position
                 if (chartZumbach.Series[serie].Points.Count < 100 && chartZumbach.Series[serie].Points.Count > 0)
                 {
-                    InfoText.Question($"{LanguageManager.GetString("tuneZumbachData_Measurement")}: {measureMent}\n" +
+                    InfoText.Question($"{Properties.Resources.tuneZumbachData_Measurement}: {measureMent}\n" +
                                   $"Position {serie + 1}:\n" +
-                                  $"{LanguageManager.GetString("tuneZumbachData_1")} {chartZumbach.Series[serie].Points.Count} {LanguageManager.GetString("tuneZumbachData_Measurepoints")}." +
-                                  $"{LanguageManager.GetString("tuneZumbachData_2")}\n" +
-                                  $"{LanguageManager.GetString("tuneZumbachData_3")}", CustomColors.InfoText_Color.Info, "Warning!");
+                                  $"{Properties.Resources.tuneZumbachData_1} {chartZumbach.Series[serie].Points.Count} {Properties.Resources.tuneZumbachData_Measurepoints}." +
+                                  $"{Properties.Resources.tuneZumbachData_2}\n" +
+                                  $"{Properties.Resources.tuneZumbachData_3}", CustomColors.InfoText_Color.Info, "Warning!");
                     if (InfoText.answer == InfoText.Answer.Yes)
                     {
                         MeasureWithZumbach.DiscardMeasureMent(measureMent);
@@ -331,10 +331,10 @@ namespace DigitalProductionProgram.Zumbach
 
                     if (ctr_Liknande_Point > 60)
                     {
-                        InfoText.Question($"{LanguageManager.GetString("tuneZumbachData_Measurement")}: {measureMent}\n" +
+                        InfoText.Question($"{Properties.Resources.tuneZumbachData_Measurement}: {measureMent}\n" +
                                       $"Position {serie + 1}\n" +
-                                      $"{LanguageManager.GetString("tuneZumbachData_4")} OD = {chartZumbach.Series[serie].Points[point].YValues[0]}\n" +
-                                      $"{LanguageManager.GetString("tuneZumbachData_3")}", CustomColors.InfoText_Color.Info, "Warning!");
+                                      $"{Properties.Resources.tuneZumbachData_4} OD = {chartZumbach.Series[serie].Points[point].YValues[0]}\n" +
+                                      $"{Properties.Resources.tuneZumbachData_3}", CustomColors.InfoText_Color.Info, "Warning!");
                         if (InfoText.answer == InfoText.Answer.Yes)
                         {
                             MeasureWithZumbach.DiscardMeasureMent(measureMent);

@@ -1,20 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using Microsoft.Data.SqlClient;
-using System.Drawing;
-using System.Drawing.Printing;
+﻿using System.Drawing.Printing;
 using System.Globalization;
-using System.Windows.Forms;
-using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.DatabaseManagement;
-using DigitalProductionProgram.Log;
 using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.Measure;
 using DigitalProductionProgram.OrderManagement;
+using DigitalProductionProgram.Processcards;
 using DigitalProductionProgram.Protocols;
-using DigitalProductionProgram.Protocols.Template_Management;
 using DigitalProductionProgram.Templates;
+using Microsoft.Data.SqlClient;
 
 namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
 {
@@ -127,16 +120,16 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
             var pt3 = new Point(PrintVariables.LeftMargin, 148);
             var pt4 = new Point(PrintVariables.MaxPaperWidth, 148);
 
-            Print.Static_InfoText(e, LanguageManager.GetString("label_Customer"), 30, 100);
+            Print.Static_InfoText(e, Properties.Resources.label_Customer, 30, 100);
             Print.Protocol_InfoText(e, Print.utskrift_Korprotokoll["Customer"], false, 100, 100, 500, false, false);
 
-            Print.Static_InfoText(e, LanguageManager.GetString("label_Description"), 30, 130);
+            Print.Static_InfoText(e, Properties.Resources.label_Description, 30, 130);
             Print.Protocol_InfoText(e, Print.utskrift_Korprotokoll["Description"], false, 100, 130, 500, false, false);
 
             Print.Static_InfoText(e, "OrderNr - Operation:", PrintVariables.MaxPaperWidth - 70, 100, true);
             Print.Protocol_InfoText(e,$"{Order.OrderNumber}-{Order.Operation}", false, PrintVariables.MaxPaperWidth - 70, 100, 100, false, false);
 
-            Print.Static_InfoText(e, LanguageManager.GetString("label_PartNumber"), PrintVariables.MaxPaperWidth - 70, 130, true);
+            Print.Static_InfoText(e, Properties.Resources.label_PartNumber, PrintVariables.MaxPaperWidth - 70, 130, true);
             Print.Protocol_InfoText(e, Print.utskrift_Korprotokoll["PartNr"], false, PrintVariables.MaxPaperWidth - 70, 130, 100, false, false);
 
             e.Graphics.DrawLine(CustomFonts.thinBlack, pt1, pt2);
@@ -148,7 +141,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
         public static void Print_MeasureInstruments(PrintPageEventArgs e, int start_Y)
         {
             var y = start_Y;
-            Print.Rubrik(e, LanguageManager.GetString("label_MeasureInstrument_Header"), PrintVariables.LeftMargin, y, PrintVariables.MaxPaperWidth - PrintVariables.LeftMargin);
+            Print.Rubrik(e, Properties.Resources.label_MeasureInstrument_Header, PrintVariables.LeftMargin, y, PrintVariables.MaxPaperWidth - PrintVariables.LeftMargin);
             y += 25;
             using (var con = new SqlConnection(Database.cs_Protocol))
             {
@@ -175,14 +168,14 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
             var dateTimeFormat = CultureInfo.CurrentCulture.DateTimeFormat;
             var formattedDate = date.ToString($"{dateTimeFormat.ShortDatePattern} {dateTimeFormat.ShortTimePattern}", CultureInfo.CurrentCulture);
             
-            e.Graphics.DrawString(LanguageManager.GetString("startDate"), CustomFonts.A11, CustomFonts.black, x_Text1, y - 44);
+            e.Graphics.DrawString(Properties.Resources.startDate, CustomFonts.A11, CustomFonts.black, x_Text1, y - 44);
             Print.Text_Operatör(e, formattedDate, x_Text2, y - 42, 160);
 
             DateTime.TryParse(Print.utskrift_Korprotokoll["Date_Stop"], out date);
             dateTimeFormat = CultureInfo.CurrentCulture.DateTimeFormat;
             formattedDate = date.ToString($"{dateTimeFormat.ShortDatePattern} {dateTimeFormat.ShortTimePattern}", CultureInfo.CurrentCulture);
 
-            e.Graphics.DrawString(LanguageManager.GetString("endDate"), CustomFonts.A11, CustomFonts.black, x_Text1, y - 22);
+            e.Graphics.DrawString(Properties.Resources.endDate, CustomFonts.A11, CustomFonts.black, x_Text1, y - 22);
             Print.Text_Operatör(e, formattedDate, x_Text2, y - 20, 160);
 
 
@@ -233,7 +226,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
             Print.Header_Measureprotocol(e, x, y, width_ErrorCode, height, "Error Code");
             x += 45;
             List_Width.Add(45);
-            Print.Header_Measureprotocol(e, x, y, width_EmplNr, height, LanguageManager.GetString("label_EmpNr"));
+            Print.Header_Measureprotocol(e, x, y, width_EmplNr, height, Properties.Resources.label_EmpNr);
             x += 50;
             List_Width.Add(50);
             Print.Header_Measureprotocol(e, x, y, width_Sign, height, "Sign.");
@@ -309,10 +302,10 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                         {
                             case 0:
                                 int.TryParse(reader["Decimals"].ToString(), out var decimals);
-                                if (double.TryParse(reader["Value"].ToString(), out var NumberValue) == false)
+                                if (!double.TryParse(reader["Value"].ToString(), out var NumberValue))
                                     value = string.Empty;
                                 else
-                                    value = Processcards.Processcard.Format_Value(NumberValue, decimals);
+                                    value = Processcard.Format_Value(NumberValue, decimals);
                                 break;
                             case 1:
                                 value = reader["TextValue"].ToString();

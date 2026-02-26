@@ -25,7 +25,7 @@ namespace DigitalProductionProgram.Protocols
         {
             if (Order.OrderNumber == null || Order.OrderID == null)
             {
-                InfoText.Show(LanguageManager.GetString("error_OrderNotOpen") , CustomColors.InfoText_Color.Bad, "Warning");
+                InfoText.Show(Properties.Resources.error_OrderNotOpen , CustomColors.InfoText_Color.Bad, "Warning");
                 return;
             }
             switch (Order.WorkOperation)

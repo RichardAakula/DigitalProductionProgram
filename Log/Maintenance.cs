@@ -101,7 +101,7 @@ namespace DigitalProductionProgram.Log
                 var hours = Time_Left_Stop.Hours;
                 var minutes = Time_Left_Stop.Minutes;
 
-                return $"{days} {LanguageManager.GetString("maintenanceWork_days")}: {hours} {LanguageManager.GetString("maintenanceWork_hours")}: {minutes} {LanguageManager.GetString("maintenanceWork_minutes")}";
+                return $"{days} {Properties.Resources.maintenanceWork_days}: {hours} {Properties.Resources.maintenanceWork_hours}: {minutes} {Properties.Resources.maintenanceWork_minutes}";
             }
         }
         public static string Time_Ongoing
@@ -111,7 +111,7 @@ namespace DigitalProductionProgram.Log
                 var hours = Time_Ongoing_Maintenance.Hours;
                 var minutes = Time_Ongoing_Maintenance.Minutes;
 
-                return $" {hours} {LanguageManager.GetString("maintenanceWork_hours")}: {minutes} {LanguageManager.GetString("maintenanceWork_minutes")}";
+                return $" {hours} {Properties.Resources.maintenanceWork_hours}: {minutes} {Properties.Resources.maintenanceWork_minutes}";
             }
         }
         public static string PlannedTime
@@ -145,14 +145,14 @@ namespace DigitalProductionProgram.Log
             // 2️⃣ Det finns en nyare version, men klienten får inte uppdatera
             if (latestAllowedVersion < latestVersion && currentVersion >= latestAllowedVersion)
             {
-                InfoText.Show(LanguageManager.GetString("update_Info"), CustomColors.InfoText_Color.Info, "Information");
+                InfoText.Show(Properties.Resources.update_Info, CustomColors.InfoText_Color.Info, "Information");
                 return;
             }
 
             // 3️⃣ Klienten är redan uppdaterad till senaste tillåtna version
             if (currentVersion >= latestAllowedVersion)
             {
-                InfoText.Show(LanguageManager.GetString("update_Info_2"), CustomColors.InfoText_Color.Info, "Information");
+                InfoText.Show(Properties.Resources.update_Info_2, CustomColors.InfoText_Color.Info, "Information");
                 return;
             }
 

@@ -221,7 +221,7 @@ namespace DigitalProductionProgram.MainWindow
             //Monitor.Monitor.Fill_cb_Operation(cb_Operation, Order.OrderNumber);
             if (cb_Operation.Items.Count == 0)
             {
-                InfoText.Show(LanguageManager.GetString("monitorInfo_1"), CustomColors.InfoText_Color.Bad, "Warning", this.Parent);
+                InfoText.Show(Properties.Resources.monitorInfo_1, CustomColors.InfoText_Color.Bad, "Warning", this.Parent);
                 cb_Operation.BackColor = CustomColors.Bad_Back;
             }
             else

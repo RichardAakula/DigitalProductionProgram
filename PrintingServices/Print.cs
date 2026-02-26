@@ -653,18 +653,18 @@ namespace DigitalProductionProgram.PrintingServices
 
         public static void ProductInformation(PrintPageEventArgs e)
         {
-            Rubrik(e, LanguageManager.GetString("productInfo"), PrintVariables.LeftMargin, 89, PrintVariables.MaxPaperWidth - PrintVariables.LeftMargin);
+            Rubrik(e, Properties.Resources.productInfo, PrintVariables.LeftMargin, 89, PrintVariables.MaxPaperWidth - PrintVariables.LeftMargin);
             e.Graphics.DrawRectangle(CustomFonts.thinBlack, PrintVariables.LeftMargin, 111, PrintVariables.MaxPaperWidth - PrintVariables.LeftMargin, 48);
             e.Graphics.DrawRectangle(CustomFonts.thinBlack, 430, 111, 210, 48);
 
             //6 rader, 2 kolumner + 4 kolumner i z-led(djup)
             object[,,] text = {
-                { { LanguageManager.GetString("label_Customer"),      30,  114 }, { utskrift_Korprotokoll["Customer"],       125, 114 } },
-                { { LanguageManager.GetString("label_Description"),   30,  137 }, { utskrift_Korprotokoll["Description"],    125, 137 } },
-                { { LanguageManager.GetString("date"),                435, 114 }, { utskrift_Korprotokoll["Date_Start"],     485, 114 } },
-                { { LanguageManager.GetString("name"),                435, 137 }, { utskrift_Korprotokoll["Name_Start"],     485, 137 } },
-                { { LanguageManager.GetString("label_OrderNr"),       643, 114 }, { Order.OrderNumber,                       703, 114 } },
-                { { LanguageManager.GetString("label_PartNumber"),        643, 137 }, { utskrift_Korprotokoll["PartNr"],         703, 137 } } };
+                { { Properties.Resources.label_Customer,      30,  114 }, { utskrift_Korprotokoll["Customer"],       125, 114 } },
+                { { Properties.Resources.label_Description,   30,  137 }, { utskrift_Korprotokoll["Description"],    125, 137 } },
+                { { Properties.Resources.date,                435, 114 }, { utskrift_Korprotokoll["Date_Start"],     485, 114 } },
+                { { Properties.Resources.name,                435, 137 }, { utskrift_Korprotokoll["Name_Start"],     485, 137 } },
+                { { Properties.Resources.label_OrderNr,       643, 114 }, { Order.OrderNumber,                       703, 114 } },
+                { { Properties.Resources.label_PartNumber,        643, 137 }, { utskrift_Korprotokoll["PartNr"],         703, 137 } } };
 
             for (var x = 0; x < 6; x++)
             {
@@ -684,7 +684,7 @@ namespace DigitalProductionProgram.PrintingServices
             {
                 var fnt = new Font("Arial Narrow", 200);
                 e.Graphics.RotateTransform(55f);
-                e.Graphics.DrawString(LanguageManager.GetString("copy"), fnt, new SolidBrush(Color.FromArgb(100, Color.Gray)), 300, -150);
+                e.Graphics.DrawString(Properties.Resources.copy, fnt, new SolidBrush(Color.FromArgb(100, Color.Gray)), 300, -150);
                 e.Graphics.RotateTransform(-55f);
             }
         }
@@ -694,7 +694,7 @@ namespace DigitalProductionProgram.PrintingServices
             {
                 var fnt = new Font("Arial Narrow", 200);
                 e.Graphics.RotateTransform(35f);
-                e.Graphics.DrawString(LanguageManager.GetString("copy"), fnt, new SolidBrush(Color.FromArgb(100, Color.Gray)), 300, -150);
+                e.Graphics.DrawString(Properties.Resources.copy, fnt, new SolidBrush(Color.FromArgb(100, Color.Gray)), 300, -150);
                 e.Graphics.RotateTransform(-35);
             }
         }
@@ -790,7 +790,7 @@ namespace DigitalProductionProgram.PrintingServices
 
             private static void Header(PrintPageEventArgs e, int x)
             {
-                Rubrik(e, LanguageManager.GetString("btn_ProcesscardBasedOn"), x, PrintVariables.Y, PrintVariables.MaxPaperWidth - PrintVariables.LeftMargin);
+                Rubrik(e, Properties.Resources.btn_ProcesscardBasedOn, x, PrintVariables.Y, PrintVariables.MaxPaperWidth - PrintVariables.LeftMargin);
             }
             private static void CheckBoxes(PrintPageEventArgs e, int x)
             {
@@ -821,8 +821,8 @@ namespace DigitalProductionProgram.PrintingServices
             }
             private static void Info(PrintPageEventArgs e, int x)
             {
-                var estBy = LanguageManager.GetString("label_EstablishedBy");
-                var appBy = LanguageManager.GetString("label_ApprovedBy");
+                var estBy = Properties.Resources.label_EstablishedBy;
+                var appBy = Properties.Resources.label_ApprovedBy;
                 Protocol_InfoText(e, "Rev.Nr:", false, x + 631, PrintVariables.Y + 31, 50, false, false);
                 Protocol_InfoText(e, estBy, false, x + 674 - TextRenderer.MeasureText(estBy, CustomFonts.parametrarFont).Width, PrintVariables.Y + 51, 200, false, false);
                 Protocol_InfoText(e, appBy, false, x + 674 - TextRenderer.MeasureText(appBy, CustomFonts.parametrarFont).Width, PrintVariables.Y + 71, 200, false, false);
@@ -862,7 +862,7 @@ namespace DigitalProductionProgram.PrintingServices
             private static void ApprovedProcesscard(PrintPageEventArgs e, int x)
             {
                 var dateTimeFormat = CultureInfo.CurrentCulture.DateTimeFormat;
-                e.Graphics.DrawString(LanguageManager.GetString("label_ProcesscardApprovedDate"), CustomFonts.M8_B, CustomFonts.black, x + 64, PrintVariables.Y + 80);
+                e.Graphics.DrawString(Properties.Resources.label_ProcesscardApprovedDate, CustomFonts.M8_B, CustomFonts.black, x + 64, PrintVariables.Y + 80);
                 e.Graphics.DrawRectangle(CustomFonts.thinBlack, x + 250, PrintVariables.Y + 80, 120, 15);
                 string date;
                 if (utskrift_Processkort["GodkäntDatum"] == "N/A" || string.IsNullOrEmpty(Order.RevNr))
@@ -899,7 +899,7 @@ namespace DigitalProductionProgram.PrintingServices
             {
                 var rectangle_StartY = PrintVariables.Y;
 
-                e.Graphics.DrawString(LanguageManager.GetString("revisionInfo"), CustomFonts.M8_B, CustomFonts.black, x + 10, PrintVariables.Y + 100);
+                e.Graphics.DrawString(Properties.Resources.revisionInfo, CustomFonts.M8_B, CustomFonts.black, x + 10, PrintVariables.Y + 100);
                 int yStartInnerRectangle = PrintVariables.Y + 115;
                 PrintVariables.Y += 130;
 
@@ -1013,7 +1013,7 @@ namespace DigitalProductionProgram.PrintingServices
         {
             public static void LineClearance_A(PrintPageEventArgs e)
             {
-                e.Graphics.DrawString(LanguageManager.GetString("print_LineClearance_1"), CustomFonts.A9, CustomFonts.black, 305, PrintVariables.Y + 5);
+                e.Graphics.DrawString(Properties.Resources.print_LineClearance_1, CustomFonts.A9, CustomFonts.black, 305, PrintVariables.Y + 5);
                 Print.Thin_Rectangle(e, 391, PrintVariables.Y + 22, 148, 22);
                 Print.Thin_Rectangle(e, 539, PrintVariables.Y + 22, 240, 22);
                 if (DateTime.TryParse(Print.utskrift_Korprotokoll["LC_Date"], out var date))
@@ -1027,7 +1027,7 @@ namespace DigitalProductionProgram.PrintingServices
                 Print.Thin_Rectangle(e, 639, PrintVariables.Y + 44, 70, 25);
                 Print.Thin_Rectangle(e, 709, PrintVariables.Y + 44, 70, 25);
 
-                e.Graphics.DrawString(LanguageManager.GetString("label_RoomTempMoist"), CustomFonts.A8, CustomFonts.black, 541, PrintVariables.Y + 52);
+                e.Graphics.DrawString(Properties.Resources.label_RoomTempMoist, CustomFonts.A8, CustomFonts.black, 541, PrintVariables.Y + 52);
                 Print.Text_Operatör(e, Print.utskrift_Korprotokoll["Rum_Temp"], 653, PrintVariables.Y + 51, 40);
                 e.Graphics.DrawString("C°", CustomFonts.A8, CustomFonts.black, 690, PrintVariables.Y + 52);
                 Print.Text_Operatör(e, Print.utskrift_Korprotokoll["Rum_Fukt"], 719, PrintVariables.Y + 51, 40);
@@ -1039,13 +1039,13 @@ namespace DigitalProductionProgram.PrintingServices
                 e.Graphics.DrawRectangle(CustomFonts.thinBlack, 509, 162, 270, 20);
                 e.Graphics.DrawRectangle(CustomFonts.thinBlack, PrintVariables.LeftMargin, 182, PrintVariables.MaxPaperWidth - PrintVariables.LeftMargin, 19);
 
-                e.Graphics.DrawString(LanguageManager.GetString("print_LineClearance_1"), CustomFonts.A9, CustomFonts.black, 292, 168);
+                e.Graphics.DrawString(Properties.Resources.print_LineClearance_1, CustomFonts.A9, CustomFonts.black, 292, 168);
 
                 if (DateTime.TryParse(Print.utskrift_Korprotokoll["LC_Date"], out var date))
                     e.Graphics.DrawString(date.ToString("yyyy-MM-dd HH:mm"), CustomFonts.operatörFont, CustomFonts.operatör_clr, 390, 168);
                 Print.Text_Operatör(e, Print.utskrift_Korprotokoll["LC_Name"], 512, 168, 500, false, true);
 
-                e.Graphics.DrawString(LanguageManager.GetString("chb_TempKalibCheck"), CustomFonts.A10_B, CustomFonts.black, 26, 183);
+                e.Graphics.DrawString(Properties.Resources.chb_TempKalibCheck, CustomFonts.A10_B, CustomFonts.black, 26, 183);
                 e.Graphics.DrawRectangle(CustomFonts.thinBlack, 405, 185, 12, 12);
                 if (MainInfo_C.Is_TempKalibChecked)
                     e.Graphics.DrawString("\u2714", CustomFonts.A8, CustomFonts.black, 404, 186);

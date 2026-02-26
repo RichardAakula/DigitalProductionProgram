@@ -173,13 +173,13 @@ namespace DigitalProductionProgram.MainWindow
             var fc = Application.OpenForms;
             if (fc.Cast<Form>().Any(frm => frm.Name.Contains("Sökning")))
             {
-                InfoText.Show(LanguageManager.GetString("Warning_OpenMeasureProtocol_1"), CustomColors.InfoText_Color.Warning, null);
+                InfoText.Show(Properties.Resources.Warning_OpenMeasureProtocol_1, CustomColors.InfoText_Color.Warning, null);
                 return;
             }
 
             if (Order.IsOrderDone == false && Order.WorkOperation == Manage_WorkOperation.WorkOperations.Krympslangsblåsning && string.IsNullOrEmpty(Equipment.Equipment.HS_Machine))
             {
-                InfoText.Show(LanguageManager.GetString("Warning_OpenMeasureProtocol_2"), CustomColors.InfoText_Color.Warning, null);
+                InfoText.Show(Properties.Resources.Warning_OpenMeasureProtocol_2, CustomColors.InfoText_Color.Warning, null);
                 return;
             }
             
@@ -207,7 +207,7 @@ namespace DigitalProductionProgram.MainWindow
                 }
             }
             else
-                InfoText.Show(LanguageManager.GetString("Warning_OpenMeasureProtocol_5"), CustomColors.InfoText_Color.Warning, null);
+                InfoText.Show(Properties.Resources.Warning_OpenMeasureProtocol_5, CustomColors.InfoText_Color.Warning, null);
         }
         
         public void F1_MeasureProtocol_Click(object sender, EventArgs? e)
@@ -242,7 +242,7 @@ namespace DigitalProductionProgram.MainWindow
             var fc = Application.OpenForms;
             if (fc.Cast<Form>().Any(frm => frm.Name.Contains("Korprotokoll") || frm.Name.Contains("Protocol") || frm.Name.Contains("Measurement")))
             {
-                InfoText.Show(LanguageManager.GetString("closeProtocols"), CustomColors.InfoText_Color.Warning, null);
+                InfoText.Show(Properties.Resources.closeProtocols, CustomColors.InfoText_Color.Warning, null);
                 return;
             }
 
@@ -263,7 +263,7 @@ namespace DigitalProductionProgram.MainWindow
                     bp.Dispose();
                     break;
                 case Manage_WorkOperation.WorkOperations.Nothing:
-                    var välj = new Choose_WorkOperation_BrowseProtocols_ManageProcesscards( false, false, true,LanguageManager.GetString("browseProtocols"));
+                    var välj = new Choose_WorkOperation_BrowseProtocols_ManageProcesscards( false, false, true,Properties.Resources.browseProtocols);
                     välj.ShowDialog();
                     välj.Dispose();
                     break;
@@ -287,7 +287,7 @@ namespace DigitalProductionProgram.MainWindow
 
             if ((string.IsNullOrEmpty(Order.HS_Pipe_1) || string.IsNullOrEmpty(Order.HS_Pipe_2) || string.IsNullOrEmpty(Order.HS_Pipe_3)) && !Order.IsOrderDone && CheckAuthority.IsWorkoperationAuthorized(CheckAuthority.TemplateWorkoperation.ManufacturesHeatShrink))
             {
-                InfoText.Show(LanguageManager.GetString("zumbach_Info_1"), CustomColors.InfoText_Color.Warning, null);
+                InfoText.Show(Properties.Resources.zumbach_Info_1, CustomColors.InfoText_Color.Warning, null);
                 return;
             }
 
@@ -339,14 +339,14 @@ namespace DigitalProductionProgram.MainWindow
         {
             if (Order.OrderNumber == string.Empty)
             {
-                InfoText.Show(LanguageManager.GetString("uploadPicture_1"), CustomColors.InfoText_Color.Warning, null);
+                InfoText.Show(Properties.Resources.uploadPicture_1, CustomColors.InfoText_Color.Warning, null);
                 return;
             }
 
             using var dlg = new OpenFileDialog
             {
                 Filter = "JPG Files(*.jpg)|*.jpg|GIF Files(*.gif)|*.gif|All Files(*.*)|*.*",
-                Title = LanguageManager.GetString("uploadPicture_2")
+                Title = Properties.Resources.uploadPicture_2
             };
             if (dlg.ShowDialog() == DialogResult.OK)
             {
@@ -369,7 +369,7 @@ namespace DigitalProductionProgram.MainWindow
                     return true;
                 });
 
-                InfoText.Show(LanguageManager.GetString("uploadPicture_3"), CustomColors.InfoText_Color.Info, null);
+                InfoText.Show(Properties.Resources.uploadPicture_3, CustomColors.InfoText_Color.Info, null);
 
                 if (Pictures.Total_Pictures > 0)
                 {

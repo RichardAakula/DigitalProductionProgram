@@ -130,8 +130,7 @@ namespace DigitalProductionProgram.User
                 }
                 catch
                 {
-                    InfoText.Show(LanguageManager.GetString("error_ProfilePicture"),
-                        CustomColors.InfoText_Color.Bad, "Error");
+                    InfoText.Show(Properties.Resources.error_ProfilePicture, CustomColors.InfoText_Color.Bad, "Error");
                     return Properties.Resources.anonym;
                 }
             }) ?? Properties.Resources.anonym; // Om ExecuteSafe returnerar null
@@ -162,7 +161,7 @@ namespace DigitalProductionProgram.User
                 return true;
 
             if (is_Ok_Show_Message)
-                InfoText.Show(LanguageManager.GetString("login_Info_7"), CustomColors.InfoText_Color.Bad, "Warning!");
+                InfoText.Show(Properties.Resources.login_Info_7, CustomColors.InfoText_Color.Bad, "Warning!");
             return false;
 
         }
@@ -429,13 +428,13 @@ namespace DigitalProductionProgram.User
                 cmd.Parameters.AddWithValue("@utbildadVerktyg", "0.0.0.0");
                 var value = cmd.ExecuteNonQuery();
                 if (value < 0)
-                    InfoText.Show($"{name} {LanguageManager.GetString("user_AlreadyInSystem")}", CustomColors.InfoText_Color.Bad, null);
+                    InfoText.Show($"{name} {Properties.Resources.user_AlreadyInSystem}", CustomColors.InfoText_Color.Bad, null);
 
                 if (img != null)
                     Save_ProfilePicture(img, name);
             });
            
-            InfoText.Show($"{name} {LanguageManager.GetString("user_AddedInSystem")}", CustomColors.InfoText_Color.Ok, null);
+            InfoText.Show($"{name} {Properties.Resources.user_AddedInSystem}", CustomColors.InfoText_Color.Ok, null);
         }
         public static void UpdatePassword( string newPassword)
         {

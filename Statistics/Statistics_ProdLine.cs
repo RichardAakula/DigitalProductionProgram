@@ -61,21 +61,21 @@ namespace DigitalProductionProgram.Statistics
 
         private void Translate_Form()
         {
-            LanguageManager.TranslationHelper.TranslateControls(new Control[]{label_ProdLine});
+            LanguageManager.TranslationHelper.TranslateControls([label_ProdLine]);
         }
         private void Fill_dgv()
         {
-            dgv_Text.Columns.Add("Header", LanguageManager.GetString("statsProdLine_Header"));
+            dgv_Text.Columns.Add("Header", Properties.Resources.statsProdLine_Header);
 
-            dgv_Text.Rows.Add(LanguageManager.GetString("statsProdLine_1"));
-            dgv_Text.Rows.Add(LanguageManager.GetString("statsProdLine_2"));
-            dgv_Text.Rows.Add(LanguageManager.GetString("statsProdLine_3"));
-            dgv_Text.Rows.Add(LanguageManager.GetString("statsProdLine_4"));
-            dgv_Text.Rows.Add(LanguageManager.GetString("statsProdLine_5"));
-            dgv_Text.Rows.Add(LanguageManager.GetString("statsProdLine_6"));
-            dgv_Text.Rows.Add(LanguageManager.GetString("statsProdLine_7"));
-            dgv_Text.Rows.Add(LanguageManager.GetString("statsProdLine_8"));
-            dgv_Text.Rows.Add(LanguageManager.GetString("statsProdLine_9"));
+            dgv_Text.Rows.Add(Properties.Resources.statsProdLine_1);
+            dgv_Text.Rows.Add(Properties.Resources.statsProdLine_2);
+            dgv_Text.Rows.Add(Properties.Resources.statsProdLine_3);
+            dgv_Text.Rows.Add(Properties.Resources.statsProdLine_4);
+            dgv_Text.Rows.Add(Properties.Resources.statsProdLine_5);
+            dgv_Text.Rows.Add(Properties.Resources.statsProdLine_6);
+            dgv_Text.Rows.Add(Properties.Resources.statsProdLine_7);
+            dgv_Text.Rows.Add(Properties.Resources.statsProdLine_8);
+            dgv_Text.Rows.Add(Properties.Resources.statsProdLine_9);
         }
 
         private void DataGridView_Text_RowEnter(object sender, DataGridViewCellEventArgs e)
@@ -137,7 +137,7 @@ namespace DigitalProductionProgram.Statistics
         private void Fill_Chart_Vanligaste_Kund()
         {
             
-            chart.Series.Add(LanguageManager.GetString("statsProdLine_1"));
+            chart.Series.Add(Properties.Resources.statsProdLine_1);
             total_Value_Chart = 0;
             using var con = new SqlConnection(Database.cs_Protocol);
             var query = @"SELECT TOP 10 * FROM (
@@ -160,7 +160,7 @@ namespace DigitalProductionProgram.Statistics
         }
         private void Fill_Chart_Vanligaste_ArtikelNr()
         {
-            chart.Series.Add(LanguageManager.GetString("statsProdLine_2"));
+            chart.Series.Add(Properties.Resources.statsProdLine_2);
             total_Value_Chart = 0;
             using (var con = new SqlConnection(Database.cs_Protocol))
             {
@@ -184,7 +184,7 @@ namespace DigitalProductionProgram.Statistics
         }
         private void Fill_Chart_Vanligaste_Material()
         {
-            chart.Series.Add(LanguageManager.GetString("statsProdLine_3"));
+            chart.Series.Add(Properties.Resources.statsProdLine_3);
             total_Value_Chart = 0;
             using (var con = new SqlConnection(Database.cs_Protocol))
             {
@@ -214,7 +214,7 @@ namespace DigitalProductionProgram.Statistics
         }
         private void Fill_Chart_Antal_Ordar_år()
         {
-            chart.Series.Add(LanguageManager.GetString("statsProdLine_4"));
+            chart.Series.Add(Properties.Resources.statsProdLine_4);
             total_Value_Chart = 0;
             var dt = new DataTable();
             dt.Columns.Add("Year");
@@ -253,7 +253,7 @@ namespace DigitalProductionProgram.Statistics
         }
         private void Fill_Chart_Antal_Ordar_månad()
         {
-            chart.Series.Add(LanguageManager.GetString("statsProdLine_5"));
+            chart.Series.Add(Properties.Resources.statsProdLine_5);
             total_Value_Chart = 0;
             var dt = new DataTable();
             dt.Columns.Add("Month");
@@ -294,7 +294,7 @@ namespace DigitalProductionProgram.Statistics
         }
         private void Fill_Chart_Operatör_Line_Clearance()
         {
-            chart.Series.Add(LanguageManager.GetString("statsProdLine_6"));
+            chart.Series.Add(Properties.Resources.statsProdLine_6);
             total_Value_Chart = 0;
             using (var con = new SqlConnection(Database.cs_Protocol))
             {
@@ -318,7 +318,7 @@ namespace DigitalProductionProgram.Statistics
         }
         private void Fill_Chart_Mätningar_Linje()
         {
-            chart.Series.Add(LanguageManager.GetString("statsProdLine_7"));
+            chart.Series.Add(Properties.Resources.statsProdLine_7);
             total_Value_Chart = 0;
             using (var con = new SqlConnection(Database.cs_Protocol))
             {
@@ -346,7 +346,7 @@ namespace DigitalProductionProgram.Statistics
         }
         private void Fill_Chart_MedelTemp_Zoner()
         {
-            chart.Series.Add(LanguageManager.GetString("statsProdLine_8"));
+            chart.Series.Add(Properties.Resources.statsProdLine_8);
             total_Value_Chart = 0;
             if (IsWorkOperation_Extrusion == false)
                 return;
@@ -392,7 +392,7 @@ namespace DigitalProductionProgram.Statistics
      
         private void Fill_Chart_Vanligaste_Storlek_Slang()
         {
-            chart.Series.Add(LanguageManager.GetString("statsProdLine_9"));
+            chart.Series.Add(Properties.Resources.statsProdLine_9);
             total_Value_Chart = 0;
             var descriptionid = MeasureProtocol_DescriptionID;
             if (descriptionid == 0)

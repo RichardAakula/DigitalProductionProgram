@@ -2078,6 +2078,72 @@ Ppk ≥ 2,00 → mycket hög prestanda
 Observera:
 Ppk förutsätter att processen är statistiskt stabil.</value>
   </data>
+  <data name="stringRestartComputer" xml:space="preserve">
+    <value>Vänligen starta om programmet för att aktivera det nya språket.</value>
+  </data>
+  <data name="label_ProdGroup" xml:space="preserve">
+    <value>Prod.grupp:</value>
+  </data>
+  <data name="label_ProductionSchedule" xml:space="preserve">
+    <value>Körplanering</value>
+  </data>
+  <data name="label_Description" xml:space="preserve">
+    <value>Benämning:</value>
+  </data>
+  <data name="label_ProdLine" xml:space="preserve">
+    <value>Produktionslinje</value>
+  </data>
+  <data name="Menu_User" xml:space="preserve">
+    <value>Användare</value>
+  </data>
+  <data name="Menu_User_Authorities" xml:space="preserve">
+    <value>Behörigheter</value>
+  </data>
+  <data name="Menu_User_CheckMyAnalysis" xml:space="preserve">
+    <value>Kolla min Analysis</value>
+  </data>
+  <data name="Menu_User_EditUser" xml:space="preserve">
+    <value>Redigera användare</value>
+  </data>
+  <data name="Menu_User_LogIn" xml:space="preserve">
+    <value>Logga in</value>
+  </data>
+  <data name="Menu_User_LogOut" xml:space="preserve">
+    <value>Logga ut</value>
+  </data>
+  <data name="Menu_User_LogOutUser" xml:space="preserve">
+    <value>Logga ut användare från Protokollet</value>
+  </data>
+  <data name="Menu_User_WhoIsLoggedIn" xml:space="preserve">
+    <value>Vem är inloggad?</value>
+  </data>
+  <data name="label_Header_ActiveOrders" xml:space="preserve">
+    <value>Dina Aktiva Ordrar</value>
+  </data>
+  <data name="Warning_OpenMeasureProtocol_1" xml:space="preserve">
+    <value>Stäng ner Bläddra gamla Körprotokoll före du försöker öppna Körprotokollet.</value>
+  </data>
+  <data name="Warning_OpenMeasureProtocol_2" xml:space="preserve">
+    <value>Du kan inte börja mäta före du valt vilken Krympslangsmaskin du använder på Körprotokollet.</value>
+  </data>
+  <data name="Warning_OpenMeasureProtocol_3" xml:space="preserve">
+    <value>Du kan inte göra mätningar före LineClearance är gjord samt godkänd av behörig personal i Körprotokollet.</value>
+  </data>
+  <data name="Warning_OpenMeasureProtocol_4" xml:space="preserve">
+    <value>Du kan inte göra mätningar före LineClearance är gjord i Körprotokollet.</value>
+  </data>
+  <data name="Warning_OpenMeasureProtocol_5" xml:space="preserve">
+    <value>Du måste starta ordern före du kan fylla i mätprotokollet.</value>
+  </data>
+  <data name="uploadPicture_1" xml:space="preserve">
+    <value>Starta/öppna en order före du försöker ladda upp en bild.</value>
+  </data>
+  <data name="uploadPicture_2" xml:space="preserve">
+    <value>Välj en bild som du vill ladda upp</value>
+  </data>
+  <data name="uploadPicture_3" xml:space="preserve">
+    <value>Bilden har nu sparats och kan ses varje gång denna artikel körs.</value>
+  </data>
   <data name="BrowseOldMeasureprotocol" xml:space="preserve">
     <value>F3-Bläddra i gamla Mätprotokoll</value>
   </data>
@@ -2104,9 +2170,6 @@ Ppk förutsätter att processen är statistiskt stabil.</value>
   </data>
   <data name="Zumbach" xml:space="preserve">
     <value>F6-Zumbach</value>
-  </data>
-  <data name="stringRestartComputer" xml:space="preserve">
-    <value>Vänligen starta om programmet för att aktivera det nya språket.</value>
   </data>
   <data name="Menu_Arkiv" xml:space="preserve">
     <value>Arkiv</value>
@@ -2192,12 +2255,6 @@ Ppk förutsätter att processen är statistiskt stabil.</value>
   <data name="label_Orange" xml:space="preserve">
     <value>Processkort saknas och behöver upprättas.</value>
   </data>
-  <data name="label_ProdGroup" xml:space="preserve">
-    <value>Prod.grupp:</value>
-  </data>
-  <data name="label_ProductionSchedule" xml:space="preserve">
-    <value>Körplanering</value>
-  </data>
   <data name="label_QuickOpenOrder" xml:space="preserve">
     <value>Öppna senast startade order</value>
   </data>
@@ -2237,38 +2294,11 @@ Ppk förutsätter att processen är statistiskt stabil.</value>
   <data name="Menu_Themes" xml:space="preserve">
     <value>Teman</value>
   </data>
-  <data name="Menu_User" xml:space="preserve">
-    <value>Användare</value>
-  </data>
-  <data name="Menu_User_Authorities" xml:space="preserve">
-    <value>Behörigheter</value>
-  </data>
-  <data name="Menu_User_CheckMyAnalysis" xml:space="preserve">
-    <value>Kolla min Analysis</value>
-  </data>
-  <data name="Menu_User_EditUser" xml:space="preserve">
-    <value>Redigera användare</value>
-  </data>
-  <data name="Menu_User_LogIn" xml:space="preserve">
-    <value>Logga in</value>
-  </data>
-  <data name="Menu_User_LogOut" xml:space="preserve">
-    <value>Logga ut</value>
-  </data>
-  <data name="Menu_User_LogOutUser" xml:space="preserve">
-    <value>Logga ut användare från Protokollet</value>
-  </data>
-  <data name="Menu_User_WhoIsLoggedIn" xml:space="preserve">
-    <value>Vem är inloggad?</value>
-  </data>
   <data name="label_Amount" xml:space="preserve">
     <value>Mängd:</value>
   </data>
   <data name="label_Customer" xml:space="preserve">
     <value>Kund:</value>
-  </data>
-  <data name="label_Description" xml:space="preserve">
-    <value>Benämning:</value>
   </data>
   <data name="label_Operation" xml:space="preserve">
     <value>Operation:</value>
@@ -2281,9 +2311,6 @@ Ppk förutsätter att processen är statistiskt stabil.</value>
   </data>
   <data name="label_PartNumber" xml:space="preserve">
     <value>ArtikelNr:</value>
-  </data>
-  <data name="label_ProdLine" xml:space="preserve">
-    <value>Produktionslinje</value>
   </data>
   <data name="label_SignedInMonitor" xml:space="preserve">
     <value>Instämplad Monitor:</value>
@@ -2312,38 +2339,11 @@ Ppk förutsätter att processen är statistiskt stabil.</value>
   <data name="chartSerieMeasurepoints2" xml:space="preserve">
     <value>Avg: Artikel</value>
   </data>
-  <data name="Warning_OpenMeasureProtocol_1" xml:space="preserve">
-    <value>Stäng ner Bläddra gamla Körprotokoll före du försöker öppna Körprotokollet.</value>
-  </data>
-  <data name="Warning_OpenMeasureProtocol_2" xml:space="preserve">
-    <value>Du kan inte börja mäta före du valt vilken Krympslangsmaskin du använder på Körprotokollet.</value>
-  </data>
-  <data name="Warning_OpenMeasureProtocol_3" xml:space="preserve">
-    <value>Du kan inte göra mätningar före LineClearance är gjord samt godkänd av behörig personal i Körprotokollet.</value>
-  </data>
-  <data name="Warning_OpenMeasureProtocol_4" xml:space="preserve">
-    <value>Du kan inte göra mätningar före LineClearance är gjord i Körprotokollet.</value>
-  </data>
-  <data name="Warning_OpenMeasureProtocol_5" xml:space="preserve">
-    <value>Du måste starta ordern före du kan fylla i mätprotokollet.</value>
-  </data>
   <data name="label_Measurepoints" xml:space="preserve">
     <value>Mätpunkter</value>
   </data>
   <data name="label_MeasureInformation" xml:space="preserve">
     <value>Mätinformation</value>
-  </data>
-  <data name="uploadPicture_1" xml:space="preserve">
-    <value>Starta/öppna en order före du försöker ladda upp en bild.</value>
-  </data>
-  <data name="uploadPicture_2" xml:space="preserve">
-    <value>Välj en bild som du vill ladda upp</value>
-  </data>
-  <data name="uploadPicture_3" xml:space="preserve">
-    <value>Bilden har nu sparats och kan ses varje gång denna artikel körs.</value>
-  </data>
-  <data name="label_Header_ActiveOrders" xml:space="preserve">
-    <value>Dina Aktiva Ordrar</value>
   </data>
   <data name="finishOrder_1" xml:space="preserve">
     <value>Denna order är redan avslutad, du kan inte avsluta den igen.
@@ -2483,5 +2483,8 @@ Kontakta Admin vid behov.</value>
   </data>
   <data name="btnZumbach" xml:space="preserve">
     <value>F6-Zumbach-mätning</value>
+  </data>
+  <data name="warningMessage" xml:space="preserve">
+    <value>Varning!</value>
   </data>
 </root>

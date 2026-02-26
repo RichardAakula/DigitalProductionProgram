@@ -74,7 +74,7 @@ namespace DigitalProductionProgram.Protocols.MainInfo
             var tb = (TextBox)sender;
             if (LineClearance.LineClearance.IsLineClearanceDone == false)
             {
-                InfoText.Show(LanguageManager.GetString("lineClearance_Info_2"), CustomColors.InfoText_Color.Warning, "Warning!", this);
+                InfoText.Show(Properties.Resources.lineClearance_Info_2, CustomColors.InfoText_Color.Warning, "Warning!", this);
                 tb.Clear();
                 return;
             }

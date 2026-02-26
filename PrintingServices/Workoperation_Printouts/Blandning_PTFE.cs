@@ -1,14 +1,11 @@
-﻿using System;
-using Microsoft.Data.SqlClient;
-using System.Drawing.Printing;
-using System.Windows.Forms;
+﻿using System.Drawing.Printing;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.Processcards;
 using DigitalProductionProgram.Protocols.Blandning_PTFE;
-using DigitalProductionProgram.Protocols.Template_Management;
 using DigitalProductionProgram.Templates;
+using Microsoft.Data.SqlClient;
 using static DigitalProductionProgram.PrintingServices.Workoperation_Printouts.Print_Protocol.PrintOut;
 
 namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
@@ -108,7 +105,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                     int.TryParse(reader["ColumnIndex"].ToString(), out var ColumnIndex);
                     var codetext = reader["CodeText"].ToString();
                     
-                    if (Part.IsPartNrSpecial == false)
+                    if (!Part.IsPartNrSpecial)
                     {
                         if (ColumnIndex == 4 || ColumnIndex == 6 || ColumnIndex == 9) 
                             continue;
@@ -168,7 +165,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                     {
                         case 0:
                             int.TryParse(reader["Decimals"].ToString(), out var decimals);
-                            if (double.TryParse(reader["value"].ToString(), out var NumberValue) == false)
+                            if (!double.TryParse(reader["value"].ToString(), out var NumberValue))
                                 value = string.Empty;
                             else
                                 value = Processcard.Format_Value(NumberValue, decimals);
@@ -178,7 +175,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                             break;
                     }
 
-                    if (Part.IsPartNrSpecial == false)
+                    if (!Part.IsPartNrSpecial)
                     {
                         if (ColumnIndex == 4 || ColumnIndex == 6 || ColumnIndex == 9)
                             continue;

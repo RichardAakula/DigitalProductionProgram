@@ -782,6 +782,15 @@ namespace DigitalProductionProgram.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Finish Order.
+        /// </summary>
+        public static string btn_FinishOrder {
+            get {
+                return ResourceManager.GetString("btn_FinishOrder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
         public static string btn_GetDataOrder {
@@ -1130,6 +1139,15 @@ namespace DigitalProductionProgram.Properties {
         public static string chb_ChoosePC_AutoChoose {
             get {
                 return ResourceManager.GetString("chb_ChoosePC_AutoChoose", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Do you want to print the order?.
+        /// </summary>
+        public static string chb_FinishOrder_PrintOrder {
+            get {
+                return ResourceManager.GetString("chb_FinishOrder_PrintOrder", resourceCulture);
             }
         }
         
@@ -1772,6 +1790,160 @@ namespace DigitalProductionProgram.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This order is finished, you can´t finish it again. 
+        ///Contact Admin if necessary..
+        /// </summary>
+        public static string finishOrder_1 {
+            get {
+                return ResourceManager.GetString("finishOrder_1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You have only made.
+        /// </summary>
+        public static string finishOrder_2_1 {
+            get {
+                return ResourceManager.GetString("finishOrder_2_1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to measurements. QC demands that you do at least 13 measurements.
+        /// </summary>
+        public static string finishOrder_2_2 {
+            get {
+                return ResourceManager.GetString("finishOrder_2_2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to before you finish the order..
+        /// </summary>
+        public static string finishOrder_3_1 {
+            get {
+                return ResourceManager.GetString("finishOrder_3_1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You have as.
+        /// </summary>
+        public static string finishOrder_3_2 {
+            get {
+                return ResourceManager.GetString("finishOrder_3_2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to authority to finish the order anyway..
+        /// </summary>
+        public static string finishOrder_3_3 {
+            get {
+                return ResourceManager.GetString("finishOrder_3_3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Do you want to continue finishing the order?.
+        /// </summary>
+        public static string finishOrder_3_4 {
+            get {
+                return ResourceManager.GetString("finishOrder_3_4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sign in before you finish an order..
+        /// </summary>
+        public static string finishOrder_4 {
+            get {
+                return ResourceManager.GetString("finishOrder_4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fill in Comments in the protocol.
+        /// </summary>
+        public static string finishOrder_Comments {
+            get {
+                return ResourceManager.GetString("finishOrder_Comments", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to tick in Cleaned Extruder in the protocol.
+        /// </summary>
+        public static string finishOrder_ExtruderCleaned {
+            get {
+                return ResourceManager.GetString("finishOrder_ExtruderCleaned", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fill in the batch number for the PreFab in the Protocol.
+        /// </summary>
+        public static string finishOrder_Halvfabrikat_1 {
+            get {
+                return ResourceManager.GetString("finishOrder_Halvfabrikat_1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fill in which extruder is used for the PreFab with the partnumber.
+        /// </summary>
+        public static string finishOrder_Halvfabrikat_2_1 {
+            get {
+                return ResourceManager.GetString("finishOrder_Halvfabrikat_2_1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to in the protocol.
+        /// </summary>
+        public static string finishOrder_Halvfabrikat_2_2 {
+            get {
+                return ResourceManager.GetString("finishOrder_Halvfabrikat_2_2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fill in all the measurement equipment numbers in the Measurement protocol.
+        /// </summary>
+        public static string finishOrder_MeasureEq_1 {
+            get {
+                return ResourceManager.GetString("finishOrder_MeasureEq_1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fill in the measurement equipment number in the Measurement protocol.
+        /// </summary>
+        public static string finishOrder_MeasureEq_2 {
+            get {
+                return ResourceManager.GetString("finishOrder_MeasureEq_2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fill in moisture content of room in the Protocol.
+        /// </summary>
+        public static string finishOrder_RoomMoist {
+            get {
+                return ResourceManager.GetString("finishOrder_RoomMoist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fill in room temperature in Protocol.
+        /// </summary>
+        public static string finishOrder_RoomTemp {
+            get {
+                return ResourceManager.GetString("finishOrder_RoomTemp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
         public static string form {
@@ -2073,6 +2245,15 @@ namespace DigitalProductionProgram.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Customer:.
+        /// </summary>
+        public static string label_Customer {
+            get {
+                return ResourceManager.GetString("label_Customer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
         public static string label_DateFrom {
@@ -2222,6 +2403,15 @@ namespace DigitalProductionProgram.Properties {
         public static string label_Felskrivning {
             get {
                 return ResourceManager.GetString("label_Felskrivning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Order is done.
+        /// </summary>
+        public static string label_FinishOrder_Header {
+            get {
+                return ResourceManager.GetString("label_FinishOrder_Header", resourceCulture);
             }
         }
         
@@ -2442,11 +2632,38 @@ namespace DigitalProductionProgram.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to OrderNr:.
+        /// </summary>
+        public static string label_OrderNr {
+            get {
+                return ResourceManager.GetString("label_OrderNr", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Started By:.
+        /// </summary>
+        public static string label_OrderStartedBy {
+            get {
+                return ResourceManager.GetString("label_OrderStartedBy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
         public static string label_PartNrNewName {
             get {
                 return ResourceManager.GetString("label_PartNrNewName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PartNr:.
+        /// </summary>
+        public static string label_PartNumber {
+            get {
+                return ResourceManager.GetString("label_PartNumber", resourceCulture);
             }
         }
         
@@ -3975,7 +4192,16 @@ namespace DigitalProductionProgram.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to Fill in.
+        /// </summary>
+        public static string orderDone_1 {
+            get {
+                return ResourceManager.GetString("orderDone_1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to on Machine #.
         /// </summary>
         public static string orderDone_2 {
             get {
@@ -4635,7 +4861,8 @@ namespace DigitalProductionProgram.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to You can&apos;t save this revision because it&apos;s already signed by QA. 
+        ///Change revision and try to save again. .
         /// </summary>
         public static string saveProcesscard_Info_2 {
             get {
@@ -4966,6 +5193,15 @@ namespace DigitalProductionProgram.Properties {
         public static string startDate {
             get {
                 return ResourceManager.GetString("startDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Do you want to start the order:.
+        /// </summary>
+        public static string StartOrder {
+            get {
+                return ResourceManager.GetString("StartOrder", resourceCulture);
             }
         }
         
@@ -5335,6 +5571,33 @@ namespace DigitalProductionProgram.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Start/Open an order before you try to upload a picture.
+        /// </summary>
+        public static string uploadPicture_1 {
+            get {
+                return ResourceManager.GetString("uploadPicture_1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select a picture you want to upload.
+        /// </summary>
+        public static string uploadPicture_2 {
+            get {
+                return ResourceManager.GetString("uploadPicture_2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Picture is saved and can now be seen everytime this partnumber is run..
+        /// </summary>
+        public static string uploadPicture_3 {
+            get {
+                return ResourceManager.GetString("uploadPicture_3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
         public static string user_AddedInSystem {
@@ -5589,6 +5852,51 @@ namespace DigitalProductionProgram.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Close down, Browse old protocols, before opening new Protocol..
+        /// </summary>
+        public static string Warning_OpenMeasureProtocol_1 {
+            get {
+                return ResourceManager.GetString("Warning_OpenMeasureProtocol_1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You cannot perform measurements until you have chosen HS-Machine in the Protocol..
+        /// </summary>
+        public static string Warning_OpenMeasureProtocol_2 {
+            get {
+                return ResourceManager.GetString("Warning_OpenMeasureProtocol_2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You cannot perform measurements until Line Clearance is completed and approved by authorized personnel..
+        /// </summary>
+        public static string Warning_OpenMeasureProtocol_3 {
+            get {
+                return ResourceManager.GetString("Warning_OpenMeasureProtocol_3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You cannot perform measurements until Line Clearance is completed..
+        /// </summary>
+        public static string Warning_OpenMeasureProtocol_4 {
+            get {
+                return ResourceManager.GetString("Warning_OpenMeasureProtocol_4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You need to initiate an order before doing measurements..
+        /// </summary>
+        public static string Warning_OpenMeasureProtocol_5 {
+            get {
+                return ResourceManager.GetString("Warning_OpenMeasureProtocol_5", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
         public static string warning_Testdatabase {
@@ -5614,6 +5922,15 @@ namespace DigitalProductionProgram.Properties {
             get {
                 object obj = ResourceManager.GetObject("Warning2", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Warning!.
+        /// </summary>
+        public static string warningMessage {
+            get {
+                return ResourceManager.GetString("warningMessage", resourceCulture);
             }
         }
         

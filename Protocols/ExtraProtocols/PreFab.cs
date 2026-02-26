@@ -57,10 +57,10 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
                 return null;
 
             // Språksträngar cache:as så de inte anropas 30 gånger i loopen
-            var colPart = LanguageManager.GetString("label_PartNumber");
-            var colDesc = LanguageManager.GetString("label_Description");
-            var colBestBefore = LanguageManager.GetString("preFab_BestBefore");
-            var colBalance = LanguageManager.GetString("preFab_Balance");
+            var colPart = Properties.Resources.label_PartNumber;
+            var colDesc = Properties.Resources.label_Description;
+            var colBestBefore = Properties.Resources.preFab_BestBefore;
+            var colBalance = Properties.Resources.preFab_Balance;
 
             var dt = new DataTable();
             Database.ExecuteSafe(con =>
@@ -124,7 +124,7 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
             {
                 var query = $@"
                     SELECT 
-                        Halvfabrikat_ArtikelNr AS '{LanguageManager.GetString("label_PartNumber")}', 
+                        Halvfabrikat_ArtikelNr AS '{Properties.Resources.label_PartNumber}', 
                         Halvfabrikat_OrderNr AS 'BatchNr:', 
                         Halvfabrikat_ID AS 'ID', 
                         Halvfabrikat_OD AS 'OD', 
@@ -137,15 +137,15 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
                 dt.Load(cmd.ExecuteReader());
             });
 
-            dt.Columns.Add($"{LanguageManager.GetString("preFab_Balance")}");
+            dt.Columns.Add($"{Properties.Resources.preFab_Balance}");
             for (var i = 0; i < dt.Rows.Count; i++)
             {
                 var batchNr = dt.Rows[i]["BatchNr:"].ToString();
-                var artikelnr = dt.Rows[i][LanguageManager.GetString("label_PartNumber")].ToString();
+                var artikelnr = dt.Rows[i][Properties.Resources.label_PartNumber].ToString();
                 if (string.IsNullOrEmpty(batchNr))
-                    dt.Rows[i][$"{LanguageManager.GetString("preFab_Balance")}"] = "N/A";
+                    dt.Rows[i][$"{Properties.Resources.preFab_Balance}"] = "N/A";
                 else
-                    dt.Rows[i][$"{LanguageManager.GetString("preFab_Balance")}"] = $"{Monitor.Monitor.Balance(artikelnr, batchNr):0.00} {Monitor.Monitor.Units(artikelnr)}";
+                    dt.Rows[i][$"{Properties.Resources.preFab_Balance}"] = $"{Monitor.Monitor.Balance(artikelnr, batchNr):0.00} {Monitor.Monitor.Units(artikelnr)}";
             }
             return dt;
         }
@@ -159,7 +159,7 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
                 var query = $@"
                     SELECT 
                         Typ as 'Slang:', 
-                        Halvfabrikat_ArtikelNr AS '{LanguageManager.GetString("label_PartNumber")}', 
+                        Halvfabrikat_ArtikelNr AS '{Properties.Resources.label_PartNumber}', 
                         Halvfabrikat_OrderNr AS 'BatchNr:', 
                         Halvfabrikat_ID AS 'ID', 
                         Halvfabrikat_OD AS 'OD', 
@@ -330,7 +330,7 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
                     break;
                 case Manage_WorkOperation.WorkOperations.Synergy_PTFE_K18:
                     dgv.DataSource = DataTable_PreFab(orderID, IsOkLoadBalance);
-                    dgv.Columns[LanguageManager.GetString("label_Description")].Visible = false;
+                    dgv.Columns[Properties.Resources.label_Description].Visible = false;
                     dgv.Columns["Extruder:"].Visible = false;
                   //  BatchNrColumn = 3;
                     break;
@@ -354,7 +354,7 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
                     return;
             }
             dgv.Columns["TempID"].Visible = false;
-            dgv.Columns[ LanguageManager.GetString("label_PartNumber")].ReadOnly = true;
+            dgv.Columns[ Properties.Resources.label_PartNumber].ReadOnly = true;
             dgv.ClearSelection();
         }
        
@@ -365,7 +365,7 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
                 return;
             List<string?> items;
             var ColumnName = dgv.Columns[e.ColumnIndex].Name;
-            var partNr = dgv.Rows[e.RowIndex].Cells[LanguageManager.GetString("label_PartNumber")].Value.ToString();
+            var partNr = dgv.Rows[e.RowIndex].Cells[Properties.Resources.label_PartNumber].Value.ToString();
             switch (ColumnName)
             {
                 case "Extruder:":
@@ -386,14 +386,14 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
                         byt_BatchNr.ShowDialog();
                         if (string.IsNullOrEmpty(byt_BatchNr.Kommentar))
                         {
-                            InfoText.Show(LanguageManager.GetString("changeBatchNr_Info_1"), CustomColors.InfoText_Color.Info, "Warning", this);
+                            InfoText.Show(Properties.Resources.changeBatchNr_Info_1, CustomColors.InfoText_Color.Info, "Warning", this);
 
                             black.Close();
                             return;
                         }
 
                         black.Close();
-                        DatabaseManagement.SaveData.INSERT_Kommentar_Byte_BatchNr($"{LanguageManager.GetString("changeBatchNr_Info_2")} {byt_BatchNr.Kommentar}");
+                        DatabaseManagement.SaveData.INSERT_Kommentar_Byte_BatchNr($"{Properties.Resources.changeBatchNr_Info_2} {byt_BatchNr.Kommentar}");
                     }
 
                     if (items != null)
@@ -437,12 +437,12 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
                     string? bestBeforeDate = null;
                     var cell_BatchNr = dgv.Rows[row].Cells["BatchNr:"];
                     var batchNr = cell_BatchNr.Value.ToString();
-                    var colName = LanguageManager.GetString("preFab_Balance") ?? string.Empty;
+                    var colName = Properties.Resources.preFab_Balance ?? string.Empty;
                     if (dgv.Columns.Contains(colName))
                     {
-                        var cell_Saldo = dgv.Rows[row].Cells[LanguageManager.GetString("preFab_Balance") ?? string.Empty];
-                        var cell_ArtikelNr = dgv.Rows[row].Cells[LanguageManager.GetString("label_PartNumber") ?? string.Empty];
-                        var columnName = LanguageManager.GetString("preFab_BestBefore");
+                        var cell_Saldo = dgv.Rows[row].Cells[Properties.Resources.preFab_Balance ?? string.Empty];
+                        var cell_ArtikelNr = dgv.Rows[row].Cells[Properties.Resources.label_PartNumber ?? string.Empty];
+                        var columnName = Properties.Resources.preFab_BestBefore;
 
 
                         if (columnName != null && dgv.Columns.Contains(columnName))
@@ -489,7 +489,7 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
         }
         private void CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
-            if (dgv.Columns[e.ColumnIndex].Name == LanguageManager.GetString("preFab_BestBefore"))
+            if (dgv.Columns[e.ColumnIndex].Name == Properties.Resources.preFab_BestBefore)
             {
                 if (DateTime.TryParse(e.Value?.ToString(), out var cellDate))
                 {
@@ -533,7 +533,7 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
         {
             if (dgv.Rows.Count == 0)
                 return;
-            var columnPartNumber = dgv.Columns[LanguageManager.GetString("label_PartNumber")].Name;
+            var columnPartNumber = dgv.Columns[Properties.Resources.label_PartNumber].Name;
             var activeBatchNr = dgv.Rows[dgv.CurrentCell.RowIndex].Cells[columnPartNumber].Value.ToString();
             var tempID = (int)dgv.Rows[dgv.CurrentCell.RowIndex].Cells["TempID"].Value;
             var IsOkDeleteRow = false;
@@ -551,7 +551,7 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
         }
         private void Info_Click(object sender, EventArgs e)
         {
-            InfoText.Show(LanguageManager.GetString("Halvfabrikat_Info_1"), CustomColors.InfoText_Color.Info, "Info", this);
+            InfoText.Show(Properties.Resources.Halvfabrikat_Info_1, CustomColors.InfoText_Color.Info, "Info", this);
         }
 
 

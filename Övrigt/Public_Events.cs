@@ -47,7 +47,7 @@ namespace DigitalProductionProgram.Övrigt
         }
         public static void pb_Info_LineClearance_Click(object sender, EventArgs e)
         {
-            InfoText.Show(LanguageManager.GetString("lineClearance_Info_3"), CustomColors.InfoText_Color.Info, null);
+            InfoText.Show(Properties.Resources.lineClearance_Info_3, CustomColors.InfoText_Color.Info, null);
         }
        
     }

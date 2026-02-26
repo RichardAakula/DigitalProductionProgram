@@ -229,11 +229,11 @@ namespace DigitalProductionProgram.MainWindow
                 Menu_Order_OrderDone.Enabled = true;
             }
             else
-                InfoText.Show(LanguageManager.GetString("editOrder"), CustomColors.InfoText_Color.Bad, "Warning", this);
+                InfoText.Show(Properties.Resources.editOrder, CustomColors.InfoText_Color.Bad, "Warning", this);
         }
         private void Menu_Order_DeleteOrder_ClickAsync(object sender, EventArgs e)
         {
-            InfoText.Question($"{LanguageManager.GetString("delete")} \n\n" +
+            InfoText.Question($"{Properties.Resources.delete} \n\n" +
                               $"OrderNr {Order.OrderNumber}\n" +
                               $"Operation {Order.Operation}?", CustomColors.InfoText_Color.Warning, "Warning!", this);
             if (InfoText.answer != InfoText.Answer.Yes) return;
@@ -250,7 +250,7 @@ namespace DigitalProductionProgram.MainWindow
 
             }
             else
-                InfoText.Show(LanguageManager.GetString("deleteOrder_Info_1"), CustomColors.InfoText_Color.Bad, "Warning", this);
+                InfoText.Show(Properties.Resources.deleteOrder_Info_1, CustomColors.InfoText_Color.Bad, "Warning", this);
 
             _ = Main_FilterQuickOpen.Load_ListAsync(mainForm.dgv_QuickOpen);
             mainForm.cf_PriorityPlanning.Load_PriorityPlanning();
@@ -260,7 +260,7 @@ namespace DigitalProductionProgram.MainWindow
         {
             if (string.IsNullOrEmpty(Order.OrderNumber))
             {
-                InfoText.Show(LanguageManager.GetString("reportJira_Info_1"), CustomColors.InfoText_Color.Bad, "Warning!", this);
+                InfoText.Show(Properties.Resources.reportJira_Info_1, CustomColors.InfoText_Color.Bad, "Warning!", this);
                 return;
             }
 
@@ -274,7 +274,7 @@ namespace DigitalProductionProgram.MainWindow
         {
             if (string.IsNullOrEmpty(Order.OrderNumber))
             {
-                InfoText.Show(LanguageManager.GetString("orderNotOpen"), CustomColors.InfoText_Color.Bad, "Warning", this);
+                InfoText.Show(Properties.Resources.orderNotOpen, CustomColors.InfoText_Color.Bad, "Warning", this);
                 return;
             }
 
@@ -308,7 +308,7 @@ namespace DigitalProductionProgram.MainWindow
                 }
 
                 _ = Activity.Stop("User checks suggested changes for the  Process card");
-                InfoText.Show(text.ToString(), CustomColors.InfoText_Color.Info, LanguageManager.GetString("processcard_SuggestedChanges"), this);
+                InfoText.Show(text.ToString(), CustomColors.InfoText_Color.Info, Properties.Resources.processcard_SuggestedChanges, this);
             });
         }
         private void Menu_Order_CreateTestOrder_Click(object sender, EventArgs e)
@@ -339,19 +339,19 @@ namespace DigitalProductionProgram.MainWindow
         {
             if (Order.IsOrderDone)
             {
-                InfoText.Show(LanguageManager.GetString("changeProcesscard_Info_4"), CustomColors.InfoText_Color.Bad, "Warning", this);
+                InfoText.Show(Properties.Resources.changeProcesscard_Info_4, CustomColors.InfoText_Color.Bad, "Warning", this);
                 return;
             }
 
             if (string.IsNullOrEmpty(Order.OrderNumber))
             {
-                InfoText.Show(LanguageManager.GetString("changeProcesscard_Info_1"), CustomColors.InfoText_Color.Bad, "Warning", this);
+                InfoText.Show(Properties.Resources.changeProcesscard_Info_1, CustomColors.InfoText_Color.Bad, "Warning", this);
                 return;
             }
 
             if (!Processcard.IsPartNrExist)
             {
-                InfoText.Show(LanguageManager.GetString("changeProcesscard_Info_2"), CustomColors.InfoText_Color.Warning, "Warning", this);
+                InfoText.Show(Properties.Resources.changeProcesscard_Info_2, CustomColors.InfoText_Color.Warning, "Warning", this);
                 return;
             }
 
@@ -379,13 +379,13 @@ namespace DigitalProductionProgram.MainWindow
         {
             if (Order.IsOrderDone)
             {
-                InfoText.Show(LanguageManager.GetString("changeProtocol_Info_1"), CustomColors.InfoText_Color.Bad, "Warning", this);
+                InfoText.Show(Properties.Resources.changeProtocol_Info_1, CustomColors.InfoText_Color.Bad, "Warning", this);
                 return;
             }
 
             if (string.IsNullOrEmpty(Order.OrderNumber))
             {
-                InfoText.Show(LanguageManager.GetString("changeProtocol_Info_2"), CustomColors.InfoText_Color.Bad, "Warning", this);
+                InfoText.Show(Properties.Resources.changeProtocol_Info_2, CustomColors.InfoText_Color.Bad, "Warning", this);
                 return;
             }
 
@@ -417,13 +417,13 @@ namespace DigitalProductionProgram.MainWindow
         {
             if (Order.IsOrderDone)
             {
-                InfoText.Show(LanguageManager.GetString("changeMeasureProtocol_Info_1"), CustomColors.InfoText_Color.Bad, "Warning", this);
+                InfoText.Show(Properties.Resources.changeMeasureProtocol_Info_1, CustomColors.InfoText_Color.Bad, "Warning", this);
                 return;
             }
 
             if (string.IsNullOrEmpty(Order.OrderNumber))
             {
-                InfoText.Show(LanguageManager.GetString("changeMeasureProtocol_Info_2"), CustomColors.InfoText_Color.Bad, "Warning", this);
+                InfoText.Show(Properties.Resources.changeMeasureProtocol_Info_2, CustomColors.InfoText_Color.Bad, "Warning", this);
                 return;
             }
 
@@ -549,19 +549,19 @@ namespace DigitalProductionProgram.MainWindow
         {
             if (Order.OrderID != null && Person.Role != "SuperAdmin")
             {
-                InfoText.Show(LanguageManager.GetString("openProcessardManagementWarning"), CustomColors.InfoText_Color.Bad, "Warning", this);
+                InfoText.Show(Properties.Resources.openProcessardManagementWarning, CustomColors.InfoText_Color.Bad, "Warning", this);
                 return;
             }
 
             // Stoppa MainTimer eventuellt om det blir problem
-            using var WorkOperation = new Choose_WorkOperation_BrowseProtocols_ManageProcesscards(true, false, false, LanguageManager.GetString("label_ChoosePC_Header"));
+            using var WorkOperation = new Choose_WorkOperation_BrowseProtocols_ManageProcesscards(true, false, false, Properties.Resources.label_ChoosePC_Header);
             WorkOperation.ShowDialog();
         }
         private void Menu_Protocol_ManageTemplates_Protocols_Click(object sender, EventArgs e)
         {
             if (Person.IsUserSignedIn(false) == false)
             {
-                InfoText.Show(LanguageManager.GetString("manageTemplates"), CustomColors.InfoText_Color.Bad, "Warning", this);
+                InfoText.Show(Properties.Resources.manageTemplates, CustomColors.InfoText_Color.Bad, "Warning", this);
                 return;
             }
 

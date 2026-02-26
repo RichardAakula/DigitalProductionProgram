@@ -42,8 +42,8 @@ namespace DigitalProductionProgram.User
             tb_Name.Text = Person.Name;
             Opacity = 0.85;
             IsOk = false;
-            label_PasswordInfo.Text = LanguageManager.GetString("label_PasswordInfo");
-            LanguageManager.TranslationHelper.TranslateControls(new Control[]{label_PasswordUser, label_PasswordPassword, lbl_Abort});
+            label_PasswordInfo.Text = Properties.Resources.label_PasswordInfo;
+            LanguageManager.TranslationHelper.TranslateControls([label_PasswordUser, label_PasswordPassword, lbl_Abort]);
         }
 
 
@@ -63,7 +63,7 @@ namespace DigitalProductionProgram.User
 
                 if (IsPasswordOK(tb_Password.Text) == false)
                 {
-                    InfoText.Show(LanguageManager.GetString("password_Info_1"), CustomColors.InfoText_Color.Bad, "Warning!", this);
+                    InfoText.Show(Properties.Resources.password_Info_1, CustomColors.InfoText_Color.Bad, "Warning!", this);
                     IsOk = false;
                     tb_Password.SelectAll();
                     return;

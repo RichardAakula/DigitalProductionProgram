@@ -303,7 +303,7 @@ namespace DigitalProductionProgram.QC
             var dlg = new OpenFileDialog
             {
                 Filter = "JPG Files(*.jpg)|*.jpg|GIF Files(*.gif)|*.gif|All Files(*.*)|*.*",
-                Title = LanguageManager.GetString("uploadPicture_2")
+                Title = Properties.Resources.uploadPicture_2
             };
             if (dlg.ShowDialog() == DialogResult.OK)
             {

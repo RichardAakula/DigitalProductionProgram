@@ -122,7 +122,8 @@ namespace DigitalProductionProgram.MainWindow
 
             public static void Load_WeekDay()
             {
-                WeekDayName = DateTimeFormatInfo.GetInstance(new CultureInfo("en-US")).GetDayName(WeekDay);
+                WeekDayName = DateTimeFormatInfo.GetInstance(LanguageManager.selectedCulture).GetDayName(WeekDay);
+                //WeekDayName = DateTimeFormatInfo.GetInstance(new CultureInfo("en-US")).GetDayName(WeekDay);
             }
             public void AddTip(string content)
             {
@@ -147,7 +148,7 @@ namespace DigitalProductionProgram.MainWindow
                     var cmd = new SqlCommand(query, con);
                     var reader = cmd.ExecuteReader();
                     while (reader.Read())
-                        tips.AddTip($"{LanguageManager.GetString("rollingTips_FutureUpdate")} {reader["Tags"]}: {reader["Description"]}");
+                        tips.AddTip($"{Properties.Resources.rollingTips_FutureUpdate} {reader["Tags"]}: {reader["Description"]}");
                 });
             }
             public static void AddTips_OrderStartDays(Tips? tips)
@@ -168,14 +169,14 @@ namespace DigitalProductionProgram.MainWindow
             public static void AddTips_TotalOrdersPerYear(Tips? tips)
             {
                 if (TotalOrdersPerYear(Year) > 0)
-                    tips.AddTip($"{TotalOrdersPerYear(Year)} {LanguageManager.GetString("rollingTips_5")} {Year} {LanguageManager.GetString("rollingTips_6")}");
+                    tips.AddTip($"{TotalOrdersPerYear(Year)} {Properties.Resources.rollingTips_5} {Year} {Properties.Resources.rollingTips_6}");
             }
             public static void AddTips_UserInfo(Tips? tips)
             {
                 if (!string.IsNullOrEmpty(Person.Name))
                 {
-                    tips.AddTip($"{LanguageManager.GetString("rollingTips_1")} {Person.TotalMeasurementsByUser} {LanguageManager.GetString("rollingTips_2")}");
-                    tips.AddTip($"{LanguageManager.GetString("rollingTips_3")} {Person.TotalLoginsByUser} {LanguageManager.GetString("rollingTips_4")}");
+                    tips.AddTip($"{Properties.Resources.rollingTips_1} {Person.TotalMeasurementsByUser} {Properties.Resources.rollingTips_2}");
+                    tips.AddTip($"{Properties.Resources.rollingTips_3} {Person.TotalLoginsByUser} {Properties.Resources.rollingTips_4}");
                 }
             }
         }

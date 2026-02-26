@@ -345,7 +345,7 @@ namespace DigitalProductionProgram.Monitor
             if (Order is null)
             {
                 if (Person.Role != "SuperAdmin")
-                    InfoText.Show(LanguageManager.GetString("monitorDeletedOrder"), CustomColors.InfoText_Color.Warning, "Warning", null);
+                    InfoText.Show(Properties.Resources.monitorDeletedOrder, CustomColors.InfoText_Color.Warning, "Warning", null);
                 return;
             }
             Operations = Utilities.GetOneFromMonitor<Manufacturing.ManufacturingOrderOperations>($"filter=ManufacturingOrderId Eq'{Order.Id}' AND OperationNumber Eq'{operation}'");

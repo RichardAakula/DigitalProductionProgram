@@ -292,7 +292,7 @@ namespace DigitalProductionProgram.Processcards
                 return;
             }
             bool flag;
-            if (lbl_Aktivera_Inaktivera_ArtikelNr.Text == LanguageManager.GetString("deactivatePartNr"))
+            if (lbl_Aktivera_Inaktivera_ArtikelNr.Text == Properties.Resources.deactivatePartNr)
             {
                 InfoText.Question("Är du säker på att du vill inaktivera detta Processkort?\n" +
                               "Alla Revisionsnummer till detta artikelnr kommer nu att bli inaktiva.", CustomColors.InfoText_Color.Info, "Inaktivera Processkort", tb_PartNr.Parent);    //testa parent

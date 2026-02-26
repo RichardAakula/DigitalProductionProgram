@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.Data.SqlClient;
-using System.Drawing;
-using System.Drawing.Printing;
-using System.Windows.Forms;
+﻿using System.Drawing.Printing;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.Protocols;
-using DigitalProductionProgram.Protocols.Slipning_TEF;
+using Microsoft.Data.SqlClient;
 using static DigitalProductionProgram.PrintingServices.Workoperation_Printouts.Print_Protocol.PrintOut;
 
 
@@ -381,7 +376,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
                 if (!string.IsNullOrEmpty(Order.OrderNumber))
                 {
                     using var con = new SqlConnection(Database.cs_Protocol);
-                    var query = $@"
+                    var query = @"
                                     SELECT 
                                         Slipmaskin,             68,  70,
                                         Matarhjul_Hastighet,    138, 65,
@@ -467,7 +462,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
 
                 using (var con = new SqlConnection(Database.cs_Protocol))
                 {
-                    var query = $@"
+                    var query = @"
                         SELECT * FROM(SELECT CodeText, Value, Text, Bool, Date_Time, AnstNr, Signature, Column_Index, ROW_NUMBER() OVER(ORDER BY Date_Time, Column_Index) AS RowNum
                         FROM  Korprotokoll_Slipning_Produktion AS prod
                             JOIN [User].Person AS op
@@ -602,7 +597,7 @@ namespace DigitalProductionProgram.PrintingServices.Workoperation_Printouts
 
                 using (var con = new SqlConnection(Database.cs_Protocol))
                 {
-                    var query = $@"
+                    var query = @"
                         SELECT * FROM(SELECT CodeText, Value, Text, Bool, Date_Time, AnstNr, Signature, Column_Index, ROW_NUMBER() OVER(ORDER BY TempID) AS RowNum
                         FROM  Korprotokoll_Slipning_Produktion AS prod
                             JOIN [User].Person AS op

@@ -137,7 +137,7 @@ namespace DigitalProductionProgram.Protocols.Slipning_TEF
             if (IsUpdating_Parameter == false)
             {//Om en ny rad skall läggas till
                 using var black = new BlackBackground(string.Empty, 80);
-                using var password = new PasswordManager(LanguageManager.GetString("confirmTransferPassword"));
+                using var password = new PasswordManager(Properties.Resources.confirmTransferPassword);
                 black.Show();
                 password.ShowDialog();
                 black.Close();

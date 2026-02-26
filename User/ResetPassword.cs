@@ -60,7 +60,7 @@ namespace DigitalProductionProgram.User
         }
         private void TranslateForm()
         {
-            LanguageManager.TranslationHelper.TranslateControls(new Control[] { label_ResetPasswordInfo, btn_ConfirmCode, btn_NewCode, btn_ConfirmNewCode });
+            LanguageManager.TranslationHelper.TranslateControls([label_ResetPasswordInfo, btn_ConfirmCode, btn_NewCode, btn_ConfirmNewCode]);
            
         }
         private void timer_Counter_Tick(object sender, EventArgs e)
@@ -71,7 +71,7 @@ namespace DigitalProductionProgram.User
             if (remainingSeconds <= 0)
             {
                 timer_Counter.Stop();
-                lbl_ResetPasswordError.Text = LanguageManager.GetString("resetPassword_CodeExpired");
+                lbl_ResetPasswordError.Text = Properties.Resources.resetPassword_CodeExpired;
                 lbl_ResetPasswordError.Visible = true;
                 btn_ConfirmCode.Enabled = false;
             }
@@ -88,7 +88,7 @@ namespace DigitalProductionProgram.User
         {
             int mins = remainingSeconds / 60;
             int secs = remainingSeconds % 60;
-            lbl_ResetPasswordTimer.Text = $"{LanguageManager.GetString("resetPassword_TimeLeft")} {mins:D2}:{secs:D2}";
+            lbl_ResetPasswordTimer.Text = $"{Properties.Resources.resetPassword_TimeLeft} {mins:D2}:{secs:D2}";
         }
         private void SendNewCode()
         {
@@ -128,7 +128,7 @@ namespace DigitalProductionProgram.User
         {
             if (DateTime.Now > codeExpiresAt)
             {
-                lbl_ResetPasswordError.Text = LanguageManager.GetString("resetPassword_CodeExpired");
+                lbl_ResetPasswordError.Text = Properties.Resources.resetPassword_CodeExpired;
                 lbl_ResetPasswordError.Visible = true;
                 return;
             }
@@ -144,11 +144,11 @@ namespace DigitalProductionProgram.User
                 if (attemptCount >= maxAttempts)
                 {
                     btn_ConfirmCode.Enabled = false;
-                    lbl_ResetPasswordError.Text = LanguageManager.GetString("resetPassword_MaxAttemptsReached");
+                    lbl_ResetPasswordError.Text = Properties.Resources.resetPassword_MaxAttemptsReached;
                 }
                 else
                 {
-                    lbl_ResetPasswordError.Text = $"{LanguageManager.GetString("resetPassword_WrongCode")} {maxAttempts - attemptCount}";
+                    lbl_ResetPasswordError.Text = $"{Properties.Resources.resetPassword_WrongCode} {maxAttempts - attemptCount}";
                     ClearAllCodeTextBoxes();
                 }
                 lbl_ResetPasswordError.Visible = true;
@@ -163,7 +163,7 @@ namespace DigitalProductionProgram.User
                 return;
             }
             Person.UpdatePassword(tb_NewPassword.Text);
-            InfoText.Show($"{LanguageManager.GetString("user_PasswordUpdated")}", CustomColors.InfoText_Color.Ok, null);
+            InfoText.Show($"{Properties.Resources.user_PasswordUpdated}", CustomColors.InfoText_Color.Ok, null);
             this.Close();
         }
         private void btn_NewCode_Click(object sender, EventArgs e)

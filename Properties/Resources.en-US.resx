@@ -2074,6 +2074,72 @@ Ppk ≥ 2.00 → very high performance
 Note:
 Ppk assumes the process is statistically stable.</value>
   </data>
+  <data name="stringRestartComputer" xml:space="preserve">
+    <value>To activate new language, please restart programme.</value>
+  </data>
+  <data name="label_ProdGroup" xml:space="preserve">
+    <value>Production Group:</value>
+  </data>
+  <data name="label_ProductionSchedule" xml:space="preserve">
+    <value>Priority Plan</value>
+  </data>
+  <data name="label_Description" xml:space="preserve">
+    <value>Description:</value>
+  </data>
+  <data name="label_ProdLine" xml:space="preserve">
+    <value>Production Line:</value>
+  </data>
+  <data name="Menu_User" xml:space="preserve">
+    <value>User</value>
+  </data>
+  <data name="Menu_User_Authorities" xml:space="preserve">
+    <value>Authorities</value>
+  </data>
+  <data name="Menu_User_CheckMyAnalysis" xml:space="preserve">
+    <value>Check my Analysis</value>
+  </data>
+  <data name="Menu_User_EditUser" xml:space="preserve">
+    <value>Edit User</value>
+  </data>
+  <data name="Menu_User_LogIn" xml:space="preserve">
+    <value>Sign In</value>
+  </data>
+  <data name="Menu_User_LogOut" xml:space="preserve">
+    <value>Sign Out</value>
+  </data>
+  <data name="Menu_User_LogOutUser" xml:space="preserve">
+    <value>Log out user from the Protocol</value>
+  </data>
+  <data name="Menu_User_WhoIsLoggedIn" xml:space="preserve">
+    <value>Who is Signed In?</value>
+  </data>
+  <data name="label_Header_ActiveOrders" xml:space="preserve">
+    <value>Your Active Orders</value>
+  </data>
+  <data name="Warning_OpenMeasureProtocol_1" xml:space="preserve">
+    <value>Close down, Browse old protocols, before opening new Protocol.</value>
+  </data>
+  <data name="Warning_OpenMeasureProtocol_2" xml:space="preserve">
+    <value>You cannot perform measurements until you have chosen HS-Machine in the Protocol.</value>
+  </data>
+  <data name="Warning_OpenMeasureProtocol_3" xml:space="preserve">
+    <value>You cannot perform measurements until Line Clearance is completed and approved by authorized personnel.</value>
+  </data>
+  <data name="Warning_OpenMeasureProtocol_4" xml:space="preserve">
+    <value>You cannot perform measurements until Line Clearance is completed.</value>
+  </data>
+  <data name="Warning_OpenMeasureProtocol_5" xml:space="preserve">
+    <value>You need to initiate an order before doing measurements.</value>
+  </data>
+  <data name="uploadPicture_1" xml:space="preserve">
+    <value>Start/Open an order before you try to upload a picture</value>
+  </data>
+  <data name="uploadPicture_2" xml:space="preserve">
+    <value>Select a picture you want to upload</value>
+  </data>
+  <data name="uploadPicture_3" xml:space="preserve">
+    <value>Picture is saved and can now be seen everytime this partnumber is run.</value>
+  </data>
   <data name="BrowseOldMeasureprotocol" xml:space="preserve">
     <value>F3-Browse Old Measurement Protocols</value>
   </data>
@@ -2100,9 +2166,6 @@ Ppk assumes the process is statistically stable.</value>
   </data>
   <data name="Zumbach" xml:space="preserve">
     <value>F6-Zumbach</value>
-  </data>
-  <data name="stringRestartComputer" xml:space="preserve">
-    <value>To activate new language, please restart programme.</value>
   </data>
   <data name="Menu_Arkiv" xml:space="preserve">
     <value>File</value>
@@ -2188,12 +2251,6 @@ Ppk assumes the process is statistically stable.</value>
   <data name="label_Orange" xml:space="preserve">
     <value>Processcard is missing and needs to be created.</value>
   </data>
-  <data name="label_ProdGroup" xml:space="preserve">
-    <value>Production Group:</value>
-  </data>
-  <data name="label_ProductionSchedule" xml:space="preserve">
-    <value>Priority Plan</value>
-  </data>
   <data name="label_QuickOpenOrder" xml:space="preserve">
     <value>Open most recently initiated orders</value>
     <comment>?</comment>
@@ -2235,38 +2292,11 @@ Ppk assumes the process is statistically stable.</value>
   <data name="Menu_Themes" xml:space="preserve">
     <value>Themes</value>
   </data>
-  <data name="Menu_User" xml:space="preserve">
-    <value>User</value>
-  </data>
-  <data name="Menu_User_Authorities" xml:space="preserve">
-    <value>Authorities</value>
-  </data>
-  <data name="Menu_User_CheckMyAnalysis" xml:space="preserve">
-    <value>Check my Analysis</value>
-  </data>
-  <data name="Menu_User_EditUser" xml:space="preserve">
-    <value>Edit User</value>
-  </data>
-  <data name="Menu_User_LogIn" xml:space="preserve">
-    <value>Sign In</value>
-  </data>
-  <data name="Menu_User_LogOut" xml:space="preserve">
-    <value>Sign Out</value>
-  </data>
-  <data name="Menu_User_LogOutUser" xml:space="preserve">
-    <value>Log out user from the Protocol</value>
-  </data>
-  <data name="Menu_User_WhoIsLoggedIn" xml:space="preserve">
-    <value>Who is Signed In?</value>
-  </data>
   <data name="label_Amount" xml:space="preserve">
     <value>Amount:</value>
   </data>
   <data name="label_Customer" xml:space="preserve">
     <value>Customer:</value>
-  </data>
-  <data name="label_Description" xml:space="preserve">
-    <value>Description:</value>
   </data>
   <data name="label_Operation" xml:space="preserve">
     <value>Operation:</value>
@@ -2279,9 +2309,6 @@ Ppk assumes the process is statistically stable.</value>
   </data>
   <data name="label_PartNumber" xml:space="preserve">
     <value>PartNr:</value>
-  </data>
-  <data name="label_ProdLine" xml:space="preserve">
-    <value>Production Line:</value>
   </data>
   <data name="label_SignedInMonitor" xml:space="preserve">
     <value>Signed In Monitor:</value>
@@ -2310,39 +2337,11 @@ Ppk assumes the process is statistically stable.</value>
   <data name="chartSerieMeasurepoints2" xml:space="preserve">
     <value>Avg: Partnumber</value>
   </data>
-  <data name="Warning_OpenMeasureProtocol_1" xml:space="preserve">
-    <value>Close down, Browse old protocols, before opening new Protocol.</value>
-    <comment>?</comment>
-  </data>
-  <data name="Warning_OpenMeasureProtocol_2" xml:space="preserve">
-    <value>You cannot perform measurements until you have chosen HS-Machine in the Protocol.</value>
-  </data>
-  <data name="Warning_OpenMeasureProtocol_3" xml:space="preserve">
-    <value>You cannot perform measurements until Line Clearance is completed and approved by authorized personnel.</value>
-  </data>
-  <data name="Warning_OpenMeasureProtocol_4" xml:space="preserve">
-    <value>You cannot perform measurements until Line Clearance is completed.</value>
-  </data>
-  <data name="Warning_OpenMeasureProtocol_5" xml:space="preserve">
-    <value>You need to initiate an order before doing measurements.</value>
-  </data>
   <data name="label_Measurepoints" xml:space="preserve">
     <value>Measurepoints</value>
   </data>
   <data name="label_MeasureInformation" xml:space="preserve">
     <value>Measureinformation</value>
-  </data>
-  <data name="uploadPicture_1" xml:space="preserve">
-    <value>Start/Open an order before you try to upload a picture</value>
-  </data>
-  <data name="uploadPicture_2" xml:space="preserve">
-    <value>Select a picture you want to upload</value>
-  </data>
-  <data name="uploadPicture_3" xml:space="preserve">
-    <value>Picture is saved and can now be seen everytime this partnumber is run.</value>
-  </data>
-  <data name="label_Header_ActiveOrders" xml:space="preserve">
-    <value>Your Active Orders</value>
   </data>
   <data name="finishOrder_1" xml:space="preserve">
     <value>This order is finished, you can´t finish it again. 
@@ -2482,5 +2481,8 @@ Contact Admin if necessary.</value>
   </data>
   <data name="btnZumbach" xml:space="preserve">
     <value>F6-Zumbach-measurement</value>
+  </data>
+  <data name="warningMessage" xml:space="preserve">
+    <value>Warning!</value>
   </data>
 </root>

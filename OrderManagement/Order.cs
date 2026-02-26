@@ -545,9 +545,9 @@ namespace DigitalProductionProgram.OrderManagement
                     else
                         months = DateTime.Now.Subtract(DateTime.Now.AddMonths(-3));
                     var dateSpan = Math.Round(months.Days / (365.25 / 12), 0);
-                    InfoText.Question($"{LanguageManager.GetString("orderNotDone_1")} {reader["OrderNr"]} - Operation {reader["Operation"]} {LanguageManager.GetString("orderNotDone_2")} {dateSpan} {LanguageManager.GetString("orderNotDone_3")}\n" +
-                                      $"{LanguageManager.GetString("orderNotDone_4")}\n\n" +
-                                      $"{LanguageManager.GetString("orderNotDone_5")}", CustomColors.InfoText_Color.Info, "Info");
+                    InfoText.Question($"{Properties.Resources.orderNotDone_1} {reader["OrderNr"]} - Operation {reader["Operation"]} {Properties.Resources.orderNotDone_2} {dateSpan} {Properties.Resources.orderNotDone_3}\n" +
+                                      $"{Properties.Resources.orderNotDone_4}\n\n" +
+                                      $"{Properties.Resources.orderNotDone_5}", CustomColors.InfoText_Color.Info, "Info");
                     Activity.Start();
                     if (InfoText.answer == InfoText.Answer.Yes)
                     {
@@ -666,7 +666,7 @@ namespace DigitalProductionProgram.OrderManagement
                         case 2:
                             return true;
                         case 3: //Startar 4e Ordern
-                            InfoText.Show(string.Format(LanguageManager.GetString("mail_Subject_NotifyOrderStartCount"), PartNumber, totalOrders + 1), CustomColors.InfoText_Color.Warning, "Warning!");
+                            InfoText.Show(string.Format(Properties.Resources.mail_Subject_NotifyOrderStartCount, PartNumber, totalOrders + 1), CustomColors.InfoText_Color.Warning, "Warning!");
                             Mail.NotifyOrderStartCount_4to5(totalOrders + 1);
                             return true;
                         case 4: //Startar 5e Ordern
@@ -685,7 +685,7 @@ namespace DigitalProductionProgram.OrderManagement
                             {
                                 Mail.NotifyOrderStartCount_6(totalOrders + 1);
                                 Mail.NotifyCustomerServiceOrderCount_6();
-                                InfoText.Show(string.Format(LanguageManager.GetString("notifyUserOrderStartCount_6"), PartNumber, totalOrders + 1), CustomColors.InfoText_Color.Warning, "Warning!");
+                                InfoText.Show(string.Format(Properties.Resources.notifyUserOrderStartCount_6, PartNumber, totalOrders + 1), CustomColors.InfoText_Color.Warning, "Warning!");
                                 return true;
                             }
 
@@ -696,7 +696,7 @@ namespace DigitalProductionProgram.OrderManagement
                             if (CheckAuthority.IsRoleAuthorized(CheckAuthority.TemplateAuthorities.StartOrderNr_7_WithoutProcesscard))
                             {
                                 Mail.NotifyOrderStartCount_4to5(totalOrders + 1);
-                                InfoText.Show(string.Format(LanguageManager.GetString("notifyDirectorOrderStartCount_7"), PartNumber), CustomColors.InfoText_Color.Warning, "Warning!");
+                                InfoText.Show(string.Format(Properties.Resources.notifyDirectorOrderStartCount_7, PartNumber), CustomColors.InfoText_Color.Warning, "Warning!");
 
                                 return true;
                             }
@@ -711,7 +711,7 @@ namespace DigitalProductionProgram.OrderManagement
             {
                 if (string.IsNullOrEmpty(Person.Name))
                 {
-                    InfoText.Show(LanguageManager.GetString("startOrder_NeedLogin"), CustomColors.InfoText_Color.Warning, "Warning", form);
+                    InfoText.Show(Properties.Resources.startOrder_NeedLogin, CustomColors.InfoText_Color.Warning, "Warning", form);
 
                     CustomProgressBar.close();
                     return true;
@@ -727,7 +727,7 @@ namespace DigitalProductionProgram.OrderManagement
                 }
                 if (WorkOperation == WorkOperations.Nothing)
                 {
-                    InfoText.Show(LanguageManager.GetString("startOrder_NoWorkoperation"), CustomColors.InfoText_Color.Bad, "Warning", form);
+                    InfoText.Show(Properties.Resources.startOrder_NoWorkoperation, CustomColors.InfoText_Color.Bad, "Warning", form);
 
                     CustomProgressBar.close();
                     return false;
@@ -754,7 +754,7 @@ namespace DigitalProductionProgram.OrderManagement
                     return;
                 }
 
-                InfoText.Question($"{LanguageManager.GetString("StartOrder")} {OrderNumber} - {ProdLine}?", CustomColors.InfoText_Color.Info, $"{WorkOperation}", null);
+                InfoText.Question($"{Properties.Resources.StartOrder} {OrderNumber} - {ProdLine}?", CustomColors.InfoText_Color.Info, $"{WorkOperation}", null);
                 if (InfoText.answer == InfoText.Answer.No)
                 {
                     ResetOrder(main);
@@ -786,7 +786,7 @@ namespace DigitalProductionProgram.OrderManagement
                     Templates_LineClearance.MainTemplate.Set_MainTemplateID();
                     if (!IsOkStartOrder)
                     {
-                        InfoText.Show(LanguageManager.GetString("selectTemplateError"), CustomColors.InfoText_Color.Bad, "Warning", main);
+                        InfoText.Show(Properties.Resources.selectTemplateError, CustomColors.InfoText_Color.Bad, "Warning", main);
                         ResetOrder(main);
                         return;
                     }
@@ -1019,32 +1019,34 @@ namespace DigitalProductionProgram.OrderManagement
                 {
                     var isDone = Database.ExecuteSafe(con =>
                     {
-                        const string query_Processkort = @"
-                SELECT DISTINCT 
-                    COALESCE(pc_data.type, template.type) AS type, 
-                    MachineIndex, 
-                    descr.CodeText, 
-                    descr.ID,
-                    COALESCE(pc_data.TemplateID, template.ID) AS TemplateID, 
-                    pc_data.Value, 
-                    pc_data.TextValue, 
-                    template.RowIndex,
-                    IsRequired
-                FROM Protocol.Template AS template
-                FULL OUTER JOIN Processcard.Data AS pc_data
-                    ON template.ID = pc_data.TemplateID
-                    AND PartID = @partid
-                    AND NOT (
-                        pc_data.Value IS NULL 
-                        AND (pc_data.TextValue IS NULL OR pc_data.TextValue = '')
-                    )
-                LEFT JOIN Protocol.Description AS descr
-                    ON descr.ID = template.ProtocolDescriptionID
-                WHERE template.FormTemplateID = @formtemplateid
-                    AND ColumnIndex = 1
-                    AND IsRequired = 1
-                    AND pc_data.TemplateID IS NOT NULL
-                ORDER BY RowIndex, MachineIndex";
+                        const string query_Processkort = """
+                                                            SELECT DISTINCT 
+                                                                COALESCE(pc_data.type, template.type) AS type, 
+                                                                MachineIndex, 
+                                                                descr.CodeText, 
+                                                                descr.ID,
+                                                                COALESCE(pc_data.TemplateID, template.ID) AS TemplateID, 
+                                                                pc_data.Value, 
+                                                                pc_data.TextValue, 
+                                                                template.RowIndex,
+                                                                IsRequired
+                                                            FROM Protocol.Template AS template
+                                                            FULL OUTER JOIN Processcard.Data AS pc_data
+                                                                ON template.ID = pc_data.TemplateID
+                                                                AND PartID = @partid
+                                                                AND NOT 
+                                                                (
+                                                                    pc_data.Value IS NULL 
+                                                                    AND (pc_data.TextValue IS NULL OR pc_data.TextValue = '')
+                                                                )
+                                                            LEFT JOIN Protocol.Description AS descr
+                                                                ON descr.ID = template.ProtocolDescriptionID
+                                                            WHERE template.FormTemplateID = @formtemplateid
+                                                                AND ColumnIndex = 1
+                                                                AND IsRequired = 1
+                                                                AND pc_data.TemplateID IS NOT NULL
+                                                            ORDER BY RowIndex, MachineIndex
+                                                         """;
 
                         using var cmd = new SqlCommand(query_Processkort, con);
                         cmd.Parameters.AddWithValue("@partid", PartID);
@@ -1072,29 +1074,25 @@ namespace DigitalProductionProgram.OrderManagement
                                     if (!Is_Value_Exist_In_Korprotokoll(codeText, protocolDescriptionId, "Value", machine, totalStartUps))
                                         return ShowMessage(
                                             string.IsNullOrEmpty(machine)
-                                                ? $"{LanguageManager.GetString("orderDone_1")} ({codeText})"
-                                                : $"{LanguageManager.GetString("orderDone_1")} ({codeText}) {LanguageManager.GetString("orderDone_2")} {machine}",
-                                            main);
+                                                ? $"{Properties.Resources.orderDone_1} ({codeText})"
+                                                : $"{Properties.Resources.orderDone_1} ({codeText}) {Properties.Resources.orderDone_2} {machine}", main);
                                     break;
 
                                 case 1:
                                     if (!Is_Value_Exist_In_Korprotokoll(codeText, protocolDescriptionId, "TextValue", machine, totalStartUps))
                                         return ShowMessage(
-                                            string.IsNullOrEmpty(machine)
-                                                ? $"{LanguageManager.GetString("orderDone_1")} ({codeText})"
-                                                : $"{LanguageManager.GetString("orderDone_1")} ({codeText}) {LanguageManager.GetString("orderDone_2")} {machine}",
-                                            main);
+                                                string.IsNullOrEmpty(machine)
+                                                    ? $"{Properties.Resources.orderDone_1} ({codeText})"
+                                            : $"{Properties.Resources.orderDone_1} ({codeText}) {Properties.Resources.orderDone_2} {machine}",main);
                                     break;
                             }
                         }
-
                         return true;
-                    });
+                            });
 
-                    if (!isDone)
-                        return false;
+                        if (!isDone)
+                            return false;
                 }
-
                 return true;
             }
             private static bool Is_Blandning_PTFE_Done(Main_Form main)
@@ -1168,11 +1166,11 @@ namespace DigitalProductionProgram.OrderManagement
                     using var reader = cmd.ExecuteReader();
 
                     if (!reader.HasRows)
-                        return ShowMessage(LanguageManager.GetString("finishOrder_MeasureEq_2"), main);
+                        return ShowMessage(Properties.Resources.finishOrder_MeasureEq_2, main);
 
                     while (reader.Read())
                         if (string.IsNullOrEmpty(reader["Nr"]?.ToString()))
-                            return ShowMessage(LanguageManager.GetString("finishOrder_MeasureEq_1"), main);
+                            return ShowMessage(Properties.Resources.finishOrder_MeasureEq_1, main);
                     return true;
                 });
             }
@@ -1189,10 +1187,10 @@ namespace DigitalProductionProgram.OrderManagement
                     while (reader.Read())
                     {
                         if (string.IsNullOrEmpty(reader["Halvfabrikat_OrderNr"]?.ToString()))
-                            return ShowMessage(LanguageManager.GetString("finishOrder_Halvfabrikat_1"), main);
+                            return ShowMessage(Properties.Resources.finishOrder_Halvfabrikat_1, main);
 
                         if (WorkOperation is WorkOperations.Extrudering_Termo or WorkOperations.Extrudering_Tryck or WorkOperations.Extrusion_HS && string.IsNullOrEmpty(reader["Extruder"]?.ToString()))
-                            return ShowMessage($"{LanguageManager.GetString("finishOrder_Halvfabrikat_2_1")} {reader["Halvfabrikat_ArtikelNr"]} {LanguageManager.GetString("finishOrder_Halvfabrikat_2_2")}", main);
+                            return ShowMessage($"{Properties.Resources.finishOrder_Halvfabrikat_2_1} {reader["Halvfabrikat_ArtikelNr"]} {Properties.Resources.finishOrder_Halvfabrikat_2_2}", main);
                     }
 
                     return true;
@@ -1209,10 +1207,10 @@ namespace DigitalProductionProgram.OrderManagement
                     while (reader.Read())
                     {
                         if (string.IsNullOrEmpty(reader["Rum_Temp"]?.ToString()))
-                            return ShowMessage(LanguageManager.GetString("finishOrder_RoomTemp"), main);
+                            return ShowMessage(Properties.Resources.finishOrder_RoomTemp, main);
 
                         if (string.IsNullOrEmpty(reader["Rum_Fukt"]?.ToString()))
-                            return ShowMessage(LanguageManager.GetString("finishOrder_RoomMoist"), main);
+                            return ShowMessage(Properties.Resources.finishOrder_RoomMoist, main);
                     }
 
                     return true;
@@ -1233,7 +1231,7 @@ namespace DigitalProductionProgram.OrderManagement
 
                     if (ctr < 13 && !IsOnlyTestRun)
                         return ShowMessage(
-                            $"{LanguageManager.GetString("finishOrder_2_1")} {ctr} {LanguageManager.GetString("finishOrder_2_2")}",
+                            $"{Properties.Resources.finishOrder_2_1} {ctr} {Properties.Resources.finishOrder_2_2}",
                             main);
 
                     return true;
@@ -1278,7 +1276,7 @@ namespace DigitalProductionProgram.OrderManagement
                     while (reader.Read())
                     {
                         if (string.IsNullOrEmpty(reader["Comments"]?.ToString()))
-                            return ShowMessage(LanguageManager.GetString("finishOrder_Comments"), main);
+                            return ShowMessage(Properties.Resources.finishOrder_Comments, main);
                     }
 
                     return true;
@@ -1375,15 +1373,15 @@ namespace DigitalProductionProgram.OrderManagement
             {
                 if (CheckAuthority.IsRoleAuthorized(CheckAuthority.TemplateAuthorities.FinishIncompleteOrder, false))
                 {
-                    InfoText.Question($"{Text} {LanguageManager.GetString("finishOrder_3_1")}\n\n" +
-                                  $"{LanguageManager.GetString("finishOrder_3_2")} {Person.Role} {LanguageManager.GetString("finishOrder_3_3")}\n\n" +
-                                  $"{LanguageManager.GetString("finishOrder_3_4")}", CustomColors.InfoText_Color.Warning, "Warning!", main);
+                    InfoText.Question($"{Text} {Properties.Resources.finishOrder_3_1}\n\n" +
+                                  $"{Properties.Resources.finishOrder_3_2} {Person.Role} {Properties.Resources.finishOrder_3_3}\n\n" +
+                                  $"{Properties.Resources.finishOrder_3_4}", CustomColors.InfoText_Color.Warning, "Warning!", main);
                     if (InfoText.answer == InfoText.Answer.Yes)
                         return true;
                     return false;
                 }
 
-                InfoText.Show($"{Text} {LanguageManager.GetString("finishOrder_3_1")}", CustomColors.InfoText_Color.Bad, "Warning", main);
+                InfoText.Show($"{Text} {Properties.Resources.finishOrder_3_1}", CustomColors.InfoText_Color.Bad, "Warning", main);
                 _ = Activity.Stop($"Error FinishOrder: {Text}");
                 return false;
             }
@@ -1392,13 +1390,13 @@ namespace DigitalProductionProgram.OrderManagement
             {
                 if (IsOrderDone)
                 {
-                    InfoText.Show(LanguageManager.GetString("finishOrder_1"), CustomColors.InfoText_Color.Bad, "Warning!", main);
+                    InfoText.Show(Properties.Resources.finishOrder_1, CustomColors.InfoText_Color.Bad, "Warning!", main);
                     return;
                 }
 
                 if (string.IsNullOrEmpty(Person.Name))
                 {
-                    InfoText.Show(LanguageManager.GetString("finishOrder_4"), CustomColors.InfoText_Color.Bad, "Warning!", main);
+                    InfoText.Show(Properties.Resources.finishOrder_4, CustomColors.InfoText_Color.Bad, "Warning!", main);
                     return;
                 }
                 Activity.Start();

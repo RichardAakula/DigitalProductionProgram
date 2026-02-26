@@ -846,7 +846,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
             var dgv_Row = dgv_Module.Rows[row];
             var items = new List<string?>();
             dgv_Module.Rows[e.RowIndex].Cells[e.ColumnIndex].Selected = true;
-            var IsItemsMultipleColumns = false;
+            var TotalColumns = 1;
             int.TryParse(dgv_Module.Rows[row].Cells["col_ProtocolDescriptionID"].Value.ToString(), out var protocolDescriptionID);
 
             if (e.Button == MouseButtons.Right)
@@ -923,23 +923,23 @@ namespace DigitalProductionProgram.Protocols.Protocol
                         case 305: //SKRUVTYP
                             //Korprotokoll hämtar ID_Nummer
                             items = DigitalProductionProgram.Equipment.Equipment.List_Register(isProcesscardUnderManagement, NOM_Value(dgv_Row), "Register_Skruvar");
-                            IsItemsMultipleColumns = true;
+                            TotalColumns = 2;
                             break;
                         case 306: //TORK
                             items = DigitalProductionProgram.Equipment.Equipment.List_Register(isProcesscardUnderManagement, NOM_Value(dgv_Row), "Register_Torkar");
-                            IsItemsMultipleColumns = true;
+                            TotalColumns = 2;
                             break;
                         case 307: //HUVUD
                             items = DigitalProductionProgram.Equipment.Equipment.List_Register(isProcesscardUnderManagement, NOM_Value(dgv_Row), "Register_Huvud");
-                            IsItemsMultipleColumns = true;
+                            TotalColumns = 2;
                             break;
                         case 308: //TORPED
                             items = DigitalProductionProgram.Equipment.Equipment.List_Register(isProcesscardUnderManagement, NOM_Value(dgv_Row), "Register_Torpeder");
-                            IsItemsMultipleColumns = true;
+                            TotalColumns = 2;
                             break;
                         case 309: //TORPEDMUTTER
                             items = DigitalProductionProgram.Equipment.Equipment.List_Register(isProcesscardUnderManagement, NOM_Value(dgv_Row), "Register_Torpedmuttrar");
-                            IsItemsMultipleColumns = true;
+                            TotalColumns = 2;
                             break;
                         case 310: //MUNSTYCKE TYP
                             items = DigitalProductionProgram.Equipment.Equipment.List_Tool_Type("Munstycke");
@@ -952,7 +952,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                             else
                                 DieType = Value(col, 310);
                             items = DigitalProductionProgram.Equipment.Equipment.List_Tool(DieType, MIN_Value(dgv_Row), MAX_Value(dgv_Row));
-                            IsItemsMultipleColumns = true;
+                            TotalColumns = 2;
                             break;
                         case 311: //KÄRNA TYP
                             items = DigitalProductionProgram.Equipment.Equipment.List_Tool_Type("Kanyl");
@@ -964,7 +964,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                             else
                                 TipType = Value(col, 311);
                             items = DigitalProductionProgram.Equipment.Equipment.List_Tool(TipType, MIN_Value(dgv_Row), MAX_Value(dgv_Row));
-                            IsItemsMultipleColumns = true;
+                            TotalColumns = 2;
                             break;
                         case 229:   //UPPTAGNING
                             items.Add("Leveransspole");
@@ -997,7 +997,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                             else
                             {
                                 items = DigitalProductionProgram.Equipment.Equipment.List_From_Register("ID_Nummer", "Register_Kalibreringar", true, Value(col, 316));
-                                IsItemsMultipleColumns = true;
+                                TotalColumns = 2;
                             }
                                 
                             
@@ -1059,7 +1059,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                 items.Add(LanguageManager.GetString("checkLastOperations"));
                 if (CheckAuthority.IsRoleAuthorized(CheckAuthority.TemplateAuthorities.ChooseFreelyFromListsProtocol, false))
                     isOkWriteText = true;
-                using var choose_Item = new Choose_Item(items, cells:cells, dataBaseColumnName: dgv_Module.Rows[row].Cells[0].Value.ToString(), maskin:MachineIndex, uppstart: startup, isOkReturnOwnText: isOkWriteText, isMultipleColumns: IsItemsMultipleColumns);
+                using var choose_Item = new Choose_Item(items, cells:cells, dataBaseColumnName: dgv_Module.Rows[row].Cells[0].Value.ToString(), maskin:MachineIndex, uppstart: startup, isOkReturnOwnText: isOkWriteText, totalColumns: TotalColumns);
                 choose_Item.ShowDialog();
             }
             if (IsOkToSave || isProcesscardUnderManagement)

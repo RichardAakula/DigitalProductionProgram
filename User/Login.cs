@@ -34,7 +34,7 @@ namespace DigitalProductionProgram.User
 
                 if (PasswordManager.IsPasswordOK(tb_Password.Text) == false)
                 {
-                    InfoText.Show(LanguageManager.GetString("password_Info_1"), CustomColors.InfoText_Color.Bad, "Warning!", this);
+                    InfoText.Show(Properties.Resources.password_Info_1, CustomColors.InfoText_Color.Bad, "Warning!", this);
                     tb_Password.SelectAll();
                     return false;
                 }
@@ -197,14 +197,14 @@ namespace DigitalProductionProgram.User
         private void Initialize_GUI_Add_User()
         {
             btn_AddUpdateUser.Click += Add_User_Click;
-            btn_AddUpdateUser.Text = LanguageManager.GetString("login_AddUser");
+            btn_AddUpdateUser.Text = Properties.Resources.login_AddUser;
             tlp_AddUser.Visible = true;
             IsInEditMode = false;
         }
         private void Initialize_GUI_Edit_User()
         {
             btn_AddUpdateUser.Click += Update_User_Click;
-            btn_AddUpdateUser.Text = LanguageManager.GetString("login_UpdateUser");
+            btn_AddUpdateUser.Text = Properties.Resources.login_UpdateUser;
             Load_User_Info();
             tlp_AddUser.Visible = true;
             tb_Förnamn.Enabled = false;
@@ -243,10 +243,10 @@ namespace DigitalProductionProgram.User
             if (lastReadVersion < currentVersion)
             {
                 InfoText.Question(
-                    $"{LanguageManager.GetString("login_Info_1_1")} {lastReadVersion} {LanguageManager.GetString("login_Info_1_2")} {currentVersion}\n" +
-                    $"{LanguageManager.GetString("login_Info_1_3")}",
+                    $"{Properties.Resources.login_Info_1_1} {lastReadVersion} {Properties.Resources.login_Info_1_2} {currentVersion}\n" +
+                    $"{Properties.Resources.login_Info_1_3}",
                     CustomColors.InfoText_Color.Info,
-                    LanguageManager.GetString("login_Info_1_4"),
+                    Properties.Resources.login_Info_1_4,
                     this);
 
                 if (InfoText.answer == InfoText.Answer.Yes)
@@ -266,49 +266,14 @@ namespace DigitalProductionProgram.User
         }
 
 
-        //private Task CheckVersion()
-        //{
-        //    var lastReadVersion = Person.LastReadChangeLogVersion(lbl_User.Text);
-
-        //    if (lastReadVersion == new Version("0.0.0.0"))
-        //    {
-        //        var changeLog = new ChangeLog(Version.Parse("1.0.0.0"));
-        //        changeLog.ShowDialog();
-        //        return Task.CompletedTask;
-        //    }
-
-        //    if (lastReadVersion < ChangeLog.CurrentVersion)
-        //    {
-        //        InfoText.Question(
-        //            $"{LanguageManager.GetString("login_Info_1_1")} {lastReadVersion} {LanguageManager.GetString("login_Info_1_2")} {ChangeLog.CurrentVersion}\n" +
-        //            $"{LanguageManager.GetString("login_Info_1_3")}", CustomColors.InfoText_Color.Info, LanguageManager.GetString("login_Info_1_4"), this);
-
-        //        if (InfoText.answer == InfoText.Answer.Yes)
-        //        {
-        //            var watch = new Stopwatch();
-        //            watch.Start();
-
-        //            var changeLog = new ChangeLog(lastReadVersion);
-        //            changeLog.ShowDialog();
-
-        //            watch.Stop();
-        //            var time = watch.Elapsed.TotalSeconds;
-
-        //            //await Activity.AddTimeUserRead(lastVersion.ToString(), time);
-        //        }
-        //    }
-
-        //    return Task.CompletedTask;
-        //}
-
-
+       
 
 
 
 
         private void Info_Click(object sender, EventArgs e)
         {
-            InfoText.Show(LanguageManager.GetString("login_Info_2"), CustomColors.InfoText_Color.Info, "Log in:");
+            InfoText.Show(Properties.Resources.login_Info_2, CustomColors.InfoText_Color.Info, "Log in:");
         }
         private void Add_User_Click(object? sender, EventArgs e)
         {
@@ -316,7 +281,7 @@ namespace DigitalProductionProgram.User
 
             if (!IsUserDataFilled)
             {
-                InfoText.Show(LanguageManager.GetString("login_Info_3"), CustomColors.InfoText_Color.Warning, "Warning!", this);
+                InfoText.Show(Properties.Resources.login_Info_3, CustomColors.InfoText_Color.Warning, "Warning!", this);
                 return;
             }
             Person.Add(namn, tb_Sign.Text, tb_AnstNr.Text, tb_NewPassword.Text, cb_Role.Text, tb_Mail.Text, ProfilePicture);
@@ -328,7 +293,7 @@ namespace DigitalProductionProgram.User
         {
             if (!IsUserDataFilled)
             {
-                InfoText.Show(LanguageManager.GetString("login_Info_4"), CustomColors.InfoText_Color.Warning, "Warning!", this);
+                InfoText.Show(Properties.Resources.login_Info_4, CustomColors.InfoText_Color.Warning, "Warning!", this);
                 return;
             }
             using (var con = new SqlConnection(Database.cs_Protocol))
@@ -341,7 +306,7 @@ namespace DigitalProductionProgram.User
                 con.Open();
                 cmd.ExecuteScalar();
             }
-            InfoText.Show(LanguageManager.GetString("login_Info_5"), CustomColors.InfoText_Color.Ok, "Updated Profile");
+            InfoText.Show(Properties.Resources.login_Info_5, CustomColors.InfoText_Color.Ok, "Updated Profile");
             Clear_All();
             Close();
         }
@@ -350,7 +315,7 @@ namespace DigitalProductionProgram.User
             using var dlg = new OpenFileDialog
             {
                 Filter = @"Image Files|*.jpg;*.jpeg;*.png;*.bmp;*.gif",
-                Title = LanguageManager.GetString("login_Info_6")
+                Title = Properties.Resources.login_Info_6
             };
 
             if (dlg.ShowDialog() != DialogResult.OK)
@@ -385,25 +350,6 @@ namespace DigitalProductionProgram.User
         }
 
 
-        //private void AddProfilePicture_Click(object sender, EventArgs e)
-        //{
-        //    var dlg = new OpenFileDialog
-        //    {
-        //        Filter = "All Files(*.*)|*.*",
-        //        Title = LanguageManager.GetString("login_Info_6")
-        //    };
-        //    if (dlg.ShowDialog() == DialogResult.OK)
-        //    {
-        //        var picLocation = dlg.FileName;
-
-        //        var fs = new FileStream(picLocation, FileMode.Open, FileAccess.Read);
-        //        var br = new BinaryReader(fs);
-        //        ProfilePicture = br.ReadBytes((int)fs.Length);
-        //    }
-
-        //    if (IsInEditMode)
-        //        Person.Save_ProfilePicture(ProfilePicture, lbl_User.Text);
-        //}
 
         private void NyAnvändare_MouseDown(object sender, MouseEventArgs e)
         {
@@ -463,7 +409,7 @@ namespace DigitalProductionProgram.User
                     if (PasswordManager.IsPasswordOK(tb_Password.Text) == false || string.IsNullOrEmpty(lbl_User.Text))
                     {
                         Shake(this);
-                        InfoText.Show(LanguageManager.GetString("password_Info_1"), CustomColors.InfoText_Color.Bad, "Warning!", this);
+                        InfoText.Show(Properties.Resources.password_Info_1, CustomColors.InfoText_Color.Bad, "Warning!", this);
                         tb_Password.SelectAll();
                         return;
                     }
@@ -494,7 +440,7 @@ namespace DigitalProductionProgram.User
         {
             if (Mail.IsValidEmail(tb_Mail.Text) == false)
             {
-                InfoText.Show(LanguageManager.GetString("validEmail"), CustomColors.InfoText_Color.Bad, "Warning!", this);
+                InfoText.Show(Properties.Resources.validEmail, CustomColors.InfoText_Color.Bad, "Warning!", this);
                 tb_Mail.Focus();
             }
         }

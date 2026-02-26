@@ -25,7 +25,7 @@ namespace DigitalProductionProgram.Protocols
 
         private void Translate_Form()
         {
-            LanguageManager.TranslationHelper.TranslateControls(new Control[]{label_ChangeChargeNr_Header, label_ChangeChargeNr_Info_1, lbl_ChangeChargeNr_Info_Change, lbl_ChangeChargeNr_Info_Exit});
+            LanguageManager.TranslationHelper.TranslateControls([label_ChangeChargeNr_Header, label_ChangeChargeNr_Info_1, lbl_ChangeChargeNr_Info_Change, lbl_ChangeChargeNr_Info_Exit]);
         }
         private void ChangeChargeNr_Click(object sender, EventArgs e)
         {
@@ -33,7 +33,7 @@ namespace DigitalProductionProgram.Protocols
             if (Kommentar.Length > 5)
                 Close();
             else
-                InfoText.Show(LanguageManager.GetString("changeBatchNr_Info_3"), CustomColors.InfoText_Color.Bad, "Warning!", this);
+                InfoText.Show(Properties.Resources.changeBatchNr_Info_3, CustomColors.InfoText_Color.Bad, "Warning!", this);
         }
 
         private void Exit_Click(object sender, EventArgs e)

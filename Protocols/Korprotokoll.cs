@@ -37,8 +37,8 @@ namespace DigitalProductionProgram.Protocols
                         !string.IsNullOrEmpty(Open_ByUser))
                     {
                         InfoText.Show(
-                            $"{LanguageManager.GetString("protocol_OpenAnotherUser_1")} {Open_ByUser} {LanguageManager.GetString("protocol_OpenAnotherUser_2")} {Open_ByComputer}.\n" +
-                            $"{LanguageManager.GetString("protocol_OpenAnotherUser_3")} {Open_ByUser}",
+                            $"{Properties.Resources.protocol_OpenAnotherUser_1} {Open_ByUser} {Properties.Resources.protocol_OpenAnotherUser_2} {Open_ByComputer}.\n" +
+                            $"{Properties.Resources.protocol_OpenAnotherUser_3} {Open_ByUser}",
                             CustomColors.InfoText_Color.Warning, "Information", form);
 
                         return true;

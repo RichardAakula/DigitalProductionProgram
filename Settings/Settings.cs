@@ -66,10 +66,10 @@ namespace DigitalProductionProgram.Settings
         }
         private void Translate_Form()
         {
-            page_General.Text = LanguageManager.GetString("settings_Page_General");
-            page_SpecialParts.Text = LanguageManager.GetString("settings_Page_Parts");
+            page_General.Text = Properties.Resources.settings_Page_General;
+            page_SpecialParts.Text = Properties.Resources.settings_Page_Parts;
 
-            page_Measureinstruments.Text = LanguageManager.GetString("settings_Page_Measureinstruments");
+            page_Measureinstruments.Text = Properties.Resources.settings_Page_Measureinstruments;
 
             Control[] controls =
             {
@@ -185,7 +185,7 @@ namespace DigitalProductionProgram.Settings
                         break;
                 }
 
-                InfoText.Show(LanguageManager.GetString("stringRestartComputer"), CustomColors.InfoText_Color.Warning, "Warning!", settings);
+                InfoText.Show(Properties.Resources.stringRestartComputer, CustomColors.InfoText_Color.Warning, "Warning!", settings);
             }
         }
         public class Zumbach
@@ -880,17 +880,19 @@ namespace DigitalProductionProgram.Settings
                             ProdLine_LoadingPLan = reader["ProdLine_LoadingPLan"].ToString();
                             Tema = reader["Theme"].ToString();
                             LanguageManager.selectedCulture = new CultureInfo($"{reader["CultureInfo"]}");
+                            Thread.CurrentThread.CurrentUICulture = LanguageManager.selectedCulture;
+                            Thread.CurrentThread.CurrentCulture = LanguageManager.selectedCulture;
                         }
                     });
                 }
                 catch (Exception)
                 {
-                    InfoText.Show($"{LanguageManager.GetString("errorConnectingDatabase")}\n" +
-                                  $"",
-                        CustomColors.InfoText_Color.Bad, "Error!");
-
+                    InfoText.Show($"{Properties.Resources.errorConnectingDatabase}", CustomColors.InfoText_Color.Bad, "Error!");
                     Application.Exit(); // stäng programmet direkt
                 }
+                
+                
+
             }
         }
 

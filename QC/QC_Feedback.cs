@@ -25,8 +25,8 @@ namespace DigitalProductionProgram.QC
     {
         private bool mouseDown;
         private Point lastLocation;
-       
-        public byte[] ImageToByteArray(Image image)
+
+        private byte[] ImageToByteArray(Image image)
         {
             if (image == null)
                 return null;
@@ -72,7 +72,7 @@ namespace DigitalProductionProgram.QC
                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
                var reader = cmd.ExecuteReader();
                while (reader.Read())
-                   list.Add($"{reader["PartNumber"]} - {reader["OrderNr"]} - {reader["Operation"]}:{reader["OrderID"]}");
+                   list.Add($"{reader["PartNumber"]} - {reader["OrderNr"]} - {reader["Operation"]}|{reader["OrderID"]}");
                return list;
             }
         }
@@ -396,7 +396,7 @@ namespace DigitalProductionProgram.QC
 
         private void PartNr_LoadHistory_Click(object sender, EventArgs e)
         {
-            using var chooseItem = new Choose_Item(HistoryPartNumbers, ctrls: [tb_PartNr, tb_OrderNr], isMultipleColumns:true, isOkReturnOwnText: true);
+            using var chooseItem = new Choose_Item(HistoryPartNumbers, ctrls: [tb_PartNr, tb_OrderNr], totalColumns:2, visibleColumns: [true, false], isOkReturnOwnText: true);
             chooseItem.ShowDialog();
             var ordernr = tb_OrderNr.Text;
             int? orderid;

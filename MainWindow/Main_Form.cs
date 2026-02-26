@@ -151,7 +151,7 @@ namespace DigitalProductionProgram.MainWindow
 
             await Task.Run(() =>
             {
-                Settings.Settings.LoadData.Load_Settings();
+                //Settings.Settings.LoadData.Load_Settings();
                 Activity.Start();
                 Login_Monitor.Login_API();
                 Mail.AutoTestJira();
@@ -540,7 +540,7 @@ namespace DigitalProductionProgram.MainWindow
         private void ChangeToBetaMode()
         {
             if (Environment.MachineName != "OH-ID61")
-                InfoText.Show(LanguageManager.GetString("warning_Testdatabase"), CustomColors.InfoText_Color.Bad, "Warning");
+                InfoText.Show(Properties.Resources.warning_Testdatabase, CustomColors.InfoText_Color.Bad, "Warning");
                 //tlp_Left.BackColor =  panel_Right.BackColor = Color.Pink;//cf_OrderInformation.BackColor =
                 //if (Environment.MachineName == "THAI-DPP-TEST01" || Environment.MachineName == "OH-ID61")
                 //    return;
@@ -734,7 +734,7 @@ namespace DigitalProductionProgram.MainWindow
         {
             if (IsLoadingMeasurePoints == false)
                 return;
-            Monitor.Monitor.Load_DataTable_Measurpoints(Order.OrderNumber, Order.Operation, true);
+            Monitor.Monitor.Load_DataTable_Measurepoints(Order.OrderNumber, Order.Operation, true);
             cf_MeasurePoints.AddMeasurePointsMainForm();
             cf_MeasurePoints.Visible = true;
         }
@@ -813,7 +813,7 @@ namespace DigitalProductionProgram.MainWindow
 
             if (IsZumbachÖppet)
             {
-                InfoText.Show(LanguageManager.GetString("quickOpen_Info_2"), CustomColors.InfoText_Color.Warning, "Warning", this);
+                InfoText.Show(Properties.Resources.quickOpen_Info_2, CustomColors.InfoText_Color.Warning, "Warning", this);
                 return;
             }
 
@@ -828,7 +828,7 @@ namespace DigitalProductionProgram.MainWindow
 
             Order.WorkOperation = Manage_WorkOperation.Load_WorkOperation(false, Order.OrderID, Order.PartID);
             if (string.IsNullOrEmpty(Order.WorkOperation.ToString()) || Order.WorkOperation == Manage_WorkOperation.WorkOperations.Nothing)
-                InfoText.Show(LanguageManager.GetString("quickOpen_Info_3"), CustomColors.InfoText_Color.Bad, "Warning", this);
+                InfoText.Show(Properties.Resources.quickOpen_Info_3, CustomColors.InfoText_Color.Bad, "Warning", this);
             Points.Add_Points(1, "Snabböppna Order");
             _ = StartOrLoadOrder(true);
             dgv.ClearSelection();
@@ -1025,7 +1025,7 @@ namespace DigitalProductionProgram.MainWindow
         private void Info_Snabböppna_Click(object sender, EventArgs e)
         {
             Points.Add_Points(1, "Klickat på Infoknapp om Snabböppna");
-            InfoText.Show(LanguageManager.GetString("quickOpen_Info"), CustomColors.InfoText_Color.Info, "Info", this);
+            InfoText.Show(Properties.Resources.quickOpen_Info, CustomColors.InfoText_Color.Info, "Info", this);
         }
         private void EasterEgg_1_Click(object sender, EventArgs e)
         {

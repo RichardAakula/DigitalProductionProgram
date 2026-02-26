@@ -232,7 +232,7 @@ namespace DigitalProductionProgram.Protocols.Kragning_TEF
                 return;
 
             using var black = new BlackBackground(string.Empty, 80);
-            using var password = new PasswordManager(LanguageManager.GetString("confirmTransferPassword"));
+            using var password = new PasswordManager(Properties.Resources.confirmTransferPassword);
             black.Show();
             password.ShowDialog();
             black.Close();

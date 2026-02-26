@@ -55,7 +55,7 @@ namespace DigitalProductionProgram.Browse_Protocols
        
         private void Translate_Form()
         {
-            LanguageManager.TranslationHelper.TranslateControls(new Control[] { chb_SelectOrders });
+            LanguageManager.TranslationHelper.TranslateControls([chb_SelectOrders]);
         }
         private void Initialize_GUI()
         {
@@ -85,9 +85,9 @@ namespace DigitalProductionProgram.Browse_Protocols
         }
         private void Fill_Menu_Items()
         {
-            cm_Orderlist.Items.Add(LanguageManager.GetString("browseProtocols_1")); //Remove Order
-            cm_Orderlist.Items.Add(LanguageManager.GetString("browseProtocols_3")); //Discard Order
-            cm_Orderlist.Items.Add(LanguageManager.GetString("browseProtocols_4")); //Activate Order
+            cm_Orderlist.Items.Add(Properties.Resources.browseProtocols_1); //Remove Order
+            cm_Orderlist.Items.Add(Properties.Resources.browseProtocols_2); //Discard Order
+            cm_Orderlist.Items.Add(Properties.Resources.browseProtocols_4); //Activate Order
         }
 
         private static void Change_ControlsToClickable(IEnumerable<Control> controls)
@@ -342,13 +342,13 @@ namespace DigitalProductionProgram.Browse_Protocols
             int.TryParse(dgv_OrderList.Rows[row].Cells["orderlist_OrderID"].Value.ToString(), out var orderid);
             switch (value.Text)
             {
-                case var text when text == LanguageManager.GetString("browseProtocols_1")://Remove Order
+                case var text when text == Properties.Resources.browseProtocols_1://Remove Order
                     Menu_RemoveOrder();
                     break;
-                case var text when text == LanguageManager.GetString("browseProtocols_3")://Discard Order
+                case var text when text == Properties.Resources.browseProtocols_3://Discard Order
                     Menu_DeactivateOrder(orderid, row);
                     break;
-                case var text when text == LanguageManager.GetString("browseProtocols_4"): //Activate Order
+                case var text when text == Properties.Resources.browseProtocols_4: //Activate Order
                     Menu_ActivateOrder(orderid, row);
                     break;
             }
@@ -511,15 +511,66 @@ namespace DigitalProductionProgram.Browse_Protocols
         private async void PartNr_Click(object? sender, EventArgs e)
         {
             var ctrl = (Control)sender;
-            using var choose_Item = new Choose_Item(Part.List_PartNr, [ctrl]);
-            choose_Item.ShowDialog();
+            List<string> partnumbers = new List<string>();
+            Database.ExecuteSafe(con =>
+            {
+                const string query = $"""
+                                        SELECT
+                                            m.PartNr,
+                                            MAX(m.Date_Start) AS LatestDateStart,
+                                            COUNT(*) AS TotalOrders
+                                        FROM [Order].MainData AS m
+                                        WHERE m.WorkoperationID = 
+                                            (
+                                                SELECT ID FROM Workoperation.Names WHERE Name = @workoperation
+                                            )
+                                            AND IsOrderDone = 'True'
+                                        GROUP BY m.PartNr
+                                        ORDER BY LatestDateStart DESC
+                                      """;
+
+                using var cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@workoperation", Order.WorkOperation.ToString());
+                var reader = cmd.ExecuteReader();
+                while (reader.Read())
+                    partnumbers?.Add($"{reader[0]}|{reader[1]}|{reader[2]}");
+            });
+
+            var partnr = new Choose_Item(partnumbers, [ctrl], totalColumns:3, headers:["PartNumber", "Date", "Total Orders"] );
+            partnr.ShowDialog();
             await Load_OrderList($" AND PartNr = '{ctrl.Text}'");
         }
         private async void Customer_Click(object? sender, EventArgs e)
         {
             var ctrl = (Control)sender;
-            using var choose_Item = new Choose_Item(Customer.Customer.List_Customers, [ctrl]);
-            choose_Item.ShowDialog();
+            List<string> customers = new List<string>();
+            Database.ExecuteSafe(con =>
+            {
+                const string query = $"""
+                                        SELECT
+                                            m.Customer,
+                                            MAX(m.Date_Start) AS LatestDateStart,
+                                            COUNT(*) AS TotalOrders
+                                        FROM [Order].MainData AS m
+                                        WHERE m.WorkoperationID = 
+                                            (
+                                                SELECT ID FROM Workoperation.Names WHERE Name = @workoperation
+                                            )
+                                            AND IsOrderDone = 'True'
+                                        GROUP BY m.Customer
+                                        ORDER BY LatestDateStart DESC
+                                      """;
+
+                using var cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@workoperation", Order.WorkOperation.ToString());
+                var reader = cmd.ExecuteReader();
+                while (reader.Read())
+                    customers?.Add($"{reader[0]}|{reader[1]}|{reader[2]}");
+            });
+
+            var partnr = new Choose_Item(customers, [ctrl], totalColumns:3, headers:["PartNumber", "Date", "Total Orders"] );
+            partnr.ShowDialog();
+
             await Load_OrderList($" AND Customer = '{ctrl.Text}'");
         }
         private async void Order_Click(object? sender, EventArgs e)
@@ -622,7 +673,7 @@ namespace DigitalProductionProgram.Browse_Protocols
         }
         private void Info_Click(object sender, EventArgs e)
         {
-            InfoText.Show(LanguageManager.GetString("browseProtocols_2"), CustomColors.InfoText_Color.Info, "Info", this);
+            InfoText.Show(Properties.Resources.browseProtocols_2, CustomColors.InfoText_Color.Info, "Info", this);
         }
 
         private void Browse_Protocols_FormClosing(object sender, FormClosingEventArgs e)

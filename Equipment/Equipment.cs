@@ -147,8 +147,8 @@ namespace DigitalProductionProgram.Equipment
             {
                 var list = new List<string?>
                 {
-                    LanguageManager.GetString("slätt"),
-                    LanguageManager.GetString("rillat"),
+                    Properties.Resources.slätt,
+                    Properties.Resources.rillat,
                     "N/A"
                 };
                 return list;
@@ -189,7 +189,7 @@ namespace DigitalProductionProgram.Equipment
             SQL_Parameter.String(cmd.Parameters, "@typ", typ);
             var reader = cmd.ExecuteReader();
             while (reader.Read())
-                list.Add($"{reader[0]}:{reader[1]}");
+                list.Add($"{reader[0]}|{reader[1]}");
             return list;
         }
         public static List<string?> List_From_Register(string kolumn, string register, bool is_Show_Typ = false, string nom_Typ = null, string? sort = null)
@@ -285,7 +285,7 @@ namespace DigitalProductionProgram.Equipment
             var reader = cmd.ExecuteReader();
            
             while (reader.Read())
-                list.Add(isType ? reader[0].ToString() : $"{reader[0]}:({reader[1]})");
+                list.Add(isType ? reader[0].ToString() : $"{reader[0]}|({reader[1]})");
 
             return list;
         }
@@ -293,18 +293,18 @@ namespace DigitalProductionProgram.Equipment
         {
             var list = new List<string?>
             {
-                LanguageManager.GetString("yes")
+                Properties.Resources.yes
             };
             if (startup > 1)
-                list.Add(LanguageManager.GetString("no"));
+                list.Add(Properties.Resources.no);
             if (startup != 1) 
                 return list;
-            list.Add(LanguageManager.GetString("protocol_EquimentInfo_1")); //No, same material and equipment as last order
-            list.Add(LanguageManager.GetString("protocol_EquimentInfo_2")); //No, same material as last startup
+            list.Add(Properties.Resources.protocol_EquimentInfo_1); //No, same material and equipment as last order
+            list.Add(Properties.Resources.protocol_EquimentInfo_2); //No, same material as last startup
             if (CheckAuthority.IsWorkoperationAuthorized(CheckAuthority.TemplateWorkoperation.CleanedCyliner)) 
                 return list;
-            list.Add(LanguageManager.GetString("protocol_EquimentInfo_3")); //No, soft to hard material
-            list.Add(LanguageManager.GetString("protocol_EquimentInfo_4")); //No, light to dark color
+            list.Add(Properties.Resources.protocol_EquimentInfo_3); //No, soft to hard material
+            list.Add(Properties.Resources.protocol_EquimentInfo_4); //No, light to dark color
 
             return list;
         }

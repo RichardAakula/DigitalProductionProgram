@@ -447,7 +447,7 @@ namespace DigitalProductionProgram.Monitor
                 Utilities.GetOneFromMonitor<Common.Units>($"filter=Number Eq'{partUnit.UnitId}'")).Result;
         }
         public static DataTable? DataTable_Measurepoints { get; set; }
-        public static void Load_DataTable_Measurpoints(string? OrderNr, string? Operation, bool IsOkWarnNoMeasurpoints)
+        public static void Load_DataTable_Measurepoints(string? OrderNr, string? Operation, bool IsOkWarnNoMeasurpoints)
         {
             DataTable_Measurepoints = new DataTable();
             DataTable_Measurepoints.Columns.Add("Description");             //0

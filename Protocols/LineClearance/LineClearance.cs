@@ -59,7 +59,7 @@ namespace DigitalProductionProgram.Protocols.LineClearance
 
         public void Translate_Form()
         {
-            label_LC_Name_Date.Text = LanguageManager.GetString("print_LineClearance_1");
+            label_LC_Name_Date.Text = Properties.Resources.print_LineClearance_1;
             LanguageManager.TranslationHelper.TranslateControls([lbl_LC_Name]);
         }
        
@@ -76,9 +76,9 @@ namespace DigitalProductionProgram.Protocols.LineClearance
                 return;
             }
 
-            if (Korprotokoll.IsProtocol_Open_By_AnotherUser(null) || (!string.IsNullOrEmpty(lbl_LC_Name.Text) && lbl_LC_Name.Text != LanguageManager.GetString("lbl_LC_Name")))
+            if (Korprotokoll.IsProtocol_Open_By_AnotherUser(null) || (!string.IsNullOrEmpty(lbl_LC_Name.Text) && lbl_LC_Name.Text != Properties.Resources.lbl_LC_Name))
                 return;
-            if (Person.IsPasswordOk(LanguageManager.GetString("lineClearance_Info_1")) && IsLineClearanceDone == false)
+            if (Person.IsPasswordOk(Properties.Resources.lineClearance_Info_1) && IsLineClearanceDone == false)
             {
                 lbl_LC_Name.Text = Person.Name;
                 LC_Date.Text = DateTime.Now.ToString(CultureInfo.InvariantCulture);

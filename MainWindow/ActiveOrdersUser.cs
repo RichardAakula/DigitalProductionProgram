@@ -37,7 +37,7 @@ namespace DigitalProductionProgram.MainWindow
         }
         public void Translate_Form()
         {
-            label_Header_ActiveOrders.Text = LanguageManager.GetString("label_Header_ActiveOrders");
+            label_Header_ActiveOrders.Text = Properties.Resources.label_Header_ActiveOrders;
         }
 
 

@@ -11,6 +11,8 @@ using System.ComponentModel;
 using System.Data;
 using System.Data.Odbc;
 using System.Diagnostics;
+using System.Globalization;
+using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.Measure;
 using DigitalProductionProgram.Templates;
 using static DigitalProductionProgram.DatabaseManagement.Database;
@@ -112,6 +114,13 @@ namespace DigitalProductionProgram.MainWindow
             ShowSplash();
             //Kontrollerar att alla databaskopplingar är ok, annars får användaren välja  
             Load_DatabaseSettings();
+            Settings.Settings.LoadData.Load_Settings();
+
+            Thread.CurrentThread.CurrentUICulture = LanguageManager.selectedCulture;
+            Thread.CurrentThread.CurrentCulture   = LanguageManager.selectedCulture;
+            
+            CultureInfo.DefaultThreadCurrentUICulture = LanguageManager.selectedCulture;
+            CultureInfo.DefaultThreadCurrentCulture   = LanguageManager.selectedCulture;
 
             //Person.Name = "Richard Aakula";
             //Application.Run(new ClientUpdateManager());

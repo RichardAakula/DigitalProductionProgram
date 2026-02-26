@@ -41,7 +41,7 @@ namespace DigitalProductionProgram.Monitor
         public static void GiveUserWarningMonitorOnStageServer()
         {
             if (Database.MonitorHost == "stage-optig5.optinova.fi")
-                InfoText.Show(LanguageManager.GetString("warning_MonitorTestserver"), CustomColors.InfoText_Color.Bad, null);
+                InfoText.Show(Properties.Resources.warning_MonitorTestserver, CustomColors.InfoText_Color.Bad, null);
         }
 
         //[DebuggerStepThrough]
@@ -115,7 +115,7 @@ namespace DigitalProductionProgram.Monitor
             }
             catch (WebException)
             {
-                InfoText.Show(LanguageManager.GetString("error_Monitor"), CustomColors.InfoText_Color.Bad, "Error Monitor");
+                InfoText.Show(Properties.Resources.error_Monitor, CustomColors.InfoText_Color.Bad, "Error Monitor");
 
                 result = new LoginResult
                 {

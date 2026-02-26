@@ -116,9 +116,9 @@ namespace DigitalProductionProgram.User
             {
                 try
                 {
-                    InfoText.Show($"{LanguageManager.GetString("authority_Check_1")}:\n" +
+                    InfoText.Show($"{Properties.Resources.authority_Check_1}:\n" +
                                   $"{Authorities_Template[(int)val]}\n" +
-                                  $"{LanguageManager.GetString("authority_Check_2")}",
+                                  $"{Properties.Resources.authority_Check_2}",
                         CustomColors.InfoText_Color.Warning, null);
                 }
                 catch
@@ -180,7 +180,7 @@ namespace DigitalProductionProgram.User
                     case "Quality Engineer":
                         break;
                     default:
-                        InfoText.Show(LanguageManager.GetString("authority_Check_3"), CustomColors.InfoText_Color.Info, null);
+                        InfoText.Show(Properties.Resources.authority_Check_3, CustomColors.InfoText_Color.Info, null);
                         return false;
                 }
 

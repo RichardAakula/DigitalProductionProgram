@@ -4,7 +4,7 @@ using System.Resources;
 
 namespace DigitalProductionProgram.ControlsManagement
 {
-    internal class LanguageManager
+    internal abstract class LanguageManager
     {
         private static readonly ResourceManager resource = new(typeof(Properties.Resources));
         public static CultureInfo selectedCulture { get; set; } = new("sv-SE");

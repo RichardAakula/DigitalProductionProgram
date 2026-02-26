@@ -170,7 +170,7 @@ namespace DigitalProductionProgram.MainWindow
 
             if (Program.IsUpdateCritical)
             {
-                InfoText.Show(LanguageManager.GetString("update_Info_1"), CustomColors.InfoText_Color.Bad, "Warning!");
+                InfoText.Show(Properties.Resources.update_Info_1, CustomColors.InfoText_Color.Bad, "Warning!");
 
                 Maintenance.StartInstallation(true);
                 minutes_CheckForUpdate = 1; // 1 minut mellan försöken
@@ -180,9 +180,9 @@ namespace DigitalProductionProgram.MainWindow
             Activity.Start();
 
             InfoText.Question(
-                $"{LanguageManager.GetString("update_Info_1_1")}\n\n" +
+                $"{Properties.Resources.update_Info_1_1}\n\n" +
                 $"{ChangeLog.News}\n" +
-                $"{LanguageManager.GetString("update_Info_1_2")}",
+                $"{Properties.Resources.update_Info_1_2}",
                 CustomColors.InfoText_Color.Warning, "Warning!");
 
             if (InfoText.answer == InfoText.Answer.No)
@@ -203,7 +203,7 @@ namespace DigitalProductionProgram.MainWindow
 
             if (Maintenance.IsMaintenance_Ongoing)
             {
-                InfoText.Show($"{LanguageManager.GetString("maintenanceWork_1")} {Maintenance.Time_Ongoing}.",
+                InfoText.Show($"{Properties.Resources.maintenanceWork_1} {Maintenance.Time_Ongoing}.",
                     CustomColors.InfoText_Color.Bad, "Info");
                 Application.Exit();
                 Environment.Exit(0);
@@ -237,9 +237,9 @@ namespace DigitalProductionProgram.MainWindow
 
 
             Activity.Start();
-            InfoText.Show($"{LanguageManager.GetString("maintenanceWork_4")} {Maintenance.Time_Left} \n\n" +
-                          $"{Maintenance.Date_PlannedStop} {LanguageManager.GetString("maintenanceWork_2")}\n\n" +
-                          $"{LanguageManager.GetString("maintenanceWork_3")} {Maintenance.PlannedTime}", clr, "Info");
+            InfoText.Show($"{Properties.Resources.maintenanceWork_4} {Maintenance.Time_Left} \n\n" +
+                          $"{Maintenance.Date_PlannedStop} {Properties.Resources.maintenanceWork_2}\n\n" +
+                          $"{Properties.Resources.maintenanceWork_3} {Maintenance.PlannedTime}", clr, "Info");
             _ = Activity.Stop($"{Person.Name} has read about the scheduled downtime");
 
         }

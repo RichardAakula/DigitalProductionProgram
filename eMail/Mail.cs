@@ -82,7 +82,7 @@ namespace DigitalProductionProgram.eMail
 
             msg.From = new MailAddress("digitalprocessprogram@optinova.com");
             msg.Subject = subject;
-            msg.Body = string.Format(LanguageManager.GetString("mail_Body") ?? string.Empty, Person.Name, Person.Mail, Body);
+            msg.Body = string.Format(Properties.Resources.mail_Body ?? string.Empty, Person.Name, Person.Mail, Body);
             msg.IsBodyHtml = true;
             var client = new SmtpClient
             {
@@ -183,10 +183,10 @@ namespace DigitalProductionProgram.eMail
             Part.SetPartNrSpecial("MissingMeasurepoints");
             if (Part.IsPartNrSpecial || Person.Role == "SuperAdmin")
                 return;
-            InfoText.Show($"{LanguageManager.GetString("mail_MissingMeasurePoints_1")}", CustomColors.InfoText_Color.Warning, null);
+            InfoText.Show($"{Properties.Resources.mail_MissingMeasurePoints_1}", CustomColors.InfoText_Color.Warning, null);
 
-            Body = string.Format(LanguageManager.GetString("mail_NotifyCustomerServiceMissingMeasurePoints"), Order.WorkOperation, Order.OrderNumber, Order.Operation, Order.PartNumber, Person.Name);
-            Send($"{LanguageManager.GetString("mail_MissingMeasurePoints_2")}", 5);
+            Body = string.Format(Properties.Resources.mail_NotifyCustomerServiceMissingMeasurePoints, Order.WorkOperation, Order.OrderNumber, Order.Operation, Order.PartNumber, Person.Name);
+            Send($"{Properties.Resources.mail_MissingMeasurePoints_2}", 5);
 
             using var con = new SqlConnection(Database.cs_Protocol);
             const string query = @"INSERT INTO Parts.PartNrSpecial (PartNr, PartNrDescriptionID )
@@ -204,32 +204,32 @@ namespace DigitalProductionProgram.eMail
         public static void NotifyOrderFinishedCount_3()
         {
             
-            Body = string.Format(LanguageManager.GetString("mail_Body_NotifyOrderFinishedCount_3"), Order.PartNumber, Monitor.Monitor.WorkCenter.Description, Order.ProdGroup, Order.WorkOperation, Order.OrderNumber, Order.Operation);
-            Send(string.Format(LanguageManager.GetString("mail_Subject_NotifyOrderFinishedCount"), Order.PartNumber), 2);
+            Body = string.Format(Properties.Resources.mail_Body_NotifyOrderFinishedCount_3, Order.PartNumber, Monitor.Monitor.WorkCenter.Description, Order.ProdGroup, Order.WorkOperation, Order.OrderNumber, Order.Operation);
+            Send(string.Format(Properties.Resources.mail_Subject_NotifyOrderFinishedCount, Order.PartNumber), 2);
         }
         public static void NotifyOrderStartCount_4to5(int totalorders)
         {
-            Body = string.Format(LanguageManager.GetString("mail_Body_NotifyOrderStartCount_4to5"), Order.PartNumber, totalorders, Monitor.Monitor.WorkCenter.Description, Order.ProdGroup, Order.WorkOperation);
-            Send(string.Format(LanguageManager.GetString("mail_Subject_NotifyOrderStartCount"), Order.PartNumber, totalorders), 3);
+            Body = string.Format(Properties.Resources.mail_Body_NotifyOrderStartCount_4to5, Order.PartNumber, totalorders, Monitor.Monitor.WorkCenter.Description, Order.ProdGroup, Order.WorkOperation);
+            Send(string.Format(Properties.Resources.mail_Subject_NotifyOrderStartCount, Order.PartNumber, totalorders), 3);
         }
         public static void NotifyOrderStartCount_6(int totalorders)
         {
-            Body = string.Format(LanguageManager.GetString("mail_Body_NotifyOrderStartCount_6"), Order.PartNumber, totalorders, Monitor.Monitor.WorkCenter?.Description, Order.ProdGroup, Order.WorkOperation);
-            Send(string.Format(LanguageManager.GetString("mail_Subject_NotifyOrderStartCount"), Order.PartNumber, totalorders), 3);
+            Body = string.Format(Properties.Resources.mail_Body_NotifyOrderStartCount_6, Order.PartNumber, totalorders, Monitor.Monitor.WorkCenter?.Description, Order.ProdGroup, Order.WorkOperation);
+            Send(string.Format(Properties.Resources.mail_Subject_NotifyOrderStartCount, Order.PartNumber, totalorders), 3);
         }
         public static void NotifyCustomerServiceOrderCount_6()
         {
-            Body = string.Format(LanguageManager.GetString("mail_Body_NotifyOrderStartCount_6"), Order.PartNumber, 6, Monitor.Monitor.WorkCenter?.Description, Order.ProdGroup, Order.WorkOperation);
-            Send(string.Format(LanguageManager.GetString("mail_Subject_NotifyOrderStartCount"), Order.PartNumber, 6), 4);
+            Body = string.Format(Properties.Resources.mail_Body_NotifyOrderStartCount_6, Order.PartNumber, 6, Monitor.Monitor.WorkCenter?.Description, Order.ProdGroup, Order.WorkOperation);
+            Send(string.Format(Properties.Resources.mail_Subject_NotifyOrderStartCount, Order.PartNumber, 6), 4);
         }
 
         public static void NotifyQAPartNumberNeedApproval(string? latestRevNr, string startedRevNr)
         {
             if (Browse_Protocols.Browse_Protocols.Is_BrowsingProtocols)
                 return;
-            InfoText.Show(string.Format(LanguageManager.GetString("mail_ApproveProcesscard_1"), Order.RevNr), CustomColors.InfoText_Color.Warning, "Warning!");
-            Mail.Body = string.Format(LanguageManager.GetString("mail_ApproveProcesscard_2"), Order.PartNumber, latestRevNr, Monitor.Monitor.WorkCenter?.Description, Order.ProdGroup, Order.WorkOperation, Order.OrderNumber, Order.Operation, startedRevNr);
-            Mail.Send(LanguageManager.GetString("mail_ApproveProcesscard"), 8);
+            InfoText.Show(string.Format(Properties.Resources.mail_ApproveProcesscard_1, Order.RevNr), CustomColors.InfoText_Color.Warning, "Warning!");
+            Mail.Body = string.Format(Properties.Resources.mail_ApproveProcesscard_2, Order.PartNumber, latestRevNr, Monitor.Monitor.WorkCenter?.Description, Order.ProdGroup, Order.WorkOperation, Order.OrderNumber, Order.Operation, startedRevNr);
+            Mail.Send(Properties.Resources.mail_ApproveProcesscard, 8);
         }
 
         public static void NotifyUserCodeResetPassword(string? code)

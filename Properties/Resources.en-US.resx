@@ -1902,6 +1902,178 @@ Contact Admin if you encounter any issues.</value>
   <data name="changeMeasureProtocol_Info_2" xml:space="preserve">
     <value>You cannot change the template for the measureprotocol before you have started/opened an order.</value>
   </data>
+  <data name="label_InactiveProcesscard" xml:space="preserve">
+    <value>This Process card is inactive.</value>
+  </data>
+  <data name="label_ResetPasswordInfo" xml:space="preserve">
+    <value>We’ve sent a code to your email. Enter it below.</value>
+  </data>
+  <data name="btn_ConfirmCode" xml:space="preserve">
+    <value>Confirm code</value>
+  </data>
+  <data name="btn_NewCode" xml:space="preserve">
+    <value>Send new code</value>
+  </data>
+  <data name="btn_ConfirmNewCode" xml:space="preserve">
+    <value>Confirm code</value>
+  </data>
+  <data name="resetPassword_CodeExpired" xml:space="preserve">
+    <value>The code has expired. Click 'Send new code'.</value>
+  </data>
+  <data name="resetPassword_TimeLeft" xml:space="preserve">
+    <value>The code is valid for:</value>
+  </data>
+  <data name="resetPassword_MaxAttemptsReached" xml:space="preserve">
+    <value>Too many failed attempts.</value>
+  </data>
+  <data name="resetPassword_WrongCode" xml:space="preserve">
+    <value>Incorrect code. Attempts left:</value>
+  </data>
+  <data name="processcardNotNeedSigning" xml:space="preserve">
+    <value>Processcards during Development do not require approval.</value>
+  </data>
+  <data name="processcardAlreadyEstablished" xml:space="preserve">
+    <value>The process card has already been established and signed.</value>
+  </data>
+  <data name="legendAverageValuePartNr" xml:space="preserve">
+    <value>Average per Part Number</value>
+  </data>
+  <data name="legendAverageLastOrder" xml:space="preserve">
+    <value>Average Latest Order</value>
+  </data>
+  <data name="col_CodeText_Header" xml:space="preserve">
+    <value>Black text = Critical Value</value>
+  </data>
+  <data name="processcard_MissingInfo_MeasurementTemplate" xml:space="preserve">
+    <value>You have not selected a template for the Measurement Protocol.
+Should this operation proceed without a Measurement Protocol?</value>
+  </data>
+  <data name="errorConnectingDatabase" xml:space="preserve">
+    <value>An error occurred while connecting to the database.
+Please contact IT support if the issue persists.</value>
+  </data>
+  <data name="error_ProfilePicture" xml:space="preserve">
+    <value>Unable to load the profile picture. The file might be damaged.</value>
+  </data>
+  <data name="error_OrderNotOpen" xml:space="preserve">
+    <value>You must open or start an order before opening the Protocol. Please make sure that the Order Number is entered and that an Operation is selected.</value>
+  </data>
+  <data name="Menu_Arkiv_UpdateDPP" xml:space="preserve">
+    <value>Update DPP</value>
+  </data>
+  <data name="processcard_ChangeProdType" xml:space="preserve">
+    <value>When you change the Product Type, the process card is saved as a completely new process card, and the revision restarts from A. The operators can then choose which of the process cards they want to use during production.</value>
+  </data>
+  <data name="label_TotalMeasureMents" xml:space="preserve">
+    <value>Total Measurements</value>
+  </data>
+  <data name="label_DiscardedMeasurements" xml:space="preserve">
+    <value>Total Discarded Measurements:</value>
+  </data>
+  <data name="top10LatestOrders" xml:space="preserve">
+    <value>10 latest started orders</value>
+  </data>
+  <data name="Menu_Order_ReadProposedProcesscardChanges" xml:space="preserve">
+    <value>View proposed process card updates for this order.</value>
+  </data>
+  <data name="orderNotOpen" xml:space="preserve">
+    <value>No open Order.</value>
+  </data>
+  <data name="Menu_Order_OrderLog" xml:space="preserve">
+    <value>Order Log</value>
+  </data>
+  <data name="zumbach_DeleteMeasurement" xml:space="preserve">
+    <value>Are you certain you want to discard this entire measurement?</value>
+  </data>
+  <data name="error_Monitor" xml:space="preserve">
+    <value>Unable to connect to Monitor. The service may be temporarily down or the network is unavailable.
+Please try again later. If the problem persists, contact support.</value>
+  </data>
+  <data name="processcard_SuggestedChanges" xml:space="preserve">
+    <value>Suggested changes for the process card</value>
+  </data>
+  <data name="update_Info" xml:space="preserve">
+    <value>A newer version is available, but this client is not yet authorized to update.</value>
+  </data>
+  <data name="update_Info_2" xml:space="preserve">
+    <value>There is currently no newer version available.</value>
+  </data>
+  <data name="spc_Totalmeasurements" xml:space="preserve">
+    <value>The number of measurements included in the SPC calculation.
+Rows filtered out (discarded / unrealistic values) are not counted.</value>
+  </data>
+  <data name="spc_Mean" xml:space="preserve">
+    <value>The average of all measurement values.
+Shows where the process is centered “on average”.</value>
+  </data>
+  <data name="spc_Median" xml:space="preserve">
+    <value>The middle value when all measurements are sorted.
+Less sensitive to outliers than the mean.</value>
+  </data>
+  <data name="spc_Min" xml:space="preserve">
+    <value>The lowest measured value.</value>
+  </data>
+  <data name="spc_Max" xml:space="preserve">
+    <value>The highest measured value.</value>
+  </data>
+  <data name="spc_Range" xml:space="preserve">
+    <value>Difference between maximum and minimum.
+A quick indicator of process variation.</value>
+  </data>
+  <data name="spc_StandardDeviation" xml:space="preserve">
+    <value>Measures how much the data varies around the mean.
+Low standard deviation = stable process.</value>
+  </data>
+  <data name="spc_Skewness" xml:space="preserve">
+    <value>Shows if the distribution leans to one side.
+
+Positive = more values below mean
+Negative = more values above mean
+
+</value>
+  </data>
+  <data name="spc_Kurtosis" xml:space="preserve">
+    <value>Kurtosis
+
+Kurtosis measures whether the distribution of measurements is peaked or flat compared to a normal distribution.
+
+Kurtosis &gt; 0 → more peaked than normal (more extreme IDs in the tails).
+Kurtosis &lt; 0 → flatter than normal (fewer extremes).
+Kurtosis = 0 → same peakiness as a normal distribution.
+
+Example:
+
+Most tubes are ~2.0 mm, but a few are 1.8 mm or 2.3 mm → positive excess kurtosis → high peakiness.</value>
+  </data>
+  <data name="spc_Pp" xml:space="preserve">
+    <value>Pp – Process Performance (Overall)
+
+Indicates how large the total process variation is in relation to the tolerance width (USL − LSL).
+It is calculated using the overall (long-term) standard deviation.
+Pp does not take process centering into account.
+Typical industry interpretation (not absolute requirements):
+
+Pp ≥ 1.33 → acceptable capability
+Pp ≥ 1.67 → good capability
+Pp ≥ 2.00 → very high capability
+
+Note: Pp assumes the process is statistically stable.</value>
+  </data>
+  <data name="spc_Ppk" xml:space="preserve">
+    <value>Ppk – Process Performance Index (Overall, Centered)
+
+Indicates how well the process performs relative to the specification limits, taking both total variation and process centering into account.
+It is calculated using the overall (long-term) standard deviation and the process mean.
+Ppk reflects whether the process is shifted toward either specification limit (USL or LSL).
+Typical industry interpretation (not absolute requirements):
+
+Ppk ≥ 1.33 → acceptable performance
+Ppk ≥ 1.67 → good performance
+Ppk ≥ 2.00 → very high performance
+
+Note:
+Ppk assumes the process is statistically stable.</value>
+  </data>
   <data name="BrowseOldMeasureprotocol" xml:space="preserve">
     <value>F3-Browse Old Measurement Protocols</value>
   </data>
@@ -2310,177 +2482,5 @@ Contact Admin if necessary.</value>
   </data>
   <data name="btnZumbach" xml:space="preserve">
     <value>F6-Zumbach-measurement</value>
-  </data>
-  <data name="label_InactiveProcesscard" xml:space="preserve">
-    <value>This Process card is inactive.</value>
-  </data>
-  <data name="label_ResetPasswordInfo" xml:space="preserve">
-    <value>We’ve sent a code to your email. Enter it below.</value>
-  </data>
-  <data name="btn_ConfirmCode" xml:space="preserve">
-    <value>Confirm code</value>
-  </data>
-  <data name="btn_NewCode" xml:space="preserve">
-    <value>Send new code</value>
-  </data>
-  <data name="btn_ConfirmNewCode" xml:space="preserve">
-    <value>Confirm code</value>
-  </data>
-  <data name="resetPassword_CodeExpired" xml:space="preserve">
-    <value>The code has expired. Click 'Send new code'.</value>
-  </data>
-  <data name="resetPassword_TimeLeft" xml:space="preserve">
-    <value>The code is valid for:</value>
-  </data>
-  <data name="resetPassword_MaxAttemptsReached" xml:space="preserve">
-    <value>Too many failed attempts.</value>
-  </data>
-  <data name="resetPassword_WrongCode" xml:space="preserve">
-    <value>Incorrect code. Attempts left:</value>
-  </data>
-  <data name="processcardNotNeedSigning" xml:space="preserve">
-    <value>Processcards during Development do not require approval.</value>
-  </data>
-  <data name="processcardAlreadyEstablished" xml:space="preserve">
-    <value>The process card has already been established and signed.</value>
-  </data>
-  <data name="legendAverageValuePartNr" xml:space="preserve">
-    <value>Average per Part Number</value>
-  </data>
-  <data name="legendAverageLastOrder" xml:space="preserve">
-    <value>Average Latest Order</value>
-  </data>
-  <data name="col_CodeText_Header" xml:space="preserve">
-    <value>Black text = Critical Value</value>
-  </data>
-  <data name="processcard_MissingInfo_MeasurementTemplate" xml:space="preserve">
-    <value>You have not selected a template for the Measurement Protocol.
-Should this operation proceed without a Measurement Protocol?</value>
-  </data>
-  <data name="errorConnectingDatabase" xml:space="preserve">
-    <value>An error occurred while connecting to the database.
-Please contact IT support if the issue persists.</value>
-  </data>
-  <data name="error_ProfilePicture" xml:space="preserve">
-    <value>Unable to load the profile picture. The file might be damaged.</value>
-  </data>
-  <data name="error_OrderNotOpen" xml:space="preserve">
-    <value>You must open or start an order before opening the Protocol. Please make sure that the Order Number is entered and that an Operation is selected.</value>
-  </data>
-  <data name="Menu_Arkiv_UpdateDPP" xml:space="preserve">
-    <value>Update DPP</value>
-  </data>
-  <data name="processcard_ChangeProdType" xml:space="preserve">
-    <value>When you change the Product Type, the process card is saved as a completely new process card, and the revision restarts from A. The operators can then choose which of the process cards they want to use during production.</value>
-  </data>
-  <data name="label_TotalMeasureMents" xml:space="preserve">
-    <value>Total Measurements</value>
-  </data>
-  <data name="label_DiscardedMeasurements" xml:space="preserve">
-    <value>Total Discarded Measurements:</value>
-  </data>
-  <data name="top10LatestOrders" xml:space="preserve">
-    <value>10 latest started orders</value>
-  </data>
-  <data name="Menu_Order_ReadProposedProcesscardChanges" xml:space="preserve">
-    <value>View proposed process card updates for this order.</value>
-  </data>
-  <data name="orderNotOpen" xml:space="preserve">
-    <value>No open Order.</value>
-  </data>
-  <data name="Menu_Order_OrderLog" xml:space="preserve">
-    <value>Order Log</value>
-  </data>
-  <data name="zumbach_DeleteMeasurement" xml:space="preserve">
-    <value>Are you certain you want to discard this entire measurement?</value>
-  </data>
-  <data name="error_Monitor" xml:space="preserve">
-    <value>Unable to connect to Monitor. The service may be temporarily down or the network is unavailable.
-Please try again later. If the problem persists, contact support.</value>
-  </data>
-  <data name="processcard_SuggestedChanges" xml:space="preserve">
-    <value>Suggested changes for the process card</value>
-  </data>
-  <data name="update_Info" xml:space="preserve">
-    <value>A newer version is available, but this client is not yet authorized to update.</value>
-  </data>
-  <data name="update_Info_2" xml:space="preserve">
-    <value>There is currently no newer version available.</value>
-  </data>
-  <data name="spc_Totalmeasurements" xml:space="preserve">
-    <value>The number of measurements included in the SPC calculation.
-Rows filtered out (discarded / unrealistic values) are not counted.</value>
-  </data>
-  <data name="spc_Mean" xml:space="preserve">
-    <value>The average of all measurement values.
-Shows where the process is centered “on average”.</value>
-  </data>
-  <data name="spc_Median" xml:space="preserve">
-    <value>The middle value when all measurements are sorted.
-Less sensitive to outliers than the mean.</value>
-  </data>
-  <data name="spc_Min" xml:space="preserve">
-    <value>The lowest measured value.</value>
-  </data>
-  <data name="spc_Max" xml:space="preserve">
-    <value>The highest measured value.</value>
-  </data>
-  <data name="spc_Range" xml:space="preserve">
-    <value>Difference between maximum and minimum.
-A quick indicator of process variation.</value>
-  </data>
-  <data name="spc_StandardDeviation" xml:space="preserve">
-    <value>Measures how much the data varies around the mean.
-Low standard deviation = stable process.</value>
-  </data>
-  <data name="spc_Skewness" xml:space="preserve">
-    <value>Shows if the distribution leans to one side.
-
-Positive = more values below mean
-Negative = more values above mean
-
-</value>
-  </data>
-  <data name="spc_Kurtosis" xml:space="preserve">
-    <value>Kurtosis
-
-Kurtosis measures whether the distribution of measurements is peaked or flat compared to a normal distribution.
-
-Kurtosis &gt; 0 → more peaked than normal (more extreme IDs in the tails).
-Kurtosis &lt; 0 → flatter than normal (fewer extremes).
-Kurtosis = 0 → same peakiness as a normal distribution.
-
-Example:
-
-Most tubes are ~2.0 mm, but a few are 1.8 mm or 2.3 mm → positive excess kurtosis → high peakiness.</value>
-  </data>
-  <data name="spc_Pp" xml:space="preserve">
-    <value>Pp – Process Performance (Overall)
-
-Indicates how large the total process variation is in relation to the tolerance width (USL − LSL).
-It is calculated using the overall (long-term) standard deviation.
-Pp does not take process centering into account.
-Typical industry interpretation (not absolute requirements):
-
-Pp ≥ 1.33 → acceptable capability
-Pp ≥ 1.67 → good capability
-Pp ≥ 2.00 → very high capability
-
-Note: Pp assumes the process is statistically stable.</value>
-  </data>
-  <data name="spc_Ppk" xml:space="preserve">
-    <value>Ppk – Process Performance Index (Overall, Centered)
-
-Indicates how well the process performs relative to the specification limits, taking both total variation and process centering into account.
-It is calculated using the overall (long-term) standard deviation and the process mean.
-Ppk reflects whether the process is shifted toward either specification limit (USL or LSL).
-Typical industry interpretation (not absolute requirements):
-
-Ppk ≥ 1.33 → acceptable performance
-Ppk ≥ 1.67 → good performance
-Ppk ≥ 2.00 → very high performance
-
-Note:
-Ppk assumes the process is statistically stable.</value>
   </data>
 </root>

@@ -61,40 +61,40 @@ namespace DigitalProductionProgram.User
 
         private void UpdateGUI_Roles()
         {
-            dgv_Template.Columns[0].HeaderText = LanguageManager.GetString("Menu_User_Authorities");
-            dgv_Details.Columns[0].HeaderText = LanguageManager.GetString("role");
-            btn_Remove.Text = LanguageManager.GetString("btn_AuthoritiesRemoveRole");
-            btn_Add.Text = LanguageManager.GetString("btn_AuthoritiesAddRole");
+            dgv_Template.Columns[0].HeaderText = Properties.Resources.Menu_User_Authorities;
+            dgv_Details.Columns[0].HeaderText = Properties.Resources.role;
+            btn_Remove.Text = Properties.Resources.btn_AuthoritiesRemoveRole;
+            btn_Add.Text = Properties.Resources.btn_AuthoritiesAddRole;
             
         }
         private void UpdateGUI_Users()
         {
-            dgv_Details.Columns[0].HeaderText = LanguageManager.GetString("Menu_User");
-            btn_Add.Text = LanguageManager.GetString("btn_AuthoritiesAddUser");
+            dgv_Details.Columns[0].HeaderText = Properties.Resources.Menu_User;
+            btn_Add.Text = Properties.Resources.btn_AuthoritiesAddUser;
             Load_Users();
         }
         private void UpdateGUI_Email()
         {
-            dgv_Template.Columns[0].HeaderText = LanguageManager.GetString("customMail");
+            dgv_Template.Columns[0].HeaderText = Properties.Resources.customMail;
             dgv_Details.Columns[0].HeaderText = "E-Mail";
-            btn_Remove.Text = LanguageManager.GetString("btn_AuthoritiesRemoveMail");
-            btn_Add.Text = LanguageManager.GetString("btn_AuthoritiesAddEmail");
+            btn_Remove.Text = Properties.Resources.btn_AuthoritiesRemoveMail;
+            btn_Add.Text = Properties.Resources.btn_AuthoritiesAddEmail;
             Load_TemplateCustomMail();
         }
         private void UpdateGUI_Workoperation()
         {
-            dgv_Template.Columns[0].HeaderText = LanguageManager.GetString("customWorkoperation");
-            dgv_Details.Columns[0].HeaderText = LanguageManager.GetString("label_Workoperation");
-            btn_Remove.Text = LanguageManager.GetString("btn_AuthoritiesRemoveWorkoperation");
-            btn_Add.Text = LanguageManager.GetString("btn_AuthoritiesAddWorkoperation");
+            dgv_Template.Columns[0].HeaderText = Properties.Resources.customWorkoperation;
+            dgv_Details.Columns[0].HeaderText = Properties.Resources.label_Workoperation;
+            btn_Remove.Text = Properties.Resources.btn_AuthoritiesRemoveWorkoperation;
+            btn_Add.Text = Properties.Resources.btn_AuthoritiesAddWorkoperation;
             Load_TemplateWorkoperations();
         }
         private void UpdateGUI_Factory()
         {
-            dgv_Template.Columns[0].HeaderText = LanguageManager.GetString("customFactory");
-            dgv_Details.Columns[0].HeaderText = LanguageManager.GetString("label_Factory");
-            btn_Remove.Text = LanguageManager.GetString("btn_AuthoritiesRemoveFactory");
-            btn_Add.Text = LanguageManager.GetString("btn_AuthoritiesAddFactory");
+            dgv_Template.Columns[0].HeaderText = Properties.Resources.customFactory;
+            dgv_Details.Columns[0].HeaderText = Properties.Resources.label_Factory;
+            btn_Remove.Text = Properties.Resources.btn_AuthoritiesRemoveFactory;
+            btn_Add.Text = Properties.Resources.btn_AuthoritiesAddFactory;
             Load_TemplateFactory();
         }
 
@@ -292,7 +292,7 @@ namespace DigitalProductionProgram.User
 
         private void Insert_Role()
         {
-            if (btn_Add.Text == LanguageManager.GetString("btn_AuthoritiesAddUser"))
+            if (btn_Add.Text == Properties.Resources.btn_AuthoritiesAddUser)
             {
                 using var choose_Item = new Choose_Item(Person.List_Users(false), ctrls: [btn_Add]);
                 choose_Item.ShowDialog();
@@ -325,7 +325,7 @@ namespace DigitalProductionProgram.User
                     cmd.ExecuteNonQuery();
                 }
 
-                btn_Add.Text = LanguageManager.GetString("btn_AuthoritiesAddUser");
+                btn_Add.Text = Properties.Resources.btn_AuthoritiesAddUser;
                 Load_Users();
             }
             else
@@ -334,7 +334,7 @@ namespace DigitalProductionProgram.User
 
                 using var choose_Item = new Choose_Item(roles, ctrls: [btn_Add]);
                 choose_Item.ShowDialog();
-                if (btn_Add.Text == LanguageManager.GetString("btn_AuthoritiesAddRole"))
+                if (btn_Add.Text == Properties.Resources.btn_AuthoritiesAddRole)
                     return;
                 using (var con = new SqlConnection(Database.cs_Protocol))
                 {
@@ -348,7 +348,7 @@ namespace DigitalProductionProgram.User
                     cmd.ExecuteNonQuery();
                 }
 
-                btn_Add.Text = LanguageManager.GetString("btn_AuthoritiesAddRole");
+                btn_Add.Text = Properties.Resources.btn_AuthoritiesAddRole;
                 Load_Roles();
             }
         }
@@ -357,7 +357,7 @@ namespace DigitalProductionProgram.User
             List<string?> emails = Person.List_MailAddress.Select(x => x.ToString()).ToList();
             using var choose_Item = new Choose_Item(emails, ctrls: [btn_Add], isOkReturnOwnText: true);
             choose_Item.ShowDialog();
-            if (btn_Add.Text == LanguageManager.GetString("btn_AuthoritiesAddEmail"))
+            if (btn_Add.Text == Properties.Resources.btn_AuthoritiesAddEmail)
                 return;
             using (var con = new SqlConnection(Database.cs_Protocol))
             {
@@ -371,7 +371,7 @@ namespace DigitalProductionProgram.User
                 cmd.ExecuteNonQuery();
             }
 
-            btn_Add.Text = LanguageManager.GetString("btn_AuthoritiesAddEmail");
+            btn_Add.Text = Properties.Resources.btn_AuthoritiesAddEmail;
             Load_Emails();
         }
         private void Insert_Workoperation()
@@ -380,7 +380,7 @@ namespace DigitalProductionProgram.User
 
             using var choose_Item = new Choose_Item(workoperations, ctrls: [btn_Add]);
             choose_Item.ShowDialog();
-            if (btn_Add.Text == LanguageManager.GetString("btn_AuthoritiesAddWorkoperation"))
+            if (btn_Add.Text == Properties.Resources.btn_AuthoritiesAddWorkoperation)
                 return;
             using (var con = new SqlConnection(Database.cs_Protocol))
             {
@@ -394,7 +394,7 @@ namespace DigitalProductionProgram.User
                 cmd.ExecuteNonQuery();
             }
 
-            btn_Add.Text = LanguageManager.GetString("btn_AuthoritiesAddWorkoperation");
+            btn_Add.Text = Properties.Resources.btn_AuthoritiesAddWorkoperation;
             Load_WorkOperation();
         }
         private void Insert_Factory()
@@ -403,7 +403,7 @@ namespace DigitalProductionProgram.User
 
             using var choose_Item = new Choose_Item(factories, ctrls: [btn_Add]);
             choose_Item.ShowDialog();
-            if (btn_Add.Text == LanguageManager.GetString("btn_AuthoritiesAddFactory"))
+            if (btn_Add.Text == Properties.Resources.btn_AuthoritiesAddFactory)
                 return;
             using (var con = new SqlConnection(Database.cs_Protocol))
             {
@@ -417,7 +417,7 @@ namespace DigitalProductionProgram.User
                 cmd.ExecuteNonQuery();
             }
 
-            btn_Add.Text = LanguageManager.GetString("btn_AuthoritiesAddFactory");
+            btn_Add.Text = Properties.Resources.btn_AuthoritiesAddFactory;
             Load_Factory();
         }
 
@@ -445,7 +445,7 @@ namespace DigitalProductionProgram.User
         private void Delete_Role()
         {
 
-            if (btn_Add.Text == LanguageManager.GetString("btn_AuthoritiesAddUser"))
+            if (btn_Add.Text == Properties.Resources.btn_AuthoritiesAddUser)
             {
                 using (var con = new SqlConnection(Database.cs_Protocol))
                 {

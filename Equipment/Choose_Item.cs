@@ -22,10 +22,14 @@ namespace DigitalProductionProgram.Equipment
         private readonly string? DataBaseColumnName;    //Används när Senaste 10 körningar skall visas
         private readonly int Maskin;                    //Används som Information när Senaste 10 körningar skall visas
         private readonly int Uppstart;                  //Används som Information när Senaste 10 körningar skall visas
+        private int TotalColumns;
+        private bool[]? VisibleColumns;
 
 
 
-        public Choose_Item(IEnumerable<string?>? items, Control?[]? ctrls = null, DataGridViewCell?[]? cells = null, bool isMultipleColumns = false, bool isOkReturnOwnText = false, bool isExtraColumnVisible = true, string? dataBaseColumnName = null, int maskin = 0, int uppstart = 0, bool isReturnMultipleValues = false, bool isListFromMonitor = false, string dividerChar = "/", List<string?>? headers = null)
+        
+        public Choose_Item(IEnumerable<string?>? items, Control?[]? ctrls = null, DataGridViewCell?[]? cells = null, int totalColumns = 1, bool[]? visibleColumns = null, bool isOkReturnOwnText = false, string? dataBaseColumnName = null, int maskin = 0, int uppstart = 0, bool isReturnMultipleValues = false, bool isListFromMonitor = false, string dividerChar = "/", List<string?>? headers = null)
+
         {
             InitializeComponent();
             Location = new Point(MousePosition.X, MousePosition.Y);
@@ -39,11 +43,13 @@ namespace DigitalProductionProgram.Equipment
             Uppstart = uppstart;
             Ctrls = ctrls;
             Cells = cells;
+            TotalColumns = totalColumns;
+            VisibleColumns = visibleColumns;
 
 
             DataTable = new DataTable();
             if (items != null)
-                AddItems(items, isMultipleColumns, headers);
+                AddItems(items, headers);
 
             // Remove empty rows
             if (DataTable.Rows.Count > 1)
@@ -56,17 +62,20 @@ namespace DigitalProductionProgram.Equipment
             dgv_Items.DataSource = DataTable;
             dgv_Items.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
             dgv_Items.Columns[0].ReadOnly = true;
+            
+            if (VisibleColumns != null)
+            {
+                for (int i = 0; i < DataTable.Columns.Count; i++)
+                {
+                    bool visible = (i >= VisibleColumns.Length) || VisibleColumns[i];
+                    dgv_Items.Columns[i].Visible = visible;
+                }
+            }
 
-            if (!isExtraColumnVisible && dgv_Items.Columns.Count > 1)
-                dgv_Items.Columns[1].Visible = false;
-
-            // ------------------------------
-            // EVENT WIRING
-            // ------------------------------
-            if (isMultipleColumns)
-                dgv_Items.CellClick += Items_MultipleColumns_Controls_CellClick;
-            else
-                dgv_Items.CellClick += Items_CellClick;
+            if (headers is not null)
+                dgv_Items.ColumnHeadersVisible = true;
+            
+            dgv_Items.CellClick += Items_Generic_CellClick;
 
             if (!isOkReturnOwnText)
                 label_ChooseItemInfo_2.Visible = false;
@@ -106,53 +115,87 @@ namespace DigitalProductionProgram.Equipment
                 
         }
 
-        private void AddItems(IEnumerable<string?> items, bool isMultipleColumns, IList<string?>? headers = null)
+        //private void AddItems(IEnumerable<string?> items, bool isMultipleColumns, IList<string?>? headers = null)
+        //{
+        //    // Säkerställ lista
+        //    var itemList = items?.ToList() ?? new List<string?>();
+        //    var headerList = headers?.ToList() ?? new List<string?>();
+
+        //    // MULTIPLE COLUMNS ---------------------------------------------
+        //    if (isMultipleColumns)
+        //    {
+        //        var h1 = headerList.Count > 0 && !string.IsNullOrWhiteSpace(headerList[0]) ? headerList[0] : "Primär";
+
+        //        var h2 = headerList.Count > 1 && !string.IsNullOrWhiteSpace(headerList[1]) ? headerList[1] : "Sekundär";
+
+        //        DataTable.Columns.Add(h1);
+        //        DataTable.Columns.Add(h2);
+
+        //        foreach (var text in itemList)
+        //        {
+        //            if (string.IsNullOrWhiteSpace(text))
+        //            {
+        //                DataTable.Rows.Add("", "");
+        //                continue;
+        //            }
+
+        //            if (text.Contains('|'))
+        //            {
+        //                var parts = text.Split('|');
+        //                var p1 = parts.Length > 0 ? parts[0].Trim() : "";
+        //                var p2 = parts.Length > 1 ? parts[1].Trim() : "";
+        //                DataTable.Rows.Add(p1, p2);
+        //            }
+        //            else
+        //            {
+        //                DataTable.Rows.Add(text.Trim(), "");
+        //            }
+        //        }
+        //    }
+
+        //    // SINGLE COLUMN -------------------------------------------------
+        //    else
+        //    {
+        //        var h = headerList.Count > 0 && !string.IsNullOrWhiteSpace(headerList[0]) ? headerList[0] : "List";
+
+        //        DataTable.Columns.Add(h);
+
+        //        foreach (var text in itemList)
+        //            DataTable.Rows.Add(text?.Trim() ?? "");
+        //    }
+        //}
+        
+        private void AddItems(IEnumerable<string?> items, IList<string?>? headers = null)
         {
-            // Säkerställ lista
             var itemList = items?.ToList() ?? new List<string?>();
             var headerList = headers?.ToList() ?? new List<string?>();
 
-            // MULTIPLE COLUMNS ---------------------------------------------
-            if (isMultipleColumns)
+            // --- Skapa kolumner dynamiskt ---
+            for (int i = 0; i < TotalColumns; i++)
             {
-                var h1 = headerList.Count > 0 && !string.IsNullOrWhiteSpace(headerList[0]) ? headerList[0] : "Primär";
+                string header = (i < headerList.Count && !string.IsNullOrWhiteSpace(headerList[i]))
+                    ? headerList[i]!
+                    : $"Col {i + 1}";
 
-                var h2 = headerList.Count > 1 && !string.IsNullOrWhiteSpace(headerList[1]) ? headerList[1] : "Sekundär";
-
-                DataTable.Columns.Add(h1);
-                DataTable.Columns.Add(h2);
-
-                foreach (var text in itemList)
-                {
-                    if (string.IsNullOrWhiteSpace(text))
-                    {
-                        DataTable.Rows.Add("", "");
-                        continue;
-                    }
-
-                    if (text.Contains('|'))
-                    {
-                        var parts = text.Split('|');
-                        var p1 = parts.Length > 0 ? parts[0].Trim() : "";
-                        var p2 = parts.Length > 1 ? parts[1].Trim() : "";
-                        DataTable.Rows.Add(p1, p2);
-                    }
-                    else
-                    {
-                        DataTable.Rows.Add(text.Trim(), "");
-                    }
-                }
+                DataTable.Columns.Add(header);
             }
 
-            // SINGLE COLUMN -------------------------------------------------
-            else
+            // --- Fyll rader ---
+            foreach (var raw in itemList)
             {
-                var h = headerList.Count > 0 && !string.IsNullOrWhiteSpace(headerList[0]) ? headerList[0] : "List";
+                if (string.IsNullOrWhiteSpace(raw))
+                {
+                    DataTable.Rows.Add(Enumerable.Repeat("", TotalColumns).ToArray());
+                    continue;
+                }
 
-                DataTable.Columns.Add(h);
+                var parts = raw.Split('|');
+                var row = new string[TotalColumns];
 
-                foreach (var text in itemList)
-                    DataTable.Rows.Add(text?.Trim() ?? "");
+                for (int i = 0; i < TotalColumns; i++)
+                    row[i] = (i < parts.Length ? parts[i].Trim() : "");
+
+                DataTable.Rows.Add(row);
             }
         }
 
@@ -161,7 +204,7 @@ namespace DigitalProductionProgram.Equipment
 
         private void Translate_Form()
         {
-            label_ChooseItemInfo_1.Text = LanguageManager.GetString(label_ChooseItemInfo_1.Name);
+            label_ChooseItemInfo_1.Text = Properties.Resources.label_ChooseItemInfo_1;
         }
         private void ChangeGUI()
         {
@@ -184,79 +227,61 @@ namespace DigitalProductionProgram.Equipment
 
             
         }
-        private void Items_CellClick(object? sender, DataGridViewCellEventArgs e)
-        {
-            var TextValue = dgv_Items.Rows[e.RowIndex].Cells[0].Value.ToString();
-
-            if (IsReturnMultipleValues)
-            {
-                dgv_AddedItems.Rows.Add(TextValue);
-                return;
-            }
-            if (Cells == null && Ctrls == null)
-            {
-                Close();
-                return;
-            }
-
-            if (TextValue == LanguageManager.GetString("checkLastOperations"))
-            { 
-                using var senaste = new Latest10Values(DataBaseColumnName, Maskin, Uppstart);
-                senaste.ShowDialog();
-                Close();
-                return;
-            }
-
-            if (Ctrls is null)//Kolla om denna gör nåt nytta? den ändras aldrig så kontrollen kan tas bort kasnke
-                foreach (var cell in Cells)
-                    cell.Value = TextValue;
-            else
-            {
-                if (Cells == null)
-                    Ctrls[0].Text = TextValue;
-                else
-                    for (var i = 0; i < dgv_Items.Columns.Count; i++)
-                        Ctrls[i].Text = dgv_Items.Rows[e.RowIndex].Cells[i].Value.ToString();
-
-            }
-
-            Close();
-        }
-        private void Items_MultipleColumns_Controls_CellClick(object? sender, DataGridViewCellEventArgs e)
+        private void Items_Generic_CellClick(object? sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex < 0)
                 return;
-            var TextValue = dgv_Items.Rows[e.RowIndex].Cells[0].Value.ToString();
-            if (TextValue == "Kolla 10 senaste körningar...")
+
+            // Hämta alla kolumnvärden i raden
+            var row = dgv_Items.Rows[e.RowIndex];
+
+            // Special-case: "Kolla 10 senaste körningar..."
+            var text0 = row.Cells[0].Value?.ToString();
+            if (text0 == "Kolla 10 senaste körningar..." ||
+                text0 == Properties.Resources.checkLastOperations)
             {
                 using var senaste = new Latest10Values(DataBaseColumnName, Maskin, Uppstart);
                 senaste.ShowDialog();
                 Close();
                 return;
             }
+
+            // MULTI-ADD (t.ex. högerlista av flera val)
             if (IsReturnMultipleValues)
             {
-                dgv_AddedItems.Rows.Add(dgv_Items.Rows[e.RowIndex].Cells[0].Value.ToString());
+                dgv_AddedItems.Rows.Add(text0);
                 return;
             }
 
-            if (Ctrls is null)
+            // UTAN KONTROLLER OCH CELLS — bara stäng
+            if (Ctrls == null && Cells == null)
             {
-                for (var col = 0; col < Cells.Length; col++)
-                {
-                    Cells[col].Selected = true;//Denna behövs så att bägge celler skall sparas i Körprotkollet
-                    Cells[col].Value = dgv_Items.Rows[e.RowIndex].Cells[col].Value.ToString();
-                }
-
+                Close();
+                return;
             }
-            else
+
+            // SKRIV TILL CELLS (DataGridViewCell[])
+            if (Cells != null)
             {
-                for (var col = 0; col < Ctrls.Length; col++)
-                    Ctrls[col].Text = dgv_Items.Rows[e.RowIndex].Cells[col].Value.ToString();
+                for (int col = 0; col < Cells.Length && col < row.Cells.Count; col++)
+                {
+                    Cells[col].Selected = true;   // Din Körprotokoll-grej
+                    Cells[col].Value = row.Cells[col].Value?.ToString();
+                }
+            }
+
+            // SKRIV TILL TEXTBOX/CONTROL-LISTA
+            if (Ctrls != null)
+            {
+                for (int col = 0; col < Ctrls.Length && col < row.Cells.Count; col++)
+                {
+                    Ctrls[col].Text = row.Cells[col].Value?.ToString();
+                }
             }
 
             Close();
         }
+       
         private void Items_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter || e.KeyCode == Keys.Return)
@@ -326,18 +351,24 @@ namespace DigitalProductionProgram.Equipment
         }
         private void Filter_TextChanged(object sender, EventArgs e)
         {
+            if (DataTable == null || DataTable.Columns.Count == 0)
+                return;
+
             var dv = DataTable.DefaultView;
-            var col1 = DataTable.Columns[0].ColumnName;
-            var col2 = DataTable.Columns.Count > 1 ? DataTable.Columns[1].ColumnName : null;
+            string text = tb_Filter.Text.Replace("'", "''"); // SQL-like escape
 
-            var filter = $"[{col1}] LIKE '%{tb_Filter.Text}%'";
+            // Bygg filter för alla kolumner
+            var parts = new List<string>();
+            for (int i = 0; i < DataTable.Columns.Count; i++)
+            {
+                string col = DataTable.Columns[i].ColumnName;
+                parts.Add($"[{col}] LIKE '%{text}%'");
+            }
 
-            if (col2 != null)
-                filter += $" OR [{col2}] LIKE '%{tb_Filter.Text}%'";
-
-            dv.RowFilter = filter;
+            dv.RowFilter = string.Join(" OR ", parts);
             dgv_Items.DataSource = dv;
 
+            // Auto-selecta en enda rad
             if (dgv_Items.Rows.Count == 1)
                 dgv_Items.Rows[0].Selected = true;
         }

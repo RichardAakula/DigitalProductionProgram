@@ -8,6 +8,7 @@ using DigitalProductionProgram.PrintingServices;
 using DigitalProductionProgram.Processcards;
 using Microsoft.Data.SqlClient;
 using System;
+using System.Configuration;
 using System.Data;
 using System.Runtime.ConstrainedExecution;
 using System.Windows.Forms;
@@ -413,10 +414,11 @@ namespace DigitalProductionProgram.MainWindow
         }
         private void ProdGrupp_MouseDown(object sender, MouseEventArgs e)
         {
-            List<string> headers =
+            var test = Thread.CurrentThread.CurrentUICulture;
+            List<string?> headers =
             [
-                "ProdGrupp",
-                "Benämning"
+                Properties.Resources.label_ProdGroup,
+                Properties.Resources.label_Description
             ];
 
             var items = new List<string>();
@@ -424,7 +426,7 @@ namespace DigitalProductionProgram.MainWindow
                 items.Add($"{kvp.Key}|{kvp.Value}");
             items.Add($"0 | Processkort Ej godkända av QA");
 
-            using var choose_Item = new Choose_Item(items, [tb_ProdGrupp, tb_ProdBenämning], isMultipleColumns: true, headers: headers);
+            using var choose_Item = new Choose_Item(items, [tb_ProdGrupp, tb_ProdBenämning], totalColumns:2, headers: headers);
             choose_Item.ShowDialog();
 
         }
@@ -450,8 +452,8 @@ namespace DigitalProductionProgram.MainWindow
                 tb_ProdGrupp.Text = Monitor.Monitor.WorkCenters.Keys.First();
 
             var org_ProdLinje = Order.ProdLine;
-            if (Order.WorkOperation == Manage_WorkOperation.WorkOperations.Nothing) //Denna är inte helt säker på att kan vara här, kolla tillräckligt många gånger att det inte medför problem. Testat 2 gånger nu
-                Enum.TryParse(Manage_WorkOperation.Workoperation(Order.OrderID), out Order.WorkOperation);
+            if (Order.WorkOperation == WorkOperations.Nothing) //Denna är inte helt säker på att kan vara här, kolla tillräckligt många gånger att det inte medför problem. Testat 2 gånger nu
+                Enum.TryParse(Workoperation(Order.OrderID), out Order.WorkOperation);
 
             if (Order.IsOrderDone == false)
                 Load_PriorityPlanning();

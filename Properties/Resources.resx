@@ -350,7 +350,7 @@
     <value />
   </data>
   <data name="label_ChooseItemInfo_1" xml:space="preserve">
-    <value />
+    <value>You can filter this list by writing text in the textfield below.</value>
   </data>
   <data name="Menu_Theme_Optinova" xml:space="preserve">
     <value />
@@ -392,7 +392,7 @@
     <value />
   </data>
   <data name="label_ProductionLines_Info" xml:space="preserve">
-    <value />
+    <value>Click on Productionline for more info</value>
   </data>
   <data name="zumbach_Info_11" xml:space="preserve">
     <value />
@@ -494,13 +494,13 @@
     <value />
   </data>
   <data name="errorCode" xml:space="preserve">
-    <value />
+    <value>Errorcode:</value>
   </data>
   <data name="print_Header_MeasurementProtocol" xml:space="preserve">
     <value />
   </data>
   <data name="label_ProductionLines_Header" xml:space="preserve">
-    <value />
+    <value>Production lines</value>
   </data>
   <data name="password_Info_1" xml:space="preserve">
     <value />
@@ -620,7 +620,7 @@
     <value />
   </data>
   <data name="label_ErrorCodeHeader_2" xml:space="preserve">
-    <value />
+    <value>Fill in a comment why you discarded the measurement</value>
   </data>
   <data name="lbl_Add_Startup" xml:space="preserve">
     <value />
@@ -683,7 +683,7 @@
     <value />
   </data>
   <data name="Menu_User_Authorities_CustomFactories" xml:space="preserve">
-    <value />
+    <value>Custom Factories</value>
   </data>
   <data name="label_DiscardUser" xml:space="preserve">
     <value />
@@ -887,7 +887,7 @@
     <value />
   </data>
   <data name="label_ProdType" xml:space="preserve">
-    <value />
+    <value>Product Type:</value>
   </data>
   <data name="maintenanceWork_minutes" xml:space="preserve">
     <value />
@@ -986,7 +986,7 @@
     <value />
   </data>
   <data name="Menu_User_Authorities_CustomMailAddresses" xml:space="preserve">
-    <value />
+    <value>Custom MailAddresses</value>
   </data>
   <data name="extraComments_Info_1" xml:space="preserve">
     <value />
@@ -1172,7 +1172,7 @@
     <value />
   </data>
   <data name="Menu_User_Authorities_Roles" xml:space="preserve">
-    <value />
+    <value>Authorities Roles</value>
   </data>
   <data name="INSERT_Korprotokoll_Main" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\resources\insert_korprotokoll_main.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
@@ -1199,7 +1199,8 @@
     <value />
   </data>
   <data name="saveSetting_1" xml:space="preserve">
-    <value />
+    <value>Error when loading settings.
+Pleaste contact Admin if necessary.</value>
   </data>
   <data name="tuneZumbachData_1" xml:space="preserve">
     <value />
@@ -1235,7 +1236,7 @@
     <value />
   </data>
   <data name="label_ProductionLines_Green" xml:space="preserve">
-    <value />
+    <value>Green = Production line is active</value>
   </data>
   <data name="label_LastName" xml:space="preserve">
     <value />
@@ -1325,7 +1326,7 @@
     <value />
   </data>
   <data name="label_ProductionLines_Red" xml:space="preserve">
-    <value />
+    <value>Red = Productionline is inactive</value>
   </data>
   <data name="measureinstrument_Delete_2" xml:space="preserve">
     <value />
@@ -1334,7 +1335,7 @@
     <value />
   </data>
   <data name="Menu_User_Authorities_CustomWorkoperations" xml:space="preserve">
-    <value />
+    <value>Custom Workoperations</value>
   </data>
   <data name="label_Comments" xml:space="preserve">
     <value />
@@ -1863,132 +1864,179 @@
     <value />
   </data>
   <data name="label_InactiveProcesscard" xml:space="preserve">
-    <value></value>
+    <value />
   </data>
   <data name="user_PasswordUpdated" xml:space="preserve">
-    <value></value>
+    <value />
   </data>
   <data name="label_ResetPasswordInfo" xml:space="preserve">
-    <value></value>
+    <value />
   </data>
   <data name="btn_ConfirmCode" xml:space="preserve">
-    <value></value>
+    <value />
   </data>
   <data name="btn_NewCode" xml:space="preserve">
-    <value></value>
+    <value />
   </data>
   <data name="btn_ConfirmNewCode" xml:space="preserve">
-    <value></value>
+    <value />
   </data>
   <data name="resetPassword_CodeExpired" xml:space="preserve">
-    <value></value>
+    <value />
   </data>
   <data name="resetPassword_TimeLeft" xml:space="preserve">
-    <value></value>
+    <value />
   </data>
   <data name="resetPassword_MaxAttemptsReached" xml:space="preserve">
-    <value></value>
+    <value />
   </data>
   <data name="resetPassword_WrongCode" xml:space="preserve">
-    <value></value>
+    <value />
   </data>
   <data name="processcardNotNeedSigning" xml:space="preserve">
-    <value></value>
+    <value />
   </data>
   <data name="processcardAlreadyEstablished" xml:space="preserve">
-    <value></value>
+    <value />
   </data>
   <data name="legendAverageValuePartNr" xml:space="preserve">
-    <value></value>
+    <value />
   </data>
   <data name="legendAverageLastOrder" xml:space="preserve">
-    <value></value>
+    <value />
   </data>
   <data name="col_CodeText_Header" xml:space="preserve">
-    <value></value>
+    <value />
   </data>
   <data name="processcard_MissingInfo_MeasurementTemplate" xml:space="preserve">
-    <value></value>
+    <value />
   </data>
   <data name="errorConnectingDatabase" xml:space="preserve">
-    <value></value>
+    <value>An error occurred while connecting to the database.
+Please contact IT support if the issue persists.</value>
   </data>
   <data name="error_ProfilePicture" xml:space="preserve">
-    <value></value>
+    <value />
   </data>
   <data name="error_OrderNotOpen" xml:space="preserve">
-    <value></value>
+    <value />
   </data>
   <data name="Menu_Arkiv_UpdateDPP" xml:space="preserve">
-    <value></value>
+    <value />
   </data>
   <data name="processcard_ChangeProdType" xml:space="preserve">
-    <value></value>
+    <value />
   </data>
   <data name="label_TotalMeasureMents" xml:space="preserve">
-    <value></value>
+    <value />
   </data>
   <data name="label_DiscardedMeasurements" xml:space="preserve">
-    <value></value>
+    <value />
   </data>
   <data name="top10LatestOrders" xml:space="preserve">
-    <value></value>
+    <value />
   </data>
   <data name="Menu_Order_ReadProposedProcesscardChanges" xml:space="preserve">
-    <value></value>
+    <value />
   </data>
   <data name="orderNotOpen" xml:space="preserve">
-    <value></value>
+    <value />
   </data>
   <data name="Menu_Order_OrderLog" xml:space="preserve">
-    <value></value>
+    <value />
   </data>
   <data name="zumbach_DeleteMeasurement" xml:space="preserve">
-    <value></value>
+    <value />
   </data>
   <data name="error_Monitor" xml:space="preserve">
-    <value></value>
+    <value />
   </data>
   <data name="processcard_SuggestedChanges" xml:space="preserve">
-    <value></value>
+    <value />
   </data>
   <data name="update_Info" xml:space="preserve">
-    <value></value>
+    <value />
   </data>
   <data name="update_Info_2" xml:space="preserve">
-    <value></value>
+    <value />
   </data>
   <data name="spc_Totalmeasurements" xml:space="preserve">
-    <value></value>
+    <value />
   </data>
   <data name="spc_Mean" xml:space="preserve">
-    <value></value>
+    <value />
   </data>
   <data name="spc_Median" xml:space="preserve">
-    <value></value>
+    <value />
   </data>
   <data name="spc_Min" xml:space="preserve">
-    <value></value>
+    <value />
   </data>
   <data name="spc_Max" xml:space="preserve">
-    <value></value>
+    <value />
   </data>
   <data name="spc_Range" xml:space="preserve">
-    <value></value>
+    <value />
   </data>
   <data name="spc_StandardDeviation" xml:space="preserve">
-    <value></value>
+    <value />
   </data>
   <data name="spc_Skewness" xml:space="preserve">
-    <value></value>
+    <value />
   </data>
   <data name="spc_Kurtosis" xml:space="preserve">
-    <value></value>
+    <value />
   </data>
   <data name="spc_Pp" xml:space="preserve">
-    <value></value>
+    <value />
   </data>
   <data name="spc_Ppk" xml:space="preserve">
-    <value></value>
+    <value />
+  </data>
+  <data name="stringRestartComputer" xml:space="preserve">
+    <value>To activate new language, please restart programme.</value>
+  </data>
+  <data name="label_ProdGroup" xml:space="preserve">
+    <value>Production Group:</value>
+    <comment>test</comment>
+  </data>
+  <data name="label_ProductionSchedule" xml:space="preserve">
+    <value>Priority Plan</value>
+  </data>
+  <data name="label_Description" xml:space="preserve">
+    <value>Description:</value>
+  </data>
+  <data name="label_ProdLine" xml:space="preserve">
+    <value>Production Line:</value>
+  </data>
+  <data name="String1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Menu_User" xml:space="preserve">
+    <value>User</value>
+  </data>
+  <data name="Menu_User_Authorities" xml:space="preserve">
+    <value>Authorities</value>
+  </data>
+  <data name="Menu_User_CheckMyAnalysis" xml:space="preserve">
+    <value>Check my Analysis</value>
+  </data>
+  <data name="Menu_User_EditUser" xml:space="preserve">
+    <value>Edit User</value>
+  </data>
+  <data name="Menu_User_LogIn" xml:space="preserve">
+    <value>Sign In</value>
+  </data>
+  <data name="Menu_User_LogOut" xml:space="preserve">
+    <value>Sign Out</value>
+  </data>
+  <data name="Menu_User_LogOutUser" xml:space="preserve">
+    <value>Log out user from the Protocol</value>
+  </data>
+  <data name="Menu_User_WhoIsLoggedIn" xml:space="preserve">
+    <value>Who is Signed In?</value>
+  </data>
+  <data name="label_Header_ActiveOrders" xml:space="preserve">
+    <value>Your Active Orders</value>
   </data>
 </root>

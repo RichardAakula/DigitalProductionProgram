@@ -27,7 +27,7 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
             if (dgv_ExtraComments.Rows[row].Cells["Spool"].Value == null && dgv_ExtraComments.Rows[row].Cells["Comments"].Value == null)        //Om Spole och Kommentar är NULL - inget händer
             {
                 if (row < dgv_ExtraComments.Rows.Count - 1)
-                    InfoText.Show(LanguageManager.GetString("extraComments_Info_2"), CustomColors.InfoText_Color.Bad, "Warning", this);
+                    InfoText.Show(Properties.Resources.extraComments_Info_2, CustomColors.InfoText_Color.Bad, "Warning", this);
                 return false;
             }
 
@@ -76,11 +76,11 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
         }
         public void Translate_Form()
         {
-            label_Header.Text = LanguageManager.GetString("extraComments");
-            dgv_ExtraComments.Columns["Spool"].HeaderText = LanguageManager.GetString("spool");
-            dgv_ExtraComments.Columns["Comments"].HeaderText = LanguageManager.GetString("comments");
-            dgv_ExtraComments.Columns["Date"].HeaderText = LanguageManager.GetString("date");
-            dgv_ExtraComments.Columns["EmpNr"].HeaderText = LanguageManager.GetString("label_EmpNr");
+            label_Header.Text = Properties.Resources.extraComments;
+            dgv_ExtraComments.Columns["Spool"].HeaderText = Properties.Resources.spool;
+            dgv_ExtraComments.Columns["Comments"].HeaderText = Properties.Resources.comments;
+            dgv_ExtraComments.Columns["Date"].HeaderText = Properties.Resources.date;
+            dgv_ExtraComments.Columns["EmpNr"].HeaderText = Properties.Resources.label_EmpNr;
 
         }
         private void ExtraComments_RowEnter(object sender, DataGridViewCellEventArgs e)
@@ -244,7 +244,7 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
         {
             if (dgv_ExtraComments.Rows[row].Cells["Spool"].Value == null || dgv_ExtraComments.Rows[row].Cells["Comments"].Value == null)
             {
-                InfoText.Show(LanguageManager.GetString("extraComments_Info_1"), CustomColors.InfoText_Color.Warning, "Warning", this);
+                InfoText.Show(Properties.Resources.extraComments_Info_1, CustomColors.InfoText_Color.Warning, "Warning", this);
                 return;
             }
             using (var con = new SqlConnection(Database.cs_Protocol))
@@ -270,7 +270,7 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
         {
             if (dgv_ExtraComments.Rows[row].Cells["Spool"].Value == null || dgv_ExtraComments.Rows[row].Cells["Comments"].Value == null)
             {
-                InfoText.Show(LanguageManager.GetString("extraComments_Info_2"), CustomColors.InfoText_Color.Warning, "Warning", this);
+                InfoText.Show(Properties.Resources.extraComments_Info_2, CustomColors.InfoText_Color.Warning, "Warning", this);
 
                 dgv_ExtraComments.Rows[row].Cells["Date"].Value = null;
                 dgv_ExtraComments.Rows[row].Cells["EmpNr"].Value = null;

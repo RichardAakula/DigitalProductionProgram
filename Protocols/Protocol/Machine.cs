@@ -174,7 +174,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                         Production.AddDates(module.dgv_Module, module.FormTemplateID);
                 }
                 else
-                    InfoText.Show(LanguageManager.GetString("addStartUp"), CustomColors.InfoText_Color.Bad, "Warning!", this);
+                    InfoText.Show(Properties.Resources.addStartUp, CustomColors.InfoText_Color.Bad, "Warning!", this);
             }
 
 

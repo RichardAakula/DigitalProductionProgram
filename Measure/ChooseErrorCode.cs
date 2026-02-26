@@ -41,7 +41,7 @@ namespace DigitalProductionProgram.Measure
 
         private void Translate_Form()
         {
-            LanguageManager.TranslationHelper.TranslateControls(new Control[]{ label_ErrorCodeHeader_1, label_ErrorCodeHeader_2, label_ErrorDiscard, label_ErrorExit });
+            LanguageManager.TranslationHelper.TranslateControls([label_ErrorCodeHeader_1, label_ErrorCodeHeader_2, label_ErrorDiscard, label_ErrorExit]);
         }
         private void Fill_ErrorCodes()
         {
@@ -58,7 +58,7 @@ namespace DigitalProductionProgram.Measure
         {
             label_ErrorDiscard.Text = LanguageManager.GetString(label_ErrorDiscard.Name);
             ErrorCode = cb_ErrorCode.Text;
-            tb_Comments.MaxLength = 63 - $"{LanguageManager.GetString("discardedMeasurement_Info_1")}".Length;
+            tb_Comments.MaxLength = 63 - $"{Properties.Resources.discardedMeasurement_Info_1}".Length;
         }
 
         private void Discard_Click(object sender, EventArgs e)
@@ -66,14 +66,14 @@ namespace DigitalProductionProgram.Measure
             Comment = tb_Comments.Text;
             if (string.IsNullOrEmpty(Comment))
             {
-                InfoText.Show(LanguageManager.GetString("measureprotocol_Info_11"), CustomColors.InfoText_Color.Warning, null);
+                InfoText.Show(Properties.Resources.measureprotocol_Info_11, CustomColors.InfoText_Color.Warning, null);
                 return;
             }
 
             if (cb_ErrorCode.SelectedIndex > -1)
                 Close();
             else
-                InfoText.Show(LanguageManager.GetString("measureprotocol_Info_4"), CustomColors.InfoText_Color.Warning, null);
+                InfoText.Show(Properties.Resources.measureprotocol_Info_4, CustomColors.InfoText_Color.Warning, null);
         }
 
         private void Abort_Click(object sender, EventArgs e)

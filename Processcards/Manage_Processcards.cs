@@ -1239,7 +1239,7 @@ namespace DigitalProductionProgram.Processcards
         private void ProdType_Click(object sender, EventArgs e)
         {
             var ctrl = (Control)sender;
-            using var choose_Item = new Choose_Item(MainInfo_B.List_ProdType("Processcard.MainData"), [ctrl], isMultipleColumns:true);
+            using var choose_Item = new Choose_Item(MainInfo_B.List_ProdType("Processcard.MainData"), [ctrl], totalColumns:2);
             choose_Item.ShowDialog();
         }
         private void ProdType_TextChanged(object sender, EventArgs e)

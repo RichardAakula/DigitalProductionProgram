@@ -401,7 +401,7 @@ namespace DigitalProductionProgram.Help
         private static void Change_GUI_QuestionText(string?[] text)
         {
             if (text is null)
-                text = new[] { LanguageManager.GetString("yes"), LanguageManager.GetString("no") };
+                text = [Properties.Resources.yes, Properties.Resources.no];
             infoText.btn_Yes.Text = text[0];
             infoText.btn_No.Text = text[1];
         }

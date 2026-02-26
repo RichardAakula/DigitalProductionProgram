@@ -24,17 +24,20 @@ namespace DigitalProductionProgram.Measure
     {
         private CartesianChart? cartesianChart;
 
-        private double LSL;
-        private double LCL;
-        private double USL;
-        private double UCL;
+        private double? LSL;
+        private double? LCL;
+        private double? USL;
+        private double? UCL;
         private const double marginPercent = 0.5;
         private bool IsLoading;
         private readonly bool IsOkAddPoints;
         private string? activeOrderNr;
         private string Column_Name => dgv_MeasureProtocol.Columns[activeCell.ColumnIndex].Name;
         private DataGridViewCell? activeCell;
-        readonly List<string> listOrderNr = new();
+        private readonly List<string> listOrderNr = [];
+        private readonly List<MeasureRow> ListMeasureRows = [];
+        private List<(string OrderNr, int RowIndex, int ColumnIndex)> outlierCells;
+        
 
         //private static readonly Font ItalicFont = new Font("Courier New", 8, FontStyle.Italic);
         
@@ -54,30 +57,73 @@ namespace DigitalProductionProgram.Measure
             }
 
         }
-        private static bool IsOutlier(double value, List<double> values, double pct)
+        private static bool IsOutlier(double value, List<double>? values, double? usl, double? lsl, double threshold)
         {
-            // pct = hur aggressivt du filtrerar. Ex: pct = 3.5 är standard.
-            // pct  = "Robust Z-score threshold"
+            // Tolkning enligt krav: 0 eller null = "ingen gräns"
+            var hasUSL = usl.HasValue && !double.IsNaN(usl.Value) && usl.Value != 0.0;
+            var hasLSL = lsl.HasValue && !double.IsNaN(lsl.Value) && lsl.Value != 0.0;
+
+            var USL = hasUSL ? usl!.Value : double.PositiveInfinity;
+            var LSL = hasLSL ? lsl!.Value : double.NegativeInfinity;
+
+            // Om båda finns: avbryt direkt beroende på om värdet är inom/utanför intervallet
+            if (hasUSL && hasLSL)
+            {
+                if (LSL > USL) 
+                {
+                    (LSL, USL) = (USL, LSL);
+                } 
+                // säkerställ korrekt ordning om någon råkat skicka LSL > USL
+                if (value < LSL || value > USL)
+                    return true;   // utanför specifikation => outlier direkt
+                return false;      // innanför båda => inte outlier
+            }
+
+            // Endast USL
+            if (hasUSL && !hasLSL)
+            {
+                if (value > USL)
+                    return true;   // överskrider övre gränsen => outlier
+                // annars: fortsätt med robust Z-score
+            }
+
+            // Endast LSL
+            if (!hasUSL && hasLSL)
+            {
+                if (value < LSL)
+                    return true;   // underskrider nedre gränsen => outlier
+                // annars: fortsätt med robust Z-score
+            }
+
+            // --- Robust Z-score (Modified Z) nedan ---
 
             if (values == null || values.Count < 5)
-                return false; // För lite data för att bedöma
+                return false; // för lite data för statistisk bedömning
 
             // 1) Median
             var sorted = values.OrderBy(v => v).ToList();
-            double median = sorted[sorted.Count / 2];
+
+            // Behåll din ursprungliga median/MAD-logik (enkel variant):
+            var median = sorted[sorted.Count / 2];
+
+            // Vill du ha exakt median även för jämnt antal, byt till:
+            // double Median(IList<double> a) => a.Count % 2 == 1 ? a[a.Count/2] : 0.5 * (a[a.Count/2 - 1] + a[a.Count/2]);
+            // var median = Median(sorted);
 
             // 2) MAD = median(|x - median|)
             var absDev = sorted.Select(v => Math.Abs(v - median)).OrderBy(v => v).ToList();
-            double mad = absDev[absDev.Count / 2];
+            var mad = absDev[absDev.Count / 2];
 
             if (mad == 0)
-                return false; // alla är typ lika – inget är outlier
+                return false; // alla ~lika => inget sticker ut
 
-            // 3) Robust Z-score
-            double robustZ = Math.Abs(value - median) / (1.4826 * mad);
+            // 3) Robust Z-score (Modified Z)
+            var robustZ = Math.Abs(value - median) / (1.4826 * mad);
 
-            // 4) Threshold styrs av pct
-            return robustZ > pct;
+            if (robustZ > threshold)
+                Debug.WriteLine($"Value {value} is outlier, RobustZ = {robustZ}");
+
+            return robustZ > threshold;
         }
         private double Max_Y_Value
         {
@@ -90,8 +136,13 @@ namespace DigitalProductionProgram.Measure
                     if (row.IsNewRow)
                         continue;
 
-                    var mr = ListMeasureRows[row.Index];
-                    if ((mr.IsDiscarded && chk_FilterDiscarded.Checked) || (mr.IsOutlied && chk_FilterBad.Checked))
+                    //var mr = ListMeasureRows[row.Index];
+                    //if ((mr.IsDiscarded && chk_FilterDiscarded.Checked) || (mr.IsOutlied && chk_FilterBad.Checked))
+                    //    continue;
+                    bool isDiscarded = bool.Parse(dgv_MeasureProtocol.Rows[row.Index].Cells["IsDiscarded"].Value.ToString());
+                    bool isOutlied = bool.Parse(dgv_MeasureProtocol.Rows[row.Index].Cells["IsOutlied"].Value.ToString());
+
+                    if ((isDiscarded && chk_FilterDiscarded.Checked) || (isOutlied && chk_FilterBad.Checked))
                         continue;
 
                     //var discardedCell = row.Cells["Discarded"];
@@ -100,18 +151,6 @@ namespace DigitalProductionProgram.Measure
                     if (valueCell?.Value == null)
                         continue;
 
-                    //bool isDiscarded = discardedCell.Value switch
-                    //{
-                    //    bool b => b,
-                    //    int i => i != 0,
-                    //    string s when s.Equals("true", StringComparison.OrdinalIgnoreCase) => true,
-                    //    string s when s.Equals("false", StringComparison.OrdinalIgnoreCase) => false,
-                    //    string s when int.TryParse(s, out var num) => num != 0,
-                    //    _ => false
-                    //};
-
-                    //if (isDiscarded)
-                    //    continue;
 
                     if (double.TryParse(valueCell.Value.ToString(), out var value))
                         values.Add(value);
@@ -123,7 +162,7 @@ namespace DigitalProductionProgram.Measure
                 var avg = values.Average();
                 var filtered = values.Where(v => v < avg * 10).ToList();
 
-                return Math.Max(USL, filtered.Count > 0 ? filtered.Max() : 0);
+                return Math.Max(USL ?? 0, filtered.Count > 0 ? filtered.Max() : 0);
             }
         }
         private double Min_Y_Value
@@ -136,30 +175,18 @@ namespace DigitalProductionProgram.Measure
                 {
                     if (row.IsNewRow)
                         continue;
+                    bool isDiscarded = bool.Parse(dgv_MeasureProtocol.Rows[row.Index].Cells["IsDiscarded"].Value.ToString());
+                    bool isOutlied = bool.Parse(dgv_MeasureProtocol.Rows[row.Index].Cells["IsOutlied"].Value.ToString());
 
-                    var mr = ListMeasureRows[row.Index];
-                    if ((mr.IsDiscarded && chk_FilterDiscarded.Checked) || (mr.IsOutlied && chk_FilterBad.Checked))
+                    //var mr = ListMeasureRows[row.Index];
+                    //if ((mr.IsDiscarded && chk_FilterDiscarded.Checked) || (mr.IsOutlied && chk_FilterBad.Checked))
+                    //    continue;
+                    if ((isDiscarded && chk_FilterDiscarded.Checked) || (isOutlied && chk_FilterBad.Checked))
                         continue;
-
                     var cell = row.Cells[Column_Name];
-                    //var discardedCell = row.Cells["Discarded"];
 
                     if (cell?.Value == null)
                         continue;
-
-                    // Säkrare tolkning av Discarded
-                    //bool isDiscarded = discardedCell.Value switch
-                    //{
-                    //    bool b => b,
-                    //    int i => i != 0,
-                    //    string s when s.Equals("true", StringComparison.OrdinalIgnoreCase) => true,
-                    //    string s when s.Equals("false", StringComparison.OrdinalIgnoreCase) => false,
-                    //    string s when int.TryParse(s, out var num) => num != 0,
-                    //    _ => false
-                    //};
-
-                    //if (isDiscarded)
-                    //    continue;
 
                     if (double.TryParse(cell.Value.ToString(), out var value))
                         values.Add(value);
@@ -176,8 +203,8 @@ namespace DigitalProductionProgram.Measure
                 var minVal = filtered.Count > 0 ? filtered.Min() : 0;
 
                 // Om LSL är satt (> 0), ta minsta av LSL och datavärdet
-                if (LSL > 0)
-                    return Math.Min(LSL, minVal);
+                if (LSL != null)
+                    return Math.Min(LSL ?? minVal, minVal);
 
                 // Annars returnera bara det minsta datavärdet
                 return minVal;
@@ -188,41 +215,49 @@ namespace DigitalProductionProgram.Measure
             get
             {
                 var sections = new List<RectangularSection>();
-                if (USL > 0)
+                if (USL != null)
                     sections.Add(new RectangularSection
-                    {
-                        Yi = USL,
-                        Yj = Max_Y_Value * (1 + marginPercent / 100),
-                        Fill = new SolidColorPaint(new SKColor(156, 0, 6, 230))
-                    }
+                        {
+                            Yi = USL,
+                            Yj = Max_Y_Value * (1 + marginPercent / 100),
+                            Fill = new SolidColorPaint(new SKColor(255, 199, 206, 230))
+                        }
                     );
-                if (LSL > 0)
+                if (LSL != null)
                     sections.Add(new RectangularSection
-                    {
-                        Yi = Min_Y_Value * (1 - marginPercent / 100),
-                        Yj = LSL,
-                        Fill = new SolidColorPaint(new SKColor(156, 0, 6, 230))
-                    }
+                        {
+                            Yi = Min_Y_Value * (1 - marginPercent / 100),
+                            Yj = LSL,
+                            Fill = new SolidColorPaint(new SKColor(255, 199, 206, 230))
+                        }
                     );
-                if (UCL > 0)
+                if (UCL != null)
                     sections.Add(new RectangularSection
-                    {
-                        Yi = UCL,
-                        Yj = USL,
-                        Fill = new SolidColorPaint(new SKColor(156, 101, 0, 230))
-                    }
+                        {
+                            Yi = UCL,
+                            Yj = USL,
+                            Fill = new SolidColorPaint(new SKColor(255, 235, 156, 230))
+                        }
                     );
-                if (LCL > 0)
+                if (LCL != null)
                     sections.Add(new RectangularSection
                     {
                         Yi = LCL,
                         Yj = LSL,
-                        Fill = new SolidColorPaint(new SKColor(156, 101, 6, 230))
+                        Fill = new SolidColorPaint(new SKColor(255, 235, 156, 230))
+                    });
+                if (UCL != null && LCL != null)
+                    sections.Add(new RectangularSection
+                    {
+                        Yi = UCL,
+                        Yj = LCL,
+                        Fill = new SolidColorPaint(new SKColor(198,239,206, 255))
                     });
                 return sections;
             }
 
         }
+       
         private CartesianChart chart(string codeText)
         {
             var chart = new CartesianChart
@@ -269,7 +304,7 @@ namespace DigitalProductionProgram.Measure
             return chart;
         }
 
-        private (string CountQuery, string SelectQuery, List<SqlParameter> Params) BuildMeasureQueries(List<string> orders)
+        private (string SelectQuery, List<SqlParameter> Params) BuildMeasureQueries(List<string> orders)
         {
             string baseCondition = """
                                         orders.PartNr = @partnr
@@ -295,14 +330,6 @@ namespace DigitalProductionProgram.Measure
                 for (int i = 0; i < orders.Count; i++)
                     parameters.Add(new SqlParameter($"@order{i}", orders[i]));
             }
-
-            string countQuery = $"""
-                                 SELECT COUNT(*) 
-                                 FROM MeasureProtocol.Data AS data
-                                 JOIN [Order].MainData AS orders ON data.OrderID = orders.OrderID
-                                 WHERE {baseCondition}{orderFilter};
-                                 """;
-
             string selectQuery = $"""
                                   SELECT
                                       template.Parameter_UserText,
@@ -342,7 +369,7 @@ namespace DigitalProductionProgram.Measure
                                           ORDER BY data.OrderID, main.RowIndex, ColumnIndex;
                                   """;
 
-            return (countQuery, selectQuery, parameters);
+            return (selectQuery, parameters);
         }
 
 
@@ -374,19 +401,9 @@ namespace DigitalProductionProgram.Measure
             {
                 tb_PartNr.Text = Order.PartNumber;
                 await Load_MeasureData();
-                for (int col = 0; col < dgv_MeasureProtocol.Columns.Count; col++)
-                {
-
-                    var tag = dgv_MeasureProtocol.Columns[col].HeaderCell.Tag;
-                    if (tag is bool b && b)
-                    {
-                        activeCell = dgv_MeasureProtocol.Rows[0].Cells[col];
-                        dgv_MeasureProtocol.CurrentCell = dgv_MeasureProtocol.Rows[0].Cells[col];
-                        break;
-                    }
-
-                }
+                SetActiveCell();
                 AddDataToChart(0);
+                await MarkOutliedCells();
             }
             Fill_Toplist();
         }
@@ -486,41 +503,28 @@ namespace DigitalProductionProgram.Measure
         {
             Fill_Toplist();
         }
-        private void PartNr_MouseClick(object sender, MouseEventArgs e)
-        {
-            List<string> partnumbers = new List<string>();
-            Database.ExecuteSafe(con =>
-            {
-                const string query = $"""
-
-                                                          SELECT
-                                          m.PartNr,
-                                          MAX(m.Date_Start) AS LatestDateStart
-                                      FROM [Order].MainData AS m
-                                      WHERE m.WorkoperationID = (
-                                          SELECT ID FROM Workoperation.Names WHERE Name = @workoperation
-                                      )
-                                      GROUP BY m.PartNr
-                                      ORDER BY LatestDateStart DESC
-                                      """;
-
-                using var cmd = new Microsoft.Data.SqlClient.SqlCommand(query, con);
-                cmd.Parameters.AddWithValue("@workoperation", cb_Workoperations.Text);
-                var reader = cmd.ExecuteReader();
-                while (reader.Read())
-                    partnumbers?.Add($"{reader[0]}:{reader[1]}");
-            });
-
-            var partnr = new Choose_Item(partnumbers, [tb_PartNr], isMultipleColumns:true,headers:["PartNumber", "Date"] );
-            partnr.ShowDialog();
-            Load_Data();
-        }
+        private bool _suppressEvents;
+        
         private void cb_MeasureTemplateRevision_SelectionChangeCommitted(object sender, EventArgs e)
         {
             chkList_ListOrders.Items.Clear();
-            Load_Data();
+            chkList_ListOrders.Items.Add("Markera alla");
         }
-
+        private async void chk_FilterBad_CheckedChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                if (_suppressEvents)
+                    return;
+                await Load_MeasureData();
+                AddDataToChart(null);
+                await MarkOutliedCells();
+            }
+            catch (Exception)
+            {
+                
+            }
+        }
         private void chkList_ListOrders_ItemCheck(object sender, ItemCheckEventArgs e)
         {
             if (e.Index == 0)
@@ -547,6 +551,40 @@ namespace DigitalProductionProgram.Measure
                 bool current = chkList_ListOrders.GetItemChecked(index);
                 chkList_ListOrders.SetItemChecked(index, !current);
             }
+        }
+        private void PartNr_MouseClick(object sender, MouseEventArgs e)
+        {
+            _suppressEvents = true;
+            chk_FilterDiscarded.Checked = false;
+            chk_FilterBad.Checked = false;
+            _suppressEvents = false;
+
+            List<string> partnumbers = new List<string>();
+            Database.ExecuteSafe(con =>
+            {
+                const string query = $"""
+                                      SELECT
+                                        m.PartNr,
+                                        MAX(m.Date_Start) AS LatestDateStart,
+                                        COUNT(*) AS TotalOrders
+                                      FROM [Order].MainData AS m
+                                      WHERE m.WorkoperationID = (
+                                          SELECT ID FROM Workoperation.Names WHERE Name = @workoperation
+                                      )
+                                      GROUP BY m.PartNr
+                                      ORDER BY LatestDateStart DESC
+                                      """;
+
+                using var cmd = new Microsoft.Data.SqlClient.SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@workoperation", cb_Workoperations.Text);
+                var reader = cmd.ExecuteReader();
+                while (reader.Read())
+                    partnumbers?.Add($"{reader[0]}|{reader[1]}|{reader[2]}");
+            });
+
+            var partnr = new Choose_Item(partnumbers, [tb_PartNr], totalColumns:3, headers:["PartNumber", "Date", "Total Orders"] );
+            partnr.ShowDialog();
+            Load_Data();
         }
         private void PartNr_TextChanged(object sender, EventArgs e)
         {
@@ -576,6 +614,8 @@ namespace DigitalProductionProgram.Measure
             cb_MeasureprotocolTemplateName.DataSource = dt;
             cb_MeasureprotocolTemplateName.DisplayMember = "Name";
             cb_MeasureprotocolTemplateName.ValueMember = "ID";
+
+            _ = Log.Activity.Stop($"User is checking part number {tb_PartNr.Text} in the Measure Protocol Browser");
         }
 
         private void ExportDataToExcel_Click(object sender, EventArgs e)
@@ -600,20 +640,209 @@ namespace DigitalProductionProgram.Measure
 
 
 
-        private void Load_Data()
+        private async void Load_Data()
         {
             if (string.IsNullOrEmpty(cb_Workoperations.Text))
                 return;
             if (string.IsNullOrEmpty(tb_PartNr.Text))
                 return;
-            _ = Load_MeasureData();
+            await Load_MeasureData();
+            SetActiveCell();
+            AddDataToChart(0);
+            await MarkOutliedCells();
         }
+        private void SetActiveCell()
+        {
+            for (int col = 0; col < dgv_MeasureProtocol.Columns.Count; col++)
+            {
 
-        private readonly List<MeasureRow> ListMeasureRows = [];
+                var tag = dgv_MeasureProtocol.Columns[col].HeaderCell.Tag;
+                if (tag is bool b && b)
+                {
+                    activeCell = dgv_MeasureProtocol.Rows[0].Cells[col];
+                    dgv_MeasureProtocol.CurrentCell = dgv_MeasureProtocol.Rows[0].Cells[col];
+                    break;
+                }
+
+            }
+        }
+        
+        //private async Task Load_MeasureData()
+        //{
+        //    if (IsLoading)
+        //        return;
+        //    ListMeasureRows.Clear();
+        //    var pbar = new CustomProgressBar(1);
+        //    pbar.Show(this);
+
+        //    try
+        //    {
+        //        dgv_MeasureProtocol.Rows.Clear();
+        //        if (string.IsNullOrEmpty(tb_PartNr.Text))
+        //            return;
+
+        //        await using var con = new SqlConnection(Database.cs_Protocol);
+        //        await con.OpenAsync();
+
+        //        var checkedOrders = chkList_ListOrders.CheckedItems.Cast<string>().ToList();
+        //        var (_, selectQuery, parameters) = BuildMeasureQueries(checkedOrders);
+
+        //        // Hämta rader
+        //        var rows = await LoadMeasureRowsAsync(con, selectQuery, parameters);
+
+        //        Load_InputControls();
+
+        //        // Grupp per rad (för discarded)
+        //        var rowGroups = rows.GroupBy(r => new { r.OrderNr, r.RowIndex }).ToList();
+
+        //        var discardedRowKeys = new HashSet<(string OrderNr, int RowIndex)>();
+        //        var outlierRowKeys = new HashSet<(string OrderNr, int RowIndex)>();
+
+        //        // === Steg 1: Discarded per rad ===
+        //        foreach (var g in rowGroups)
+        //        {
+        //            if (g.Any(x => x.IsDiscarded))
+        //                discardedRowKeys.Add((g.Key.OrderNr, g.Key.RowIndex));
+        //        }
+
+        //        // === Steg 2: Outliers per kolumn ===
+
+        //        var measureGroups = rows
+        //            .Where(r => r.IsMeasureValue && r.Value.HasValue)
+        //            .GroupBy(r => new { r.OrderNr, r.ColumnIndex, r.MonitorText }) // ParameterText = kodnamn
+        //            .ToList();
+
+        //        double threshold = (double)num_OutlierLimit.Value;
+
+        //        foreach (var colGroup in measureGroups)
+        //        {
+        //            var values = colGroup.Select(x => x.Value.Value).ToList();
+
+        //            foreach (var cell in colGroup)
+        //            {
+        //                double val = cell.Value.Value;
+        //                if (IsOutlier(val, values, threshold))
+        //                    outlierRowKeys.Add((cell.OrderNr, cell.RowIndex));
+        //            }
+        //        }
+
+        //        // === Steg 3: Kombinerat filter ===
+        //        var skipKeys = new HashSet<(string OrderNr, int RowIndex)>();
+
+        //        if (chk_FilterDiscarded.Checked)
+        //            foreach (var x in discardedRowKeys)
+        //                skipKeys.Add(x);
+
+        //        //if (chk_FilterBad.Checked)
+        //        //    foreach (var x in outlierRowKeys)
+        //        //        skipKeys.Add(x);
+
+        //        // === Steg 4: Rendering ===
+        //        var row = -1;
+        //        var processed = 0;
+        //        string lastOrderNr = null;
+        //        var lastRowIndex = -99999;
+
+        //        var total = rowGroups.Count - skipKeys.Count;
+        //        if (total < 1) total = 1;
+
+        //        foreach (var item in rows)
+        //        {
+        //            var key = (item.OrderNr, item.RowIndex);
+        //            if (chk_FilterBad.Checked)
+        //            {
+        //                var isBad = outlierRowKeys.Contains(key);
+        //                if (isBad)
+        //                    item.IsOutlied = true;
+        //            }
+
+        //            if (item.IsMeasureValue)
+        //            {
+        //                var colIndex = item.ColumnIndex + 2;
+        //                var headerCell = dgv_MeasureProtocol.Columns[colIndex].HeaderCell;
+        //                headerCell.Tag = true;
+        //            }
+        //            if (!chkList_ListOrders.Items.Contains(item.OrderNr))
+        //                chkList_ListOrders.Items.Add(item.OrderNr, true);
+
+        //            var newRow = lastOrderNr != item.OrderNr || lastRowIndex != item.RowIndex;
+
+        //            if (newRow)
+        //            {
+        //                processed++;
+        //                double percent = Math.Min(100.0, processed * 100.0 / total);
+        //                var refresh = processed % 10 == 0;
+
+        //                pbar.Set_ValueProgressBar(percent, "Laddar data: OrderNr " + item.OrderNr, 1, refresh);
+
+        //                dgv_MeasureProtocol.Rows.Add();
+        //                row++;
+        //                dgv_MeasureProtocol.Rows[row].Tag = (item.OrderNr, item.RowIndex);
+        //                ListMeasureRows.Add(item);
+        //                lastOrderNr = item.OrderNr;
+        //                lastRowIndex = item.RowIndex;
+        //                dgv_MeasureProtocol.Rows[row].Cells["IsOutlied"].Value = item.IsOutlied;
+        //                dgv_MeasureProtocol.Rows[row].Cells["IsDiscarded"].Value = item.IsDiscarded;
+
+        //                Add_Text_DatagridCell(row, dgv_MeasureProtocol.Rows[row].Cells["OrderNr"], item.OrderNr, item);
+        //                Add_Text_DatagridCell(row, dgv_MeasureProtocol.Rows[row].Cells["Operation"], item.Operation, item);
+        //                Add_Text_DatagridCell(row, dgv_MeasureProtocol.Rows[row].Cells["Date"], item.Date, item);
+        //                Add_Text_DatagridCell(row, dgv_MeasureProtocol.Rows[row].Cells["ErrorCode"], item.ErrorCode, item);
+        //                Add_Text_DatagridCell(row, dgv_MeasureProtocol.Rows[row].Cells["AnstNr"], item.AnstNr, item);
+        //                Add_Text_DatagridCell(row, dgv_MeasureProtocol.Rows[row].Cells["Sign"], item.Sign, item);
+        //            }
+
+        //            string text = item.DataType switch
+        //            {
+        //                "0" => item.Value.HasValue ? Measurement_Protocol.SetDecimals_Value(item.Value.Value, item.Decimals) : "N/A",
+        //                "1" => item.TextValue ?? "N/A",
+        //                "2" => item.BoolValue == true ? "✔" : "N/A",
+        //                _ => "N/A"
+        //            };
+
+        //            Add_Text_DatagridCell(row, dgv_MeasureProtocol.Rows[row].Cells[item.ColumnIndex + 2], text, item, item.ParameterText);
+        //        }
+
+        //        lbl_TotalOrders.Text = $"Totalt {chkList_ListOrders.Items.Count} ordrar:";
+
+        //        if (chk_FilterBad.Checked || chk_FilterDiscarded.Checked)
+        //        {
+
+        //            int totalFiltered = 0;
+
+        //            if (chk_FilterDiscarded.Checked)
+        //                totalFiltered += discardedRowKeys.Count;
+
+        //            if (chk_FilterBad.Checked)
+        //                totalFiltered += outlierRowKeys.Count;
+
+
+        //            label_FilterInfo.Text =
+        //                $"""
+        //                 Filtrerar bort {totalFiltered} rader:
+        //                 {(chk_FilterDiscarded.Checked ? $"Kasserade: {discardedRowKeys.Count}" : "")}
+        //                 {(chk_FilterBad.Checked ? $"Orimliga: {outlierRowKeys.Count}" : "")}
+        //                 """;
+
+        //        }
+        //        else
+        //        {
+        //            label_FilterInfo.Text = "";
+        //        }
+
+        //    }
+        //    finally
+        //    {
+        //        pbar.Close();
+
+        //    }
+        //}
+        
         private async Task Load_MeasureData()
         {
             if (IsLoading)
                 return;
+
             ListMeasureRows.Clear();
             var pbar = new CustomProgressBar(1);
             pbar.Show(this);
@@ -621,6 +850,7 @@ namespace DigitalProductionProgram.Measure
             try
             {
                 dgv_MeasureProtocol.Rows.Clear();
+
                 if (string.IsNullOrEmpty(tb_PartNr.Text))
                     return;
 
@@ -628,103 +858,116 @@ namespace DigitalProductionProgram.Measure
                 await con.OpenAsync();
 
                 var checkedOrders = chkList_ListOrders.CheckedItems.Cast<string>().ToList();
-                var (_, selectQuery, parameters) = BuildMeasureQueries(checkedOrders);
+                var (selectQuery, parameters) = BuildMeasureQueries(checkedOrders);
 
-                // Hämta rader
+                // === Load rows ===
                 var rows = await LoadMeasureRowsAsync(con, selectQuery, parameters);
 
                 Load_InputControls();
 
-                // Grupp per rad (för discarded)
+                // === Group by row (OrderNr + RowIndex) ===
                 var rowGroups = rows.GroupBy(r => new { r.OrderNr, r.RowIndex }).ToList();
 
                 var discardedRowKeys = new HashSet<(string OrderNr, int RowIndex)>();
                 var outlierRowKeys = new HashSet<(string OrderNr, int RowIndex)>();
+                outlierCells = [];
+                
 
-                // === Steg 1: Discarded per rad ===
+
+                // === STEP 1: Discarded rows ===
                 foreach (var g in rowGroups)
                 {
                     if (g.Any(x => x.IsDiscarded))
                         discardedRowKeys.Add((g.Key.OrderNr, g.Key.RowIndex));
                 }
 
-                // === Steg 2: Outliers per kolumn ===
 
+                // === STEP 2: Outliers per measurement column ===
                 var measureGroups = rows
                     .Where(r => r.IsMeasureValue && r.Value.HasValue)
-                    .GroupBy(r => new { r.OrderNr, r.ColumnIndex, r.MonitorText }) // ParameterText = kodnamn
+                    .GroupBy(r => new { r.OrderNr, r.ColumnIndex, r.MonitorText })
                     .ToList();
 
-                double pct = (double)num_OutlierPercent.Value;
+                double threshold = (double)num_OutlierLimit.Value;
 
                 foreach (var colGroup in measureGroups)
                 {
-                    var values = colGroup.Select(x => x.Value.Value).ToList();
+                    var values = colGroup.Select(x => x.Value!.Value).ToList();
 
                     foreach (var cell in colGroup)
                     {
-                        double val = cell.Value.Value;
-
-                        if (IsOutlier(val, values, pct))
+                        double val = cell.Value!.Value;
+                        double? usl = MeasurePoints.Tolerances.ActiveTolerance(cell.MonitorText, "USL");
+                        double? lsl = MeasurePoints.Tolerances.ActiveTolerance(cell.MonitorText, "LSL");
+                        if (IsOutlier(val, values, usl, lsl, threshold))
+                        {
                             outlierRowKeys.Add((cell.OrderNr, cell.RowIndex));
+                            outlierCells.Add((cell.OrderNr, cell.RowIndex, cell.ColumnIndex));
+                        }
                     }
-
                 }
 
-                // === Steg 3: Kombinerat filter ===
+
+                // === STEP 3: Combined filter ===
                 var skipKeys = new HashSet<(string OrderNr, int RowIndex)>();
 
                 if (chk_FilterDiscarded.Checked)
                     foreach (var x in discardedRowKeys)
                         skipKeys.Add(x);
 
-                //if (chk_FilterBad.Checked)
-                //    foreach (var x in outlierRowKeys)
-                //        skipKeys.Add(x);
+                if (chk_FilterBad.Checked)
+                    foreach (var x in outlierRowKeys)
+                        skipKeys.Add(x);
 
-                // === Steg 4: Rendering ===
-                var row = -1;
-                var processed = 0;
+
+                // === STEP 4: Rendering ===
+                int row = -1;
+                int processed = 0;
                 string lastOrderNr = null;
-                var lastRowIndex = -99999;
+                int lastRowIndex = -99999;
 
-                var total = rowGroups.Count - skipKeys.Count;
+                int total = rowGroups.Count - skipKeys.Count;
                 if (total < 1) total = 1;
 
                 foreach (var item in rows)
                 {
                     var key = (item.OrderNr, item.RowIndex);
+
                     if (chk_FilterBad.Checked)
                     {
-                        var isBad = outlierRowKeys.Contains(key);
-                        if (isBad)
+                        if (outlierRowKeys.Contains(key))
                             item.IsOutlied = true;
                     }
 
                     if (item.IsMeasureValue)
                     {
-                        var colIndex = item.ColumnIndex + 2;
-                        var headerCell = dgv_MeasureProtocol.Columns[colIndex].HeaderCell;
-                        headerCell.Tag = true;
+                        int colIndex = item.ColumnIndex + 2;
+                        dgv_MeasureProtocol.Columns[colIndex].HeaderCell.Tag = true;
                     }
+
                     if (!chkList_ListOrders.Items.Contains(item.OrderNr))
                         chkList_ListOrders.Items.Add(item.OrderNr, true);
 
-                    var newRow = lastOrderNr != item.OrderNr || lastRowIndex != item.RowIndex;
+                    bool newRow = lastOrderNr != item.OrderNr || lastRowIndex != item.RowIndex;
 
                     if (newRow)
                     {
+
                         processed++;
-                        double percent = Math.Min(100.0, processed * 100.0 / total);
+                        var percent = Math.Min(100.0, processed * 100.0 / total);
                         var refresh = processed % 10 == 0;
 
                         pbar.Set_ValueProgressBar(percent, "Laddar data: OrderNr " + item.OrderNr, 1, refresh);
 
                         dgv_MeasureProtocol.Rows.Add();
                         row++;
+
+                        dgv_MeasureProtocol.Rows[row].Tag = key;
+
                         ListMeasureRows.Add(item);
                         lastOrderNr = item.OrderNr;
                         lastRowIndex = item.RowIndex;
+
                         dgv_MeasureProtocol.Rows[row].Cells["IsOutlied"].Value = item.IsOutlied;
                         dgv_MeasureProtocol.Rows[row].Cells["IsDiscarded"].Value = item.IsDiscarded;
 
@@ -747,43 +990,34 @@ namespace DigitalProductionProgram.Measure
                     Add_Text_DatagridCell(row, dgv_MeasureProtocol.Rows[row].Cells[item.ColumnIndex + 2], text, item, item.ParameterText);
                 }
 
-                lbl_TotalOrders.Text = $"Totalt {chkList_ListOrders.Items.Count} ordrar:";
+
+                // === STEP 6: Filter info ===
+                lbl_TotalOrders.Text = @$"Totalt {chkList_ListOrders.Items.Count} ordrar:";
 
                 if (chk_FilterBad.Checked || chk_FilterDiscarded.Checked)
                 {
-                    
                     int totalFiltered = 0;
+                    if (chk_FilterDiscarded.Checked) totalFiltered += discardedRowKeys.Count;
+                    if (chk_FilterBad.Checked) totalFiltered += outlierRowKeys.Count;
 
-                    if (chk_FilterDiscarded.Checked)
-                        totalFiltered += discardedRowKeys.Count;
-
-                    if (chk_FilterBad.Checked)
-                        totalFiltered += outlierRowKeys.Count;
-
-                    
                     label_FilterInfo.Text =
                         $"""
                          Filtrerar bort {totalFiltered} rader:
                          {(chk_FilterDiscarded.Checked ? $"Kasserade: {discardedRowKeys.Count}" : "")}
                          {(chk_FilterBad.Checked ? $"Orimliga: {outlierRowKeys.Count}" : "")}
                          """;
-
-
                 }
                 else
                 {
                     label_FilterInfo.Text = "";
                 }
-
             }
             finally
             {
                 pbar.Close();
-
             }
         }
-
-        private async Task<List<MeasureRow>> LoadMeasureRowsAsync(SqlConnection con, string query, IEnumerable<SqlParameter> parameters)
+        private static async Task<List<MeasureRow>> LoadMeasureRowsAsync(SqlConnection con, string query, IEnumerable<SqlParameter> parameters)
         {
             var list = new List<MeasureRow>();
             await using var cmd = new SqlCommand(query, con);
@@ -820,7 +1054,30 @@ namespace DigitalProductionProgram.Measure
             }
             return list;
         }
+        private Task MarkOutliedCells()
+        {
+            // === STEP 5: Highlight outliers AFTER grid is built ===
+            foreach (var (order, rIdx, colIdx) in outlierCells)
+            {
+                var match = dgv_MeasureProtocol.Rows
+                    .Cast<DataGridViewRow>()
+                    .FirstOrDefault(r =>
+                        r.Tag is ValueTuple<string, int> t &&
+                        t.Item1 == order &&
+                        t.Item2 == rIdx);
 
+                if (match != null)
+                {
+                    match.Cells[colIdx + 2].Style = new DataGridViewCellStyle
+                    {
+                        BackColor = CustomColors.Bad_Back,
+                        ForeColor = CustomColors.Bad_Front
+                    };
+                }
+            }
+
+            return Task.CompletedTask;
+        }
 
 
 
@@ -841,7 +1098,7 @@ namespace DigitalProductionProgram.Measure
                     continue;
                 }
 
-                Monitor.Monitor.Load_DataTable_Measurpoints(ordernr, operation, false);
+                Monitor.Monitor.Load_DataTable_Measurepoints(ordernr, operation, false);
                 Set_MeasurePoints();
                 rowIndex++;
                 activeOrderNr = ordernr;
@@ -849,10 +1106,10 @@ namespace DigitalProductionProgram.Measure
         }
         private void Set_MeasurePoints()
         {
-            LSL = 0;
-            LCL = 0;
-            UCL = 0;
-            USL = 0;
+            LSL = null;
+            LCL = null;
+            UCL = null;
+            USL = null;
             IsMeasurePointSet = false;
             if (Monitor.Monitor.DataTable_Measurepoints != null)
                 foreach (DataRow row in Monitor.Monitor.DataTable_Measurepoints.Rows)
@@ -860,10 +1117,11 @@ namespace DigitalProductionProgram.Measure
                     var codename = row[0].ToString();
                     if (codename == Column_Name)
                     {
-                        double.TryParse(row[5].ToString(), out LSL);
-                        double.TryParse(row[4].ToString(), out LCL);
-                        double.TryParse(row[2].ToString(), out UCL);
-                        double.TryParse(row[1].ToString(), out USL);
+                        LSL = ParseValue(row[5]);
+                        LCL = ParseValue(row[4]);
+                        UCL = ParseValue(row[2]);
+                        USL = ParseValue(row[1]);
+                       
                         if (codename.Contains("Concentricity"))
                         {
                             LSL *= 100;
@@ -874,6 +1132,14 @@ namespace DigitalProductionProgram.Measure
                         IsMeasurePointSet = true;
                     }
                 }
+        }
+        private static double? ParseValue(object value)
+        {
+            if (value is null || value is DBNull)
+                return null;
+            if (double.TryParse(value.ToString(), out var result))
+                return result;
+            return null;
         }
         private void Load_InputControls()
         {
@@ -924,18 +1190,18 @@ namespace DigitalProductionProgram.Measure
         }
         private void Add_Text_DatagridCell(int row, DataGridViewCell cell, string text, MeasureRow item, string CodeText = null)
         {
-            if (item.IsOutlied)
-            {
-                cell.Style = new DataGridViewCellStyle
-                {
-                    BackColor = CustomColors.Bad_Back,
-                    ForeColor = CustomColors.Bad_Front,
-                };
+            //if (item.IsOutlied)
+            //{
+            //    cell.Style = new DataGridViewCellStyle
+            //    {
+            //        BackColor = CustomColors.Bad_Back,
+            //        ForeColor = CustomColors.Bad_Front,
+            //    };
 
-                cell.Value = text;
-                return;
+            //    cell.Value = text;
+            //    return;
 
-            }
+            //}
             if (item.IsDiscarded)
             {
                 cell.Style = new DataGridViewCellStyle
@@ -972,28 +1238,17 @@ namespace DigitalProductionProgram.Measure
             activeCell = dgv_MeasureProtocol.Rows[e.RowIndex].Cells[e.ColumnIndex];
             AddDataToChart(e.RowIndex);
         }
-        private async void chk_FilterBad_CheckedChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                await Load_MeasureData();
-                AddDataToChart(null);
-            }
-            catch
-            {
-
-            }
-        }
+        
         private async void LoadOrder_Click(object sender, EventArgs e)
         {
             try
             {
                 await Load_MeasureData();
                 AddDataToChart(null);
+                await MarkOutliedCells();
             }
-            catch
+            catch (Exception )
             {
-
             }
         }
 
@@ -1139,16 +1394,17 @@ namespace DigitalProductionProgram.Measure
             label_SPC_Title.Text = string.IsNullOrWhiteSpace(spc.CodeName) ? "SPC" : "SPC – " + spc.CodeName;
 
             lbl_TotalMeasurements.Text = spc.Count.ToString() ?? "N/A";
-            lbl_Mean.Text = spc.Mean?.ToString("F3") ?? "N/A";
+            lbl_Mean.Text = spc.Mean?.ToString("F4") ?? "N/A";
             lbl_Median.Text = spc.Median.ToString();
-            lbl_Min.Text = spc.Min?.ToString("F3") ?? "N/A";
-            lbl_Max.Text = spc.Max?.ToString("F3") ?? "N/A";
-            lbl_Range.Text = spc.Range?.ToString("F3") ?? "N/A";
+            lbl_Min.Text = spc.Min?.ToString("F4") ?? "N/A";
+            lbl_Max.Text = spc.Max?.ToString("F4") ?? "N/A";
+            lbl_Range.Text = spc.Range?.ToString("F4") ?? "N/A";
             lbl_StandardDeviation.Text = spc.StandardDeviation?.ToString("F4") ?? "N/A";
-            lbl_Skewness.Text = spc.Skewness?.ToString("F3") ?? "-";
-            lbl_Kurtosis.Text = spc.Kurtosis?.ToString("F3") ?? "-";
-            lbl_Pp.Text = spc.Pp.HasValue ? spc.Pp.Value.ToString("F3") : "N/A";
-            lbl_Ppk.Text = spc.Ppk.HasValue ? spc.Ppk.Value.ToString("F3") : "M/A";
+            lbl_Skewness.Text = spc.Skewness?.ToString("F4") ?? "N/A";
+            lbl_Kurtosis.Text = spc.Kurtosis?.ToString("F4") ?? "N/A";
+            lbl_Pp.Text = spc.Pp.HasValue ? spc.Pp.Value.ToString("F4") : "N/A";
+            lbl_Ppk.Text = spc.Ppk.HasValue ? spc.Ppk.Value.ToString("F4") : "N/A";
+            lbl_PerformanceRatio.Text = spc.PerformanceRatio.HasValue ? $"{spc.PerformanceRatio.Value:F2} %" : "N/A";
 
             // Skewness: nära 0 är bra → invert: true, använd |skew|
             if (spc.Skewness != null)
@@ -1168,14 +1424,21 @@ namespace DigitalProductionProgram.Measure
             }
 
             // Pp: högre = bättre → inte invert och INGEN Abs
-            if (spc.Pp != null)
-                MiniBarRenderer.DrawMiniBar(lbl_Bar_Pp, (double)spc.Pp, 0.0, 2.0);
+            //if (spc.Pp != null)
+                MiniBarRenderer.DrawMiniBar(lbl_Bar_Pp, spc.Pp, 0.0, 2.0);
             // Ppk: högre = bättre → inte invert och INGEN Abs
-            if (spc.Ppk != null)
-                MiniBarRenderer.DrawMiniBar(lbl_Bar_Ppk, (double)spc.Ppk, 0.0, 2.0);
+            //if (spc.Ppk != null)
+                MiniBarRenderer.DrawMiniBar(lbl_Bar_Ppk, spc.Ppk, 0.0, 2.0);
             // Standard Deviation: lägre = bättre → invert: true
             if (spc.StandardDeviation != null)
-                MiniBarRenderer.DrawMiniBar(lbl_Bar_StandardDeviation, (double)spc.StandardDeviation, 0.0, 0.03, invert: true);
+            {
+                var max = 0.03;
+                if (USL != null && LSL != null)
+                    max = Math.Abs((double)USL - (double)LSL) / 6;
+
+                MiniBarRenderer.DrawMiniBar(lbl_Bar_StandardDeviation, (double)spc.StandardDeviation, 0.0, max, invert: true);
+            }
+            MiniBarRenderer.DrawMiniBar(lbl_Bar_PerformanceRatio, spc.PerformanceRatio, 0, 100);   
 
         }
 
@@ -1188,26 +1451,24 @@ namespace DigitalProductionProgram.Measure
                 toolTip1.SetToolTip(lbl, GetSpcTooltip(lbl.Name));
             }
         }
-
         private string? GetSpcTooltip(string labelName)
         {
             return labelName switch
             {
-                "label_TotalMeasurements" => LanguageManager.GetString("spc_Totalmeasurements"),
-                "label_Mean" => LanguageManager.GetString("spc_Mean"),
-                "label_Median" => LanguageManager.GetString("spc_Median"),
-                "label_Min" => LanguageManager.GetString("spc_Min"),
-                "label_Max" => LanguageManager.GetString("spc_Max"),
-                "label_Range" => LanguageManager.GetString("spc_Range"),
-                "label_StandardDeviation" => LanguageManager.GetString("spc_StandardDeviation"),
-                "label_Skewness" => LanguageManager.GetString("spc_Skewness"),
-                "label_Kurtosis" => LanguageManager.GetString("spc_Kurtosis"),
-                "label_Pp" => LanguageManager.GetString("spc_Pp"),
-                "label_Ppk" => LanguageManager.GetString("spc_Ppk"),
+                "label_TotalMeasurements" => Properties.Resources.spc_Totalmeasurements,
+                "label_Mean" => Properties.Resources.spc_Mean,
+                "label_Median" => Properties.Resources.spc_Median,
+                "label_Min" => Properties.Resources.spc_Min,
+                "label_Max" => Properties.Resources.spc_Max,
+                "label_Range" => Properties.Resources.spc_Range,
+                "label_StandardDeviation" => Properties.Resources.spc_StandardDeviation,
+                "label_Skewness" => Properties.Resources.spc_Skewness,
+                "label_Kurtosis" => Properties.Resources.spc_Kurtosis,
+                "label_Pp" => Properties.Resources.spc_Pp,
+                "label_Ppk" => Properties.Resources.spc_Ppk,
                 _ => ""
             };
         }
-
 
         private void SökMätprotokoll_FormClosed(object sender, FormClosedEventArgs e)
         {
@@ -1221,11 +1482,16 @@ namespace DigitalProductionProgram.Measure
         {
             public static void DrawMiniBar(Label target, double? value, double? min, double? max, bool invert = false, Color? colBad = null, Color? colMid = null, Color? colGood = null)
             {
+                
                 // Färgpalett (kan överstyras via parametrar)
-                Color cBad = colBad ?? CustomColors.Bad_Front;
-                Color cMid = colMid ?? CustomColors.Warning_Back;
-                Color cGood = colGood ?? CustomColors.Ok_Front;
-
+                var cBad = colBad ?? CustomColors.Bad_Front;
+                var cMid = colMid ?? CustomColors.Warning_Back;
+                var cGood = colGood ?? CustomColors.Ok_Front;
+                if (!value.HasValue)
+                {
+                    RenderMiniBar(target, 0.0, cBad, cMid, cGood);
+                    return;
+                }
                 // Sane guards
                 if (target == null || !value.HasValue || !min.HasValue || !max.HasValue)
                 {
@@ -1252,20 +1518,26 @@ namespace DigitalProductionProgram.Measure
                 normalized = Math.Max(0.0, Math.Min(1.0, normalized));
 
                 if (invert) normalized = 1.0 - normalized;
+                
+                //if (v > vmax)
+                //{
+                //    RenderMiniBar(target, 1.0, cBad, cMid, cGood, string.Empty);
+                //    return;
+                //}
 
                 RenderMiniBar(target, normalized, cBad, cMid, cGood);
             }
             private static void RenderMiniBar(Label target, double normalized, Color cBad, Color cMid, Color cGood)
             {
-                int steps = 100;
-                int filled = (int)Math.Round(normalized * steps);
+                var steps = 100;
+                var filled = (int)Math.Round(normalized * steps);
 
                 using var bmp = new Bitmap(target.Width, target.Height);
                 using Graphics g = Graphics.FromImage(bmp);
                 g.Clear(target.BackColor);
 
-                int barWidth = Math.Max(1, target.Width / steps);
-                int barHeight = Math.Max(1, target.Height - 4);
+                var barWidth = Math.Max(1, target.Width / steps);
+                var barHeight = Math.Max(1, target.Height - 4);
 
                 for (int i = 0; i < steps; i++)
                 {
@@ -1294,8 +1566,8 @@ namespace DigitalProductionProgram.Measure
                         color = Color.FromArgb(40, 255, 255, 255); // “tom” steg
                     }
 
-                    using (Brush b = new SolidBrush(color))
-                        g.FillRectangle(b, rect);
+                    using Brush b = new SolidBrush(color);
+                    g.FillRectangle(b, rect);
                 }
 
                 // Byt ut ev. gammal bild
@@ -1322,20 +1594,20 @@ namespace DigitalProductionProgram.Measure
             public int RowIndex { get; init; }
             public int ColumnIndex { get; init; }
             public string ParameterText { get; init; } = "";
-            public string MonitorText { get; set; }
-            public string Operation { get; set; } = "";
-            public string DataType { get; set; } = "";
-            public string ErrorCode { get; set; } = "";
-            public string AnstNr { get; set; } = "";
-            public string Sign { get; set; } = "";
-            public bool IsMeasureValue { get; set; }
-            public bool IsDiscarded { get; set; }
+            public string MonitorText { get; init; }
+            public string Operation { get; init; } = "";
+            public string DataType { get; init; } = "";
+            public string ErrorCode { get; init; } = "";
+            public string AnstNr { get; init; } = "";
+            public string Sign { get; init; } = "";
+            public bool IsMeasureValue { get; init; }
+            public bool IsDiscarded { get; init; }
             public bool IsOutlied { get; set; }
-            public double? Value { get; set; }
-            public string? TextValue { get; set; }
-            public bool? BoolValue { get; set; }
-            public int Decimals { get; set; }
-            public string Date { get; set; }
+            public double? Value { get; init; }
+            public string? TextValue { get; init; }
+            public bool? BoolValue { get; init; }
+            public int Decimals { get; init; }
+            public string Date { get; init; }
         }
 
 
@@ -1349,26 +1621,22 @@ namespace DigitalProductionProgram.Measure
 
 
 
-
-
-
-
         public sealed class SpcResult
         {
             private const double EPS = 1e-12;
-            public string CodeName { get; set; }
+            public string CodeName { get; private init; }
 
             // Grundstatistik
-            public int Count { get; set; }
-            public double? Mean { get; set; }
-            public double? Min { get; set; }
-            public double? Max { get; set; }
-            public double? Median { get; set; }
-            public double? Range { get; set; }
-            public double? StandardDeviation { get; set; }
-            public double? Skewness { get; set; }
-            public double? Kurtosis { get; set; }
-
+            public int Count { get; private set; }
+            public double? Mean { get; private set; }
+            public double? Min { get; private set; }
+            public double? Max { get; private set; }
+            public double? Median { get; private set; }
+            public double? Range { get; private set; }
+            public double? StandardDeviation { get; private set; }
+            public double? Skewness { get; private set; }
+            public double? Kurtosis { get; private set; }
+            public double? PerformanceRatio { get; private set; }
 
             // Specgränser (design/specification limits)
             private double? LSL { get; set; }
@@ -1376,12 +1644,9 @@ namespace DigitalProductionProgram.Measure
             private double? Nom { get; set; }
 
             // Kapabilitet
-            public double? Pp { get; set; }
-            public double? Ppk { get; set; }
+            public double? Pp { get; private set; }
+            public double? Ppk { get; private set; }
 
-            // Performance-index (mot hela samplet, inte subgrupper) – valfritt
-            //public double? Pp { get; set; }
-            //public double? Ppk { get; set; }
 
             public static SpcResult Calculate(IList<double?> values, string codeName, string specText = null, double? lsl = null, double? usl = null, double? target = null, double sigmaFactor = 3.0, bool useSampleSigma = false)
             {
@@ -1403,6 +1668,7 @@ namespace DigitalProductionProgram.Measure
                 res.StandardDeviation = Övrigt.Calculate.StandardDeviation(values.Select(v => v).ToList());
                 res.Skewness = Övrigt.Calculate.Skewness(values.Select(v => v).ToList());
                 res.Kurtosis = Övrigt.Calculate.Kurtosis(values.Select(v => v).ToList());
+                res.PerformanceRatio = Övrigt.Calculate.PerformanceRatio(values.Select(v => v).ToList(), usl, lsl);
 
                 // Hämta specgränser (LSL/USL/Target)
                 // 1) overrides vinner
@@ -1430,26 +1696,13 @@ namespace DigitalProductionProgram.Measure
                 }
 
                 // Kapabilitet (Pp/Ppk kräver LSL & USL & std > 0)
-                if (res is { USL: not null, LSL: not null })
+                var hasLSL = res.LSL.HasValue;        // 0 är OK
+                var hasUSL = res.USL.HasValue && res.USL.Value > 0; // 0 = saknas
+
+                if (hasLSL && hasUSL && res.StandardDeviation > 0)
                 {
-                    res.Pp = Övrigt.Calculate.Pp(values.Select(v => (double?)v).ToList(), res.USL, res.LSL);
-                    res.Ppk = Övrigt.Calculate.Ppk(values.Select(v => (double?)v).ToList(), res.USL, res.LSL);
-
-
-                    // double width = res.USL.Value - res.LSL.Value;
-
-
-                    // Pp/Ppk: använder sample standard deviation över hela datat (”global performance”)
-                    // Här kan du välja att använda samma std som ovan, eller specifik "overall std".
-                    // Vi använder samma std för enkelhet, men vill du ha en "overall" kan du skicka useSampleSigma=true här.
-                    //var overallStd = res.StdDev;
-                    //if (overallStd > EPS && width > EPS)
-                    //{
-                    //    res.Pp = width / (2.0 * sigmaFactor * overallStd);
-                    //    double ppu = (res.USL.Value - res.Mean) / (sigmaFactor * overallStd);
-                    //    double ppl = (res.Mean - res.LSL.Value) / (sigmaFactor * overallStd);
-                    //    res.Ppk = Math.Min(ppu, ppl);
-                    //}
+                    res.Pp = Övrigt.Calculate.Pp(values.Select(v => v).ToList(), res.USL, res.LSL);
+                    res.Ppk = Övrigt.Calculate.Ppk(values.Select(v => v).ToList(), res.USL, res.LSL);
                 }
 
                 return res;
@@ -1477,8 +1730,6 @@ namespace DigitalProductionProgram.Measure
             spec = new Spec();
             return false;
         }
-
-        
     }
 
 }

@@ -84,8 +84,8 @@ namespace DigitalProductionProgram.Protocols.Protocol
                                 bool.TryParse(module.dgv_Module.Rows[cell.RowIndex].Cells["col_IsValueCritical"].Value.ToString(), out var isValueCriticial);
                                 if (isValueCriticial == false)
                                     break;
-                                InfoText.Show($"{LanguageManager.GetString("isOkAddStartUp")} \n\n" +
-                                              string.Format(LanguageManager.GetString("isOkAddStartUp_2"), FormTemplateName(module.FormTemplateID)), CustomColors.InfoText_Color.Bad, "Warning!", this);
+                                InfoText.Show($"{Properties.Resources.isOkAddStartUp} \n\n" +
+                                              string.Format(Properties.Resources.isOkAddStartUp_2, FormTemplateName(module.FormTemplateID)), CustomColors.InfoText_Color.Bad, "Warning!", this);
                                 return false;
                             }
 
@@ -146,8 +146,8 @@ namespace DigitalProductionProgram.Protocols.Protocol
 
         private void Translate_Form()
         {
-            LanguageManager.TranslationHelper.TranslateControls(new Control[] { btn_AddStartUp, btn_RemoveStartUp, btn_Confirm_Equipment, btn_Edit_Equipment });
-            btn_ExtraComments.Text = LanguageManager.GetString("extraComments");
+            LanguageManager.TranslationHelper.TranslateControls([btn_AddStartUp, btn_RemoveStartUp, btn_Confirm_Equipment, btn_Edit_Equipment]);
+            btn_ExtraComments.Text = Properties.Resources.extraComments;
         }
         private void LoadData()
         {
@@ -215,7 +215,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                 "C" => new MainInfo.MainInfo_C { Dock = DockStyle.Fill, Margin = new Padding(0, 0, 0, 1) },
                 _ => new Label
                 {
-                    Text = LanguageManager.GetString("mainInfo_Missing"),
+                    Text = Properties.Resources.mainInfo_Missing,
                     ForeColor = CustomColors.Bad_Back,
                     Font = new Font("Arial", 24),
                     Dock = DockStyle.Fill
@@ -279,12 +279,12 @@ namespace DigitalProductionProgram.Protocols.Protocol
             var startup = Module.TotalStartUps;
             if (startup == 1)
             {
-                InfoText.Show(LanguageManager.GetString("removeStartup_1"), CustomColors.InfoText_Color.Bad, "Warning", this);
+                InfoText.Show(Properties.Resources.removeStartup_1, CustomColors.InfoText_Color.Bad, "Warning", this);
                 return;
             }
 
-            InfoText.Question($"{LanguageManager.GetString("removeStartup_2_1")} #{startup}?\n" +
-                              LanguageManager.GetString("remove_Startup_2_2"), CustomColors.InfoText_Color.Warning, "Warning!", this);
+            InfoText.Question($"{Properties.Resources.removeStartup_2_1} #{startup}?\n" +
+                              Properties.Resources.remove_Startup_2_2, CustomColors.InfoText_Color.Warning, "Warning!", this);
             if (InfoText.answer == InfoText.Answer.No)
                 return;
 
@@ -320,7 +320,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
             if (!isOKToConfirm)
                 return;
 
-            if (Person.IsPasswordOk(LanguageManager.GetString("extrusionTEF_Info_3")) == false)
+            if (Person.IsPasswordOk(Properties.Resources.extrusionTEF_Info_3) == false)
             {
                 _ = Activity.Stop("User entered an incorrect password before transferring the equipment");
                 return;
@@ -406,7 +406,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
 
                         if (name != Person.Name)
                         {
-                            InfoText.Show(LanguageManager.GetString("equipment_Error_1"), CustomColors.InfoText_Color.Bad, "Warning", this);
+                            InfoText.Show(Properties.Resources.equipment_Error_1, CustomColors.InfoText_Color.Bad, "Warning", this);
                             return;
                         }
 

@@ -59,9 +59,8 @@ namespace DigitalProductionProgram.ControlsManagement
             lbl_Info.Location = new Point(66, 13);
             lbl_Info.Margin = new Padding(4, 0, 4, 0);
             lbl_Info.Name = "lbl_Info";
-            lbl_Info.Size = new Size(100, 24);
+            lbl_Info.Size = new Size(0, 24);
             lbl_Info.TabIndex = 1;
-            lbl_Info.Text = "Loading...";
             // 
             // lbl_Percent_Main
             // 

@@ -183,6 +183,9 @@
   <data name="Menu_Protocol_Unlock_ValidatedProcesscard" xml:space="preserve">
     <value>ปลดล็อกการ์ดกระบวนการที่ผ่านการตรวจสอบแล้ว</value>
   </data>
+  <data name="label_ProdGroup" xml:space="preserve">
+    <value>thai</value>
+  </data>
   <data name="btnZumbach" xml:space="preserve">
     <value>ฉ6...ซุมบัค</value>
   </data>

@@ -58,11 +58,11 @@ namespace DigitalProductionProgram.Measure
             label_FilterInfo = new Label();
             chk_FilterDiscarded = new CheckBox();
             panel_FilterOutliers = new Panel();
-            num_OutlierPercent = new NumericUpDown();
+            num_OutlierLimit = new NumericUpDown();
             chk_FilterBad = new CheckBox();
-            label2 = new Label();
+            label_Threshold = new Label();
             gBox_Filter = new GroupBox();
-            btn_LoadOrder = new Button();
+            btn_LoadData = new Button();
             chkList_ListOrders = new CheckedListBox();
             tb_PartNr = new TextBox();
             btn_ExportDataToExcel = new Button();
@@ -99,9 +99,12 @@ namespace DigitalProductionProgram.Measure
             label_TotalMeasurements = new Label();
             lbl_TotalMeasurements = new Label();
             lbl_Bar_Skewness = new Label();
+            label_PerformanceRatio = new Label();
+            lbl_PerformanceRatio = new Label();
+            lbl_Bar_PerformanceRatio = new Label();
             label_SPC_Title = new Label();
-            toolTip1 = new ToolTip(components);
             cf_MeasurePoints = new MeasurePoints();
+            toolTip1 = new ToolTip(components);
             ((ISupportInitialize)dgv_MeasureProtocol).BeginInit();
             panel_TopRight.SuspendLayout();
             panelInfo.SuspendLayout();
@@ -110,7 +113,7 @@ namespace DigitalProductionProgram.Measure
             panel_Top.SuspendLayout();
             panel_Filter.SuspendLayout();
             panel_FilterOutliers.SuspendLayout();
-            ((ISupportInitialize)num_OutlierPercent).BeginInit();
+            ((ISupportInitialize)num_OutlierLimit).BeginInit();
             gBox_Filter.SuspendLayout();
             tlp_Bottom.SuspendLayout();
             panel_SPC.SuspendLayout();
@@ -435,9 +438,9 @@ namespace DigitalProductionProgram.Measure
             // 
             // panel_FilterOutliers
             // 
-            panel_FilterOutliers.Controls.Add(num_OutlierPercent);
+            panel_FilterOutliers.Controls.Add(num_OutlierLimit);
             panel_FilterOutliers.Controls.Add(chk_FilterBad);
-            panel_FilterOutliers.Controls.Add(label2);
+            panel_FilterOutliers.Controls.Add(label_Threshold);
             panel_FilterOutliers.Dock = DockStyle.Top;
             panel_FilterOutliers.Location = new Point(0, 222);
             panel_FilterOutliers.Margin = new Padding(0);
@@ -446,17 +449,17 @@ namespace DigitalProductionProgram.Measure
             panel_FilterOutliers.Size = new Size(283, 29);
             panel_FilterOutliers.TabIndex = 17;
             // 
-            // num_OutlierPercent
+            // num_OutlierLimit
             // 
-            num_OutlierPercent.BackColor = Color.FromArgb(6, 81, 87);
-            num_OutlierPercent.Dock = DockStyle.Right;
-            num_OutlierPercent.ForeColor = Color.FromArgb(239, 228, 177);
-            num_OutlierPercent.Location = new Point(228, 5);
-            num_OutlierPercent.Name = "num_OutlierPercent";
-            num_OutlierPercent.Size = new Size(34, 23);
-            num_OutlierPercent.TabIndex = 16;
-            num_OutlierPercent.Value = new decimal(new int[] { 5, 0, 0, 0 });
-            num_OutlierPercent.ValueChanged += chk_FilterBad_CheckedChanged;
+            num_OutlierLimit.BackColor = Color.FromArgb(6, 81, 87);
+            num_OutlierLimit.Dock = DockStyle.Right;
+            num_OutlierLimit.ForeColor = Color.FromArgb(239, 228, 177);
+            num_OutlierLimit.Location = new Point(199, 5);
+            num_OutlierLimit.Name = "num_OutlierLimit";
+            num_OutlierLimit.Size = new Size(38, 23);
+            num_OutlierLimit.TabIndex = 16;
+            num_OutlierLimit.Value = new decimal(new int[] { 10, 0, 0, 0 });
+            num_OutlierLimit.ValueChanged += chk_FilterBad_CheckedChanged;
             // 
             // chk_FilterBad
             // 
@@ -472,21 +475,22 @@ namespace DigitalProductionProgram.Measure
             chk_FilterBad.UseVisualStyleBackColor = true;
             chk_FilterBad.CheckedChanged += chk_FilterBad_CheckedChanged;
             // 
-            // label2
+            // label_Threshold
             // 
-            label2.AutoSize = true;
-            label2.Dock = DockStyle.Right;
-            label2.Font = new Font("Segoe UI", 11F);
-            label2.ForeColor = Color.FromArgb(239, 228, 177);
-            label2.Location = new Point(262, 5);
-            label2.Name = "label2";
-            label2.Size = new Size(21, 20);
-            label2.TabIndex = 17;
-            label2.Text = "%";
+            label_Threshold.AutoSize = true;
+            label_Threshold.Dock = DockStyle.Right;
+            label_Threshold.Font = new Font("Segoe UI", 9F);
+            label_Threshold.ForeColor = Color.FromArgb(239, 228, 177);
+            label_Threshold.Location = new Point(237, 5);
+            label_Threshold.Name = "label_Threshold";
+            label_Threshold.Padding = new Padding(0, 3, 0, 0);
+            label_Threshold.Size = new Size(46, 18);
+            label_Threshold.TabIndex = 17;
+            label_Threshold.Text = "Z Score";
             // 
             // gBox_Filter
             // 
-            gBox_Filter.Controls.Add(btn_LoadOrder);
+            gBox_Filter.Controls.Add(btn_LoadData);
             gBox_Filter.Controls.Add(chkList_ListOrders);
             gBox_Filter.Dock = DockStyle.Bottom;
             gBox_Filter.Font = new Font("Segoe UI", 11F);
@@ -498,21 +502,21 @@ namespace DigitalProductionProgram.Measure
             gBox_Filter.TabStop = false;
             gBox_Filter.Text = "Välj ordrar";
             // 
-            // btn_LoadOrder
+            // btn_LoadData
             // 
-            btn_LoadOrder.BackColor = Color.FromArgb(198, 239, 206);
-            btn_LoadOrder.Dock = DockStyle.Bottom;
-            btn_LoadOrder.FlatStyle = FlatStyle.Flat;
-            btn_LoadOrder.Font = new Font("Segoe UI", 10F);
-            btn_LoadOrder.ForeColor = Color.FromArgb(0, 97, 0);
-            btn_LoadOrder.Location = new Point(3, 253);
-            btn_LoadOrder.Margin = new Padding(0);
-            btn_LoadOrder.Name = "btn_LoadOrder";
-            btn_LoadOrder.Size = new Size(277, 26);
-            btn_LoadOrder.TabIndex = 12;
-            btn_LoadOrder.Text = "Ladda Data";
-            btn_LoadOrder.UseVisualStyleBackColor = false;
-            btn_LoadOrder.Click += LoadOrder_Click;
+            btn_LoadData.BackColor = Color.FromArgb(198, 239, 206);
+            btn_LoadData.Dock = DockStyle.Bottom;
+            btn_LoadData.FlatStyle = FlatStyle.Flat;
+            btn_LoadData.Font = new Font("Segoe UI", 10F);
+            btn_LoadData.ForeColor = Color.FromArgb(0, 97, 0);
+            btn_LoadData.Location = new Point(3, 253);
+            btn_LoadData.Margin = new Padding(0);
+            btn_LoadData.Name = "btn_LoadData";
+            btn_LoadData.Size = new Size(277, 26);
+            btn_LoadData.TabIndex = 12;
+            btn_LoadData.Text = "Ladda Data";
+            btn_LoadData.UseVisualStyleBackColor = false;
+            btn_LoadData.Click += LoadOrder_Click;
             // 
             // chkList_ListOrders
             // 
@@ -659,10 +663,14 @@ namespace DigitalProductionProgram.Measure
             tlp_SPC_Data.Controls.Add(label_TotalMeasurements, 0, 0);
             tlp_SPC_Data.Controls.Add(lbl_TotalMeasurements, 1, 0);
             tlp_SPC_Data.Controls.Add(lbl_Bar_Skewness, 2, 7);
+            tlp_SPC_Data.Controls.Add(label_PerformanceRatio, 0, 11);
+            tlp_SPC_Data.Controls.Add(lbl_PerformanceRatio, 1, 11);
+            tlp_SPC_Data.Controls.Add(lbl_Bar_PerformanceRatio, 2, 11);
             tlp_SPC_Data.Dock = DockStyle.Fill;
             tlp_SPC_Data.Location = new Point(0, 31);
             tlp_SPC_Data.Name = "tlp_SPC_Data";
-            tlp_SPC_Data.RowCount = 12;
+            tlp_SPC_Data.RowCount = 13;
+            tlp_SPC_Data.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
             tlp_SPC_Data.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
             tlp_SPC_Data.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
             tlp_SPC_Data.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
@@ -1086,6 +1094,39 @@ namespace DigitalProductionProgram.Measure
             lbl_Bar_Skewness.TabIndex = 21;
             lbl_Bar_Skewness.TextAlign = ContentAlignment.MiddleCenter;
             // 
+            // label_PerformanceRatio
+            // 
+            label_PerformanceRatio.AutoSize = true;
+            label_PerformanceRatio.Dock = DockStyle.Fill;
+            label_PerformanceRatio.ForeColor = Color.FromArgb(181, 210, 207);
+            label_PerformanceRatio.Location = new Point(3, 220);
+            label_PerformanceRatio.Name = "label_PerformanceRatio";
+            label_PerformanceRatio.Size = new Size(119, 20);
+            label_PerformanceRatio.TabIndex = 26;
+            label_PerformanceRatio.Text = "Performance Ratio:";
+            label_PerformanceRatio.TextAlign = ContentAlignment.TopRight;
+            // 
+            // lbl_PerformanceRatio
+            // 
+            lbl_PerformanceRatio.AutoSize = true;
+            lbl_PerformanceRatio.Dock = DockStyle.Fill;
+            lbl_PerformanceRatio.ForeColor = Color.FromArgb(184, 220, 231);
+            lbl_PerformanceRatio.Location = new Point(128, 220);
+            lbl_PerformanceRatio.Name = "lbl_PerformanceRatio";
+            lbl_PerformanceRatio.Size = new Size(43, 20);
+            lbl_PerformanceRatio.TabIndex = 27;
+            lbl_PerformanceRatio.Text = "-";
+            // 
+            // lbl_Bar_PerformanceRatio
+            // 
+            lbl_Bar_PerformanceRatio.AutoSize = true;
+            lbl_Bar_PerformanceRatio.Dock = DockStyle.Fill;
+            lbl_Bar_PerformanceRatio.Location = new Point(177, 220);
+            lbl_Bar_PerformanceRatio.Name = "lbl_Bar_PerformanceRatio";
+            lbl_Bar_PerformanceRatio.Size = new Size(110, 20);
+            lbl_Bar_PerformanceRatio.TabIndex = 28;
+            lbl_Bar_PerformanceRatio.TextAlign = ContentAlignment.MiddleCenter;
+            // 
             // label_SPC_Title
             // 
             label_SPC_Title.BackColor = Color.Transparent;
@@ -1137,7 +1178,7 @@ namespace DigitalProductionProgram.Measure
             panel_Filter.PerformLayout();
             panel_FilterOutliers.ResumeLayout(false);
             panel_FilterOutliers.PerformLayout();
-            ((ISupportInitialize)num_OutlierPercent).EndInit();
+            ((ISupportInitialize)num_OutlierLimit).EndInit();
             gBox_Filter.ResumeLayout(false);
             tlp_Bottom.ResumeLayout(false);
             panel_SPC.ResumeLayout(false);
@@ -1171,7 +1212,7 @@ namespace DigitalProductionProgram.Measure
         private ComboBox cb_MeasureTemplateRevision;
         private TableLayoutPanel tlp_Bottom;
         private GroupBox gBox_Filter;
-        private Button btn_LoadOrder;
+        private Button btn_LoadData;
         private Label lbl_TotalOrders;
         private Button btn_ExportDataToExcel;
         private CheckedListBox chkList_ListOrders;
@@ -1181,8 +1222,8 @@ namespace DigitalProductionProgram.Measure
         private Label label_FilterInfo;
         private Panel panel1;
         private Panel panel_FilterOutliers;
-        private NumericUpDown num_OutlierPercent;
-        private Label label2;
+        private NumericUpDown num_OutlierLimit;
+        private Label label_Threshold;
         private Panel panel_SPC;
         private Label label_TotalMeasurements;
         private Label lbl_TotalMeasurements;
@@ -1215,5 +1256,8 @@ namespace DigitalProductionProgram.Measure
         private Label lbl_Bar_StandardDeviation;
         private ToolTip toolTip1;
         private MeasurePoints cf_MeasurePoints;
+        private Label label_PerformanceRatio;
+        private Label lbl_PerformanceRatio;
+        private Label lbl_Bar_PerformanceRatio;
     }
 }

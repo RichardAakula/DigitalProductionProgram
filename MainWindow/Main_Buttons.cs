@@ -254,7 +254,6 @@ namespace DigitalProductionProgram.MainWindow
             switch (Order.WorkOperation)
             {
                 default:
-
                     Browse_Protocols.Browse_Protocols.Is_BrowsingProtocols = true;
                     var bp = new Browse_Protocols.Browse_Protocols(Order.PartNumber);
                     var cs = Screen.FromControl(this);
@@ -263,6 +262,7 @@ namespace DigitalProductionProgram.MainWindow
                     bp.Dispose();
                     break;
                 case Manage_WorkOperation.WorkOperations.Nothing:
+                    Browse_Protocols.Browse_Protocols.Is_BrowsingProtocols = true;
                     var välj = new Choose_WorkOperation_BrowseProtocols_ManageProcesscards( false, false, true,Properties.Resources.browseProtocols);
                     välj.ShowDialog();
                     välj.Dispose();

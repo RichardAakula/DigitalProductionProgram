@@ -74,6 +74,7 @@ namespace DigitalProductionProgram.Browse_Protocols
             lbl_DiscardedComment = new Label();
             lbl_DiscardedDate = new Label();
             lbl_DiscardedBy = new Label();
+            label_ViewSPC = new Label();
             flp_Left.SuspendLayout();
             tlp_Main.SuspendLayout();
             panel_Top.SuspendLayout();
@@ -89,6 +90,7 @@ namespace DigitalProductionProgram.Browse_Protocols
             flp_Left.BackColor = Color.FromArgb(45, 45, 45);
             flp_Left.Controls.Add(lbl_Export_Excel);
             flp_Left.Controls.Add(lbl_PrintOrder);
+            flp_Left.Controls.Add(label_ViewSPC);
             flp_Left.Dock = DockStyle.Left;
             flp_Left.FlowDirection = FlowDirection.TopDown;
             flp_Left.Location = new Point(0, 63);
@@ -189,6 +191,7 @@ namespace DigitalProductionProgram.Browse_Protocols
             Prefab.Location = new Point(1382, 872);
             Prefab.Margin = new Padding(5, 3, 5, 3);
             Prefab.Name = "Prefab";
+            Prefab.ParentProtocol = null;
             Prefab.Size = new Size(472, 192);
             Prefab.TabIndex = 4;
             // 
@@ -541,6 +544,22 @@ namespace DigitalProductionProgram.Browse_Protocols
             lbl_DiscardedBy.TabIndex = 0;
             lbl_DiscardedBy.Text = "Name";
             // 
+            // label_ViewSPC
+            // 
+            label_ViewSPC.AutoSize = true;
+            label_ViewSPC.BackColor = Color.Transparent;
+            label_ViewSPC.Cursor = Cursors.Hand;
+            label_ViewSPC.Font = new Font("Palatino Linotype", 10.25F);
+            label_ViewSPC.ForeColor = Color.Wheat;
+            label_ViewSPC.Location = new Point(12, 126);
+            label_ViewSPC.Margin = new Padding(12, 23, 4, 0);
+            label_ViewSPC.Name = "label_ViewSPC";
+            label_ViewSPC.Size = new Size(71, 19);
+            label_ViewSPC.TabIndex = 882;
+            label_ViewSPC.Text = "View SPC";
+            label_ViewSPC.TextAlign = ContentAlignment.MiddleCenter;
+            label_ViewSPC.Click += label_ViewSPC_Click;
+            // 
             // Browse_Protocols
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -609,5 +628,6 @@ namespace DigitalProductionProgram.Browse_Protocols
         private DataGridViewTextBoxColumn orderlist_InactivatedDate;
         private DataGridViewTextBoxColumn orderlist_InactivatedComment;
         private FlowLayoutPanel flp_Machines;
+        private Label label_ViewSPC;
     }
 }

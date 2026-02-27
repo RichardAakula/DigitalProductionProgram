@@ -111,7 +111,7 @@ namespace DigitalProductionProgram.MainWindow
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            ShowSplash();
+            //ShowSplash();
             //Kontrollerar att alla databaskopplingar är ok, annars får användaren välja  
             Load_DatabaseSettings();
             Settings.Settings.LoadData.Load_Settings();
@@ -126,7 +126,14 @@ namespace DigitalProductionProgram.MainWindow
             //Application.Run(new ClientUpdateManager());
             //return;
 
-            //Order.WorkOperation = Manage_WorkOperation.WorkOperations.Extrudering_FEP;
+            Order.WorkOperation = Manage_WorkOperation.WorkOperations.Extrudering_Termo;
+            Person.Name = "Richard Aakula";
+            
+            Browse_Protocols.Browse_Protocols.Is_BrowsingProtocols = true;
+            var browse = new Browse_Protocols.Browse_Protocols("358255");
+            browse.ShowDialog();
+            return;
+
             //Templates_Protocol.MainTemplate.ID = 22;
             //Templates_MeasureProtocol.MainTemplate.ID = 29;
             //Order.PartID = 4345;

@@ -13,6 +13,8 @@ namespace DigitalProductionProgram.Protocols.Protocol
 {
     public partial class Machine : UserControl
     {
+        public event EventHandler<Module> ModuleActivated;
+
         public static bool Is_MultipleMachines
         {
             get
@@ -140,6 +142,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                     Dock = DockStyle.Fill,
                     MachineIndex = machineIndex
                 };
+                module.ModuleActivated += (s, e) => { ModuleActivated?.Invoke(this, module); };
 
                 module.LoadTemplate(isHeaderVisible, processcardMinWidth, processcardNomWidth, processcardMaxWidth, runprotocolColWidth, isOkChangeProcessdata);
                 module.load_processcard.Load_ProcessData(formtemplateid);

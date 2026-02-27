@@ -21,6 +21,13 @@ namespace DigitalProductionProgram.Protocols.Protocol
 {
     public partial class Module : UserControl
     {
+        public event EventHandler ModuleActivated;
+
+        private void OnModuleActivated()
+        {
+            ModuleActivated?.Invoke(this, EventArgs.Empty);
+        }
+
         public string? LeftHeader { get; set; }
         public int FormTemplateID { get; set; }
         public int RunprotocolWidth { get; set; }
@@ -166,7 +173,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
         public readonly Processcard.Save save_processcard;
         public readonly Processcard.Load load_processcard;
         public Processcard processcard;
-
+       
 
 
         public Module()
@@ -175,7 +182,10 @@ namespace DigitalProductionProgram.Protocols.Protocol
             MainProtocol.Module_dataGridViews?.Add(dgv_Module);
 
             dgv_Module.ScrollBars = ScrollBars.None;
-
+            dgv_Module.Enter += (s, e) => OnModuleActivated();
+            dgv_Module.Click += (s, e) => OnModuleActivated();
+            dgv_Module.CellClick += (s, e) => OnModuleActivated();
+            this.Enter += (s, e) => OnModuleActivated();
 
             equipment = new Equipment(this);
             save_processcard = new Processcard.Save(this);
@@ -806,28 +816,28 @@ namespace DigitalProductionProgram.Protocols.Protocol
         }
         private void Module_ShowSpecialItems_CellRightMouseDown(object sender, DataGridViewCellMouseEventArgs e)
         {
-            if (Browse_Protocols.Browse_Protocols.Is_BrowsingProtocols)
-            {
-                _ = Activity.Stop($"Felsökning: ModuleRightMouseDown - IsBrowsingProtocol: Row= {e.RowIndex}, Col = {e.ColumnIndex}, Button = {e.Button}");
-                return;
-            }
+            //if (Browse_Protocols.Browse_Protocols.Is_BrowsingProtocols)
+            //{
+            //    _ = Activity.Stop($"Felsökning: ModuleRightMouseDown - IsBrowsingProtocol: Row= {e.RowIndex}, Col = {e.ColumnIndex}, Button = {e.Button}");
+            //    return;
+            //}
 
-            if (IsOkShowList == false) 
-            {
-                _ =Activity.Stop($"Felsökning: ModuleRightMouseDown - IsOkShowList = false:  Row= {e.RowIndex}, Col = {e.ColumnIndex}, Button = {e.Button}");
-                return;
-            }
+            //if (IsOkShowList == false) 
+            //{
+            //    _ =Activity.Stop($"Felsökning: ModuleRightMouseDown - IsOkShowList = false:  Row= {e.RowIndex}, Col = {e.ColumnIndex}, Button = {e.Button}");
+            //    return;
+            //}
 
-            if (dgv_Module.Columns[e.ColumnIndex].ReadOnly)
-            {
-                _ = Activity.Stop($"Felsökning: ModuleRightMouseDown - ColumnIndex.ReadOnly: Row= {e.RowIndex}, Col = {e.ColumnIndex}, Button = {e.Button}");
-                return;
-            }
-            if (IsAuthenticationNeeded && e.RowIndex > dgv_Module.Rows.Count - 3)
-            {
-                _ = Activity.Stop($"Felsökning: ModuleRightMouseDown - IsAuthenticationNeeded: Row= {e.RowIndex}, Col = {e.ColumnIndex}, Button = {e.Button}");
-                return;
-            }
+            //if (dgv_Module.Columns[e.ColumnIndex].ReadOnly)
+            //{
+            //    _ = Activity.Stop($"Felsökning: ModuleRightMouseDown - ColumnIndex.ReadOnly: Row= {e.RowIndex}, Col = {e.ColumnIndex}, Button = {e.Button}");
+            //    return;
+            //}
+            //if (IsAuthenticationNeeded && e.RowIndex > dgv_Module.Rows.Count - 3)
+            //{
+            //    _ = Activity.Stop($"Felsökning: ModuleRightMouseDown - IsAuthenticationNeeded: Row= {e.RowIndex}, Col = {e.ColumnIndex}, Button = {e.Button}");
+            //    return;
+            //}
 
 
             var isProcesscardUnderManagement = Manage_Processcards.IsProcesscardUnderManagement;
@@ -1818,6 +1828,29 @@ namespace DigitalProductionProgram.Protocols.Protocol
             }
         }
 
-       
+
+        public ParameterInfo GetSelectedParameter()
+        {
+            //if (Browse_Protocols.Browse_Protocols.Is_BrowsingProtocols == false)
+            //    return null;
+            if (dgv_Module.CurrentRow == null)
+                return null;
+            return new ParameterInfo
+            {
+                ProtocolDescriptionId = Convert.ToInt16(dgv_Module.CurrentRow.Cells["col_ProtocolDescriptionID"].Value),
+                Name = dgv_Module.CurrentRow.Cells["col_CodeText"].Value?.ToString(),
+                Min = Convert.ToDouble(dgv_Module.CurrentRow.Cells["col_Min"].Value),
+                Nom = Convert.ToDouble(dgv_Module.CurrentRow.Cells["col_nom"].Value),
+                Max = Convert.ToDouble(dgv_Module.CurrentRow.Cells["col_Max"].Value),
+            };
+        }
+        public class ParameterInfo
+        {
+            public int? ProtocolDescriptionId { get; set; }     // rekommenderas starkt
+            public string Name { get; set; }
+            public double? Min { get; set; }
+            public double? Nom { get; set; }
+            public double? Max { get; set; }
+        }
     }
 }

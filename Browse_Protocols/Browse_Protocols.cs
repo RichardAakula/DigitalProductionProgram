@@ -41,7 +41,7 @@ namespace DigitalProductionProgram.Browse_Protocols
             this.Shown += async (s, e) => await Load_OrderList(extra_query);
 
             Initialize_GUI();
-           
+
             Translate_Form();
             Prefab.Translate_Form();
             Processcard_BasedOn.Translate_Form();
@@ -52,7 +52,7 @@ namespace DigitalProductionProgram.Browse_Protocols
             mainInfo_A.lbl_PartNumber.MouseClick += PartNr_Click;
             mainInfo_A.lbl_Customer.MouseClick += Customer_Click;
         }
-       
+
         private void Translate_Form()
         {
             LanguageManager.TranslationHelper.TranslateControls([chb_SelectOrders]);
@@ -168,7 +168,7 @@ namespace DigitalProductionProgram.Browse_Protocols
             spolning_PTFE.MainInfo.lbl_Customer.Click += Customer_Click;
             spolning_PTFE.MainInfo.lbl_OrderNr.Click += Order_Click;
         }
-      
+
         private void Initialize_GUI_Protocol()
         {
             AddMachine(1);
@@ -180,8 +180,10 @@ namespace DigitalProductionProgram.Browse_Protocols
 
             var machine = new Machine(machineIndex, ref isUsingEquipment, ref height, false)
             {
-                Name = machineIndex.ToString(),
+                Name = machineIndex.ToString()
+                
             };
+            machine.ModuleActivated += Machine_ModuleActivated;
             var width = machine.TotalWidth;
             if (machine.HorizontalScroll.Visible)
                 height += SystemInformation.HorizontalScrollBarHeight;
@@ -536,7 +538,7 @@ namespace DigitalProductionProgram.Browse_Protocols
                     partnumbers?.Add($"{reader[0]}|{reader[1]}|{reader[2]}");
             });
 
-            var partnr = new Choose_Item(partnumbers, [ctrl], totalColumns:3, headers:["PartNumber", "Date", "Total Orders"] );
+            var partnr = new Choose_Item(partnumbers, [ctrl], totalColumns: 3, headers: ["PartNumber", "Date", "Total Orders"]);
             partnr.ShowDialog();
             await Load_OrderList($" AND PartNr = '{ctrl.Text}'");
         }
@@ -568,7 +570,7 @@ namespace DigitalProductionProgram.Browse_Protocols
                     customers?.Add($"{reader[0]}|{reader[1]}|{reader[2]}");
             });
 
-            var partnr = new Choose_Item(customers, [ctrl], totalColumns:3, headers:["PartNumber", "Date", "Total Orders"] );
+            var partnr = new Choose_Item(customers, [ctrl], totalColumns: 3, headers: ["PartNumber", "Date", "Total Orders"]);
             partnr.ShowDialog();
 
             await Load_OrderList($" AND Customer = '{ctrl.Text}'");
@@ -607,7 +609,7 @@ namespace DigitalProductionProgram.Browse_Protocols
                     return;
             }
 
-            using var choose_Items = new Choose_Item(items, cells:cells);
+            using var choose_Items = new Choose_Item(items, cells: cells);
             choose_Items.ShowDialog();
             await Load_OrderList($" AND OrderID IN (SELECT OrderID FROM [Order].PreFab WHERE {codetext} = '{cells[0].Value}')");
         }
@@ -640,7 +642,7 @@ namespace DigitalProductionProgram.Browse_Protocols
                 InfoText.Show("Denna funktion fungerar endast om det finns data i Processkortet", CustomColors.InfoText_Color.Warning, "Warning", this);
                 return;
             }
-            using var choose_Items = new Choose_Item(items, cells:cells);
+            using var choose_Items = new Choose_Item(items, cells: cells);
             choose_Items.ShowDialog();
             await Load_OrderList($" AND OrderID IN (SELECT DISTINCT OrderID FROM [Order].Data WHERE TextValue = '{cells[0].Value}')");
         }
@@ -670,6 +672,46 @@ namespace DigitalProductionProgram.Browse_Protocols
         private void PrintOrder_Click(object sender, EventArgs e)
         {
             Main_Form.Preview_PrintOut();
+        }
+        private Module _activeModule;
+
+        private void Machine_ModuleActivated(object sender, Module module)
+        {
+            _activeModule = module;
+        }
+        private void label_ViewSPC_Click(object sender, EventArgs e)
+        {
+            var parameter = _activeModule.GetSelectedParameter();
+            if (parameter == null)
+                return;
+            var orderNumbers = GetVisibleOrdersFromGrid();
+            var request = new OrderSpcRequest(
+                protocolDescriptionId: parameter.ProtocolDescriptionId,
+                parameterName: parameter.Name,
+                min: parameter.Min,
+                nom: parameter.Nom,
+                max: parameter.Max,
+                orderNumbers: orderNumbers);
+
+            var form = new SpcOrderAnalysis(request);
+            form.Show();
+        }
+        private List<string> GetVisibleOrdersFromGrid()
+        {
+            var list = new List<string>();
+
+            foreach (DataGridViewRow row in dgv_OrderList.Rows)
+            {
+                if (!row.IsNewRow)
+                {
+                    var orderId = row.Cells["orderlist_OrderID"].Value?.ToString();
+
+                    if (!string.IsNullOrWhiteSpace(orderId))
+                        list.Add(orderId);
+                }
+            }
+
+            return list;
         }
         private void Info_Click(object sender, EventArgs e)
         {

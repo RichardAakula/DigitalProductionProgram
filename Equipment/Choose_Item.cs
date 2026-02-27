@@ -265,7 +265,7 @@ namespace DigitalProductionProgram.Equipment
             {
                 for (int col = 0; col < Cells.Length && col < row.Cells.Count; col++)
                 {
-                    Cells[col].Selected = true;   // Din Körprotokoll-grej
+                   // Cells[col].Selected = true;  
                     Cells[col].Value = row.Cells[col].Value?.ToString();
                 }
             }

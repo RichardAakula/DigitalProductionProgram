@@ -93,6 +93,7 @@
             dgv_Module.ScrollBars = ScrollBars.None;
             dgv_Module.Size = new Size(769, 475);
             dgv_Module.TabIndex = 898;
+            dgv_Module.CellClick += Module_CellClick;
             dgv_Module.CellDoubleClick += Protocol_CellDoubleClick;
             dgv_Module.CellEnter += Module_CellEnter;
             dgv_Module.CellLeave += Module_CellLeave;

@@ -26,6 +26,7 @@ namespace DigitalProductionProgram.Browse_Protocols
         private MainProtocol_Skärmning_TEF? skärmning_TEF;
         private MainProtocol_Slipning_TEF? slipning_TEF;
         private MainProtocol_Spolning_PTFE? spolning_PTFE;
+        private SpcOrderAnalysis _spcForm;
 
 
         public static bool Is_BrowsingProtocols;
@@ -41,7 +42,7 @@ namespace DigitalProductionProgram.Browse_Protocols
             this.Shown += async (s, e) => await Load_OrderList(extra_query);
 
             Initialize_GUI();
-
+            
             Translate_Form();
             Prefab.Translate_Form();
             Processcard_BasedOn.Translate_Form();
@@ -51,6 +52,7 @@ namespace DigitalProductionProgram.Browse_Protocols
             mainInfo_A.lbl_PartNumber.Cursor = mainInfo_A.lbl_Customer.Cursor = Cursors.Hand;
             mainInfo_A.lbl_PartNumber.MouseClick += PartNr_Click;
             mainInfo_A.lbl_Customer.MouseClick += Customer_Click;
+            
         }
 
         private void Translate_Form()
@@ -184,12 +186,12 @@ namespace DigitalProductionProgram.Browse_Protocols
                 
             };
             machine.ModuleActivated += Machine_ModuleActivated;
+            
             var width = machine.TotalWidth;
             if (machine.HorizontalScroll.Visible)
                 height += SystemInformation.HorizontalScrollBarHeight;
             machine.Size = new Size(width, height);
             flp_Machines.Controls.Add(machine);
-
         }
 
         private async Task Load_OrderList(string extraQuery = null)
@@ -197,8 +199,6 @@ namespace DigitalProductionProgram.Browse_Protocols
             dgv_OrderList.Rows.Clear();
             CustomProgressBar pbar = new CustomProgressBar();
             pbar.Show();
-
-
             var orderRows = new List<DataGridViewRow>();
 
             await Task.Run(() =>
@@ -211,8 +211,9 @@ namespace DigitalProductionProgram.Browse_Protocols
                 PartNr, 
                 orders.OrderID, 
                 orders.OrderNr, 
-                RevNr, 
-                Date_Start,
+                orders.RevNr, 
+                orders.ProdLine,
+                orders.Date_Start,
                 CASE 
                     WHEN discard.OrderID IS NULL THEN 'False' 
                     ELSE 'True' 
@@ -245,7 +246,7 @@ namespace DigitalProductionProgram.Browse_Protocols
                     row.Cells[3].Value = reader["OrderNr"].ToString();
                     row.Cells[4].Value = reader["OrderID"].ToString();
                     row.Cells[5].Value = reader["RevNr"].ToString();
-
+                    row.Cells[12].Value = reader["ProdLine"].ToString();
                     var date = DateTime.Parse(reader["Date_Start"].ToString());
                     var dateTimeFormat = CultureInfo.CurrentCulture.DateTimeFormat;
                     var formattedDate = date.ToString($"{dateTimeFormat.ShortDatePattern} {dateTimeFormat.ShortTimePattern}", CultureInfo.CurrentCulture);
@@ -677,38 +678,107 @@ namespace DigitalProductionProgram.Browse_Protocols
 
         private void Machine_ModuleActivated(object sender, Module module)
         {
+            if (module == null) 
+                return; 
+            if (_activeModule != null)
+                _activeModule.OnParameterSelected -= ActiveModule_OnParameterSelected;
+
             _activeModule = module;
+
+            _activeModule.OnParameterSelected += ActiveModule_OnParameterSelected;
         }
         private void label_ViewSPC_Click(object sender, EventArgs e)
         {
-            var parameter = _activeModule.GetSelectedParameter();
+            InfoText.Show("Klicka i någon rad i parametrarna för att öppna SPC-fönstret.", 
+                CustomColors.InfoText_Color.Info, "SPC");
+        }
+        private bool _isHandlingParameter = false;
+       
+        private void ActiveModule_OnParameterSelected(Module.ParameterInfo parameter)
+        {
             if (parameter == null)
                 return;
-            var orderNumbers = GetVisibleOrdersFromGrid();
-            var request = new OrderSpcRequest(
-                protocolDescriptionId: parameter.ProtocolDescriptionId,
-                parameterName: parameter.Name,
-                min: parameter.Min,
-                nom: parameter.Nom,
-                max: parameter.Max,
-                orderNumbers: orderNumbers);
 
-            var form = new SpcOrderAnalysis(request);
-            form.Show();
+            var orders = GetVisibleOrdersFromGrid() ?? new List<OrderInfo>();
+            if (orders.Count == 0)
+                return;
+
+            // Om formuläret är null eller disposed, skapa nytt
+            if (_spcForm == null || _spcForm.IsDisposed)
+            {
+                var request = new OrderSpcRequest(
+                    protocolDescriptionId: parameter.ProtocolDescriptionId,
+                    parameterName: parameter.Name,
+                    min: parameter.Min,
+                    nom: parameter.Nom,
+                    max: parameter.Max,
+                    orders: orders);
+
+                _spcForm = new SpcOrderAnalysis(request);
+
+                // Ta bort handler direkt när formuläret stängs
+                _spcForm.FormClosed += (s, e) =>
+                {
+                    if (_activeModule != null)
+                    {
+                       // _activeModule.OnParameterSelected -= ActiveModule_OnParameterSelected;
+                    }
+                    _spcForm = null;
+                };
+
+                _spcForm.AddParameter(parameter, orders);
+                _spcForm.Show();
+            }
+            else
+            {
+                // Om formuläret redan finns, säkerställ att det inte är disposed
+                if (!_spcForm.IsDisposed && _spcForm.IsHandleCreated)
+                {
+                    _spcForm.AddParameter(parameter, orders);
+                    _spcForm.Activate();
+                }
+                else
+                {
+                    // Om det blev disposed, skapa nytt formulär
+                    _spcForm = null;
+                    ActiveModule_OnParameterSelected(parameter);
+                }
+            }
         }
-        private List<string> GetVisibleOrdersFromGrid()
+        //private List<int> GetVisibleOrdersFromGrid()
+        //{
+        //    var list = new List<int>();
+
+        //    foreach (DataGridViewRow row in dgv_OrderList.Rows)
+        //    {
+        //        if (!row.IsNewRow)
+        //        {
+        //            if (int.TryParse(row.Cells["orderlist_OrderID"].Value?.ToString(), out var orderId))
+        //                list.Add(orderId);
+        //        }
+        //    }
+
+        //    return list;
+        //}
+        private List<OrderInfo> GetVisibleOrdersFromGrid()
         {
-            var list = new List<string>();
+            var list = new List<OrderInfo>();
 
             foreach (DataGridViewRow row in dgv_OrderList.Rows)
             {
-                if (!row.IsNewRow)
-                {
-                    var orderId = row.Cells["orderlist_OrderID"].Value?.ToString();
+                if (row.IsNewRow)
+                    continue;
 
-                    if (!string.IsNullOrWhiteSpace(orderId))
-                        list.Add(orderId);
-                }
+                // Hämta OrderID
+                if (!int.TryParse(row.Cells["orderlist_OrderID"].Value?.ToString(), out var orderId))
+                    continue;
+
+                // Hämta OrderNumber och RevNr, fallback till tom sträng om null
+                var orderNumber = row.Cells["orderlist_OrderNr"].Value?.ToString() ?? "";
+                var revNr = row.Cells["orderlist_RevNr"].Value?.ToString() ?? "";
+                var prodline = row.Cells["orderlist_ProdLine"].Value?.ToString() ?? "";
+
+                list.Add(new OrderInfo(orderId, orderNumber, revNr, prodline));
             }
 
             return list;
@@ -724,6 +794,16 @@ namespace DigitalProductionProgram.Browse_Protocols
             Order.Restore_TempOrderInfo();
         }
 
-       
+        //public class OrderSelection
+        //{
+        //    public int OrderId { get; set; }
+        //    public string OrderNr { get; set; }
+        //    public string RevNr { get; set; }
+
+        //    public override string ToString()
+        //    {
+        //        return $"{OrderNr}  Rev {RevNr}";
+        //    }
+        //}
     }
 }

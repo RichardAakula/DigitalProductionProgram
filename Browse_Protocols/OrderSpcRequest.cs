@@ -6,6 +6,11 @@ using System.Threading.Tasks;
 
 namespace DigitalProductionProgram.Browse_Protocols
 {
+    public record OrderInfo(int OrderID, string OrderNumber, string RevNr, string ProdLine)
+    {
+        public override string ToString() => $"{OrderNumber} - {RevNr} - {ProdLine}";
+    }
+
     public class OrderSpcRequest
     {
         public int? ProtocolDescriptionId { get; set; }
@@ -13,16 +18,17 @@ namespace DigitalProductionProgram.Browse_Protocols
         public double? Min { get; }
         public double? Nom { get; }
         public double? Max { get; }
-        public List<string> OrderNumbers { get; }
+        public List<OrderInfo> Orders { get; }
 
-        public OrderSpcRequest(int? protocolDescriptionId, string parameterName, double? min, double? nom, double? max, List<string> orderNumbers)
+
+        public OrderSpcRequest(int? protocolDescriptionId, string parameterName, double? min, double? nom, double? max, List<OrderInfo>? orders)
         {
             ProtocolDescriptionId = protocolDescriptionId;
             ParameterName = parameterName;
             Min = min;
             Nom = nom;
             Max = max;
-            OrderNumbers = orderNumbers ?? new List<string>();
+            Orders = orders ?? new List<OrderInfo>();
         }
     }
 }

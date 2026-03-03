@@ -128,7 +128,7 @@ namespace DigitalProductionProgram.MainWindow
 
             Order.WorkOperation = Manage_WorkOperation.WorkOperations.Extrudering_Termo;
             Person.Name = "Richard Aakula";
-            
+
             Browse_Protocols.Browse_Protocols.Is_BrowsingProtocols = true;
             var browse = new Browse_Protocols.Browse_Protocols("358255");
             browse.ShowDialog();

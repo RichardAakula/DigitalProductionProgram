@@ -34,6 +34,7 @@
             label_USL = new Label();
             tlp_Main = new TableLayoutPanel();
             tlp_SPC_Data = new TableLayoutPanel();
+            chkList_Orders = new CheckedListBox();
             lbl_LSL = new Label();
             lbl_NOM = new Label();
             lbl_USL = new Label();
@@ -67,6 +68,8 @@
             label_PerformanceRatio = new Label();
             lbl_PerformanceRatio = new Label();
             lbl_Bar_PerformanceRatio = new Label();
+            chkList_Parameters = new CheckedListBox();
+            flp_Charts = new FlowLayoutPanel();
             tlp_Main.SuspendLayout();
             tlp_SPC_Data.SuspendLayout();
             SuspendLayout();
@@ -80,7 +83,7 @@
             lbl_ParameterName.ForeColor = Color.FromArgb(239, 228, 177);
             lbl_ParameterName.Location = new Point(3, 0);
             lbl_ParameterName.Name = "lbl_ParameterName";
-            lbl_ParameterName.Size = new Size(295, 20);
+            lbl_ParameterName.Size = new Size(386, 20);
             lbl_ParameterName.TabIndex = 0;
             lbl_ParameterName.Text = "Parameter Name:";
             lbl_ParameterName.TextAlign = ContentAlignment.TopCenter;
@@ -127,12 +130,13 @@
             tlp_Main.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25.0203743F));
             tlp_Main.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 74.97962F));
             tlp_Main.Controls.Add(tlp_SPC_Data, 0, 0);
+            tlp_Main.Controls.Add(flp_Charts, 1, 0);
             tlp_Main.Dock = DockStyle.Fill;
             tlp_Main.Location = new Point(0, 0);
             tlp_Main.Name = "tlp_Main";
             tlp_Main.RowCount = 1;
             tlp_Main.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
-            tlp_Main.Size = new Size(1227, 608);
+            tlp_Main.Size = new Size(1591, 827);
             tlp_Main.TabIndex = 1;
             // 
             // tlp_SPC_Data
@@ -142,6 +146,7 @@
             tlp_SPC_Data.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 125F));
             tlp_SPC_Data.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 49F));
             tlp_SPC_Data.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            tlp_SPC_Data.Controls.Add(chkList_Orders, 0, 17);
             tlp_SPC_Data.Controls.Add(lbl_LSL, 1, 3);
             tlp_SPC_Data.Controls.Add(lbl_NOM, 1, 2);
             tlp_SPC_Data.Controls.Add(lbl_USL, 1, 1);
@@ -179,10 +184,11 @@
             tlp_SPC_Data.Controls.Add(label_PerformanceRatio, 0, 15);
             tlp_SPC_Data.Controls.Add(lbl_PerformanceRatio, 1, 15);
             tlp_SPC_Data.Controls.Add(lbl_Bar_PerformanceRatio, 2, 15);
+            tlp_SPC_Data.Controls.Add(chkList_Parameters, 0, 16);
             tlp_SPC_Data.Dock = DockStyle.Fill;
             tlp_SPC_Data.Location = new Point(3, 3);
             tlp_SPC_Data.Name = "tlp_SPC_Data";
-            tlp_SPC_Data.RowCount = 17;
+            tlp_SPC_Data.RowCount = 18;
             tlp_SPC_Data.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
             tlp_SPC_Data.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
             tlp_SPC_Data.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
@@ -199,9 +205,22 @@
             tlp_SPC_Data.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
             tlp_SPC_Data.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
             tlp_SPC_Data.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
-            tlp_SPC_Data.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            tlp_SPC_Data.Size = new Size(301, 602);
+            tlp_SPC_Data.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
+            tlp_SPC_Data.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
+            tlp_SPC_Data.Size = new Size(392, 821);
             tlp_SPC_Data.TabIndex = 872;
+            // 
+            // chkList_Orders
+            // 
+            chkList_Orders.CheckOnClick = true;
+            tlp_SPC_Data.SetColumnSpan(chkList_Orders, 3);
+            chkList_Orders.Dock = DockStyle.Fill;
+            chkList_Orders.FormattingEnabled = true;
+            chkList_Orders.IntegralHeight = false;
+            chkList_Orders.Location = new Point(3, 573);
+            chkList_Orders.Name = "chkList_Orders";
+            chkList_Orders.Size = new Size(386, 245);
+            chkList_Orders.TabIndex = 34;
             // 
             // lbl_LSL
             // 
@@ -244,7 +263,7 @@
             lbl_Bar_StandardDeviation.ForeColor = Color.FromArgb(147, 146, 153);
             lbl_Bar_StandardDeviation.Location = new Point(177, 200);
             lbl_Bar_StandardDeviation.Name = "lbl_Bar_StandardDeviation";
-            lbl_Bar_StandardDeviation.Size = new Size(121, 20);
+            lbl_Bar_StandardDeviation.Size = new Size(212, 20);
             lbl_Bar_StandardDeviation.TabIndex = 25;
             lbl_Bar_StandardDeviation.TextAlign = ContentAlignment.TopCenter;
             // 
@@ -254,7 +273,7 @@
             lbl_Bar_Ppk.Dock = DockStyle.Fill;
             lbl_Bar_Ppk.Location = new Point(177, 280);
             lbl_Bar_Ppk.Name = "lbl_Bar_Ppk";
-            lbl_Bar_Ppk.Size = new Size(121, 20);
+            lbl_Bar_Ppk.Size = new Size(212, 20);
             lbl_Bar_Ppk.TabIndex = 24;
             lbl_Bar_Ppk.TextAlign = ContentAlignment.MiddleCenter;
             // 
@@ -264,7 +283,7 @@
             lbl_Bar_Pp.Dock = DockStyle.Fill;
             lbl_Bar_Pp.Location = new Point(177, 260);
             lbl_Bar_Pp.Name = "lbl_Bar_Pp";
-            lbl_Bar_Pp.Size = new Size(121, 20);
+            lbl_Bar_Pp.Size = new Size(212, 20);
             lbl_Bar_Pp.TabIndex = 23;
             lbl_Bar_Pp.TextAlign = ContentAlignment.MiddleCenter;
             // 
@@ -274,7 +293,7 @@
             lbl_Bar_Kurtosis.Dock = DockStyle.Fill;
             lbl_Bar_Kurtosis.Location = new Point(177, 240);
             lbl_Bar_Kurtosis.Name = "lbl_Bar_Kurtosis";
-            lbl_Bar_Kurtosis.Size = new Size(121, 20);
+            lbl_Bar_Kurtosis.Size = new Size(212, 20);
             lbl_Bar_Kurtosis.TabIndex = 22;
             lbl_Bar_Kurtosis.TextAlign = ContentAlignment.MiddleCenter;
             // 
@@ -537,7 +556,7 @@
             lbl_Bar_Skewness.Dock = DockStyle.Fill;
             lbl_Bar_Skewness.Location = new Point(177, 220);
             lbl_Bar_Skewness.Name = "lbl_Bar_Skewness";
-            lbl_Bar_Skewness.Size = new Size(121, 20);
+            lbl_Bar_Skewness.Size = new Size(212, 20);
             lbl_Bar_Skewness.TabIndex = 21;
             lbl_Bar_Skewness.TextAlign = ContentAlignment.MiddleCenter;
             // 
@@ -570,15 +589,39 @@
             lbl_Bar_PerformanceRatio.Dock = DockStyle.Fill;
             lbl_Bar_PerformanceRatio.Location = new Point(177, 300);
             lbl_Bar_PerformanceRatio.Name = "lbl_Bar_PerformanceRatio";
-            lbl_Bar_PerformanceRatio.Size = new Size(121, 20);
+            lbl_Bar_PerformanceRatio.Size = new Size(212, 20);
             lbl_Bar_PerformanceRatio.TabIndex = 28;
             lbl_Bar_PerformanceRatio.TextAlign = ContentAlignment.MiddleCenter;
+            // 
+            // chkList_Parameters
+            // 
+            chkList_Parameters.CheckOnClick = true;
+            tlp_SPC_Data.SetColumnSpan(chkList_Parameters, 3);
+            chkList_Parameters.Dock = DockStyle.Fill;
+            chkList_Parameters.FormattingEnabled = true;
+            chkList_Parameters.IntegralHeight = false;
+            chkList_Parameters.Location = new Point(3, 323);
+            chkList_Parameters.Name = "chkList_Parameters";
+            chkList_Parameters.Size = new Size(386, 244);
+            chkList_Parameters.TabIndex = 33;
+            chkList_Parameters.ItemCheck += chkList_Parameters_ItemCheck;
+            // 
+            // flp_Charts
+            // 
+            flp_Charts.AutoScroll = true;
+            flp_Charts.Dock = DockStyle.Fill;
+            flp_Charts.FlowDirection = FlowDirection.TopDown;
+            flp_Charts.Location = new Point(401, 3);
+            flp_Charts.Name = "flp_Charts";
+            flp_Charts.Size = new Size(1187, 821);
+            flp_Charts.TabIndex = 873;
+            flp_Charts.WrapContents = false;
             // 
             // SpcOrderAnalysis
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1227, 608);
+            ClientSize = new Size(1591, 827);
             Controls.Add(tlp_Main);
             Name = "SpcOrderAnalysis";
             Text = "SpcOrderAnalysis";
@@ -629,5 +672,8 @@
         private Label lbl_LSL;
         private Label lbl_NOM;
         private Label lbl_USL;
+        private CheckedListBox chkList_Parameters;
+        private CheckedListBox chkList_Orders;
+        private FlowLayoutPanel flp_Charts;
     }
 }

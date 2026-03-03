@@ -22,11 +22,23 @@ namespace DigitalProductionProgram.Protocols.Protocol
     public partial class Module : UserControl
     {
         public event EventHandler ModuleActivated;
-
+        private bool _isModuleActivating = false;
         private void OnModuleActivated()
         {
-            ModuleActivated?.Invoke(this, EventArgs.Empty);
+            if (_isModuleActivating) return;
+            if (dgv_Module.CurrentRow == null) return;
+
+            _isModuleActivating = true;
+            try
+            {
+                ModuleActivated?.Invoke(this, EventArgs.Empty);
+            }
+            finally
+            {
+                _isModuleActivating = false;
+            }
         }
+        public event Action<ParameterInfo> OnParameterSelected;
 
         public string? LeftHeader { get; set; }
         public int FormTemplateID { get; set; }
@@ -90,7 +102,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
             }
 
             if (int.TryParse(headertext, out var startup) == false)
-                _ = Activity.Stop($"Error Save Data: Wrong Startup: {headertext} - Method: {method}"); 
+                _ = Activity.Stop($"Error Save Data: Wrong Startup: {headertext} - Method: {method}");
             return startup;
 
         }
@@ -173,7 +185,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
         public readonly Processcard.Save save_processcard;
         public readonly Processcard.Load load_processcard;
         public Processcard processcard;
-       
+
 
 
         public Module()
@@ -183,9 +195,6 @@ namespace DigitalProductionProgram.Protocols.Protocol
 
             dgv_Module.ScrollBars = ScrollBars.None;
             dgv_Module.Enter += (s, e) => OnModuleActivated();
-            dgv_Module.Click += (s, e) => OnModuleActivated();
-            dgv_Module.CellClick += (s, e) => OnModuleActivated();
-            this.Enter += (s, e) => OnModuleActivated();
 
             equipment = new Equipment(this);
             save_processcard = new Processcard.Save(this);
@@ -236,8 +245,8 @@ namespace DigitalProductionProgram.Protocols.Protocol
             float y = (availableHeight / 2f) - (textLength / 2f);
 
             // Rita texten
-            Print_LeftLabel(e, LeftHeader,  (int)availableHeight, (int)y, font);
-            
+            Print_LeftLabel(e, LeftHeader, (int)availableHeight, (int)y, font);
+
             dgv_Module.ClearSelection();
         }
         private static void Print_LeftLabel(PaintEventArgs e, string? text, int top, int y, Font? font = null)
@@ -247,7 +256,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
 
             g.DrawString(text, font, Brushes.Black, 0, y, new StringFormat(StringFormatFlags.DirectionVertical));
             using var pen = new Pen(Color.Black, 3);
-            g.DrawLine(pen, 0,top, 20, top);
+            g.DrawLine(pen, 0, top, 20, top);
         }
 
         private static bool IsCodeTextExistInModule(DataGridView dgv, string codeText)
@@ -430,7 +439,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                             AND Uppstart > 0
                        ORDER BY Uppstart, Ugn, template.RowIndex";
                 var cmd = new SqlCommand(query, con);
-                
+
                 SQL_Parameter.NullableINT(cmd.Parameters, "@orderid", Order.OrderID);
                 cmd.Parameters.AddWithValue("@formtemplateid", formTemplateID);
                 cmd.Parameters.AddWithValue("@machineindex", MachineIndex);
@@ -638,6 +647,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
         }
         private void Module_CellEnter(object sender, DataGridViewCellEventArgs e)
         {
+            return;
             if (dgv_Module == null || !IsOkToSave || e.RowIndex < 0)
                 return;
             var cell = dgv_Module.Rows[e.RowIndex].Cells["col_CodeText"];
@@ -646,6 +656,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
         }
         private void Module_CellMouseEnter(object sender, DataGridViewCellEventArgs e)
         {
+            return;
             if (e.RowIndex < 0 || e.ColumnIndex < 0)
                 return;
 
@@ -664,6 +675,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
         }
         private void Module_CellLeave(object sender, DataGridViewCellEventArgs e)
         {
+            return;
             if (dgv_Module == null || !IsOkToSave || e.RowIndex < 0)
                 return;
 
@@ -997,7 +1009,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                             items = Monitor.Monitor.List_CandleFilter_PartNr("Candle");
                             break;
                         case 316: //KALIBRERINGSTYP
-                            
+
                             items = DigitalProductionProgram.Equipment.Equipment.List_Register(true, NOM_Value(dgv_Row), "Register_Kalibreringar");
                             //  IsItemsMultipleColumns = false;
                             break;
@@ -1009,56 +1021,56 @@ namespace DigitalProductionProgram.Protocols.Protocol
                                 items = DigitalProductionProgram.Equipment.Equipment.List_From_Register("ID_Nummer", "Register_Kalibreringar", true, Value(col, 316));
                                 TotalColumns = 2;
                             }
-                                
-                            
+
+
                             break;
 
                         case 159:   //HS MASKIN
-                                    items = Machines.HS_Machines;
-                                    break;
-                                case 75:    //RÖR ID# POS 1
-                                case 160:   //RÖR ID# POS 2
-                                case 161:   //RÖR ID# POS 3
-                                    items = Tools.RegisterList.List_HS_PipeID(isProcesscardUnderManagement);
-                                    break;
-                                case 71:    //HACKHYLSA
-                                    items = Tools.RegisterList.List_HS_Hackhylsa;
-                                    break;
-                                case 73:    //UPPTAGARE/HACK
-                                    items = Machines.HS_Upptagare;
-                                    break;
-                                case 131:   //RAKBLADSTYP
-                                    items = Monitor.Monitor.List_RazorTypes;
-                                    break;
-                                case 132:   //HACKRÖRSTYP
-                                    items.Add("Vanlig");
-                                    items.Add("PTFE");
-                                    items.Add("Vinkel");
-                                    break;
-                                case 138:   //HJUL
-                                    items.Add("Stort");
-                                    items.Add("Litet");
-                                    break;
-                                case 139:   //PÅSTYP
-                                    items.Add("Transparent PE");
-                                    items.Add("Svart PE");
-                                    items.Add("Spolpåse");
-                                    items.Add("Inserterrörspåse");
-                                    break;
-                                case 333:   //SVÄNGT / BYTT RAKBLAD
-                                    items.Add("Svängt Rakblad");
-                                    items.Add("Nytt Rakblad");
-                                    break;
-                                case 357:   //BRYTPLATTA
-                                    items.Add("Platt");
-                                    items.Add("Försänkt");
-                                    items.Add("Strypring");
-                                    break;
-                                case 362:
-                                    items.Add("Kont.");
-                                    items.Add("Inter.");
-                                    break;
-                                }
+                            items = Machines.HS_Machines;
+                            break;
+                        case 75:    //RÖR ID# POS 1
+                        case 160:   //RÖR ID# POS 2
+                        case 161:   //RÖR ID# POS 3
+                            items = Tools.RegisterList.List_HS_PipeID(isProcesscardUnderManagement);
+                            break;
+                        case 71:    //HACKHYLSA
+                            items = Tools.RegisterList.List_HS_Hackhylsa;
+                            break;
+                        case 73:    //UPPTAGARE/HACK
+                            items = Machines.HS_Upptagare;
+                            break;
+                        case 131:   //RAKBLADSTYP
+                            items = Monitor.Monitor.List_RazorTypes;
+                            break;
+                        case 132:   //HACKRÖRSTYP
+                            items.Add("Vanlig");
+                            items.Add("PTFE");
+                            items.Add("Vinkel");
+                            break;
+                        case 138:   //HJUL
+                            items.Add("Stort");
+                            items.Add("Litet");
+                            break;
+                        case 139:   //PÅSTYP
+                            items.Add("Transparent PE");
+                            items.Add("Svart PE");
+                            items.Add("Spolpåse");
+                            items.Add("Inserterrörspåse");
+                            break;
+                        case 333:   //SVÄNGT / BYTT RAKBLAD
+                            items.Add("Svängt Rakblad");
+                            items.Add("Nytt Rakblad");
+                            break;
+                        case 357:   //BRYTPLATTA
+                            items.Add("Platt");
+                            items.Add("Försänkt");
+                            items.Add("Strypring");
+                            break;
+                        case 362:
+                            items.Add("Kont.");
+                            items.Add("Inter.");
+                            break;
+                    }
                 }
 
 
@@ -1069,11 +1081,33 @@ namespace DigitalProductionProgram.Protocols.Protocol
                 items.Add(Properties.Resources.checkLastOperations);
                 if (CheckAuthority.IsRoleAuthorized(CheckAuthority.TemplateAuthorities.ChooseFreelyFromListsProtocol, false))
                     isOkWriteText = true;
-                using var choose_Item = new Choose_Item(items, cells:cells, dataBaseColumnName: dgv_Module.Rows[row].Cells[0].Value.ToString(), maskin:MachineIndex, uppstart: startup, isOkReturnOwnText: isOkWriteText, totalColumns: TotalColumns);
+                using var choose_Item = new Choose_Item(items, cells: cells, dataBaseColumnName: dgv_Module.Rows[row].Cells[0].Value.ToString(), maskin: MachineIndex, uppstart: startup, isOkReturnOwnText: isOkWriteText, totalColumns: TotalColumns);
                 choose_Item.ShowDialog();
             }
             if (IsOkToSave || isProcesscardUnderManagement)
                 SpecialItems(row, col, protocolDescriptionID, isProcesscardUnderManagement);
+        }
+        private bool _isHandlingParameter = false;
+        private void Module_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            var parameter = GetSelectedParameter();
+            if (parameter == null)
+                return;
+
+            // Skjut upp eventet till slutet av message-loop
+            this.BeginInvoke(new Action(() =>
+            {
+                try
+                {
+                    if (parameter != null)
+                        OnParameterSelected?.Invoke(parameter);
+                }
+                catch (Exception ex)
+                {
+                    // Här kan vi logga exceptionen, den kommer inte krascha UI
+                    Debug.WriteLine(ex);
+                }
+            }));
         }
         private void Module_RowEnter(object sender, DataGridViewCellEventArgs e)
         {
@@ -1165,13 +1199,13 @@ namespace DigitalProductionProgram.Protocols.Protocol
                             AND Uppstart = @uppstart
                             AND Ugn = @oven";
                     var cmd = new SqlCommand(query, con);
-                    
+
                     cmd.Parameters.AddWithValue("@uppstart", startup);
                     cmd.Parameters.AddWithValue("@oven", oven);
                     cmd.ExecuteNonQuery();
                 });
             }
-            
+
             public static void Save_Data(DataGridView dgv, int row, int formtemplateid, int OvenIndex = 0, int machineindex = 0)
             {
                 if (Module.IsOkToSave == false)
@@ -1437,7 +1471,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                     }
                     return 1;
                 });
-                
+
             }
             public static bool IsOkAddOven(int startUp, int oven)
             {
@@ -1829,20 +1863,42 @@ namespace DigitalProductionProgram.Protocols.Protocol
         }
 
 
-        public ParameterInfo GetSelectedParameter()
+        private ParameterInfo GetSelectedParameter()
         {
-            //if (Browse_Protocols.Browse_Protocols.Is_BrowsingProtocols == false)
-            //    return null;
-            if (dgv_Module.CurrentRow == null)
+            var row = dgv_Module.CurrentRow;
+            if (row == null)
+                return null; // skydd
+
+            var protocolObj = row.Cells["col_ProtocolDescriptionID"].Value;
+            if (protocolObj == null || !short.TryParse(protocolObj.ToString(), out short protocolId))
                 return null;
+
+            string name = row.Cells["col_CodeText"].Value?.ToString();
+            double? min = TryGetNullableDouble(row, "col_Min");
+            double? nom = TryGetNullableDouble(row, "col_nom");
+            double? max = TryGetNullableDouble(row, "col_Max");
+
             return new ParameterInfo
             {
-                ProtocolDescriptionId = Convert.ToInt16(dgv_Module.CurrentRow.Cells["col_ProtocolDescriptionID"].Value),
-                Name = dgv_Module.CurrentRow.Cells["col_CodeText"].Value?.ToString(),
-                Min = Convert.ToDouble(dgv_Module.CurrentRow.Cells["col_Min"].Value),
-                Nom = Convert.ToDouble(dgv_Module.CurrentRow.Cells["col_nom"].Value),
-                Max = Convert.ToDouble(dgv_Module.CurrentRow.Cells["col_Max"].Value),
+                ProtocolDescriptionId = protocolId,
+                Name = name,
+                Min = min,
+                Nom = nom,
+                Max = max
             };
+        }
+
+        private double? TryGetNullableDouble(DataGridViewRow row, string columnName)
+        {
+            var value = row.Cells[columnName].Value;
+
+            if (value == null)
+                return null;
+
+            if (double.TryParse(value.ToString(), out double result))
+                return result;
+
+            return null;
         }
         public class ParameterInfo
         {
@@ -1852,5 +1908,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
             public double? Nom { get; set; }
             public double? Max { get; set; }
         }
+
+           
     }
 }

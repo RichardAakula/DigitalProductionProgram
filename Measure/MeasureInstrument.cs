@@ -154,10 +154,10 @@ namespace DigitalProductionProgram.Measure
             else
                 Value = cell.Value.ToString();
 
-            var Mätdon = dgv_Mätdon.Rows[row].HeaderCell.Value.ToString();
+            var MeasureInstrument = dgv_Mätdon.Rows[row].HeaderCell.Value.ToString();
             var Row = int.Parse(dgv_Mätdon.Rows[row].Cells[1].Value.ToString());
 
-            Save_Mätdon(Mätdon, Value, Row);
+            Save_Mätdon(MeasureInstrument, Value, Row);
 
         }
         private void Mätdon_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)

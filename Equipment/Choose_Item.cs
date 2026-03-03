@@ -265,8 +265,11 @@ namespace DigitalProductionProgram.Equipment
             {
                 for (int col = 0; col < Cells.Length && col < row.Cells.Count; col++)
                 {
-                   // Cells[col].Selected = true;  
-                    Cells[col].Value = row.Cells[col].Value?.ToString();
+                    var cell = Cells[col];
+                    if (!(cell is DataGridViewHeaderCell))
+                        cell.Selected = true;
+
+                    cell.Value = row.Cells[col].Value?.ToString();
                 }
             }
 

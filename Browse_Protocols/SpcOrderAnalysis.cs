@@ -1,11 +1,13 @@
 ﻿using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Measure;
+using DigitalProductionProgram.PrintingServices;
 using DigitalProductionProgram.Protocols.Protocol;
 using LiveChartsCore;
 using LiveChartsCore.Defaults;
 using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.Painting;
 using LiveChartsCore.SkiaSharpView.WinForms;
+using OpenTK.Audio.OpenAL;
 using SkiaSharp;
 using System;
 using System.Collections.Generic;
@@ -27,24 +29,8 @@ namespace DigitalProductionProgram.Browse_Protocols
     public partial class SpcOrderAnalysis : Form
     {
         private bool _initializingOrders = false;
-        private readonly CartesianChart cartesianChart;
-        private readonly List<MeasurementPoint> _measurements;
-        private Dictionary<string, SeriesData> _seriesByParameter = new();
-        //private SeriesData? GetSingleVisibleSeriesData()
-        //{
-        //    // Hämta ibockade parameternamn
-        //    var checkedParams = new HashSet<string>(
-        //        chkList_Parameters.CheckedItems.Cast<string>()
-        //    );
-
-        //    // Filtrera på dictionary-nyckeln (parameternamn)
-        //    var visible = _seriesByParameter
-        //        .Where(kvp => checkedParams.Contains(kvp.Key))
-        //        .Select(kvp => kvp.Value)
-        //        .ToList();
-
-        //    return visible.Count == 1 ? visible[0] : null;
-        //}
+        private readonly CartesianChart? cartesianChart;
+        private readonly Dictionary<string, SeriesData> _seriesByParameter = new();
         private SeriesData? GetSingleVisibleSeriesData()
         {
             var visible = _seriesByParameter.Values
@@ -53,6 +39,50 @@ namespace DigitalProductionProgram.Browse_Protocols
 
             return visible.Count == 1 ? visible[0] : null;
         }
+        
+        private bool IsMatch(string? text, string? pattern)
+        {
+            if (string.IsNullOrWhiteSpace(pattern)) return true;
+            if (string.IsNullOrEmpty(text)) return false;
+
+            // Dela upp pattern på , ; eller mellanslag
+            var parts = pattern
+                .Split([',', ';'], StringSplitOptions.RemoveEmptyEntries)
+                .Select(p => p.Trim())
+                .Where(p => p.Length > 0)
+                .ToArray();
+
+            if (parts.Length == 0)
+                return true;
+
+            foreach (var p in parts)
+            {
+                // Om inget wildcard används → gör Contains(…) jämförelse
+                if (!p.Contains('*') && !p.Contains('?'))
+                {
+                    if (text.IndexOf(p, StringComparison.OrdinalIgnoreCase) >= 0)
+                        return true;
+                    continue;
+                }
+
+                // Wildcard-stöd
+                var rx = "^" + System.Text.RegularExpressions.Regex.Escape(p)
+                    .Replace("\\*", ".*")
+                    .Replace("\\?", ".") + "$";
+
+                if (System.Text.RegularExpressions.Regex.IsMatch(
+                        text, rx, System.Text.RegularExpressions.RegexOptions.IgnoreCase))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+
+
+
         public SpcOrderAnalysis(OrderSpcRequest request)
         {
             if (request == null)
@@ -60,6 +90,11 @@ namespace DigitalProductionProgram.Browse_Protocols
             InitializeComponent();
             chkList_Parameters.CheckOnClick = true; // gör det smidigt att klicka
             chkList_Orders.ItemCheck += chkList_Orders_ItemCheck;
+
+            tb_FilterProdLine.TextChanged += (s, e) =>
+                ApplyOrderFilters(tb_FilterRevNr.Text, tb_FilterProdLine.Text, checkMatches: true, uncheckOthers: false);
+            tb_FilterRevNr.TextChanged += (s, e) =>
+                ApplyOrderFilters(tb_FilterRevNr.Text, tb_FilterProdLine.Text, checkMatches: true, uncheckOthers: false);
 
             flp_Charts.Resize += (s, e) =>
             {
@@ -77,52 +112,7 @@ namespace DigitalProductionProgram.Browse_Protocols
 
         }
 
-        
 
-        //private void UpdateSPC(SeriesData? seriesData)
-        //{
-        //    if (seriesData == null || seriesData.Series?.Values == null)
-        //    {
-        //        ResetSpcLabels();
-        //        this.Text = "SPC";
-        //        return;
-        //    }
-        //    this.Text = $"SPC – {seriesData.ParameterName}";
-        //    lbl_ParameterName.Text = seriesData.ParameterName;
-        //    lbl_USL.Text = seriesData.Max?.ToString();
-        //    lbl_NOM.Text = seriesData.Nom?.ToString();
-        //    lbl_LSL.Text = seriesData.Min?.ToString();
-
-            
-        //    var valueList = ((LineSeries<ObservableMeasurementPoint>)seriesData.Series)
-        //        .Values
-        //        .Cast<ObservableMeasurementPoint>()
-        //        .Select(mp => (double?)mp.Val)
-        //        .ToList();
-
-            
-        //    var spc = BrowseMeasureProtocols.SpcResult.Calculate(
-        //        valueList,
-        //        seriesData.ParameterName,
-        //        null,
-        //        seriesData.Min,
-        //        seriesData.Max
-        //    );
-
-        //    lbl_Mean.Text = spc.Mean?.ToString("F3");
-        //    lbl_Median.Text = spc.Median?.ToString();
-        //    lbl_Min.Text = valueList.Min().ToString();
-        //    lbl_Max.Text = valueList.Max().ToString();
-        //    lbl_Range.Text = spc.Range?.ToString();
-        //    lbl_StandardDeviation.Text = spc.StandardDeviation?.ToString("F3");
-        //    lbl_Skewness.Text = spc.Skewness?.ToString("F3");
-        //    lbl_Kurtosis.Text = spc.Kurtosis?.ToString("F3");
-        //    lbl_Pp.Text = spc.Pp?.ToString("F3");
-        //    lbl_Ppk.Text = spc.Ppk?.ToString("F3");
-        //    lbl_PerformanceRatio.Text = spc.PerformanceRatio?.ToString("F2");
-        //    lbl_TotalOrders.Text = $@"{spc.Count}";
-        //    //lbl_TotalOrders.Text = @$"{seriesData.Measurements.Select(m => m.OrderNumber).Distinct().Count()}";
-        //}
         private void UpdateSPCFor(SeriesData sd)
         {
             var test = sd.HostPanel;
@@ -137,171 +127,88 @@ namespace DigitalProductionProgram.Browse_Protocols
             var spc = BrowseMeasureProtocols.SpcResult.Calculate(
                 valueList, sd.ParameterName, null, sd.Min, sd.Max);
 
+           
+            if (sd.SpcPanel == null) 
+                return;
+
+            // Töm och förbered
+            sd.SpcPanel.SuspendLayout();
             sd.SpcPanel.Controls.Clear();
 
-            sd.SpcPanel.Controls.Add(new Label { Text = @$"Mean: {spc.Mean:F3}" });
-            sd.SpcPanel.Controls.Add(new Label { Text = @$"Median: {spc.Mean:F3}" });
-            sd.SpcPanel.Controls.Add(new Label { Text = @$"Min: {spc.Min}" });
-            sd.SpcPanel.Controls.Add(new Label { Text = @$"Max: {spc.Max}" });
-            sd.SpcPanel.Controls.Add(new Label { Text = @$"Ppk: {spc.Ppk:F3}" });
-            sd.SpcPanel.Controls.Add(new Label { Text = @$"Orders: {spc.Count}" });
+            // Skapa en tabell med 2 kolumner och auto-rader
+            var tlp = new TableLayoutPanel
+            {
+                Dock = DockStyle.Fill,
+                BackColor = Color.Transparent,
+                ColumnCount = 2,
+                RowCount = 0,
+                AutoSize = false,
+                Padding = new Padding(0),
+                Margin = new Padding(0)
+            };
+
+            // Kolumnbredder: caption auto, värde fyll
+            tlp.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));     // caption
+            tlp.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100)); // value (tar resten)
+
+            // En liten lokal helper för att lägga till rader
+            void AddRow(string caption, string value)
+            {
+                int row = tlp.RowCount++;
+                tlp.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+
+                var lblCaption = new Label
+                {
+                    Text = caption,
+                    AutoSize = true,
+                    ForeColor = CustomColors.Teal_Font,
+                    Margin = new Padding(0, 0, 6, 4), // lite luft till höger + nederkant
+                    TextAlign = ContentAlignment.MiddleLeft
+                };
+
+                var lblValue = new Label
+                {
+                    Text = value,
+                    AutoSize = true,
+                    ForeColor = CustomColors.Teal_Font,
+                    Margin = new Padding(0, 0, 0, 4),
+                    TextAlign = ContentAlignment.MiddleLeft
+                };
+
+                tlp.Controls.Add(lblCaption, 0, row);
+                tlp.Controls.Add(lblValue,   1, row);
+            }
+
+            // Formatera tal (justera efter din standard)
+            string F3(double? d) => d.HasValue ? d.Value.ToString("F3") : "–";
+            string F2(double? d) => d.HasValue ? d.Value.ToString("F2") : "–";
+            string F0(double? d) => d.HasValue ? d.Value.ToString("F0") : "–";
+    
+            // Bygg rader – USL/NOM/LSL först (dina sd‑gränser)
+            AddRow("USL:",    F2(sd.Max));
+            AddRow("NOM:",    F2(sd.Nom));
+            AddRow("LSL:",    F2(sd.Min));
+            AddRow("Total Orders:", F0(spc.Count)); //F0(sd.Measurements.Count));
+        
+            // Sedan beräknade värden
+            AddRow("Mean:",   F3(spc.Mean));
+            AddRow("Median:", F3(spc.Median));       // <-- fixad, var spc.Mean hos dig
+            AddRow("Min:",    spc.Min.HasValue ? spc.Min.Value.ToString("F2") : "–");
+            AddRow("Max:",    spc.Max.HasValue ? spc.Max.Value.ToString("F2") : "–");
+            AddRow("Range:",  spc.Range.HasValue ? spc.Range.Value.ToString("F2") : "–");
+            AddRow("StandardDeviation:",  spc.StandardDeviation.HasValue ? spc.StandardDeviation.Value.ToString("F3") : "–");
+            AddRow("Skewness:",    F3(spc.Skewness));
+            AddRow("Kurtosis:",    F3(spc.Kurtosis));
+            AddRow("Pp:",    F3(spc.Pp));
+            AddRow("Ppk:",    F3(spc.Ppk));
+            AddRow("PerformanceRatio:",    F3(spc.PerformanceRatio));
+
+            // Lägg in tabellen i panelen
+            sd.SpcPanel.Controls.Add(tlp);
+            sd.SpcPanel.ResumeLayout();
+
         }
-        //private void UpdateSections()
-        //{
-        //    var visibleSeries = _seriesByParameter.Values
-        //        .Where(x => x?.Series != null && x.Series.IsVisible)
-        //        .ToList();
-
-        //    int count = visibleSeries.Count;
-
-        //    // Rensa alltid sections först
-        //    cartesianChart.Sections = Array.Empty<RectangularSection>();
-        //    ResetSpcLabels();
-
-        //    // =========================
-        //    // 0 serier
-        //    // =========================
-        //    if (count == 0)
-        //    {
-        //        cartesianChart.YAxes = new[]
-        //        {
-        //            new Axis
-        //            {
-        //                MinLimit = 0,
-        //                MaxLimit = 1
-        //            }
-        //        };
-        //        return;
-        //    }
-
-        //    // =========================
-        //    // Flera serier (INGA LSL/USL)
-        //    // =========================
-        //    if (count > 1)
-        //    {
-        //        double globalMin = double.MaxValue;
-        //        double globalMax = double.MinValue;
-
-        //        foreach (var s in visibleSeries)
-        //        {
-        //            var values = ((LineSeries<ObservableMeasurementPoint>)s.Series)
-        //                .Values.Cast<ObservableMeasurementPoint>()
-        //                .Select(mp => mp.Val ?? double.NaN);
-
-        //            if (!values.Any()) continue;
-
-        //            var min = values.Min();
-        //            var max = values.Max();
-
-        //            if (min < globalMin) globalMin = min;
-        //            if (max > globalMax) globalMax = max;
-        //        }
-
-        //        if (globalMin == double.MaxValue)
-        //        {
-        //            globalMin = 0;
-        //            globalMax = 1;
-        //        }
-
-        //        double span = globalMax - globalMin;
-        //        if (span <= 0) span = 1;
-
-        //        double margin = span * 0.1;
-
-        //        cartesianChart.YAxes = new[]
-        //        {
-        //            new Axis
-        //            {
-        //                MinLimit = globalMin - margin,
-        //                MaxLimit = globalMax + margin
-        //            }
-        //        };
-
-        //        return;
-        //    }
-
-        //    // =========================
-        //    // Exakt 1 serie (visa LSL/USL)
-        //    // =========================
-        //    var single = visibleSeries.First();
-            
-        //    var valuesList = ((LineSeries<ObservableMeasurementPoint>)single.Series)
-        //        .Values
-        //        .Cast<ObservableMeasurementPoint>()
-        //        .Select(m => m.Val ?? double.NaN)
-        //        .ToList();
-
-
-
-        //    if (!valuesList.Any())
-        //        return;
-
-        //    double dataMin = valuesList.Min();
-        //    double dataMax = valuesList.Max();
-
-        //    // Inkludera toleranser i axelberäkningen
-        //    double effectiveMin = dataMin;
-        //    double effectiveMax = dataMax;
-
-        //    if (single.Min.HasValue)
-        //        effectiveMin = Math.Min(effectiveMin, single.Min.Value);
-
-        //    if (single.Max.HasValue)
-        //        effectiveMax = Math.Max(effectiveMax, single.Max.Value);
-
-        //    double spanSingle = effectiveMax - effectiveMin;
-        //    if (spanSingle <= 0) spanSingle = 1;
-
-        //    double marginSingle = spanSingle * 0.1;
-
-        //    double yMin = effectiveMin - marginSingle;
-        //    double yMax = effectiveMax + marginSingle;
-
-        //    cartesianChart.YAxes = new[]
-        //    {
-        //        new Axis
-        //        {
-        //            MinLimit = yMin,
-        //            MaxLimit = yMax
-        //        }
-        //    };
-
-        //    var sections = new List<RectangularSection>();
-
-        //    if (single.Min.HasValue)
-        //    {
-        //        sections.Add(new RectangularSection
-        //        {
-        //            Yi = yMin,
-        //            Yj = single.Min.Value,
-        //            Fill = new SolidColorPaint(new SKColor(255, 199, 206, 230))
-        //        });
-        //    }
-
-        //    if (single.Max.HasValue)
-        //    {
-        //        sections.Add(new RectangularSection
-        //        {
-        //            Yi = single.Max.Value,
-        //            Yj = yMax,
-        //            Fill = new SolidColorPaint(new SKColor(255, 199, 206, 230))
-        //        });
-        //    }
-
-        //    if (single.Min.HasValue && single.Max.HasValue)
-        //    {
-        //        sections.Add(new RectangularSection
-        //        {
-        //            Yi = single.Min.Value,
-        //            Yj = single.Max.Value,
-        //            Fill = new SolidColorPaint(new SKColor(198, 239, 206, 255))
-        //        });
-        //    }
-        //    //var serie = visibleSeries[0];
-        //    UpdateSPCFor(single);
-        //   // UpdateSPC(single);
-        //    cartesianChart.Sections = sections.ToArray();
-        //}
+       
         private void ApplySectionsAndYAxis(SeriesData sd)
 {
     if (sd.Chart is null || sd.Series is not LineSeries<ObservableMeasurementPoint> ls) return;
@@ -378,6 +285,45 @@ namespace DigitalProductionProgram.Browse_Protocols
     sd.Chart.Sections = sections.ToArray();
     sd.Chart.Update();
 }
+
+        private bool _updatingOrderChecks = false;
+        private void ApplyOrderFilters(string? revPattern, string? linePattern, bool checkMatches, bool uncheckOthers)
+        {
+            try
+            {
+                _updatingOrderChecks = true;
+                chkList_Orders.BeginUpdate();
+
+                for (int i = 0; i < chkList_Orders.Items.Count; i++)
+                {
+                    if (chkList_Orders.Items[i] is not OrderInfo o) continue;
+
+                    bool match =
+                        IsMatch(o.RevNr,       revPattern) &&
+                        IsMatch(o.ProdLine,    linePattern);
+
+                    if (match)
+                    {
+                        if (!chkList_Orders.GetItemChecked(i))
+                            chkList_Orders.SetItemChecked(i, true);
+                    }
+                    else 
+                    {
+                        if (chkList_Orders.GetItemChecked(i))
+                            chkList_Orders.SetItemChecked(i, false);
+                    }
+                }
+            }
+            finally
+            {
+                chkList_Orders.EndUpdate();
+                _updatingOrderChecks = false;
+            }
+
+            // Trigga din grafuppdatering efter programmatisk ändring
+            UpdateChartForCheckedOrders(new ItemCheckEventArgs(-1, CheckState.Unchecked, CheckState.Unchecked));
+        }
+
         private void UpdateChartForCheckedOrders(ItemCheckEventArgs e)
         {
             if (_initializingOrders) return;
@@ -417,31 +363,8 @@ namespace DigitalProductionProgram.Browse_Protocols
                 UpdateSPCFor(sd);
                 ApplySectionsAndYAxis(sd);
             }
-
-            // Uppdatera SPC för "enda synliga" (om exakt ett kort är ibockat)
-            var singleVisible = GetSingleVisibleSeriesData();
-            //UpdateSPC(singleVisible);
         }
 
-        private void ResetSpcLabels()
-        {
-            lbl_ParameterName.Text = "Multiple Series";
-            lbl_USL.Text = @"N/A";
-            lbl_NOM.Text = @"N/A";
-            lbl_LSL.Text = @"N/A";
-            lbl_Mean.Text = @"N/A";
-            lbl_Median.Text = @"N/A";
-            lbl_Min.Text = @"N/A";
-            lbl_Max.Text = @"N/A";
-            lbl_Range.Text = @"N/A";
-            lbl_StandardDeviation.Text = @"N/A";
-            lbl_Skewness.Text = @"N/A";
-            lbl_Kurtosis.Text = @"N/A";
-            lbl_Pp.Text = @"N/A";
-            lbl_Ppk.Text = @"N/A";
-            lbl_PerformanceRatio.Text = @"N/A";
-            lbl_TotalOrders.Text = @"N/A";
-        }
         
         public class ObservableMeasurementPoint(double x, double y, MeasurementPoint mp) : ObservablePoint(x, y)
         {
@@ -496,19 +419,18 @@ namespace DigitalProductionProgram.Browse_Protocols
                 Margin = new Padding(3),
                 BackColor = Color.White,
                 BorderStyle = BorderStyle.FixedSingle,   // valfritt, men bra för att “synas”
-                Height = 300,                     // valfritt – höjd styr du själv
+                Height = 320,                     // valfritt – höjd styr du själv
                 Width = flp_Charts.ClientSize.Width - 20
             };
-            host.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             
-            var spcPanel = new Panel
+            var spcPanel = new Panel()
             {
                 Dock = DockStyle.Left,
-                Width = 180,
+                AutoScroll = false,
+                BackColor = CustomColors.Teal,
+                Width = 190,
                 Padding = new Padding(6)
             };
-            
-            
 
             var header = new Label
             {
@@ -523,13 +445,11 @@ namespace DigitalProductionProgram.Browse_Protocols
             var chart = new CartesianChart
             {
                 Dock = DockStyle.Fill,
-
-                //LegendPosition = LiveChartsCore.Measure.LegendPosition.Hidden,
                 Series = [series]
             };
 
             host.Controls.Add(chart);
-            //host.Controls.Add(spcPanel);
+            host.Controls.Add(spcPanel);
             host.Controls.Add(header);
             flp_Charts.Controls.Add(host);
 
@@ -559,7 +479,8 @@ namespace DigitalProductionProgram.Browse_Protocols
             // Fyll orderlistan
             _initializingOrders = true;
             chkList_Orders.Items.Clear();
-            foreach (var order in orders) chkList_Orders.Items.Add(order, true);
+            foreach (var order in orders) 
+                chkList_Orders.Items.Add(order, true);
             _initializingOrders = false;
 
             // Uppdatera SPC för denna (om du vill att senast tillagda blir aktiv)
@@ -619,22 +540,14 @@ namespace DigitalProductionProgram.Browse_Protocols
 
             if (!_seriesByParameter.TryGetValue(paramName, out var sd)) return;
 
-            // Växla synlighet på hela kortet när användaren klickar
-            // (NewValue är framtida tillstånd, så vi sätter Visible = Checked)
             bool willBeChecked = (e.NewValue == CheckState.Checked);
-            // Fördröjd toggle tills efter eventet: använd BeginInvoke
-            //BeginInvoke(new Action(() =>
-           // {
                 if (sd.HostPanel != null) sd.HostPanel.Visible = willBeChecked;
 
-                // Uppdatera SPC om exakt ett kort är synligt
-                var single = GetSingleVisibleSeriesData();
-                if (single != null)
-                    UpdateSPCFor(single);
-            //}));
+            // Uppdatera SPC om exakt ett kort är synligt
+            var single = GetSingleVisibleSeriesData();
+            if (single != null)
+                UpdateSPCFor(single);
         }
-        
-
         private void chkList_Orders_ItemCheck(object sender, ItemCheckEventArgs e)
         {
             if (_initializingOrders)

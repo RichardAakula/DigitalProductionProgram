@@ -141,8 +141,6 @@ namespace DigitalProductionProgram.MainWindow
             Application.Run(main);
 
         }
-        
-
 
     }
 }

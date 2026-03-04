@@ -1874,17 +1874,17 @@ namespace DigitalProductionProgram.Protocols.Protocol
                 return null;
 
             string name = row.Cells["col_CodeText"].Value?.ToString();
-            double? min = TryGetNullableDouble(row, "col_Min");
+            double? lsl = TryGetNullableDouble(row, "col_Min");
             double? nom = TryGetNullableDouble(row, "col_nom");
-            double? max = TryGetNullableDouble(row, "col_Max");
+            double? usl = TryGetNullableDouble(row, "col_Max");
 
             return new ParameterInfo
             {
                 ProtocolDescriptionId = protocolId,
                 Name = name,
-                Min = min,
+                LSL = lsl,
                 Nom = nom,
-                Max = max
+                USL = usl
             };
         }
 
@@ -1904,9 +1904,9 @@ namespace DigitalProductionProgram.Protocols.Protocol
         {
             public int? ProtocolDescriptionId { get; set; }     // rekommenderas starkt
             public string Name { get; set; }
-            public double? Min { get; set; }
+            public double? LSL { get; set; }
             public double? Nom { get; set; }
-            public double? Max { get; set; }
+            public double? USL { get; set; }
         }
 
            

@@ -127,7 +127,7 @@ namespace DigitalProductionProgram.Browse_Protocols
                     .ToList();
 
             var spc = BrowseMeasureProtocols.SpcResult.Calculate(
-                valueList, sd.ParameterName, null, sd.Min, sd.Max);
+                valueList, sd.ParameterName, null, sd.LSL, sd.USL);
 
            
             if (sd.SpcPanel == null) 
@@ -187,9 +187,9 @@ namespace DigitalProductionProgram.Browse_Protocols
             string F0(double? d) => d.HasValue ? d.Value.ToString("F0") : "–";
     
             // Bygg rader – USL/NOM/LSL först (dina sd‑gränser)
-            AddRow("USL:",    F2(sd.Max));
+            AddRow("USL:",    F2(sd.USL));
             AddRow("NOM:",    F2(sd.Nom));
-            AddRow("LSL:",    F2(sd.Min));
+            AddRow("LSL:",    F2(sd.LSL));
             AddRow("Total Orders:", F0(spc.Count)); //F0(sd.Measurements.Count));
         
             // Sedan beräknade värden
@@ -237,8 +237,8 @@ namespace DigitalProductionProgram.Browse_Protocols
             double effectiveMin = dataMin;
             double effectiveMax = dataMax;
 
-            if (sd.Min.HasValue) effectiveMin = Math.Min(effectiveMin, sd.Min.Value);
-            if (sd.Max.HasValue) effectiveMax = Math.Max(effectiveMax, sd.Max.Value);
+            if (sd.LSL.HasValue) effectiveMin = Math.Min(effectiveMin, sd.LSL.Value);
+            if (sd.USL.HasValue) effectiveMax = Math.Max(effectiveMax, sd.USL.Value);
 
             double span = effectiveMax - effectiveMin;
             if (span <= 0) span = 1;
@@ -260,34 +260,34 @@ namespace DigitalProductionProgram.Browse_Protocols
             var sections = new List<RectangularSection>();
 
             // under LSL (röd)
-            if (sd.Min.HasValue)
+            if (sd.LSL.HasValue)
             {
                 sections.Add(new RectangularSection
                 {
                     Yi = yMin,
-                    Yj = sd.Min.Value,
+                    Yj = sd.LSL.Value,
                     Fill = new SolidColorPaint(new SKColor(255, 199, 206, 230))
                 });
             }
 
             // över USL (röd)
-            if (sd.Max.HasValue)
+            if (sd.USL.HasValue)
             {
                 sections.Add(new RectangularSection
                 {
-                    Yi = sd.Max.Value,
+                    Yi = sd.USL.Value,
                     Yj = yMax,
                     Fill = new SolidColorPaint(new SKColor(255, 199, 206, 230))
                 });
             }
 
             // inom tolerans (grön)
-            if (sd.Min.HasValue && sd.Max.HasValue)
+            if (sd.LSL.HasValue && sd.USL.HasValue)
             {
                 sections.Add(new RectangularSection
                 {
-                    Yi = sd.Min.Value,
-                    Yj = sd.Max.Value,
+                    Yi = sd.LSL.Value,
+                    Yj = sd.USL.Value,
                     Fill = new SolidColorPaint(new SKColor(198, 239, 206, 255))
                 });
             }
@@ -485,9 +485,9 @@ namespace DigitalProductionProgram.Browse_Protocols
                 Chart = chart,
                 HostPanel = host,
                 SpcPanel = spcPanel,
-                Min = parameter.Min,
+                LSL = parameter.LSL,
                 Nom = parameter.Nom,
-                Max = parameter.Max,
+                USL = parameter.USL,
                 Measurements = measurements
             };
 
@@ -638,9 +638,9 @@ namespace DigitalProductionProgram.Browse_Protocols
         public Panel? HostPanel { get; set; } 
         public string ParameterName { get; set; } = "";
         public int? ProtocolDescriptionId { get; set; }
-        public double? Min { get; set; }
+        public double? LSL { get; set; }
         public double? Nom { get; set; }
-        public double? Max { get; set; }
+        public double? USL { get; set; }
         public List<MeasurementPoint> Measurements { get; set; }
     }
 }

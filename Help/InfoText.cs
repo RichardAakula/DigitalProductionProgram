@@ -99,7 +99,6 @@ namespace DigitalProductionProgram.Help
             // Vänta på att användaren stänger rutan
             infoText.ShowDialog();
         }
-
         public static void Question(string? Question, CustomColors.InfoText_Color color, string? header, Control? Form = null, bool IsSpecialText = false)
         {
             Change_GUI_BackColor(color);

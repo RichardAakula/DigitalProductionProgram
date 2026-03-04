@@ -761,9 +761,9 @@ namespace DigitalProductionProgram.Browse_Protocols
                 var request = new OrderSpcRequest(
                     protocolDescriptionId: parameter.ProtocolDescriptionId,
                     parameterName: parameter.Name,
-                    min: parameter.Min,
+                    lsl: parameter.LSL,
                     nom: parameter.Nom,
-                    max: parameter.Max,
+                    usl: parameter.USL,
                     orders: orders);
 
                 _spcForm = new SpcOrderAnalysis(request);

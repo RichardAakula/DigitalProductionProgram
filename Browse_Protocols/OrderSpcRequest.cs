@@ -15,19 +15,19 @@ namespace DigitalProductionProgram.Browse_Protocols
     {
         public int? ProtocolDescriptionId { get; set; }
         public string ParameterName { get; }
-        public double? Min { get; }
+        public double? LSL { get; }
         public double? Nom { get; }
-        public double? Max { get; }
+        public double? USL { get; }
         public List<OrderInfo> Orders { get; }
 
 
-        public OrderSpcRequest(int? protocolDescriptionId, string parameterName, double? min, double? nom, double? max, List<OrderInfo>? orders)
+        public OrderSpcRequest(int? protocolDescriptionId, string parameterName, double? usl, double? nom, double? lsl, List<OrderInfo>? orders)
         {
             ProtocolDescriptionId = protocolDescriptionId;
             ParameterName = parameterName;
-            Min = min;
+            LSL = lsl;
             Nom = nom;
-            Max = max;
+            USL = usl;
             Orders = orders ?? new List<OrderInfo>();
         }
     }

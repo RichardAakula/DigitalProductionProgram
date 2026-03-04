@@ -222,7 +222,7 @@ namespace DigitalProductionProgram.Equipment
                     if (is_Show_Typ == false || !string.IsNullOrEmpty(sort))
                         list.Add(reader[0].ToString());
                     else
-                        list.Add($"{reader[0]} : ({reader[1]})");
+                        list.Add($"{reader[0]} | ({reader[1]})");
 
                 }
 

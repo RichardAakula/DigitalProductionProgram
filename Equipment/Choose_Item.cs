@@ -14,7 +14,9 @@ namespace DigitalProductionProgram.Equipment
     {
         private readonly DataTable DataTable;
         private readonly Control?[]? Ctrls;
+        private readonly Control _anchor;
         private readonly DataGridViewCell?[]? Cells;
+        private readonly bool _clampRightToAnchorRight;
         private readonly bool IsOkReturnOwnText;        //Används om användare får skriva i egen text
         private readonly bool IsReturnMultipleValues;   //Används vid skapande av Processkort om användare vill ha t.ex. 2 st torkar med i Processkortet
         private readonly bool IsListFromMonitor;
@@ -28,8 +30,7 @@ namespace DigitalProductionProgram.Equipment
 
 
         
-        public Choose_Item(IEnumerable<string?>? items, Control?[]? ctrls = null, DataGridViewCell?[]? cells = null, int totalColumns = 1, bool[]? visibleColumns = null, bool isOkReturnOwnText = false, string? dataBaseColumnName = null, int maskin = 0, int uppstart = 0, bool isReturnMultipleValues = false, bool isListFromMonitor = false, string dividerChar = "/", List<string?>? headers = null)
-
+        public Choose_Item(IEnumerable<string?>? items, Control?[]? ctrls = null, DataGridViewCell?[]? cells = null, int totalColumns = 1, bool[]? visibleColumns = null, bool isOkReturnOwnText = false, string? dataBaseColumnName = null, int maskin = 0, int uppstart = 0, bool isReturnMultipleValues = false, bool isListFromMonitor = false, string dividerChar = "/", List<string?>? headers = null, bool clampRightToAnchorRight = false)
         {
             InitializeComponent();
             Location = new Point(MousePosition.X, MousePosition.Y);
@@ -46,7 +47,16 @@ namespace DigitalProductionProgram.Equipment
             TotalColumns = totalColumns;
             VisibleColumns = visibleColumns;
 
+            _anchor = ctrls?.FirstOrDefault(c => c is not null);
+            
+            if (_anchor is null && cells?.FirstOrDefault() is DataGridViewCell cell && cell.DataGridView is not null)
+                _anchor = cell.DataGridView; // ankra mot grid:en
 
+            _clampRightToAnchorRight = clampRightToAnchorRight;
+            if (_clampRightToAnchorRight)
+            {
+                StartPosition = FormStartPosition.Manual;
+            }
             DataTable = new DataTable();
             if (items != null)
                 AddItems(items, headers);
@@ -96,6 +106,57 @@ namespace DigitalProductionProgram.Equipment
         {
             tb_Filter.Focus();
         }
+        
+        
+        
+        protected override void OnShown(EventArgs e)
+        {
+            base.OnShown(e);
+
+            if (_clampRightToAnchorRight)
+            {
+                if (_anchor is not null)
+                    PositionNearAnchor();
+            }
+        }
+
+        
+       
+        private void PositionNearAnchor()
+        {
+            // 1) Kontrollens rect i SKÄRMKOORDINATER
+            var anchorTopLeft = _anchor.PointToScreen(Point.Empty);
+            var a = new Rectangle(anchorTopLeft, _anchor.Size);
+
+            // 2) Utgå från samma skärm som ankaret
+            var screen = Screen.FromControl(_anchor);
+            var wa = screen.WorkingArea;
+
+            // 3) Önskat läge: under kontrollen, vänsterkant = kontrollens vänsterkant
+            var desiredX = a.Left;
+            var desiredY = a.Bottom + 5;
+
+            // 4) Om vi ska clamp:a högerkanten: dialog.Right <= anchor.Right
+            if (_clampRightToAnchorRight)
+            {
+                // Flytta så att dialogens högra kant inte överskrider kontollens högra kant
+                var maxRight = a.Right;
+                desiredX = Math.Min(desiredX, maxRight - this.Width);
+            }
+
+            // 5) Om inte plats under – försök ovanför
+            if (desiredY + this.Height > wa.Bottom)
+            {
+                desiredY = a.Top - this.Height - 5;
+            }
+
+            // 6) Slutlig clamp inom WorkingArea
+            var finalX = Math.Min(Math.Max(desiredX, wa.Left), wa.Right - this.Width);
+            var finalY = Math.Min(Math.Max(desiredY, wa.Top),  wa.Bottom - this.Height);
+
+            this.Location = new Point(finalX, finalY);
+        }
+
 
 
         private void SetBackgroundColor()

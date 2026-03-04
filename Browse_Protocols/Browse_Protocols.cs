@@ -52,8 +52,11 @@ namespace DigitalProductionProgram.Browse_Protocols
             mainInfo_A.lbl_PartNumber.Cursor = mainInfo_A.lbl_Customer.Cursor = Cursors.Hand;
             mainInfo_A.lbl_PartNumber.MouseClick += PartNr_Click;
             mainInfo_A.lbl_Customer.MouseClick += Customer_Click;
-            
+            mainInfo_A.lbl_OrderNr.MouseClick += Order_Click;
+            mainInfo_A.lbl_ProdType.MouseClick += ProdType_Click;
         }
+
+       
 
         private void Translate_Form()
         {
@@ -213,6 +216,7 @@ namespace DigitalProductionProgram.Browse_Protocols
                 orders.OrderNr, 
                 orders.RevNr, 
                 orders.ProdLine,
+                orders.ProdType, 
                 orders.Date_Start,
                 CASE 
                     WHEN discard.OrderID IS NULL THEN 'False' 
@@ -247,6 +251,7 @@ namespace DigitalProductionProgram.Browse_Protocols
                     row.Cells[4].Value = reader["OrderID"].ToString();
                     row.Cells[5].Value = reader["RevNr"].ToString();
                     row.Cells[12].Value = reader["ProdLine"].ToString();
+                    row.Cells[13].Value = reader["ProdType"].ToString();
                     var date = DateTime.Parse(reader["Date_Start"].ToString());
                     var dateTimeFormat = CultureInfo.CurrentCulture.DateTimeFormat;
                     var formattedDate = date.ToString($"{dateTimeFormat.ShortDatePattern} {dateTimeFormat.ShortTimePattern}", CultureInfo.CurrentCulture);
@@ -312,7 +317,29 @@ namespace DigitalProductionProgram.Browse_Protocols
                 dgv_OrderList.Rows[e.RowIndex].Selected = true;
             }
 
-            cm_Orderlist.Show(dgv_OrderList.PointToScreen(dgv_OrderList.GetCellDisplayRectangle(e.ColumnIndex, e.RowIndex, false).Location));
+            
+            Rectangle cellRect = dgv_OrderList.GetCellDisplayRectangle(e.ColumnIndex, e.RowIndex, false);
+
+            // Skärmpunkt där cellen ligger (övre vänster)
+            Point cellScreenPoint = dgv_OrderList.PointToScreen(cellRect.Location);
+
+            // Hitta rätt skärm
+            Screen scr = Screen.FromPoint(cellScreenPoint);
+            Rectangle wa = scr.WorkingArea;
+
+            // Meny-storlek (viktig!)
+            Size menuSize = cm_Orderlist.GetPreferredSize(Size.Empty);
+
+            // Önskad position
+            int x = cellScreenPoint.X;
+            int y = cellScreenPoint.Y + cellRect.Height;
+
+            // Clamp inom skärmen
+            x = Math.Min(Math.Max(x, wa.Left), wa.Right - menuSize.Width);
+            y = Math.Min(Math.Max(y, wa.Top),  wa.Bottom - menuSize.Height);
+
+            // Visa menyn
+            cm_Orderlist.Show(new Point(x, y));
         }
         private void OrderList_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
         {
@@ -539,7 +566,7 @@ namespace DigitalProductionProgram.Browse_Protocols
                     partnumbers?.Add($"{reader[0]}|{reader[1]}|{reader[2]}");
             });
 
-            var partnr = new Choose_Item(partnumbers, [ctrl], totalColumns: 3, headers: ["PartNumber", "Date", "Total Orders"]);
+            var partnr = new Choose_Item(partnumbers, [ctrl], totalColumns: 3, headers: ["PartNumber", "Date", "Total Orders"], clampRightToAnchorRight:true);
             partnr.ShowDialog();
             await Load_OrderList($" AND PartNr = '{ctrl.Text}'");
         }
@@ -571,23 +598,48 @@ namespace DigitalProductionProgram.Browse_Protocols
                     customers?.Add($"{reader[0]}|{reader[1]}|{reader[2]}");
             });
 
-            var partnr = new Choose_Item(customers, [ctrl], totalColumns: 3, headers: ["PartNumber", "Date", "Total Orders"]);
-            partnr.ShowDialog();
+            var chooseItem = new Choose_Item(customers, [ctrl], totalColumns: 3, headers: ["PartNumber", "Date", "Total Orders"]);
+            chooseItem.ShowDialog();
 
             await Load_OrderList($" AND Customer = '{ctrl.Text}'");
         }
         private async void Order_Click(object? sender, EventArgs e)
         {
             var ctrl = (Control)sender;
-            using var choose_Item = new Choose_Item(Order.List_Orders, [ctrl]);
+            using var choose_Item = new Choose_Item(Order.List_Orders, [ctrl], clampRightToAnchorRight:true);
             choose_Item.ShowDialog();
             await Load_OrderList($" AND OrderNr = '{ctrl.Text}'");
         }
         private async void ProdType_Click(object sender, EventArgs e)
         {
             var ctrl = (Control)sender;
-            using var choose_Item = new Choose_Item(Order.List_ProdType, [ctrl]);
-            choose_Item.ShowDialog();
+            List<string> prodtype = new List<string>();
+            Database.ExecuteSafe(con =>
+            {
+                const string query = $"""
+                                        SELECT
+                                            m.ProdType,
+                                            MAX(m.Date_Start) AS LatestDateStart,
+                                            COUNT(*) AS TotalOrders
+                                        FROM [Order].MainData AS m
+                                        WHERE m.WorkoperationID = 
+                                            (
+                                                SELECT ID FROM Workoperation.Names WHERE Name = @workoperation
+                                            )
+                                            AND IsOrderDone = 'True'
+                                        GROUP BY m.ProdType
+                                        ORDER BY LatestDateStart DESC
+                                      """;
+
+                using var cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@workoperation", Order.WorkOperation.ToString());
+                var reader = cmd.ExecuteReader();
+                while (reader.Read())
+                    prodtype?.Add($"{reader[0]}|{reader[1]}|{reader[2]}");
+            });
+
+            var chooseItem = new Choose_Item(prodtype, [ctrl], totalColumns: 3, headers: ["PartNumber", "Date", "Total Orders"]);
+            chooseItem.ShowDialog();
             await Load_OrderList($" AND ProdType = '{ctrl.Text}'");
         }
         private async void Halvfabrikat_Click(object sender, EventArgs e)
@@ -745,21 +797,6 @@ namespace DigitalProductionProgram.Browse_Protocols
                 }
             }
         }
-        //private List<int> GetVisibleOrdersFromGrid()
-        //{
-        //    var list = new List<int>();
-
-        //    foreach (DataGridViewRow row in dgv_OrderList.Rows)
-        //    {
-        //        if (!row.IsNewRow)
-        //        {
-        //            if (int.TryParse(row.Cells["orderlist_OrderID"].Value?.ToString(), out var orderId))
-        //                list.Add(orderId);
-        //        }
-        //    }
-
-        //    return list;
-        //}
         private List<OrderInfo> GetVisibleOrdersFromGrid()
         {
             var list = new List<OrderInfo>();
@@ -777,8 +814,10 @@ namespace DigitalProductionProgram.Browse_Protocols
                 var orderNumber = row.Cells["orderlist_OrderNr"].Value?.ToString() ?? "";
                 var revNr = row.Cells["orderlist_RevNr"].Value?.ToString() ?? "";
                 var prodline = row.Cells["orderlist_ProdLine"].Value?.ToString() ?? "";
+                var prodtype = row.Cells["orderlist_ProdType"].Value?.ToString() ?? "";
+                DateTime.TryParse(row.Cells["orderlist_Datum"].Value?.ToString(), out var date);
 
-                list.Add(new OrderInfo(orderId, orderNumber, revNr, prodline));
+                list.Add(new OrderInfo(orderId, orderNumber, revNr, prodline, prodtype, date));
             }
 
             return list;
@@ -794,16 +833,5 @@ namespace DigitalProductionProgram.Browse_Protocols
             Order.Restore_TempOrderInfo();
         }
 
-        //public class OrderSelection
-        //{
-        //    public int OrderId { get; set; }
-        //    public string OrderNr { get; set; }
-        //    public string RevNr { get; set; }
-
-        //    public override string ToString()
-        //    {
-        //        return $"{OrderNr}  Rev {RevNr}";
-        //    }
-        //}
     }
 }

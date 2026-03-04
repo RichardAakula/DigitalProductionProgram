@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DigitalProductionProgram.Browse_Protocols
 {
-    public record OrderInfo(int OrderID, string OrderNumber, string RevNr, string ProdLine)
+    public record OrderInfo(int OrderID, string OrderNumber, string RevNr, string ProdLine, string ProdType, DateTime Date)
     {
         public override string ToString() => $"{OrderNumber} - {RevNr} - {ProdLine}";
     }

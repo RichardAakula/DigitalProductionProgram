@@ -76,6 +76,7 @@ namespace DigitalProductionProgram.Browse_Protocols
             orderlist_InactivatedDate = new DataGridViewTextBoxColumn();
             orderlist_InactivatedComment = new DataGridViewTextBoxColumn();
             orderlist_ProdLine = new DataGridViewTextBoxColumn();
+            orderlist_ProdType = new DataGridViewTextBoxColumn();
             flp_Left.SuspendLayout();
             tlp_Main.SuspendLayout();
             panel_Top.SuspendLayout();
@@ -353,7 +354,7 @@ namespace DigitalProductionProgram.Browse_Protocols
             dgv_OrderList.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             dgv_OrderList.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgv_OrderList.ColumnHeadersVisible = false;
-            dgv_OrderList.Columns.AddRange(new DataGridViewColumn[] { orderlist_PartNr, orderList_MainTemplateID, orderlist_PartID, orderlist_OrderNr, orderlist_OrderID, orderlist_RevNr, orderlist_PC_BasedOn, orderlist_Datum, orderlist_Inactive, orderlist_InactivatedBy, orderlist_InactivatedDate, orderlist_InactivatedComment, orderlist_ProdLine });
+            dgv_OrderList.Columns.AddRange(new DataGridViewColumn[] { orderlist_PartNr, orderList_MainTemplateID, orderlist_PartID, orderlist_OrderNr, orderlist_OrderID, orderlist_RevNr, orderlist_PC_BasedOn, orderlist_Datum, orderlist_Inactive, orderlist_InactivatedBy, orderlist_InactivatedDate, orderlist_InactivatedComment, orderlist_ProdLine, orderlist_ProdType });
             tlp_Right.SetColumnSpan(dgv_OrderList, 2);
             dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle2.BackColor = Color.FromArgb(25, 25, 25);
@@ -568,6 +569,13 @@ namespace DigitalProductionProgram.Browse_Protocols
             orderlist_ProdLine.ReadOnly = true;
             orderlist_ProdLine.Visible = false;
             // 
+            // orderlist_ProdType
+            // 
+            orderlist_ProdType.HeaderText = "ProdType";
+            orderlist_ProdType.Name = "orderlist_ProdType";
+            orderlist_ProdType.ReadOnly = true;
+            orderlist_ProdType.Visible = false;
+            // 
             // Browse_Protocols
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -638,5 +646,6 @@ namespace DigitalProductionProgram.Browse_Protocols
         private DataGridViewTextBoxColumn orderlist_InactivatedDate;
         private DataGridViewTextBoxColumn orderlist_InactivatedComment;
         private DataGridViewTextBoxColumn orderlist_ProdLine;
+        private DataGridViewTextBoxColumn orderlist_ProdType;
     }
 }

@@ -89,12 +89,14 @@ namespace DigitalProductionProgram.Browse_Protocols
                 throw new ArgumentNullException(nameof(request));
             InitializeComponent();
             chkList_Parameters.CheckOnClick = true; // gör det smidigt att klicka
-            chkList_Orders.ItemCheck += chkList_Orders_ItemCheck;
+            //chkList_Orders.ItemCheck += chkList_Orders_ItemCheck;
 
             tb_FilterProdLine.TextChanged += (s, e) =>
-                ApplyOrderFilters(tb_FilterRevNr.Text, tb_FilterProdLine.Text, checkMatches: true, uncheckOthers: false);
+                ApplyOrderFilters(tb_FilterRevNr.Text, tb_FilterProdLine.Text, tb_ProdType.Text);
             tb_FilterRevNr.TextChanged += (s, e) =>
-                ApplyOrderFilters(tb_FilterRevNr.Text, tb_FilterProdLine.Text, checkMatches: true, uncheckOthers: false);
+                ApplyOrderFilters(tb_FilterRevNr.Text, tb_FilterProdLine.Text, tb_ProdType.Text);
+            tb_ProdType.TextChanged += (s, e) =>
+                ApplyOrderFilters(tb_FilterRevNr.Text, tb_FilterProdLine.Text, tb_ProdType.Text);
 
             flp_Charts.Resize += (s, e) =>
             {
@@ -208,171 +210,192 @@ namespace DigitalProductionProgram.Browse_Protocols
             sd.SpcPanel.ResumeLayout();
 
         }
-       
         private void ApplySectionsAndYAxis(SeriesData sd)
-{
-    if (sd.Chart is null || sd.Series is not LineSeries<ObservableMeasurementPoint> ls) return;
-
-    var values = ls.Values
-        .Cast<ObservableMeasurementPoint>()
-        .Select(v => v.Val ?? double.NaN)
-        .Where(v => !double.IsNaN(v))
-        .ToList();
-
-    if (values.Count == 0)
-    {
-        sd.Chart.YAxes = new[]
         {
-            new Axis { MinLimit = 0, MaxLimit = 1 }
-        };
-        sd.Chart.Sections = Array.Empty<RectangularSection>();
-        return;
-    }
+            if (sd.Chart is null || sd.Series is not LineSeries<ObservableMeasurementPoint> ls) 
+                return;
 
-    double dataMin = values.Min();
-    double dataMax = values.Max();
+            var values = ls.Values
+                .Cast<ObservableMeasurementPoint>()
+                .Select(v => v.Val ?? double.NaN)
+                .Where(v => !double.IsNaN(v))
+                .ToList();
 
-    double effectiveMin = dataMin;
-    double effectiveMax = dataMax;
+            if (values.Count == 0)
+            {
+                sd.Chart.YAxes = new[]
+                {
+                    new Axis { MinLimit = 0, MaxLimit = 1 }
+                };
+                sd.Chart.Sections = Array.Empty<RectangularSection>();
+                return;
+            }
 
-    if (sd.Min.HasValue) effectiveMin = Math.Min(effectiveMin, sd.Min.Value);
-    if (sd.Max.HasValue) effectiveMax = Math.Max(effectiveMax, sd.Max.Value);
+            double dataMin = values.Min();
+            double dataMax = values.Max();
 
-    double span = effectiveMax - effectiveMin;
-    if (span <= 0) span = 1;
-    double margin = span * 0.10;
+            double effectiveMin = dataMin;
+            double effectiveMax = dataMax;
 
-    double yMin = effectiveMin - margin;
-    double yMax = effectiveMax + margin;
+            if (sd.Min.HasValue) effectiveMin = Math.Min(effectiveMin, sd.Min.Value);
+            if (sd.Max.HasValue) effectiveMax = Math.Max(effectiveMax, sd.Max.Value);
 
-    sd.Chart.YAxes = new[] { new Axis { MinLimit = yMin, MaxLimit = yMax } };
+            double span = effectiveMax - effectiveMin;
+            if (span <= 0) span = 1;
+            double margin = Math.Ceiling(span * 0.10);
 
-    var sections = new List<RectangularSection>();
+            double yMin = effectiveMin - margin;
+            double yMax = effectiveMax + margin;
+            
+            double targetLines = 5.0;
+            double step = (yMax - yMin) / targetLines;
 
-    // under LSL (röd)
-    if (sd.Min.HasValue)
-    {
-        sections.Add(new RectangularSection
+            sd.Chart.YAxes = [new Axis
+            {
+                MinLimit = yMin, 
+                MaxLimit = yMax,
+                MinStep = step
+            }];
+
+            var sections = new List<RectangularSection>();
+
+            // under LSL (röd)
+            if (sd.Min.HasValue)
+            {
+                sections.Add(new RectangularSection
+                {
+                    Yi = yMin,
+                    Yj = sd.Min.Value,
+                    Fill = new SolidColorPaint(new SKColor(255, 199, 206, 230))
+                });
+            }
+
+            // över USL (röd)
+            if (sd.Max.HasValue)
+            {
+                sections.Add(new RectangularSection
+                {
+                    Yi = sd.Max.Value,
+                    Yj = yMax,
+                    Fill = new SolidColorPaint(new SKColor(255, 199, 206, 230))
+                });
+            }
+
+            // inom tolerans (grön)
+            if (sd.Min.HasValue && sd.Max.HasValue)
+            {
+                sections.Add(new RectangularSection
+                {
+                    Yi = sd.Min.Value,
+                    Yj = sd.Max.Value,
+                    Fill = new SolidColorPaint(new SKColor(198, 239, 206, 255))
+                });
+            }
+
+            sd.Chart.Sections = sections.ToArray();
+            sd.Chart.Update();
+        }
+        private bool _updatingOrderChecks;
+        private void ApplyOrderFilters(string? revnrFilter, string? prodLineFilter, string? prodTypeFilter)
         {
-            Yi = yMin,
-            Yj = sd.Min.Value,
-            Fill = new SolidColorPaint(new SKColor(255, 199, 206, 230))
-        });
-    }
+            if (_initializingOrders) 
+                return;
 
-    // över USL (röd)
-    if (sd.Max.HasValue)
-    {
-        sections.Add(new RectangularSection
-        {
-            Yi = sd.Max.Value,
-            Yj = yMax,
-            Fill = new SolidColorPaint(new SKColor(255, 199, 206, 230))
-        });
-    }
+            _updatingOrderChecks = true;
 
-    // inom tolerans (grön)
-    if (sd.Min.HasValue && sd.Max.HasValue)
-    {
-        sections.Add(new RectangularSection
-        {
-            Yi = sd.Min.Value,
-            Yj = sd.Max.Value,
-            Fill = new SolidColorPaint(new SKColor(198, 239, 206, 255))
-        });
-    }
-
-    sd.Chart.Sections = sections.ToArray();
-    sd.Chart.Update();
-}
-
-        private bool _updatingOrderChecks = false;
-        private void ApplyOrderFilters(string? revPattern, string? linePattern, bool checkMatches, bool uncheckOthers)
-        {
             try
             {
-                _updatingOrderChecks = true;
-                chkList_Orders.BeginUpdate();
-
-                for (int i = 0; i < chkList_Orders.Items.Count; i++)
+                foreach (DataGridViewRow row in dgv_OrderList.Rows)
                 {
-                    if (chkList_Orders.Items[i] is not OrderInfo o) continue;
+                    if (row.Tag is not OrderInfo o)
+                        continue;
 
                     bool match =
-                        IsMatch(o.RevNr,       revPattern) &&
-                        IsMatch(o.ProdLine,    linePattern);
+                        IsMatch(o.RevNr, revnrFilter) &&
+                        IsMatch(o.ProdLine, prodLineFilter) &&
+                        IsMatch(o.ProdType, prodTypeFilter);
 
+                    // match?
                     if (match)
-                    {
-                        if (!chkList_Orders.GetItemChecked(i))
-                            chkList_Orders.SetItemChecked(i, true);
-                    }
+                        row.Cells["isChecked"].Value = true;
                     else 
-                    {
-                        if (chkList_Orders.GetItemChecked(i))
-                            chkList_Orders.SetItemChecked(i, false);
-                    }
+                        row.Cells["isChecked"].Value = false;
                 }
             }
             finally
             {
-                chkList_Orders.EndUpdate();
                 _updatingOrderChecks = false;
             }
 
-            // Trigga din grafuppdatering efter programmatisk ändring
-            UpdateChartForCheckedOrders(new ItemCheckEventArgs(-1, CheckState.Unchecked, CheckState.Unchecked));
+            // Uppdatera grafen efter programändring
+            UpdateChartForCheckedOrders();
         }
 
-        private void UpdateChartForCheckedOrders(ItemCheckEventArgs e)
+        private void UpdateChartForCheckedOrders()
         {
-            if (_initializingOrders) return;
+            if (_initializingOrders) 
+                return;
 
-            // Hämta ibockade OrderID
+            // 1. Hämta ibockade OrderID från DGV
             var checkedOrders = new HashSet<int>();
-            for (int i = 0; i < chkList_Orders.Items.Count; i++)
+
+            foreach (DataGridViewRow row in dgv_OrderList.Rows)
             {
-                bool isChecked = (i == e.Index)
-                    ? e.NewValue == CheckState.Checked
-                    : chkList_Orders.GetItemChecked(i);
+                bool isChecked = row.Cells["isChecked"].Value as bool? == true;
 
-                if (isChecked && chkList_Orders.Items[i] is OrderInfo order)
-                    checkedOrders.Add(order.OrderID);
+                if (!isChecked)
+                    continue;
+
+               
+                if (row.Tag is OrderInfo orderFromTag)
+                {
+                    checkedOrders.Add(orderFromTag.OrderID);
+                }
+                else
+                {
+                    // 2) Fallback: försök läsa ID från cellen ifall Tag saknas av någon anledning
+                    var cell = row.Cells["OrderID"].Value;
+                    if (cell is int id)
+                        checkedOrders.Add(id);
+                    else if (int.TryParse(cell?.ToString(), out var parsed))
+                        checkedOrders.Add(parsed);
+                }
+
             }
+            
+            
 
+            // 2. EXACT samma chartlogik som du hade tidigare
             foreach (var sd in _seriesByParameter.Values)
             {
-                // Filtrera mätpunkter
+                // Filtrera mätpunkter för valda orders
                 var filtered = sd.Measurements
                     .Where(m => m.Value.HasValue && checkedOrders.Contains(m.OrderID))
                     .ToList();
 
                 // Bygg om ObservableMeasurementPoint med ny X-indexering
-                var obsValues = new ObservableCollection<SpcOrderAnalysis.ObservableMeasurementPoint>();
+                var obsValues = new ObservableCollection<ObservableMeasurementPoint>();
                 int x = 0;
+
                 foreach (var m in filtered)
                 {
-                    obsValues.Add(new SpcOrderAnalysis.ObservableMeasurementPoint(x, m.Value!.Value, m));
+                    obsValues.Add(new ObservableMeasurementPoint(
+                        x, 
+                        m.Value!.Value, 
+                        m
+                    ));
                     x++;
                 }
 
                 if (sd.Series is LineSeries<ObservableMeasurementPoint> ls)
                     ls.Values = obsValues;
 
-                // Sätt om Y-axel + sektioner för det här chartet
+                // Sätt om Y-axel + sektioner som innan
                 UpdateSPCFor(sd);
                 ApplySectionsAndYAxis(sd);
             }
         }
 
-        
-        public class ObservableMeasurementPoint(double x, double y, MeasurementPoint mp) : ObservablePoint(x, y)
-        {
-            public int OrderID { get; } = mp.OrderID;
-            public string OrderNumber { get; } = mp.OrderNumber;
-            public int StartUp { get; } = mp.StartUp;
-            public double? Val { get; } = mp.Value;
-        }
 
 
         public void AddParameter(Module.ParameterInfo parameter, List<OrderInfo> orders)
@@ -380,13 +403,14 @@ namespace DigitalProductionProgram.Browse_Protocols
             if (_seriesByParameter.ContainsKey(parameter.Name))
                 return; // redan tillagd
 
-            var orderIds = orders.Select(o => o.OrderID).ToList();
+            // 1) Ladda mätvärden för exakt de OrderID som visas i DGV
+            var orderIds = orders.Select(o => o.OrderID).Distinct().ToList();
             var measurements = LoadMeasurements(parameter.ProtocolDescriptionId, orderIds);
 
             var hasValues = measurements.Any(m => m.Value.HasValue);
             if (!hasValues) return;
 
-            // Bygg värden (X = löpindex för snygg linje även när vi filtrerar)
+            // 2) Bygg värden (X = löpindex)
             var obsValues = new ObservableCollection<ObservableMeasurementPoint>();
             int x = 0;
             foreach (var mp in measurements.Where(m => m.Value.HasValue))
@@ -397,33 +421,33 @@ namespace DigitalProductionProgram.Browse_Protocols
 
             var series = new LineSeries<ObservableMeasurementPoint>
             {
-                Name = string.Empty,               // ingen titel i tooltip
+                Name = string.Empty,
                 Fill = null,
                 GeometrySize = 2,
                 Values = obsValues,
                 YToolTipLabelFormatter = cp =>
                 {
                     var mp = (ObservableMeasurementPoint)cp.Model;
-                    var nl = Environment.NewLine; // CRLF på Windows
+                    var nl = Environment.NewLine;
 
-                    return nl +                   // tom första rad
+                    return nl +
                            $"OrderNr: {mp.OrderNumber}{nl}" +
                            $"StartUp: {mp.StartUp}{nl}" +
                            $"Value: {mp.Val}";
                 }
             };
 
-            // --- Skapa en "kort-panel" per parameter: Label (rubrik) + Chart ---
+            // 3) UI: kort-panel + chart
             var host = new Panel
             {
                 Margin = new Padding(3),
                 BackColor = Color.White,
-                BorderStyle = BorderStyle.FixedSingle,   // valfritt, men bra för att “synas”
-                Height = 320,                     // valfritt – höjd styr du själv
+                BorderStyle = BorderStyle.FixedSingle,
+                Height = 320,
                 Width = flp_Charts.ClientSize.Width - 20
             };
-            
-            var spcPanel = new Panel()
+
+            var spcPanel = new Panel
             {
                 Dock = DockStyle.Left,
                 AutoScroll = false,
@@ -453,7 +477,7 @@ namespace DigitalProductionProgram.Browse_Protocols
             host.Controls.Add(header);
             flp_Charts.Controls.Add(host);
 
-            var sd = new SeriesData 
+            var sd = new SeriesData
             {
                 ParameterName = parameter.Name,
                 ProtocolDescriptionId = parameter.ProtocolDescriptionId,
@@ -469,24 +493,48 @@ namespace DigitalProductionProgram.Browse_Protocols
 
             _seriesByParameter.Add(parameter.Name, sd);
 
-            // Sätt Y-axel & sektioner för den här (enda) serien/chartet
+            // 4) Y-axel + SPC-sektioner
             ApplySectionsAndYAxis(sd);
 
-            // Lägg till parameter i chkList_Parameters (styr synlighet av KORTET)
+            // 5) Synlighetslistan för parametrar (oförändrat)
             if (!chkList_Parameters.Items.Contains(parameter.Name))
                 chkList_Parameters.Items.Add(parameter.Name, true);
 
-            // Fyll orderlistan
+            // 6) DGV: Populera orderlistan från exakt samma "orders"
+            //    - Viktigt för att OrderID i DGV och sd.Measurements ska matcha
             _initializingOrders = true;
-            chkList_Orders.Items.Clear();
-            foreach (var order in orders) 
-                chkList_Orders.Items.Add(order, true);
-            _initializingOrders = false;
+            try
+            {
+                dgv_OrderList.SuspendLayout();
 
-            // Uppdatera SPC för denna (om du vill att senast tillagda blir aktiv)
+                dgv_OrderList.Rows.Clear();
+
+                foreach (var order in orders)
+                {
+                    int rowIndex = dgv_OrderList.Rows.Add();
+                    var row = dgv_OrderList.Rows[rowIndex];
+
+                    row.Cells["OrderID"].Value  = order.OrderID;
+                    row.Cells["ordernr"].Value  = order.OrderNumber;
+                    row.Cells["revnr"].Value    = order.RevNr;
+                    row.Cells["prodline"].Value = order.ProdLine;
+                    row.Cells["date"].Value     = order.Date.ToString(); 
+                    row.Cells["prodtype"].Value = order.ProdType;
+                    row.Cells["isChecked"].Value = true; // alla ibockade från start
+
+                    row.Tag = order; 
+                }
+
+                dgv_OrderList.ClearSelection();
+            }
+            finally
+            {
+                dgv_OrderList.ResumeLayout();
+                _initializingOrders = false;
+            }
+
             UpdateSPCFor(sd);
-            //UpdateSPC(sd);
-}
+        }
         private List<MeasurementPoint> LoadMeasurements(int? protocolDescriptionId, List<int> orderid)
         {
             var list = new List<MeasurementPoint>();
@@ -548,14 +596,33 @@ namespace DigitalProductionProgram.Browse_Protocols
             if (single != null)
                 UpdateSPCFor(single);
         }
-        private void chkList_Orders_ItemCheck(object sender, ItemCheckEventArgs e)
+        private void dgv_OrderList_CurrentCellDirtyStateChanged(object sender, EventArgs e)
         {
-            if (_initializingOrders)
-                return; // ignorera eventet under initialisering
-            UpdateChartForCheckedOrders(e);
+            if (dgv_OrderList.IsCurrentCellDirty)
+                dgv_OrderList.CommitEdit(DataGridViewDataErrorContexts.Commit);
+        }
+        private void dgv_OrderList_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            if (_initializingOrders || _updatingOrderChecks) 
+                return; 
+            var col = dgv_OrderList.Columns["isChecked"];
+            if (col == null) 
+                return; 
+
+            if (e.ColumnIndex == col.Index)
+                UpdateChartForCheckedOrders();
         }
     }
 
+
+
+    public class ObservableMeasurementPoint(double x, double y, MeasurementPoint mp) : ObservablePoint(x, y)
+    {
+        public int OrderID { get; } = mp.OrderID;
+        public string OrderNumber { get; } = mp.OrderNumber;
+        public int StartUp { get; } = mp.StartUp;
+        public double? Val { get; } = mp.Value;
+    }
     public class MeasurementPoint
     {
         public int OrderID { get; set; }

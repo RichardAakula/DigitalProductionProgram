@@ -2063,17 +2063,6 @@ namespace DigitalProductionProgram.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to INSERT INTO [Order].MainData (WorkOperationID,MainTemplateID, ProtocolTemplateRevision, MeasureProtocolTemplateRevision, OrderID, OrderNr, Operation, PartID, PartNr, RevNr, ProdGroup, ProdLine, ProdType, Customer, Description, Amount, Unit, 
-        ///                    Name_Start, Date_Start, Version, IsOrderDone, IsDeleted)
-        ///                VALUES (@workoperationid, @maintemplateid, @korprotokolltemplaterevision, @measureprotocoltemplaterevision, @id, @ordernr, @operation, @partid, @partnr, @revNr, @prodgroup, @p [rest of string was truncated]&quot;;.
-        /// </summary>
-        public static string INSERT_Korprotokoll_Main {
-            get {
-                return ResourceManager.GetString("INSERT_Korprotokoll_Main", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
         public static string isOkAddStartUp {

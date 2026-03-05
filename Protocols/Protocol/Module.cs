@@ -828,28 +828,28 @@ namespace DigitalProductionProgram.Protocols.Protocol
         }
         private void Module_ShowSpecialItems_CellRightMouseDown(object sender, DataGridViewCellMouseEventArgs e)
         {
-            //if (Browse_Protocols.Browse_Protocols.Is_BrowsingProtocols)
-            //{
-            //    _ = Activity.Stop($"Felsökning: ModuleRightMouseDown - IsBrowsingProtocol: Row= {e.RowIndex}, Col = {e.ColumnIndex}, Button = {e.Button}");
-            //    return;
-            //}
+            if (Browse_Protocols.Browse_Protocols.Is_BrowsingProtocols)
+            {
+                _ = Activity.Stop($"Felsökning: ModuleRightMouseDown - IsBrowsingProtocol: Row= {e.RowIndex}, Col = {e.ColumnIndex}, Button = {e.Button}");
+                return;
+            }
 
-            //if (IsOkShowList == false) 
-            //{
-            //    _ =Activity.Stop($"Felsökning: ModuleRightMouseDown - IsOkShowList = false:  Row= {e.RowIndex}, Col = {e.ColumnIndex}, Button = {e.Button}");
-            //    return;
-            //}
+            if (IsOkShowList == false)
+            {
+                _ = Activity.Stop($"Felsökning: ModuleRightMouseDown - IsOkShowList = false:  Row= {e.RowIndex}, Col = {e.ColumnIndex}, Button = {e.Button}");
+                return;
+            }
 
-            //if (dgv_Module.Columns[e.ColumnIndex].ReadOnly)
-            //{
-            //    _ = Activity.Stop($"Felsökning: ModuleRightMouseDown - ColumnIndex.ReadOnly: Row= {e.RowIndex}, Col = {e.ColumnIndex}, Button = {e.Button}");
-            //    return;
-            //}
-            //if (IsAuthenticationNeeded && e.RowIndex > dgv_Module.Rows.Count - 3)
-            //{
-            //    _ = Activity.Stop($"Felsökning: ModuleRightMouseDown - IsAuthenticationNeeded: Row= {e.RowIndex}, Col = {e.ColumnIndex}, Button = {e.Button}");
-            //    return;
-            //}
+            if (dgv_Module.Columns[e.ColumnIndex].ReadOnly)
+            {
+                _ = Activity.Stop($"Felsökning: ModuleRightMouseDown - ColumnIndex.ReadOnly: Row= {e.RowIndex}, Col = {e.ColumnIndex}, Button = {e.Button}");
+                return;
+            }
+            if (IsAuthenticationNeeded && e.RowIndex > dgv_Module.Rows.Count - 3)
+            {
+                _ = Activity.Stop($"Felsökning: ModuleRightMouseDown - IsAuthenticationNeeded: Row= {e.RowIndex}, Col = {e.ColumnIndex}, Button = {e.Button}");
+                return;
+            }
 
 
             var isProcesscardUnderManagement = Manage_Processcards.IsProcesscardUnderManagement;
@@ -1150,7 +1150,13 @@ namespace DigitalProductionProgram.Protocols.Protocol
                 case 83:
                 case 209:
                     if (isProcesscardUnderManagement)
-                        cell.Value = Regex.Replace(cell.Value.ToString(), "[^0-9,]", "");
+                    {
+                        var input = cell.Value?.ToString() ?? "";
+                        var match = Regex.Match(input, @"\d+[.,]?\d*");
+                        if (match.Success)
+                            cell.Value = match.Value;
+                    }
+                        //cell.Value = Regex.Replace(cell.Value.ToString(), "[^0-9,]", "");
                     break;
                 case 310:
                     DieType = dgv_Module.Rows[row].Cells[col].Value.ToString();

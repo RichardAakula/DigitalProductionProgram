@@ -1175,9 +1175,6 @@ Change revision and try to save again. </value>
   <data name="Menu_User_Authorities_Roles" xml:space="preserve">
     <value>Authorities Roles</value>
   </data>
-  <data name="INSERT_Korprotokoll_Main" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\resources\insert_korprotokoll_main.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
-  </data>
   <data name="label_FirstName" xml:space="preserve">
     <value />
   </data>

@@ -115,9 +115,9 @@ namespace DigitalProductionProgram.Övrigt
             public static double x1, x2, x3, x4, x5, x6, x7;
             public static double y1, y2, y3, y4, y5, y6, y7;
 
-            public static double Wall1 => x1;
-            public static double? Wall2 => x3 - x2;
-            public static double? Wall3 => y1;
+            private static double Wall1 => x1;
+            private static double? Wall2 => x3 - x2;
+            private static double? Wall3 => y1;
             public static double? Wall4 => y3 - y2;
 
             public static double? ID => (x2 - x1 + (y2 - y1)) / 2 / 1000;

@@ -1232,6 +1232,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                                 'Save data: ',
                                 COALESCE((SELECT TOP(1) CodeText FROM [Protocol].[Description] WHERE ID = @protocoldescriptionid), 'N/A'),
                                 ' - Value = ', @value,
+                                ' - TextValue = ', @textvalue,
                                 ' - StartUp = ', @uppstart,
                                 ', Machine = ', @machineindex));
                     "

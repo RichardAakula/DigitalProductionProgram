@@ -107,7 +107,7 @@ namespace DigitalProductionProgram.MainWindow
             BrowseOldMeasureprotocol.Location = new Point(254, 2);
             BrowseOldMeasureprotocol.Margin = new Padding(2, 2, 0, 0);
             BrowseOldMeasureprotocol.Name = "BrowseOldMeasureprotocol";
-            BrowseOldMeasureprotocol.Size = new Size(124, 42);
+            BrowseOldMeasureprotocol.Size = new Size(150, 42);
             BrowseOldMeasureprotocol.TabIndex = 880;
             BrowseOldMeasureprotocol.Text = "F3-Bläddra gamla Mätprotokoll";
             BrowseOldMeasureprotocol.UseVisualStyleBackColor = true;
@@ -118,7 +118,7 @@ namespace DigitalProductionProgram.MainWindow
             BrowseOldOrders.FlatAppearance.CheckedBackColor = Color.FromArgb(255, 224, 192);
             BrowseOldOrders.FlatStyle = FlatStyle.Flat;
             BrowseOldOrders.ForeColor = Color.DarkGoldenrod;
-            BrowseOldOrders.Location = new Point(380, 2);
+            BrowseOldOrders.Location = new Point(406, 2);
             BrowseOldOrders.Margin = new Padding(2, 2, 0, 0);
             BrowseOldOrders.Name = "BrowseOldOrders";
             BrowseOldOrders.Size = new Size(124, 42);
@@ -132,7 +132,7 @@ namespace DigitalProductionProgram.MainWindow
             Compound.FlatAppearance.CheckedBackColor = Color.FromArgb(255, 224, 192);
             Compound.FlatStyle = FlatStyle.Flat;
             Compound.ForeColor = Color.DarkGoldenrod;
-            Compound.Location = new Point(506, 2);
+            Compound.Location = new Point(532, 2);
             Compound.Margin = new Padding(2, 2, 0, 0);
             Compound.Name = "Compound";
             Compound.Size = new Size(171, 42);
@@ -146,7 +146,7 @@ namespace DigitalProductionProgram.MainWindow
             Zumbach.FlatAppearance.CheckedBackColor = Color.FromArgb(255, 224, 192);
             Zumbach.FlatStyle = FlatStyle.Flat;
             Zumbach.ForeColor = Color.DarkGoldenrod;
-            Zumbach.Location = new Point(679, 2);
+            Zumbach.Location = new Point(705, 2);
             Zumbach.Margin = new Padding(2, 2, 0, 0);
             Zumbach.Name = "Zumbach";
             Zumbach.Size = new Size(171, 42);
@@ -161,7 +161,7 @@ namespace DigitalProductionProgram.MainWindow
             OverviewProdlines.FlatAppearance.CheckedBackColor = Color.FromArgb(255, 224, 192);
             OverviewProdlines.FlatStyle = FlatStyle.Flat;
             OverviewProdlines.ForeColor = Color.DarkGoldenrod;
-            OverviewProdlines.Location = new Point(852, 2);
+            OverviewProdlines.Location = new Point(878, 2);
             OverviewProdlines.Margin = new Padding(2, 2, 0, 0);
             OverviewProdlines.Name = "OverviewProdlines";
             OverviewProdlines.Size = new Size(179, 42);
@@ -176,7 +176,7 @@ namespace DigitalProductionProgram.MainWindow
             Statistics.FlatAppearance.CheckedBackColor = Color.FromArgb(255, 224, 192);
             Statistics.FlatStyle = FlatStyle.Flat;
             Statistics.ForeColor = Color.DarkGoldenrod;
-            Statistics.Location = new Point(1033, 2);
+            Statistics.Location = new Point(1059, 2);
             Statistics.Margin = new Padding(2, 2, 0, 0);
             Statistics.Name = "Statistics";
             Statistics.Size = new Size(86, 42);
@@ -191,7 +191,7 @@ namespace DigitalProductionProgram.MainWindow
             Frequency_Marking.FlatAppearance.CheckedBackColor = Color.FromArgb(255, 224, 192);
             Frequency_Marking.FlatStyle = FlatStyle.Flat;
             Frequency_Marking.ForeColor = Color.DarkGoldenrod;
-            Frequency_Marking.Location = new Point(1121, 2);
+            Frequency_Marking.Location = new Point(1147, 2);
             Frequency_Marking.Margin = new Padding(2, 2, 0, 0);
             Frequency_Marking.Name = "Frequency_Marking";
             Frequency_Marking.Size = new Size(141, 42);
@@ -206,7 +206,7 @@ namespace DigitalProductionProgram.MainWindow
             panel_Pictures.BorderStyle = BorderStyle.FixedSingle;
             panel_Pictures.Controls.Add(pb_LoadPicture);
             panel_Pictures.Controls.Add(pb_UploadPicture);
-            panel_Pictures.Location = new Point(1268, 2);
+            panel_Pictures.Location = new Point(1294, 2);
             panel_Pictures.Margin = new Padding(6, 2, 0, 2);
             panel_Pictures.MinimumSize = new Size(136, 45);
             panel_Pictures.Name = "panel_Pictures";

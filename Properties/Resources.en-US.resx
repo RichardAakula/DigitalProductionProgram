@@ -992,9 +992,6 @@ Note! It must be between 1 to 3 layers.</value>
   <data name="label_List_PartNr" xml:space="preserve">
     <value>List of Partnumbers</value>
   </data>
-  <data name="label_Workoperation_Header" xml:space="preserve">
-    <value>Choose Workoperation</value>
-  </data>
   <data name="Menu_Help_InstructionVideos_SaveProcessCard" xml:space="preserve">
     <value>Save new Process card</value>
   </data>
@@ -2140,8 +2137,90 @@ Ppk assumes the process is statistically stable.</value>
   <data name="uploadPicture_3" xml:space="preserve">
     <value>Picture is saved and can now be seen everytime this partnumber is run.</value>
   </data>
+  <data name="label_Customer" xml:space="preserve">
+    <value>Customer:</value>
+  </data>
+  <data name="label_OrderNr" xml:space="preserve">
+    <value>OrderNr:</value>
+  </data>
+  <data name="label_OrderStartedBy" xml:space="preserve">
+    <value>Started By:</value>
+  </data>
+  <data name="label_PartNumber" xml:space="preserve">
+    <value>PartNr:</value>
+  </data>
+  <data name="StartOrder" xml:space="preserve">
+    <value>Do you want to start the order:</value>
+  </data>
+  <data name="finishOrder_1" xml:space="preserve">
+    <value>This order is finished, you can´t finish it again. 
+Contact Admin if necessary.</value>
+  </data>
+  <data name="finishOrder_2_1" xml:space="preserve">
+    <value>You have only made</value>
+  </data>
+  <data name="finishOrder_2_2" xml:space="preserve">
+    <value>measurements. QC demands that you do at least 13 measurements</value>
+  </data>
+  <data name="finishOrder_3_1" xml:space="preserve">
+    <value>before you finish the order.</value>
+  </data>
+  <data name="finishOrder_3_2" xml:space="preserve">
+    <value>You have as</value>
+  </data>
+  <data name="finishOrder_3_3" xml:space="preserve">
+    <value>authority to finish the order anyway.</value>
+  </data>
+  <data name="finishOrder_3_4" xml:space="preserve">
+    <value>Do you want to continue finishing the order?</value>
+  </data>
+  <data name="orderDone_1" xml:space="preserve">
+    <value>Fill in</value>
+  </data>
+  <data name="finishOrder_4" xml:space="preserve">
+    <value>Sign in before you finish an order.</value>
+  </data>
+  <data name="finishOrder_MeasureEq_1" xml:space="preserve">
+    <value>Fill in all the measurement equipment numbers in the Measurement protocol</value>
+  </data>
+  <data name="finishOrder_MeasureEq_2" xml:space="preserve">
+    <value>Fill in the measurement equipment number in the Measurement protocol</value>
+  </data>
+  <data name="finishOrder_Halvfabrikat_1" xml:space="preserve">
+    <value>Fill in the batch number for the PreFab in the Protocol</value>
+  </data>
+  <data name="finishOrder_Halvfabrikat_2_1" xml:space="preserve">
+    <value>Fill in which extruder is used for the PreFab with the partnumber</value>
+  </data>
+  <data name="finishOrder_Halvfabrikat_2_2" xml:space="preserve">
+    <value>in the protocol</value>
+  </data>
+  <data name="finishOrder_RoomTemp" xml:space="preserve">
+    <value>Fill in room temperature in Protocol</value>
+  </data>
+  <data name="finishOrder_RoomMoist" xml:space="preserve">
+    <value>Fill in moisture content of room in the Protocol</value>
+  </data>
+  <data name="finishOrder_Comments" xml:space="preserve">
+    <value>Fill in Comments in the protocol</value>
+  </data>
+  <data name="finishOrder_ExtruderCleaned" xml:space="preserve">
+    <value>tick in Cleaned Extruder in the protocol</value>
+  </data>
+  <data name="label_FinishOrder_Header" xml:space="preserve">
+    <value>Order is done</value>
+  </data>
+  <data name="chb_FinishOrder_PrintOrder" xml:space="preserve">
+    <value>Do you want to print the order?</value>
+  </data>
+  <data name="btn_FinishOrder" xml:space="preserve">
+    <value>Finish Order</value>
+  </data>
+  <data name="warningMessage" xml:space="preserve">
+    <value>Warning!</value>
+  </data>
   <data name="BrowseOldMeasureprotocol" xml:space="preserve">
-    <value>F3-Browse Old Measurement Protocols</value>
+    <value>F3-Historical Measurements &amp;&amp; SPC</value>
   </data>
   <data name="BrowseOldOrders" xml:space="preserve">
     <value>F4-Browse Old Orders</value>
@@ -2295,20 +2374,8 @@ Ppk assumes the process is statistically stable.</value>
   <data name="label_Amount" xml:space="preserve">
     <value>Amount:</value>
   </data>
-  <data name="label_Customer" xml:space="preserve">
-    <value>Customer:</value>
-  </data>
   <data name="label_Operation" xml:space="preserve">
     <value>Operation:</value>
-  </data>
-  <data name="label_OrderNr" xml:space="preserve">
-    <value>OrderNr:</value>
-  </data>
-  <data name="label_OrderStartedBy" xml:space="preserve">
-    <value>Started By:</value>
-  </data>
-  <data name="label_PartNumber" xml:space="preserve">
-    <value>PartNr:</value>
   </data>
   <data name="label_SignedInMonitor" xml:space="preserve">
     <value>Signed In Monitor:</value>
@@ -2328,9 +2395,6 @@ Ppk assumes the process is statistically stable.</value>
   <data name="btn_Yes" xml:space="preserve">
     <value>Yes</value>
   </data>
-  <data name="StartOrder" xml:space="preserve">
-    <value>Do you want to start the order:</value>
-  </data>
   <data name="chartSerieMeasurepoints1" xml:space="preserve">
     <value>Avg: Last Order</value>
   </data>
@@ -2342,40 +2406,6 @@ Ppk assumes the process is statistically stable.</value>
   </data>
   <data name="label_MeasureInformation" xml:space="preserve">
     <value>Measureinformation</value>
-  </data>
-  <data name="finishOrder_1" xml:space="preserve">
-    <value>This order is finished, you can´t finish it again. 
-Contact Admin if necessary.</value>
-  </data>
-  <data name="finishOrder_2_1" xml:space="preserve">
-    <value>You have only made</value>
-  </data>
-  <data name="finishOrder_2_2" xml:space="preserve">
-    <value>measurements. QC demands that you do at least 13 measurements</value>
-  </data>
-  <data name="finishOrder_3_1" xml:space="preserve">
-    <value>before you finish the order.</value>
-  </data>
-  <data name="finishOrder_3_2" xml:space="preserve">
-    <value>You have as</value>
-  </data>
-  <data name="finishOrder_3_3" xml:space="preserve">
-    <value>authority to finish the order anyway.</value>
-  </data>
-  <data name="finishOrder_3_4" xml:space="preserve">
-    <value>Do you want to continue finishing the order?</value>
-  </data>
-  <data name="orderDone_1" xml:space="preserve">
-    <value>Fill in</value>
-  </data>
-  <data name="finishOrder_4" xml:space="preserve">
-    <value>Sign in before you finish an order.</value>
-  </data>
-  <data name="finishOrder_MeasureEq_1" xml:space="preserve">
-    <value>Fill in all the measurement equipment numbers in the Measurement protocol</value>
-  </data>
-  <data name="finishOrder_MeasureEq_2" xml:space="preserve">
-    <value>Fill in the measurement equipment number in the Measurement protocol</value>
   </data>
   <data name="m" xml:space="preserve">
     <value>You need to conduct Line Clearance</value>
@@ -2443,36 +2473,6 @@ Contact Admin if necessary.</value>
   <data name="Menu_Equipment_UseSilpaket" xml:space="preserve">
     <value>Use Screen package</value>
   </data>
-  <data name="finishOrder_Halvfabrikat_1" xml:space="preserve">
-    <value>Fill in the batch number for the PreFab in the Protocol</value>
-  </data>
-  <data name="finishOrder_Halvfabrikat_2_1" xml:space="preserve">
-    <value>Fill in which extruder is used for the PreFab with the partnumber</value>
-  </data>
-  <data name="finishOrder_Halvfabrikat_2_2" xml:space="preserve">
-    <value>in the protocol</value>
-  </data>
-  <data name="finishOrder_RoomTemp" xml:space="preserve">
-    <value>Fill in room temperature in Protocol</value>
-  </data>
-  <data name="finishOrder_RoomMoist" xml:space="preserve">
-    <value>Fill in moisture content of room in the Protocol</value>
-  </data>
-  <data name="finishOrder_Comments" xml:space="preserve">
-    <value>Fill in Comments in the protocol</value>
-  </data>
-  <data name="finishOrder_ExtruderCleaned" xml:space="preserve">
-    <value>tick in Cleaned Extruder in the protocol</value>
-  </data>
-  <data name="label_FinishOrder_Header" xml:space="preserve">
-    <value>Order is done</value>
-  </data>
-  <data name="chb_FinishOrder_PrintOrder" xml:space="preserve">
-    <value>Do you want to print the order?</value>
-  </data>
-  <data name="btn_FinishOrder" xml:space="preserve">
-    <value>Finish Order</value>
-  </data>
   <data name="btn_Abort" xml:space="preserve">
     <value>Abort</value>
   </data>
@@ -2482,7 +2482,49 @@ Contact Admin if necessary.</value>
   <data name="btnZumbach" xml:space="preserve">
     <value>F6-Zumbach-measurement</value>
   </data>
-  <data name="warningMessage" xml:space="preserve">
-    <value>Warning!</value>
+  <data name="header_BrowseOldMeasureprotocols" xml:space="preserve">
+    <value>Historical Measurements &amp; SPC</value>
+  </data>
+  <data name="label_ChooseWorkOperation" xml:space="preserve">
+    <value>Choose Woorkoperation</value>
+  </data>
+  <data name="label_ChooseRevisionMeasureTemplate" xml:space="preserve">
+    <value>Select Revision for the Measurement Protocol Template</value>
+  </data>
+  <data name="label_ChoosePartNumber" xml:space="preserve">
+    <value>Choose Part Number</value>
+  </data>
+  <data name="chk_FilterBadValues" xml:space="preserve">
+    <value>Remove outlier values</value>
+  </data>
+  <data name="chk_FilterDiscarded" xml:space="preserve">
+    <value>Exclude discarded measurements</value>
+  </data>
+  <data name="FilterInfo_Title" xml:space="preserve">
+    <value>Filtering out {0} measurements:</value>
+  </data>
+  <data name="FilterInfo_Discarded" xml:space="preserve">
+    <value>Discarded: {0}</value>
+  </data>
+  <data name="FilterInfo_Outliers" xml:space="preserve">
+    <value>Outliers: {0}</value>
+  </data>
+  <data name="btn_ReloadData" xml:space="preserve">
+    <value>Reload data</value>
+  </data>
+  <data name="loadingDataOrderNr" xml:space="preserve">
+    <value>Loading measurements: Ordernumber</value>
+  </data>
+  <data name="btn_ExportDataToExcel" xml:space="preserve">
+    <value>Export measurements to Excel</value>
+  </data>
+  <data name="gBox_FilterOrders" xml:space="preserve">
+    <value>Select Orders</value>
+  </data>
+  <data name="selectOrders" xml:space="preserve">
+    <value>Select all Orders</value>
+  </data>
+  <data name="label_SPC_Title" xml:space="preserve">
+    <value>SPC Analysis of Measurement Data</value>
   </data>
 </root>

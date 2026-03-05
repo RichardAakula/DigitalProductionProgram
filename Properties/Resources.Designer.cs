@@ -782,6 +782,15 @@ namespace DigitalProductionProgram.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string btn_ExportDataToExcel {
+            get {
+                return ResourceManager.GetString("btn_ExportDataToExcel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Finish Order.
         /// </summary>
         public static string btn_FinishOrder {
@@ -886,6 +895,15 @@ namespace DigitalProductionProgram.Properties {
         public static string btn_RefreshPriorityPlan {
             get {
                 return ResourceManager.GetString("btn_RefreshPriorityPlan", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string btn_ReloadData {
+            get {
+                return ResourceManager.GetString("btn_ReloadData", resourceCulture);
             }
         }
         
@@ -1229,6 +1247,24 @@ namespace DigitalProductionProgram.Properties {
         public static string checkLastOperations {
             get {
                 return ResourceManager.GetString("checkLastOperations", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string chk_FilterBadValues {
+            get {
+                return ResourceManager.GetString("chk_FilterBadValues", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string chk_FilterDiscarded {
+            get {
+                return ResourceManager.GetString("chk_FilterDiscarded", resourceCulture);
             }
         }
         
@@ -1783,6 +1819,33 @@ namespace DigitalProductionProgram.Properties {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        public static string FilterInfo_Discarded {
+            get {
+                return ResourceManager.GetString("FilterInfo_Discarded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string FilterInfo_Outliers {
+            get {
+                return ResourceManager.GetString("FilterInfo_Outliers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string FilterInfo_Title {
+            get {
+                return ResourceManager.GetString("FilterInfo_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         public static string finishedOrder {
             get {
                 return ResourceManager.GetString("finishedOrder", resourceCulture);
@@ -1962,6 +2025,15 @@ namespace DigitalProductionProgram.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string gBox_FilterOrders {
+            get {
+                return ResourceManager.GetString("gBox_FilterOrders", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
         public static byte[] Gollum {
@@ -2007,6 +2079,15 @@ namespace DigitalProductionProgram.Properties {
         public static string Halvfabrikat_Info_1 {
             get {
                 return ResourceManager.GetString("Halvfabrikat_Info_1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string header_BrowseOldMeasureprotocols {
+            get {
+                return ResourceManager.GetString("header_BrowseOldMeasureprotocols", resourceCulture);
             }
         }
         
@@ -2184,6 +2265,15 @@ namespace DigitalProductionProgram.Properties {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        public static string label_ChoosePartNumber {
+            get {
+                return ResourceManager.GetString("label_ChoosePartNumber", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         public static string label_ChoosePC_Header {
             get {
                 return ResourceManager.GetString("label_ChoosePC_Header", resourceCulture);
@@ -2211,9 +2301,27 @@ namespace DigitalProductionProgram.Properties {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        public static string label_ChooseRevisionMeasureTemplate {
+            get {
+                return ResourceManager.GetString("label_ChooseRevisionMeasureTemplate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         public static string label_ChooseUser {
             get {
                 return ResourceManager.GetString("label_ChooseUser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string label_ChooseWorkOperation {
+            get {
+                return ResourceManager.GetString("label_ChooseWorkOperation", resourceCulture);
             }
         }
         
@@ -2913,6 +3021,15 @@ namespace DigitalProductionProgram.Properties {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        public static string label_SPC_Title {
+            get {
+                return ResourceManager.GetString("label_SPC_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         public static string label_StartUps {
             get {
                 return ResourceManager.GetString("label_StartUps", resourceCulture);
@@ -2952,15 +3069,6 @@ namespace DigitalProductionProgram.Properties {
         public static string label_Workoperation {
             get {
                 return ResourceManager.GetString("label_Workoperation", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        public static string label_Workoperation_Header {
-            get {
-                return ResourceManager.GetString("label_Workoperation_Header", resourceCulture);
             }
         }
         
@@ -3186,6 +3294,15 @@ namespace DigitalProductionProgram.Properties {
         public static string Load_LineClearance {
             get {
                 return ResourceManager.GetString("Load_LineClearance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string loadingDataOrderNr {
+            get {
+                return ResourceManager.GetString("loadingDataOrderNr", resourceCulture);
             }
         }
         
@@ -4976,6 +5093,15 @@ namespace DigitalProductionProgram.Properties {
         public static string saveSetting_1 {
             get {
                 return ResourceManager.GetString("saveSetting_1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string selectOrders {
+            get {
+                return ResourceManager.GetString("selectOrders", resourceCulture);
             }
         }
         

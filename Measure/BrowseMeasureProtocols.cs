@@ -142,7 +142,7 @@ namespace DigitalProductionProgram.Measure
                     bool isDiscarded = bool.Parse(dgv_MeasureProtocol.Rows[row.Index].Cells["IsDiscarded"].Value.ToString());
                     bool isOutlied = bool.Parse(dgv_MeasureProtocol.Rows[row.Index].Cells["IsOutlied"].Value.ToString());
 
-                    if ((isDiscarded && chk_FilterDiscarded.Checked) || (isOutlied && chk_FilterBad.Checked))
+                    if ((isDiscarded && chk_FilterDiscarded.Checked) || (isOutlied && chk_FilterBadValues.Checked))
                         continue;
 
                     //var discardedCell = row.Cells["Discarded"];
@@ -181,7 +181,7 @@ namespace DigitalProductionProgram.Measure
                     //var mr = ListMeasureRows[row.Index];
                     //if ((mr.IsDiscarded && chk_FilterDiscarded.Checked) || (mr.IsOutlied && chk_FilterBad.Checked))
                     //    continue;
-                    if ((isDiscarded && chk_FilterDiscarded.Checked) || (isOutlied && chk_FilterBad.Checked))
+                    if ((isDiscarded && chk_FilterDiscarded.Checked) || (isOutlied && chk_FilterBadValues.Checked))
                         continue;
                     var cell = row.Cells[Column_Name];
 
@@ -388,11 +388,11 @@ namespace DigitalProductionProgram.Measure
             Fill_WorkOperation();
 
             IsOkAddPoints = false;
-            chkList_ListOrders.Items.Add("Markera alla");
+            chkList_ListOrders.Items.Add(Properties.Resources.selectOrders);
 
             if (Order.WorkOperation != Manage_WorkOperation.WorkOperations.Nothing)
                 cb_Workoperations.Text = Order.WorkOperation.ToString();
-
+            TranslateForm();
             _ = Log.Activity.Stop("Search Measurement Protocol");
         }
         private async void BrowseMeasureProtocols_Load(object sender, EventArgs e)
@@ -409,6 +409,25 @@ namespace DigitalProductionProgram.Measure
         }
 
 
+        private void TranslateForm()
+        {
+            this.Text = Properties.Resources.header_BrowseOldMeasureprotocols;
+            LanguageManager.TranslationHelper.TranslateControls
+            ([
+                    label_TotalOrders, 
+                    label_ChooseWorkOperation, 
+                    label_MeasureProtocolTemplateName,
+                    label_ChooseRevisionMeasureTemplate,
+                    label_ChoosePartNumber,
+                    chk_FilterBadValues,
+                    chk_FilterDiscarded,
+                    btn_ReloadData,
+                    btn_ExportDataToExcel,
+                    gBox_FilterOrders,
+                    label_SPC_Title
+            ]);
+            cf_MeasurePoints.Translate_Form();
+        }
         private void Fill_Toplist()
         {
             dgv_TopList.DataSource = null;
@@ -508,7 +527,7 @@ namespace DigitalProductionProgram.Measure
         private void cb_MeasureTemplateRevision_SelectionChangeCommitted(object sender, EventArgs e)
         {
             chkList_ListOrders.Items.Clear();
-            chkList_ListOrders.Items.Add("Markera alla");
+            chkList_ListOrders.Items.Add(Properties.Resources.selectOrders);
         }
         private async void chk_FilterBad_CheckedChanged(object sender, EventArgs e)
         {
@@ -556,7 +575,7 @@ namespace DigitalProductionProgram.Measure
         {
             _suppressEvents = true;
             chk_FilterDiscarded.Checked = false;
-            chk_FilterBad.Checked = false;
+            chk_FilterBadValues.Checked = false;
             _suppressEvents = false;
 
             List<string> partnumbers = new List<string>();
@@ -915,7 +934,7 @@ namespace DigitalProductionProgram.Measure
                     foreach (var x in discardedRowKeys)
                         skipKeys.Add(x);
 
-                if (chk_FilterBad.Checked)
+                if (chk_FilterBadValues.Checked)
                     foreach (var x in outlierRowKeys)
                         skipKeys.Add(x);
 
@@ -933,7 +952,7 @@ namespace DigitalProductionProgram.Measure
                 {
                     var key = (item.OrderNr, item.RowIndex);
 
-                    if (chk_FilterBad.Checked)
+                    if (chk_FilterBadValues.Checked)
                     {
                         if (outlierRowKeys.Contains(key))
                             item.IsOutlied = true;
@@ -957,7 +976,7 @@ namespace DigitalProductionProgram.Measure
                         var percent = Math.Min(100.0, processed * 100.0 / total);
                         var refresh = processed % 10 == 0;
 
-                        pbar.Set_ValueProgressBar(percent, "Laddar data: OrderNr " + item.OrderNr, 1, refresh);
+                        pbar.Set_ValueProgressBar(percent, Properties.Resources.loadingDataOrderNr + item.OrderNr, 1, refresh);
 
                         dgv_MeasureProtocol.Rows.Add();
                         row++;
@@ -992,20 +1011,26 @@ namespace DigitalProductionProgram.Measure
 
 
                 // === STEP 6: Filter info ===
-                lbl_TotalOrders.Text = @$"Totalt {chkList_ListOrders.Items.Count} ordrar:";
+                label_TotalOrders.Text = @$"Totalt {chkList_ListOrders.Items.Count} ordrar:";
 
-                if (chk_FilterBad.Checked || chk_FilterDiscarded.Checked)
+                if (chk_FilterBadValues.Checked || chk_FilterDiscarded.Checked)
                 {
                     int totalFiltered = 0;
                     if (chk_FilterDiscarded.Checked) totalFiltered += discardedRowKeys.Count;
-                    if (chk_FilterBad.Checked) totalFiltered += outlierRowKeys.Count;
+                    if (chk_FilterBadValues.Checked) totalFiltered += outlierRowKeys.Count;
 
+                    
                     label_FilterInfo.Text =
                         $"""
-                         Filtrerar bort {totalFiltered} rader:
-                         {(chk_FilterDiscarded.Checked ? $"Kasserade: {discardedRowKeys.Count}" : "")}
-                         {(chk_FilterBad.Checked ? $"Orimliga: {outlierRowKeys.Count}" : "")}
+                         {string.Format(Properties.Resources.FilterInfo_Title, totalFiltered)}
+                         {(chk_FilterDiscarded.Checked 
+                             ? string.Format(Properties.Resources.FilterInfo_Discarded, discardedRowKeys.Count) 
+                             : "")}
+                         {(chk_FilterBadValues.Checked 
+                             ? string.Format(Properties.Resources.FilterInfo_Outliers, outlierRowKeys.Count) 
+                             : "")}
                          """;
+
                 }
                 else
                 {
@@ -1302,7 +1327,7 @@ namespace DigitalProductionProgram.Measure
 
                 // Filtrera på Outlier
                 bool isOut = (r.Cells["IsOutlied"].Value?.ToString()?.ToLower() == "true");
-                if (isOut && chk_FilterBad.Checked)
+                if (isOut && chk_FilterBadValues.Checked)
                     continue;
 
                 // Hämta mätvärdet i kolumnen

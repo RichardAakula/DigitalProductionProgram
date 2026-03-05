@@ -144,7 +144,7 @@ namespace DigitalProductionProgram.OrderManagement
 
         private void Translate_Form()
         {
-            LanguageManager.TranslationHelper.TranslateControls(new Control[]{label_Workoperation_Header, btn_Workoperation_Choose, btn_Workoperation_Abort});
+            LanguageManager.TranslationHelper.TranslateControls(new Control[]{label_ChooseWorkOperation, btn_Workoperation_Choose, btn_Workoperation_Abort});
         }
 
         public static void Fill_cb_Workoperation(ComboBox cb)

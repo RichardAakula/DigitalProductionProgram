@@ -987,9 +987,6 @@ OBS! Det måste vara mellan 1 till 3 lager</value>
   <data name="label_List_PartNr" xml:space="preserve">
     <value>List med ArtikelNr</value>
   </data>
-  <data name="label_Workoperation_Header" xml:space="preserve">
-    <value>Välj Arbetsoperation</value>
-  </data>
   <data name="Menu_Help_InstructionVideos_SaveProcessCard" xml:space="preserve">
     <value>Spara Nytt Processkort</value>
   </data>
@@ -2144,8 +2141,90 @@ Ppk förutsätter att processen är statistiskt stabil.</value>
   <data name="uploadPicture_3" xml:space="preserve">
     <value>Bilden har nu sparats och kan ses varje gång denna artikel körs.</value>
   </data>
+  <data name="label_Customer" xml:space="preserve">
+    <value>Kund:</value>
+  </data>
+  <data name="label_OrderNr" xml:space="preserve">
+    <value>OrderNr:</value>
+  </data>
+  <data name="label_OrderStartedBy" xml:space="preserve">
+    <value>Startad Av:</value>
+  </data>
+  <data name="label_PartNumber" xml:space="preserve">
+    <value>ArtikelNr:</value>
+  </data>
+  <data name="StartOrder" xml:space="preserve">
+    <value>Vill du starta Order:</value>
+  </data>
+  <data name="finishOrder_1" xml:space="preserve">
+    <value>Denna order är redan avslutad, du kan inte avsluta den igen.
+Kontakta Admin vid behov.</value>
+  </data>
+  <data name="finishOrder_2_1" xml:space="preserve">
+    <value>Du har gjort endast</value>
+  </data>
+  <data name="finishOrder_2_2" xml:space="preserve">
+    <value>mätningar. QC kräver att du gör minst 13 st längdmätningar</value>
+  </data>
+  <data name="finishOrder_3_1" xml:space="preserve">
+    <value>före du avslutar ordern.</value>
+  </data>
+  <data name="finishOrder_3_2" xml:space="preserve">
+    <value>Du har som</value>
+  </data>
+  <data name="finishOrder_3_3" xml:space="preserve">
+    <value>behörighet att avsluta ordern ändå.</value>
+  </data>
+  <data name="finishOrder_3_4" xml:space="preserve">
+    <value>Vill du fortsätta avsluta ordern?</value>
+  </data>
+  <data name="orderDone_1" xml:space="preserve">
+    <value>Fyll i</value>
+  </data>
+  <data name="finishOrder_4" xml:space="preserve">
+    <value>Logga in före du avslutar en order.</value>
+  </data>
+  <data name="finishOrder_MeasureEq_1" xml:space="preserve">
+    <value>Fyll i alla MätdonsNr i Mätprotokollet</value>
+  </data>
+  <data name="finishOrder_MeasureEq_2" xml:space="preserve">
+    <value>Fyll i MätdonsNr i Mätprotokollet</value>
+  </data>
+  <data name="finishOrder_Halvfabrikat_1" xml:space="preserve">
+    <value>Fyll i Halvfabrikatets batchnr i Körprotokollet</value>
+  </data>
+  <data name="finishOrder_Halvfabrikat_2_1" xml:space="preserve">
+    <value>Fyll i vilken Extruder som används för Halvfabrikatet med artikelnr</value>
+  </data>
+  <data name="finishOrder_Halvfabrikat_2_2" xml:space="preserve">
+    <value>i Körprotokollet</value>
+  </data>
+  <data name="finishOrder_RoomTemp" xml:space="preserve">
+    <value>Fyll i rumstemperatur i Körprotokollet före du avslutar ordern.</value>
+  </data>
+  <data name="finishOrder_RoomMoist" xml:space="preserve">
+    <value>Fyll i rummets luftfuktighet i Körprotokollet före du avslutar ordern.</value>
+  </data>
+  <data name="finishOrder_Comments" xml:space="preserve">
+    <value>Fyll i Kommentarer i Körprotokollet</value>
+  </data>
+  <data name="finishOrder_ExtruderCleaned" xml:space="preserve">
+    <value>Kryssa i Rengjort Extrudering på Körprotokollet</value>
+  </data>
+  <data name="label_FinishOrder_Header" xml:space="preserve">
+    <value>Ordern är nu klar</value>
+  </data>
+  <data name="chb_FinishOrder_PrintOrder" xml:space="preserve">
+    <value>Vill du skriva ut ordern?</value>
+  </data>
+  <data name="btn_FinishOrder" xml:space="preserve">
+    <value>Avsluta Order</value>
+  </data>
+  <data name="warningMessage" xml:space="preserve">
+    <value>Varning!</value>
+  </data>
   <data name="BrowseOldMeasureprotocol" xml:space="preserve">
-    <value>F3-Bläddra i gamla Mätprotokoll</value>
+    <value>F3-Historiska mätningar &amp;&amp; SPC</value>
   </data>
   <data name="BrowseOldOrders" xml:space="preserve">
     <value>F4-Bläddra i gamla Ordrar</value>
@@ -2297,20 +2376,8 @@ Ppk förutsätter att processen är statistiskt stabil.</value>
   <data name="label_Amount" xml:space="preserve">
     <value>Mängd:</value>
   </data>
-  <data name="label_Customer" xml:space="preserve">
-    <value>Kund:</value>
-  </data>
   <data name="label_Operation" xml:space="preserve">
     <value>Operation:</value>
-  </data>
-  <data name="label_OrderNr" xml:space="preserve">
-    <value>OrderNr:</value>
-  </data>
-  <data name="label_OrderStartedBy" xml:space="preserve">
-    <value>Startad Av:</value>
-  </data>
-  <data name="label_PartNumber" xml:space="preserve">
-    <value>ArtikelNr:</value>
   </data>
   <data name="label_SignedInMonitor" xml:space="preserve">
     <value>Instämplad Monitor:</value>
@@ -2330,9 +2397,6 @@ Ppk förutsätter att processen är statistiskt stabil.</value>
   <data name="btn_Yes" xml:space="preserve">
     <value>Ja</value>
   </data>
-  <data name="StartOrder" xml:space="preserve">
-    <value>Vill du starta Order:</value>
-  </data>
   <data name="chartSerieMeasurepoints1" xml:space="preserve">
     <value>Avg: Senaste Order</value>
   </data>
@@ -2344,40 +2408,6 @@ Ppk förutsätter att processen är statistiskt stabil.</value>
   </data>
   <data name="label_MeasureInformation" xml:space="preserve">
     <value>Mätinformation</value>
-  </data>
-  <data name="finishOrder_1" xml:space="preserve">
-    <value>Denna order är redan avslutad, du kan inte avsluta den igen.
-Kontakta Admin vid behov.</value>
-  </data>
-  <data name="finishOrder_2_1" xml:space="preserve">
-    <value>Du har gjort endast</value>
-  </data>
-  <data name="finishOrder_2_2" xml:space="preserve">
-    <value>mätningar. QC kräver att du gör minst 13 st längdmätningar</value>
-  </data>
-  <data name="finishOrder_3_1" xml:space="preserve">
-    <value>före du avslutar ordern.</value>
-  </data>
-  <data name="finishOrder_3_2" xml:space="preserve">
-    <value>Du har som</value>
-  </data>
-  <data name="finishOrder_3_3" xml:space="preserve">
-    <value>behörighet att avsluta ordern ändå.</value>
-  </data>
-  <data name="finishOrder_3_4" xml:space="preserve">
-    <value>Vill du fortsätta avsluta ordern?</value>
-  </data>
-  <data name="orderDone_1" xml:space="preserve">
-    <value>Fyll i</value>
-  </data>
-  <data name="finishOrder_4" xml:space="preserve">
-    <value>Logga in före du avslutar en order.</value>
-  </data>
-  <data name="finishOrder_MeasureEq_1" xml:space="preserve">
-    <value>Fyll i alla MätdonsNr i Mätprotokollet</value>
-  </data>
-  <data name="finishOrder_MeasureEq_2" xml:space="preserve">
-    <value>Fyll i MätdonsNr i Mätprotokollet</value>
   </data>
   <data name="m" xml:space="preserve">
     <value>Du måste göra LineClearance</value>
@@ -2445,36 +2475,6 @@ Kontakta Admin vid behov.</value>
   <data name="Menu_Equipment_UseSilpaket" xml:space="preserve">
     <value>Använd Silpaket</value>
   </data>
-  <data name="finishOrder_Halvfabrikat_1" xml:space="preserve">
-    <value>Fyll i Halvfabrikatets batchnr i Körprotokollet</value>
-  </data>
-  <data name="finishOrder_Halvfabrikat_2_1" xml:space="preserve">
-    <value>Fyll i vilken Extruder som används för Halvfabrikatet med artikelnr</value>
-  </data>
-  <data name="finishOrder_Halvfabrikat_2_2" xml:space="preserve">
-    <value>i Körprotokollet</value>
-  </data>
-  <data name="finishOrder_RoomTemp" xml:space="preserve">
-    <value>Fyll i rumstemperatur i Körprotokollet före du avslutar ordern.</value>
-  </data>
-  <data name="finishOrder_RoomMoist" xml:space="preserve">
-    <value>Fyll i rummets luftfuktighet i Körprotokollet före du avslutar ordern.</value>
-  </data>
-  <data name="finishOrder_Comments" xml:space="preserve">
-    <value>Fyll i Kommentarer i Körprotokollet</value>
-  </data>
-  <data name="finishOrder_ExtruderCleaned" xml:space="preserve">
-    <value>Kryssa i Rengjort Extrudering på Körprotokollet</value>
-  </data>
-  <data name="label_FinishOrder_Header" xml:space="preserve">
-    <value>Ordern är nu klar</value>
-  </data>
-  <data name="chb_FinishOrder_PrintOrder" xml:space="preserve">
-    <value>Vill du skriva ut ordern?</value>
-  </data>
-  <data name="btn_FinishOrder" xml:space="preserve">
-    <value>Avsluta Order</value>
-  </data>
   <data name="btn_Abort" xml:space="preserve">
     <value>Avbryt</value>
   </data>
@@ -2484,7 +2484,49 @@ Kontakta Admin vid behov.</value>
   <data name="btnZumbach" xml:space="preserve">
     <value>F6-Zumbach-mätning</value>
   </data>
-  <data name="warningMessage" xml:space="preserve">
-    <value>Varning!</value>
+  <data name="header_BrowseOldMeasureprotocols" xml:space="preserve">
+    <value>Historiska mätningar &amp; SPC</value>
+  </data>
+  <data name="label_ChooseWorkOperation" xml:space="preserve">
+    <value>Välj Arbetsoperation</value>
+  </data>
+  <data name="label_ChooseRevisionMeasureTemplate" xml:space="preserve">
+    <value>Välj Revision för Mätprotokollsmallen</value>
+  </data>
+  <data name="label_ChoosePartNumber" xml:space="preserve">
+    <value>Välj Artikelnummer</value>
+  </data>
+  <data name="chk_FilterBadValues" xml:space="preserve">
+    <value>Ta bort avvikande värden</value>
+  </data>
+  <data name="chk_FilterDiscarded" xml:space="preserve">
+    <value>Exkludera kasserade mätningar</value>
+  </data>
+  <data name="FilterInfo_Title" xml:space="preserve">
+    <value>Filtrerar bort {0} mätningar</value>
+  </data>
+  <data name="FilterInfo_Discarded" xml:space="preserve">
+    <value>Kasserade: {0}</value>
+  </data>
+  <data name="FilterInfo_Outliers" xml:space="preserve">
+    <value>Avvikande: {0}</value>
+  </data>
+  <data name="btn_ReloadData" xml:space="preserve">
+    <value>Ladda om data</value>
+  </data>
+  <data name="loadingDataOrderNr" xml:space="preserve">
+    <value>Laddar mätningar: OrderNr</value>
+  </data>
+  <data name="btn_ExportDataToExcel" xml:space="preserve">
+    <value>Exportera mätningar till Excel</value>
+  </data>
+  <data name="gBox_FilterOrders" xml:space="preserve">
+    <value>Välj Ordrar</value>
+  </data>
+  <data name="selectOrders" xml:space="preserve">
+    <value>Markera alla Ordrar</value>
+  </data>
+  <data name="label_SPC_Title" xml:space="preserve">
+    <value>SPC-analys av mätdata:</value>
   </data>
 </root>

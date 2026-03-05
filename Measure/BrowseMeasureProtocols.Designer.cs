@@ -39,9 +39,9 @@ namespace DigitalProductionProgram.Measure
             DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
             cb_Workoperations = new ComboBox();
             label_ChooseWorkOperation = new Label();
-            label_MeasureTemplateName = new Label();
+            label_MeasureProtocolTemplateName = new Label();
             cb_MeasureprotocolTemplateName = new ComboBox();
-            label_PartNumber = new Label();
+            label_ChoosePartNumber = new Label();
             dgv_MeasureProtocol = new DataGridView();
             label_Info = new Label();
             panel_TopRight = new Panel();
@@ -59,16 +59,16 @@ namespace DigitalProductionProgram.Measure
             chk_FilterDiscarded = new CheckBox();
             panel_FilterOutliers = new Panel();
             num_OutlierLimit = new NumericUpDown();
-            chk_FilterBad = new CheckBox();
+            chk_FilterBadValues = new CheckBox();
             label_Threshold = new Label();
-            gBox_Filter = new GroupBox();
-            btn_LoadData = new Button();
+            gBox_FilterOrders = new GroupBox();
+            btn_ReloadData = new Button();
             chkList_ListOrders = new CheckedListBox();
             tb_PartNr = new TextBox();
             btn_ExportDataToExcel = new Button();
             cb_MeasureTemplateRevision = new ComboBox();
-            label_TemplateRevision = new Label();
-            lbl_TotalOrders = new Label();
+            label_ChooseRevisionMeasureTemplate = new Label();
+            label_TotalOrders = new Label();
             tlp_Bottom = new TableLayoutPanel();
             panel_SPC = new Panel();
             tlp_SPC_Data = new TableLayoutPanel();
@@ -114,7 +114,7 @@ namespace DigitalProductionProgram.Measure
             panel_Filter.SuspendLayout();
             panel_FilterOutliers.SuspendLayout();
             ((ISupportInitialize)num_OutlierLimit).BeginInit();
-            gBox_Filter.SuspendLayout();
+            gBox_FilterOrders.SuspendLayout();
             tlp_Bottom.SuspendLayout();
             panel_SPC.SuspendLayout();
             tlp_SPC_Data.SuspendLayout();
@@ -128,7 +128,7 @@ namespace DigitalProductionProgram.Measure
             cb_Workoperations.Location = new Point(0, 56);
             cb_Workoperations.Margin = new Padding(4, 3, 4, 0);
             cb_Workoperations.Name = "cb_Workoperations";
-            cb_Workoperations.Size = new Size(283, 23);
+            cb_Workoperations.Size = new Size(320, 23);
             cb_Workoperations.TabIndex = 5;
             cb_Workoperations.SelectionChangeCommitted += Workoperation_SelectionChangeCommitted;
             // 
@@ -147,20 +147,20 @@ namespace DigitalProductionProgram.Measure
             label_ChooseWorkOperation.TabIndex = 1;
             label_ChooseWorkOperation.Text = "Välj Arbetsoperation";
             // 
-            // label_MeasureTemplateName
+            // label_MeasureProtocolTemplateName
             // 
-            label_MeasureTemplateName.AutoSize = true;
-            label_MeasureTemplateName.Cursor = Cursors.Hand;
-            label_MeasureTemplateName.Dock = DockStyle.Top;
-            label_MeasureTemplateName.Font = new Font("Segoe UI", 9F);
-            label_MeasureTemplateName.ForeColor = Color.FromArgb(239, 228, 177);
-            label_MeasureTemplateName.Location = new Point(0, 79);
-            label_MeasureTemplateName.Margin = new Padding(4, 0, 4, 0);
-            label_MeasureTemplateName.Name = "label_MeasureTemplateName";
-            label_MeasureTemplateName.Padding = new Padding(0, 5, 0, 4);
-            label_MeasureTemplateName.Size = new Size(141, 24);
-            label_MeasureTemplateName.TabIndex = 1;
-            label_MeasureTemplateName.Text = "Välj Mall för Mätprotokoll";
+            label_MeasureProtocolTemplateName.AutoSize = true;
+            label_MeasureProtocolTemplateName.Cursor = Cursors.Hand;
+            label_MeasureProtocolTemplateName.Dock = DockStyle.Top;
+            label_MeasureProtocolTemplateName.Font = new Font("Segoe UI", 9F);
+            label_MeasureProtocolTemplateName.ForeColor = Color.FromArgb(239, 228, 177);
+            label_MeasureProtocolTemplateName.Location = new Point(0, 79);
+            label_MeasureProtocolTemplateName.Margin = new Padding(4, 0, 4, 0);
+            label_MeasureProtocolTemplateName.Name = "label_MeasureProtocolTemplateName";
+            label_MeasureProtocolTemplateName.Padding = new Padding(0, 5, 0, 4);
+            label_MeasureProtocolTemplateName.Size = new Size(141, 24);
+            label_MeasureProtocolTemplateName.TabIndex = 1;
+            label_MeasureProtocolTemplateName.Text = "Välj Mall för Mätprotokoll";
             // 
             // cb_MeasureprotocolTemplateName
             // 
@@ -172,25 +172,25 @@ namespace DigitalProductionProgram.Measure
             cb_MeasureprotocolTemplateName.Margin = new Padding(4, 3, 4, 0);
             cb_MeasureprotocolTemplateName.MaxDropDownItems = 25;
             cb_MeasureprotocolTemplateName.Name = "cb_MeasureprotocolTemplateName";
-            cb_MeasureprotocolTemplateName.Size = new Size(283, 23);
+            cb_MeasureprotocolTemplateName.Size = new Size(320, 23);
             cb_MeasureprotocolTemplateName.Sorted = true;
             cb_MeasureprotocolTemplateName.TabIndex = 0;
             cb_MeasureprotocolTemplateName.SelectedIndexChanged += MeasureTemplateName_SelectedIndexChanged;
             // 
-            // label_PartNumber
+            // label_ChoosePartNumber
             // 
-            label_PartNumber.AutoSize = true;
-            label_PartNumber.Cursor = Cursors.Hand;
-            label_PartNumber.Dock = DockStyle.Top;
-            label_PartNumber.Font = new Font("Segoe UI", 9F);
-            label_PartNumber.ForeColor = Color.FromArgb(239, 228, 177);
-            label_PartNumber.Location = new Point(0, 173);
-            label_PartNumber.Margin = new Padding(4, 0, 4, 0);
-            label_PartNumber.Name = "label_PartNumber";
-            label_PartNumber.Padding = new Padding(0, 5, 0, 6);
-            label_PartNumber.Size = new Size(108, 26);
-            label_PartNumber.TabIndex = 1;
-            label_PartNumber.Text = "Välj Artikelnummer";
+            label_ChoosePartNumber.AutoSize = true;
+            label_ChoosePartNumber.Cursor = Cursors.Hand;
+            label_ChoosePartNumber.Dock = DockStyle.Top;
+            label_ChoosePartNumber.Font = new Font("Segoe UI", 9F);
+            label_ChoosePartNumber.ForeColor = Color.FromArgb(239, 228, 177);
+            label_ChoosePartNumber.Location = new Point(0, 173);
+            label_ChoosePartNumber.Margin = new Padding(4, 0, 4, 0);
+            label_ChoosePartNumber.Name = "label_ChoosePartNumber";
+            label_ChoosePartNumber.Padding = new Padding(0, 5, 0, 6);
+            label_ChoosePartNumber.Size = new Size(108, 26);
+            label_ChoosePartNumber.TabIndex = 1;
+            label_ChoosePartNumber.Text = "Välj Artikelnummer";
             // 
             // dgv_MeasureProtocol
             // 
@@ -217,7 +217,7 @@ namespace DigitalProductionProgram.Measure
             dataGridViewCellStyle2.WrapMode = DataGridViewTriState.False;
             dgv_MeasureProtocol.DefaultCellStyle = dataGridViewCellStyle2;
             dgv_MeasureProtocol.Dock = DockStyle.Fill;
-            dgv_MeasureProtocol.Location = new Point(283, 0);
+            dgv_MeasureProtocol.Location = new Point(320, 0);
             dgv_MeasureProtocol.Margin = new Padding(6, 3, 4, 3);
             dgv_MeasureProtocol.Name = "dgv_MeasureProtocol";
             dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft;
@@ -230,7 +230,7 @@ namespace DigitalProductionProgram.Measure
             dgv_MeasureProtocol.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
             dgv_MeasureProtocol.RowHeadersVisible = false;
             dgv_MeasureProtocol.SelectionMode = DataGridViewSelectionMode.CellSelect;
-            dgv_MeasureProtocol.Size = new Size(577, 647);
+            dgv_MeasureProtocol.Size = new Size(540, 647);
             dgv_MeasureProtocol.TabIndex = 43;
             dgv_MeasureProtocol.CellClick += MätProtokoll_CellClick;
             // 
@@ -392,22 +392,22 @@ namespace DigitalProductionProgram.Measure
             panel_Filter.Controls.Add(label_FilterInfo);
             panel_Filter.Controls.Add(chk_FilterDiscarded);
             panel_Filter.Controls.Add(panel_FilterOutliers);
-            panel_Filter.Controls.Add(gBox_Filter);
+            panel_Filter.Controls.Add(gBox_FilterOrders);
             panel_Filter.Controls.Add(tb_PartNr);
-            panel_Filter.Controls.Add(label_PartNumber);
+            panel_Filter.Controls.Add(label_ChoosePartNumber);
             panel_Filter.Controls.Add(btn_ExportDataToExcel);
             panel_Filter.Controls.Add(cb_MeasureTemplateRevision);
-            panel_Filter.Controls.Add(label_TemplateRevision);
+            panel_Filter.Controls.Add(label_ChooseRevisionMeasureTemplate);
             panel_Filter.Controls.Add(cb_MeasureprotocolTemplateName);
-            panel_Filter.Controls.Add(label_MeasureTemplateName);
+            panel_Filter.Controls.Add(label_MeasureProtocolTemplateName);
             panel_Filter.Controls.Add(cb_Workoperations);
             panel_Filter.Controls.Add(label_ChooseWorkOperation);
-            panel_Filter.Controls.Add(lbl_TotalOrders);
+            panel_Filter.Controls.Add(label_TotalOrders);
             panel_Filter.Dock = DockStyle.Left;
             panel_Filter.Location = new Point(0, 0);
             panel_Filter.MinimumSize = new Size(0, 650);
             panel_Filter.Name = "panel_Filter";
-            panel_Filter.Size = new Size(283, 650);
+            panel_Filter.Size = new Size(320, 650);
             panel_Filter.TabIndex = 14;
             // 
             // label_FilterInfo
@@ -430,23 +430,23 @@ namespace DigitalProductionProgram.Measure
             chk_FilterDiscarded.Location = new Point(0, 251);
             chk_FilterDiscarded.Name = "chk_FilterDiscarded";
             chk_FilterDiscarded.Padding = new Padding(1, 0, 0, 0);
-            chk_FilterDiscarded.Size = new Size(283, 19);
+            chk_FilterDiscarded.Size = new Size(320, 19);
             chk_FilterDiscarded.TabIndex = 14;
-            chk_FilterDiscarded.Text = "Filtrera bort skrotade Mätningar";
+            chk_FilterDiscarded.Text = "Exkludera kasserade mätningar";
             chk_FilterDiscarded.UseVisualStyleBackColor = true;
             chk_FilterDiscarded.CheckedChanged += chk_FilterBad_CheckedChanged;
             // 
             // panel_FilterOutliers
             // 
             panel_FilterOutliers.Controls.Add(num_OutlierLimit);
-            panel_FilterOutliers.Controls.Add(chk_FilterBad);
+            panel_FilterOutliers.Controls.Add(chk_FilterBadValues);
             panel_FilterOutliers.Controls.Add(label_Threshold);
             panel_FilterOutliers.Dock = DockStyle.Top;
             panel_FilterOutliers.Location = new Point(0, 222);
             panel_FilterOutliers.Margin = new Padding(0);
             panel_FilterOutliers.Name = "panel_FilterOutliers";
             panel_FilterOutliers.Padding = new Padding(1, 5, 0, 0);
-            panel_FilterOutliers.Size = new Size(283, 29);
+            panel_FilterOutliers.Size = new Size(320, 29);
             panel_FilterOutliers.TabIndex = 17;
             // 
             // num_OutlierLimit
@@ -454,26 +454,26 @@ namespace DigitalProductionProgram.Measure
             num_OutlierLimit.BackColor = Color.FromArgb(6, 81, 87);
             num_OutlierLimit.Dock = DockStyle.Right;
             num_OutlierLimit.ForeColor = Color.FromArgb(239, 228, 177);
-            num_OutlierLimit.Location = new Point(199, 5);
+            num_OutlierLimit.Location = new Point(236, 5);
             num_OutlierLimit.Name = "num_OutlierLimit";
             num_OutlierLimit.Size = new Size(38, 23);
             num_OutlierLimit.TabIndex = 16;
             num_OutlierLimit.Value = new decimal(new int[] { 10, 0, 0, 0 });
             num_OutlierLimit.ValueChanged += chk_FilterBad_CheckedChanged;
             // 
-            // chk_FilterBad
+            // chk_FilterBadValues
             // 
-            chk_FilterBad.AutoSize = true;
-            chk_FilterBad.Dock = DockStyle.Left;
-            chk_FilterBad.Font = new Font("Segoe UI", 9F);
-            chk_FilterBad.ForeColor = Color.FromArgb(239, 228, 177);
-            chk_FilterBad.Location = new Point(1, 5);
-            chk_FilterBad.Name = "chk_FilterBad";
-            chk_FilterBad.Size = new Size(173, 24);
-            chk_FilterBad.TabIndex = 14;
-            chk_FilterBad.Text = "Filtrera bort orimliga värden";
-            chk_FilterBad.UseVisualStyleBackColor = true;
-            chk_FilterBad.CheckedChanged += chk_FilterBad_CheckedChanged;
+            chk_FilterBadValues.AutoSize = true;
+            chk_FilterBadValues.Dock = DockStyle.Left;
+            chk_FilterBadValues.Font = new Font("Segoe UI", 9F);
+            chk_FilterBadValues.ForeColor = Color.FromArgb(239, 228, 177);
+            chk_FilterBadValues.Location = new Point(1, 5);
+            chk_FilterBadValues.Name = "chk_FilterBadValues";
+            chk_FilterBadValues.Size = new Size(157, 24);
+            chk_FilterBadValues.TabIndex = 14;
+            chk_FilterBadValues.Text = "Ta bort avvikande värden";
+            chk_FilterBadValues.UseVisualStyleBackColor = true;
+            chk_FilterBadValues.CheckedChanged += chk_FilterBad_CheckedChanged;
             // 
             // label_Threshold
             // 
@@ -481,42 +481,42 @@ namespace DigitalProductionProgram.Measure
             label_Threshold.Dock = DockStyle.Right;
             label_Threshold.Font = new Font("Segoe UI", 9F);
             label_Threshold.ForeColor = Color.FromArgb(239, 228, 177);
-            label_Threshold.Location = new Point(237, 5);
+            label_Threshold.Location = new Point(274, 5);
             label_Threshold.Name = "label_Threshold";
             label_Threshold.Padding = new Padding(0, 3, 0, 0);
             label_Threshold.Size = new Size(46, 18);
             label_Threshold.TabIndex = 17;
             label_Threshold.Text = "Z Score";
             // 
-            // gBox_Filter
+            // gBox_FilterOrders
             // 
-            gBox_Filter.Controls.Add(btn_LoadData);
-            gBox_Filter.Controls.Add(chkList_ListOrders);
-            gBox_Filter.Dock = DockStyle.Bottom;
-            gBox_Filter.Font = new Font("Segoe UI", 11F);
-            gBox_Filter.ForeColor = Color.FromArgb(239, 228, 177);
-            gBox_Filter.Location = new Point(0, 335);
-            gBox_Filter.Name = "gBox_Filter";
-            gBox_Filter.Size = new Size(283, 282);
-            gBox_Filter.TabIndex = 12;
-            gBox_Filter.TabStop = false;
-            gBox_Filter.Text = "Välj ordrar";
+            gBox_FilterOrders.Controls.Add(btn_ReloadData);
+            gBox_FilterOrders.Controls.Add(chkList_ListOrders);
+            gBox_FilterOrders.Dock = DockStyle.Bottom;
+            gBox_FilterOrders.Font = new Font("Segoe UI", 11F);
+            gBox_FilterOrders.ForeColor = Color.FromArgb(239, 228, 177);
+            gBox_FilterOrders.Location = new Point(0, 335);
+            gBox_FilterOrders.Name = "gBox_FilterOrders";
+            gBox_FilterOrders.Size = new Size(320, 282);
+            gBox_FilterOrders.TabIndex = 12;
+            gBox_FilterOrders.TabStop = false;
+            gBox_FilterOrders.Text = "Välj ordrar";
             // 
-            // btn_LoadData
+            // btn_ReloadData
             // 
-            btn_LoadData.BackColor = Color.FromArgb(198, 239, 206);
-            btn_LoadData.Dock = DockStyle.Bottom;
-            btn_LoadData.FlatStyle = FlatStyle.Flat;
-            btn_LoadData.Font = new Font("Segoe UI", 10F);
-            btn_LoadData.ForeColor = Color.FromArgb(0, 97, 0);
-            btn_LoadData.Location = new Point(3, 253);
-            btn_LoadData.Margin = new Padding(0);
-            btn_LoadData.Name = "btn_LoadData";
-            btn_LoadData.Size = new Size(277, 26);
-            btn_LoadData.TabIndex = 12;
-            btn_LoadData.Text = "Ladda Data";
-            btn_LoadData.UseVisualStyleBackColor = false;
-            btn_LoadData.Click += LoadOrder_Click;
+            btn_ReloadData.BackColor = Color.FromArgb(198, 239, 206);
+            btn_ReloadData.Dock = DockStyle.Bottom;
+            btn_ReloadData.FlatStyle = FlatStyle.Flat;
+            btn_ReloadData.Font = new Font("Segoe UI", 10F);
+            btn_ReloadData.ForeColor = Color.FromArgb(0, 97, 0);
+            btn_ReloadData.Location = new Point(3, 253);
+            btn_ReloadData.Margin = new Padding(0);
+            btn_ReloadData.Name = "btn_ReloadData";
+            btn_ReloadData.Size = new Size(314, 26);
+            btn_ReloadData.TabIndex = 12;
+            btn_ReloadData.Text = "Ladda Data";
+            btn_ReloadData.UseVisualStyleBackColor = false;
+            btn_ReloadData.Click += LoadOrder_Click;
             // 
             // chkList_ListOrders
             // 
@@ -526,7 +526,7 @@ namespace DigitalProductionProgram.Measure
             chkList_ListOrders.MultiColumn = true;
             chkList_ListOrders.Name = "chkList_ListOrders";
             chkList_ListOrders.SelectionMode = SelectionMode.None;
-            chkList_ListOrders.Size = new Size(277, 256);
+            chkList_ListOrders.Size = new Size(314, 256);
             chkList_ListOrders.TabIndex = 14;
             chkList_ListOrders.ItemCheck += chkList_ListOrders_ItemCheck;
             chkList_ListOrders.MouseDown += chkList_ListOrders_MouseDown;
@@ -537,7 +537,7 @@ namespace DigitalProductionProgram.Measure
             tb_PartNr.Location = new Point(0, 199);
             tb_PartNr.Margin = new Padding(4, 3, 4, 0);
             tb_PartNr.Name = "tb_PartNr";
-            tb_PartNr.Size = new Size(283, 23);
+            tb_PartNr.Size = new Size(320, 23);
             tb_PartNr.TabIndex = 6;
             tb_PartNr.MouseClick += PartNr_MouseClick;
             tb_PartNr.TextChanged += PartNr_TextChanged;
@@ -552,7 +552,7 @@ namespace DigitalProductionProgram.Measure
             btn_ExportDataToExcel.Location = new Point(0, 617);
             btn_ExportDataToExcel.Margin = new Padding(0, 0, 2, 0);
             btn_ExportDataToExcel.Name = "btn_ExportDataToExcel";
-            btn_ExportDataToExcel.Size = new Size(283, 33);
+            btn_ExportDataToExcel.Size = new Size(320, 33);
             btn_ExportDataToExcel.TabIndex = 13;
             btn_ExportDataToExcel.Text = "Exportera mätningar till Excel";
             btn_ExportDataToExcel.UseVisualStyleBackColor = false;
@@ -568,38 +568,38 @@ namespace DigitalProductionProgram.Measure
             cb_MeasureTemplateRevision.Margin = new Padding(4, 3, 4, 0);
             cb_MeasureTemplateRevision.MaxDropDownItems = 25;
             cb_MeasureTemplateRevision.Name = "cb_MeasureTemplateRevision";
-            cb_MeasureTemplateRevision.Size = new Size(283, 23);
+            cb_MeasureTemplateRevision.Size = new Size(320, 23);
             cb_MeasureTemplateRevision.Sorted = true;
             cb_MeasureTemplateRevision.TabIndex = 8;
             cb_MeasureTemplateRevision.SelectedValueChanged += cb_MeasureTemplateRevision_SelectionChangeCommitted;
             // 
-            // label_TemplateRevision
+            // label_ChooseRevisionMeasureTemplate
             // 
-            label_TemplateRevision.AutoSize = true;
-            label_TemplateRevision.Cursor = Cursors.Hand;
-            label_TemplateRevision.Dock = DockStyle.Top;
-            label_TemplateRevision.Font = new Font("Segoe UI", 9F);
-            label_TemplateRevision.ForeColor = Color.FromArgb(239, 228, 177);
-            label_TemplateRevision.Location = new Point(0, 126);
-            label_TemplateRevision.Margin = new Padding(4, 0, 4, 0);
-            label_TemplateRevision.Name = "label_TemplateRevision";
-            label_TemplateRevision.Padding = new Padding(0, 5, 0, 4);
-            label_TemplateRevision.Size = new Size(129, 24);
-            label_TemplateRevision.TabIndex = 7;
-            label_TemplateRevision.Text = "Välj Revision för Mallen";
+            label_ChooseRevisionMeasureTemplate.AutoSize = true;
+            label_ChooseRevisionMeasureTemplate.Cursor = Cursors.Hand;
+            label_ChooseRevisionMeasureTemplate.Dock = DockStyle.Top;
+            label_ChooseRevisionMeasureTemplate.Font = new Font("Segoe UI", 9F);
+            label_ChooseRevisionMeasureTemplate.ForeColor = Color.FromArgb(239, 228, 177);
+            label_ChooseRevisionMeasureTemplate.Location = new Point(0, 126);
+            label_ChooseRevisionMeasureTemplate.Margin = new Padding(4, 0, 4, 0);
+            label_ChooseRevisionMeasureTemplate.Name = "label_ChooseRevisionMeasureTemplate";
+            label_ChooseRevisionMeasureTemplate.Padding = new Padding(0, 5, 0, 4);
+            label_ChooseRevisionMeasureTemplate.Size = new Size(298, 24);
+            label_ChooseRevisionMeasureTemplate.TabIndex = 7;
+            label_ChooseRevisionMeasureTemplate.Text = "Select Revision for the Measurement Protocol Template";
             // 
-            // lbl_TotalOrders
+            // label_TotalOrders
             // 
-            lbl_TotalOrders.AutoSize = true;
-            lbl_TotalOrders.Dock = DockStyle.Top;
-            lbl_TotalOrders.Font = new Font("Lucida Sans", 11F);
-            lbl_TotalOrders.ForeColor = Color.FromArgb(181, 210, 207);
-            lbl_TotalOrders.Location = new Point(0, 0);
-            lbl_TotalOrders.Name = "lbl_TotalOrders";
-            lbl_TotalOrders.Padding = new Padding(0, 5, 0, 10);
-            lbl_TotalOrders.Size = new Size(104, 32);
-            lbl_TotalOrders.TabIndex = 13;
-            lbl_TotalOrders.Text = "Antal Ordrar: ";
+            label_TotalOrders.AutoSize = true;
+            label_TotalOrders.Dock = DockStyle.Top;
+            label_TotalOrders.Font = new Font("Lucida Sans", 11F);
+            label_TotalOrders.ForeColor = Color.FromArgb(181, 210, 207);
+            label_TotalOrders.Location = new Point(0, 0);
+            label_TotalOrders.Name = "label_TotalOrders";
+            label_TotalOrders.Padding = new Padding(0, 5, 0, 10);
+            label_TotalOrders.Size = new Size(104, 32);
+            label_TotalOrders.TabIndex = 13;
+            label_TotalOrders.Text = "Antal Ordrar: ";
             // 
             // tlp_Bottom
             // 
@@ -1179,7 +1179,7 @@ namespace DigitalProductionProgram.Measure
             panel_FilterOutliers.ResumeLayout(false);
             panel_FilterOutliers.PerformLayout();
             ((ISupportInitialize)num_OutlierLimit).EndInit();
-            gBox_Filter.ResumeLayout(false);
+            gBox_FilterOrders.ResumeLayout(false);
             tlp_Bottom.ResumeLayout(false);
             panel_SPC.ResumeLayout(false);
             tlp_SPC_Data.ResumeLayout(false);
@@ -1189,11 +1189,11 @@ namespace DigitalProductionProgram.Measure
         }
 
         #endregion
-        private Label label_PartNumber;
+        private Label label_ChoosePartNumber;
         private System.Threading.Timer timer_AddPoints;
         private DataGridView dgv_MeasureProtocol;
         private Label label_Info;
-        private Label label_MeasureTemplateName;
+        private Label label_MeasureProtocolTemplateName;
         private ComboBox cb_MeasureprotocolTemplateName;
         private Panel panel_TopRight;
         private Panel panelInfo;
@@ -1208,16 +1208,16 @@ namespace DigitalProductionProgram.Measure
         private Panel panel_Top;
         private Label label_ChooseWorkOperation;
         private TextBox tb_PartNr;
-        private Label label_TemplateRevision;
+        private Label label_ChooseRevisionMeasureTemplate;
         private ComboBox cb_MeasureTemplateRevision;
         private TableLayoutPanel tlp_Bottom;
-        private GroupBox gBox_Filter;
-        private Button btn_LoadData;
-        private Label lbl_TotalOrders;
+        private GroupBox gBox_FilterOrders;
+        private Button btn_ReloadData;
+        private Label label_TotalOrders;
         private Button btn_ExportDataToExcel;
         private CheckedListBox chkList_ListOrders;
         private Panel panel_Filter;
-        private CheckBox chk_FilterBad;
+        private CheckBox chk_FilterBadValues;
         private CheckBox chk_FilterDiscarded;
         private Label label_FilterInfo;
         private Panel panel1;

@@ -997,9 +997,6 @@
   <data name="label_List_PartNr" xml:space="preserve">
     <value />
   </data>
-  <data name="label_Workoperation_Header" xml:space="preserve">
-    <value />
-  </data>
   <data name="Menu_Help_InstructionVideos_SaveProcessCard" xml:space="preserve">
     <value />
   </data>
@@ -2145,5 +2142,50 @@ Contact Admin if necessary.</value>
   </data>
   <data name="warningMessage" xml:space="preserve">
     <value>Warning!</value>
+  </data>
+  <data name="header_BrowseOldMeasureprotocols" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label_ChooseWorkOperation" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label_ChooseRevisionMeasureTemplate" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label_ChoosePartNumber" xml:space="preserve">
+    <value />
+  </data>
+  <data name="chk_FilterBadValues" xml:space="preserve">
+    <value />
+  </data>
+  <data name="chk_FilterDiscarded" xml:space="preserve">
+    <value />
+  </data>
+  <data name="FilterInfo_Title" xml:space="preserve">
+    <value />
+  </data>
+  <data name="FilterInfo_Discarded" xml:space="preserve">
+    <value />
+  </data>
+  <data name="FilterInfo_Outliers" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btn_ReloadData" xml:space="preserve">
+    <value />
+  </data>
+  <data name="loadingDataOrderNr" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btn_ExportDataToExcel" xml:space="preserve">
+    <value />
+  </data>
+  <data name="gBox_FilterOrders" xml:space="preserve">
+    <value />
+  </data>
+  <data name="selectOrders" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label_SPC_Title" xml:space="preserve">
+    <value />
   </data>
 </root>

@@ -204,20 +204,7 @@ namespace DigitalProductionProgram.DatabaseManagement
             cmd.ExecuteNonQuery();
         }
 
-
        
-        public static void UPDATE_Korprotokoll_Parametrar_Kassera(string db_Tabell, string datum, string tid, string anstNr)
-        {
-            using var con = new SqlConnection(Database.cs_Protocol);
-            var query = $"UPDATE {db_Tabell} SET Kasserad = 'True' {Queries.WHERE_OrderID} AND Datum = @datum AND Tid = @tid AND AnstNr = @employeenumber";
-            var cmd = new SqlCommand(query, con);
-            cmd.Parameters.AddWithValue("@id", Order.OrderID);
-            cmd.Parameters.AddWithValue("@datum", datum);
-            cmd.Parameters.AddWithValue("@tid", tid);
-            cmd.Parameters.AddWithValue("@employeenumber", anstNr);
-            con.Open();
-            cmd.ExecuteScalar();
-        }
 
         public static void UPDATE_User_Online(bool flag, string anstNr)
         {

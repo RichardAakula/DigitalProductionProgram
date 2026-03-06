@@ -1,37 +1,99 @@
-﻿using DigitalProductionProgram.DatabaseManagement;
+using DigitalProductionProgram.DatabaseManagement;
+using LoadingProgressBar = DigitalProductionProgram.ControlsManagement.CustomProgressBar;
 using DigitalProductionProgram.User;
 using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace DigitalProductionProgram.Log
 {
     public partial class ClientUpdateManager : Form
     {
-        // --- Masterlista för alla klienter ---
+        // --- Masterlista fÃƒÂ¶r alla klienter ---
         private List<HostItem> _allClients = new();
         private List<HostItem> _allBlockedClients = new();
         private readonly List<string> _allProdLines = new();
 
-        // --- Flagga för att undvika SelectedIndexChanged under listuppdatering ---
+        // --- Flagga fÃƒÂ¶r att undvika SelectedIndexChanged under listuppdatering ---
         private bool _suppressSelectionChanged;
+        private CancellationTokenSource _usersOnClientCts;
 
         public ClientUpdateManager()
         {
             InitializeComponent();
             InitializeUsersOnClientListView();
+            Opacity = 0;
+            ShowInTaskbar = false;
 
-            LoadClients();
-            LoadProdLines();
-            LoadVersions();
-            LoadAllUsers();
+            Load += async (_, __) => await InitializeDataAsync();
 
             // Koppla filtertextbox
             tb_FilterAllClients.TextChanged += tb_Filter_TextChanged;
             tb_FilterBlockedClients.TextChanged += tb_FilterBlockedClients_TextChanged;
+        }
+
+        private async Task InitializeDataAsync()
+        {
+            SetLoadingState(true);
+            using var pbar = new LoadingProgressBar();
+            try
+            {
+                pbar.Show();
+                pbar.TopMost = true;
+                pbar.BringToFront();
+                pbar.Activate();
+                pbar.Set_ValueProgressBar(0, "Startar Client Update Manager...", isOkRefresh: true);
+                await Task.Yield();
+
+                pbar.Set_ValueProgressBar(15, "Laddar klienter...", isOkRefresh: true);
+                LoadClients();
+                await Task.Yield();
+
+                pbar.Set_ValueProgressBar(45, "Laddar produktionslinjer...", isOkRefresh: true);
+                LoadProdLines();
+                await Task.Yield();
+
+                pbar.Set_ValueProgressBar(70, "Laddar versioner...", isOkRefresh: true);
+                LoadVersions();
+                await Task.Yield();
+
+                pbar.Set_ValueProgressBar(90, "Laddar anvÃ¤ndare...", isOkRefresh: true);
+                LoadAllUsers();
+                await Task.Yield();
+
+                pbar.Set_ValueProgressBar(100, "Klart", isOkRefresh: true);
+                await Task.Delay(120);
+            }
+            finally
+            {
+                if (!pbar.IsDisposed)
+                {
+                    pbar.TopMost = false;
+                    pbar.Close();
+                }
+
+                SetLoadingState(false);
+                ShowInTaskbar = true;
+                Opacity = 1;
+                Activate();
+            }
+        }
+
+        private void SetLoadingState(bool isLoading)
+        {
+            Cursor = isLoading ? Cursors.WaitCursor : Cursors.Default;
+            lb_Clients.Enabled = !isLoading;
+            lb_ProdLines.Enabled = !isLoading;
+            lb_Versions.Enabled = !isLoading;
+            lb_AllUsers.Enabled = !isLoading;
+            lb_BlockedClients.Enabled = !isLoading;
+            btn_BlockClient.Enabled = !isLoading;
+            btn_UnBlockClient.Enabled = !isLoading;
         }
 
 
@@ -56,7 +118,7 @@ namespace DigitalProductionProgram.Log
                 foreach (var client in filtered)
                     lb_Clients.Items.Add(client);
 
-                // Om CheckAll är ikryssad, markera alla synliga
+                // Om CheckAll ÃƒÂ¤r ikryssad, markera alla synliga
                 if (chk_CheckAllClients.Checked)
                 {
                     lb_Clients.SelectedIndices.Clear();
@@ -107,6 +169,7 @@ namespace DigitalProductionProgram.Log
             lv_UsersOnClient.Columns.Add("UserID", 50, HorizontalAlignment.Left);
             lv_UsersOnClient.Columns.Add("Name", 150, HorizontalAlignment.Left);
         }
+
         private void LoadClients()
         {
             _allClients.Clear();
@@ -144,6 +207,7 @@ namespace DigitalProductionProgram.Log
 
             RefreshClientList();
         }
+
         private void LoadProdLines()
         {
             _allProdLines.Clear();
@@ -179,7 +243,8 @@ namespace DigitalProductionProgram.Log
                     return list;
                 });
 
-                _allProdLines.AddRange(prodLines);
+                if (prodLines != null)
+                    _allProdLines.AddRange(prodLines);
 
                 foreach (var pl in _allProdLines)
                     lb_ProdLines.Items.Add(pl);
@@ -189,6 +254,7 @@ namespace DigitalProductionProgram.Log
                 lb_ProdLines.EndUpdate();
             }
         }
+
 
 
         private void LoadVersions()
@@ -212,6 +278,7 @@ namespace DigitalProductionProgram.Log
 
             lb_Versions.DataSource = versions;
         }
+
         private void LoadAllUsers()
         {
             lb_AllUsers.Items.Clear();
@@ -236,15 +303,18 @@ namespace DigitalProductionProgram.Log
             });
 
             // Fyll lb_AllUsers med namn
-            foreach (var user in users)
-                lb_AllUsers.Items.Add(user);
+            if (users != null)
+            {
+                foreach (var user in users)
+                    lb_AllUsers.Items.Add(user);
+            }
 
             // Om du vill kan du visa endast namn i ListBox
             lb_AllUsers.DisplayMember = "Value";
             lb_AllUsers.ValueMember = "Key";
         }
 
-        private void lb_Clients_SelectedIndexChanged(object sender, EventArgs e)
+        private async void lb_Clients_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_suppressSelectionChanged)
                 return;
@@ -254,6 +324,11 @@ namespace DigitalProductionProgram.Log
                 .Select(h => h.HostID)
                 .ToList();
 
+            _usersOnClientCts?.Cancel();
+            _usersOnClientCts?.Dispose();
+            _usersOnClientCts = new CancellationTokenSource();
+            var token = _usersOnClientCts.Token;
+
             lv_UsersOnClient.BeginUpdate();
             try
             {
@@ -262,7 +337,9 @@ namespace DigitalProductionProgram.Log
                 if (selectedHosts.Count == 0)
                     return;
 
-                var users = GetUsersForHosts(selectedHosts);
+                var users = await GetUsersForHostsAsync(selectedHosts, token);
+                if (token.IsCancellationRequested || users == null)
+                    return;
 
                 foreach (var user in users)
                 {
@@ -291,7 +368,7 @@ namespace DigitalProductionProgram.Log
 
                 IEnumerable<HostItem> filtered = _allClients;
 
-                // Kolla om några ProductionLines är markerade
+                // Kolla om nÃƒÂ¥gra ProductionLines ÃƒÂ¤r markerade
                 var selectedProdLines = lb_ProdLines.SelectedItems.Cast<string>().ToList();
 
                 if (selectedProdLines.Any())
@@ -300,7 +377,7 @@ namespace DigitalProductionProgram.Log
 
                     foreach (var prodLine in selectedProdLines)
                     {
-                        // Hämta top 50 HostID som använts med denna ProductionLine senaste året
+                        // HÃƒÂ¤mta top 50 HostID som anvÃƒÂ¤nts med denna ProductionLine senaste ÃƒÂ¥ret
                         var hostIds = Database.ExecuteSafe(con =>
                         {
                             var list = new List<int>();
@@ -326,7 +403,7 @@ namespace DigitalProductionProgram.Log
                             hostIdsForProdLines.Add(h);
                     }
 
-                    // Filtrera masterlistan baserat på alla valda ProductionLines
+                    // Filtrera masterlistan baserat pÃƒÂ¥ alla valda ProductionLines
                     filtered = filtered.Where(c => hostIdsForProdLines.Contains(c.HostID));
                 }
 
@@ -341,7 +418,7 @@ namespace DigitalProductionProgram.Log
                 foreach (var client in filtered)
                     lb_Clients.Items.Add(client);
 
-                // Om CheckAll är ikryssad, markera alla synliga
+                // Om CheckAll ÃƒÂ¤r ikryssad, markera alla synliga
                 if (chk_CheckAllClients.Checked)
                 {
                     lb_Clients.SelectedIndices.Clear();
@@ -361,24 +438,24 @@ namespace DigitalProductionProgram.Log
             if (lb_Versions.SelectedItem is not string version)
                 return;
 
-            // 🔥 1. Återställ masterlistan för Clients helt (inkl. UI)
-            LoadClients();  
+            // Ã°Å¸â€Â¥ 1. Ãƒâ€¦terstÃƒÂ¤ll masterlistan fÃƒÂ¶r Clients helt (inkl. UI)
+            LoadClients();
 
-            // 🔥 2. Hämta blockerade klienter för vald version
+            // Ã°Å¸â€Â¥ 2. HÃƒÂ¤mta blockerade klienter fÃƒÂ¶r vald version
             var blockedClients = GetBlockedClientsForVersion(version);
 
-            // 🔥 3. Uppdatera masterlistan för blockerade klienter
+            // Ã°Å¸â€Â¥ 3. Uppdatera masterlistan fÃƒÂ¶r blockerade klienter
             _allBlockedClients = blockedClients.ToList();
 
             lb_BlockedClients.BeginUpdate();
             lb_Clients.BeginUpdate();
             try
             {
-                // 🔥 4. Fyll Blocked-listan från masterlistan
+                // Ã°Å¸â€Â¥ 4. Fyll Blocked-listan frÃƒÂ¥n masterlistan
                 lb_BlockedClients.Items.Clear();
                 lb_BlockedClients.Items.AddRange(_allBlockedClients.ToArray());
 
-                // 🔥 5. Ta bort blockerade från _allClients
+                // Ã°Å¸â€Â¥ 5. Ta bort blockerade frÃƒÂ¥n _allClients
                 if (_allBlockedClients.Count > 0)
                 {
                     var blockedIds = new HashSet<int>(_allBlockedClients.Select(x => x.HostID));
@@ -393,10 +470,10 @@ namespace DigitalProductionProgram.Log
                 lb_BlockedClients.EndUpdate();
             }
 
-            // 🔥 6. Refreshar klientlistan med aktuella filter (tb_Filter)
+            // Ã°Å¸â€Â¥ 6. Refreshar klientlistan med aktuella filter (tb_Filter)
             RefreshClientList();
 
-            // 🔥 7. Refreshar Blocked-listan med aktuellt filter (tb_FilterBlockedClients)
+            // Ã°Å¸â€Â¥ 7. Refreshar Blocked-listan med aktuellt filter (tb_FilterBlockedClients)
             RefreshBlockedClientList();
         }
         private void lb_AllUsers_SelectedIndexChanged(object sender, EventArgs e)
@@ -409,7 +486,7 @@ namespace DigitalProductionProgram.Log
 
                 IEnumerable<HostItem> filtered = _allClients;
 
-                // Kolla om några användare är markerade
+                // Kolla om nÃƒÂ¥gra anvÃƒÂ¤ndare ÃƒÂ¤r markerade
                 var selectedUsers = lb_AllUsers.SelectedItems.Cast<KeyValuePair<int, string>>().ToList();
 
                 if (selectedUsers.Any())
@@ -418,7 +495,7 @@ namespace DigitalProductionProgram.Log
 
                     foreach (var user in selectedUsers)
                     {
-                        // Hämta top 50 HostID som användaren jobbat mest på senaste året
+                        // HÃƒÂ¤mta top 50 HostID som anvÃƒÂ¤ndaren jobbat mest pÃƒÂ¥ senaste ÃƒÂ¥ret
                         var userHostIds = Database.ExecuteSafe(con =>
                         {
                             var list = new List<int>();
@@ -439,12 +516,12 @@ namespace DigitalProductionProgram.Log
                             return list;
                         });
 
-                        // Lägg till i en HashSet för union
+                        // LÃƒÂ¤gg till i en HashSet fÃƒÂ¶r union
                         foreach (var h in userHostIds)
                             hostIdsForUsers.Add(h);
                     }
 
-                    // Filtrera masterlistan baserat på alla valda användares HostID
+                    // Filtrera masterlistan baserat pÃƒÂ¥ alla valda anvÃƒÂ¤ndares HostID
                     filtered = filtered.Where(c => hostIdsForUsers.Contains(c.HostID));
                 }
 
@@ -459,7 +536,7 @@ namespace DigitalProductionProgram.Log
                 foreach (var client in filtered)
                     lb_Clients.Items.Add(client);
 
-                // Om CheckAll är ikryssad, markera alla synliga
+                // Om CheckAll ÃƒÂ¤r ikryssad, markera alla synliga
                 if (chk_CheckAllClients.Checked)
                 {
                     lb_Clients.SelectedIndices.Clear();
@@ -474,7 +551,7 @@ namespace DigitalProductionProgram.Log
             }
         }
 
-        private void chk_CheckAll_CheckedChanged(object sender, EventArgs e)
+        private void chk_CheckAllClients_CheckedChanged(object sender, EventArgs e)
         {
             _suppressSelectionChanged = true;
 
@@ -495,7 +572,7 @@ namespace DigitalProductionProgram.Log
                 _suppressSelectionChanged = false;
             }
 
-            // 🔥 TRIGGA EN ENDA uppdatering manuellt
+            // Ã°Å¸â€Â¥ TRIGGA EN ENDA uppdatering manuellt
             lb_Clients_SelectedIndexChanged(lb_Clients, EventArgs.Empty);
         }
         private void chk_CheckAllBlockedClients_CheckedChanged(object sender, EventArgs e)
@@ -522,7 +599,7 @@ namespace DigitalProductionProgram.Log
             if (lb_Clients.SelectedItems.Count == 0 || string.IsNullOrEmpty(version))
                 return;
 
-            // Hämta valda klienter
+            // HÃƒÂ¤mta valda klienter
             var toBlock = lb_Clients.SelectedItems.Cast<HostItem>().ToList();
             if (toBlock.Count == 0)
                 return;
@@ -566,7 +643,7 @@ namespace DigitalProductionProgram.Log
                 if (_allBlockedClients.All(x => x.HostID != host.HostID))
                     _allBlockedClients.Add(host);
 
-                // ta bort från clients masterlist
+                // ta bort frÃƒÂ¥n clients masterlist
                 _allClients.RemoveAll(x => x.HostID == host.HostID);
             }
 
@@ -590,7 +667,7 @@ namespace DigitalProductionProgram.Log
 
             // --- 4. Filtrera blocked-list efter ev. textfilter ---
             RefreshBlockedClientList();
-}
+        }
         private void btn_UnBlockClient_Click(object sender, EventArgs e)
         {
             if (lb_BlockedClients.SelectedItems.Count == 0)
@@ -621,7 +698,7 @@ namespace DigitalProductionProgram.Log
                 // Ta bort ur blocked masterlist
                 _allBlockedClients.RemoveAll(x => x.HostID == host.HostID);
 
-                // Lägg tillbaka i client-masterlist om säkert
+                // LÃƒÂ¤gg tillbaka i client-masterlist om sÃƒÂ¤kert
                 if (_allClients.All(x => x.HostID != host.HostID))
                     _allClients.Add(host);
             }
@@ -644,10 +721,10 @@ namespace DigitalProductionProgram.Log
                 lb_Clients.EndUpdate();
             }
 
-            // --- 4. Sökfilter på blocked-list ---
+            // --- 4. SÃƒÂ¶kfilter pÃƒÂ¥ blocked-list ---
             RefreshBlockedClientList();
         }
-        
+
 
         private void tb_Filter_TextChanged(object sender, EventArgs e)
         {
@@ -689,6 +766,15 @@ namespace DigitalProductionProgram.Log
                 return result;
             });
         }
+        private async Task<List<(int UserID, string Name, DateTime LastActivity)>> GetUsersForHostsAsync(IEnumerable<int> hostIds, CancellationToken cancellationToken)
+        {
+            return await Task.Run(() =>
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                return GetUsersForHosts(hostIds);
+            }, cancellationToken);
+        }
+
         private List<(int UserID, string Name, DateTime LastActivity)> GetUsersForHosts(IEnumerable<int> hostIds)
         {
             return Database.ExecuteSafe(con =>
@@ -772,6 +858,14 @@ namespace DigitalProductionProgram.Log
 
         }
 
-       
+        private void label_AllUsers_Click(object sender, EventArgs e)
+        {
+            lb_AllUsers.ClearSelected();
+        }
+        private void label_ProdLines_Click(object sender, EventArgs e)
+        {
+            lb_ProdLines.ClearSelected();
+        }
     }
 }
+

@@ -13,6 +13,7 @@ namespace DigitalProductionProgram.Log
     {
         // --- Masterlista för alla klienter ---
         private List<HostItem> _allClients = new();
+        private List<HostItem> _allBlockedClients = new();
         private readonly List<string> _allProdLines = new();
 
         // --- Flagga för att undvika SelectedIndexChanged under listuppdatering ---
@@ -29,7 +30,8 @@ namespace DigitalProductionProgram.Log
             LoadAllUsers();
 
             // Koppla filtertextbox
-            tb_Filter.TextChanged += tb_Filter_TextChanged;
+            tb_FilterAllClients.TextChanged += tb_Filter_TextChanged;
+            tb_FilterBlockedClients.TextChanged += tb_FilterBlockedClients_TextChanged;
         }
 
 
@@ -44,7 +46,7 @@ namespace DigitalProductionProgram.Log
 
                 IEnumerable<HostItem> filtered = _allClients;
 
-                string filter = tb_Filter.Text.Trim();
+                string filter = tb_FilterAllClients.Text.Trim();
                 if (!string.IsNullOrWhiteSpace(filter))
                 {
                     filtered = filtered.Where(c =>
@@ -68,6 +70,32 @@ namespace DigitalProductionProgram.Log
                 lb_Clients.EndUpdate();
             }
         }
+        private void RefreshBlockedClientList()
+        {
+            lb_BlockedClients.BeginUpdate();
+            try
+            {
+                lb_BlockedClients.Items.Clear();
+
+                IEnumerable<HostItem> filtered = _allBlockedClients;
+
+                string filter = tb_FilterBlockedClients.Text.Trim();
+
+                if (!string.IsNullOrWhiteSpace(filter))
+                {
+                    filtered = filtered.Where(c =>
+                        c.HostName.Contains(filter, StringComparison.OrdinalIgnoreCase) ||
+                        c.HostID.ToString().Contains(filter));
+                }
+
+                lb_BlockedClients.Items.AddRange(filtered.ToArray());
+            }
+            finally
+            {
+                lb_BlockedClients.EndUpdate();
+            }
+        }
+
         private void InitializeUsersOnClientListView()
         {
             lv_UsersOnClient.View = View.Details;
@@ -303,7 +331,7 @@ namespace DigitalProductionProgram.Log
                 }
 
                 // Kombinera med tb_Filter om text finns
-                string textFilter = tb_Filter.Text.Trim();
+                string textFilter = tb_FilterAllClients.Text.Trim();
                 if (!string.IsNullOrWhiteSpace(textFilter))
                 {
                     filtered = filtered.Where(c =>
@@ -333,21 +361,30 @@ namespace DigitalProductionProgram.Log
             if (lb_Versions.SelectedItem is not string version)
                 return;
 
-            lb_BlockedClients.Items.Clear();
+            // 🔥 1. Återställ masterlistan för Clients helt (inkl. UI)
+            LoadClients();  
 
+            // 🔥 2. Hämta blockerade klienter för vald version
             var blockedClients = GetBlockedClientsForVersion(version);
 
-            lb_Clients.BeginUpdate();
+            // 🔥 3. Uppdatera masterlistan för blockerade klienter
+            _allBlockedClients = blockedClients.ToList();
+
             lb_BlockedClients.BeginUpdate();
+            lb_Clients.BeginUpdate();
             try
             {
-                foreach (var client in blockedClients)
-                {
-                    // Lägg till i blocked list
-                    lb_BlockedClients.Items.Add(client);
+                // 🔥 4. Fyll Blocked-listan från masterlistan
+                lb_BlockedClients.Items.Clear();
+                lb_BlockedClients.Items.AddRange(_allBlockedClients.ToArray());
 
-                    // Ta bort från masterlistan
-                    _allClients.RemoveAll(x => x.HostID == client.HostID);
+                // 🔥 5. Ta bort blockerade från _allClients
+                if (_allBlockedClients.Count > 0)
+                {
+                    var blockedIds = new HashSet<int>(_allBlockedClients.Select(x => x.HostID));
+                    _allClients = _allClients
+                        .Where(c => !blockedIds.Contains(c.HostID))
+                        .ToList();
                 }
             }
             finally
@@ -356,7 +393,11 @@ namespace DigitalProductionProgram.Log
                 lb_BlockedClients.EndUpdate();
             }
 
+            // 🔥 6. Refreshar klientlistan med aktuella filter (tb_Filter)
             RefreshClientList();
+
+            // 🔥 7. Refreshar Blocked-listan med aktuellt filter (tb_FilterBlockedClients)
+            RefreshBlockedClientList();
         }
         private void lb_AllUsers_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -408,7 +449,7 @@ namespace DigitalProductionProgram.Log
                 }
 
                 // Kombinera med tb_Filter om text finns
-                string textFilter = tb_Filter.Text.Trim();
+                string textFilter = tb_FilterAllClients.Text.Trim();
                 if (!string.IsNullOrWhiteSpace(textFilter))
                 {
                     filtered = filtered.Where(c =>
@@ -481,27 +522,27 @@ namespace DigitalProductionProgram.Log
             if (lb_Clients.SelectedItems.Count == 0 || string.IsNullOrEmpty(version))
                 return;
 
-            // Hämta alla valda klienter
-            var toMove = lb_Clients.SelectedItems.Cast<HostItem>().ToList();
-            if (toMove.Count == 0)
+            // Hämta valda klienter
+            var toBlock = lb_Clients.SelectedItems.Cast<HostItem>().ToList();
+            if (toBlock.Count == 0)
                 return;
 
-            // --- 1. DB: Batch insert med transaktion ---
+            // --- 1. DB UPDATE ---
             Database.ExecuteSafe(con =>
             {
                 using var tran = con.BeginTransaction();
                 try
                 {
-                    const string query = @"
+                    const string sql = @"
                 INSERT INTO Log.ClientPolicy (HostID, Version, CreatedBy)
-                VALUES (@hostid, @version, @createdby)";
+                VALUES (@hostid, @version, @createdby);";
 
-                    using var cmd = new SqlCommand(query, con, tran);
+                    using var cmd = new SqlCommand(sql, con, tran);
                     cmd.Parameters.Add("@hostid", SqlDbType.Int);
                     cmd.Parameters.Add("@version", SqlDbType.NVarChar);
                     cmd.Parameters.Add("@createdby", SqlDbType.NVarChar);
 
-                    foreach (var host in toMove)
+                    foreach (var host in toBlock)
                     {
                         cmd.Parameters["@hostid"].Value = host.HostID;
                         cmd.Parameters["@version"].Value = version;
@@ -518,80 +559,104 @@ namespace DigitalProductionProgram.Log
                 }
             });
 
-            // --- 2. UI: batcha ListBox-uppdatering ---
+            // --- 2. MASTERLIST UPPDATERING ---
+            foreach (var host in toBlock)
+            {
+                // flytta till blocked masterlist
+                if (_allBlockedClients.All(x => x.HostID != host.HostID))
+                    _allBlockedClients.Add(host);
+
+                // ta bort från clients masterlist
+                _allClients.RemoveAll(x => x.HostID == host.HostID);
+            }
+
+            // --- 3. UI UPPDATERING ---
             lb_BlockedClients.BeginUpdate();
             lb_Clients.BeginUpdate();
             try
             {
-                // Ta alla redan blockerade hostIDs
-                var blockedIds = new HashSet<int>(lb_BlockedClients.Items.Cast<HostItem>().Select(x => x.HostID));
+                // fyll blocked-listan
+                lb_BlockedClients.Items.Clear();
+                lb_BlockedClients.Items.AddRange(_allBlockedClients.ToArray());
 
-                // Lägg till nya hostar i blocked list
-                var toAddToBlocked = toMove.Where(h => !blockedIds.Contains(h.HostID)).ToArray();
-                if (toAddToBlocked.Length > 0)
-                {
-                    lb_BlockedClients.Items.AddRange(toAddToBlocked);
-
-                    // Ta bort dem från _allClients
-                    _allClients = _allClients.Except(toAddToBlocked).ToList();
-                }
-
-                // --- Fyll om lb_Clients från _allClients istället för Remove loop ---
-                lb_Clients.Items.Clear();
-                lb_Clients.Items.AddRange(_allClients.ToArray());
+                // fyll client-listan (filtrerat)
+                RefreshClientList();
             }
             finally
             {
-                lb_BlockedClients.EndUpdate();
                 lb_Clients.EndUpdate();
+                lb_BlockedClients.EndUpdate();
             }
 
-            // Uppdatera UI och ev filter
-            RefreshClientList();
-        }
-
-
+            // --- 4. Filtrera blocked-list efter ev. textfilter ---
+            RefreshBlockedClientList();
+}
         private void btn_UnBlockClient_Click(object sender, EventArgs e)
         {
             if (lb_BlockedClients.SelectedItems.Count == 0)
                 return;
 
-            var toMove = lb_BlockedClients.SelectedItems.Cast<HostItem>().ToList();
+            var selected = lb_BlockedClients.SelectedItems.Cast<HostItem>().ToList();
+            string version = lb_Versions.SelectedItem?.ToString() ?? "";
 
-            lb_Clients.BeginUpdate();
+            // --- 1. DB DELETE ---
+            Database.ExecuteSafe(con =>
+            {
+                using var cmd = new SqlCommand(
+                    @"DELETE FROM Log.ClientPolicy WHERE HostID = @hostid AND Version = @version", con);
+
+                cmd.Parameters.Add("@hostid", SqlDbType.Int);
+                cmd.Parameters.Add("@version", SqlDbType.NVarChar).Value = version;
+
+                foreach (var host in selected)
+                {
+                    cmd.Parameters["@hostid"].Value = host.HostID;
+                    cmd.ExecuteNonQuery();
+                }
+            });
+
+            // --- 2. MASTERLIST UPDATE ---
+            foreach (var host in selected)
+            {
+                // Ta bort ur blocked masterlist
+                _allBlockedClients.RemoveAll(x => x.HostID == host.HostID);
+
+                // Lägg tillbaka i client-masterlist om säkert
+                if (_allClients.All(x => x.HostID != host.HostID))
+                    _allClients.Add(host);
+            }
+
+            // --- 3. UI UPDATE ---
             lb_BlockedClients.BeginUpdate();
+            lb_Clients.BeginUpdate();
             try
             {
-                foreach (var host in toMove)
-                {
-                    if (_allClients.All(x => x.HostID != host.HostID))
-                        _allClients.Add(host);
+                // fyll blocked-listan
+                lb_BlockedClients.Items.Clear();
+                lb_BlockedClients.Items.AddRange(_allBlockedClients.ToArray());
 
-                    lb_BlockedClients.Items.Remove(host);
-
-                    Database.ExecuteSafe(con =>
-                    {
-                        using var cmd = new SqlCommand(
-                            "DELETE FROM Log.ClientPolicy WHERE HostID = @hostid AND Version = @version", con);
-                        cmd.Parameters.AddWithValue("@hostid", host.HostID);
-                        cmd.Parameters.AddWithValue("@version", lb_Versions.SelectedItem?.ToString() ?? string.Empty);
-                        cmd.ExecuteNonQuery();
-                    });
-                }
+                // fyll client list (med filter)
+                RefreshClientList();
             }
             finally
             {
-                lb_Clients.EndUpdate();
                 lb_BlockedClients.EndUpdate();
+                lb_Clients.EndUpdate();
             }
 
-            RefreshClientList();
+            // --- 4. Sökfilter på blocked-list ---
+            RefreshBlockedClientList();
         }
+        
+
         private void tb_Filter_TextChanged(object sender, EventArgs e)
         {
             RefreshClientList();
         }
-
+        private void tb_FilterBlockedClients_TextChanged(object sender, EventArgs e)
+        {
+            RefreshBlockedClientList();
+        }
 
         private List<KeyValuePair<int, string>> GetUsersForHost(int hostId)
         {
@@ -700,7 +765,11 @@ namespace DigitalProductionProgram.Log
             public int HostID { get; } = hostId;
             public string HostName { get; } = hostName;
 
-            public override string ToString() => HostName;
+            public override string ToString()
+            {
+                return $"{HostName} (ID: {HostID})";
+            }
+
         }
 
        

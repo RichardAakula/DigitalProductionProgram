@@ -135,7 +135,6 @@ namespace DigitalProductionProgram.MainWindow
         }
         private void Menu_File_UpdateDPP_Click(object sender, EventArgs e)
         {
-
             if (File.Exists(Database.UpdatePath))
             {
                 _ = Activity.Stop("User updated DPP via the menu");

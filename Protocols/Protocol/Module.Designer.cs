@@ -91,7 +91,7 @@
             dgv_Module.RowHeadersVisible = false;
             dgv_Module.RowTemplate.Height = 16;
             dgv_Module.ScrollBars = ScrollBars.None;
-            dgv_Module.Size = new Size(769, 475);
+            dgv_Module.Size = new Size(743, 475);
             dgv_Module.TabIndex = 898;
             dgv_Module.CellDoubleClick += Protocol_CellDoubleClick;
             dgv_Module.CellEnter += Module_CellEnter;
@@ -249,7 +249,7 @@
             Controls.Add(label_LEFT);
             Margin = new Padding(0);
             Name = "Module";
-            Size = new Size(789, 475);
+            Size = new Size(763, 475);
             Load += Module_Load;
             ((System.ComponentModel.ISupportInitialize)dgv_Module).EndInit();
             ResumeLayout(false);

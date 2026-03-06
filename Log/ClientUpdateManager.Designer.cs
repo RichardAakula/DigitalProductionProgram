@@ -43,10 +43,11 @@
             btn_BlockClient = new Button();
             btn_UnBlockClient = new Button();
             chk_CheckAllBlockedClients = new CheckBox();
-            tb_Filter = new TextBox();
+            tb_FilterAllClients = new TextBox();
             lv_UsersOnClient = new ListView();
             lb_ProdLines = new ListBox();
             label_FilterClients = new Label();
+            tb_FilterBlockedClients = new TextBox();
             tlp_Main.SuspendLayout();
             SuspendLayout();
             // 
@@ -66,7 +67,7 @@
             // 
             // tlp_Main
             // 
-            tlp_Main.ColumnCount = 10;
+            tlp_Main.ColumnCount = 11;
             tlp_Main.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 150F));
             tlp_Main.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 180F));
             tlp_Main.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 35F));
@@ -76,7 +77,8 @@
             tlp_Main.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 218F));
             tlp_Main.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 136F));
             tlp_Main.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 87F));
-            tlp_Main.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 91F));
+            tlp_Main.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 119F));
+            tlp_Main.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 8F));
             tlp_Main.Controls.Add(label_ProdLines, 1, 1);
             tlp_Main.Controls.Add(lb_AllUsers, 0, 3);
             tlp_Main.Controls.Add(label_AllUsers, 0, 1);
@@ -89,12 +91,13 @@
             tlp_Main.Controls.Add(lb_BlockedClients, 8, 3);
             tlp_Main.Controls.Add(chk_CheckAllClients, 3, 2);
             tlp_Main.Controls.Add(btn_BlockClient, 5, 2);
-            tlp_Main.Controls.Add(btn_UnBlockClient, 9, 2);
+            tlp_Main.Controls.Add(btn_UnBlockClient, 10, 2);
             tlp_Main.Controls.Add(chk_CheckAllBlockedClients, 8, 2);
-            tlp_Main.Controls.Add(tb_Filter, 4, 2);
+            tlp_Main.Controls.Add(tb_FilterAllClients, 4, 2);
             tlp_Main.Controls.Add(lv_UsersOnClient, 6, 3);
             tlp_Main.Controls.Add(lb_ProdLines, 1, 3);
             tlp_Main.Controls.Add(label_FilterClients, 0, 0);
+            tlp_Main.Controls.Add(tb_FilterBlockedClients, 9, 2);
             tlp_Main.Dock = DockStyle.Fill;
             tlp_Main.Location = new Point(0, 0);
             tlp_Main.Name = "tlp_Main";
@@ -160,7 +163,7 @@
             // label_BlockedClients
             // 
             label_BlockedClients.AutoSize = true;
-            tlp_Main.SetColumnSpan(label_BlockedClients, 2);
+            tlp_Main.SetColumnSpan(label_BlockedClients, 3);
             label_BlockedClients.Dock = DockStyle.Fill;
             label_BlockedClients.Font = new Font("Segoe UI", 14F);
             label_BlockedClients.ForeColor = Color.FromArgb(239, 228, 177);
@@ -211,7 +214,7 @@
             // 
             // lb_BlockedClients
             // 
-            tlp_Main.SetColumnSpan(lb_BlockedClients, 2);
+            tlp_Main.SetColumnSpan(lb_BlockedClients, 3);
             lb_BlockedClients.Dock = DockStyle.Fill;
             lb_BlockedClients.FormattingEnabled = true;
             lb_BlockedClients.ItemHeight = 15;
@@ -253,7 +256,7 @@
             btn_UnBlockClient.Dock = DockStyle.Left;
             btn_UnBlockClient.FlatStyle = FlatStyle.Flat;
             btn_UnBlockClient.ForeColor = Color.FromArgb(0, 97, 0);
-            btn_UnBlockClient.Location = new Point(1113, 73);
+            btn_UnBlockClient.Location = new Point(1232, 73);
             btn_UnBlockClient.Name = "btn_UnBlockClient";
             btn_UnBlockClient.Size = new Size(155, 24);
             btn_UnBlockClient.TabIndex = 8;
@@ -273,13 +276,13 @@
             chk_CheckAllBlockedClients.UseVisualStyleBackColor = true;
             chk_CheckAllBlockedClients.CheckedChanged += chk_CheckAllBlockedClients_CheckedChanged;
             // 
-            // tb_Filter
+            // tb_FilterAllClients
             // 
-            tb_Filter.Dock = DockStyle.Fill;
-            tb_Filter.Location = new Point(451, 73);
-            tb_Filter.Name = "tb_Filter";
-            tb_Filter.Size = new Size(118, 23);
-            tb_Filter.TabIndex = 12;
+            tb_FilterAllClients.Dock = DockStyle.Fill;
+            tb_FilterAllClients.Location = new Point(451, 73);
+            tb_FilterAllClients.Name = "tb_FilterAllClients";
+            tb_FilterAllClients.Size = new Size(118, 23);
+            tb_FilterAllClients.TabIndex = 12;
             // 
             // lv_UsersOnClient
             // 
@@ -319,6 +322,13 @@
             label_FilterClients.Text = "Filter Clients";
             label_FilterClients.TextAlign = ContentAlignment.BottomCenter;
             // 
+            // tb_FilterBlockedClients
+            // 
+            tb_FilterBlockedClients.Location = new Point(1113, 73);
+            tb_FilterBlockedClients.Name = "tb_FilterBlockedClients";
+            tb_FilterBlockedClients.Size = new Size(113, 23);
+            tb_FilterBlockedClients.TabIndex = 19;
+            // 
             // ClientUpdateManager
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -347,12 +357,13 @@
         private Label label_BlockedClients;
         private CheckBox chk_CheckAllBlockedClients;
         private Label label_Versions;
-        private TextBox tb_Filter;
+        private TextBox tb_FilterAllClients;
         private ListBox lb_AllUsers;
         private Label label_AllUsers;
         private ListView lv_UsersOnClient;
         private Label label_ProdLines;
         private ListBox lb_ProdLines;
         private Label label_FilterClients;
+        private TextBox tb_FilterBlockedClients;
     }
 }

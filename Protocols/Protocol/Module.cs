@@ -626,6 +626,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
 
             Validate_Data.IsCharOk_KeyPress(e, row, FormTemplateID, dgv_Module);
         }
+        [DebuggerStepThrough]
         private void Module_CellEnter(object sender, DataGridViewCellEventArgs e)
         {
             if (dgv_Module == null || !IsOkToSave || e.RowIndex < 0)
@@ -652,6 +653,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
 
             cell.ToolTipText = toolTipText;
         }
+        [DebuggerStepThrough]
         private void Module_CellLeave(object sender, DataGridViewCellEventArgs e)
         {
             if (dgv_Module == null || !IsOkToSave || e.RowIndex < 0)
@@ -1106,7 +1108,12 @@ namespace DigitalProductionProgram.Protocols.Protocol
                 case 83:
                 case 209:
                     if (isProcesscardUnderManagement)
-                        cell.Value = Regex.Replace(cell.Value.ToString(), "[^0-9,]", "");
+                    {
+                        var input = cell.Value?.ToString() ?? "";
+                        var match = Regex.Match(input, @"\d+[.,]?\d*");
+                        if (match.Success)
+                            cell.Value = match.Value;
+                    }
                     break;
                 case 310:
                     DieType = dgv_Module.Rows[row].Cells[col].Value.ToString();
@@ -1117,10 +1124,6 @@ namespace DigitalProductionProgram.Protocols.Protocol
                 case 399:   //KALIBRERING 
                     if (isProcesscardUnderManagement)
                         cell.Value = Regex.Replace(cell.Value.ToString(), "[^0-9,]", "");
-                    break;
-                case 325:   //RENGJORT CYLINDER
-                    break;
-                case 326:   //RENGJORT UTRUSTNING
                     break;
             }
         }
@@ -1289,6 +1292,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                                 'Save data: ',
                                 COALESCE((SELECT TOP(1) CodeText FROM [Protocol].[Description] WHERE ID = @protocoldescriptionid), 'N/A'),
                                 ' - Value = ', @value,
+                                ' - TextValue = ', @textvalue,
                                 ' - StartUp = ', @uppstart,
                                 ', Machine = ', @machineindex));";
 
@@ -1610,10 +1614,10 @@ namespace DigitalProductionProgram.Protocols.Protocol
                 var startup = dgv_Protocol.Columns.Count;
                 switch (value)
                 {
-                    case "Ja":
-                    case "Yes":
-                        Delete_Equipment(dgv_Protocol);
-                        break;
+                    //case "Ja":
+                    //case "Yes":
+                    //    Delete_Equipment(dgv_Protocol);
+                    //    break;
                     case "Nej, samma material och utrustning som föreg. Order":
                     case "No, same material and equipment as last":
                     case "Nej, samma material som föreg. uppstart":
@@ -1746,7 +1750,11 @@ namespace DigitalProductionProgram.Protocols.Protocol
             private static void Delete_Equipment(DataGridView dgv_Protocol)
             {
                 for (var i = 2; i < dgv_Protocol.Rows.Count - 1; i++)
+                {
+                    dgv_Protocol.Rows[i].Cells[dgv_Protocol.Columns.Count - 1].Selected = true;
                     dgv_Protocol.Rows[i].Cells[dgv_Protocol.Columns.Count - 1].Value = string.Empty;
+                }
+                    
             }
             public static void Load_DryingUnderExtrusion(DataGridView dgv_Protocol, int ExtruderIndex)
             {

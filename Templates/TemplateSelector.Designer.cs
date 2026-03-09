@@ -2,7 +2,7 @@
 
 namespace DigitalProductionProgram.Templates
 {
-    partial class ProcesscardTemplateSelector
+    partial class TemplateSelector
     {
         /// <summary>
         /// Required designer variable.
@@ -173,8 +173,8 @@ namespace DigitalProductionProgram.Templates
             Name = "ProcesscardTemplateSelector";
             StartPosition = FormStartPosition.CenterScreen;
             FormClosing += ChooseProcesscard_FormClosing;
-            Load += ProcesscardTemplateSelector_Load;
-            Shown += ProcesscardTemplateSelector_Shown;
+            Load += TemplateSelector_Load;
+            Shown += TemplateSelector_Shown;
             tlp_InfoLabels.ResumeLayout(false);
             tlp_InfoLabels.PerformLayout();
             ResumeLayout(false);

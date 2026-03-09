@@ -181,7 +181,7 @@ namespace DigitalProductionProgram.OrderManagement
 
             if (Processcard.IsMultipleProcesscard(Order.WorkOperation))
             {
-                using var chooseProcesscard_StartTestOrder = new ProcesscardTemplateSelector(false, false, false, false);
+                using var chooseProcesscard_StartTestOrder = new TemplateSelector(false, false, false, false);
                 chooseProcesscard_StartTestOrder.ShowDialog();
 
             }

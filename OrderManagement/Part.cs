@@ -161,7 +161,7 @@ namespace DigitalProductionProgram.OrderManagement
                 if (WorkOperation is null)
                     Order.WorkOperation = Manage_WorkOperation.WorkOperations.Nothing;
                 using var black = new BlackBackground("", 70);
-                using var chooseProcesscard = new ProcesscardTemplateSelector(IsOperatorStartingOrder, IsOnlyProcessCard, false, isAutoSelectTemplate);
+                using var chooseProcesscard = new TemplateSelector(IsOperatorStartingOrder, IsOnlyProcessCard, false, isAutoSelectTemplate);
                 {
                     black.Show();
                     chooseProcesscard.ShowDialog();

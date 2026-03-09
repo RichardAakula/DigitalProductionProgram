@@ -145,7 +145,7 @@ namespace DigitalProductionProgram.MainWindow
                 MessageBox.Show("Updater could not be found, please contact Admin.", "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
-           // Application.Exit(); // Closing DPP
+            // Application.Exit(); // Closing DPP
         }
         private async void Menu_File_Öppna_Click(object sender, EventArgs e)
         {
@@ -354,7 +354,7 @@ namespace DigitalProductionProgram.MainWindow
                 return;
             }
 
-            using var chooseProcesscard_ChangeProcesscard = new ProcesscardTemplateSelector(true, true, false, false);
+            using var chooseProcesscard_ChangeProcesscard = new TemplateSelector(true, true, false, false);
             chooseProcesscard_ChangeProcesscard.ShowDialog();
 
             Database.ExecuteSafe(con =>
@@ -389,10 +389,10 @@ namespace DigitalProductionProgram.MainWindow
             }
 
             //Väljer först Workoperation -> ProtocolTemplateID -> LineClearanceMainTemplateID
-            using var changeWorkoperation = new ProcesscardTemplateSelector(ProcesscardTemplateSelector.TemplateType.Workoperations);
+            using var changeWorkoperation = new TemplateSelector(TemplateSelector.TemplateType.Workoperations);
             changeWorkoperation.ShowDialog();
 
-            using var changeTemplate = new ProcesscardTemplateSelector(ProcesscardTemplateSelector.TemplateType.TemplateProtocol);
+            using var changeTemplate = new TemplateSelector(TemplateSelector.TemplateType.TemplateProtocol);
             changeTemplate.ShowDialog();
             Templates_LineClearance.MainTemplate.Set_MainTemplateID();
             Database.ExecuteSafe(con =>
@@ -426,7 +426,8 @@ namespace DigitalProductionProgram.MainWindow
                 return;
             }
 
-            using var changeTemplate = new ProcesscardTemplateSelector(ProcesscardTemplateSelector.TemplateType.TemplateMeasureProtocol);
+
+            using var changeTemplate = new TemplateSelector(TemplateSelector.TemplateType.TemplateMeasureProtocol, false);
             changeTemplate.ShowDialog();
             Database.ExecuteSafe(con =>
             {
@@ -1358,6 +1359,9 @@ Protocol.Revision       = " + Templates_Protocol.MainTemplate.Revision + @"\line
 
         }
 
-        
+        private void menu_Developer_AutotestJira_Click(object sender, EventArgs e)
+        {
+            Mail.AutoTestJira();
+        }
     }
 }

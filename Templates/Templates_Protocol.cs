@@ -1221,7 +1221,7 @@ namespace DigitalProductionProgram.Templates
                     return;
                 }
 
-                var chooseTemplate = new ProcesscardTemplateSelector(ProcesscardTemplateSelector.TemplateType.TemplateProtocol);
+                var chooseTemplate = new TemplateSelector(TemplateSelector.TemplateType.TemplateProtocol);
                 chooseTemplate.ShowDialog();
                 if (chooseTemplate.IsAborted)
                     IsOkStartOrder = false;

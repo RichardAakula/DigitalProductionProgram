@@ -1,4 +1,4 @@
-using DigitalProductionProgram.DatabaseManagement;
+﻿using DigitalProductionProgram.DatabaseManagement;
 using LoadingProgressBar = DigitalProductionProgram.ControlsManagement.CustomProgressBar;
 using DigitalProductionProgram.User;
 using Microsoft.Data.SqlClient;
@@ -14,12 +14,10 @@ namespace DigitalProductionProgram.Log
 {
     public partial class ClientUpdateManager : Form
     {
-        // --- Masterlista fÃƒÂ¶r alla klienter ---
         private List<HostItem> _allClients = new();
         private List<HostItem> _allBlockedClients = new();
         private readonly List<string> _allProdLines = new();
 
-        // --- Flagga fÃƒÂ¶r att undvika SelectedIndexChanged under listuppdatering ---
         private bool _suppressSelectionChanged;
         private CancellationTokenSource _usersOnClientCts;
 
@@ -62,7 +60,7 @@ namespace DigitalProductionProgram.Log
                 LoadVersions();
                 await Task.Yield();
 
-                pbar.Set_ValueProgressBar(90, "Laddar anvÃ¤ndare...", isOkRefresh: true);
+                pbar.Set_ValueProgressBar(90, "Laddar anvÃƒÆ’Ã‚Â¤ndare...", isOkRefresh: true);
                 LoadAllUsers();
                 await Task.Yield();
 
@@ -118,7 +116,7 @@ namespace DigitalProductionProgram.Log
                 foreach (var client in filtered)
                     lb_Clients.Items.Add(client);
 
-                // Om CheckAll ÃƒÂ¤r ikryssad, markera alla synliga
+                // Om CheckAll ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¤r ikryssad, markera alla synliga
                 if (chk_CheckAllClients.Checked)
                 {
                     lb_Clients.SelectedIndices.Clear();
@@ -319,11 +317,50 @@ namespace DigitalProductionProgram.Log
             if (_suppressSelectionChanged)
                 return;
 
+            _suppressSelectionChanged = true;
+            try
+            {
+                if (lb_BlockedClients.SelectedItems.Count > 0)
+                    lb_BlockedClients.ClearSelected();
+            }
+            finally
+            {
+                _suppressSelectionChanged = false;
+            }
+
             var selectedHosts = lb_Clients.SelectedItems
                 .Cast<HostItem>()
                 .Select(h => h.HostID)
                 .ToList();
 
+            await LoadUsersForSelectedHostsAsync(selectedHosts);
+        }
+        private async void lb_BlockedClients_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_suppressSelectionChanged)
+                return;
+
+            _suppressSelectionChanged = true;
+            try
+            {
+                if (lb_Clients.SelectedItems.Count > 0)
+                    lb_Clients.ClearSelected();
+            }
+            finally
+            {
+                _suppressSelectionChanged = false;
+            }
+
+            var selectedHosts = lb_BlockedClients.SelectedItems
+                .Cast<HostItem>()
+                .Select(h => h.HostID)
+                .ToList();
+
+            await LoadUsersForSelectedHostsAsync(selectedHosts);
+        }
+
+        private async Task LoadUsersForSelectedHostsAsync(List<int> selectedHosts)
+        {
             _usersOnClientCts?.Cancel();
             _usersOnClientCts?.Dispose();
             _usersOnClientCts = new CancellationTokenSource();
@@ -337,7 +374,16 @@ namespace DigitalProductionProgram.Log
                 if (selectedHosts.Count == 0)
                     return;
 
-                var users = await GetUsersForHostsAsync(selectedHosts, token);
+                List<(int UserID, string Name, DateTime LastActivity)> users;
+                try
+                {
+                    users = await GetUsersForHostsAsync(selectedHosts, token);
+                }
+                catch (OperationCanceledException)
+                {
+                    return;
+                }
+
                 if (token.IsCancellationRequested || users == null)
                     return;
 
@@ -346,7 +392,6 @@ namespace DigitalProductionProgram.Log
                     var item = new ListViewItem(user.UserID.ToString());
                     item.SubItems.Add(user.Name);
                     item.SubItems.Add(user.LastActivity.ToString("yyyy-MM-dd HH:mm"));
-
                     lv_UsersOnClient.Items.Add(item);
                 }
             }
@@ -355,6 +400,7 @@ namespace DigitalProductionProgram.Log
                 lv_UsersOnClient.EndUpdate();
             }
         }
+
         private void lb_ProdLines_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_suppressSelectionChanged)
@@ -368,7 +414,7 @@ namespace DigitalProductionProgram.Log
 
                 IEnumerable<HostItem> filtered = _allClients;
 
-                // Kolla om nÃƒÂ¥gra ProductionLines ÃƒÂ¤r markerade
+                // Kolla om nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¥gra ProductionLines ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¤r markerade
                 var selectedProdLines = lb_ProdLines.SelectedItems.Cast<string>().ToList();
 
                 if (selectedProdLines.Any())
@@ -377,7 +423,7 @@ namespace DigitalProductionProgram.Log
 
                     foreach (var prodLine in selectedProdLines)
                     {
-                        // HÃƒÂ¤mta top 50 HostID som anvÃƒÂ¤nts med denna ProductionLine senaste ÃƒÂ¥ret
+                        // HÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¤mta top 50 HostID som anvÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¤nts med denna ProductionLine senaste ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¥ret
                         var hostIds = Database.ExecuteSafe(con =>
                         {
                             var list = new List<int>();
@@ -403,7 +449,7 @@ namespace DigitalProductionProgram.Log
                             hostIdsForProdLines.Add(h);
                     }
 
-                    // Filtrera masterlistan baserat pÃƒÂ¥ alla valda ProductionLines
+                    // Filtrera masterlistan baserat pÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¥ alla valda ProductionLines
                     filtered = filtered.Where(c => hostIdsForProdLines.Contains(c.HostID));
                 }
 
@@ -418,7 +464,7 @@ namespace DigitalProductionProgram.Log
                 foreach (var client in filtered)
                     lb_Clients.Items.Add(client);
 
-                // Om CheckAll ÃƒÂ¤r ikryssad, markera alla synliga
+                // Om CheckAll ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¤r ikryssad, markera alla synliga
                 if (chk_CheckAllClients.Checked)
                 {
                     lb_Clients.SelectedIndices.Clear();
@@ -438,24 +484,24 @@ namespace DigitalProductionProgram.Log
             if (lb_Versions.SelectedItem is not string version)
                 return;
 
-            // Ã°Å¸â€Â¥ 1. Ãƒâ€¦terstÃƒÂ¤ll masterlistan fÃƒÂ¶r Clients helt (inkl. UI)
+            // ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â¥ 1. ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦terstÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¤ll masterlistan fÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¶r Clients helt (inkl. UI)
             LoadClients();
 
-            // Ã°Å¸â€Â¥ 2. HÃƒÂ¤mta blockerade klienter fÃƒÂ¶r vald version
+            // ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â¥ 2. HÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¤mta blockerade klienter fÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¶r vald version
             var blockedClients = GetBlockedClientsForVersion(version);
 
-            // Ã°Å¸â€Â¥ 3. Uppdatera masterlistan fÃƒÂ¶r blockerade klienter
+            // ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â¥ 3. Uppdatera masterlistan fÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¶r blockerade klienter
             _allBlockedClients = blockedClients.ToList();
 
             lb_BlockedClients.BeginUpdate();
             lb_Clients.BeginUpdate();
             try
             {
-                // Ã°Å¸â€Â¥ 4. Fyll Blocked-listan frÃƒÂ¥n masterlistan
+                // ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â¥ 4. Fyll Blocked-listan frÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¥n masterlistan
                 lb_BlockedClients.Items.Clear();
                 lb_BlockedClients.Items.AddRange(_allBlockedClients.ToArray());
 
-                // Ã°Å¸â€Â¥ 5. Ta bort blockerade frÃƒÂ¥n _allClients
+                // ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â¥ 5. Ta bort blockerade frÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¥n _allClients
                 if (_allBlockedClients.Count > 0)
                 {
                     var blockedIds = new HashSet<int>(_allBlockedClients.Select(x => x.HostID));
@@ -470,10 +516,10 @@ namespace DigitalProductionProgram.Log
                 lb_BlockedClients.EndUpdate();
             }
 
-            // Ã°Å¸â€Â¥ 6. Refreshar klientlistan med aktuella filter (tb_Filter)
+            // ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â¥ 6. Refreshar klientlistan med aktuella filter (tb_Filter)
             RefreshClientList();
 
-            // Ã°Å¸â€Â¥ 7. Refreshar Blocked-listan med aktuellt filter (tb_FilterBlockedClients)
+            // ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â¥ 7. Refreshar Blocked-listan med aktuellt filter (tb_FilterBlockedClients)
             RefreshBlockedClientList();
         }
         private void lb_AllUsers_SelectedIndexChanged(object sender, EventArgs e)
@@ -486,7 +532,7 @@ namespace DigitalProductionProgram.Log
 
                 IEnumerable<HostItem> filtered = _allClients;
 
-                // Kolla om nÃƒÂ¥gra anvÃƒÂ¤ndare ÃƒÂ¤r markerade
+                // Kolla om nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¥gra anvÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¤ndare ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¤r markerade
                 var selectedUsers = lb_AllUsers.SelectedItems.Cast<KeyValuePair<int, string>>().ToList();
 
                 if (selectedUsers.Any())
@@ -495,7 +541,7 @@ namespace DigitalProductionProgram.Log
 
                     foreach (var user in selectedUsers)
                     {
-                        // HÃƒÂ¤mta top 50 HostID som anvÃƒÂ¤ndaren jobbat mest pÃƒÂ¥ senaste ÃƒÂ¥ret
+                        // HÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¤mta top 50 HostID som anvÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¤ndaren jobbat mest pÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¥ senaste ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¥ret
                         var userHostIds = Database.ExecuteSafe(con =>
                         {
                             var list = new List<int>();
@@ -516,12 +562,12 @@ namespace DigitalProductionProgram.Log
                             return list;
                         });
 
-                        // LÃƒÂ¤gg till i en HashSet fÃƒÂ¶r union
+                        // LÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¤gg till i en HashSet fÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¶r union
                         foreach (var h in userHostIds)
                             hostIdsForUsers.Add(h);
                     }
 
-                    // Filtrera masterlistan baserat pÃƒÂ¥ alla valda anvÃƒÂ¤ndares HostID
+                    // Filtrera masterlistan baserat pÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¥ alla valda anvÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¤ndares HostID
                     filtered = filtered.Where(c => hostIdsForUsers.Contains(c.HostID));
                 }
 
@@ -536,7 +582,7 @@ namespace DigitalProductionProgram.Log
                 foreach (var client in filtered)
                     lb_Clients.Items.Add(client);
 
-                // Om CheckAll ÃƒÂ¤r ikryssad, markera alla synliga
+                // Om CheckAll ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¤r ikryssad, markera alla synliga
                 if (chk_CheckAllClients.Checked)
                 {
                     lb_Clients.SelectedIndices.Clear();
@@ -572,7 +618,7 @@ namespace DigitalProductionProgram.Log
                 _suppressSelectionChanged = false;
             }
 
-            // Ã°Å¸â€Â¥ TRIGGA EN ENDA uppdatering manuellt
+            // ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â¥ TRIGGA EN ENDA uppdatering manuellt
             lb_Clients_SelectedIndexChanged(lb_Clients, EventArgs.Empty);
         }
         private void chk_CheckAllBlockedClients_CheckedChanged(object sender, EventArgs e)
@@ -599,7 +645,7 @@ namespace DigitalProductionProgram.Log
             if (lb_Clients.SelectedItems.Count == 0 || string.IsNullOrEmpty(version))
                 return;
 
-            // HÃƒÂ¤mta valda klienter
+            // HÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¤mta valda klienter
             var toBlock = lb_Clients.SelectedItems.Cast<HostItem>().ToList();
             if (toBlock.Count == 0)
                 return;
@@ -643,7 +689,7 @@ namespace DigitalProductionProgram.Log
                 if (_allBlockedClients.All(x => x.HostID != host.HostID))
                     _allBlockedClients.Add(host);
 
-                // ta bort frÃƒÂ¥n clients masterlist
+                // ta bort frÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¥n clients masterlist
                 _allClients.RemoveAll(x => x.HostID == host.HostID);
             }
 
@@ -698,7 +744,7 @@ namespace DigitalProductionProgram.Log
                 // Ta bort ur blocked masterlist
                 _allBlockedClients.RemoveAll(x => x.HostID == host.HostID);
 
-                // LÃƒÂ¤gg tillbaka i client-masterlist om sÃƒÂ¤kert
+                // LÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¤gg tillbaka i client-masterlist om sÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¤kert
                 if (_allClients.All(x => x.HostID != host.HostID))
                     _allClients.Add(host);
             }
@@ -721,7 +767,7 @@ namespace DigitalProductionProgram.Log
                 lb_Clients.EndUpdate();
             }
 
-            // --- 4. SÃƒÂ¶kfilter pÃƒÂ¥ blocked-list ---
+            // --- 4. SÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¶kfilter pÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¥ blocked-list ---
             RefreshBlockedClientList();
         }
 
@@ -768,11 +814,21 @@ namespace DigitalProductionProgram.Log
         }
         private async Task<List<(int UserID, string Name, DateTime LastActivity)>> GetUsersForHostsAsync(IEnumerable<int> hostIds, CancellationToken cancellationToken)
         {
-            return await Task.Run(() =>
+            if (cancellationToken.IsCancellationRequested)
+                return new List<(int UserID, string Name, DateTime LastActivity)>();
+
+            var users = await Task.Run(() =>
             {
-                cancellationToken.ThrowIfCancellationRequested();
+                if (cancellationToken.IsCancellationRequested)
+                    return new List<(int UserID, string Name, DateTime LastActivity)>();
+
                 return GetUsersForHosts(hostIds);
-            }, cancellationToken);
+            });
+
+            if (cancellationToken.IsCancellationRequested)
+                return new List<(int UserID, string Name, DateTime LastActivity)>();
+
+            return users;
         }
 
         private List<(int UserID, string Name, DateTime LastActivity)> GetUsersForHosts(IEnumerable<int> hostIds)
@@ -845,7 +901,6 @@ namespace DigitalProductionProgram.Log
                 return result;
             });
         }
-
         public class HostItem(int hostId, string hostName)
         {
             public int HostID { get; } = hostId;

@@ -91,9 +91,22 @@ namespace DigitalProductionProgram.eMail
                 Port = 25,
                 EnableSsl = false,
             };
-            if (msg.To.Count > 0)
-                client.Send(msg);
-            client.Dispose();
+            try
+            {
+                if (msg.To.Count > 0)
+                    client.Send(msg);
+            }
+            catch (Exception e)
+            {
+                Log.Activity.Stop("MailSendError: " + e.Message);
+                InfoText.Show("Error!\n" +
+                              $"{e.Message}", CustomColors.InfoText_Color.Bad, header:"Error");
+            }
+            finally
+            {
+                client.Dispose();
+            }
+            
         }
 
         public static void Test()

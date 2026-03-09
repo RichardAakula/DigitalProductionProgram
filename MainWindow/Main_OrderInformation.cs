@@ -69,45 +69,56 @@ namespace DigitalProductionProgram.MainWindow
 
             Database.ExecuteSafe(con =>
             {
-                const string query = @"
-        SELECT TOP(1) 
-            Operation, 
-            PartNr, 
-            Amount, 
-            Unit, 
-            Name_Start, 
-            Date_Start, 
-            Date_Stop, 
-            ProdGroup, 
-            ProdLine, 
-            Customer, 
-            Description, 
-            Version, 
-            RevNr, 
-            PartID, 
-            maintemplate.Revision AS ProtocolTemplateRevision,
-            orders.LineClearanceMainTemplateID, 
-            orders.MeasureProtocolMainTemplateID,
-            CASE 
-                WHEN orders.LineClearanceMainTemplateID IS NULL THEN NULL 
-                ELSE lc.CenturiLink 
-            END AS CenturiLink, 
-            orders.ProtocolMainTemplateID, 
-            maintemplate.Name AS ProtocolTemplateName,
-            measure.Name AS MeasureprotocolTemplateName,
-            IsUsingPreFab, 
-            IsMultipleColumnsStartup
-        FROM [Order].MainData AS orders
-            LEFT JOIN Protocol.MainTemplate AS maintemplate
-                ON orders.ProtocolMainTemplateID = maintemplate.ID
-            LEFT JOIN Protocol.FormTemplate AS formtemplate
-                ON orders.ProtocolMainTemplateID = formtemplate.MainTemplateID
-            LEFT JOIN LineClearance.MainTemplate AS lc
-                ON lc.ProtocolMainTemplateID = maintemplate.ID
-            LEFT JOIN MeasureProtocol.MainTemplate AS measure
-                ON orders.MeasureProtocolMainTemplateID = measure.MeasureProtocolMainTemplateID
-        WHERE OrderID = @orderid
-        ORDER BY IsMultipleColumnsStartup DESC";
+                const string query = """
+                
+
+                                                                                  SELECT TOP (1)
+                                                                                     orders.Operation,
+                                                                                     orders.PartNr,
+                                                                                     orders.Amount,
+                                                                                     orders.Unit,
+                                                                                     orders.Name_Start,
+                                                                                     orders.Date_Start,
+                                                                                     orders.Date_Stop,
+                                                                                     orders.ProdGroup,
+                                                                                     orders.ProdLine,
+                                                                                     orders.Customer,
+                                                                                     orders.Description,
+                                                                                     orders.Version,
+                                                                                     orders.RevNr,
+                                                                                     orders.PartID,
+                                                                                     maintemplate.Revision AS ProtocolTemplateRevision,
+                                                                                     CA.MainTemplateID AS LineClearanceMainTemplateId,
+                                                                                     orders.MeasureProtocolMainTemplateID,
+                                                                                     orders.WorkoperationID,
+                                                                                     CA.CenturiLink,                              -- från cross apply
+                                                                                     orders.ProtocolMainTemplateID,
+                                                                                     maintemplate.Name AS ProtocolTemplateName,
+                                                                                     measure.Name AS MeasureprotocolTemplateName,
+                                                                                     IsUsingPreFab,
+                                                                                     IsMultipleColumnsStartup
+                                                                                 FROM [Order].MainData AS orders
+                                                                                 LEFT JOIN Protocol.MainTemplate AS maintemplate
+                                                                                     ON orders.ProtocolMainTemplateID = maintemplate.ID
+                                                                                 LEFT JOIN Protocol.FormTemplate AS formtemplate
+                                                                                     ON orders.ProtocolMainTemplateID = formtemplate.MainTemplateID
+                                                                                 OUTER APPLY 
+                                                                                 (
+                                                                                     SELECT TOP (1)
+                                                                                         lc.MainTemplateID,
+                                                                                         lc.CenturiLink,
+                                                                                         lc.LineClearance_Revision
+                                                                                     FROM LineClearance.MainTemplate AS lc
+                                                                                     WHERE lc.WorkoperationID = orders.WorkoperationId
+                                                                                     ORDER BY lc.LineClearance_Revision DESC
+                                                                                 ) AS CA
+
+                                                                                 LEFT JOIN MeasureProtocol.MainTemplate AS measure
+                                                                                     ON orders.MeasureProtocolMainTemplateID = measure.MeasureProtocolMainTemplateID
+                                                                                 WHERE orders.OrderID = @orderid
+                                                                                 ORDER BY IsMultipleColumnsStartup DESC;
+                
+                """;
 
                 using var cmd = new SqlCommand(query, con);
                 cmd.Parameters.Add("@orderid", SqlDbType.Int).Value = Order.OrderID;
@@ -146,7 +157,7 @@ namespace DigitalProductionProgram.MainWindow
                 if (TryParse(reader["ProtocolMainTemplateID"]?.ToString(), out var protocolTemplateId))
                     Templates_Protocol.MainTemplate.ID = protocolTemplateId;
 
-                if (TryParse(reader["LineClearanceMainTemplateID"]?.ToString(), out var lcTemplateId))
+                if (TryParse(reader["LineClearanceMainTemplateId"]?.ToString(), out var lcTemplateId))
                     Templates_LineClearance.MainTemplate.LineClearance_MainTemplateID = lcTemplateId;
 
                 Templates_MeasureProtocol.MainTemplate.ID = reader["MeasureProtocolMainTemplateID"] is DBNull ? null : Convert.ToInt32(reader["MeasureProtocolMainTemplateID"]);

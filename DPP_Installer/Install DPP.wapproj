@@ -64,7 +64,7 @@
     <GenerateTestArtifacts>True</GenerateTestArtifacts>
     <AppxBundlePlatforms>x86</AppxBundlePlatforms>
     <AppInstallerUri>\\optifil\DPP\</AppInstallerUri>
-    <HoursBetweenUpdateChecks>24</HoursBetweenUpdateChecks>
+    <HoursBetweenUpdateChecks>168</HoursBetweenUpdateChecks>
     <AppxPackageDir>\\optifil\DPP\</AppxPackageDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

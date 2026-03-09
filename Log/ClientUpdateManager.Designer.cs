@@ -1,4 +1,4 @@
-﻿namespace DigitalProductionProgram.Log
+namespace DigitalProductionProgram.Log
 {
     partial class ClientUpdateManager
     {
@@ -227,6 +227,7 @@
             lb_BlockedClients.SelectionMode = SelectionMode.MultiExtended;
             lb_BlockedClients.Size = new Size(359, 699);
             lb_BlockedClients.TabIndex = 5;
+            lb_BlockedClients.SelectedIndexChanged += lb_BlockedClients_SelectedIndexChanged;
             // 
             // chk_CheckAllClients
             // 

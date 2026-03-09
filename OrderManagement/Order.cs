@@ -855,7 +855,7 @@ namespace DigitalProductionProgram.OrderManagement
 
                     if (Processcard.IsMultipleProcesscard(WorkOperation))
                     {
-                        using var chooseProcesscard_StartOrder = new ProcesscardTemplateSelector(true, false, false, false); 
+                        using var chooseProcesscard_StartOrder = new TemplateSelector(true, false, false, false); 
                         using var black = new BlackBackground("", 70);
                         black.Show();
                         chooseProcesscard_StartOrder.ShowDialog();

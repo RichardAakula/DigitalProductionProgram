@@ -272,7 +272,7 @@ namespace DigitalProductionProgram.OrderManagement
             if (names.Count > 1 && Order.OrderNumber != null && Order.WorkOperation == WorkOperations.Nothing)
             {
                 //Om en produktionslinje tillhör flera arbetsoperationer får operatören nedan välja vilken arbetsoperation ordern hör till
-                using  var chooseWorkoperation = new ProcesscardTemplateSelector(ProcesscardTemplateSelector.TemplateType.Workoperations);
+                using  var chooseWorkoperation = new TemplateSelector(TemplateSelector.TemplateType.Workoperations);
                 chooseWorkoperation.ShowDialog();
 
                 //var chooseWorkoperation = new ChooseWorkoperation(names, null, ChooseWorkoperation.SourceType.Type_WorkOperation);

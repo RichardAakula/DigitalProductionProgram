@@ -825,7 +825,7 @@ namespace DigitalProductionProgram.Templates
 
                 return;
                 //Koden nedan behövs troligen inte, LineClearance bör alltid bli rätt laddad
-                var chooseTemplate = new ProcesscardTemplateSelector(ProcesscardTemplateSelector.TemplateType.TemplateMeasureProtocol);
+                var chooseTemplate = new TemplateSelector(TemplateSelector.TemplateType.TemplateMeasureProtocol);
                 chooseTemplate.ShowDialog();
             }
             public static void Save_Data(string name, string lineClearanceRevision, string centuriLink, bool isApprovalRequired)

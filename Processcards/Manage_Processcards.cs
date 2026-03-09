@@ -582,7 +582,7 @@ namespace DigitalProductionProgram.Processcards
             if (Processcard.IsMultipleProcesscard(Order.WorkOperation, Order.PartNumber))
             {
                 using var black = new BlackBackground("", 70);
-                using var chooseProcesscard = new ProcesscardTemplateSelector(false, true, true, false);
+                using var chooseProcesscard = new TemplateSelector(false, true, true, false);
                 black.Show();
                 chooseProcesscard.ShowDialog();
                 black.Close();

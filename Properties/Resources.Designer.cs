@@ -1627,7 +1627,7 @@ namespace DigitalProductionProgram.Properties {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
-        public static string error_Monitor {
+        internal static string errorCode {
             get {
                 return ResourceManager.GetString("error_Monitor", resourceCulture);
             }
@@ -1666,16 +1666,6 @@ namespace DigitalProductionProgram.Properties {
         public static string errorcode_Info_1 {
             get {
                 return ResourceManager.GetString("errorcode_Info_1", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to An error occurred while connecting to the database.
-        ///Please contact IT support if the issue persists..
-        /// </summary>
-        public static string errorConnectingDatabase {
-            get {
-                return ResourceManager.GetString("errorConnectingDatabase", resourceCulture);
             }
         }
         
@@ -2063,6 +2053,17 @@ namespace DigitalProductionProgram.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to INSERT INTO [Order].MainData (WorkOperationID,MainTemplateID, ProtocolTemplateRevision, MeasureProtocolTemplateRevision, OrderID, OrderNr, Operation, PartID, PartNr, RevNr, ProdGroup, ProdLine, ProdType, Customer, Description, Amount, Unit, 
+        ///                    Name_Start, Date_Start, Version, IsOrderDone, IsDeleted)
+        ///                VALUES (@workoperationid, @maintemplateid, @korprotokolltemplaterevision, @measureprotocoltemplaterevision, @id, @ordernr, @operation, @partid, @partnr, @revNr, @prodgroup, @p [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string INSERT_Korprotokoll_Main {
+            get {
+                return ResourceManager.GetString("INSERT_Korprotokoll_Main", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
         public static string isOkAddStartUp {
@@ -2290,16 +2291,7 @@ namespace DigitalProductionProgram.Properties {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
-        public static string label_DiscardedMeasurements {
-            get {
-                return ResourceManager.GetString("label_DiscardedMeasurements", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        public static string label_DiscardUser {
+        internal static string label_DiscardUser {
             get {
                 return ResourceManager.GetString("label_DiscardUser", resourceCulture);
             }
@@ -2443,7 +2435,7 @@ namespace DigitalProductionProgram.Properties {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
-        public static string label_InactiveProcesscard {
+        internal static string label_Info {
             get {
                 return ResourceManager.GetString("label_InactiveProcesscard", resourceCulture);
             }
@@ -2803,7 +2795,7 @@ namespace DigitalProductionProgram.Properties {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
-        public static string label_ResetPasswordInfo {
+        internal static string label_RevNr {
             get {
                 return ResourceManager.GetString("label_ResetPasswordInfo", resourceCulture);
             }
@@ -2911,16 +2903,7 @@ namespace DigitalProductionProgram.Properties {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
-        public static string label_TotalMeasureMents {
-            get {
-                return ResourceManager.GetString("label_TotalMeasureMents", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        public static string label_Warning {
+        internal static string label_Warning {
             get {
                 return ResourceManager.GetString("label_Warning", resourceCulture);
             }
@@ -3776,16 +3759,7 @@ namespace DigitalProductionProgram.Properties {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
-        public static string Menu_Order_OrderLog {
-            get {
-                return ResourceManager.GetString("Menu_Order_OrderLog", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        public static string Menu_Order_QC_Feedback {
+        internal static string Menu_Order_QC_Feedback {
             get {
                 return ResourceManager.GetString("Menu_Order_QC_Feedback", resourceCulture);
             }
@@ -3794,16 +3768,7 @@ namespace DigitalProductionProgram.Properties {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
-        public static string Menu_Order_ReadProposedProcesscardChanges {
-            get {
-                return ResourceManager.GetString("Menu_Order_ReadProposedProcesscardChanges", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        public static string Menu_Order_ReLink_MeasureProtocol {
+        internal static string Menu_Order_ReLink_MeasureProtocol {
             get {
                 return ResourceManager.GetString("Menu_Order_ReLink_MeasureProtocol", resourceCulture);
             }
@@ -4118,7 +4083,17 @@ namespace DigitalProductionProgram.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap NewLogo {
+        internal static System.Drawing.Bitmap NewIcon {
+            get {
+                object obj = ResourceManager.GetObject("NewIcon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap NewLogo {
             get {
                 object obj = ResourceManager.GetObject("NewLogo", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -4183,7 +4158,7 @@ namespace DigitalProductionProgram.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Fill in.
         /// </summary>
-        public static string orderDone_1 {
+        internal static string orderDone_2 {
             get {
                 return ResourceManager.GetString("orderDone_1", resourceCulture);
             }
@@ -4246,7 +4221,7 @@ namespace DigitalProductionProgram.Properties {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
-        public static string orderNotOpen {
+        internal static string orderProdtime {
             get {
                 return ResourceManager.GetString("orderNotOpen", resourceCulture);
             }
@@ -4465,16 +4440,7 @@ namespace DigitalProductionProgram.Properties {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
-        public static string processcard_ChangeProdType {
-            get {
-                return ResourceManager.GetString("processcard_ChangeProdType", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        public static string processcard_MissingInfo {
+        internal static string processcard_MissingInfo {
             get {
                 return ResourceManager.GetString("processcard_MissingInfo", resourceCulture);
             }
@@ -4483,34 +4449,7 @@ namespace DigitalProductionProgram.Properties {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
-        public static string processcard_MissingInfo_MeasurementTemplate {
-            get {
-                return ResourceManager.GetString("processcard_MissingInfo_MeasurementTemplate", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        public static string processcard_SuggestedChanges {
-            get {
-                return ResourceManager.GetString("processcard_SuggestedChanges", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        public static string processcardAlreadyEstablished {
-            get {
-                return ResourceManager.GetString("processcardAlreadyEstablished", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        public static string processcardAlreadySigned {
+        internal static string processcardAlreadySigned {
             get {
                 return ResourceManager.GetString("processcardAlreadySigned", resourceCulture);
             }
@@ -4717,25 +4656,7 @@ namespace DigitalProductionProgram.Properties {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
-        public static string resetPassword_CodeExpired {
-            get {
-                return ResourceManager.GetString("resetPassword_CodeExpired", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        public static string resetPassword_MaxAttemptsReached {
-            get {
-                return ResourceManager.GetString("resetPassword_MaxAttemptsReached", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        public static string resetPassword_TimeLeft {
+        internal static string revisionInfo {
             get {
                 return ResourceManager.GetString("resetPassword_TimeLeft", resourceCulture);
             }
@@ -5043,7 +4964,7 @@ namespace DigitalProductionProgram.Properties {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
-        public static string spc_Kurtosis {
+        internal static string spool {
             get {
                 return ResourceManager.GetString("spc_Kurtosis", resourceCulture);
             }
@@ -5305,7 +5226,7 @@ namespace DigitalProductionProgram.Properties {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
-        public static string String1 {
+        internal static string template {
             get {
                 return ResourceManager.GetString("String1", resourceCulture);
             }
@@ -5341,7 +5262,7 @@ namespace DigitalProductionProgram.Properties {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
-        public static string top10LatestOrders {
+        internal static string transferDataExcel_1 {
             get {
                 return ResourceManager.GetString("top10LatestOrders", resourceCulture);
             }
@@ -5517,16 +5438,7 @@ namespace DigitalProductionProgram.Properties {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
-        public static string update_Info {
-            get {
-                return ResourceManager.GetString("update_Info", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        public static string update_Info_1 {
+        internal static string update_Info_1 {
             get {
                 return ResourceManager.GetString("update_Info_1", resourceCulture);
             }
@@ -5553,43 +5465,7 @@ namespace DigitalProductionProgram.Properties {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
-        public static string update_Info_2 {
-            get {
-                return ResourceManager.GetString("update_Info_2", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Start/Open an order before you try to upload a picture.
-        /// </summary>
-        public static string uploadPicture_1 {
-            get {
-                return ResourceManager.GetString("uploadPicture_1", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Select a picture you want to upload.
-        /// </summary>
-        public static string uploadPicture_2 {
-            get {
-                return ResourceManager.GetString("uploadPicture_2", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Picture is saved and can now be seen everytime this partnumber is run..
-        /// </summary>
-        public static string uploadPicture_3 {
-            get {
-                return ResourceManager.GetString("uploadPicture_3", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        public static string user_AddedInSystem {
+        internal static string user_AddedInSystem {
             get {
                 return ResourceManager.GetString("user_AddedInSystem", resourceCulture);
             }
@@ -5971,16 +5847,7 @@ namespace DigitalProductionProgram.Properties {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
-        public static string zumbach_DeleteMeasurement {
-            get {
-                return ResourceManager.GetString("zumbach_DeleteMeasurement", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        public static string zumbach_Info_1 {
+        internal static string zumbach_Info_1 {
             get {
                 return ResourceManager.GetString("zumbach_Info_1", resourceCulture);
             }

@@ -288,10 +288,10 @@ namespace DigitalProductionProgram.MainWindow
             tlp_Top.ColumnCount = 3;
             tlp_Top.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 665F));
             tlp_Top.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
-            tlp_Top.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 169F));
-            tlp_Top.Controls.Add(cf_MainMenu, 0, 0);
-            tlp_Top.Controls.Add(cf_Serverstatus, 2, 0);
-            tlp_Top.Controls.Add(cf_RollingInformation, 1, 0);
+            tlp_Top.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 105F));
+            tlp_Top.Controls.Add(RollingInformation, 1, 0);
+            tlp_Top.Controls.Add(MainMenu, 0, 0);
+            tlp_Top.Controls.Add(Serverstatus, 2, 0);
             tlp_Top.Dock = DockStyle.Top;
             tlp_Top.Location = new Point(0, 0);
             tlp_Top.Margin = new Padding(0);
@@ -301,18 +301,17 @@ namespace DigitalProductionProgram.MainWindow
             tlp_Top.Size = new Size(1924, 43);
             tlp_Top.TabIndex = 912;
             // 
-            // cf_MainMenu
+            // RollingInformation
             // 
-            cf_MainMenu.AutoSize = true;
-            cf_MainMenu.BackColor = Color.Transparent;
-            cf_MainMenu.Dock = DockStyle.Fill;
-            cf_MainMenu.Location = new Point(0, 0);
-            cf_MainMenu.Margin = new Padding(0);
-            cf_MainMenu.Name = "cf_MainMenu";
-            cf_MainMenu.Size = new Size(665, 43);
-            cf_MainMenu.TabIndex = 894;
+            RollingInformation.BackColor = Color.FromArgb(155, 25, 25);
+            RollingInformation.Dock = DockStyle.Fill;
+            RollingInformation.Location = new Point(670, 5);
+            RollingInformation.Margin = new Padding(5);
+            RollingInformation.Name = "RollingInformation";
+            RollingInformation.Size = new Size(1144, 33);
+            RollingInformation.TabIndex = 893;
             // 
-            // cf_Serverstatus
+            // MainMenu
             // 
             cf_Serverstatus.Dock = DockStyle.Fill;
             cf_Serverstatus.Location = new Point(1760, 3);

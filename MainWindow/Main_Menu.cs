@@ -965,12 +965,8 @@ Protocol.Revision       = " + Templates_Protocol.MainTemplate.Revision + @"\line
         }
         private void Menu_Developer_TestMonitorAPI_Click(object sender, EventArgs e)
         {
-            var list = new List<double>();
-            for (int i = 0; i < 10; i++)
-            {
-                var sw = new Stopwatch();
-                sw.Start();
-            }
+            using var monitorApiPerformance = new MonitorApiPerformanceForm();
+            monitorApiPerformance.ShowDialog(mainForm);
         }
 
 

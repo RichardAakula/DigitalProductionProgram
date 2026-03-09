@@ -299,9 +299,9 @@ namespace DigitalProductionProgram.Browse_Protocols
         }
         private void OrderList_CellMouseDown(object sender, DataGridViewCellMouseEventArgs e)
         {
-            if (CheckAuthority.IsRoleAuthorized(CheckAuthority.TemplateAuthorities.ManageOrderCounter, true) == false)
-                return;
             if (e.Button != MouseButtons.Right)
+                return;
+            if (CheckAuthority.IsRoleAuthorized(CheckAuthority.TemplateAuthorities.ManageOrderCounter, true) == false)
                 return;
             if (e.RowIndex >= 0 && e.ColumnIndex >= 0)
             {

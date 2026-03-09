@@ -130,7 +130,7 @@ namespace DigitalProductionProgram.MainWindow
             Menu_Developer_BlockClients = new ToolStripMenuItem();
             Menu_Developer_CheckForUpdate = new ToolStripMenuItem();
             menu_Developer_AutotestJira = new ToolStripMenuItem();
-            ettToolStripMenuItem = new ToolStripMenuItem();
+            Menu_Developer_TestMonitorAPI = new ToolStripMenuItem();
             tvåToolStripMenuItem = new ToolStripMenuItem();
             Menu_Developer_EasterEggPsycho = new ToolStripMenuItem();
             fixaChangeLogListaToolStripMenuItem = new ToolStripMenuItem();
@@ -703,7 +703,7 @@ namespace DigitalProductionProgram.MainWindow
             // 
             // Menu_Developer
             // 
-            Menu_Developer.DropDownItems.AddRange(new ToolStripItem[] { Menu_Developer_GetOrderInfo, Menu_Developer_SendMailToAllUsers, Menu_Developer_AddGallup, Menu_Developer_CheckGallup, Menu_Developer_OpenRandomOrder, Menu_Developer_Timer_test, Menu_Developer_ExportHS_Data, Menu_Developer_GetDataForQuoting, testaNAntalKörningarPåArtikelNrToolStripMenuItem, Menu_Developer_AddThemePicture, Menu_Developer_TestNewProtocol, testCalendarToolStripMenuItem, påskäggToolStripMenuItem, Developer_CountSql_Queries, Developer_Clear_Sql_Queries, Menu_Developer_BlockClients, Menu_Developer_CheckForUpdate, menu_Developer_AutotestJira, ettToolStripMenuItem, tvåToolStripMenuItem, Menu_Developer_EasterEggPsycho, fixaChangeLogListaToolStripMenuItem });
+            Menu_Developer.DropDownItems.AddRange(new ToolStripItem[] { Menu_Developer_GetOrderInfo, Menu_Developer_SendMailToAllUsers, Menu_Developer_AddGallup, Menu_Developer_CheckGallup, Menu_Developer_OpenRandomOrder, Menu_Developer_Timer_test, Menu_Developer_ExportHS_Data, Menu_Developer_GetDataForQuoting, testaNAntalKörningarPåArtikelNrToolStripMenuItem, Menu_Developer_AddThemePicture, Menu_Developer_TestNewProtocol, testCalendarToolStripMenuItem, påskäggToolStripMenuItem, Developer_CountSql_Queries, Developer_Clear_Sql_Queries, Menu_Developer_BlockClients, Menu_Developer_CheckForUpdate, menu_Developer_AutotestJira, Menu_Developer_TestMonitorAPI, tvåToolStripMenuItem, Menu_Developer_EasterEggPsycho, fixaChangeLogListaToolStripMenuItem });
             Menu_Developer.ForeColor = Color.DeepSkyBlue;
             Menu_Developer.Name = "Menu_Developer";
             Menu_Developer.Size = new Size(81, 32);
@@ -873,10 +873,12 @@ namespace DigitalProductionProgram.MainWindow
             menu_Developer_AutotestJira.Text = "Testa Autotest funktionen till Jira";
             menu_Developer_AutotestJira.Click += menu_Developer_AutotestJira_Click;
             // 
-            // ettToolStripMenuItem
+            // Menu_Developer_TestMonitorAPI
             // 
-            ettToolStripMenuItem.Name = "ettToolStripMenuItem";
-            ettToolStripMenuItem.Size = new Size(271, 22);
+            Menu_Developer_TestMonitorAPI.Name = "Menu_Developer_TestMonitorAPI";
+            Menu_Developer_TestMonitorAPI.Size = new Size(271, 22);
+            Menu_Developer_TestMonitorAPI.Text = "Test Monitor API";
+            Menu_Developer_TestMonitorAPI.Click += Menu_Developer_TestMonitorAPI_Click;
             // 
             // tvåToolStripMenuItem
             // 
@@ -1066,7 +1068,7 @@ namespace DigitalProductionProgram.MainWindow
         private ToolStripMenuItem Menu_Arkiv_UpdateDPP;
         private ToolStripMenuItem Menu_Developer_CheckForUpdate;
         private ToolStripMenuItem menu_Developer_AutotestJira;
-        private ToolStripMenuItem ettToolStripMenuItem;
+        private ToolStripMenuItem Menu_Developer_TestMonitorAPI;
         private ToolStripMenuItem tvåToolStripMenuItem;
         private ToolStripMenuItem Menu_Developer_EasterEggPsycho;
         private ToolStripMenuItem Menu_Order_ReadProposedProcesscardChanges;

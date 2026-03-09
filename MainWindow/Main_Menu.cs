@@ -959,7 +959,19 @@ Protocol.Revision       = " + Templates_Protocol.MainTemplate.Revision + @"\line
             EasterEgg_GetPsycho psycho = new EasterEgg_GetPsycho();
             psycho.Show();
         }
-
+        private void menu_Developer_AutotestJira_Click(object sender, EventArgs e)
+        {
+            Mail.AutoTestJira();
+        }
+        private void Menu_Developer_TestMonitorAPI_Click(object sender, EventArgs e)
+        {
+            var list = new List<double>();
+            for (int i = 0; i < 10; i++)
+            {
+                var sw = new Stopwatch();
+                sw.Start();
+            }
+        }
 
 
 
@@ -1359,9 +1371,6 @@ Protocol.Revision       = " + Templates_Protocol.MainTemplate.Revision + @"\line
 
         }
 
-        private void menu_Developer_AutotestJira_Click(object sender, EventArgs e)
-        {
-            Mail.AutoTestJira();
-        }
+        
     }
 }

@@ -111,7 +111,7 @@ namespace DigitalProductionProgram.Monitor
                 return parts.Select(part => part.ExtraDescription).ToList();
             }
         }
-
+        
         
         public static List<Inventory.Parts> List_Part_Types(string Description)
         {
@@ -640,7 +640,6 @@ namespace DigitalProductionProgram.Monitor
 
             return list;
         }
-
         public static List<string> List_All_WithExpand()
         {
             var list = new List<string>();

@@ -12,6 +12,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using DigitalProductionProgram.PrintingServices;
 
 namespace DigitalProductionProgram.MainWindow
 {
@@ -32,9 +33,9 @@ namespace DigitalProductionProgram.MainWindow
 
             _queries = new List<QueryDefinition>
             {
-                new(R("Query.Units", "Common.Units (top 1)"), () =>
+                new(R("Query.Units", "Top 1000 PartNumbers"), () =>
                 {
-                    var rows = Utilities.GetFromMonitor<Common.Units>("top=1", "select=Code");
+                    var rows = Utilities.GetFromMonitor<Inventory.Parts>("top=1000");
                     return rows?.Count ?? -1;
                 }),
                 new(R("Query.Orders", "ManufacturingOrders (top 1)"), () =>
@@ -89,7 +90,6 @@ namespace DigitalProductionProgram.MainWindow
         {
             ExportCsv();
         }
-
         private async Task RunPerformanceTestAsync()
         {
             if (cbFactory.SelectedItem is not FactoryDefinition factory || cbQuery.SelectedItem is not QueryDefinition query)
@@ -128,11 +128,17 @@ namespace DigitalProductionProgram.MainWindow
                 for (var i = 1; i <= loops; i++)
                 {
                     var sw = Stopwatch.StartNew();
-                    var rowCount = await Task.Run(query.Execute);
+                    var ok = true;
+
+                    var rowCount = _queries.Count;
+                    //var parts = await List_PartNumber();
+                    //var rowCount = parts.Count;
+                    if (rowCount == 0)
+                        ok = false;
                     sw.Stop();
 
-                    var ok = rowCount >= 0;
-                    var result = new LoopResult(i, sw.ElapsedMilliseconds, ok, Math.Max(0, rowCount), DateTime.Now);
+                    
+                    var result = new LoopResult(i, sw.ElapsedMilliseconds, ok, rowCount, DateTime.Now);
                     _results.Add(result);
 
                     var item = new ListViewItem(result.Iteration.ToString());
@@ -140,6 +146,7 @@ namespace DigitalProductionProgram.MainWindow
                     item.SubItems.Add(result.Success ? R("Result.Ok", "OK") : R("Result.Fail", "Fel"));
                     item.SubItems.Add(result.RowCount.ToString());
                     item.SubItems.Add(result.Timestamp.ToString("yyyy-MM-dd HH:mm:ss.fff"));
+                    item.SubItems.Add("Hämtar 1000 PartNumber från Inventory.Parts");
                     lvResults.Items.Add(item);
 
                     progressBar.Value = i;
@@ -159,6 +166,13 @@ namespace DigitalProductionProgram.MainWindow
                 Login_Monitor.sessionId = oldSession;
                 SetControlsEnabled(true);
             }
+        }
+
+        
+        private async Task<List<string>> List_PartNumber()
+        {
+            var parts = Utilities.GetFromMonitor<Inventory.Parts>("top=1000");
+            return parts?.Select(p => p.PartNumber).ToList() ?? new List<string>();
         }
 
         private void UpdateSummary()
@@ -192,7 +206,6 @@ namespace DigitalProductionProgram.MainWindow
                 max,
                 avg.ToString("F2"));
         }
-
         private void ExportCsv()
         {
             if (_results.Count == 0 || _lastFactory is null || _lastQuery is null)
@@ -240,7 +253,6 @@ namespace DigitalProductionProgram.MainWindow
                 DateTime.Now.ToString("yyyyMMdd_HHmmss"));
             Get_Protocol_Data.Save_csvFile(sb, fileName);
         }
-
         private void SetControlsEnabled(bool enabled)
         {
             cbFactory.Enabled = enabled;

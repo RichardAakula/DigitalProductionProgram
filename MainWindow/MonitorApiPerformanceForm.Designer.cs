@@ -17,7 +17,6 @@
 
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MonitorApiPerformanceForm));
             mainLayout = new TableLayoutPanel();
             controlsPanel = new TableLayoutPanel();
             lblFactory = new Label();
@@ -98,7 +97,7 @@
             lblFactory.Name = "lblFactory";
             lblFactory.Size = new Size(84, 50);
             lblFactory.TabIndex = 0;
-            lblFactory.Text = resources.GetString("lblFactory.Text");
+            lblFactory.Text = "Factory";
             lblFactory.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // cbFactory
@@ -119,7 +118,7 @@
             lblQuery.Name = "lblQuery";
             lblQuery.Size = new Size(84, 50);
             lblQuery.TabIndex = 2;
-            lblQuery.Text = resources.GetString("lblQuery.Text");
+            lblQuery.Text = "API-fråga";
             lblQuery.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // cbQuery
@@ -140,7 +139,7 @@
             lblLoops.Name = "lblLoops";
             lblLoops.Size = new Size(74, 50);
             lblLoops.TabIndex = 4;
-            lblLoops.Text = resources.GetString("lblLoops.Text");
+            lblLoops.Text = "Loopar";
             lblLoops.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // nudLoops
@@ -164,7 +163,7 @@
             btnRun.Name = "btnRun";
             btnRun.Size = new Size(114, 44);
             btnRun.TabIndex = 6;
-            btnRun.Text = resources.GetString("btnRun.Text");
+            btnRun.Text = "Kör test";
             btnRun.UseVisualStyleBackColor = false;
             btnRun.Click += btnRun_Click;
             // 
@@ -179,7 +178,7 @@
             btnExport.Name = "btnExport";
             btnExport.Size = new Size(114, 44);
             btnExport.TabIndex = 7;
-            btnExport.Text = resources.GetString("btnExport.Text");
+            btnExport.Text = "Exportera CSV";
             btnExport.UseVisualStyleBackColor = false;
             btnExport.Click += btnExport_Click;
             // 
@@ -191,7 +190,7 @@
             lblSummary.Name = "lblSummary";
             lblSummary.Size = new Size(996, 30);
             lblSummary.TabIndex = 1;
-            lblSummary.Text = resources.GetString("lblSummary.Text");
+            lblSummary.Text = "Ingen körning ännu.";
             lblSummary.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // progressBar
@@ -219,27 +218,27 @@
             // 
             // colLoop
             // 
-            colLoop.Text = resources.GetString("colLoop.Text");
+            colLoop.Text = "Loop";
             colLoop.Width = 80;
             // 
             // colTime
             // 
-            colTime.Text = resources.GetString("colTime.Text");
+            colTime.Text = "Tid (ms)";
             colTime.Width = 120;
             // 
             // colResult
             // 
-            colResult.Text = resources.GetString("colResult.Text");
+            colResult.Text = "Resultat";
             colResult.Width = 120;
             // 
             // colRows
             // 
-            colRows.Text = resources.GetString("colRows.Text");
+            colRows.Text = "Rader";
             colRows.Width = 100;
             // 
             // colTimestamp
             // 
-            colTimestamp.Text = resources.GetString("colTimestamp.Text");
+            colTimestamp.Text = "Tidpunkt";
             colTimestamp.Width = 220;
             // 
             // MonitorApiPerformanceForm
@@ -254,7 +253,7 @@
             Name = "MonitorApiPerformanceForm";
             Padding = new Padding(16);
             StartPosition = FormStartPosition.CenterParent;
-            Text = resources.GetString("$this.Text");
+            Text = "Monitor API Performance Test";
             mainLayout.ResumeLayout(false);
             controlsPanel.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)nudLoops).EndInit();

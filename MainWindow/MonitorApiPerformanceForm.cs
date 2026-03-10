@@ -33,19 +33,20 @@ namespace DigitalProductionProgram.MainWindow
 
             _queries = new List<QueryDefinition>
             {
+                new(R("Query.Orders", "Top 100 PartNumbers"), () =>
+                {
+                    var rows = Utilities.GetFromMonitor<Inventory.Parts>("top=100");
+                    return rows?.Count ?? -1;
+                }),
                 new(R("Query.Units", "Top 1000 PartNumbers"), () =>
                 {
                     var rows = Utilities.GetFromMonitor<Inventory.Parts>("top=1000");
                     return rows?.Count ?? -1;
                 }),
-                new(R("Query.Orders", "ManufacturingOrders (top 1)"), () =>
+                
+                new(R("Query.PartsHeavy", "Top 5000 PartNumbers"), () =>
                 {
-                    var rows = Utilities.GetFromMonitor<Manufacturing.ManufacturingOrders>("top=1", "select=Id,OrderNumber");
-                    return rows?.Count ?? -1;
-                }),
-                new(R("Query.PartsHeavy", "Inventory.Parts (top 500, heavy)"), () =>
-                {
-                    var rows = Utilities.GetFromMonitor<Inventory.Parts>("top=500", "select=Id,PartNumber,Description,ExtraDescription");
+                    var rows = Utilities.GetFromMonitor<Inventory.Parts>("top=5000");
                     return rows?.Count ?? -1;
                 })
             };
@@ -130,7 +131,7 @@ namespace DigitalProductionProgram.MainWindow
                     var sw = Stopwatch.StartNew();
                     var ok = true;
 
-                    var rowCount = _queries.Count;
+                    var rowCount = await Task.Run(query.Execute);
                     //var parts = await List_PartNumber();
                     //var rowCount = parts.Count;
                     if (rowCount == 0)

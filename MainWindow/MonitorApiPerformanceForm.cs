@@ -19,32 +19,34 @@ namespace DigitalProductionProgram.MainWindow
     internal partial class MonitorApiPerformanceForm : Form
     {
         private readonly List<LoopResult> _results = new();
-        private readonly List<QueryDefinition> _queries;
-        private readonly List<FactoryDefinition> _factories;
-        private readonly ComponentResourceManager _resources = new(typeof(MonitorApiPerformanceForm));
+        private List<QueryDefinition> _queries;
+        private List<FactoryDefinition> _factories;
 
         private QueryDefinition? _lastQuery;
         private FactoryDefinition? _lastFactory;
         private DateTime _lastRunAt;
 
+
         public MonitorApiPerformanceForm()
         {
             InitializeComponent();
-
+        }
+        private void MonitorApiPerformanceForm_Load(object sender, EventArgs e)
+        {
             _queries = new List<QueryDefinition>
             {
-                new(R("Query.Orders", "Top 100 PartNumbers"), () =>
+                new("Top 100 PartNumbers", () =>
                 {
                     var rows = Utilities.GetFromMonitor<Inventory.Parts>("top=100");
                     return rows?.Count ?? -1;
                 }),
-                new(R("Query.Units", "Top 1000 PartNumbers"), () =>
+                new("Top 1000 PartNumbers", () =>
                 {
                     var rows = Utilities.GetFromMonitor<Inventory.Parts>("top=1000");
                     return rows?.Count ?? -1;
                 }),
-                
-                new(R("Query.PartsHeavy", "Top 5000 PartNumbers"), () =>
+
+                new("Top 5000 PartNumbers", () =>
                 {
                     var rows = Utilities.GetFromMonitor<Inventory.Parts>("top=5000");
                     return rows?.Count ?? -1;
@@ -53,56 +55,50 @@ namespace DigitalProductionProgram.MainWindow
 
             _factories = new List<FactoryDefinition>
             {
-                new(R("Factory.Godby", "Godby"), Monitor.Monitor.Factory.Godby, "001.1"),
-                new(R("Factory.Holding", "Holding"), Monitor.Monitor.Factory.Holding, "003.1"),
-                new(R("Factory.Thailand", "Thailand"), Monitor.Monitor.Factory.Thailand, "010.1"),
-                new(R("Factory.ValleyForge", "Valley Forge"), Monitor.Monitor.Factory.ValleyForge, "012.1")
+                new("Godby", Monitor.Monitor.Factory.Godby, "001.1"),
+                new("Holding", Monitor.Monitor.Factory.Holding, "003.1"),
+                new( "Thailand", Monitor.Monitor.Factory.Thailand, "010.1"),
+                new( "Valley Forge", Monitor.Monitor.Factory.ValleyForge, "012.1")
             };
 
             LoadDefaults();
         }
 
-        private string R(string key, string fallback)
-        {
-            var value = _resources.GetString(key);
-            return string.IsNullOrWhiteSpace(value) ? fallback : value;
-        }
-
         private void LoadDefaults()
         {
-            cbFactory.DataSource = _factories;
-            cbFactory.DisplayMember = nameof(FactoryDefinition.DisplayName);
+            cb_Factory.DataSource = _factories;
+            cb_Factory.DisplayMember = nameof(FactoryDefinition.DisplayName);
 
-            cbQuery.DataSource = _queries;
-            cbQuery.DisplayMember = nameof(QueryDefinition.DisplayName);
+            cb_Query.DataSource = _queries;
+            cb_Query.DisplayMember = nameof(QueryDefinition.DisplayName);
 
             var currentFactory = _factories.Find(f => f.Factory == Monitor.Monitor.factory) ?? _factories[0];
-            cbFactory.SelectedItem = currentFactory;
-            cbQuery.SelectedIndex = 0;
-            lblSummary.Text = R("Summary.Empty", "Ingen körning ännu.");
+            cb_Factory.SelectedItem = currentFactory;
+            cb_Query.SelectedIndex = 0;
+            label_Summary.Text = @"Ingen körning ännu.";
         }
 
-        private async void btnRun_Click(object sender, EventArgs e)
+        private async void btn_Run_Click(object sender, EventArgs e)
         {
             await RunPerformanceTestAsync();
         }
 
-        private void btnExport_Click(object sender, EventArgs e)
+        private void btn_Export_Click(object sender, EventArgs e)
         {
             ExportCsv();
         }
         private async Task RunPerformanceTestAsync()
         {
-            if (cbFactory.SelectedItem is not FactoryDefinition factory || cbQuery.SelectedItem is not QueryDefinition query)
+            if (cb_Factory.SelectedItem is not FactoryDefinition factory || cb_Query.SelectedItem is not QueryDefinition query)
                 return;
 
-            var loops = (int)nudLoops.Value;
+            var loops = (int)num_Loops.Value;
             _results.Clear();
-            lvResults.Items.Clear();
-            btnExport.Enabled = false;
-            progressBar.Minimum = 0;
-            progressBar.Maximum = loops;
-            progressBar.Value = 0;
+            lv_Results.Items.Clear();
+            btn_Export.Enabled = false;
+            pbar_ProgressBar.Minimum = 0;
+            pbar_ProgressBar.Maximum = loops;
+            pbar_ProgressBar.Value = 0;
 
             SetControlsEnabled(false);
 
@@ -119,10 +115,7 @@ namespace DigitalProductionProgram.MainWindow
                 var loginResult = await Task.Run(() => Login_Monitor.Login_API(true));
                 if (!loginResult.Success)
                 {
-                    InfoText.Show(
-                        R("Error.LoginFailed", "Kunde inte logga in mot Monitor för vald factory."),
-                        CustomColors.InfoText_Color.Bad,
-                        R("Title.Short", "Monitor API"));
+                    InfoText.Show("Kunde inte logga in mot Monitor för vald factory.", CustomColors.InfoText_Color.Bad, "Monitor API");
                     return;
                 }
 
@@ -138,19 +131,19 @@ namespace DigitalProductionProgram.MainWindow
                         ok = false;
                     sw.Stop();
 
-                    
+
                     var result = new LoopResult(i, sw.ElapsedMilliseconds, ok, rowCount, DateTime.Now);
                     _results.Add(result);
 
                     var item = new ListViewItem(result.Iteration.ToString());
                     item.SubItems.Add(result.ElapsedMilliseconds.ToString());
-                    item.SubItems.Add(result.Success ? R("Result.Ok", "OK") : R("Result.Fail", "Fel"));
+                    item.SubItems.Add(result.Success ? "OK" : "Fel");
                     item.SubItems.Add(result.RowCount.ToString());
                     item.SubItems.Add(result.Timestamp.ToString("yyyy-MM-dd HH:mm:ss.fff"));
                     item.SubItems.Add("Hämtar 1000 PartNumber från Inventory.Parts");
-                    lvResults.Items.Add(item);
+                    lv_Results.Items.Add(item);
 
-                    progressBar.Value = i;
+                    pbar_ProgressBar.Value = i;
                 }
 
                 _lastFactory = factory;
@@ -158,7 +151,7 @@ namespace DigitalProductionProgram.MainWindow
                 _lastRunAt = DateTime.Now;
 
                 UpdateSummary();
-                btnExport.Enabled = _results.Count > 0;
+                btn_Export.Enabled = _results.Count > 0;
             }
             finally
             {
@@ -169,25 +162,19 @@ namespace DigitalProductionProgram.MainWindow
             }
         }
 
-        
-        private async Task<List<string>> List_PartNumber()
-        {
-            var parts = Utilities.GetFromMonitor<Inventory.Parts>("top=1000");
-            return parts?.Select(p => p.PartNumber).ToList() ?? new List<string>();
-        }
 
         private void UpdateSummary()
         {
             if (_results.Count == 0)
             {
-                lblSummary.Text = R("Summary.NoData", "Ingen data.");
+                label_Summary.Text = @"Ingen data.";
                 return;
             }
 
             var valid = _results.FindAll(r => r.Success).ConvertAll(r => r.ElapsedMilliseconds);
             if (valid.Count == 0)
             {
-                lblSummary.Text = R("Summary.AllFailed", "Alla loopar misslyckades.");
+                label_Summary.Text = @"Alla loopar misslyckades.";
                 return;
             }
 
@@ -196,16 +183,15 @@ namespace DigitalProductionProgram.MainWindow
             var avg = valid.Average();
             var failed = _results.Count(r => !r.Success);
 
-            lblSummary.Text = string.Format(
-                R("Summary.Format", "Factory: {0} ({1}) | Fråga: {2} | Körningar: {3} | Fel: {4} | Min: {5} ms | Max: {6} ms | Average: {7} ms"),
+            label_Summary.Text = string.Format(
+                 @"Factory: {0} ({1}) | Fråga: {2} | Körningar: {3} | Fel: {4} | Min: {5} ms | Max: {6} ms | Average: {7:F2} ms",
                 _lastFactory?.DisplayName,
                 _lastFactory?.CompanyCode,
                 _lastQuery?.DisplayName,
                 _results.Count,
                 failed,
                 min,
-                max,
-                avg.ToString("F2"));
+                max, avg);
         }
         private void ExportCsv()
         {
@@ -249,62 +235,41 @@ namespace DigitalProductionProgram.MainWindow
             var sb = new StringBuilder();
             Get_Protocol_Data.ConvertDataTableTo_csv(dt, sb);
             var fileName = string.Format(
-                R("FileName.Format", "MonitorApiPerformance_{0}_{1}.csv"),
-                _lastFactory.DisplayName,
-                DateTime.Now.ToString("yyyyMMdd_HHmmss"));
+                "MonitorApiPerformance_{0}_{1:yyyyMMdd_HHmmss}.csv",
+                _lastFactory.DisplayName, DateTime.Now);
             Get_Protocol_Data.Save_csvFile(sb, fileName);
         }
         private void SetControlsEnabled(bool enabled)
         {
-            cbFactory.Enabled = enabled;
-            cbQuery.Enabled = enabled;
-            nudLoops.Enabled = enabled;
-            btnRun.Enabled = enabled;
-            btnExport.Enabled = enabled && _results.Count > 0;
+            cb_Factory.Enabled = enabled;
+            cb_Query.Enabled = enabled;
+            num_Loops.Enabled = enabled;
+            btn_Run.Enabled = enabled;
+            btn_Export.Enabled = enabled && _results.Count > 0;
         }
 
-        private sealed class QueryDefinition
+        private sealed class QueryDefinition(string displayName, Func<int> execute)
         {
-            public QueryDefinition(string displayName, Func<int> execute)
-            {
-                DisplayName = displayName;
-                Execute = execute;
-            }
-
-            public string DisplayName { get; }
-            public Func<int> Execute { get; }
+            public string DisplayName { get; } = displayName;
+            public Func<int> Execute { get; } = execute;
         }
 
-        private sealed class FactoryDefinition
+        private sealed class FactoryDefinition(string displayName, Monitor.Monitor.Factory factory, string companyCode)
         {
-            public FactoryDefinition(string displayName, Monitor.Monitor.Factory factory, string companyCode)
-            {
-                DisplayName = displayName;
-                Factory = factory;
-                CompanyCode = companyCode;
-            }
-
-            public string DisplayName { get; }
-            public Monitor.Monitor.Factory Factory { get; }
-            public string CompanyCode { get; }
+            public string DisplayName { get; } = displayName;
+            public Monitor.Monitor.Factory Factory { get; } = factory;
+            public string CompanyCode { get; } = companyCode;
         }
 
-        private sealed class LoopResult
+        private sealed class LoopResult(int iteration, long elapsedMilliseconds, bool success, int rowCount, DateTime timestamp)
         {
-            public LoopResult(int iteration, long elapsedMilliseconds, bool success, int rowCount, DateTime timestamp)
-            {
-                Iteration = iteration;
-                ElapsedMilliseconds = elapsedMilliseconds;
-                Success = success;
-                RowCount = rowCount;
-                Timestamp = timestamp;
-            }
-
-            public int Iteration { get; }
-            public long ElapsedMilliseconds { get; }
-            public bool Success { get; }
-            public int RowCount { get; }
-            public DateTime Timestamp { get; }
+            public int Iteration { get; } = iteration;
+            public long ElapsedMilliseconds { get; } = elapsedMilliseconds;
+            public bool Success { get; } = success;
+            public int RowCount { get; } = rowCount;
+            public DateTime Timestamp { get; } = timestamp;
         }
+
+       
     }
 }

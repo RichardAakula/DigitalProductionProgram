@@ -2188,4 +2188,10 @@ Contact Admin if necessary.</value>
   <data name="label_SPC_Title" xml:space="preserve">
     <value />
   </data>
+  <data name="changeMeasureProtocol_Info_3" xml:space="preserve">
+    <value />
+  </data>
+  <data name="changeMeasureProtocol_Info_IsMeasurementsDone" xml:space="preserve">
+    <value />
+  </data>
 </root>

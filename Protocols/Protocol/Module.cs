@@ -853,7 +853,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
 
             if (e.Button == MouseButtons.Right)
             {
-                bool.TryParse(dgv_Module.Rows[row].Cells["col_IsOkWriteText"].Value.ToString(), out var isOkWriteText);
+                bool.TryParse(dgv_Module.Rows[row].Cells["col_IsOkWriteText"].Value.ToString(), out var isOkReturnOwnText);
                 bool.TryParse(dgv_Module.Rows[e.RowIndex].Cells["col_IsList_Protocol"].Value.ToString(), out var IsListProtocol);
                 int.TryParse(dgv_Module.Columns[e.ColumnIndex].HeaderText, out int startup);
                 if (IsListProtocol)
@@ -1001,7 +1001,6 @@ namespace DigitalProductionProgram.Protocols.Protocol
                                 items = DigitalProductionProgram.Equipment.Equipment.List_From_Register("ID_Nummer", "Register_Kalibreringar", true, Value(col, 316));
                                 TotalColumns = 2;
                             }
-                                
                             
                             break;
 
@@ -1011,6 +1010,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                                 case 75:    //RÖR ID# POS 1
                                 case 160:   //RÖR ID# POS 2
                                 case 161:   //RÖR ID# POS 3
+                                   //isOkReturnOwnText = false;
                                     items = Tools.RegisterList.List_HS_PipeID(isProcesscardUnderManagement);
                                     break;
                                 case 71:    //HACKHYLSA
@@ -1060,8 +1060,8 @@ namespace DigitalProductionProgram.Protocols.Protocol
                     items.Add("N/A");
                 items.Add(Properties.Resources.checkLastOperations);
                 if (CheckAuthority.IsRoleAuthorized(CheckAuthority.TemplateAuthorities.ChooseFreelyFromListsProtocol, false))
-                    isOkWriteText = true;
-                using var choose_Item = new Choose_Item(items, cells:cells, dataBaseColumnName: dgv_Module.Rows[row].Cells[0].Value.ToString(), maskin:MachineIndex, uppstart: startup, isOkReturnOwnText: isOkWriteText, totalColumns: TotalColumns);
+                    isOkReturnOwnText = true;
+                using var choose_Item = new Choose_Item(items, cells:cells, dataBaseColumnName: dgv_Module.Rows[row].Cells[0].Value.ToString(), maskin:MachineIndex, uppstart: startup, isOkReturnOwnText: isOkReturnOwnText, totalColumns: TotalColumns);
                 choose_Item.ShowDialog();
             }
             if (IsOkToSave || isProcesscardUnderManagement)

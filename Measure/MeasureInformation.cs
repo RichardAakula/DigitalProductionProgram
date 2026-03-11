@@ -11,7 +11,7 @@ using DigitalProductionProgram.Templates;
 namespace DigitalProductionProgram.Measure
 {
    
-    internal class MeasureInformation
+    internal abstract class MeasureInformation
     {
         public static int TotalMeasurmentsByOperators
         {

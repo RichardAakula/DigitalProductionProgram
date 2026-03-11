@@ -17,229 +17,229 @@
 
         private void InitializeComponent()
         {
-            mainLayout = new TableLayoutPanel();
-            controlsPanel = new TableLayoutPanel();
-            lblFactory = new Label();
-            cbFactory = new ComboBox();
-            lblQuery = new Label();
-            cbQuery = new ComboBox();
-            lblLoops = new Label();
-            nudLoops = new NumericUpDown();
-            btnRun = new Button();
-            btnExport = new Button();
-            lblSummary = new Label();
-            progressBar = new ProgressBar();
-            lvResults = new ListView();
-            colLoop = new ColumnHeader();
-            colTime = new ColumnHeader();
-            colResult = new ColumnHeader();
-            colRows = new ColumnHeader();
-            colTimestamp = new ColumnHeader();
-            mainLayout.SuspendLayout();
-            controlsPanel.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)nudLoops).BeginInit();
+            tlp_Main = new TableLayoutPanel();
+            tlp_ControlPanel = new TableLayoutPanel();
+            label_Factory = new Label();
+            cb_Factory = new ComboBox();
+            label_Query = new Label();
+            cb_Query = new ComboBox();
+            label_Loops = new Label();
+            num_Loops = new NumericUpDown();
+            btn_Run = new Button();
+            btn_Export = new Button();
+            label_Summary = new Label();
+            pbar_ProgressBar = new ProgressBar();
+            lv_Results = new ListView();
+            col_Loop = new ColumnHeader();
+            col_Time = new ColumnHeader();
+            col_Result = new ColumnHeader();
+            col_Rows = new ColumnHeader();
+            col_Timestamp = new ColumnHeader();
+            tlp_Main.SuspendLayout();
+            tlp_ControlPanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)num_Loops).BeginInit();
             SuspendLayout();
             // 
-            // mainLayout
+            // tlp_Main
             // 
-            mainLayout.ColumnCount = 1;
-            mainLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
-            mainLayout.Controls.Add(controlsPanel, 0, 0);
-            mainLayout.Controls.Add(lblSummary, 0, 1);
-            mainLayout.Controls.Add(progressBar, 0, 2);
-            mainLayout.Controls.Add(lvResults, 0, 3);
-            mainLayout.Dock = DockStyle.Fill;
-            mainLayout.Location = new Point(16, 16);
-            mainLayout.Name = "mainLayout";
-            mainLayout.RowCount = 4;
-            mainLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 130F));
-            mainLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 30F));
-            mainLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 44F));
-            mainLayout.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            mainLayout.Size = new Size(1002, 628);
-            mainLayout.TabIndex = 0;
+            tlp_Main.ColumnCount = 1;
+            tlp_Main.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            tlp_Main.Controls.Add(tlp_ControlPanel, 0, 0);
+            tlp_Main.Controls.Add(label_Summary, 0, 1);
+            tlp_Main.Controls.Add(pbar_ProgressBar, 0, 2);
+            tlp_Main.Controls.Add(lv_Results, 0, 3);
+            tlp_Main.Dock = DockStyle.Fill;
+            tlp_Main.Location = new Point(16, 16);
+            tlp_Main.Name = "tlp_Main";
+            tlp_Main.RowCount = 4;
+            tlp_Main.RowStyles.Add(new RowStyle(SizeType.Absolute, 86F));
+            tlp_Main.RowStyles.Add(new RowStyle(SizeType.Absolute, 74F));
+            tlp_Main.RowStyles.Add(new RowStyle(SizeType.Absolute, 44F));
+            tlp_Main.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            tlp_Main.Size = new Size(1002, 628);
+            tlp_Main.TabIndex = 0;
             // 
-            // controlsPanel
+            // tlp_ControlPanel
             // 
-            controlsPanel.BackColor = Color.FromArgb(81, 85, 92);
-            controlsPanel.ColumnCount = 8;
-            controlsPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 90F));
-            controlsPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 190F));
-            controlsPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 90F));
-            controlsPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 260F));
-            controlsPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 80F));
-            controlsPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 90F));
-            controlsPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 120F));
-            controlsPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
-            controlsPanel.Controls.Add(lblFactory, 0, 0);
-            controlsPanel.Controls.Add(cbFactory, 1, 0);
-            controlsPanel.Controls.Add(lblQuery, 2, 0);
-            controlsPanel.Controls.Add(cbQuery, 3, 0);
-            controlsPanel.Controls.Add(lblLoops, 4, 0);
-            controlsPanel.Controls.Add(nudLoops, 5, 0);
-            controlsPanel.Controls.Add(btnRun, 6, 0);
-            controlsPanel.Controls.Add(btnExport, 6, 1);
-            controlsPanel.Dock = DockStyle.Fill;
-            controlsPanel.Location = new Point(3, 3);
-            controlsPanel.Name = "controlsPanel";
-            controlsPanel.Padding = new Padding(12);
-            controlsPanel.RowCount = 2;
-            controlsPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
-            controlsPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
-            controlsPanel.Size = new Size(996, 124);
-            controlsPanel.TabIndex = 0;
+            tlp_ControlPanel.BackColor = Color.FromArgb(81, 85, 92);
+            tlp_ControlPanel.ColumnCount = 8;
+            tlp_ControlPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 90F));
+            tlp_ControlPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 190F));
+            tlp_ControlPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 90F));
+            tlp_ControlPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 260F));
+            tlp_ControlPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 80F));
+            tlp_ControlPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 90F));
+            tlp_ControlPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 120F));
+            tlp_ControlPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            tlp_ControlPanel.Controls.Add(label_Factory, 0, 0);
+            tlp_ControlPanel.Controls.Add(cb_Factory, 1, 0);
+            tlp_ControlPanel.Controls.Add(label_Query, 2, 0);
+            tlp_ControlPanel.Controls.Add(cb_Query, 3, 0);
+            tlp_ControlPanel.Controls.Add(label_Loops, 4, 0);
+            tlp_ControlPanel.Controls.Add(num_Loops, 5, 0);
+            tlp_ControlPanel.Controls.Add(btn_Run, 6, 0);
+            tlp_ControlPanel.Controls.Add(btn_Export, 6, 1);
+            tlp_ControlPanel.Dock = DockStyle.Fill;
+            tlp_ControlPanel.Location = new Point(3, 3);
+            tlp_ControlPanel.Name = "tlp_ControlPanel";
+            tlp_ControlPanel.Padding = new Padding(12);
+            tlp_ControlPanel.RowCount = 2;
+            tlp_ControlPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
+            tlp_ControlPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
+            tlp_ControlPanel.Size = new Size(996, 80);
+            tlp_ControlPanel.TabIndex = 0;
             // 
-            // lblFactory
+            // label_Factory
             // 
-            lblFactory.Dock = DockStyle.Fill;
-            lblFactory.ForeColor = Color.FromArgb(239, 228, 177);
-            lblFactory.Location = new Point(15, 12);
-            lblFactory.Name = "lblFactory";
-            lblFactory.Size = new Size(84, 50);
-            lblFactory.TabIndex = 0;
-            lblFactory.Text = "Factory";
-            lblFactory.TextAlign = ContentAlignment.MiddleLeft;
+            label_Factory.Dock = DockStyle.Fill;
+            label_Factory.ForeColor = Color.FromArgb(239, 228, 177);
+            label_Factory.Location = new Point(15, 12);
+            label_Factory.Name = "label_Factory";
+            label_Factory.Size = new Size(84, 28);
+            label_Factory.TabIndex = 0;
+            label_Factory.Text = "Factory";
+            label_Factory.TextAlign = ContentAlignment.MiddleLeft;
             // 
-            // cbFactory
+            // cb_Factory
             // 
-            cbFactory.Dock = DockStyle.Fill;
-            cbFactory.DropDownStyle = ComboBoxStyle.DropDownList;
-            cbFactory.FormattingEnabled = true;
-            cbFactory.Location = new Point(105, 15);
-            cbFactory.Name = "cbFactory";
-            cbFactory.Size = new Size(184, 23);
-            cbFactory.TabIndex = 1;
+            cb_Factory.Dock = DockStyle.Fill;
+            cb_Factory.DropDownStyle = ComboBoxStyle.DropDownList;
+            cb_Factory.FormattingEnabled = true;
+            cb_Factory.Location = new Point(105, 15);
+            cb_Factory.Name = "cb_Factory";
+            cb_Factory.Size = new Size(184, 23);
+            cb_Factory.TabIndex = 1;
             // 
-            // lblQuery
+            // label_Query
             // 
-            lblQuery.Dock = DockStyle.Fill;
-            lblQuery.ForeColor = Color.FromArgb(239, 228, 177);
-            lblQuery.Location = new Point(295, 12);
-            lblQuery.Name = "lblQuery";
-            lblQuery.Size = new Size(84, 50);
-            lblQuery.TabIndex = 2;
-            lblQuery.Text = "API-fråga";
-            lblQuery.TextAlign = ContentAlignment.MiddleLeft;
+            label_Query.Dock = DockStyle.Fill;
+            label_Query.ForeColor = Color.FromArgb(239, 228, 177);
+            label_Query.Location = new Point(295, 12);
+            label_Query.Name = "label_Query";
+            label_Query.Size = new Size(84, 28);
+            label_Query.TabIndex = 2;
+            label_Query.Text = "API-fråga";
+            label_Query.TextAlign = ContentAlignment.MiddleLeft;
             // 
-            // cbQuery
+            // cb_Query
             // 
-            cbQuery.Dock = DockStyle.Fill;
-            cbQuery.DropDownStyle = ComboBoxStyle.DropDownList;
-            cbQuery.FormattingEnabled = true;
-            cbQuery.Location = new Point(385, 15);
-            cbQuery.Name = "cbQuery";
-            cbQuery.Size = new Size(254, 23);
-            cbQuery.TabIndex = 3;
+            cb_Query.Dock = DockStyle.Fill;
+            cb_Query.DropDownStyle = ComboBoxStyle.DropDownList;
+            cb_Query.FormattingEnabled = true;
+            cb_Query.Location = new Point(385, 15);
+            cb_Query.Name = "cb_Query";
+            cb_Query.Size = new Size(254, 23);
+            cb_Query.TabIndex = 3;
             // 
-            // lblLoops
+            // label_Loops
             // 
-            lblLoops.Dock = DockStyle.Fill;
-            lblLoops.ForeColor = Color.FromArgb(239, 228, 177);
-            lblLoops.Location = new Point(645, 12);
-            lblLoops.Name = "lblLoops";
-            lblLoops.Size = new Size(74, 50);
-            lblLoops.TabIndex = 4;
-            lblLoops.Text = "Loopar";
-            lblLoops.TextAlign = ContentAlignment.MiddleLeft;
+            label_Loops.Dock = DockStyle.Fill;
+            label_Loops.ForeColor = Color.FromArgb(239, 228, 177);
+            label_Loops.Location = new Point(645, 12);
+            label_Loops.Name = "label_Loops";
+            label_Loops.Size = new Size(74, 28);
+            label_Loops.TabIndex = 4;
+            label_Loops.Text = "Loopar";
+            label_Loops.TextAlign = ContentAlignment.MiddleLeft;
             // 
-            // nudLoops
+            // num_Loops
             // 
-            nudLoops.Dock = DockStyle.Fill;
-            nudLoops.Location = new Point(725, 15);
-            nudLoops.Maximum = new decimal(new int[] { 5000, 0, 0, 0 });
-            nudLoops.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
-            nudLoops.Name = "nudLoops";
-            nudLoops.Size = new Size(84, 23);
-            nudLoops.TabIndex = 5;
-            nudLoops.Value = new decimal(new int[] { 25, 0, 0, 0 });
+            num_Loops.Dock = DockStyle.Fill;
+            num_Loops.Location = new Point(725, 15);
+            num_Loops.Maximum = new decimal(new int[] { 5000, 0, 0, 0 });
+            num_Loops.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
+            num_Loops.Name = "num_Loops";
+            num_Loops.Size = new Size(84, 23);
+            num_Loops.TabIndex = 5;
+            num_Loops.Value = new decimal(new int[] { 25, 0, 0, 0 });
             // 
-            // btnRun
+            // btn_Run
             // 
-            btnRun.BackColor = Color.FromArgb(198, 239, 206);
-            btnRun.Dock = DockStyle.Fill;
-            btnRun.FlatStyle = FlatStyle.Flat;
-            btnRun.ForeColor = Color.FromArgb(0, 97, 0);
-            btnRun.Location = new Point(815, 15);
-            btnRun.Name = "btnRun";
-            btnRun.Size = new Size(114, 44);
-            btnRun.TabIndex = 6;
-            btnRun.Text = "Kör test";
-            btnRun.UseVisualStyleBackColor = false;
-            btnRun.Click += btnRun_Click;
+            btn_Run.BackColor = Color.FromArgb(198, 239, 206);
+            btn_Run.Dock = DockStyle.Fill;
+            btn_Run.FlatStyle = FlatStyle.Flat;
+            btn_Run.ForeColor = Color.FromArgb(0, 97, 0);
+            btn_Run.Location = new Point(815, 15);
+            btn_Run.Name = "btn_Run";
+            btn_Run.Size = new Size(114, 22);
+            btn_Run.TabIndex = 6;
+            btn_Run.Text = "Kör test";
+            btn_Run.UseVisualStyleBackColor = false;
+            btn_Run.Click += btn_Run_Click;
             // 
-            // btnExport
+            // btn_Export
             // 
-            btnExport.BackColor = Color.FromArgb(184, 220, 231);
-            btnExport.Dock = DockStyle.Fill;
-            btnExport.Enabled = false;
-            btnExport.FlatStyle = FlatStyle.Flat;
-            btnExport.ForeColor = Color.FromArgb(6, 81, 87);
-            btnExport.Location = new Point(815, 65);
-            btnExport.Name = "btnExport";
-            btnExport.Size = new Size(114, 44);
-            btnExport.TabIndex = 7;
-            btnExport.Text = "Exportera CSV";
-            btnExport.UseVisualStyleBackColor = false;
-            btnExport.Click += btnExport_Click;
+            btn_Export.BackColor = Color.FromArgb(184, 220, 231);
+            btn_Export.Dock = DockStyle.Fill;
+            btn_Export.Enabled = false;
+            btn_Export.FlatStyle = FlatStyle.Flat;
+            btn_Export.ForeColor = Color.FromArgb(6, 81, 87);
+            btn_Export.Location = new Point(815, 43);
+            btn_Export.Name = "btn_Export";
+            btn_Export.Size = new Size(114, 22);
+            btn_Export.TabIndex = 7;
+            btn_Export.Text = "Exportera CSV";
+            btn_Export.UseVisualStyleBackColor = false;
+            btn_Export.Click += btn_Export_Click;
             // 
-            // lblSummary
+            // label_Summary
             // 
-            lblSummary.Dock = DockStyle.Fill;
-            lblSummary.ForeColor = Color.FromArgb(147, 146, 153);
-            lblSummary.Location = new Point(3, 130);
-            lblSummary.Name = "lblSummary";
-            lblSummary.Size = new Size(996, 30);
-            lblSummary.TabIndex = 1;
-            lblSummary.Text = "Ingen körning ännu.";
-            lblSummary.TextAlign = ContentAlignment.MiddleLeft;
+            label_Summary.Dock = DockStyle.Fill;
+            label_Summary.ForeColor = Color.FromArgb(147, 146, 153);
+            label_Summary.Location = new Point(3, 86);
+            label_Summary.Name = "label_Summary";
+            label_Summary.Size = new Size(996, 74);
+            label_Summary.TabIndex = 1;
+            label_Summary.Text = "Ingen körning ännu.";
+            label_Summary.TextAlign = ContentAlignment.MiddleLeft;
             // 
-            // progressBar
+            // pbar_ProgressBar
             // 
-            progressBar.Dock = DockStyle.Fill;
-            progressBar.Location = new Point(3, 163);
-            progressBar.Name = "progressBar";
-            progressBar.Size = new Size(996, 38);
-            progressBar.TabIndex = 2;
+            pbar_ProgressBar.Dock = DockStyle.Fill;
+            pbar_ProgressBar.Location = new Point(3, 163);
+            pbar_ProgressBar.Name = "pbar_ProgressBar";
+            pbar_ProgressBar.Size = new Size(996, 38);
+            pbar_ProgressBar.TabIndex = 2;
             // 
-            // lvResults
+            // lv_Results
             // 
-            lvResults.BackColor = Color.FromArgb(81, 85, 92);
-            lvResults.Columns.AddRange(new ColumnHeader[] { colLoop, colTime, colResult, colRows, colTimestamp });
-            lvResults.Dock = DockStyle.Fill;
-            lvResults.ForeColor = Color.FromArgb(239, 228, 177);
-            lvResults.FullRowSelect = true;
-            lvResults.GridLines = true;
-            lvResults.Location = new Point(3, 207);
-            lvResults.Name = "lvResults";
-            lvResults.Size = new Size(996, 418);
-            lvResults.TabIndex = 3;
-            lvResults.UseCompatibleStateImageBehavior = false;
-            lvResults.View = View.Details;
+            lv_Results.BackColor = Color.FromArgb(81, 85, 92);
+            lv_Results.Columns.AddRange(new ColumnHeader[] { col_Loop, col_Time, col_Result, col_Rows, col_Timestamp });
+            lv_Results.Dock = DockStyle.Fill;
+            lv_Results.ForeColor = Color.FromArgb(239, 228, 177);
+            lv_Results.FullRowSelect = true;
+            lv_Results.GridLines = true;
+            lv_Results.Location = new Point(3, 207);
+            lv_Results.Name = "lv_Results";
+            lv_Results.Size = new Size(996, 418);
+            lv_Results.TabIndex = 3;
+            lv_Results.UseCompatibleStateImageBehavior = false;
+            lv_Results.View = View.Details;
             // 
-            // colLoop
+            // col_Loop
             // 
-            colLoop.Text = "Loop";
-            colLoop.Width = 80;
+            col_Loop.Text = "Loop";
+            col_Loop.Width = 80;
             // 
-            // colTime
+            // col_Time
             // 
-            colTime.Text = "Tid (ms)";
-            colTime.Width = 120;
+            col_Time.Text = "Tid (ms)";
+            col_Time.Width = 120;
             // 
-            // colResult
+            // col_Result
             // 
-            colResult.Text = "Resultat";
-            colResult.Width = 120;
+            col_Result.Text = "Resultat";
+            col_Result.Width = 120;
             // 
-            // colRows
+            // col_Rows
             // 
-            colRows.Text = "Rader";
-            colRows.Width = 100;
+            col_Rows.Text = "Rader";
+            col_Rows.Width = 100;
             // 
-            // colTimestamp
+            // col_Timestamp
             // 
-            colTimestamp.Text = "Tidpunkt";
-            colTimestamp.Width = 220;
+            col_Timestamp.Text = "Tidpunkt";
+            col_Timestamp.Width = 220;
             // 
             // MonitorApiPerformanceForm
             // 
@@ -247,38 +247,39 @@
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(6, 81, 87);
             ClientSize = new Size(1034, 660);
-            Controls.Add(mainLayout);
+            Controls.Add(tlp_Main);
             ForeColor = Color.FromArgb(239, 228, 177);
             MinimumSize = new Size(950, 600);
             Name = "MonitorApiPerformanceForm";
             Padding = new Padding(16);
             StartPosition = FormStartPosition.CenterParent;
             Text = "Monitor API Performance Test";
-            mainLayout.ResumeLayout(false);
-            controlsPanel.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)nudLoops).EndInit();
+            Load += MonitorApiPerformanceForm_Load;
+            tlp_Main.ResumeLayout(false);
+            tlp_ControlPanel.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)num_Loops).EndInit();
             ResumeLayout(false);
         }
 
         #endregion
 
-        private TableLayoutPanel mainLayout;
-        private TableLayoutPanel controlsPanel;
-        private Label lblFactory;
-        private ComboBox cbFactory;
-        private Label lblQuery;
-        private ComboBox cbQuery;
-        private Label lblLoops;
-        private NumericUpDown nudLoops;
-        private Button btnRun;
-        private Button btnExport;
-        private Label lblSummary;
-        private ProgressBar progressBar;
-        private ListView lvResults;
-        private ColumnHeader colLoop;
-        private ColumnHeader colTime;
-        private ColumnHeader colResult;
-        private ColumnHeader colRows;
-        private ColumnHeader colTimestamp;
+        private TableLayoutPanel tlp_Main;
+        private TableLayoutPanel tlp_ControlPanel;
+        private Label label_Factory;
+        private ComboBox cb_Factory;
+        private Label label_Query;
+        private ComboBox cb_Query;
+        private Label label_Loops;
+        private NumericUpDown num_Loops;
+        private Button btn_Run;
+        private Button btn_Export;
+        private Label label_Summary;
+        private ProgressBar pbar_ProgressBar;
+        private ListView lv_Results;
+        private ColumnHeader col_Loop;
+        private ColumnHeader col_Time;
+        private ColumnHeader col_Result;
+        private ColumnHeader col_Rows;
+        private ColumnHeader col_Timestamp;
     }
 }

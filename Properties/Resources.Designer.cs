@@ -1091,6 +1091,24 @@ namespace DigitalProductionProgram.Properties {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        public static string changeMeasureProtocol_Info_3 {
+            get {
+                return ResourceManager.GetString("changeMeasureProtocol_Info_3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string changeMeasureProtocol_Info_IsMeasurementsDone {
+            get {
+                return ResourceManager.GetString("changeMeasureProtocol_Info_IsMeasurementsDone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         public static string changeProcesscard_Info_1 {
             get {
                 return ResourceManager.GetString("changeProcesscard_Info_1", resourceCulture);

@@ -830,15 +830,39 @@ namespace DigitalProductionProgram.Templates
             }
             public static void Save_Data(string name, string lineClearanceRevision, string centuriLink, bool isApprovalRequired)
             {
-                using (var con = new SqlConnection(Database.cs_Protocol))
+                Database.ExecuteSafe(con =>
                 {
                     const string query =
-                        @"IF NOT EXISTS (SELECT * FROM LineClearance.MainTemplate WHERE ProtocolMainTemplateID = @protocolmaintemplateid AND LineClearance_Revision = @revision)
-                        INSERT INTO LineClearance.MainTemplate (ProtocolMainTemplateID, LineClearance_Revision, IsApprovalRequired, CenturiLink, CreatedBy, CreatedDate)
-                        VALUES (@protocolmaintemplateid, @revision, @isapprovalrequired, @centurilink, @createdby, @createddate)";
+                        """
+                        IF NOT EXISTS 
+                        (
+                            SELECT * 
+                            FROM LineClearance.MainTemplate 
+                            WHERE ProtocolMainTemplateID = @protocolmaintemplateid AND LineClearance_Revision = @revision
+                        )
+                        INSERT INTO LineClearance.MainTemplate 
+                        (
+                            ProtocolMainTemplateID, 
+                            WorkoperationId,
+                            LineClearance_Revision, 
+                            IsApprovalRequired, 
+                            CenturiLink, 
+                            CreatedBy, 
+                            CreatedDate
+                        )
+                        VALUES 
+                        (   
+                            @protocolmaintemplateid, 
+                            (SELECT WorkoperationID FROM Protocol.MainTemplate WHERE ID = @protocolmaintemplateid),
+                            @revision, 
+                            @isapprovalrequired, 
+                            @centurilink, 
+                            @createdby, 
+                            @createddate
+                        )
+                        """;
 
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    cmd.Parameters.Add("@maintemplateid", SqlDbType.Int).Value = LineClearance_MainTemplateID;
+                    var cmd = new SqlCommand(query, con);
 
                     cmd.Parameters.AddWithValue("@protocolmaintemplateid", Templates_Protocol.MainTemplate.ID);
                     cmd.Parameters.AddWithValue("@name", name);
@@ -848,9 +872,8 @@ namespace DigitalProductionProgram.Templates
                     cmd.Parameters.AddWithValue("@createdby", Person.Name);
                     cmd.Parameters.AddWithValue("@createddate", DateTime.Now);
 
-                    con.Open();
                     cmd.ExecuteNonQuery();
-                }
+                });
             }
             public static void Delete_Template()
             {

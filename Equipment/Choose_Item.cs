@@ -317,8 +317,9 @@ namespace DigitalProductionProgram.Equipment
         {
             if (e.KeyCode == Keys.Enter || e.KeyCode == Keys.Return)
             {
-                if (dgv_Items.Rows.Count < 1)
-                    return;
+               // if (dgv_Items.Rows.Count < 1)
+                //    return;
+                
                 switch (IsOkReturnOwnText)
                 {
                     case false:

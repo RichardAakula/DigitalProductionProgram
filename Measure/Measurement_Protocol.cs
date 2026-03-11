@@ -167,7 +167,6 @@ namespace DigitalProductionProgram.Measure
                 }
             };
             InitializeComponent();
-
             tb_Hack.KeyDown += Public_Events.Enter_To_TAB_KeyDown;
             controls.Change_GUI_Template(this);
             AddControls.Load_InputControls(this);
@@ -214,8 +213,6 @@ namespace DigitalProductionProgram.Measure
 
         private void Translate_Form()
         {
-            Text = Properties.Resources.Measurement_Protocol;
-
             LanguageManager.TranslationHelper.TranslateControls([
                 label_Customer, label_Description, label_OrderNr, label_PartNumber, label_Ok, label_Fail, label_Warning, label_Felskrivning, label_Discarded, btn_Clear_HelpInput_1,
                 btn_Clear_HelpInput_2, btn_TransferLengthMeasure, btn_TransferMeasurement, btn_EditBag, btn_EditAmount, btn_Discard, btn_TransferToExcel, label_TotalMeasureMents, label_DiscardedMeasurements

@@ -419,14 +419,23 @@ namespace DigitalProductionProgram.MainWindow
                 InfoText.Show(Properties.Resources.changeMeasureProtocol_Info_1, CustomColors.InfoText_Color.Bad, "Warning", this);
                 return;
             }
-
             if (string.IsNullOrEmpty(Order.OrderNumber))
             {
                 InfoText.Show(Properties.Resources.changeMeasureProtocol_Info_2, CustomColors.InfoText_Color.Bad, "Warning", this);
                 return;
             }
+            if (!string.IsNullOrEmpty(Order.RevNr))
+            {
+                InfoText.Show(Properties.Resources.changeMeasureProtocol_Info_3, CustomColors.InfoText_Color.Bad, "Warning", this);
+                return;
+            }
 
-
+            if (MeasureInformation.TotalMeasurmentsByOperators > 0)
+            {
+                InfoText.Question(Properties.Resources.changeMeasureProtocol_Info_IsMeasurementsDone, CustomColors.InfoText_Color.Warning, "Warning", this);
+                if (InfoText.answer == InfoText.Answer.No)
+                    return;
+            }
             using var changeTemplate = new TemplateSelector(TemplateSelector.TemplateType.TemplateMeasureProtocol, false);
             changeTemplate.ShowDialog();
             Database.ExecuteSafe(con =>

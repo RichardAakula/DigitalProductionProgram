@@ -105,42 +105,54 @@ namespace DigitalProductionProgram.MainWindow
 
         private async Task AnimateTextAsync(CancellationToken token)
         {
-            while (!token.IsCancellationRequested && !_allTextsWritten)
+            try
             {
-                // 1. Skriv bokstäver
-                if (_activeIndex < _currentText.Length - 1)
+                while (!token.IsCancellationRequested && !_allTextsWritten)
                 {
-                    _activeIndex++;
-                }
-                else
-                {
-                    // 2. Full text skriven → pausa
-                    _pauseTicks++;
-
-                    if (_pauseTicks >= PauseLength)
+                    // 1. Skriv bokstäver
+                    if (_activeIndex < _currentText.Length - 1)
                     {
-                        _pauseTicks = 0;
-
-                        // 3. Commit exakt EN gång
-                        _finishedTexts.Add((_currentText, _currentActiveColor));
-
-                        // Är detta sista texten?
-                        if (_currentTextIndex == _splashTexts.Count - 1)
-                        {
-                            _allTextsWritten = true;
-                            Invalidate(); // sista repaint
-                            break;
-                        }
-
-                        // Förbered nästa text
-                        _currentTextIndex++;
-                        _activeIndex = -1;
-                        _currentActiveColor = CustomColors.LightBlue;// GetNextActiveColor();
+                        _activeIndex++;
                     }
-                }
+                    else
+                    {
+                        // 2. Full text skriven → pausa
+                        _pauseTicks++;
 
-                Invalidate();
-                await Task.Delay(40, token);
+                        if (_pauseTicks >= PauseLength)
+                        {
+                            _pauseTicks = 0;
+
+                            // 3. Commit exakt EN gång
+                            _finishedTexts.Add((_currentText, _currentActiveColor));
+
+                            // Är detta sista texten?
+                            if (_currentTextIndex == _splashTexts.Count - 1)
+                            {
+                                _allTextsWritten = true;
+                                Invalidate(); // sista repaint
+                                break;
+                            }
+
+                            // Förbered nästa text
+                            _currentTextIndex++;
+                            _activeIndex = -1;
+                            _currentActiveColor = CustomColors.LightBlue;// GetNextActiveColor();
+                        }
+                    }
+
+                    Invalidate();
+                    await Task.Delay(40, token);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+            }
+            catch (ObjectDisposedException)
+            {
+            }
+            catch (Exception)
+            {
             }
         }
 

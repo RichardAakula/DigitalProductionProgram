@@ -21,7 +21,7 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
 namespace DigitalProductionProgram.Templates
 {
-    public partial class Templates_MeasureProtocol : Form
+    public  partial class Templates_MeasureProtocol : Form
     {
         public int TotalConnectedProcesscardsToTemplate
         {

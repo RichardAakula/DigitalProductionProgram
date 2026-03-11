@@ -37,20 +37,20 @@ namespace DigitalProductionProgram.Protocols.Spolning_PTFE
             get
             {
                 var list = new List<string?>();
-                using (var con = new SqlConnection(Database.cs_Protocol))
+                using var con = new SqlConnection(Database.cs_Protocol);
+                return Database.ExecuteSafe(con =>
                 {
                     var query = @"
                         SELECT Halvfabrikat_OrderNr 
                         FROM [Order].PreFab
                         WHERE OrderID IN (SELECT OrderID FROM [Order].MainData WHERE orderNr = @ordernr)";
-                    con.Open();
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                    var cmd = new SqlCommand(query, con);
                     cmd.Parameters.AddWithValue("@ordernr", Order.OrderNumber);
                     var reader = cmd.ExecuteReader();
                     while (reader.Read())
                         list.Add(reader[0].ToString());
-                }
-                return list;
+                    return list;
+                });
             }
         }
         private string? Lotnr => dgv_Journal_Input.Rows[0].Cells["147"]?.Value?.ToString();

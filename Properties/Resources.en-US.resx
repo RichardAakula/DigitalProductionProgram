@@ -2219,6 +2219,54 @@ Contact Admin if necessary.</value>
   <data name="warningMessage" xml:space="preserve">
     <value>Warning!</value>
   </data>
+  <data name="header_BrowseOldMeasureprotocols" xml:space="preserve">
+    <value>Historical Measurements &amp; SPC</value>
+  </data>
+  <data name="label_ChooseWorkOperation" xml:space="preserve">
+    <value>Choose Woorkoperation</value>
+  </data>
+  <data name="label_ChooseRevisionMeasureTemplate" xml:space="preserve">
+    <value>Select Revision for the Measurement Protocol Template</value>
+  </data>
+  <data name="label_ChoosePartNumber" xml:space="preserve">
+    <value>Choose Part Number</value>
+  </data>
+  <data name="chk_FilterBadValues" xml:space="preserve">
+    <value>Remove outlier values</value>
+  </data>
+  <data name="chk_FilterDiscarded" xml:space="preserve">
+    <value>Exclude discarded measurements</value>
+  </data>
+  <data name="FilterInfo_Title" xml:space="preserve">
+    <value>Filtering out {0} measurements:</value>
+  </data>
+  <data name="FilterInfo_Discarded" xml:space="preserve">
+    <value>Discarded: {0}</value>
+  </data>
+  <data name="FilterInfo_Outliers" xml:space="preserve">
+    <value>Outliers: {0}</value>
+  </data>
+  <data name="btn_ReloadData" xml:space="preserve">
+    <value>Reload data</value>
+  </data>
+  <data name="loadingDataOrderNr" xml:space="preserve">
+    <value>Loading measurements: Ordernumber</value>
+  </data>
+  <data name="btn_ExportDataToExcel" xml:space="preserve">
+    <value>Export measurements to Excel</value>
+  </data>
+  <data name="gBox_FilterOrders" xml:space="preserve">
+    <value>Select Orders</value>
+  </data>
+  <data name="selectOrders" xml:space="preserve">
+    <value>Select all Orders</value>
+  </data>
+  <data name="label_SPC_Title" xml:space="preserve">
+    <value>SPC Analysis of Measurement Data</value>
+  </data>
+  <data name="changeMeasureProtocol_Info_3" xml:space="preserve">
+    <value>You cannot change the Measurement Protocol template on an order that has a Process Card attached.</value>
+  </data>
   <data name="BrowseOldMeasureprotocol" xml:space="preserve">
     <value>F3-Historical Measurements &amp;&amp; SPC</value>
   </data>
@@ -2482,49 +2530,8 @@ Contact Admin if necessary.</value>
   <data name="btnZumbach" xml:space="preserve">
     <value>F6-Zumbach-measurement</value>
   </data>
-  <data name="header_BrowseOldMeasureprotocols" xml:space="preserve">
-    <value>Historical Measurements &amp; SPC</value>
-  </data>
-  <data name="label_ChooseWorkOperation" xml:space="preserve">
-    <value>Choose Woorkoperation</value>
-  </data>
-  <data name="label_ChooseRevisionMeasureTemplate" xml:space="preserve">
-    <value>Select Revision for the Measurement Protocol Template</value>
-  </data>
-  <data name="label_ChoosePartNumber" xml:space="preserve">
-    <value>Choose Part Number</value>
-  </data>
-  <data name="chk_FilterBadValues" xml:space="preserve">
-    <value>Remove outlier values</value>
-  </data>
-  <data name="chk_FilterDiscarded" xml:space="preserve">
-    <value>Exclude discarded measurements</value>
-  </data>
-  <data name="FilterInfo_Title" xml:space="preserve">
-    <value>Filtering out {0} measurements:</value>
-  </data>
-  <data name="FilterInfo_Discarded" xml:space="preserve">
-    <value>Discarded: {0}</value>
-  </data>
-  <data name="FilterInfo_Outliers" xml:space="preserve">
-    <value>Outliers: {0}</value>
-  </data>
-  <data name="btn_ReloadData" xml:space="preserve">
-    <value>Reload data</value>
-  </data>
-  <data name="loadingDataOrderNr" xml:space="preserve">
-    <value>Loading measurements: Ordernumber</value>
-  </data>
-  <data name="btn_ExportDataToExcel" xml:space="preserve">
-    <value>Export measurements to Excel</value>
-  </data>
-  <data name="gBox_FilterOrders" xml:space="preserve">
-    <value>Select Orders</value>
-  </data>
-  <data name="selectOrders" xml:space="preserve">
-    <value>Select all Orders</value>
-  </data>
-  <data name="label_SPC_Title" xml:space="preserve">
-    <value>SPC Analysis of Measurement Data</value>
+  <data name="changeMeasureProtocol_Info_IsMeasurementsDone" xml:space="preserve">
+    <value>Note! There are measurements on this order. If you change the template, all measurements will be completely or partially lost.
+Are you sure you want to continue?</value>
   </data>
 </root>

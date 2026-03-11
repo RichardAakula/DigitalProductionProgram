@@ -2223,6 +2223,54 @@ Kontakta Admin vid behov.</value>
   <data name="warningMessage" xml:space="preserve">
     <value>Varning!</value>
   </data>
+  <data name="header_BrowseOldMeasureprotocols" xml:space="preserve">
+    <value>Historiska mätningar &amp; SPC</value>
+  </data>
+  <data name="label_ChooseWorkOperation" xml:space="preserve">
+    <value>Välj Arbetsoperation</value>
+  </data>
+  <data name="label_ChooseRevisionMeasureTemplate" xml:space="preserve">
+    <value>Välj Revision för Mätprotokollsmallen</value>
+  </data>
+  <data name="label_ChoosePartNumber" xml:space="preserve">
+    <value>Välj Artikelnummer</value>
+  </data>
+  <data name="chk_FilterBadValues" xml:space="preserve">
+    <value>Ta bort avvikande värden</value>
+  </data>
+  <data name="chk_FilterDiscarded" xml:space="preserve">
+    <value>Exkludera kasserade mätningar</value>
+  </data>
+  <data name="FilterInfo_Title" xml:space="preserve">
+    <value>Filtrerar bort {0} mätningar</value>
+  </data>
+  <data name="FilterInfo_Discarded" xml:space="preserve">
+    <value>Kasserade: {0}</value>
+  </data>
+  <data name="FilterInfo_Outliers" xml:space="preserve">
+    <value>Avvikande: {0}</value>
+  </data>
+  <data name="btn_ReloadData" xml:space="preserve">
+    <value>Ladda om data</value>
+  </data>
+  <data name="loadingDataOrderNr" xml:space="preserve">
+    <value>Laddar mätningar: OrderNr</value>
+  </data>
+  <data name="btn_ExportDataToExcel" xml:space="preserve">
+    <value>Exportera mätningar till Excel</value>
+  </data>
+  <data name="gBox_FilterOrders" xml:space="preserve">
+    <value>Välj Ordrar</value>
+  </data>
+  <data name="selectOrders" xml:space="preserve">
+    <value>Markera alla Ordrar</value>
+  </data>
+  <data name="label_SPC_Title" xml:space="preserve">
+    <value>SPC-analys av mätdata:</value>
+  </data>
+  <data name="changeMeasureProtocol_Info_3" xml:space="preserve">
+    <value>Du kan INTE byta mall för Mätprotokoll på en order som har ett Processkort kopplat.</value>
+  </data>
   <data name="BrowseOldMeasureprotocol" xml:space="preserve">
     <value>F3-Historiska mätningar &amp;&amp; SPC</value>
   </data>
@@ -2484,49 +2532,8 @@ Kontakta Admin vid behov.</value>
   <data name="btnZumbach" xml:space="preserve">
     <value>F6-Zumbach-mätning</value>
   </data>
-  <data name="header_BrowseOldMeasureprotocols" xml:space="preserve">
-    <value>Historiska mätningar &amp; SPC</value>
-  </data>
-  <data name="label_ChooseWorkOperation" xml:space="preserve">
-    <value>Välj Arbetsoperation</value>
-  </data>
-  <data name="label_ChooseRevisionMeasureTemplate" xml:space="preserve">
-    <value>Välj Revision för Mätprotokollsmallen</value>
-  </data>
-  <data name="label_ChoosePartNumber" xml:space="preserve">
-    <value>Välj Artikelnummer</value>
-  </data>
-  <data name="chk_FilterBadValues" xml:space="preserve">
-    <value>Ta bort avvikande värden</value>
-  </data>
-  <data name="chk_FilterDiscarded" xml:space="preserve">
-    <value>Exkludera kasserade mätningar</value>
-  </data>
-  <data name="FilterInfo_Title" xml:space="preserve">
-    <value>Filtrerar bort {0} mätningar</value>
-  </data>
-  <data name="FilterInfo_Discarded" xml:space="preserve">
-    <value>Kasserade: {0}</value>
-  </data>
-  <data name="FilterInfo_Outliers" xml:space="preserve">
-    <value>Avvikande: {0}</value>
-  </data>
-  <data name="btn_ReloadData" xml:space="preserve">
-    <value>Ladda om data</value>
-  </data>
-  <data name="loadingDataOrderNr" xml:space="preserve">
-    <value>Laddar mätningar: OrderNr</value>
-  </data>
-  <data name="btn_ExportDataToExcel" xml:space="preserve">
-    <value>Exportera mätningar till Excel</value>
-  </data>
-  <data name="gBox_FilterOrders" xml:space="preserve">
-    <value>Välj Ordrar</value>
-  </data>
-  <data name="selectOrders" xml:space="preserve">
-    <value>Markera alla Ordrar</value>
-  </data>
-  <data name="label_SPC_Title" xml:space="preserve">
-    <value>SPC-analys av mätdata:</value>
+  <data name="changeMeasureProtocol_Info_IsMeasurementsDone" xml:space="preserve">
+    <value>OBS! Det finns mätningar på denna order, om du byter mall kommer alla mätningar helt eller delvis försvinna.
+Är du säker på att du vill fortsätta?</value>
   </data>
 </root>

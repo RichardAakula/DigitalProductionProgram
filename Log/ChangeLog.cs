@@ -37,6 +37,7 @@ namespace DigitalProductionProgram.Log
                                 FROM Log.ClientPolicy
                                 WHERE HostID = (SELECT TOP(1) HostID FROM Settings.General WHERE HostName = @hostname)
                             )
+                        AND ReleaseDate IS NOT NULL
                         ORDER BY cl.ID DESC";
 
                     var cmd = new SqlCommand(query, con);

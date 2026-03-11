@@ -28,7 +28,7 @@ namespace DigitalProductionProgram.Log
         /// </summary>
         private void InitializeComponent()
         {
-            lb_Clients = new ListBox();
+            this.lb_AllowedClients = new ListBox();
             tlp_Main = new TableLayoutPanel();
             label_ProdLines = new Label();
             lb_AllUsers = new ListBox();
@@ -36,7 +36,7 @@ namespace DigitalProductionProgram.Log
             label_Versions = new Label();
             label_BlockedClients = new Label();
             label_UsersOnClient = new Label();
-            label_Clients = new Label();
+            label_AllowedClients = new Label();
             lb_Versions = new ListBox();
             lb_BlockedClients = new ListBox();
             chk_CheckAllClients = new CheckBox();
@@ -51,19 +51,19 @@ namespace DigitalProductionProgram.Log
             tlp_Main.SuspendLayout();
             SuspendLayout();
             // 
-            // lb_Clients
+            // lb_AllowedClients
             // 
-            lb_Clients.BackColor = SystemColors.Window;
-            tlp_Main.SetColumnSpan(lb_Clients, 3);
-            lb_Clients.Dock = DockStyle.Fill;
-            lb_Clients.FormattingEnabled = true;
-            lb_Clients.ItemHeight = 15;
-            lb_Clients.Location = new Point(553, 103);
-            lb_Clients.Name = "lb_Clients";
-            lb_Clients.SelectionMode = SelectionMode.MultiExtended;
-            lb_Clients.Size = new Size(359, 699);
-            lb_Clients.TabIndex = 0;
-            lb_Clients.SelectedIndexChanged += lb_Clients_SelectedIndexChanged;
+            this.lb_AllowedClients.BackColor = SystemColors.Window;
+            tlp_Main.SetColumnSpan(this.lb_AllowedClients, 3);
+            this.lb_AllowedClients.Dock = DockStyle.Fill;
+            this.lb_AllowedClients.FormattingEnabled = true;
+            this.lb_AllowedClients.ItemHeight = 15;
+            this.lb_AllowedClients.Location = new Point(553, 103);
+            this.lb_AllowedClients.Name = "lb_AllowedClients";
+            this.lb_AllowedClients.SelectionMode = SelectionMode.MultiExtended;
+            this.lb_AllowedClients.Size = new Size(359, 699);
+            this.lb_AllowedClients.TabIndex = 0;
+            this.lb_AllowedClients.SelectedIndexChanged += this.lb_Clients_SelectedIndexChanged;
             // 
             // tlp_Main
             // 
@@ -87,8 +87,8 @@ namespace DigitalProductionProgram.Log
             tlp_Main.Controls.Add(label_Versions, 9, 1);
             tlp_Main.Controls.Add(label_BlockedClients, 8, 1);
             tlp_Main.Controls.Add(label_UsersOnClient, 2, 1);
-            tlp_Main.Controls.Add(lb_Clients, 4, 3);
-            tlp_Main.Controls.Add(label_Clients, 4, 1);
+            tlp_Main.Controls.Add(this.lb_AllowedClients, 4, 3);
+            tlp_Main.Controls.Add(label_AllowedClients, 4, 1);
             tlp_Main.Controls.Add(lb_Versions, 9, 3);
             tlp_Main.Controls.Add(lb_BlockedClients, 8, 3);
             tlp_Main.Controls.Add(chk_CheckAllClients, 4, 2);
@@ -191,19 +191,19 @@ namespace DigitalProductionProgram.Log
             label_UsersOnClient.Text = "Users On Client";
             label_UsersOnClient.TextAlign = ContentAlignment.MiddleCenter;
             // 
-            // label_Clients
+            // label_AllowedClients
             // 
-            label_Clients.AutoSize = true;
-            tlp_Main.SetColumnSpan(label_Clients, 3);
-            label_Clients.Dock = DockStyle.Fill;
-            label_Clients.Font = new Font("Segoe UI", 14F);
-            label_Clients.ForeColor = Color.FromArgb(239, 228, 177);
-            label_Clients.Location = new Point(553, 30);
-            label_Clients.Name = "label_Clients";
-            label_Clients.Size = new Size(359, 40);
-            label_Clients.TabIndex = 2;
-            label_Clients.Text = "All Clients";
-            label_Clients.TextAlign = ContentAlignment.MiddleCenter;
+            label_AllowedClients.AutoSize = true;
+            tlp_Main.SetColumnSpan(label_AllowedClients, 3);
+            label_AllowedClients.Dock = DockStyle.Fill;
+            label_AllowedClients.Font = new Font("Segoe UI", 14F);
+            label_AllowedClients.ForeColor = Color.FromArgb(239, 228, 177);
+            label_AllowedClients.Location = new Point(553, 30);
+            label_AllowedClients.Name = "label_AllowedClients";
+            label_AllowedClients.Size = new Size(359, 40);
+            label_AllowedClients.TabIndex = 2;
+            label_AllowedClients.Text = "Allowed Clients";
+            label_AllowedClients.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // lb_Versions
             // 
@@ -350,10 +350,10 @@ namespace DigitalProductionProgram.Log
 
         #endregion
 
-        private ListBox lb_Clients;
+        private ListBox lb_AllowedClients;
         private TableLayoutPanel tlp_Main;
         private Label label_UsersOnClient;
-        private Label label_Clients;
+        private Label label_AllowedClients;
         private ListBox lb_Versions;
         private ListBox lb_BlockedClients;
         private CheckBox chk_CheckAllClients;

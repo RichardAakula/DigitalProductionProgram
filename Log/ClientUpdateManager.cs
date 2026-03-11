@@ -85,7 +85,7 @@ namespace DigitalProductionProgram.Log
         private void SetLoadingState(bool isLoading)
         {
             Cursor = isLoading ? Cursors.WaitCursor : Cursors.Default;
-            lb_Clients.Enabled = !isLoading;
+            lb_AllowedClients.Enabled = !isLoading;
             lb_ProdLines.Enabled = !isLoading;
             lb_Versions.Enabled = !isLoading;
             lb_AllUsers.Enabled = !isLoading;
@@ -98,11 +98,11 @@ namespace DigitalProductionProgram.Log
 
         private void RefreshClientList()
         {
-            lb_Clients.BeginUpdate();
+            lb_AllowedClients.BeginUpdate();
             _suppressSelectionChanged = true;
             try
             {
-                lb_Clients.Items.Clear();
+                lb_AllowedClients.Items.Clear();
 
                 IEnumerable<HostItem> filtered = _allClients;
 
@@ -114,20 +114,20 @@ namespace DigitalProductionProgram.Log
                 }
 
                 foreach (var client in filtered)
-                    lb_Clients.Items.Add(client);
+                    lb_AllowedClients.Items.Add(client);
 
                 // Om CheckAll ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¤r ikryssad, markera alla synliga
                 if (chk_CheckAllClients.Checked)
                 {
-                    lb_Clients.SelectedIndices.Clear();
-                    for (int i = 0; i < lb_Clients.Items.Count; i++)
-                        lb_Clients.SelectedIndices.Add(i);
+                    lb_AllowedClients.SelectedIndices.Clear();
+                    for (int i = 0; i < lb_AllowedClients.Items.Count; i++)
+                        lb_AllowedClients.SelectedIndices.Add(i);
                 }
             }
             finally
             {
                 _suppressSelectionChanged = false;
-                lb_Clients.EndUpdate();
+                lb_AllowedClients.EndUpdate();
             }
         }
         private void RefreshBlockedClientList()
@@ -328,7 +328,7 @@ namespace DigitalProductionProgram.Log
                 _suppressSelectionChanged = false;
             }
 
-            var selectedHosts = lb_Clients.SelectedItems
+            var selectedHosts = lb_AllowedClients.SelectedItems
                 .Cast<HostItem>()
                 .Select(h => h.HostID)
                 .ToList();
@@ -343,8 +343,8 @@ namespace DigitalProductionProgram.Log
             _suppressSelectionChanged = true;
             try
             {
-                if (lb_Clients.SelectedItems.Count > 0)
-                    lb_Clients.ClearSelected();
+                if (lb_AllowedClients.SelectedItems.Count > 0)
+                    lb_AllowedClients.ClearSelected();
             }
             finally
             {
@@ -407,10 +407,10 @@ namespace DigitalProductionProgram.Log
                 return;
 
             _suppressSelectionChanged = true;
-            lb_Clients.BeginUpdate();
+            lb_AllowedClients.BeginUpdate();
             try
             {
-                lb_Clients.Items.Clear();
+                lb_AllowedClients.Items.Clear();
 
                 IEnumerable<HostItem> filtered = _allClients;
 
@@ -462,20 +462,20 @@ namespace DigitalProductionProgram.Log
                 }
 
                 foreach (var client in filtered)
-                    lb_Clients.Items.Add(client);
+                    lb_AllowedClients.Items.Add(client);
 
                 // Om CheckAll ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¤r ikryssad, markera alla synliga
                 if (chk_CheckAllClients.Checked)
                 {
-                    lb_Clients.SelectedIndices.Clear();
-                    for (int i = 0; i < lb_Clients.Items.Count; i++)
-                        lb_Clients.SelectedIndices.Add(i);
+                    lb_AllowedClients.SelectedIndices.Clear();
+                    for (int i = 0; i < lb_AllowedClients.Items.Count; i++)
+                        lb_AllowedClients.SelectedIndices.Add(i);
                 }
             }
             finally
             {
                 _suppressSelectionChanged = false;
-                lb_Clients.EndUpdate();
+                lb_AllowedClients.EndUpdate();
             }
         }
 
@@ -494,7 +494,7 @@ namespace DigitalProductionProgram.Log
             _allBlockedClients = blockedClients.ToList();
 
             lb_BlockedClients.BeginUpdate();
-            lb_Clients.BeginUpdate();
+            lb_AllowedClients.BeginUpdate();
             try
             {
                 // ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â¥ 4. Fyll Blocked-listan frÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¥n masterlistan
@@ -512,7 +512,7 @@ namespace DigitalProductionProgram.Log
             }
             finally
             {
-                lb_Clients.EndUpdate();
+                lb_AllowedClients.EndUpdate();
                 lb_BlockedClients.EndUpdate();
             }
 
@@ -525,10 +525,10 @@ namespace DigitalProductionProgram.Log
         private void lb_AllUsers_SelectedIndexChanged(object sender, EventArgs e)
         {
             _suppressSelectionChanged = true;
-            lb_Clients.BeginUpdate();
+            lb_AllowedClients.BeginUpdate();
             try
             {
-                lb_Clients.Items.Clear();
+                lb_AllowedClients.Items.Clear();
 
                 IEnumerable<HostItem> filtered = _allClients;
 
@@ -580,20 +580,20 @@ namespace DigitalProductionProgram.Log
                 }
 
                 foreach (var client in filtered)
-                    lb_Clients.Items.Add(client);
+                    lb_AllowedClients.Items.Add(client);
 
                 // Om CheckAll ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¤r ikryssad, markera alla synliga
                 if (chk_CheckAllClients.Checked)
                 {
-                    lb_Clients.SelectedIndices.Clear();
-                    for (int i = 0; i < lb_Clients.Items.Count; i++)
-                        lb_Clients.SelectedIndices.Add(i);
+                    lb_AllowedClients.SelectedIndices.Clear();
+                    for (int i = 0; i < lb_AllowedClients.Items.Count; i++)
+                        lb_AllowedClients.SelectedIndices.Add(i);
                 }
             }
             finally
             {
                 _suppressSelectionChanged = false;
-                lb_Clients.EndUpdate();
+                lb_AllowedClients.EndUpdate();
             }
         }
 
@@ -601,25 +601,25 @@ namespace DigitalProductionProgram.Log
         {
             _suppressSelectionChanged = true;
 
-            lb_Clients.BeginUpdate();
+            lb_AllowedClients.BeginUpdate();
             try
             {
-                lb_Clients.ClearSelected();
+                lb_AllowedClients.ClearSelected();
 
                 if (chk_CheckAllClients.Checked)
                 {
-                    for (int i = 0; i < lb_Clients.Items.Count; i++)
-                        lb_Clients.SelectedIndices.Add(i);
+                    for (int i = 0; i < lb_AllowedClients.Items.Count; i++)
+                        lb_AllowedClients.SelectedIndices.Add(i);
                 }
             }
             finally
             {
-                lb_Clients.EndUpdate();
+                lb_AllowedClients.EndUpdate();
                 _suppressSelectionChanged = false;
             }
 
             // ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â¥ TRIGGA EN ENDA uppdatering manuellt
-            lb_Clients_SelectedIndexChanged(lb_Clients, EventArgs.Empty);
+            lb_Clients_SelectedIndexChanged(lb_AllowedClients, EventArgs.Empty);
         }
         private void chk_CheckAllBlockedClients_CheckedChanged(object sender, EventArgs e)
         {
@@ -642,11 +642,11 @@ namespace DigitalProductionProgram.Log
         private void btn_BlockClient_Click(object sender, EventArgs e)
         {
             var version = lb_Versions.SelectedItem?.ToString();
-            if (lb_Clients.SelectedItems.Count == 0 || string.IsNullOrEmpty(version))
+            if (lb_AllowedClients.SelectedItems.Count == 0 || string.IsNullOrEmpty(version))
                 return;
 
             // HÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¤mta valda klienter
-            var toBlock = lb_Clients.SelectedItems.Cast<HostItem>().ToList();
+            var toBlock = lb_AllowedClients.SelectedItems.Cast<HostItem>().ToList();
             if (toBlock.Count == 0)
                 return;
 
@@ -695,7 +695,7 @@ namespace DigitalProductionProgram.Log
 
             // --- 3. UI UPPDATERING ---
             lb_BlockedClients.BeginUpdate();
-            lb_Clients.BeginUpdate();
+            lb_AllowedClients.BeginUpdate();
             try
             {
                 // fyll blocked-listan
@@ -707,7 +707,7 @@ namespace DigitalProductionProgram.Log
             }
             finally
             {
-                lb_Clients.EndUpdate();
+                lb_AllowedClients.EndUpdate();
                 lb_BlockedClients.EndUpdate();
             }
 
@@ -751,7 +751,7 @@ namespace DigitalProductionProgram.Log
 
             // --- 3. UI UPDATE ---
             lb_BlockedClients.BeginUpdate();
-            lb_Clients.BeginUpdate();
+            lb_AllowedClients.BeginUpdate();
             try
             {
                 // fyll blocked-listan
@@ -764,7 +764,7 @@ namespace DigitalProductionProgram.Log
             finally
             {
                 lb_BlockedClients.EndUpdate();
-                lb_Clients.EndUpdate();
+                lb_AllowedClients.EndUpdate();
             }
 
             // --- 4. SÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¶kfilter pÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¥ blocked-list ---

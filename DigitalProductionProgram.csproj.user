@@ -91,7 +91,7 @@
     <Compile Update="MainWindow\Main_PriorityPlanning.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Update="MainWindow\MonitorApiPerformanceForm.cs">
+    <Compile Update="Log\MonitorApiPerformanceForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="MainWindow\RollingInformation.cs">

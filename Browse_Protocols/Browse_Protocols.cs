@@ -86,7 +86,7 @@ namespace DigitalProductionProgram.Browse_Protocols
         private void Fill_Menu_Items()
         {
             cm_Orderlist.Items.Add(Properties.Resources.browseProtocols_1); //Remove Order
-            cm_Orderlist.Items.Add(Properties.Resources.browseProtocols_2); //Discard Order
+            cm_Orderlist.Items.Add(Properties.Resources.browseProtocols_3); //Discard Order
             cm_Orderlist.Items.Add(Properties.Resources.browseProtocols_4); //Activate Order
         }
 

@@ -1,6 +1,4 @@
-﻿using DigitalProductionProgram.ControlsManagement;
-using DigitalProductionProgram.Help;
-using DigitalProductionProgram.Log;
+﻿using DigitalProductionProgram.Help;
 using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.PrintingServices;
 using Microsoft.Data.SqlClient;
@@ -10,7 +8,6 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text;
-using DigitalProductionProgram.User;
 
 
 namespace DigitalProductionProgram.DatabaseManagement
@@ -72,6 +69,9 @@ namespace DigitalProductionProgram.DatabaseManagement
         private const string UpdatePath_OGO = @"\\optifil\dpp\Update\Update DPP.exe";
         private const string UpdatePath_OTH = @"\\oth-s2-file\Digital Production Program\Update\Update DPP.exe";
         private const string UpdatePath_OVF = @"\\ovf-s1-file\Digital Production Program\Update\Update DPP.exe";
+        private const string InstallationPath_OGO = @"\\optifil\dpp\Install DPP.appinstaller";
+        private const string InstallationPath_OTH = @"\\oth-s2-file\Digital Production Program\Install DPP.appinstaller";
+        private const string InstallationPath_OVF = @"\\ovf-s1-file\Digital Production Program\Install DPP.appinstaller";
 
         /// </summary>
 
@@ -143,6 +143,24 @@ namespace DigitalProductionProgram.DatabaseManagement
             }
         }
 
+        public static string InstallationPath
+        {
+            get
+            {
+                switch (Monitor.Monitor.factory)
+                {
+                    case Monitor.Monitor.Factory.Godby:
+                    case Monitor.Monitor.Factory.Holding:
+                        return InstallationPath_OGO;
+                    case Monitor.Monitor.Factory.Thailand:
+                        return InstallationPath_OTH;
+                    case Monitor.Monitor.Factory.ValleyForge:
+                        return InstallationPath_OVF;
+                    default:
+                        throw new InvalidOperationException("Ogiltig fabrik angiven.");
+                }
+            }
+        }
 
         public Database()
         {

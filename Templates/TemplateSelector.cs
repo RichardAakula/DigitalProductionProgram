@@ -19,7 +19,7 @@ namespace DigitalProductionProgram.Templates
         private static bool IsDevelopmentOfProcessCard(int? partID)
         {
             using var con = new SqlConnection(Database.cs_Protocol);
-            var query = @"SELECT TOP(1) Framtagning_ProcessfÃ¶nster FROM Processcard.MainData
+            var query = @"SELECT TOP(1) Framtagning_Processfönster FROM Processcard.MainData
                                 WHERE PartID = @partid";
 
             var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
@@ -108,20 +108,20 @@ namespace DigitalProductionProgram.Templates
             {
                 case TemplateType.TemplateProtocol:
                     tlp_InfoLabels.Visible = false;
-                    label_Header.Text = "Välj mall för Körprotokoll/Processkort:\n" +
-                                        "Detta Artikelnummer har ingen mall för Protokollet kopplat, det finns flera mallar som passar denna operation.";
+                    label_Header.Text = @"Välj mall för Körprotokoll/Processkort:\n" +
+                                        @"Detta Artikelnummer har ingen mall för Protokollet kopplat, det finns flera mallar som passar denna operation.";
                     Add_ProtocolTemplates();
                     break;
                 case TemplateType.TemplateMeasureProtocol:
                     tlp_InfoLabels.Visible = false;
-                    label_Header.Text = "VÃ¤lj mall fÃ¶r MÃ¤tprotokollet:\n" +
-                                        "Detta Artikelnummer har ingen mall för Mätprotokoll kopplat, det finns flera mallar som passar denna operation.";
+                    label_Header.Text = @"Välj mall för Mätprotokollet:\n" +
+                                        @"Detta Artikelnummer har ingen mall för Mätprotokoll kopplat, det finns flera mallar som passar denna operation.";
                     Add_MeasureProtocolTemplates(useWorkoperationFilter);
                     break;
                 case TemplateType.Workoperations:
                     tlp_InfoLabels.Visible = false;
-                    label_Header.Text = "Välj Arbetsoperation nedan:\n" +
-                                        "Detta Artikelnummer tillhör flera Arbetsoperationer.";
+                    label_Header.Text = @"Välj Arbetsoperation nedan:\n" +
+                                        @"Detta Artikelnummer tillhör flera Arbetsoperationer.";
                     Add_Workoperations();
                     break;
             }
@@ -142,7 +142,7 @@ namespace DigitalProductionProgram.Templates
                 Close();
             }
 
-            //Om anvÃ¤ndare hÃ¥ller pÃ¥ Ã¶ppna BlÃ¤ddra gamla ordrar sÃ¥ vÃ¤ljs automatiskt den fÃ¶rsta mallen i listan pga att det Ã¤r irrelevant vilken mall som vÃ¤ljs eftersom det Ã¤ndÃ¥ vÃ¤ljs automatiskt nÃ¤r ordern Ã¶ppnas.
+            //Om användare håller på öppna Bläddra gamla ordrar så väljs automatiskt den första mallen i listan pga att det är irrelevant vilken mall som väljs eftersom det ändå väljs automatiskt när ordern öppnas.
             if (IsAutoSelectTemplate)
                 foreach (HeaderButton btn in flp_Buttons.Controls.OfType<HeaderButton>())
                     btn.PerformClick();
@@ -193,111 +193,117 @@ namespace DigitalProductionProgram.Templates
 
         private void Add_MultipleProcesscards(bool IsOkSelectLatestRev)
         {
-            using var con = new SqlConnection(Database.cs_Protocol);
-            const string query = @"
-               WITH OrderedRevisions AS 
-(
-    SELECT 
-        PartID, 
-        PartGroupID, 
-        RevNr, 
-        TRY_CAST(RevNr AS INT) AS RevNrInt,
-        ProdLine,
-        ProdType,
-        QA_sign,
-        Historiska_Data, 
-        Validerat,  
-        Framtagning_ProcessfÃ¶nster,
-        Aktiv,
-        ROW_NUMBER() OVER (
-            PARTITION BY PartGroupID 
-            ORDER BY TRY_CAST(RevNr AS INT) DESC, RevNr DESC
-        ) AS RowNum,
-        COUNT(*) OVER (PARTITION BY PartGroupID) AS TotalRevisions,
-        MIN(RevNr) OVER (PARTITION BY PartGroupID) AS FirstRev,
-        MAX(RevNr) OVER (PARTITION BY PartGroupID) AS LatestRev,
-        MAX(CASE WHEN Framtagning_ProcessfÃ¶nster = 'True' THEN RevNr END) 
-            OVER (PARTITION BY PartGroupID) AS LatestFramtagningRev,
-        MAX(CASE WHEN QA_sign IS NOT NULL THEN RevNr END) 
-            OVER (PARTITION BY PartGroupID) AS LatestApprovedRev
-    FROM Processcard.MainData 
-    WHERE PartNr = @partnr
-      AND WorkoperationID = (
-          SELECT ID FROM Workoperation.Names WHERE Name = @workoperation
-      )
-),
-CheckAllNulls AS 
-(
-    SELECT PartGroupID 
-    FROM OrderedRevisions 
-    GROUP BY PartGroupID 
-    HAVING COUNT(*) = COUNT(CASE WHEN QA_sign IS NULL THEN 1 END)
-),
-FinalSelection AS
-(
-    SELECT *,
-        CASE 
-            WHEN @IsOkSelectLatestRev = 1 AND RevNr = LatestRev THEN 1
-            WHEN @IsOkSelectLatestRev = 0 AND RevNr = LatestApprovedRev THEN 1
-            WHEN @IsOkSelectLatestRev = 0 AND PartGroupID IN (SELECT PartGroupID FROM CheckAllNulls)
-                 AND EXISTS (
-                     SELECT 1 FROM OrderedRevisions o2 
-                     WHERE o2.PartGroupID = OrderedRevisions.PartGroupID 
-                       AND o2.Framtagning_ProcessfÃ¶nster = 'True'
-                 )
-                 AND RevNr = LatestFramtagningRev THEN 1
-            WHEN @IsOkSelectLatestRev = 0 AND PartGroupID IN (SELECT PartGroupID FROM CheckAllNulls)
-                 AND NOT EXISTS (
-                     SELECT 1 FROM OrderedRevisions o2 
-                     WHERE o2.PartGroupID = OrderedRevisions.PartGroupID 
-                       AND o2.Framtagning_ProcessfÃ¶nster = 'True'
-                 )
-                 AND RevNr = FirstRev THEN 1
-            WHEN @IsOkSelectLatestRev = 0 AND Framtagning_ProcessfÃ¶nster = 'True' AND RevNr = LatestRev THEN 1
-            ELSE 0
-        END AS IsSelected
-    FROM OrderedRevisions
-)
-SELECT TOP 1 WITH TIES
-    PartID, 
-    PartGroupID, 
-    RevNr, 
-    ProdLine, 
-    ProdType, 
-    QA_sign, 
-    Historiska_Data, 
-    Validerat, 
-    Framtagning_ProcessfÃ¶nster,
-    Aktiv,
-    LatestRev,
-    CASE WHEN RevNr = LatestRev THEN 1 ELSE 0 END AS LatestRevSelected
-FROM FinalSelection
-WHERE IsSelected = 1
-ORDER BY ROW_NUMBER() OVER (PARTITION BY PartGroupID ORDER BY TRY_CAST(RevNr AS INT) DESC);";
-
-            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-            cmd.Parameters.Add("@partnr", SqlDbType.NVarChar).Value = Order.PartNumber;
-            cmd.Parameters.Add("@workoperation", SqlDbType.NVarChar).Value = Order.WorkOperation.ToString();
-            cmd.Parameters.Add("@IsOkSelectLatestRev", SqlDbType.Bit).Value = IsOkSelectLatestRev;
-
-            con.Open();
-            var reader = cmd.ExecuteReader();
-            while (reader.Read())
+            Database.ExecuteSafe(con =>
             {
-                var text = $"{reader["ProdLine"]} / {reader["ProdType"]}";
-                int.TryParse(reader["PartID"].ToString(), out var partid);
-                int.TryParse(reader["PartGroupID"].ToString(), out var partGroupID);
-                var prodType = reader["ProdType"].ToString();
-                var prodLine = reader["ProdLine"].ToString();
-                var revNr = reader["RevNr"].ToString();
-                var latestRevNr = reader["LatestRev"].ToString();
-                var isLatestRevNrSelected = Convert.ToBoolean(reader["LatestRevSelected"]);
-                var isActive = Convert.ToInt32(reader["Aktiv"]) == 1;
+                const string query = """
+                                     WITH OrderedRevisions AS 
+                                     (
+                                         SELECT 
+                                             PartID, 
+                                             PartGroupID, 
+                                             RevNr, 
+                                             TRY_CAST(RevNr AS INT) AS RevNrInt,
+                                             ProdLine,
+                                             ProdType,
+                                             QA_sign,
+                                             Historiska_Data, 
+                                             Validerat,  
+                                             Framtagning_Processfönster,
+                                             Aktiv,
+                                             ROW_NUMBER() OVER (
+                                                 PARTITION BY PartGroupID 
+                                                 ORDER BY TRY_CAST(RevNr AS INT) DESC, RevNr DESC
+                                             ) AS RowNum,
+                                             COUNT(*) OVER (PARTITION BY PartGroupID) AS TotalRevisions,
+                                             MIN(RevNr) OVER (PARTITION BY PartGroupID) AS FirstRev,
+                                             MAX(RevNr) OVER (PARTITION BY PartGroupID) AS LatestRev,
+                                             MAX(CASE WHEN Framtagning_Processfönster = 'True' THEN RevNr END) 
+                                                 OVER (PARTITION BY PartGroupID) AS LatestFramtagningRev,
+                                             MAX(CASE WHEN QA_sign IS NOT NULL THEN RevNr END) 
+                                                 OVER (PARTITION BY PartGroupID) AS LatestApprovedRev
+                                         FROM Processcard.MainData 
+                                         WHERE PartNr = @partnr
+                                           AND WorkoperationID = 
+                                           (
+                                               SELECT ID FROM Workoperation.Names WHERE Name = @workoperation
+                                           )
+                                     ),
+                                     CheckAllNulls AS 
+                                     (
+                                         SELECT PartGroupID 
+                                         FROM OrderedRevisions 
+                                         GROUP BY PartGroupID 
+                                         HAVING COUNT(*) = COUNT(CASE WHEN QA_sign IS NULL THEN 1 END)
+                                     ),
+                                     FinalSelection AS
+                                     (
+                                         SELECT *,
+                                             CASE 
+                                                 WHEN @IsOkSelectLatestRev = 1 AND RevNr = LatestRev THEN 1
+                                                 WHEN @IsOkSelectLatestRev = 0 AND RevNr = LatestApprovedRev THEN 1
+                                                 WHEN @IsOkSelectLatestRev = 0 AND PartGroupID IN (SELECT PartGroupID FROM CheckAllNulls)
+                                                      AND EXISTS 
+                                                      (
+                                                          SELECT 1 FROM OrderedRevisions o2 
+                                                          WHERE o2.PartGroupID = OrderedRevisions.PartGroupID 
+                                                            AND o2.Framtagning_Processfönster = 'True'
+                                                      )
+                                                      AND RevNr = LatestFramtagningRev THEN 1
+                                                 WHEN @IsOkSelectLatestRev = 0 AND PartGroupID IN (SELECT PartGroupID FROM CheckAllNulls)
+                                                      AND NOT EXISTS 
+                                                      (
+                                                          SELECT 1 FROM OrderedRevisions o2 
+                                                          WHERE o2.PartGroupID = OrderedRevisions.PartGroupID 
+                                                            AND o2.Framtagning_Processfönster = 'True'
+                                                      )
+                                                      AND RevNr = FirstRev THEN 1
+                                                 WHEN @IsOkSelectLatestRev = 0 AND Framtagning_Processfönster = 'True' AND RevNr = LatestRev THEN 1
+                                                 ELSE 0
+                                             END AS IsSelected
+                                         FROM OrderedRevisions
+                                     )
+                                     SELECT TOP 1 WITH TIES
+                                         PartID, 
+                                         PartGroupID, 
+                                         RevNr, 
+                                         ProdLine, 
+                                         ProdType, 
+                                         QA_sign, 
+                                         Historiska_Data, 
+                                         Validerat, 
+                                         Framtagning_Processfönster,
+                                         Aktiv,
+                                         LatestRev,
+                                         CASE WHEN RevNr = LatestRev THEN 1 ELSE 0 END AS LatestRevSelected
+                                     FROM FinalSelection
+                                     WHERE IsSelected = 1
+                                     ORDER BY ROW_NUMBER() OVER (PARTITION BY PartGroupID ORDER BY TRY_CAST(RevNr AS INT) DESC);
+                                     """;
 
-                Add_Button_Processcard(text, Order.WorkOperation.ToString(), prodType, prodLine, revNr, partid, partGroupID, !IsOperatorStartingOrder, true, latestRevNr, isLatestRevNrSelected, isActive);
-            }
-            Add_Button_Processcard("Processkort saknas", Order.WorkOperation.ToString(), null, null, null, null, null, true, false, null, true, true);
-            totalLabels--; //"Processkort saknas" ska inte rÃ¤knas med i totalen, den Ã¤r bara en fallback-knapp om inget annat finns.
+                var cmd = new SqlCommand(query, con);
+                cmd.Parameters.Add("@partnr", SqlDbType.NVarChar).Value = Order.PartNumber;
+                cmd.Parameters.Add("@workoperation", SqlDbType.NVarChar).Value = Order.WorkOperation.ToString();
+                cmd.Parameters.Add("@IsOkSelectLatestRev", SqlDbType.Bit).Value = IsOkSelectLatestRev;
+
+                var reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    var text = $"{reader["ProdLine"]} / {reader["ProdType"]}";
+                    int.TryParse(reader["PartID"].ToString(), out var partid);
+                    int.TryParse(reader["PartGroupID"].ToString(), out var partGroupID);
+                    var prodType = reader["ProdType"].ToString();
+                    var prodLine = reader["ProdLine"].ToString();
+                    var revNr = reader["RevNr"].ToString();
+                    var latestRevNr = reader["LatestRev"].ToString();
+                    var isLatestRevNrSelected = Convert.ToBoolean(reader["LatestRevSelected"]);
+                    var isActive = Convert.ToInt32(reader["Aktiv"]) == 1;
+
+                    Add_Button_Processcard(text, Order.WorkOperation.ToString(), prodType, prodLine, revNr, partid, partGroupID, !IsOperatorStartingOrder, true, latestRevNr, isLatestRevNrSelected, isActive);
+                }
+
+                Add_Button_Processcard("Processkort saknas", Order.WorkOperation.ToString(), null, null, null, null, null, true, false, null, true, true);
+                totalLabels--; //"Processkort saknas" ska inte räknas med i totalen, den är bara en fallback-knapp om inget annat finns.
+            });
         }
         private void Add_Workoperations()
         {
@@ -481,26 +487,26 @@ ORDER BY ROW_NUMBER() OVER (PARTITION BY PartGroupID ORDER BY TRY_CAST(RevNr AS 
                 return;
             }
 
-            if (btn.Text == $"{Properties.Resources.chooseProcesscard_Info_1} / ")
+            if (btn.Text == @$"{Properties.Resources.chooseProcesscard_Info_1} / ")
             {
                 btn.ForeColor = CustomColors.Ok_Front;
                 btn.BackColor = CustomColors.Ok_Back;
                 return;
             }
 
-            //Om Processkort under Framarbetning och mindre Ã¤n tre ordrar kÃ¶rda
+            //Om Processkort under Framarbetning och mindre än tre ordrar körda
             if (IsDevelopmentOfProcessCard(partID) && Part.TotalOrders_PartID(partID) > 2)
             {
                 btn.ForeColor = Color.DarkOrange;
                 btn.BackColor = Color.Brown;
             }
-            //GodkÃ¤nd av QA eller under framtagning av Processkort och kÃ¶rd under 3 gÃ¥nger
+            //Godkänd av QA eller under framtagning av Processkort och körd under 3 gånger
             else if (Processcard.IsApproved_By_QA(partID) || (IsDevelopmentOfProcessCard(partID) && Part.TotalOrders_PartID(partID) < 3))
             {
                 btn.ForeColor = CustomColors.Ok_Front;
                 btn.BackColor = CustomColors.Ok_Back;
             }
-            //Ej godkÃ¤nd av QA
+            //Ej godkänd av QA
             else
             {
                 btn.ForeColor = CustomColors.Bad_Front;

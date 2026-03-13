@@ -54,6 +54,7 @@ namespace DigitalProductionProgram.Log
         {
             get
             {
+                //return new Version(4, 3, 16, 2);
                 // För att hämta versionen från den aktuella exekverbara filen
                 var versionInfo = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location);
                 if (versionInfo.FileVersion != null) return new Version(versionInfo.FileVersion);
@@ -65,7 +66,7 @@ namespace DigitalProductionProgram.Log
         {
             get
             {
-                const string appInstallerPath = @"\\optifil\dpp\Install DPP.appinstaller";
+                var appInstallerPath = Database.InstallationPath;
 
                 // ✅ Kontrollera att filen finns innan vi försöker läsa
                 if (File.Exists(appInstallerPath))

@@ -218,18 +218,21 @@ namespace DigitalProductionProgram.Processcards
                         SELECT 1 
                         FROM Processcard.MainData 
                         WHERE PartNr = @partnr 
-                            AND RevNr = @revNr 
-                            AND WorkOperationID = 
-                            (
-                                SELECT ID 
-                                FROM Workoperation.Names 
-                                WHERE Name = @workoperation 
-                                    AND ID IS NOT NULL
-                            )";
+                            AND PartGroupId = @partgroupid
+                            AND RevNr = @revnr";
+                            //AND WorkOperationID = 
+                            //(
+                            //    SELECT ID 
+                            //    FROM Workoperation.Names 
+                            //    WHERE Name = @workoperation 
+                            //        AND ID IS NOT NULL
+                            //)";
                     using var cmd = new SqlCommand(query, con);
                     cmd.Parameters.AddWithValue("@partnr", Order.PartNumber);
+                    cmd.Parameters.AddWithValue("@partgroupid", Order.PartGroupID);
                     cmd.Parameters.AddWithValue("@revNr", ProcesscardBasedOn.lbl_RevNr.Text);
-                    cmd.Parameters.AddWithValue("@workoperation", Order.WorkOperation);
+                    //cmd.Parameters.AddWithValue("@workoperation", Order.WorkOperation);
+                    
                     using var reader = cmd.ExecuteReader();
                     return reader.HasRows;
                 });
@@ -384,12 +387,7 @@ namespace DigitalProductionProgram.Processcards
             if (Person.Role == "SuperAdmin")
                 btn_CopyPartNr.Visible = true;
         }
-        private void FillComboBox(
-            ComboBox comboBox,
-            string query,
-            Dictionary<string, object> parameters,
-            EventHandler? selectedIndexChangedHandler = null,
-            bool setLastSelected = false)
+        private void FillComboBox(ComboBox comboBox, string query, Dictionary<string, object> parameters, EventHandler? selectedIndexChangedHandler = null, bool setLastSelected = false)
         {
             // Optionally detach event handler
             if (selectedIndexChangedHandler != null)
@@ -989,8 +987,8 @@ namespace DigitalProductionProgram.Processcards
                     return;
             else
             {
-                if (IsPartRevisionNrExist)
-                    return;
+                //if (IsPartRevisionNrExist)
+                //    return;
                 Save_ProcessCard(ref is_Ok);
             }
 
@@ -1007,11 +1005,17 @@ namespace DigitalProductionProgram.Processcards
             pbar.Set_ValueProgressBar(0, $"Saving Processcard {Order.PartNumber} - RevNr {Order.RevNr}");
 
             Order.PartID = Part.Get_NewPartID;
-            if (Part.IsPartNr_Exist(tb_NewPartNr.Text, Order.WorkOperation.ToString(), tb_ProdLine.Text, tb_ProdType.Text, cb_ProtocolTemplateName.Text, cb_TemplateRevision.Text) == false)
+            if (Part.IsPartNr_Exist(tb_NewPartNr.Text, Order.WorkOperation.ToString(), tb_ProdLine.Text, tb_ProdType.Text) == false) //, cb_ProtocolTemplateName.Text, cb_TemplateRevision.Text) == false)
                 Part.Create_NewPartGroup_ID();
             else
                 Part.Load_PartGroup_ID(Order.PartNumber, cb_ProtocolTemplateName.Text, Order.WorkOperation);
 
+            if (IsPartRevisionNrExist)
+            {
+                pbar.Close();
+                return;
+            }
+                
 
             switch (Order.WorkOperation)
             {

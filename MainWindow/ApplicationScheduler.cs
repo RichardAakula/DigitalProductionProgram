@@ -40,7 +40,7 @@ namespace DigitalProductionProgram.MainWindow
             _serverStatus = serverStatus;
             _masterTimer = new System.Windows.Forms.Timer
             {
-                Interval = 60000 // 1 sekund
+                Interval = 60000 // 1 minut
             };
 
             _masterTimer.Tick += MasterTimer_Tick;
@@ -128,7 +128,7 @@ namespace DigitalProductionProgram.MainWindow
                 await _statistics.Load_StatisticsAsync();
             }
 
-            //----10 minuter---- Ändras till 120 minuter om användaren väljer att inte uppdatera
+            //----10 minuter---- Ändras till 4 h om användaren väljer att inte uppdatera
             //----Kollar om det finns en ny version av programmet och uppdaterar vid behov----
             if (minutes_CheckForUpdate >= timer_counterCheckForUpdate)
             {
@@ -188,7 +188,7 @@ namespace DigitalProductionProgram.MainWindow
             if (InfoText.answer == InfoText.Answer.No)
             {
                 _ = Activity.Stop($"User {Person.Name} did NOT update the application. CurrentVersion = {currentVersion} - LatestVersion = {latestAllowedtVersion}");
-                timer_counterCheckForUpdate = 120; // 2 timmar
+                timer_counterCheckForUpdate = 240; // 4 timmar
             }
             else
             {

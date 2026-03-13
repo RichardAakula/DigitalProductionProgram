@@ -905,7 +905,7 @@ namespace DigitalProductionProgram.MainWindow
             menuStrip.Dock = DockStyle.Fill;
             menuStrip.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             menuStrip.ImageScalingSize = new Size(28, 28);
-            menuStrip.Items.AddRange(new ToolStripItem[] { Menu_Arkiv, Menu_Order, Menu_Protocol, Menu_Equipment, Menu_User, Menu_Help, Menu_Themes, Menu_Settings, Menu_Developer });
+            menuStrip.Items.AddRange(new ToolStripItem[] { Menu_Arkiv, Menu_Order, Menu_Protocol, Menu_Equipment, Menu_User, Menu_Help, Menu_Settings, Menu_Themes, Menu_Developer });
             menuStrip.LayoutStyle = ToolStripLayoutStyle.HorizontalStackWithOverflow;
             menuStrip.Location = new Point(0, 0);
             menuStrip.Name = "menuStrip";

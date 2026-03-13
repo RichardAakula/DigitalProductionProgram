@@ -491,8 +491,9 @@ GROUP BY md.PartID";
             var query = @"
                 SELECT PartGroupID FROM Processcard.MainData 
                 WHERE PartNr = @partnr 
-                    AND WorkOperationID = (SELECT ID FROM Workoperation.Names WHERE Name = @workoperation AND ID IS NOT NULL) 
-                    AND ProtocolMainTemplateID IN (SELECT ID FROM Protocol.MainTemplate WHERE Name = @maintemplatename)";
+                    AND WorkOperationID = (SELECT ID FROM Workoperation.Names WHERE Name = @workoperation AND ID IS NOT NULL) ";
+                    //Jag har bytt så att olika ProtocolMainTemplateID skall kunna vara på samma ProdGroupID så nedanstående kod är borta. Samma sak finns i IsPartNr_Exist
+                    //AND ProtocolMainTemplateID IN (SELECT ID FROM Protocol.MainTemplate WHERE Name = @maintemplatename)";
             if (Processcard.IsMultipleProcesscard(workoperation, PartNr))
                 query += @"AND (@prodline IS NULL OR ProdLine = @prodline)
                          AND (@prodtype IS NULL OR ProdType = @prodtype)";
@@ -557,7 +558,7 @@ GROUP BY md.PartID";
                 return;
             Order.ProdLine = (string)cmd.ExecuteScalar();
         }
-        public static bool IsPartNr_Exist(string PartNr, string WorkOperation, string ProdLine, string ProdType, string ProtocolTemplateName, string ProtocolTemplateRevision)
+        public static bool IsPartNr_Exist(string PartNr, string WorkOperation, string ProdLine, string ProdType)//, string ProtocolTemplateName, string ProtocolTemplateRevision)
         {
             if (Order.PartID is null || Order.PartID == 0)
                 return false;
@@ -568,8 +569,9 @@ GROUP BY md.PartID";
                             WHERE PartNr = @partNr 
                                 AND WorkOperationID = (SELECT ID FROM Workoperation.Names WHERE Name = @workoperation AND ID IS NOT NULL) 
                                 AND (ProdLine = @prodline OR COALESCE(@prodline, '') = '') 
-                                AND (ProdType = @prodtype OR COALESCE(@prodtype, '') = '')
-                                AND ProtocolMainTemplateID = (SELECT ID FROM Protocol.MainTemplate WHERE Name = @name AND Revision = @revision)";
+                                AND (ProdType = @prodtype OR COALESCE(@prodtype, '') = '')";
+                                //Nedanstående skall troligen inte vara med eftersom en ny mall kan skapas på samma PartGroupID, samma sak finns i Load_PartGroup_ID
+                                //AND ProtocolMainTemplateID = (SELECT ID FROM Protocol.MainTemplate WHERE Name = @name AND Revision = @revision)";
 
             var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             var test = Order.PartNumber;
@@ -578,8 +580,8 @@ GROUP BY md.PartID";
             cmd.Parameters.AddWithValue("@workoperation", WorkOperation);
             cmd.Parameters.AddWithValue("@prodline", ProdLine);
             cmd.Parameters.AddWithValue("@prodtype", ProdType);
-            cmd.Parameters.AddWithValue("@name", ProtocolTemplateName);
-            cmd.Parameters.AddWithValue("@revision", ProtocolTemplateRevision);
+           // cmd.Parameters.AddWithValue("@name", ProtocolTemplateName);
+           // cmd.Parameters.AddWithValue("@revision", ProtocolTemplateRevision);
 
             con.Open();
             var reader = cmd.ExecuteReader();

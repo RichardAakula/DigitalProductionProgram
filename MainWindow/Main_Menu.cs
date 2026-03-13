@@ -28,6 +28,13 @@ namespace DigitalProductionProgram.MainWindow
 {
     public partial class Main_Menu : UserControl
     {
+        
+        private const string RtfColor_Date      = @"\red255\green255\blue255;";   // Vit
+        private const string RtfColor_Header    = @"\red100\green200\blue255;";   // Ljusblå
+        private const string RtfColor_Name      = @"\red150\green255\blue150;";   // Ljusgrön
+        private const string RtfColor_Message = @"\red200\green200\blue200;";  // Grå
+
+
         public Main_Form mainForm;
 
         public Main_Menu()
@@ -143,7 +150,7 @@ namespace DigitalProductionProgram.MainWindow
             else
             {
                 MessageBox.Show("Updater could not be found, please contact Admin.", "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            }       
 
             // Application.Exit(); // Closing DPP
         }
@@ -280,36 +287,83 @@ namespace DigitalProductionProgram.MainWindow
             Database.ExecuteSafe(con =>
             {
                 const string query = @"
-                SELECT 
-                    Rubrik, 
-                    Meddelande, 
-                    Namn, 
-                    Datum
-                FROM Processcard.ProposedChanges
-                WHERE OrderID = @orderid
-                ORDER BY Datum DESC";
-                var cmd = new SqlCommand(query, con);
+                    SELECT Rubrik, Meddelande, Namn, Datum
+                    FROM Processcard.ProposedChanges
+                    WHERE OrderID = @orderid
+                    ORDER BY Datum DESC;";
+
+                using var cmd = new SqlCommand(query, con);
                 cmd.Parameters.Add("@orderid", SqlDbType.Int).Value = Order.OrderID;
-                var reader = cmd.ExecuteReader();
-                var text = new StringBuilder("\n");
-                var brRegex = new Regex(@"<br\s*/?>", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+                using var reader = cmd.ExecuteReader();
+
+                // Hantera både "<br>" och HTML-escaped "&lt;br&gt;"
+                var brRegex = new Regex(@"(<br\s*/?>)|(&lt;br\s*/?&gt;)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+
+                var rtf = new StringBuilder();
+
+                // ANSI + codepage 1252 så å/ä/ö funkar utan \u-escape
+                rtf.Append(@"{\rtf1\ansi\ansicpg1252\deff0");
+                rtf.Append(@"{\colortbl ;");
+                rtf.Append(RtfColor_Date); // 1 vit (datum)
+                rtf.Append(RtfColor_Header); // 2 ljusblå (rubrik)
+                rtf.Append(RtfColor_Name); // 3 ljusgrön (namn)
+                rtf.Append(RtfColor_Message); // 4 grå  (meddelande)
+                rtf.Append(@"}");
+
                 while (reader.Read())
                 {
-                    var rubrik = reader["Rubrik"].ToString()?.Replace("<br />", "\n  ");
-
+                    var rubrik = reader["Rubrik"]?.ToString() ?? string.Empty;
+                    rubrik = brRegex.Replace(rubrik, "\n").Replace("\r\n", "\n").Replace("\r", "");
+                   
                     var meddelande = reader["Meddelande"]?.ToString() ?? string.Empty;
                     meddelande = brRegex.Replace(meddelande, "\n").Replace("\r\n", "\n").Replace("\r", "").Trim('\n');
 
-                    var namn = reader["Namn"].ToString();
-                    var datum = reader["Datum"].ToString();
+                    var namn = reader["Namn"]?.ToString() ?? string.Empty;
+                    var datum = reader["Datum"]?.ToString() ?? string.Empty;
 
-                    text.AppendLine($"[{datum}]\n{rubrik} \n        ({meddelande}) \n-{namn}\n\n");
+                    // DATUM – vit
+                    rtf.Append(@"\cf1\b[");
+                    rtf.Append(EscapeRtf(datum));
+                    rtf.Append(@"]\b0\line\pard");
+
+
+                    // RUBRIK – ljusblå (med radbrytningar via \line mellan escapade delar)
+                    rtf.Append(@"\pard\cf2");
+                    {
+                        var parts = rubrik.Split('\n');
+                        for (int i = 0; i < parts.Length; i++)
+                        {
+                            rtf.Append(EscapeRtf(parts[i]));
+                            if (i < parts.Length - 1) 
+                                rtf.Append(@"\line ");
+                        }
+                    }
+                    rtf.Append(@"\b0\line\line");
+                    // MEDDELANDE – grå
+                    rtf.Append(@"\cf4\tab(");
+                    {
+                        var parts = meddelande.Split('\n');
+                        for (int i = 0; i < parts.Length; i++)
+                        {
+                            rtf.Append(EscapeRtf(parts[i]));
+                            if (i < parts.Length - 1) rtf.Append(@"\line");
+                        }
+                    }
+                    rtf.Append(@")\line");
+
+                    // NAMN – ljusgrön
+                    rtf.Append(@"\cf3\b -");
+                    rtf.Append(EscapeRtf(namn));
+                    rtf.Append(@"\b0\line\line");
                 }
 
-                _ = Activity.Stop("User checks suggested changes for the  Process card");
-                InfoText.Show(text.ToString(), CustomColors.InfoText_Color.Info, Properties.Resources.processcard_SuggestedChanges, this);
+                rtf.Append("}");
+
+                _ = Activity.Stop("User checks suggested changes for the Process card");
+                InfoText.Show(rtf.ToString(), CustomColors.InfoText_Color.Info, Properties.Resources.processcard_SuggestedChanges, this);
             });
-        }
+}
+
         private void Menu_Order_CreateTestOrder_Click(object sender, EventArgs e)
         {
             var org_OrderNr = Order.OrderNumber;
@@ -464,10 +518,10 @@ namespace DigitalProductionProgram.MainWindow
                 // Starta RTF och definiera färger: 1=blå, 2=grå, 3=grön
                 sb.Append(@"{\rtf1\ansi\deff0");
                 sb.AppendLine(@"{\colortbl ;");
-                sb.AppendLine(@"\red250\green250\blue250;"); // ParmesanFont  --Datum
-                sb.AppendLine(@"\red216\green109\blue205;"); // Name+HostName
-                sb.AppendLine(@"\red184\green220\blue231;"); // LightBlue  --Info
-                sb.AppendLine(@"\red239\green228\blue177;"); // Parmesan   --Rubrik
+                sb.AppendLine(RtfColor_Date); // ParmesanFont  --Datum
+                sb.AppendLine(RtfColor_Name); // Name+HostName
+                sb.AppendLine(RtfColor_Message); // LightBlue  --Info
+                sb.AppendLine(RtfColor_Header); // Parmesan   --Rubrik
                 sb.AppendLine(@"}");
 
                 // Rubrik i grön

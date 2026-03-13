@@ -62,7 +62,7 @@ namespace DigitalProductionProgram.Help
                 System.Reflection.BindingFlags.SetProperty |
                 System.Reflection.BindingFlags.Instance |
                 System.Reflection.BindingFlags.NonPublic,
-                null, infoText.rtb_Message, new object[] { true });
+                null, infoText.rtb_Message, [true]);
 
             Change_GUI_Header(header);
             infoText.tlp_Main.RowStyles[2].Height = 10;

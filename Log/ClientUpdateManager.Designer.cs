@@ -28,7 +28,7 @@ namespace DigitalProductionProgram.Log
         /// </summary>
         private void InitializeComponent()
         {
-            this.lb_AllowedClients = new ListBox();
+            lb_AllowedClients = new ListBox();
             tlp_Main = new TableLayoutPanel();
             label_ProdLines = new Label();
             lb_AllUsers = new ListBox();
@@ -53,17 +53,17 @@ namespace DigitalProductionProgram.Log
             // 
             // lb_AllowedClients
             // 
-            this.lb_AllowedClients.BackColor = SystemColors.Window;
-            tlp_Main.SetColumnSpan(this.lb_AllowedClients, 3);
-            this.lb_AllowedClients.Dock = DockStyle.Fill;
-            this.lb_AllowedClients.FormattingEnabled = true;
-            this.lb_AllowedClients.ItemHeight = 15;
-            this.lb_AllowedClients.Location = new Point(553, 103);
-            this.lb_AllowedClients.Name = "lb_AllowedClients";
-            this.lb_AllowedClients.SelectionMode = SelectionMode.MultiExtended;
-            this.lb_AllowedClients.Size = new Size(359, 699);
-            this.lb_AllowedClients.TabIndex = 0;
-            this.lb_AllowedClients.SelectedIndexChanged += this.lb_Clients_SelectedIndexChanged;
+            lb_AllowedClients.BackColor = SystemColors.Window;
+            tlp_Main.SetColumnSpan(lb_AllowedClients, 3);
+            lb_AllowedClients.Dock = DockStyle.Fill;
+            lb_AllowedClients.FormattingEnabled = true;
+            lb_AllowedClients.ItemHeight = 15;
+            lb_AllowedClients.Location = new Point(553, 103);
+            lb_AllowedClients.Name = "lb_AllowedClients";
+            lb_AllowedClients.SelectionMode = SelectionMode.MultiExtended;
+            lb_AllowedClients.Size = new Size(359, 699);
+            lb_AllowedClients.TabIndex = 0;
+            lb_AllowedClients.SelectedIndexChanged += lb_Clients_SelectedIndexChanged;
             // 
             // tlp_Main
             // 
@@ -87,7 +87,7 @@ namespace DigitalProductionProgram.Log
             tlp_Main.Controls.Add(label_Versions, 9, 1);
             tlp_Main.Controls.Add(label_BlockedClients, 8, 1);
             tlp_Main.Controls.Add(label_UsersOnClient, 2, 1);
-            tlp_Main.Controls.Add(this.lb_AllowedClients, 4, 3);
+            tlp_Main.Controls.Add(lb_AllowedClients, 4, 3);
             tlp_Main.Controls.Add(label_AllowedClients, 4, 1);
             tlp_Main.Controls.Add(lb_Versions, 9, 3);
             tlp_Main.Controls.Add(lb_BlockedClients, 8, 3);

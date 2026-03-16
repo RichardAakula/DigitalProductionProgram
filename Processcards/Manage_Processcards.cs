@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.DatabaseManagement;
@@ -1053,8 +1054,9 @@ namespace DigitalProductionProgram.Processcards
                 return;
 
             InfoText.Show($@"{Properties.Resources.saveProcesscard_Info_3_1} {tb_NewPartNr.Text}, Revision: {ProcesscardBasedOn.lbl_RevNr.Text}
-{Properties.Resources.saveProcesscard_Info_3_2}", CustomColors.InfoText_Color.Ok, null, this);
+                {Properties.Resources.saveProcesscard_Info_3_2}", CustomColors.InfoText_Color.Ok, null, this);
 
+            Log.Activity.Stop($"Save Processcard: PartId {Order.PartID}, PartGroupId: {Order.PartGroupID}, PartNr: {Order.PartNumber}, RevNr: {Order.RevNr}");
             Load_Processcard_Info();
             Order.PartGroupID = null;
 
@@ -1129,7 +1131,7 @@ namespace DigitalProductionProgram.Processcards
             });
         }
 
-        public static void Execute_cmd(IDbCommand cmd, ref bool IsOk)
+        public static void Execute_cmd(IDbCommand cmd, ref bool IsOk, [CallerMemberName] string caller = null)
         {
             try
             {
@@ -1139,11 +1141,10 @@ namespace DigitalProductionProgram.Processcards
             catch (Exception e)
             {
                 IsOk = false;
-                InfoText.Show(Properties.Resources.saveProcesscard_Info_6,
-                    CustomColors.InfoText_Color.Bad, "Warning!");
+                InfoText.Show(Properties.Resources.saveProcesscard_Info_6,CustomColors.InfoText_Color.Bad, "Warning!");
 
                 if (Person.Role != "SuperAdmin")
-                    Mail.Inform_SuperAdmin_Bug_Create_Processcard(e.Message);
+                    Mail.Inform_SuperAdmin_Bug_Create_Processcard(e.Message, caller);
 
                 InfoText.Show(e.Message, CustomColors.InfoText_Color.Info, null);
             }

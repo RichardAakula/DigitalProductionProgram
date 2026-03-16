@@ -135,9 +135,10 @@ namespace DigitalProductionProgram.eMail
 
 
         }
-        public static void Inform_SuperAdmin_Bug_Create_Processcard(string text)
+        public static void Inform_SuperAdmin_Bug_Create_Processcard(string text, string caller)
         {
-            Body = $"ArtikelNr: {Order.PartNumber}<br />" +
+            Body = $"Caller: {caller}<br />" +
+                   $"ArtikelNr: {Order.PartNumber}<br />" +
                    $"ArtikelID: {Order.PartID}<br />" +
                    $"ArtikelGroupID: {Order.PartGroupID}<br />" +
                    $"RevNr: {Order.RevNr}<br />" +

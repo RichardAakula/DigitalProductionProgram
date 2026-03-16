@@ -35,7 +35,7 @@ namespace DigitalProductionProgram.MainWindow
         private DoubleBufferedFlowLayoutPanel flp_List = new();
         public enum EventType { Login, Logout }
         private readonly SemaphoreSlim _fillLock = new(1, 1);
-
+        
 
         public MonitorUsers()
         {
@@ -439,7 +439,7 @@ namespace DigitalProductionProgram.MainWindow
             else
                 flp.BackColor = Color.FromArgb(50, CustomColors.Ok_Front);
 
-            Label end = (Label)flp.Controls["End"];
+            var end = (Label)flp.Controls["End"];
             string endtime = "";
             if (user.IsClosedInterval)
                 endtime += $"End: {user.IntervalEnd}";
@@ -449,7 +449,6 @@ namespace DigitalProductionProgram.MainWindow
 
             var loggedIn = user.AbsenceDescription ?? Time(user);
             lbl_loggedIn.Invoke(new Action(() => lbl_loggedIn.Text = loggedIn));
-
         }
 
         private async void cb_Monitor_SelectedIndexChanged(object sender, EventArgs e)

@@ -226,7 +226,8 @@ namespace DigitalProductionProgram.Protocols.Kragning_TEF
                     COMMIT TRANSACTION";
 
                 
-            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            var cmd = new SqlCommand(query, con); 
+            ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@partid", Order.PartID);
             if (parameters != null)
                 Add_Parameters(cmd, parameters);
@@ -243,7 +244,8 @@ namespace DigitalProductionProgram.Protocols.Kragning_TEF
                 query += $"{Manage_Processcards.UPDATE_Processkort_Main} ";
 
             query += "COMMIT TRANSACTION";
-            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            var cmd = new SqlCommand(query, con); 
+            ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@partid", Order.PartID);
             if (parameters != null)
                 Add_Parameters(cmd, parameters);
@@ -251,10 +253,9 @@ namespace DigitalProductionProgram.Protocols.Kragning_TEF
             Manage_Processcards.Execute_cmd(cmd, ref IsOk);
         }
 
-        public void Add_Parameters(SqlCommand cmd, List<SqlParameter> parameters)
+        private void Add_Parameters(SqlCommand cmd, List<SqlParameter> parameters)
         {
             cmd.Parameters.AddRange(parameters.ToArray());
-          //  SQL_Parameter.NullableINT(cmd.Parameters, "@partid", Order.PartID);
             SQL_Parameter.String(cmd.Parameters, "@prodline", Order.ProdLine);
             SQL_Parameter.String(cmd.Parameters, "@prodtype", Order.ProdType);
             cmd.Parameters.AddWithValue("@partgroupid", Order.PartGroupID);

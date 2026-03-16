@@ -60,7 +60,7 @@ namespace DigitalProductionProgram.Log
                 LoadVersions();
                 await Task.Yield();
 
-                pbar.Set_ValueProgressBar(90, "Laddar anvÃƒÆ’Ã‚Â¤ndare...", isOkRefresh: true);
+                pbar.Set_ValueProgressBar(90, "Laddar användare...", isOkRefresh: true);
                 LoadAllUsers();
                 await Task.Yield();
 
@@ -116,7 +116,6 @@ namespace DigitalProductionProgram.Log
                 foreach (var client in filtered)
                     lb_AllowedClients.Items.Add(client);
 
-                // Om CheckAll ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¤r ikryssad, markera alla synliga
                 if (chk_CheckAllClients.Checked)
                 {
                     lb_AllowedClients.SelectedIndices.Clear();
@@ -205,7 +204,6 @@ namespace DigitalProductionProgram.Log
 
             RefreshClientList();
         }
-
         private void LoadProdLines()
         {
             _allProdLines.Clear();
@@ -408,13 +406,15 @@ namespace DigitalProductionProgram.Log
 
             _suppressSelectionChanged = true;
             lb_AllowedClients.BeginUpdate();
+            lb_BlockedClients.BeginUpdate();  // ✅ NYT
             try
             {
                 lb_AllowedClients.Items.Clear();
+                lb_BlockedClients.Items.Clear();  // ✅ NYT
 
-                IEnumerable<HostItem> filtered = _allClients;
+                IEnumerable<HostItem> filteredAllowed = _allClients;  // ✅ ÄNDRAD
+                IEnumerable<HostItem> filteredBlocked = _allBlockedClients;  // ✅ NYT
 
-                // Kolla om nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¥gra ProductionLines ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¤r markerade
                 var selectedProdLines = lb_ProdLines.SelectedItems.Cast<string>().ToList();
 
                 if (selectedProdLines.Any())
@@ -423,7 +423,6 @@ namespace DigitalProductionProgram.Log
 
                     foreach (var prodLine in selectedProdLines)
                     {
-                        // HÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¤mta top 50 HostID som anvÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¤nts med denna ProductionLine senaste ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¥ret
                         var hostIds = Database.ExecuteSafe(con =>
                         {
                             var list = new List<int>();
@@ -449,22 +448,35 @@ namespace DigitalProductionProgram.Log
                             hostIdsForProdLines.Add(h);
                     }
 
-                    // Filtrera masterlistan baserat pÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¥ alla valda ProductionLines
-                    filtered = filtered.Where(c => hostIdsForProdLines.Contains(c.HostID));
+                    // ✅ FILTRERA BÅDA
+                    filteredAllowed = filteredAllowed.Where(c => hostIdsForProdLines.Contains(c.HostID));
+                    filteredBlocked = filteredBlocked.Where(c => hostIdsForProdLines.Contains(c.HostID));
                 }
 
-                // Kombinera med tb_Filter om text finns
+                // ✅ TEXTFILTER ALLOWED
                 string textFilter = tb_FilterAllClients.Text.Trim();
                 if (!string.IsNullOrWhiteSpace(textFilter))
                 {
-                    filtered = filtered.Where(c =>
+                    filteredAllowed = filteredAllowed.Where(c =>
                         c.HostName.Contains(textFilter, StringComparison.OrdinalIgnoreCase));
                 }
 
-                foreach (var client in filtered)
+                // ✅ TEXTFILTER BLOCKED
+                string blockedTextFilter = tb_FilterBlockedClients.Text.Trim();
+                if (!string.IsNullOrWhiteSpace(blockedTextFilter))
+                {
+                    filteredBlocked = filteredBlocked.Where(c =>
+                        c.HostName.Contains(blockedTextFilter, StringComparison.OrdinalIgnoreCase) ||
+                        c.HostID.ToString().Contains(blockedTextFilter));
+                }
+
+                // ✅ FYLL BÅDA LISTORNA
+                foreach (var client in filteredAllowed)
                     lb_AllowedClients.Items.Add(client);
 
-                // Om CheckAll ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¤r ikryssad, markera alla synliga
+                foreach (var client in filteredBlocked)
+                    lb_BlockedClients.Items.Add(client);
+
                 if (chk_CheckAllClients.Checked)
                 {
                     lb_AllowedClients.SelectedIndices.Clear();
@@ -476,6 +488,7 @@ namespace DigitalProductionProgram.Log
             {
                 _suppressSelectionChanged = false;
                 lb_AllowedClients.EndUpdate();
+                lb_BlockedClients.EndUpdate();  // ✅ NYT
             }
         }
 
@@ -526,13 +539,15 @@ namespace DigitalProductionProgram.Log
         {
             _suppressSelectionChanged = true;
             lb_AllowedClients.BeginUpdate();
+            lb_BlockedClients.BeginUpdate();  // ✅ NYT
             try
             {
                 lb_AllowedClients.Items.Clear();
+                lb_BlockedClients.Items.Clear();  // ✅ NYT
 
-                IEnumerable<HostItem> filtered = _allClients;
+                IEnumerable<HostItem> filteredAllowed = _allClients;  // ✅ ÄNDRAD
+                IEnumerable<HostItem> filteredBlocked = _allBlockedClients;  // ✅ NYT
 
-                // Kolla om nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¥gra anvÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¤ndare ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¤r markerade
                 var selectedUsers = lb_AllUsers.SelectedItems.Cast<KeyValuePair<int, string>>().ToList();
 
                 if (selectedUsers.Any())
@@ -541,7 +556,6 @@ namespace DigitalProductionProgram.Log
 
                     foreach (var user in selectedUsers)
                     {
-                        // HÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¤mta top 50 HostID som anvÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¤ndaren jobbat mest pÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¥ senaste ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¥ret
                         var userHostIds = Database.ExecuteSafe(con =>
                         {
                             var list = new List<int>();
@@ -562,27 +576,39 @@ namespace DigitalProductionProgram.Log
                             return list;
                         });
 
-                        // LÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¤gg till i en HashSet fÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¶r union
                         foreach (var h in userHostIds)
                             hostIdsForUsers.Add(h);
                     }
 
-                    // Filtrera masterlistan baserat pÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¥ alla valda anvÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¤ndares HostID
-                    filtered = filtered.Where(c => hostIdsForUsers.Contains(c.HostID));
+                    // ✅ FILTRERA BÅDA
+                    filteredAllowed = filteredAllowed.Where(c => hostIdsForUsers.Contains(c.HostID));
+                    filteredBlocked = filteredBlocked.Where(c => hostIdsForUsers.Contains(c.HostID));
                 }
 
-                // Kombinera med tb_Filter om text finns
+                // ✅ TEXTFILTER ALLOWED
                 string textFilter = tb_FilterAllClients.Text.Trim();
                 if (!string.IsNullOrWhiteSpace(textFilter))
                 {
-                    filtered = filtered.Where(c =>
+                    filteredAllowed = filteredAllowed.Where(c =>
                         c.HostName.Contains(textFilter, StringComparison.OrdinalIgnoreCase));
                 }
 
-                foreach (var client in filtered)
+                // ✅ TEXTFILTER BLOCKED
+                string blockedTextFilter = tb_FilterBlockedClients.Text.Trim();
+                if (!string.IsNullOrWhiteSpace(blockedTextFilter))
+                {
+                    filteredBlocked = filteredBlocked.Where(c =>
+                        c.HostName.Contains(blockedTextFilter, StringComparison.OrdinalIgnoreCase) ||
+                        c.HostID.ToString().Contains(blockedTextFilter));
+                }
+
+                // ✅ FYLL BÅDA LISTORNA
+                foreach (var client in filteredAllowed)
                     lb_AllowedClients.Items.Add(client);
 
-                // Om CheckAll ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¤r ikryssad, markera alla synliga
+                foreach (var client in filteredBlocked)
+                    lb_BlockedClients.Items.Add(client);
+
                 if (chk_CheckAllClients.Checked)
                 {
                     lb_AllowedClients.SelectedIndices.Clear();
@@ -594,6 +620,7 @@ namespace DigitalProductionProgram.Log
             {
                 _suppressSelectionChanged = false;
                 lb_AllowedClients.EndUpdate();
+                lb_BlockedClients.EndUpdate();  // ✅ NYT
             }
         }
 

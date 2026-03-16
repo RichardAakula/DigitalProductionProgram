@@ -74,7 +74,8 @@ namespace DigitalProductionProgram.Protocols.Slipning_TEF
 
                     COMMIT TRANSACTION";
 
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                var cmd = new SqlCommand(query, con); 
+                ServerStatus.Add_Sql_Counter();
                 Add_Parameters(cmd, parameters);
                 con.Open();
                 Manage_Processcards.Execute_cmd(cmd, ref IsOk);
@@ -96,7 +97,8 @@ namespace DigitalProductionProgram.Protocols.Slipning_TEF
                         {Manage_Processcards.UPDATE_Processkort_Main}
                      
                     COMMIT TRANSACTION";
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                var cmd = new SqlCommand(query, con); 
+                ServerStatus.Add_Sql_Counter();
                 Add_Parameters(cmd, parameters);
                 con.Open();
                 Manage_Processcards.Execute_cmd(cmd, ref IsOk);

@@ -588,7 +588,8 @@ namespace DigitalProductionProgram.Processcards
                         'True'
                     )";
 
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                var cmd = new SqlCommand(query, con); 
+                ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@partid", PartID);
                 cmd.Parameters.AddWithValue("@name", Templates_MeasureProtocol.MainTemplate.Name);
                 Add_Parameters(cmd, parameters, PartID);
@@ -605,7 +606,8 @@ namespace DigitalProductionProgram.Processcards
                         INSERT INTO Processcard.Data (PartID, TemplateID, MachineIndex, Value, TextValue, Type)
                         VALUES {data} ";
 
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                var cmd = new SqlCommand(query, con); 
+                ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@partid", Order.PartID);
                 con.Open();
                 Manage_Processcards.Execute_cmd(cmd, ref IsOk);
@@ -628,7 +630,8 @@ namespace DigitalProductionProgram.Processcards
                         Validerade_Loter = @validerade_Loter 
                     WHERE PartID = @partID";
 
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                var cmd = new SqlCommand(query, con); 
+                ServerStatus.Add_Sql_Counter();
                 cmd.Parameters.AddWithValue("@partid", Order.PartID);
                 cmd.Parameters.AddWithValue("@name", Templates_MeasureProtocol.MainTemplate.Name);
                 Add_Parameters(cmd, parameters, (int)Order.PartID);

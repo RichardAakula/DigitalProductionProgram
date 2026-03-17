@@ -884,6 +884,8 @@ namespace DigitalProductionProgram.MainWindow
             // 
             tvåToolStripMenuItem.Name = "tvåToolStripMenuItem";
             tvåToolStripMenuItem.Size = new Size(271, 22);
+            tvåToolStripMenuItem.Text = "ActivityViewer";
+            tvåToolStripMenuItem.Click += tvåToolStripMenuItem_Click;
             // 
             // Menu_Developer_EasterEggPsycho
             // 

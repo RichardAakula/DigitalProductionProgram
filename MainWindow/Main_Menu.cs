@@ -28,10 +28,10 @@ namespace DigitalProductionProgram.MainWindow
 {
     public partial class Main_Menu : UserControl
     {
-        
-        private const string RtfColor_Date      = @"\red255\green255\blue255;";   // Vit
-        private const string RtfColor_Header    = @"\red100\green200\blue255;";   // Ljusblå
-        private const string RtfColor_Name      = @"\red150\green255\blue150;";   // Ljusgrön
+
+        private const string RtfColor_Date = @"\red255\green255\blue255;";   // Vit
+        private const string RtfColor_Header = @"\red100\green200\blue255;";   // Ljusblå
+        private const string RtfColor_Name = @"\red150\green255\blue150;";   // Ljusgrön
         private const string RtfColor_Message = @"\red200\green200\blue200;";  // Grå
 
 
@@ -150,7 +150,7 @@ namespace DigitalProductionProgram.MainWindow
             else
             {
                 MessageBox.Show("Updater could not be found, please contact Admin.", "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }       
+            }
 
             // Application.Exit(); // Closing DPP
         }
@@ -314,7 +314,7 @@ namespace DigitalProductionProgram.MainWindow
                 {
                     var rubrik = reader["Rubrik"]?.ToString() ?? string.Empty;
                     rubrik = brRegex.Replace(rubrik, "\n").Replace("\r\n", "\n").Replace("\r", "");
-                   
+
                     var meddelande = reader["Meddelande"]?.ToString() ?? string.Empty;
                     meddelande = brRegex.Replace(meddelande, "\n").Replace("\r\n", "\n").Replace("\r", "").Trim('\n');
 
@@ -334,7 +334,7 @@ namespace DigitalProductionProgram.MainWindow
                         for (int i = 0; i < parts.Length; i++)
                         {
                             rtf.Append(EscapeRtf(parts[i]));
-                            if (i < parts.Length - 1) 
+                            if (i < parts.Length - 1)
                                 rtf.Append(@"\line ");
                         }
                     }
@@ -362,7 +362,7 @@ namespace DigitalProductionProgram.MainWindow
                 _ = Activity.Stop("User checks suggested changes for the Process card");
                 InfoText.Show(rtf.ToString(), CustomColors.InfoText_Color.Info, Properties.Resources.processcard_SuggestedChanges, this);
             });
-}
+        }
 
         private void Menu_Order_CreateTestOrder_Click(object sender, EventArgs e)
         {
@@ -1430,6 +1430,10 @@ Protocol.Revision       = " + Templates_Protocol.MainTemplate.Revision + @"\line
 
         }
 
-        
+        private void tvåToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var activitylogViewer = new ActivityLogViewer();
+            activitylogViewer.Show();
+        }
     }
 }

@@ -5,6 +5,7 @@ using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
 using System.Diagnostics;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text;
@@ -472,18 +473,41 @@ namespace DigitalProductionProgram.DatabaseManagement
                 Location = new Point(Location.X + deltaX, Location.Y + deltaY);
             }
         }
-
-        private void Save_XmlFile()
+        private void EnsureDatabaseSettingsExists()
         {
             var settingsPath = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                 "DigitalProductionProgram",
                 "DatabaseSettings.json");
-            Directory.CreateDirectory(Path.GetDirectoryName(settingsPath)); // Säkerställ att mappen finns
+
+            Directory.CreateDirectory(Path.GetDirectoryName(settingsPath));
 
             if (!File.Exists(settingsPath))
             {
-                MessageBox.Show(@"DatabaseSettings.json hittades inte.", "Fel", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                // Hämta embedded resource
+                var assembly = Assembly.GetExecutingAssembly();
+                using var stream = assembly.GetManifestResourceStream("DigitalProductionProgram.DatabaseSettings.json");
+                using var reader = new StreamReader(stream);
+                string jsonContent = reader.ReadToEnd();
+
+                // Skriv till disk
+                File.WriteAllText(settingsPath, jsonContent);
+            }
+        }
+        private void Save_XmlFile()
+        {
+            EnsureDatabaseSettingsExists();
+            var settingsPath = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                "DigitalProductionProgram",
+                "DatabaseSettings.json");
+            Directory.CreateDirectory(Path.GetDirectoryName(settingsPath)); // Säkerställ att mappen finns
+            if (!File.Exists(settingsPath))
+            {
+                MessageBox.Show($"""
+                    DatabaseSettings.json hittades inte.
+                    {settingsPath}
+                    """, @"Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 

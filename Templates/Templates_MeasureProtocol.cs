@@ -670,7 +670,8 @@ namespace DigitalProductionProgram.Templates
         private void cb_TemplateName_KeyDown(object sender, KeyEventArgs e)
         {
             TemplateState.IsOkUpdateTemplate = false;
-            cb_Revision.SelectedIndex = 0;
+            if (cb_Revision.Items.Count > 0)
+                cb_Revision.SelectedIndex = 0;
             SetTotalConnectedTemplates();
         }
 

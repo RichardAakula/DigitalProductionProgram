@@ -138,6 +138,7 @@ namespace DigitalProductionProgram.MainWindow
             mainForm.BackColor = Color.FromArgb(25, 25, 25);
 
             mainForm.Change_GUI_StandardColor();
+            Change_Theme();
             _ = Log.Activity.Stop("User Click New Order");
         }
         private void Menu_File_UpdateDPP_Click(object sender, EventArgs e)
@@ -987,7 +988,7 @@ Protocol.Revision       = " + Templates_Protocol.MainTemplate.Revision + @"\line
         private void Menu_Developer_BlockClients_Click(object sender, EventArgs e)
         {
             ClientUpdateManager blockClients = new ClientUpdateManager();
-            blockClients.ShowDialog();
+            blockClients.Show();
         }
         private void Menu_Developer_CheckForUpdate_Click(object sender, EventArgs e)
         {

@@ -369,7 +369,19 @@ namespace DigitalProductionProgram.Templates
         }
         private void PerformUpdate()
         {
-            if (TemplateButtons.IsOkUpdateTemplate)
+            //if (TemplateButtons.IsOkUpdateTemplate)   //Testar ta bort denna för jag förstår inte i nuläget 2026-03-18 vad koden nedanför för för nytta
+            var total = 0;
+            if (MainTemplate.IsTemplateConnectedToProcesscard(ref total))
+            {
+                ShowWarning($"Denna mall har {total} processkort kopplat till sig och kan inte längre uppdateras.");
+                return;
+            }
+
+            if (MainTemplate.IsTemplateConnectedToOrderNr(ref total))
+            {
+                ShowWarning($"Denna mall har {total} ordrar kopplade till sig och kan inte längre uppdateras.");
+                return;
+            }
             {
                 MainTemplate.Update_Data(chb_IsUsingPreFab.Checked, cb_LineClearance_Revision.Text);
 
@@ -392,29 +404,32 @@ namespace DigitalProductionProgram.Templates
 
                     int.TryParse(dgv_FormTemplate.Rows[0].Cells["col_MachineIndex"].Value.ToString(), out var machineIndex);
 
+                    
                     FormTemplate.Save_Data(cb_TemplateName.Text, cb_TemplateRevision.Text, dgv_FormTemplate, lbl_ModuleName.Text, templateOrder);
+                    Template.Save_Data(cb_TemplateName.Text, dgv_Template, cb_TemplateRevision.Text, templateOrder, machineIndex, formtemplateID);
                     Template.Update_Data(cb_TemplateName.Text, dgv_Template, cb_TemplateRevision.Text, templateOrder, machineIndex, formtemplateID);
                     templateOrder++;
 
                 }
             }
-            else
+            //else
             {
-                var total = 0;
-                if (MainTemplate.IsTemplateConnectedToProcesscard(ref total))
-                {
-                    ShowWarning($"Denna mall har {total} processkort kopplat till sig och kan inte längre uppdateras.");
-                    return;
-                }
+                //Förstår inte riktigt hur denna funkar och vad nedanstående gör för nytta
+               // var total = 0;
+                //if (MainTemplate.IsTemplateConnectedToProcesscard(ref total))
+                //{
+                //    ShowWarning($"Denna mall har {total} processkort kopplat till sig och kan inte längre uppdateras.");
+                //    return;
+                //}
 
-                if (MainTemplate.IsTemplateConnectedToOrderNr(ref total))
-                {
-                    ShowWarning($"Denna mall har {total} ordrar kopplade till sig och kan inte längre uppdateras.");
-                    return;
-                }
+                //if (MainTemplate.IsTemplateConnectedToOrderNr(ref total))
+                //{
+                //    ShowWarning($"Denna mall har {total} ordrar kopplade till sig och kan inte längre uppdateras.");
+                //    return;
+                //}
 
-                MainTemplate.Delete_Template(cb_TemplateName.Text, cb_TemplateRevision.Text, false);
-                MainTemplate.Save_NewTemplate(cb_TemplateName.Text, cb_TemplateRevision.Text, chb_IsUsingPreFab.Checked, chb_IsProductionLineNeeded.Checked, cb_LineClearance_Revision.Text, cb_MainInfo_Template.Text, tb_Workoperation.Text, flp_Main);
+              //  MainTemplate.Delete_Template(cb_TemplateName.Text, cb_TemplateRevision.Text, false);
+               // MainTemplate.Save_NewTemplate(cb_TemplateName.Text, cb_TemplateRevision.Text, chb_IsUsingPreFab.Checked, chb_IsProductionLineNeeded.Checked, cb_LineClearance_Revision.Text, cb_MainInfo_Template.Text, tb_Workoperation.Text, flp_Main);
             }
         }
 
@@ -765,7 +780,7 @@ namespace DigitalProductionProgram.Templates
 
                     int? formtemplateID = formTemplateID;
 
-                    tb_ModuleName.Text = codetext.Replace(" ", "").Replace("\n", "").Replace("\r", "");
+                    tb_ModuleName.Text = codetext.Replace("\n", "").Replace("\r", "");
                     if (isOkLoadRevision)
                         LoadRevisions();
                     AddModule(machindeIndex, formtemplateID);
@@ -1306,9 +1321,9 @@ namespace DigitalProductionProgram.Templates
                     templateOrder++;
                 }
             }
-            public static void Save_Data(string name, string revision, bool isUsingPreFab, bool isUsingProdLine, string? lineClearanceTemplate, string mainInfoTemplate, string workoperation)
+            private static void Save_Data(string name, string revision, bool isUsingPreFab, bool isUsingProdLine, string? lineClearanceTemplate, string mainInfoTemplate, string workoperation)
             {
-                using (var con = new SqlConnection(Database.cs_Protocol))
+                Database.ExecuteSafe(con =>
                 {
                     const string query =
                         @"
@@ -1341,7 +1356,7 @@ namespace DigitalProductionProgram.Templates
                                 @createdby, 
                                 @createddate
                             )";
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                    var cmd = new SqlCommand(query, con);
                     cmd.Parameters.AddWithValue("@name", name);
                     cmd.Parameters.AddWithValue("@revision", revision);
                     cmd.Parameters.AddWithValue("@isusingprefab", isUsingPreFab);
@@ -1351,14 +1366,14 @@ namespace DigitalProductionProgram.Templates
                     cmd.Parameters.AddWithValue("@workoperation", workoperation);
                     cmd.Parameters.AddWithValue("@createdby", Person.Name);
                     cmd.Parameters.AddWithValue("@createddate", DateTime.Now);
-
-                    con.Open();
                     cmd.ExecuteNonQuery();
-                }
+                });
             }
             public static void Update_Data(bool isUsingPreFab, string lineClearanceTemplate)
             {
-                using (var con = new SqlConnection(Database.cs_Protocol))
+               // if (string.IsNullOrEmpty(lineClearanceTemplate))
+               //     lineClearanceTemplate = null;
+                Database.ExecuteSafe(con =>
                 {
                     const string query =
                         @"
@@ -1367,13 +1382,14 @@ namespace DigitalProductionProgram.Templates
                                 IsUsingPreFab = @isusingprefab, 
                                 LineClearance_Template = @lineclearancetemplate
                             WHERE ID = @protocolmaintemplateid";
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                    var cmd = new SqlCommand(query, con);
                     cmd.Parameters.AddWithValue("@protocolmaintemplateid", ID);
                     cmd.Parameters.AddWithValue("@isusingprefab", isUsingPreFab);
-                    cmd.Parameters.AddWithValue("@lineclearancetemplate", lineClearanceTemplate);
-                    con.Open();
+                    cmd.Parameters.AddWithValue("@lineclearancetemplate", string.IsNullOrEmpty(lineClearanceTemplate) ? (object)DBNull.Value : lineClearanceTemplate
+                    );
+
                     cmd.ExecuteNonQuery();
-                }
+                });
             }
             public static void Delete_Template(string templateName, string revision, bool isOkAskQuestion)
             {
@@ -1467,8 +1483,9 @@ namespace DigitalProductionProgram.Templates
             }
             public static void Save_Data(string templateName, string revision, DataGridView dgv, string moduleName, int templateOrder)
             {
-                using var con = new SqlConnection(Database.cs_Protocol);
-                const string query = @"
+                Database.ExecuteSafe(con =>
+                {
+                    const string query = @"
              MERGE INTO Protocol.FormTemplate AS target
              USING (SELECT (SELECT ID FROM Protocol.MainTemplate WHERE Name = @templatename AND Revision = @revision) AS MainTemplateID) AS source
                  ON target.ModuleName = @modulename
@@ -1518,23 +1535,23 @@ namespace DigitalProductionProgram.Templates
                  source.MainTemplateID
              );";
 
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@templatename", templateName);
-                cmd.Parameters.AddWithValue("@revision", revision);
+                    var cmd = new SqlCommand(query, con);
+                    cmd.Parameters.AddWithValue("@templatename", templateName);
+                    cmd.Parameters.AddWithValue("@revision", revision);
 
-                cmd.Parameters.AddWithValue("@templateorder", templateOrder);
-                cmd.Parameters.AddWithValue("@modulename", moduleName.Replace("\n", ""));
-                SQL_Parameter.Boolean(cmd.Parameters, "@isheadervisible", dgv.Rows[0].Cells["col_IsHeaderVisible"].Value, true);
-                SQL_Parameter.Int(cmd.Parameters, "@machineIndex", dgv.Rows[0].Cells["col_MachineIndex"].Value);
-                SQL_Parameter.Boolean(cmd.Parameters, "@isauthenticationneeded", dgv.Rows[0].Cells["col_IsAuthenticationNeeded"].Value, true);
-                SQL_Parameter.Boolean(cmd.Parameters, "@ismultiplecolumnsstartup", dgv.Rows[0].Cells["col_IsMultipleColumnsStartup"].Value, true);
-                SQL_Parameter.Boolean(cmd.Parameters, "@isstartupdates", dgv.Rows[0].Cells["col_IsStartUpDates"].Value, true);
-                SQL_Parameter.Int(cmd.Parameters, "@processcardminwidth", dgv.Rows[0].Cells["col_MinProcesscardWidth"].Value);
-                SQL_Parameter.Int(cmd.Parameters, "@processcardnomwidth", dgv.Rows[0].Cells["col_NomProcesscardWidth"].Value);
-                SQL_Parameter.Int(cmd.Parameters, "@processcardmaxwidth", dgv.Rows[0].Cells["col_MaxProcesscardWidth"].Value);
-                SQL_Parameter.Int(cmd.Parameters, "@runprotocolnomwidth", dgv.Rows[0].Cells["col_NomRunProtocolWidth"].Value);
-                con.Open();
-                cmd.ExecuteNonQuery();
+                    cmd.Parameters.AddWithValue("@templateorder", templateOrder);
+                    cmd.Parameters.AddWithValue("@modulename", moduleName.Replace("\n", ""));
+                    SQL_Parameter.Boolean(cmd.Parameters, "@isheadervisible", dgv.Rows[0].Cells["col_IsHeaderVisible"].Value, true);
+                    SQL_Parameter.Int(cmd.Parameters, "@machineIndex", dgv.Rows[0].Cells["col_MachineIndex"].Value);
+                    SQL_Parameter.Boolean(cmd.Parameters, "@isauthenticationneeded", dgv.Rows[0].Cells["col_IsAuthenticationNeeded"].Value, true);
+                    SQL_Parameter.Boolean(cmd.Parameters, "@ismultiplecolumnsstartup", dgv.Rows[0].Cells["col_IsMultipleColumnsStartup"].Value, true);
+                    SQL_Parameter.Boolean(cmd.Parameters, "@isstartupdates", dgv.Rows[0].Cells["col_IsStartUpDates"].Value, true);
+                    SQL_Parameter.Int(cmd.Parameters, "@processcardminwidth", dgv.Rows[0].Cells["col_MinProcesscardWidth"].Value);
+                    SQL_Parameter.Int(cmd.Parameters, "@processcardnomwidth", dgv.Rows[0].Cells["col_NomProcesscardWidth"].Value);
+                    SQL_Parameter.Int(cmd.Parameters, "@processcardmaxwidth", dgv.Rows[0].Cells["col_MaxProcesscardWidth"].Value);
+                    SQL_Parameter.Int(cmd.Parameters, "@runprotocolnomwidth", dgv.Rows[0].Cells["col_NomRunProtocolWidth"].Value);
+                    cmd.ExecuteNonQuery();
+                });
             }
         }
        
@@ -1726,6 +1743,13 @@ namespace DigitalProductionProgram.Templates
                         if (IsColumnUsed || columnIndex == 1)
                         {
                             using var cmd = new SqlCommand(@"
+                                IF NOT EXISTS 
+                                    (
+                                        SELECT * FROM Protocol.Template 
+                                        WHERE FormTemplateID = @formtemplateid 
+                                            AND ColumnIndex = @columnindex 
+                                            AND RowIndex = @rowindex 
+                                    )
                                INSERT INTO Protocol.Template 
                                    (
                                        Revision, 

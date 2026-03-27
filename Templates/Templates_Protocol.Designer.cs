@@ -39,13 +39,11 @@ namespace DigitalProductionProgram.Templates
             cb_TemplateName = new ComboBox();
             btn_SaveNewTemplate = new Button();
             btn_UpdateTemplate = new Button();
-            label_ModuleName = new Label();
             label_TemplateName = new Label();
             label_Revision = new Label();
             chb_IsUsingPreFab = new CheckBox();
             btn_NewModule = new Button();
             tb_FilterCodeText = new TextBox();
-            label_FilterCodeText = new Label();
             btn_ConnectPartNr_NewTemplate = new Button();
             btn_PreviewTemplate = new Button();
             cb_LineClearance_Revision = new ComboBox();
@@ -144,12 +142,14 @@ namespace DigitalProductionProgram.Templates
             // 
             // tb_ModuleName
             // 
+            tb_ModuleName.Dock = DockStyle.Top;
             tb_ModuleName.Font = new Font("Lucida Sans", 8.25F);
-            tb_ModuleName.Location = new Point(5, 104);
+            tb_ModuleName.Location = new Point(4, 54);
             tb_ModuleName.Margin = new Padding(1, 0, 0, 0);
             tb_ModuleName.Multiline = true;
             tb_ModuleName.Name = "tb_ModuleName";
-            tb_ModuleName.Size = new Size(289, 28);
+            tb_ModuleName.PlaceholderText = "Modul namn, vertikal text vänster om modul";
+            tb_ModuleName.Size = new Size(290, 28);
             tb_ModuleName.TabIndex = 3;
             tb_ModuleName.KeyPress += ModuleName_KeyPress;
             // 
@@ -199,18 +199,6 @@ namespace DigitalProductionProgram.Templates
             btn_UpdateTemplate.UseVisualStyleBackColor = false;
             btn_UpdateTemplate.Click += Update_Template_Click;
             // 
-            // label_ModuleName
-            // 
-            label_ModuleName.BackColor = Color.FromArgb(239, 228, 177);
-            label_ModuleName.Font = new Font("Lucida Sans", 10.25F);
-            label_ModuleName.ForeColor = Color.FromArgb(57, 108, 121);
-            label_ModuleName.Location = new Point(5, 63);
-            label_ModuleName.Margin = new Padding(1, 0, 0, 1);
-            label_ModuleName.Name = "label_ModuleName";
-            label_ModuleName.Size = new Size(289, 39);
-            label_ModuleName.TabIndex = 8;
-            label_ModuleName.Text = "Modul-namn, den vertikala texten till vänster om modulen.\r\n";
-            // 
             // label_TemplateName
             // 
             label_TemplateName.BackColor = Color.FromArgb(239, 228, 177);
@@ -250,12 +238,13 @@ namespace DigitalProductionProgram.Templates
             // 
             // btn_NewModule
             // 
-            btn_NewModule.BackColor = Color.FromArgb(185, 188, 189);
+            btn_NewModule.BackColor = Color.FromArgb(198, 239, 206);
             btn_NewModule.Cursor = Cursors.Hand;
+            btn_NewModule.Dock = DockStyle.Top;
             btn_NewModule.FlatStyle = FlatStyle.Flat;
             btn_NewModule.Font = new Font("Lucida Sans", 10.25F);
-            btn_NewModule.ForeColor = Color.FromArgb(63, 116, 140);
-            btn_NewModule.Location = new Point(4, 29);
+            btn_NewModule.ForeColor = Color.FromArgb(0, 97, 0);
+            btn_NewModule.Location = new Point(4, 19);
             btn_NewModule.Margin = new Padding(0);
             btn_NewModule.Name = "btn_NewModule";
             btn_NewModule.Size = new Size(290, 35);
@@ -266,27 +255,17 @@ namespace DigitalProductionProgram.Templates
             // 
             // tb_FilterCodeText
             // 
+            tb_FilterCodeText.Dock = DockStyle.Bottom;
             tb_FilterCodeText.Font = new Font("Lucida Sans", 8.25F);
-            tb_FilterCodeText.Location = new Point(5, 57);
+            tb_FilterCodeText.Location = new Point(4, 158);
             tb_FilterCodeText.Margin = new Padding(1, 0, 0, 0);
             tb_FilterCodeText.Multiline = true;
             tb_FilterCodeText.Name = "tb_FilterCodeText";
-            tb_FilterCodeText.Size = new Size(289, 28);
+            tb_FilterCodeText.PlaceholderText = "Filtrera text...";
+            tb_FilterCodeText.Size = new Size(290, 28);
             tb_FilterCodeText.TabIndex = 3;
             tb_FilterCodeText.TextChanged += FilterCodeText_TextChanged;
             tb_FilterCodeText.Enter += FilterCodeText_Enter;
-            // 
-            // label_FilterCodeText
-            // 
-            label_FilterCodeText.BackColor = Color.FromArgb(239, 228, 177);
-            label_FilterCodeText.Font = new Font("Lucida Sans", 10.25F);
-            label_FilterCodeText.ForeColor = Color.FromArgb(57, 108, 121);
-            label_FilterCodeText.Location = new Point(5, 28);
-            label_FilterCodeText.Margin = new Padding(0, 0, 0, 1);
-            label_FilterCodeText.Name = "label_FilterCodeText";
-            label_FilterCodeText.Size = new Size(289, 28);
-            label_FilterCodeText.TabIndex = 8;
-            label_FilterCodeText.Text = "Filtrera texten";
             // 
             // btn_ConnectPartNr_NewTemplate
             // 
@@ -762,9 +741,8 @@ namespace DigitalProductionProgram.Templates
             // 
             // gbx_Module
             // 
-            gbx_Module.Controls.Add(btn_NewModule);
-            gbx_Module.Controls.Add(label_ModuleName);
             gbx_Module.Controls.Add(tb_ModuleName);
+            gbx_Module.Controls.Add(btn_NewModule);
             gbx_Module.Dock = DockStyle.Fill;
             gbx_Module.Font = new Font("Lucida Sans", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
             gbx_Module.ForeColor = Color.FromArgb(239, 228, 177);
@@ -820,7 +798,6 @@ namespace DigitalProductionProgram.Templates
             gbx_CodeText.Controls.Add(tb_NewUnit);
             gbx_CodeText.Controls.Add(tb_NewCodeText);
             gbx_CodeText.Controls.Add(btn_AddCodeText);
-            gbx_CodeText.Controls.Add(label_FilterCodeText);
             gbx_CodeText.Controls.Add(tb_FilterCodeText);
             gbx_CodeText.Dock = DockStyle.Fill;
             gbx_CodeText.Font = new Font("Lucida Sans", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
@@ -838,10 +815,11 @@ namespace DigitalProductionProgram.Templates
             // tb_NewUnit
             // 
             tb_NewUnit.Font = new Font("Lucida Sans", 8.25F);
-            tb_NewUnit.Location = new Point(209, 155);
+            tb_NewUnit.Location = new Point(208, 56);
             tb_NewUnit.Margin = new Padding(1, 0, 0, 0);
             tb_NewUnit.Multiline = true;
             tb_NewUnit.Name = "tb_NewUnit";
+            tb_NewUnit.PlaceholderText = "Unit...";
             tb_NewUnit.Size = new Size(85, 28);
             tb_NewUnit.TabIndex = 14;
             tb_NewUnit.Enter += NewUnit_Enter;
@@ -850,7 +828,7 @@ namespace DigitalProductionProgram.Templates
             // 
             tb_NewCodeText.CharacterCasing = CharacterCasing.Upper;
             tb_NewCodeText.Font = new Font("Lucida Sans", 8.25F);
-            tb_NewCodeText.Location = new Point(5, 155);
+            tb_NewCodeText.Location = new Point(4, 56);
             tb_NewCodeText.Margin = new Padding(1, 0, 0, 0);
             tb_NewCodeText.Multiline = true;
             tb_NewCodeText.Name = "tb_NewCodeText";
@@ -860,12 +838,13 @@ namespace DigitalProductionProgram.Templates
             // 
             // btn_AddCodeText
             // 
-            btn_AddCodeText.BackColor = Color.FromArgb(185, 188, 189);
+            btn_AddCodeText.BackColor = Color.FromArgb(198, 239, 206);
             btn_AddCodeText.Cursor = Cursors.Hand;
+            btn_AddCodeText.Dock = DockStyle.Top;
             btn_AddCodeText.FlatStyle = FlatStyle.Flat;
             btn_AddCodeText.Font = new Font("Lucida Sans", 10.25F);
-            btn_AddCodeText.ForeColor = Color.FromArgb(63, 116, 140);
-            btn_AddCodeText.Location = new Point(4, 115);
+            btn_AddCodeText.ForeColor = Color.FromArgb(0, 97, 0);
+            btn_AddCodeText.Location = new Point(4, 19);
             btn_AddCodeText.Margin = new Padding(0);
             btn_AddCodeText.Name = "btn_AddCodeText";
             btn_AddCodeText.Size = new Size(290, 35);
@@ -947,7 +926,6 @@ namespace DigitalProductionProgram.Templates
         private ComboBox cb_TemplateName;
         private Button btn_SaveNewTemplate;
         private Button btn_UpdateTemplate;
-        private Label label_ModuleName;
         private Label label_TemplateName;
         private Label label_Revision;
         private CheckBox chb_IsUsingPreFab;

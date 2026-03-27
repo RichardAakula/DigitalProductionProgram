@@ -113,8 +113,10 @@ namespace DigitalProductionProgram.OrderManagement
             Extrusion_HS = 22,
             Kragning_K20_TEF = 23,
             Tapering_Bump_PTFE_K28 = 25,
+            Kragning_K26_PTFE = 26,
             Plockning_PTFE,
             Spetsformning_PTFE
+
         }
         public static List<string> List_Workoperations
         {
@@ -144,7 +146,7 @@ namespace DigitalProductionProgram.OrderManagement
 
         private void Translate_Form()
         {
-            LanguageManager.TranslationHelper.TranslateControls(new Control[]{label_ChooseWorkOperation, btn_Workoperation_Choose, btn_Workoperation_Abort});
+            LanguageManager.TranslationHelper.TranslateControls([label_ChooseWorkOperation, btn_Workoperation_Choose, btn_Workoperation_Abort]);
         }
 
         public static void Fill_cb_Workoperation(ComboBox cb)

@@ -681,7 +681,10 @@ namespace DigitalProductionProgram.Measure
                 });
 
                 var comment = $"{Properties.Resources.discardedMeasurement_Info_1} {errorCode} - {chooseErrorCode.Comment}";
-                var bag = dgv_Measurements.Rows[row].Cells["Bag"].Value.ToString();
+                
+                var bagColumn = dgv_Measurements.Columns.Cast<DataGridViewColumn>().First(c => (string)c.Tag == "Bag");
+
+                var bag = dgv_Measurements.Rows[row].Cells[bagColumn.Index].Value?.ToString();
                 Extra_Comments.Add(bag, comment, Person.EmployeeNr, true, Extra_Comments.Next_Row_ExtraComments);
             }
 
@@ -762,8 +765,11 @@ namespace DigitalProductionProgram.Measure
         {
             for (var i = 0; i < dgv_Measurements.Columns.Count - 5; i++)
             {
-                var name = dgv_Measurements.Columns[i].Name;
-                var ctrl = InputControl(flp_InputControls, new[] { name });
+                string name = dgv_Measurements.Columns[i].Tag as string;
+
+                if (name == null)
+                    continue; // ingen tag = inget att hämta
+                var ctrl = InputControl(flp_InputControls, [name]);
                 if (ctrl is TextBox || ctrl is NumericUpDown)
                     ctrl.Text = dgv_Measurements.Rows[row].Cells[i].Value.ToString();
             }

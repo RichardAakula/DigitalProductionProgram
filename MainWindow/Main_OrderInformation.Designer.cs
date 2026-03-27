@@ -482,6 +482,7 @@ namespace DigitalProductionProgram.MainWindow
             tb_OrderNr.Location = new Point(1, 5);
             tb_OrderNr.Margin = new Padding(0, 3, 0, 0);
             tb_OrderNr.Name = "tb_OrderNr";
+            tb_OrderNr.PlaceholderText = "Fill in OrderNumber";
             tb_OrderNr.Size = new Size(104, 14);
             tb_OrderNr.TabIndex = 0;
             tb_OrderNr.MouseDoubleClick += Label_MouseClick;

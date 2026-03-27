@@ -51,7 +51,6 @@ namespace DigitalProductionProgram.Templates
             gbx_MeasureParameters = new GroupBox();
             chb_IsMeasureValue = new CheckBox();
             tb_NewCodeText = new TextBox();
-            label_FilterCodeText = new Label();
             gbox_MeasureProtocolTemplate = new GroupBox();
             chb_IsUsingCutterTakeUpUnit = new CheckBox();
             chb_ExtraInputBoxes_Second_Measurement = new CheckBox();
@@ -255,11 +254,11 @@ namespace DigitalProductionProgram.Templates
             // btn_NewRevision
             // 
             btn_NewRevision.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            btn_NewRevision.BackColor = Color.FromArgb(185, 188, 189);
+            btn_NewRevision.BackColor = Color.FromArgb(198, 239, 206);
             btn_NewRevision.Cursor = Cursors.Hand;
             btn_NewRevision.FlatStyle = FlatStyle.Flat;
             btn_NewRevision.Font = new Font("Lucida Sans", 10.25F);
-            btn_NewRevision.ForeColor = Color.FromArgb(63, 116, 140);
+            btn_NewRevision.ForeColor = Color.FromArgb(0, 97, 0);
             btn_NewRevision.Location = new Point(1092, 54);
             btn_NewRevision.Margin = new Padding(4, 3, 4, 3);
             btn_NewRevision.Name = "btn_NewRevision";
@@ -273,22 +272,23 @@ namespace DigitalProductionProgram.Templates
             // tb_FilterCodeText
             // 
             tb_FilterCodeText.Dock = DockStyle.Bottom;
-            tb_FilterCodeText.Font = new Font("Lucida Sans", 8.25F);
-            tb_FilterCodeText.Location = new Point(4, 130);
+            tb_FilterCodeText.Font = new Font("Lucida Sans", 9.25F);
+            tb_FilterCodeText.Location = new Point(4, 128);
             tb_FilterCodeText.Margin = new Padding(4, 3, 4, 3);
             tb_FilterCodeText.Name = "tb_FilterCodeText";
-            tb_FilterCodeText.Size = new Size(307, 20);
+            tb_FilterCodeText.PlaceholderText = "Filtrera parametrar...";
+            tb_FilterCodeText.Size = new Size(307, 22);
             tb_FilterCodeText.TabIndex = 3;
             tb_FilterCodeText.TextChanged += FilterCodeText_TextChanged;
             // 
             // btn_AddParameter
             // 
-            btn_AddParameter.BackColor = Color.FromArgb(185, 188, 189);
+            btn_AddParameter.BackColor = Color.FromArgb(198, 239, 206);
             btn_AddParameter.Cursor = Cursors.Hand;
             btn_AddParameter.Dock = DockStyle.Top;
             btn_AddParameter.FlatStyle = FlatStyle.Flat;
             btn_AddParameter.Font = new Font("Lucida Sans", 10.25F);
-            btn_AddParameter.ForeColor = Color.FromArgb(63, 116, 140);
+            btn_AddParameter.ForeColor = Color.FromArgb(0, 97, 0);
             btn_AddParameter.Location = new Point(4, 20);
             btn_AddParameter.Margin = new Padding(4, 3, 4, 3);
             btn_AddParameter.Name = "btn_AddParameter";
@@ -302,7 +302,6 @@ namespace DigitalProductionProgram.Templates
             // 
             gbx_MeasureParameters.Controls.Add(chb_IsMeasureValue);
             gbx_MeasureParameters.Controls.Add(tb_NewCodeText);
-            gbx_MeasureParameters.Controls.Add(label_FilterCodeText);
             gbx_MeasureParameters.Controls.Add(btn_AddParameter);
             gbx_MeasureParameters.Controls.Add(tb_FilterCodeText);
             gbx_MeasureParameters.Dock = DockStyle.Bottom;
@@ -338,19 +337,6 @@ namespace DigitalProductionProgram.Templates
             tb_NewCodeText.Name = "tb_NewCodeText";
             tb_NewCodeText.Size = new Size(188, 28);
             tb_NewCodeText.TabIndex = 14;
-            // 
-            // label_FilterCodeText
-            // 
-            label_FilterCodeText.BackColor = Color.FromArgb(239, 228, 177);
-            label_FilterCodeText.Dock = DockStyle.Bottom;
-            label_FilterCodeText.Font = new Font("Lucida Sans", 10.25F);
-            label_FilterCodeText.ForeColor = Color.FromArgb(57, 108, 121);
-            label_FilterCodeText.Location = new Point(4, 102);
-            label_FilterCodeText.Margin = new Padding(0, 0, 0, 1);
-            label_FilterCodeText.Name = "label_FilterCodeText";
-            label_FilterCodeText.Size = new Size(307, 28);
-            label_FilterCodeText.TabIndex = 12;
-            label_FilterCodeText.Text = "Filtrera texten";
             // 
             // gbox_MeasureProtocolTemplate
             // 
@@ -902,7 +888,6 @@ namespace DigitalProductionProgram.Templates
         private DataGridViewTextBoxColumn col_Width;
         private DataGridViewTextBoxColumn col_MaxChars;
         private Button btn_ConnectPartNr_NewTemplate;
-        private Label label_FilterCodeText;
         private TextBox tb_NewCodeText;
         private CheckBox chb_IsMeasureValue;
     }

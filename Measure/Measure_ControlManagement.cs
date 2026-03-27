@@ -662,7 +662,7 @@ namespace DigitalProductionProgram.Measure
             public static void Load_InputControls(Measurement_Protocol mp)
             {
                 var TotalWidth = 0;
-                using (var con = new SqlConnection(Database.cs_Protocol))
+                Database.ExecuteSafe(con =>
                 {
                     const string query = @"
                 SELECT 
@@ -688,9 +688,8 @@ namespace DigitalProductionProgram.Measure
                 WHERE template.MeasureProtocolMainTemplateID = @maintemplateid 
                 ORDER BY ColumnIndex";
 
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                    var cmd = new SqlCommand(query, con);
                     cmd.Parameters.AddWithValue("@maintemplateid", Templates_MeasureProtocol.MainTemplate.ID);
-                    con.Open();
                     var reader = cmd.ExecuteReader();
                     if (reader.HasRows == false)
                     {
@@ -716,34 +715,37 @@ namespace DigitalProductionProgram.Measure
                         var userText = reader["Parameter_UserText"].ToString();
                         var name = reader["Parameter_Monitor"].ToString();
                         var controlType = reader["ControlType"].ToString();
-                        int.TryParse(reader["DataType"].ToString(), out var dataType);
+                        int.TryParse(reader["DataType"].ToString(), out int dataType);
                         var columnName = string.IsNullOrEmpty(name) ? userText : name;
                         var dataTypeName = Database.datatype.FirstOrDefault(d => d.ID == dataType)?.Name ?? "Unknown";
-
-                        Add_Column_DatagridView(mp.dgv_Measurements, columnName, userText, columnIndex, width);
-
+                        //columnName += columnIndex; // Ensure unique column names by appending the column index
+                        var tag = name;     //Tag is only used to know which controls that correspond to "Bag"
+                        //name += columnIndex;
+                        Add_Column_DatagridView(mp.dgv_Measurements, columnName, tag, userText, columnIndex, width);
                         Add_Header(mp.flp_Headers, reader["Parameter_UserText"].ToString(), isMandatory, columnIndex, width);
 
                         switch (controlType)
                         {
                             case "NumericUpDown":
-                                Add_Input_NumUpDown(mp.flp_InputControls, dataType, columnIndex, increment, width, descriptionID, name, isMandatory,  isOkEdit);
+                                Add_Input_NumUpDown(mp.flp_InputControls, dataType, columnIndex, increment, width, descriptionID, name, isMandatory, isOkEdit);
                                 break;
                             case "TextBox":
                                 switch (dataTypeName)
                                 {
                                     case "Numeric":
-                                        Add_Input_Numeric(mp, mp.flp_InputControls, dataType, columnIndex, width, descriptionID, maxChars, decimals, formula, name,  isMandatory, isOkEdit);
+                                        Add_Input_Numeric(mp, mp.flp_InputControls, dataType, columnIndex, width, descriptionID, maxChars, decimals, formula, name, isMandatory, isOkEdit);
                                         break;
                                     case "Text":
                                         Add_Input_Text(mp.flp_InputControls, dataType, columnIndex, width, descriptionID, name, isList, isMandatory, isOkEdit);
                                         break;
                                 }
+
                                 break;
                             case "CheckBox":
                                 Add_Input_CheckBox(mp.flp_InputControls, dataType, columnIndex, width, descriptionID, name, isMandatory);
                                 break;
                         }
+
                         TotalWidth += width + 1;
                     }
 
@@ -753,26 +755,27 @@ namespace DigitalProductionProgram.Measure
                     Add_Header(mp.flp_Headers, "Sign", true, columnIndex + 4, 40);
                     Add_Label(mp.flp_InputControls, Person.Sign, columnIndex + 4, 40);
 
-                    Add_Column_DatagridView(mp.dgv_Measurements, "Date", Properties.Resources.dateTime, columnIndex + 1, 160);
+                    Add_Column_DatagridView(mp.dgv_Measurements, "Date", null,Properties.Resources.dateTime, columnIndex + 1, 160);
                     TotalWidth += 161;
-                    Add_Column_DatagridView(mp.dgv_Measurements, "ErrorCode", Properties.Resources.errorCode, columnIndex + 2, 55);
+                    Add_Column_DatagridView(mp.dgv_Measurements, "ErrorCode", null, Properties.Resources.errorCode, columnIndex + 2, 55);
                     TotalWidth += 55;
-                    Add_Column_DatagridView(mp.dgv_Measurements, "AnstNr", Properties.Resources.empNr, columnIndex + 3, 70);
+                    Add_Column_DatagridView(mp.dgv_Measurements, "AnstNr", null, Properties.Resources.empNr, columnIndex + 3, 70);
                     TotalWidth += 70;
-                    Add_Column_DatagridView(mp.dgv_Measurements, "Sign", "Sign", columnIndex + 4, 50);
+                    Add_Column_DatagridView(mp.dgv_Measurements, "Sign", null,"Sign", columnIndex + 4, 50);
                     TotalWidth += 51;
-                    Add_Column_DatagridView(mp.dgv_Measurements, "Discarded", "Discarded", columnIndex + 5, 0);
-                    Add_Column_DatagridView(mp.dgv_Measurements, "TempID", "TempID", columnIndex + 6, 0);
-                }
+                    Add_Column_DatagridView(mp.dgv_Measurements, "Discarded", null,"Discarded", columnIndex + 5, 0);
+                    Add_Column_DatagridView(mp.dgv_Measurements, "TempID", null,"TempID", columnIndex + 6, 0);
+                });
                 //22pixlar är extra space som behövs till Scrollbar
                 mp.Width = TotalWidth + 22;
                 mp.pb_CrossSectionTube.Left = mp.tlp_Help_InputData_1.Right;
             }
 
-            private static void Add_Column_DatagridView(DataGridView dgv, string name, string? headerText, int columnIndex, int width)
+            private static void Add_Column_DatagridView(DataGridView dgv, string name, string? tag, string? headerText, int columnIndex, int width)
             {
+                name+= columnIndex; // Ensure unique column names by appending the column index
                 dgv.Columns.Add(name, headerText);
-                dgv.Columns[name].Tag = columnIndex;
+                dgv.Columns[name].Tag = tag; //columnIndex var det tidigare
                 dgv.Columns[name].Width = width;
                 dgv.Columns[name].SortMode = DataGridViewColumnSortMode.NotSortable;
                 if (width == 0)

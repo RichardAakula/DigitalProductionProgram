@@ -478,20 +478,34 @@ namespace DigitalProductionProgram.DatabaseManagement
             var settingsPath = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                 "DigitalProductionProgram",
-                "DatabaseSettings.json");
+                "DataBaseSettings.json");
 
             Directory.CreateDirectory(Path.GetDirectoryName(settingsPath));
 
             if (!File.Exists(settingsPath))
             {
-                // Hämta embedded resource
                 var assembly = Assembly.GetExecutingAssembly();
-                using var stream = assembly.GetManifestResourceStream("DigitalProductionProgram.DatabaseSettings.json");
-                using var reader = new StreamReader(stream);
-                string jsonContent = reader.ReadToEnd();
 
-                // Skriv till disk
-                File.WriteAllText(settingsPath, jsonContent);
+                // Hitta RÄTT resource-nyckel
+                var resourceName = assembly.GetManifestResourceNames()
+                    .FirstOrDefault(n => n.EndsWith("DatabaseSettings.json", StringComparison.OrdinalIgnoreCase));
+
+                if (resourceName == null)
+                {
+                    MessageBox.Show(
+                        "Embedded resource 'DatabaseSettings.json' kunde inte hittas.\n" +
+                        "Kontrollera Build Action = Embedded Resource.",
+                        "Fel",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
+                    return;
+                }
+
+                using var stream = assembly.GetManifestResourceStream(resourceName);
+                using var reader = new StreamReader(stream);
+                string json = reader.ReadToEnd();
+
+                File.WriteAllText(settingsPath, json);
             }
         }
         private void Save_XmlFile()

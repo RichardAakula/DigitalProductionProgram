@@ -771,7 +771,7 @@ namespace DigitalProductionProgram.Log
                 // Ta bort ur blocked masterlist
                 _allBlockedClients.RemoveAll(x => x.HostID == host.HostID);
 
-                // LÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¤gg tillbaka i client-masterlist om sÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¤kert
+                // Lägg tillbaka i client‑masterlist om säkert
                 if (_allClients.All(x => x.HostID != host.HostID))
                     _allClients.Add(host);
             }
@@ -794,8 +794,9 @@ namespace DigitalProductionProgram.Log
                 lb_AllowedClients.EndUpdate();
             }
 
-            // --- 4. SÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¶kfilter pÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¥ blocked-list ---
+            // --- 4. Sökfilter på blocked-list ---
             RefreshBlockedClientList();
+            tb_FilterBlockedClients.Text = string.Empty;
         }
 
 

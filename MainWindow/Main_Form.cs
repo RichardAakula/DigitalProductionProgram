@@ -175,7 +175,7 @@ namespace DigitalProductionProgram.MainWindow
             
             Translate_MainForm();
             await InitializeUIAsync();
-
+            Change_Theme();
             CloseSplash();
         }
         private async Task InitializeUIAsync()
@@ -476,7 +476,7 @@ namespace DigitalProductionProgram.MainWindow
             Change_GUI_ExtraInfo();
             if (IsBetaMode)
                 ChangeToBetaMode();
-            Change_Theme();
+           // Change_Theme();
         }
         private void Change_GUI_Mätdator()
         {

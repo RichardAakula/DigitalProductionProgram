@@ -503,9 +503,10 @@ namespace DigitalProductionProgram.Templates
                         chb_IsApprovalRequired.Checked = reader.GetBoolean(3);
                         tb_Centuri.Text = reader["CenturiLink"].ToString();
                         tb_Category.Text = reader["Category"].ToString();
+                        MainTemplate.LineClearance_MainTemplateID = int.Parse(reader["MainTemplateID"].ToString());
                         if (int.TryParse(reader["FormTemplateID"].ToString(), out var formTemplateID))
                         {
-                            MainTemplate.LineClearance_MainTemplateID = int.Parse(reader["MainTemplateID"].ToString());
+                            //MainTemplate.LineClearance_MainTemplateID = int.Parse(reader["MainTemplateID"].ToString());
                             AddCategory(formTemplateID);
                         }
                     }
@@ -751,8 +752,11 @@ namespace DigitalProductionProgram.Templates
             public static string LineClearance_CenturiLink { get; set; }
             public static int TotalConnectedProcesscardsToTemplate(string lineClearanceRevision)
             {
-                using var con = new SqlConnection(Database.cs_Protocol);
-                const string query = @"
+                if (LineClearance_MainTemplateID == null)
+                    return 0;
+                return Database.ExecuteSafe(con =>
+                {
+                    const string query = @"
                             SELECT COUNT(*) 
                             FROM Processcard.MainData as maindata
                                 JOIN LineClearance.MainTemplate as lineclearancetemplate
@@ -761,17 +765,20 @@ namespace DigitalProductionProgram.Templates
 	                                ON protocolTemplate.ID = lineclearancetemplate.ProtocolMainTemplateID
                             WHERE maindata.ProtocolMainTemplateID = (SELECT ProtocolMainTemplateID FROM LineClearance.MainTemplate WHERE MainTemplateID = @lineclearancemaintemplateid)
                                 AND protocolTemplate.LineClearance_Template = @lineclearancerevision";
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                con.Open();
-                cmd.Parameters.AddWithValue("@lineclearancemaintemplateid", LineClearance_MainTemplateID);
-                cmd.Parameters.AddWithValue("@lineclearancerevision", lineClearanceRevision);
-                var value = cmd.ExecuteScalar();
-                return value == null ? 0 : int.Parse(value.ToString());
+                    var cmd = new SqlCommand(query, con);
+                    cmd.Parameters.AddWithValue("@lineclearancemaintemplateid", LineClearance_MainTemplateID);
+                    cmd.Parameters.AddWithValue("@lineclearancerevision", lineClearanceRevision);
+                    var value = cmd.ExecuteScalar();
+                    return value == null ? 0 : int.Parse(value.ToString());
+                });
             }
             public static int TotalConnectedOrdersToTemplate(string lineClearanceRevision)
             {
-                using var con = new SqlConnection(Database.cs_Protocol);
-                const string query = @"
+                if (LineClearance_MainTemplateID == null)
+                    return 0;
+                return Database.ExecuteSafe(con =>
+                {
+                    const string query = @"
                     SELECT COUNT(*) 
                     FROM [Order].MainData as maindata
                     JOIN LineClearance.MainTemplate as lineclearancetemplate
@@ -780,53 +787,46 @@ namespace DigitalProductionProgram.Templates
 	                    ON protocolTemplate.ID = lineclearancetemplate.ProtocolMainTemplateID
                     WHERE maindata.ProtocolMainTemplateID = (SELECT ProtocolMainTemplateID FROM LineClearance.MainTemplate WHERE MainTemplateID = @lineclearancemaintemplateid)
                         AND protocolTemplate.LineClearance_Template = @lineclearancerevision";
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                con.Open();
-                cmd.Parameters.AddWithValue("@lineclearancemaintemplateid", LineClearance_MainTemplateID);
-                cmd.Parameters.AddWithValue("@lineclearancerevision", lineClearanceRevision);
-                var value = cmd.ExecuteScalar();
-                return value == null ? 0 : int.Parse(value.ToString());
+                    var cmd = new SqlCommand(query, con);
+                    cmd.Parameters.AddWithValue("@lineclearancemaintemplateid", LineClearance_MainTemplateID);
+                    cmd.Parameters.AddWithValue("@lineclearancerevision", lineClearanceRevision);
+                    var value = cmd.ExecuteScalar();
+                    return value == null ? 0 : int.Parse(value.ToString());
+                });
             }
             public static bool IsTemplateExist(string revision)
             {
-                using (var con = new SqlConnection(Database.cs_Protocol))
+                if (LineClearance_MainTemplateID == null)
+                    return false;
+                return Database.ExecuteSafe(con =>
                 {
                     const string query = @"
                         SELECT * FROM LineClearance.MainTemplate WHERE MainTemplateID = @maintemplateid AND LineClearance_Revision = @lcrevision ";
-                    using (var cmd = new SqlCommand(query, con))
-                    {
-                        con.Open();
-                        cmd.Parameters.Add("@maintemplateid", SqlDbType.Int).Value = LineClearance_MainTemplateID;
-                        cmd.Parameters.Add("@lcrevision", SqlDbType.NVarChar).Value = revision;
-                        using (var reader = cmd.ExecuteReader())
-                        {
-                            if (reader.HasRows)
-                                return true;
-                        }
-                    }
-                }
-                return false;
+                    using var cmd = new SqlCommand(query, con);
+                    cmd.Parameters.Add("@maintemplateid", SqlDbType.Int).Value = LineClearance_MainTemplateID;
+                    cmd.Parameters.Add("@lcrevision", SqlDbType.NVarChar).Value = revision;
+                    using var reader = cmd.ExecuteReader();
+                    if (reader.HasRows)
+                        return true;
+                    return false;
+                });
             }
 
             public static void Set_MainTemplateID()
             {
-                using var con = new SqlConnection(Database.cs_Protocol);
-                const string query = @"
+                Database.ExecuteSafe(con =>
+                {
+                    const string query = @"
                         SELECT TOP (1) MainTemplateID 
                         FROM LineClearance.MainTemplate 
                         WHERE ProtocolMainTemplateID = @prototocolmaintemplateid
                         ORDER BY LineClearance_Revision DESC";
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@prototocolmaintemplateid", Templates_Protocol.MainTemplate.ID);
-                con.Open();
-                var value = cmd.ExecuteScalar();
-                if (value != DBNull.Value && value != null)
-                    LineClearance_MainTemplateID = int.Parse(value.ToString());
-
-                return;
-                //Koden nedan behövs troligen inte, LineClearance bör alltid bli rätt laddad
-                var chooseTemplate = new TemplateSelector(TemplateSelector.TemplateType.TemplateMeasureProtocol);
-                chooseTemplate.ShowDialog();
+                    var cmd = new SqlCommand(query, con);
+                    cmd.Parameters.AddWithValue("@prototocolmaintemplateid", Templates_Protocol.MainTemplate.ID);
+                    var value = cmd.ExecuteScalar();
+                    if (value != DBNull.Value && value != null)
+                        LineClearance_MainTemplateID = int.Parse(value.ToString());
+                });
             }
             public static void Save_Data(string name, string lineClearanceRevision, string centuriLink, bool isApprovalRequired)
             {
@@ -844,6 +844,7 @@ namespace DigitalProductionProgram.Templates
                         (
                             ProtocolMainTemplateID, 
                             WorkoperationId,
+                            ProtocolTemplateName,
                             LineClearance_Revision, 
                             IsApprovalRequired, 
                             CenturiLink, 
@@ -854,6 +855,7 @@ namespace DigitalProductionProgram.Templates
                         (   
                             @protocolmaintemplateid, 
                             (SELECT WorkoperationID FROM Protocol.MainTemplate WHERE ID = @protocolmaintemplateid),
+                            @protocoltemplatename,
                             @revision, 
                             @isapprovalrequired, 
                             @centurilink, 
@@ -865,7 +867,7 @@ namespace DigitalProductionProgram.Templates
                     var cmd = new SqlCommand(query, con);
 
                     cmd.Parameters.AddWithValue("@protocolmaintemplateid", Templates_Protocol.MainTemplate.ID);
-                    cmd.Parameters.AddWithValue("@name", name);
+                    cmd.Parameters.AddWithValue("@protocoltemplatename", name);
                     cmd.Parameters.AddWithValue("@revision", lineClearanceRevision);
                     cmd.Parameters.AddWithValue("@isapprovalrequired", isApprovalRequired);
                     cmd.Parameters.AddWithValue("@centurilink", centuriLink);
@@ -877,13 +879,13 @@ namespace DigitalProductionProgram.Templates
             }
             public static void Delete_Template()
             {
-                using (var con = new SqlConnection(Database.cs_Protocol))
+                Database.ExecuteSafe(con =>
                 {
                     const string query =
                         @"
                         BEGIN TRANSACTION
                             BEGIN TRY
-                                DELETE FROM LineClearance.MainTemplate WHERE MainTemplateID = @maintemplateid;
+                                DELETE FROM LineClearance.MainTemplate WHERE MainTemplateId = @maintemplateid;
                                 DELETE FROM LineClearance.Template WHERE FormTemplateID IN (SELECT FormTemplateID FROM LineClearance.FormTemplate WHERE MainTemplateID = @maintemplateid);
                                 DELETE FROM LineClearance.FormTemplate WHERE MainTemplateID = @maintemplateid;          
                                 COMMIT TRANSACTION;
@@ -893,17 +895,14 @@ namespace DigitalProductionProgram.Templates
                         
                         END CATCH";
 
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                    var cmd = new SqlCommand(query, con);
                     cmd.Parameters.Add("@maintemplateid", SqlDbType.Int).Value = LineClearance_MainTemplateID;
-
-                    con.Open();
                     cmd.ExecuteNonQuery();
-                }
+                });
             }
         }
         public abstract class Template
         {
-
             public static void AddColumns_dgv_Template(DataGridView dgv)
             {
                 Templates_Protocol.TemplateControls.AddColumn(dgv, new DataGridViewTextBoxColumn(), "ProtocolDescriptionID", "col_ProtocolDescriptionID", 0, false);
@@ -938,33 +937,52 @@ namespace DigitalProductionProgram.Templates
 
             private static void Save_Data(DataGridView dgv, int templateOrder, string lineClearanceRevision)
             {
-                foreach (DataGridViewRow row in dgv.Rows)
+                int formTemplateId;
+
+                Database.ExecuteSafe(con =>
                 {
-                    using var con = new SqlConnection(Database.cs_Protocol);
-                    const string query = @"
+                    // 1. Hämta FormTemplateID EN gång
+                    using (var cmd = new SqlCommand("""
+                                                    SELECT FormTemplateID
+                                                    FROM LineClearance.FormTemplate 
+                                                    WHERE MainTemplateID = 
+                                                    (
+                                                        SELECT MainTemplateID 
+                                                        FROM LineClearance.MainTemplate 
+                                                        WHERE ProtocolMainTemplateID = @protocolmaintemplateid
+                                                            AND LineClearance_Revision = @lcrevision
+                                                    )
+                                                        AND TemplateOrder = @templateorder
+                                                    """, con))
+                    {
+                        cmd.Parameters.AddWithValue("@protocolmaintemplateid", Templates_Protocol.MainTemplate.ID);
+                        cmd.Parameters.AddWithValue("@lcrevision", lineClearanceRevision);
+                        cmd.Parameters.AddWithValue("@templateorder", templateOrder);
+                        formTemplateId = (int)cmd.ExecuteScalar();
+                    }
+
+                    // 2. Transaktion för alla inserts
+                    using (var tran = con.BeginTransaction())
+                    {
+                        foreach (DataGridViewRow row in dgv.Rows)
+                        {
+                            if (row.IsNewRow) continue; // hoppa tom sista-raden
+
+                            using var cmd = new SqlCommand(@"
                                 INSERT INTO LineClearance.Template (FormTemplateID, DescriptionID, RowIndex)
-                                VALUES ( 
-                                            (SELECT FormTemplateID 
-                                                FROM LineClearance.FormTemplate 
-                                                WHERE MainTemplateID = (SELECT MainTemplateID FROM LineClearance.MainTemplate WHERE ProtocolMainTemplateID = @protocolmaintemplateid AND LineClearance_Revision = @lcrevision) 
-                                                    AND TemplateOrder = @templateorder), 
-                                            @protocoldescriptionid,
-                                            @rowindex
-                                        )";
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    cmd.Parameters.AddWithValue("@templateorder", templateOrder);
-                    //cmd.Parameters.AddWithValue("@maintemplateid", LineClearanceMainTemplateID);
-                    cmd.Parameters.AddWithValue("@protocolmaintemplateid", Templates_Protocol.MainTemplate.ID);
-                    cmd.Parameters.AddWithValue("@lcrevision", lineClearanceRevision);
-                    SQL_Parameter.Int(cmd.Parameters, "@protocoldescriptionid", row.Cells["col_ProtocolDescriptionID"].Value);
-                    cmd.Parameters.AddWithValue("@rowindex", row.Index);
-                    con.Open();
-                    cmd.ExecuteNonQuery();
-                }
+                                VALUES (@formtemplateid, @protocoldescriptionid, @rowindex)", con, tran);
+                            cmd.Parameters.AddWithValue("@formtemplateid", formTemplateId);
+                            SQL_Parameter.Int(cmd.Parameters, "@protocoldescriptionid", row.Cells["col_ProtocolDescriptionID"].Value);
+                            cmd.Parameters.AddWithValue("@rowindex", row.Index);
+                            cmd.ExecuteNonQuery();
+                        }
+                        tran.Commit();
+                    }
+                });
             }
             public static void Load_Data(int? formTemplateID)
             {
-                using (var con = new SqlConnection(Database.cs_Protocol))
+                Database.ExecuteSafe(con =>
                 {
                     const string query = @"
                     SELECT template.DescriptionID, Tasks
@@ -974,28 +992,26 @@ namespace DigitalProductionProgram.Templates
                     WHERE template.FormTemplateID = @formtemplateid
                         AND RowIndex IS NOT NULL
                     ORDER BY RowIndex";
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                    var cmd = new SqlCommand(query, con);
                     cmd.Parameters.AddWithValue("@formtemplateid", formTemplateID);
-                    con.Open();
                     var reader = cmd.ExecuteReader();
 
                     while (reader.Read())
                     {
                         int.TryParse(reader["DescriptionID"].ToString(), out var protocoldescriptionID);
                         var task = reader["Tasks"].ToString();
-
                         dgv_LineClearance_Active_Main.Rows.Add();
-                        dgv_LineClearance_Active_Main.Rows[dgv_LineClearance_Active_Main.Rows.Count - 1].Cells["col_ProtocolDescriptionID"].Value = protocoldescriptionID;
-                        dgv_LineClearance_Active_Main.Rows[dgv_LineClearance_Active_Main.Rows.Count - 1].Cells["col_Tasks"].Value = $"• {task}";
+                        dgv_LineClearance_Active_Main.Rows[^1].Cells["col_ProtocolDescriptionID"].Value = protocoldescriptionID;
+                        dgv_LineClearance_Active_Main.Rows[^1].Cells["col_Tasks"].Value = $"• {task}";
                     }
-                }
+                });
             }
         }
         public abstract class FormTemplate
         {
             public static void Save_Data(string category, int templateOrder, string revision)
             {
-                using (var con = new SqlConnection(Database.cs_Protocol))
+                Database.ExecuteSafe(con =>
                 {
                     const string query = @"
                         IF NOT EXISTS (SELECT * FROM LineClearance.FormTemplate WHERE Category = @category AND MainTemplateID = (SELECT MainTemplateID FROM LineClearance.MainTemplate WHERE ProtocolMainTemplateID = @protocolmaintemplateid AND LineClearance_Revision = @lcrevision))
@@ -1004,16 +1020,13 @@ namespace DigitalProductionProgram.Templates
                                        (SELECT MainTemplateID FROM LineClearance.MainTemplate WHERE ProtocolMainTemplateID = @protocolmaintemplateid AND LineClearance_Revision = @lcrevision), @templateorder, @category
                                    )";
 
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                    cmd.Parameters.Add("@maintemplateid", SqlDbType.Int).Value = MainTemplate.LineClearance_MainTemplateID;
+                    var cmd = new SqlCommand(query, con);
                     cmd.Parameters.Add("@protocolmaintemplateid", SqlDbType.Int).Value = Templates_Protocol.MainTemplate.ID;
                     cmd.Parameters.Add("@templateorder", SqlDbType.Int).Value = templateOrder;
                     cmd.Parameters.Add("@category", SqlDbType.NVarChar).Value = category;
                     cmd.Parameters.Add("@lcrevision", SqlDbType.NVarChar).Value = revision;
-
-                    con.Open();
                     cmd.ExecuteNonQuery();
-                }
+                });
             }
         }
     }

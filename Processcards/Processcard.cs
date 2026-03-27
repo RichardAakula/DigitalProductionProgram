@@ -368,15 +368,16 @@ namespace DigitalProductionProgram.Processcards
 
         private static void Add_Parameters(SqlCommand cmd, List<SqlParameter> parameters, int partID)
         {
-            cmd.Parameters.AddRange(parameters.ToArray());
+            if (parameters != null && parameters.Count > 0)
+                cmd.Parameters.AddRange(parameters.ToArray());
 
             SQL_Parameter.NullableINT(cmd.Parameters, "@artID", partID);
-            cmd.Parameters.AddWithValue("@partgroupid", Order.PartGroupID);
-            SQL_Parameter.String(cmd.Parameters, "@prodline", Order.ProdLine);
+            SQL_Parameter.NullableINT(cmd.Parameters, "@partgroupid", Order.PartGroupID);
+            SQL_Parameter.String(cmd.Parameters, "@prodline", Order.ProdLine, true);
             if (ControlValidator.IsStringNA(Order.ProdType))
                 SQL_Parameter.String(cmd.Parameters, "@prodtype", DBNull.Value.ToString(), true);
             else
-                SQL_Parameter.String(cmd.Parameters, "@prodtype", Order.ProdType);
+                SQL_Parameter.String(cmd.Parameters, "@prodtype", Order.ProdType, true);
         }
         public static int TextLength(string? text, Font font, Graphics g)
         {

@@ -18,6 +18,7 @@ namespace DigitalProductionProgram.Protocols.Spolning_PTFE
 {
     public partial class Journal_Spolning_PTFE : UserControl
     {
+        private const int FormTemplateId = 13;
         public Warning? warning;
         private int? EditRow;
         public static string row_User = null!;
@@ -190,27 +191,28 @@ namespace DigitalProductionProgram.Protocols.Spolning_PTFE
 
             return null;
         }
-        private static string Korprotokoll_Extruder(string? lotnr)
+        private static string? Korprotokoll_Extruder(string? lotnr)
         {
             int orderid = OrderID(lotnr);
             if (orderid == 0)
                 return string.Empty;
             //Hämtar Extruder från Extrudering_PTFE baserat på vilket ordernr operatören skriver in
             //Om det inte finns extruder i ordern skickas N/A tillbaka.
-            using var con = new SqlConnection(Database.cs_Protocol);
-            var query = @"
+            return Database.ExecuteSafe(con =>
+            {
+                var query = @"
                         SELECT TOP(1) TextValue FROM [Order].Data
                         WHERE OrderID = @orderid 
                         AND ProtocolDescriptionID = 80
                         ORDER BY uppstart";
-            con.Open();
-            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-            cmd.Parameters.AddWithValue("@orderid", orderid);
-            var value = cmd.ExecuteScalar();
-            if (value != null)
-                return value.ToString();
+                var cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@orderid", orderid);
+                var value = cmd.ExecuteScalar();
+                if (value != null)
+                    return value.ToString();
 
-            return "N/A";
+                return "N/A";
+            });
         }
         private static string Measureprotocol_Ugn(string? lotnr, int påse)
         {
@@ -264,6 +266,8 @@ namespace DigitalProductionProgram.Protocols.Spolning_PTFE
 
         private void Add_Extra_InfoLabels()
         {
+            panel_ExtraInfoLabels.Controls.Clear();
+
             var lbl_Blandning = new Label
             {
                 Text = "BLANDNING",
@@ -314,7 +318,16 @@ namespace DigitalProductionProgram.Protocols.Spolning_PTFE
         {
             dgv_Journal.Columns.Clear();
             dgv_Journal_Input.Columns.Clear();
-            using (var con = new SqlConnection(Database.cs_Protocol))
+            BuildJournalColumns();
+            ConfigureInputColumns();
+            AddRowIndexColumn();
+            dgv_Journal_Input.Rows.Add();
+            ApplyJournalLayout();
+        }
+
+        private void BuildJournalColumns()
+        {
+            Database.ExecuteSafe(con =>
             {
                 const string query = @"
                     SELECT DISTINCT 
@@ -335,54 +348,54 @@ namespace DigitalProductionProgram.Protocols.Spolning_PTFE
                         WHERE MainTemplateID = @protocolmaintemplateid
                     )
                     ORDER BY template.ColumnIndex";
-                con.Open();
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                using var cmd = new SqlCommand(query, con);
                 cmd.Parameters.AddWithValue("@protocolmaintemplateid", Templates_Protocol.MainTemplate.ID);
-                cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
-                var reader = cmd.ExecuteReader();
+                using var reader = cmd.ExecuteReader();
                 var ctr = 0;
 
                 while (reader.Read())
                 {
-                    var name = reader["ProtocolDescriptionID"].ToString();
-                    var col_Input = new DataGridViewTextBoxColumn
-                    {
-                        HeaderText = reader[0].ToString(),
-                        Name = reader["ProtocolDescriptionID"].ToString(),
-                        CellTemplate = new DataGridViewTextBoxCell(),
-                        Width = InputBoxes_Width[ctr],
-                    };
+                    var headerText = reader["CodeText"].ToString();
+                    var protocolDescriptionId = reader["ProtocolDescriptionID"].ToString();
+                    var width = InputBoxes_Width[ctr++];
 
-                    var col1 = new DataGridViewColumn
-                    {
-                        HeaderText = reader[0].ToString(),
-                        Name = reader["ProtocolDescriptionID"].ToString(),
-                        CellTemplate = new DataGridViewTextBoxCell(),
-                        Width = InputBoxes_Width[ctr],
-
-                    };
-                    ctr++;
-                    dgv_Journal_Input.Columns.Add(col_Input);
-                    dgv_Journal.Columns.Add(col1);
+                    dgv_Journal_Input.Columns.Add(CreateTextColumn(headerText, protocolDescriptionId, width));
+                    dgv_Journal.Columns.Add(CreateTextColumn(headerText, protocolDescriptionId, width));
                 }
-            }
+            });
+        }
 
-            var IsOkShowRowIndex = Person.Role == "SuperAdmin";
+        private static DataGridViewTextBoxColumn CreateTextColumn(string? headerText, string? name, int width)
+        {
+            return new DataGridViewTextBoxColumn
+            {
+                HeaderText = headerText,
+                Name = name,
+                CellTemplate = new DataGridViewTextBoxCell(),
+                Width = width
+            };
+        }
 
-            // ReSharper disable once PossibleNullReferenceException
+        private void ConfigureInputColumns()
+        {
             ((DataGridViewTextBoxColumn)dgv_Journal_Input.Columns["187"]).MaxInputLength = 1;
-            // ReSharper disable once PossibleNullReferenceException
             ((DataGridViewTextBoxColumn)dgv_Journal_Input.Columns["189"]).MaxInputLength = 1;
+        }
+
+        private void AddRowIndexColumn()
+        {
+            var isOkShowRowIndex = Person.Role == "SuperAdmin";
             var col = new DataGridViewColumn
             {
                 Name = "RowIndex",
                 CellTemplate = new DataGridViewTextBoxCell(),
-                Visible = IsOkShowRowIndex
-
+                Visible = isOkShowRowIndex
             };
             dgv_Journal.Columns.Add(col);
-            dgv_Journal_Input.Rows.Add();
+        }
 
+        private void ApplyJournalLayout()
+        {
             Width = dgv_Journal_Input.Width;
 
             if (Part.IsPartNrSpecial == false)
@@ -500,118 +513,143 @@ namespace DigitalProductionProgram.Protocols.Spolning_PTFE
         {
             if (!Person.IsPasswordOk("Bekräfta överföringen med ditt lösenord."))
                 return;
-            Activity.Start();
-            //Om raden editeras raderas här den förra raden 
-            if (EditRow != null)
-                DeleteRow();
 
+            Activity.Start();
+            var now = DateTime.Now;
+
+            ApplyAuditFieldsToInputRow(now);
+
+            var uppstart = SaveCurrentRow(now);
+            if (uppstart is null)
+                return;
+
+            RefreshAfterSave(uppstart.Value);
+        }
+
+        private void ApplyAuditFieldsToInputRow(DateTime now)
+        {
             dgv_Journal_Input.Rows[0].Cells["157"].Value = Person.Sign;
             dgv_Journal_Input.Rows[0].Cells["158"].Value = Person.EmployeeNr;
-
-            var now = DateTime.Now;
             dgv_Journal_Input.Rows[0].Cells["171"].Value = now.ToString("yyyy-MM-dd HH:mm");
-            var uppstart = Last_StartUp + 1;
-            foreach (DataGridViewColumn column in dgv_Journal_Input.Columns)
+        }
+
+        private int? SaveCurrentRow(DateTime now)
+        {
+            return Database.ExecuteSafe<int?>(con =>
             {
-                var cell = dgv_Journal_Input.Rows[0].Cells[column.Index];
-                var pcID = Protocol_Description.Protocol_Description_ID_Col(column.Index, 13);
-                var type = Module.DatabaseManagement.ValueType(pcID, 13);
-
-                if (EditRow != null)
-                    uppstart = (int)EditRow;
-                using var con = new SqlConnection(Database.cs_Protocol);
-                var query = @"
-                    BEGIN TRY
-                        BEGIN TRAN;
-
-                        INSERT INTO [Order].Data
-                        (
-                            OrderID, 
-                            ProtocolDescriptionID, 
-                            Uppstart, 
-                            Ugn, 
-                            Value, 
-                            TextValue, 
-                            BoolValue
-                        )
-                        VALUES
-                        (
-                            @orderid, 
-                            @protocoldescriptionid, 
-                            @uppstart, 
-                            NULL, 
-                            @value, 
-                            @textvalue, 
-                            @boolvalue
-                        );
-
-                        INSERT INTO Log.ActivityLog
-                        (
-                            HostID, 
-                            UserID, 
-                            OrderID, 
-                            Program, 
-                            Version, 
-                            Date, 
-                            Info
-                        )
-                        VALUES
-                        (
-                            (SELECT HostID FROM [Settings].General WHERE HostName = @hostname),
-                            @userid,
-                            @orderid,
-                            @program,
-                            @version,
-                            @date,
-                            CONCAT
-                                (
-                                    'Save data: ',
-                                    COALESCE((SELECT TOP(1) CodeText FROM [Protocol].[Description] WHERE ID = @protocoldescriptionid), 'N/A'),
-                                    ' - Value = ', COALESCE(CONVERT(varchar(50), @value), 'NULL'),
-                                    ' - StartUp = ', COALESCE(CONVERT(varchar(10), @uppstart), 'NULL')
-                                )
-                        );
-                        COMMIT TRAN;
-                    END TRY
-                    BEGIN CATCH
-                    IF @@TRANCOUNT > 0 ROLLBACK TRAN;
-                    THROW;
-                    END CATCH";
-                con.Open();
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
-                cmd.Parameters.AddWithValue("@protocoldescriptionid", pcID);
-                cmd.Parameters.AddWithValue("@uppstart", uppstart);
-                SQL_Parameter.Int(cmd.Parameters, "@userid", Person.UserID);
-                cmd.Parameters.AddWithValue("@hostname", Activity.HostName);
-                cmd.Parameters.AddWithValue("@date", DateTime.Now);
-                cmd.Parameters.AddWithValue("@program", "SaveData");
-                cmd.Parameters.AddWithValue("@version", ChangeLog.CurrentVersion.ToString());
-
-                switch (type)
+                var uppstart = EditRow ?? Last_StartUp + 1;
+                using var transaction = con.BeginTransaction();
+                try
                 {
-                    case 0: //NumberValue
-                        SQL_Parameter.Double(cmd.Parameters, "@value", cell.Value);
-                        cmd.Parameters.AddWithValue("@textvalue", DBNull.Value);
-                        cmd.Parameters.AddWithValue("@boolvalue", DBNull.Value);
-                        break;
-                    case 1: //TextValue
-                    case 3: //Date
-                        if (cell.Value != null)
-                            SQL_Parameter.String(cmd.Parameters, "@textvalue", cell.Value.ToString());
-                        else
-                            cmd.Parameters.AddWithValue("@textvalue", DBNull.Value);
-                        cmd.Parameters.AddWithValue("@value", DBNull.Value);
-                        cmd.Parameters.AddWithValue("@boolvalue", DBNull.Value);
-                        break;
-                    case 2: //Bool
-                        SQL_Parameter.Boolean(cmd.Parameters, "@boolvalue", "True");
-                        cmd.Parameters.AddWithValue("@textvalue", DBNull.Value);
-                        cmd.Parameters.AddWithValue("@value", DBNull.Value);
-                        break;
+                    if (EditRow != null)
+                        DeleteRow(con, transaction, EditRow.Value);
+
+                    foreach (DataGridViewColumn column in dgv_Journal_Input.Columns)
+                        SaveCell(con, transaction, column, uppstart, now);
+
+                    transaction.Commit();
+                    return uppstart;
                 }
-                cmd.ExecuteNonQuery();
+                catch
+                {
+                    transaction.Rollback();
+                    throw;
+                }
+            });
+        }
+
+        private void SaveCell(SqlConnection con, SqlTransaction transaction, DataGridViewColumn column, int uppstart, DateTime now)
+        {
+            var cell = dgv_Journal_Input.Rows[0].Cells[column.Index];
+            var pcID = Protocol_Description.Protocol_Description_ID_Col(column.Index, FormTemplateId);
+            var type = Module.DatabaseManagement.ValueType(pcID, FormTemplateId);
+            var query = @"
+                INSERT INTO [Order].Data
+                (
+                    OrderID, 
+                    ProtocolDescriptionID, 
+                    Uppstart, 
+                    Ugn, 
+                    Value, 
+                    TextValue, 
+                    BoolValue
+                )
+                VALUES
+                (
+                    @orderid, 
+                    @protocoldescriptionid, 
+                    @uppstart, 
+                    NULL, 
+                    @value, 
+                    @textvalue, 
+                    @boolvalue
+                );
+
+                INSERT INTO Log.ActivityLog
+                (
+                    HostID, 
+                    UserID, 
+                    OrderID, 
+                    Program, 
+                    Version, 
+                    Date, 
+                    Info
+                )
+                VALUES
+                (
+                    (SELECT HostID FROM [Settings].General WHERE HostName = @hostname),
+                    @userid,
+                    @orderid,
+                    @program,
+                    @version,
+                    @date,
+                    CONCAT
+                        (
+                            'Save data: ',
+                            COALESCE((SELECT TOP(1) CodeText FROM [Protocol].[Description] WHERE ID = @protocoldescriptionid), 'N/A'),
+                            ' - Value = ', COALESCE(CONVERT(varchar(50), @value), 'NULL'),
+                            ' - StartUp = ', COALESCE(CONVERT(varchar(10), @uppstart), 'NULL')
+                        )
+                );";
+
+            using var cmd = new SqlCommand(query, con, transaction); ServerStatus.Add_Sql_Counter();
+            cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
+            cmd.Parameters.AddWithValue("@protocoldescriptionid", pcID);
+            cmd.Parameters.AddWithValue("@uppstart", uppstart);
+            SQL_Parameter.Int(cmd.Parameters, "@userid", Person.UserID);
+            cmd.Parameters.AddWithValue("@hostname", Activity.HostName);
+            cmd.Parameters.AddWithValue("@date", now);
+            cmd.Parameters.AddWithValue("@program", "SaveData");
+            cmd.Parameters.AddWithValue("@version", ChangeLog.CurrentVersion.ToString());
+
+            switch (type)
+            {
+                case 0: //NumberValue
+                    SQL_Parameter.Double(cmd.Parameters, "@value", cell.Value);
+                    cmd.Parameters.AddWithValue("@textvalue", DBNull.Value);
+                    cmd.Parameters.AddWithValue("@boolvalue", DBNull.Value);
+                    break;
+                case 1: //TextValue
+                case 3: //Date
+                    if (cell.Value != null)
+                        SQL_Parameter.String(cmd.Parameters, "@textvalue", cell.Value.ToString());
+                    else
+                        cmd.Parameters.AddWithValue("@textvalue", DBNull.Value);
+                    cmd.Parameters.AddWithValue("@value", DBNull.Value);
+                    cmd.Parameters.AddWithValue("@boolvalue", DBNull.Value);
+                    break;
+                case 2: //Bool
+                    SQL_Parameter.Boolean(cmd.Parameters, "@boolvalue", "True");
+                    cmd.Parameters.AddWithValue("@textvalue", DBNull.Value);
+                    cmd.Parameters.AddWithValue("@value", DBNull.Value);
+                    break;
             }
+
+            cmd.ExecuteNonQuery();
+        }
+
+        private void RefreshAfterSave(int uppstart)
+        {
             _ = Activity.Stop($"User Save Measurement for Startup = {uppstart}. TotalRows = {dgv_Journal.Rows.Count}");
             dgv_Journal_Input.Rows.Clear();
             Load_Data();
@@ -622,17 +660,18 @@ namespace DigitalProductionProgram.Protocols.Spolning_PTFE
         }
         private void EditRow_Click(object sender, EventArgs e)
         {
-            dgv_Journal_Input.CellValueChanged -= Journal_Input_CellValueChanged;
-            btn_EditRow.Enabled = false;
             var row = (int)dgv_Journal.Rows[dgv_Journal.CurrentCell.RowIndex].Cells["RowIndex"].Value;
             EditRow = row;
             row_User = dgv_Journal.Rows[dgv_Journal.CurrentCell.RowIndex].Cells["157"].Value.ToString();//157=Sign
             if (row_User != Person.Sign)
             {
+                EditRow = null;
                 InfoText.Show("Du kan inte redigera någon annans rad.", CustomColors.InfoText_Color.Bad, "Warning!", this);
                 return;
             }
 
+            dgv_Journal_Input.CellValueChanged -= Journal_Input_CellValueChanged;
+            btn_EditRow.Enabled = false;
             warning = new Warning("Kom ihåg att spara raden annars försvinner den!", 75);
             warning.Show();
 
@@ -647,22 +686,19 @@ namespace DigitalProductionProgram.Protocols.Spolning_PTFE
             dgv_Journal_Input.CellValueChanged += Journal_Input_CellValueChanged;
         }
 
-        private void DeleteRow()
+        private void DeleteRow(SqlConnection con, SqlTransaction transaction, int row)
         {
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                var query = @"DELETE FROM [Order].Data WHERE OrderID = @orderid AND Uppstart = @row";
-                con.Open();
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
-                cmd.Parameters.AddWithValue("@row", EditRow);
+            const string query = @"DELETE FROM [Order].Data WHERE OrderID = @orderid AND Uppstart = @row";
+            using var cmd = new SqlCommand(query, con, transaction); ServerStatus.Add_Sql_Counter();
+            cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
+            cmd.Parameters.AddWithValue("@row", row);
 
-                cmd.ExecuteNonQuery();
-            }
+            cmd.ExecuteNonQuery();
         }
         private void EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
         {
             var tb = (DataGridViewTextBoxEditingControl)e.Control;
+            tb.KeyPress -= AllowedChars_KeyPress_Spolning_PTFE;
             tb.KeyPress += AllowedChars_KeyPress_Spolning_PTFE;
             tb.ShortcutsEnabled = false;
         }
@@ -675,77 +711,74 @@ namespace DigitalProductionProgram.Protocols.Spolning_PTFE
             var colName = dgv_Journal_Input.Columns[colIndex].Name;
             int.TryParse(colName, out int protocolDescriptionID);
 
-            // Spärrade kolumner
-            if (protocolDescriptionID is 178 or 182 or 187 or 157 or 158)
-            {
-                string msg = protocolDescriptionID switch
-                {
-                    178 or 182 => "Klicka i rutan för att välja datum.",
-                    187 => "Klicka i denna ruta för att bekräfta att slangen är ok.",
-                    157 or 158 => "Denna ruta fylls i automatiskt när du Sparar raden.",
-                    _ => "Denna ruta är spärrad."
-                };
+            if (HandleBlockedColumn(protocolDescriptionID, colIndex, e))
+                return;
 
-                InfoText.Show(msg, CustomColors.InfoText_Color.Warning, "Warning!", this);
+            if (HandleLimitedGradeInput(protocolDescriptionID, e))
+                return;
+
+            e.Handled = !IsAllowedByTemplateRule(colIndex, e.KeyChar);
+        }
+
+        private bool HandleBlockedColumn(int protocolDescriptionID, int colIndex, KeyPressEventArgs e)
+        {
+            if (protocolDescriptionID is not (178 or 182 or 187 or 157 or 158))
+                return false;
+
+            string msg = protocolDescriptionID switch
+            {
+                178 or 182 => "Klicka i rutan för att välja datum.",
+                187 => "Klicka i denna ruta för att bekräfta att slangen är ok.",
+                157 or 158 => "Denna ruta fylls i automatiskt när du Sparar raden.",
+                _ => "Denna ruta är spärrad."
+            };
+
+            InfoText.Show(msg, CustomColors.InfoText_Color.Warning, "Warning!", this);
+            e.Handled = true;
+
+            int nextCol = protocolDescriptionID switch
+            {
+                187 => colIndex + 1,
+                157 or 158 => dgv_Journal_Input.Columns.Contains("192") ? dgv_Journal_Input.Columns["192"].Index : colIndex + 1,
+                _ => colIndex + 1
+            };
+
+            if (nextCol < dgv_Journal_Input.Columns.Count)
+                dgv_Journal_Input.CurrentCell = dgv_Journal_Input.Rows[0].Cells[nextCol];
+
+            return true;
+        }
+        private static bool HandleLimitedGradeInput(int protocolDescriptionID, KeyPressEventArgs e)
+        {
+            if (protocolDescriptionID is not (189 or 191))
+                return false;
+
+            if (e.KeyChar is not ('1' or '2' or '3'))
                 e.Handled = true;
 
-                // Hoppa vidare till nästa kolumn
-                int nextCol = protocolDescriptionID switch
-                {
-                    187 => colIndex + 1,
-                    157 or 158 => dgv_Journal_Input.Columns.Contains("192") ? dgv_Journal_Input.Columns["192"].Index : colIndex + 1,
-                    _ => colIndex + 1
-                };
+            return true;
+        }
+        private bool IsAllowedByTemplateRule(int colIndex, char keyChar)
+        {
+            if (!dict_TemplateRules.TryGetValue(colIndex, out var rule))
+                return false;
 
-                if (nextCol < dgv_Journal_Input.Columns.Count)
-                    dgv_Journal_Input.CurrentCell = dgv_Journal_Input.Rows[0].Cells[nextCol];
+            var (type, decimals, _) = rule;
 
-                return;
-            }
-
-            // Begränsa specifikt för 189 och 191 (bara 1,2,3)
-            if (protocolDescriptionID is 189 or 191)
+            return type switch
             {
-                if (e.KeyChar is not ('1' or '2' or '3'))
-                    e.Handled = true;
-                return;
-            }
+                0 => IsAllowedNumericInput(keyChar, decimals),
+                1 => true,
+                2 => true,
+                _ => false
+            };
+        }
+        private static bool IsAllowedNumericInput(char keyChar, int? decimals)
+        {
+            if (decimals > 0)
+                return char.IsDigit(keyChar) || keyChar == ',' || keyChar == '-';
 
-            // Validera mot regler
-            if (dict_TemplateRules.TryGetValue(colIndex, out var rule))
-            {
-                var (type, decimals, _) = rule;
-
-                switch (type)
-                {
-                    case 0: // Numerisk
-                        if (decimals > 0)
-                        {
-                            if (!char.IsDigit(e.KeyChar) && e.KeyChar != ',' && e.KeyChar != '-')
-                                e.Handled = true;
-                        }
-                        else
-                        {
-                            if (!char.IsDigit(e.KeyChar) && e.KeyChar != '-')
-                                e.Handled = true;
-                        }
-                        break;
-
-                    case 1: // Text
-                    case 2: // Alfanum
-                        e.Handled = false;
-                        break;
-
-                    default:
-                        e.Handled = true;
-                        break;
-                }
-            }
-            else
-            {
-                // Kolumn finns ej i mall: blockera
-                e.Handled = true;
-            }
+            return char.IsDigit(keyChar) || keyChar == '-';
         }
 
         private void Journal_Input_CellEnter(object sender, DataGridViewCellEventArgs e)

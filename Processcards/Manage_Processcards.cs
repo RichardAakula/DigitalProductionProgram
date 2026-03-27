@@ -1363,7 +1363,7 @@ Protocol.TemplateRevision = {Templates_Protocol.MainTemplate.Revision}
 
 HS-Machine = {Equipment.Equipment.HS_Machine}", CustomColors.InfoText_Color.Info, "Info", this);
         }
-        private void Töm_Processkort_Click(object sender, EventArgs e)
+        private void EmptyProcesscard_Click(object sender, EventArgs e)
         {
             Clear_Data();
         }

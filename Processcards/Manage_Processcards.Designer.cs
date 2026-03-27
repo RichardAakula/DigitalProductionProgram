@@ -917,7 +917,7 @@ namespace DigitalProductionProgram.Processcards
             btn_ClearProcessCard.TabIndex = 1009;
             btn_ClearProcessCard.Text = "Töm Processkortet";
             btn_ClearProcessCard.UseVisualStyleBackColor = true;
-            btn_ClearProcessCard.Click += Töm_Processkort_Click;
+            btn_ClearProcessCard.Click += EmptyProcesscard_Click;
             // 
             // btn_DeActivate_PartNr
             // 

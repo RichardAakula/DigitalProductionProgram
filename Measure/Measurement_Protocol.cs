@@ -394,18 +394,45 @@ namespace DigitalProductionProgram.Measure
                     currentRow = dgv_Measurements.Rows[currentRowIndex];
 
                     var date = DateTime.TryParse(rowObj[5]?.ToString(), out var dt) ? dt : DateTime.MinValue;
-                    var formattedDate = date.ToString(
-                        $"{dateTimeFormat.ShortDatePattern} {dateTimeFormat.ShortTimePattern}",
-                        CultureInfo.CurrentCulture);
+                    var formattedDate = date.ToString($"{dateTimeFormat.ShortDatePattern} {dateTimeFormat.ShortTimePattern}", CultureInfo.CurrentCulture);
 
-                    Add_Text_DatagridCell(currentRowIndex, currentRow.Cells["Date"], formattedDate, isDiscarded);
-                    Add_Text_DatagridCell(currentRowIndex, currentRow.Cells["ErrorCode"], rowObj[7]?.ToString(), isDiscarded);
-                    Add_Text_DatagridCell(currentRowIndex, currentRow.Cells["AnstNr"], rowObj[8]?.ToString(), isDiscarded);
-                    Add_Text_DatagridCell(currentRowIndex, currentRow.Cells["Sign"], rowObj[9]?.ToString(), isDiscarded);
-                    Add_Text_DatagridCell(currentRowIndex, currentRow.Cells["Discarded"], rowObj[6]?.ToString(), isDiscarded);
-                    Add_Text_DatagridCell(currentRowIndex, currentRow.Cells["TempID"], tempId.ToString(), isDiscarded);
+                    var columnsByTag = dgv_Measurements.Columns
+                        .Cast<DataGridViewColumn>()
+                        .Where(c => !string.IsNullOrWhiteSpace(c.Tag?.ToString()))
+                        .ToDictionary(c => c.Tag.ToString(), c => c);
+
+                    SetCell("Date", formattedDate);
+                    SetCell("ErrorCode", rowObj[7]);
+                    SetCell("AnstNr", rowObj[8]);
+                    SetCell("Sign", rowObj[9]);
+                    SetCell("Discarded", rowObj[6]);
+                    SetCell("TempID", tempId);
+                    //var errorCodeColumn = dgv_Measurements.Columns.Cast<DataGridViewColumn>().First(c => (string)c.Tag == "ErrorCode");
+                    //Add_Text_DatagridCell(currentRowIndex, currentRow.Cells[errorCodeColumn.Index], rowObj[7]?.ToString(), isDiscarded);
+                    //var anstNrColumn = dgv_Measurements.Columns.Cast<DataGridViewColumn>().First(c => (string)c.Tag == "AnstNr");
+                    //Add_Text_DatagridCell(currentRowIndex, currentRow.Cells[anstNrColumn.Index], rowObj[8]?.ToString(), isDiscarded);
+                    //var signColumn = dgv_Measurements.Columns.Cast<DataGridViewColumn>().First(c => (string)c.Tag == "Sign");
+                    //Add_Text_DatagridCell(currentRowIndex, currentRow.Cells[signColumn.Index], rowObj[9]?.ToString(), isDiscarded);
+                    
+                    //var discardedColumn = dgv_Measurements.Columns.Cast<DataGridViewColumn>().First(c => (string)c.Tag == "Discarded");
+                    //Add_Text_DatagridCell(currentRowIndex, currentRow.Cells[discardedColumn.Index], rowObj[6]?.ToString(), isDiscarded);
+                    
+                    //var tempIdColumn = dgv_Measurements.Columns.Cast<DataGridViewColumn>().First(c => (string)c.Tag == "TempID");
+                    //Add_Text_DatagridCell(currentRowIndex, currentRow.Cells[tempIdColumn.Index], tempId.ToString(), isDiscarded);
+                    
+                    void SetCell(string tag, object value)
+                    {
+                        if (!columnsByTag.TryGetValue(tag, out var col))
+                            return;
+
+                        Add_Text_DatagridCell(
+                            currentRowIndex,
+                            currentRow.Cells[col.Index],
+                            value?.ToString(),
+                            isDiscarded);
+                    }
                 }
-
+                
                 if (currentRow != null)
                     Add_Text_DatagridCell(currentRowIndex, currentRow.Cells[colIndex], text, isDiscarded, parameterName);
             }
@@ -417,7 +444,7 @@ namespace DigitalProductionProgram.Measure
             dgv_Measurements.Visible = true;
             dgv_Measurements.ResumeLayout();
         }
-
+       
 
         private void Count_Measurements()
         {
@@ -430,10 +457,14 @@ namespace DigitalProductionProgram.Measure
                     continue;
 
                 total++;
+                var columnsByTag = dgv_Measurements.Columns.Cast<DataGridViewColumn>().Where(c => !string.IsNullOrWhiteSpace(c.Tag?.ToString())).ToDictionary(c => c.Tag.ToString(), c => c);
+                if (columnsByTag.TryGetValue("Discarded", out var col))
+                {
+                    var cell = row.Cells[col.Index];
 
-                var cell = row.Cells["Discarded"];
-                if (cell?.Value != null && cell.Value.ToString().Equals("True", StringComparison.OrdinalIgnoreCase))
-                    discarded++;
+                    if (cell?.Value != null && cell.Value.ToString().Equals("True", StringComparison.OrdinalIgnoreCase))
+                        discarded++;
+                }
             }
 
             lbl_TotalMeasurements.Text = total.ToString();
@@ -652,6 +683,8 @@ namespace DigitalProductionProgram.Measure
                 using var black = new BlackBackground("", 80);
                 black.Show();
                 chooseErrorCode.ShowDialog();
+                var columnsByTag = dgv_Measurements.Columns.Cast<DataGridViewColumn>().Where(c => !string.IsNullOrWhiteSpace(c.Tag?.ToString())).ToDictionary(c => c.Tag.ToString(), c => c);
+
                 if (string.IsNullOrEmpty(chooseErrorCode.ErrorCode) || string.IsNullOrEmpty(chooseErrorCode.Comment))
                 {
                     InfoText.Show(Properties.Resources.measureprotocol_Info_12, CustomColors.InfoText_Color.Info, Properties.Resources.warningMessage);
@@ -662,7 +695,10 @@ namespace DigitalProductionProgram.Measure
                 black.Close();
 
                 var errorCode = chooseErrorCode.ErrorCode.Substring(0, 3);
-                var tempId = dgv_Measurements.Rows[row].Cells["TempID"].Value.ToString();
+
+                string tempId = null;
+                if (columnsByTag.TryGetValue("TempID", out var col))
+                    tempId = dgv_Measurements.Rows[row].Cells[col.Index].Value?.ToString();
                 Database.ExecuteSafe(con =>
                 {
                     const string query = @"
@@ -681,7 +717,6 @@ namespace DigitalProductionProgram.Measure
                 });
 
                 var comment = $"{Properties.Resources.discardedMeasurement_Info_1} {errorCode} - {chooseErrorCode.Comment}";
-                
                 var bagColumn = dgv_Measurements.Columns.Cast<DataGridViewColumn>().First(c => (string)c.Tag == "Bag");
 
                 var bag = dgv_Measurements.Rows[row].Cells[bagColumn.Index].Value?.ToString();

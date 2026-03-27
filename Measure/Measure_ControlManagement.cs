@@ -755,16 +755,16 @@ namespace DigitalProductionProgram.Measure
                     Add_Header(mp.flp_Headers, "Sign", true, columnIndex + 4, 40);
                     Add_Label(mp.flp_InputControls, Person.Sign, columnIndex + 4, 40);
 
-                    Add_Column_DatagridView(mp.dgv_Measurements, "Date", null,Properties.Resources.dateTime, columnIndex + 1, 160);
+                    Add_Column_DatagridView(mp.dgv_Measurements, "Date", "Date",Properties.Resources.dateTime, columnIndex + 1, 160);
                     TotalWidth += 161;
-                    Add_Column_DatagridView(mp.dgv_Measurements, "ErrorCode", null, Properties.Resources.errorCode, columnIndex + 2, 55);
+                    Add_Column_DatagridView(mp.dgv_Measurements, "ErrorCode", "ErrorCode", Properties.Resources.errorCode, columnIndex + 2, 55);
                     TotalWidth += 55;
-                    Add_Column_DatagridView(mp.dgv_Measurements, "AnstNr", null, Properties.Resources.empNr, columnIndex + 3, 70);
+                    Add_Column_DatagridView(mp.dgv_Measurements, "AnstNr", "AnstNr", Properties.Resources.empNr, columnIndex + 3, 70);
                     TotalWidth += 70;
-                    Add_Column_DatagridView(mp.dgv_Measurements, "Sign", null,"Sign", columnIndex + 4, 50);
+                    Add_Column_DatagridView(mp.dgv_Measurements, "Sign", "Sign","Sign", columnIndex + 4, 50);
                     TotalWidth += 51;
-                    Add_Column_DatagridView(mp.dgv_Measurements, "Discarded", null,"Discarded", columnIndex + 5, 0);
-                    Add_Column_DatagridView(mp.dgv_Measurements, "TempID", null,"TempID", columnIndex + 6, 0);
+                    Add_Column_DatagridView(mp.dgv_Measurements, "Discarded", "Discarded","Discarded", columnIndex + 5, 0);
+                    Add_Column_DatagridView(mp.dgv_Measurements, "TempID", "TempID","TempID", columnIndex + 6, 0);
                 });
                 //22pixlar är extra space som behövs till Scrollbar
                 mp.Width = TotalWidth + 22;
@@ -773,7 +773,7 @@ namespace DigitalProductionProgram.Measure
 
             private static void Add_Column_DatagridView(DataGridView dgv, string name, string? tag, string? headerText, int columnIndex, int width)
             {
-                name+= columnIndex; // Ensure unique column names by appending the column index
+                name += columnIndex; // Ensure unique column names by appending the column index
                 dgv.Columns.Add(name, headerText);
                 dgv.Columns[name].Tag = tag; //columnIndex var det tidigare
                 dgv.Columns[name].Width = width;

@@ -51,7 +51,7 @@ namespace DigitalProductionProgram.Protocols
 
         private void Translate_Form()
         {
-            LanguageManager.TranslationHelper.TranslateControls(new Control[] { label_HS_Color_Info, btn_HS_Machine_NewColor, chb_HS_Machine_InvertForeColor, btn_HS_Machine_Close, btn_HS_Machine_Exit });
+            LanguageManager.TranslationHelper.TranslateControls([label_HS_Color_Info, btn_HS_Machine_NewColor, chb_HS_Machine_InvertForeColor, btn_HS_Machine_Close, btn_HS_Machine_Exit]);
         }
         private void Load_MachineNames()
         {

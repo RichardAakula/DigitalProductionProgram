@@ -393,7 +393,7 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
                         }
 
                         black.Close();
-                        DatabaseManagement.SaveData.INSERT_Kommentar_Byte_BatchNr($"{Properties.Resources.changeBatchNr_Info_2} {byt_BatchNr.Kommentar}");
+                        Extra_Comments.SaveExtraComment("N/A", byt_BatchNr.Kommentar, Person.EmployeeNr, true, Extra_Comments.Next_Row_ExtraComments);
                     }
 
                     if (items != null)

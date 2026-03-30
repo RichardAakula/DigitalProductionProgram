@@ -51,19 +51,18 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
         {
             get
             {
-                using var con = new SqlConnection(Database.cs_Protocol);
-                const string query = @"
-            SELECT ISNULL(MAX(Row), 0) + 1 
-            FROM [Order].ExtraComments
-            WHERE OrderID = @id";
+                return Database.ExecuteSafe(con =>
+                {
+                    const string query = @"
+                        SELECT ISNULL(MAX(Row), 0) + 1 
+                        FROM [Order].ExtraComments
+                        WHERE OrderID = @id";
 
-                using var cmd = new SqlCommand(query, con);
-                cmd.Parameters.AddWithValue("@id", Order.OrderID);
-                ServerStatus.Add_Sql_Counter();
-
-                con.Open();
-                var result = cmd.ExecuteScalar();
-                return Convert.ToInt32(result);
+                    using var cmd = new SqlCommand(query, con);
+                    ServerStatus.Add_Sql_Counter();
+                    var result = cmd.ExecuteScalar();
+                    return Convert.ToInt32(result);
+                });
             }
         }
 
@@ -74,7 +73,7 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
             Load_Data();
             dgv_ExtraComments.MouseWheel += ExtraComments_MouseWheel;
         }
-        public void Translate_Form()
+        private void Translate_Form()
         {
             label_Header.Text = Properties.Resources.extraComments;
             dgv_ExtraComments.Columns["Spool"].HeaderText = Properties.Resources.spool;
@@ -83,6 +82,7 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
             dgv_ExtraComments.Columns["EmpNr"].HeaderText = Properties.Resources.label_EmpNr;
 
         }
+
         private void ExtraComments_RowEnter(object sender, DataGridViewCellEventArgs e)
         {
             timer_Update_ExtraKommentarer.Stop();
@@ -167,7 +167,7 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
                     dgv_ExtraComments.Rows[e.RowIndex].Cells["is_Locked"].Value = false;
                     if (Module.IsOkToSave == false)//Denna bör aldrig kunna bli false???
                         return;
-                    INSERT_Extra_Kommentar(e.RowIndex);
+                    INSERT_ExtraComments(e.RowIndex);
 
                 }
                 else if (IsINSERT_Extra_Kommentar == false && IsOkSaveExtraComments)
@@ -181,7 +181,7 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
 
                     if (Module.IsOkToSave == false)//Denna bör aldrig kunna bli false???
                         return;
-                    UPDATE_Extra_Kommentar(e.RowIndex);
+                    UPDATE_ExtraComments(e.RowIndex);
 
                 }
                 timer_Update_ExtraKommentarer.Start();
@@ -193,7 +193,7 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
 
         }
 
-        public void Load_Data()
+        private void Load_Data()
         {
             dgv_ExtraComments.RowEnter -= ExtraComments_RowEnter;
 
@@ -240,7 +240,7 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
             dgv_ExtraComments.Rows.Add();
             dgv_ExtraComments.RowEnter += ExtraComments_RowEnter;
         }
-        public void UPDATE_Extra_Kommentar(int row)
+        private void UPDATE_ExtraComments(int row)
         {
             if (dgv_ExtraComments.Rows[row].Cells["Spool"].Value == null || dgv_ExtraComments.Rows[row].Cells["Comments"].Value == null)
             {
@@ -266,7 +266,7 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
                 cmd.ExecuteNonQuery();
             }
         }
-        public void INSERT_Extra_Kommentar(int row)
+        private void INSERT_ExtraComments(int row)
         {
             if (dgv_ExtraComments.Rows[row].Cells["Spool"].Value == null || dgv_ExtraComments.Rows[row].Cells["Comments"].Value == null)
             {
@@ -277,7 +277,7 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
                 dgv_ExtraComments.Rows[row].Cells["Sign"].Value = null;
                 return;
             }
-            Add(dgv_ExtraComments.Rows[row].Cells["Spool"].Value.ToString(), dgv_ExtraComments.Rows[row].Cells["Comments"].Value.ToString(), dgv_ExtraComments.Rows[row].Cells["EmpNr"].Value.ToString(), bool.Parse(dgv_ExtraComments.Rows[row].Cells["is_Locked"].Value.ToString()), row);
+            SaveExtraComment(dgv_ExtraComments.Rows[row].Cells["Spool"].Value.ToString(), dgv_ExtraComments.Rows[row].Cells["Comments"].Value.ToString(), dgv_ExtraComments.Rows[row].Cells["EmpNr"].Value.ToString(), bool.Parse(dgv_ExtraComments.Rows[row].Cells["is_Locked"].Value.ToString()), row);
             try
             {
                 dgv_ExtraComments.AllowUserToAddRows = true;
@@ -288,29 +288,50 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
 
         }
 
-        public static void Add(string spool, string comment, string empNr, bool isLocked, int row)
+        public static void SaveExtraComment(string spool, string comment, string empNr, bool isLocked, int row)
         {
             try
             {
-                using var con = new SqlConnection(Database.cs_Protocol);
-                const string query = @"INSERT INTO [Order].ExtraComments (OrderID, Spole, Kommentar, Datum, AnstNr, is_Locked, Row)
-                                     VALUES (@orderid, @spool, @comment, @date, @empnr, @islocked, @row)";
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
+                Database.ExecuteSafe(con =>
+                {
+                    const string query = """
+                                         INSERT INTO [Order].ExtraComments 
+                                         (
+                                            OrderID, 
+                                            Spole, 
+                                            Kommentar, 
+                                            Datum, 
+                                            AnstNr, 
+                                            is_Locked, 
+                                            Row
+                                         )
+                                         VALUES 
+                                         (
+                                            @orderid, 
+                                            @spool, 
+                                            @comment, 
+                                            @date, 
+                                            @empnr, 
+                                            @islocked, 
+                                            @row
+                                         )
+                                         """;
+                    var cmd = new SqlCommand(query, con);
+                    cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
 
-                cmd.Parameters.AddWithValue("@spool", spool);
-                cmd.Parameters.AddWithValue("@comment", comment);
-                cmd.Parameters.AddWithValue("@date", DateTime.Now);
-                cmd.Parameters.AddWithValue("@empnr", empNr);
-                cmd.Parameters.AddWithValue("@islocked", isLocked);
-                cmd.Parameters.AddWithValue("@row", row);
+                    cmd.Parameters.AddWithValue("@spool", spool);
+                    cmd.Parameters.AddWithValue("@comment", comment);
+                    cmd.Parameters.AddWithValue("@date", DateTime.Now);
+                    cmd.Parameters.AddWithValue("@empnr", empNr);
+                    cmd.Parameters.AddWithValue("@islocked", isLocked);
+                    cmd.Parameters.AddWithValue("@row", row);
 
-                con.Open();
-                cmd.ExecuteScalar();
+                    cmd.ExecuteScalar();
+                });
             }
             catch (Exception e)
             {
-               Activity.Stop($"Error Add Extra Comment: {e.Message}");
+               Activity.Stop($"Error Add Extra Comment: {e.Message}, Spole = {spool}, kommentar = {comment}");
             }
             
         }

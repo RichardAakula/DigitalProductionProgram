@@ -720,7 +720,7 @@ namespace DigitalProductionProgram.Measure
                 var bagColumn = dgv_Measurements.Columns.Cast<DataGridViewColumn>().First(c => (string)c.Tag == "Bag");
 
                 var bag = dgv_Measurements.Rows[row].Cells[bagColumn.Index].Value?.ToString();
-                Extra_Comments.Add(bag, comment, Person.EmployeeNr, true, Extra_Comments.Next_Row_ExtraComments);
+                Extra_Comments.SaveExtraComment(bag, comment, Person.EmployeeNr, true, Extra_Comments.Next_Row_ExtraComments);
             }
 
             Load_MeasureData();

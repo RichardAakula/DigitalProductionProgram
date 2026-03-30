@@ -558,7 +558,8 @@ namespace DigitalProductionProgram.MainWindow
                             'AutoTestJira',
                             'Looping_ThroughMeasurements',
                             'Mätdata_Row_Click',
-                            'Load_dt_Korprotokoll_MainDataAsync' 
+                            'Load_dt_Korprotokoll_MainDataAsync',
+                            'SaveExtraComment'
                         )
                         AND Info NOT LIKE '%Felsökning%'
                         AND Info NOT LIKE '%Error%'

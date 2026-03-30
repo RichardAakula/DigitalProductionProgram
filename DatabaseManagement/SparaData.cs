@@ -34,23 +34,7 @@ namespace DigitalProductionProgram.DatabaseManagement
             }
         }
 
-        public static void INSERT_Kommentar_Byte_BatchNr(string kommentar)
-        {
-            using (var con = new SqlConnection(Database.cs_Protocol))
-            {
-                const string query = "INSERT INTO [Order].ExtraComments (OrderID, Spole, Kommentar, Datum, AnstNr, is_Locked, Row)" +
-                                     "VALUES (@id, @spole, @kommentar, @datum, @employeenumber, 'True', @row)";
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@id", Order.OrderID);
-                cmd.Parameters.AddWithValue("@spole", "N/A");
-                cmd.Parameters.AddWithValue("@kommentar", kommentar);
-                cmd.Parameters.AddWithValue("@datum", DateTime.Now);
-                cmd.Parameters.AddWithValue("@employeenumber", Person.EmployeeNr);
-                cmd.Parameters.AddWithValue("@row", Extra_Comments.Next_Row_ExtraComments);
-                con.Open();
-                cmd.ExecuteScalar();
-            }
-        }
+       
         public static void INSERT_Korprotokoll_MainData()
         {
             //Här är ProdType null om inte operatören fått välja Processkort
@@ -133,38 +117,6 @@ namespace DigitalProductionProgram.DatabaseManagement
             cmd.Parameters.AddWithValue("@version", ChangeLog.CurrentVersion.ToString());
             cmd.ExecuteNonQuery();
         }
-        public static void UPDATE_Korprotokoll_Main_From_Processkort_Main()
-        {
-            //Improvement: RevNr kanske inte behöver uppdateras här? Det har sitt rätta värde före det kommer hit, men måste kollas ordentligt
-            if (Part.IsPartID_Exist() == false)
-                return;
-
-            using var con = new SqlConnection(Database.cs_Protocol);
-            var query = @"
-                UPDATE [Order].MainData
-                SET [Order].MainData.RevNr = pc_main.RevNr,
-                    [Order].MainData.ProdType = pc_main.ProdType
-
-                FROM [Order].MainData, Processcard.MainData AS pc_main
-                WHERE [Order].MainData.PartID = @partid
-                    AND pc_main.PartID = @partid
-                    AND pc_main.RevNr = @revNr
-                    AND pc_main.WorkOperationID = @workoperationid
-                    AND [Order].MainData.OrderID = @orderid";
-
-            var cmd = new SqlCommand(query, con);
-            SQL_Parameter.Int(cmd.Parameters, "@partid", Order.PartID);
-            SQL_Parameter.Int(cmd.Parameters, "@workoperationid", Order.WorkoperationID);
-            SQL_Parameter.Int(cmd.Parameters, "@orderid", Order.OrderID);
-            if (string.IsNullOrEmpty(Order.RevNr))
-                cmd.Parameters.AddWithValue("@revNr", Processkort_General.LoadRevNr());//Vet inte varför denna kontroll finns här, kolla om breakpåointen nånsin utlöses och varför isåfall, troligen kan detta tas bort
-            else//Om Testorder skapats så skall revNr vara Order.RevNr annars skall det automatiskt hämtas från Senaste_RevNr_Processkort
-                cmd.Parameters.AddWithValue("@revNr", Order.RevNr);
-            con.Open();
-
-            cmd.ExecuteNonQuery();
-        }
-
         public static void INSERT_Operatör_Tid_Läsa_MyAnalysis(double seconds)
         {
             using var con = new SqlConnection(Database.cs_Protocol);
@@ -190,7 +142,6 @@ namespace DigitalProductionProgram.DatabaseManagement
             con.Open();
             cmd.ExecuteScalar();
         }
-
 
 
 

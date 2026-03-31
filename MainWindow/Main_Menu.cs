@@ -20,6 +20,7 @@ using System.Data;
 using System.Diagnostics;
 using System.Text;
 using System.Text.RegularExpressions;
+using DigitalProductionProgram.Statistics;
 using Activity = DigitalProductionProgram.Log.Activity;
 using Color = System.Drawing.Color;
 using ProgressBar = DigitalProductionProgram.ControlsManagement.CustomProgressBar;
@@ -765,7 +766,14 @@ namespace DigitalProductionProgram.MainWindow
             toolCalculator.Show();
 
         }
-
+        private void Menu_Settings_AnalyseParameterData_Click(object sender, EventArgs e)
+        {
+            using var parameterData = new ParameterDataSearch();
+            using var black = new BlackBackground("", 70);
+            black.Show();
+            parameterData.ShowDialog();
+            black.Close();
+        }
 
         //----------TEMAN----------
         private void Menu_Theme_Click(object sender, EventArgs e)
@@ -1437,5 +1445,7 @@ Protocol.Revision       = " + Templates_Protocol.MainTemplate.Revision + @"\line
             var activitylogViewer = new ActivityLogViewer();
             activitylogViewer.Show();
         }
+
+       
     }
 }

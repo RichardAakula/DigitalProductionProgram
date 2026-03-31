@@ -334,7 +334,6 @@ namespace DigitalProductionProgram.MainWindow
             frekvensmarkering.ShowDialog();
         }
 
-
         private void UploadPicture_Click(object sender, EventArgs e)
         {
             if (Order.OrderNumber == string.Empty)

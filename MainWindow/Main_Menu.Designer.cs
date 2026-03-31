@@ -138,6 +138,7 @@ namespace DigitalProductionProgram.MainWindow
             Menu_Equipment = new ToolStripMenuItem();
             Menu_Equipment_UseFilter = new ToolStripMenuItem();
             Menu_Equipment_UseSilpaket = new ToolStripMenuItem();
+            Menu_Settings_AnalyseParameterData = new ToolStripMenuItem();
             menuStrip.SuspendLayout();
             SuspendLayout();
             // 
@@ -454,7 +455,7 @@ namespace DigitalProductionProgram.MainWindow
             // 
             // Menu_Settings
             // 
-            Menu_Settings.DropDownItems.AddRange(new ToolStripItem[] { Menu_Settings_Settings, Menu_Settings_CalculateMaterial, Menu_Settings_ChangeColorHS_Machine, Menu_Settings_ToolsCalculator });
+            Menu_Settings.DropDownItems.AddRange(new ToolStripItem[] { Menu_Settings_Settings, Menu_Settings_CalculateMaterial, Menu_Settings_ChangeColorHS_Machine, Menu_Settings_ToolsCalculator, Menu_Settings_AnalyseParameterData });
             Menu_Settings.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
             Menu_Settings.ForeColor = Color.DeepSkyBlue;
             Menu_Settings.Name = "Menu_Settings";
@@ -465,14 +466,14 @@ namespace DigitalProductionProgram.MainWindow
             // Menu_Settings_Settings
             // 
             Menu_Settings_Settings.Name = "Menu_Settings_Settings";
-            Menu_Settings_Settings.Size = new Size(212, 22);
+            Menu_Settings_Settings.Size = new Size(236, 22);
             Menu_Settings_Settings.Text = "Inställningar";
             Menu_Settings_Settings.Click += Menu_Verktyg_Inställningar_Click;
             // 
             // Menu_Settings_CalculateMaterial
             // 
             Menu_Settings_CalculateMaterial.Name = "Menu_Settings_CalculateMaterial";
-            Menu_Settings_CalculateMaterial.Size = new Size(212, 22);
+            Menu_Settings_CalculateMaterial.Size = new Size(236, 22);
             Menu_Settings_CalculateMaterial.Text = "Beräkna Material";
             Menu_Settings_CalculateMaterial.Visible = false;
             Menu_Settings_CalculateMaterial.Click += Menu_Verktyg_Beräkna_Material_Click;
@@ -480,14 +481,14 @@ namespace DigitalProductionProgram.MainWindow
             // Menu_Settings_ChangeColorHS_Machine
             // 
             Menu_Settings_ChangeColorHS_Machine.Name = "Menu_Settings_ChangeColorHS_Machine";
-            Menu_Settings_ChangeColorHS_Machine.Size = new Size(212, 22);
+            Menu_Settings_ChangeColorHS_Machine.Size = new Size(236, 22);
             Menu_Settings_ChangeColorHS_Machine.Text = "Ändra färg HS-Maskin";
             Menu_Settings_ChangeColorHS_Machine.Click += Menu_Settings_ChangeColorHS_Machine_Click;
             // 
             // Menu_Settings_ToolsCalculator
             // 
             Menu_Settings_ToolsCalculator.Name = "Menu_Settings_ToolsCalculator";
-            Menu_Settings_ToolsCalculator.Size = new Size(212, 22);
+            Menu_Settings_ToolsCalculator.Size = new Size(236, 22);
             Menu_Settings_ToolsCalculator.Text = "Verktygsberäkning";
             Menu_Settings_ToolsCalculator.Click += Menu_Settings_ToolsCalculator_Click;
             // 
@@ -951,6 +952,13 @@ namespace DigitalProductionProgram.MainWindow
             Menu_Equipment_UseSilpaket.Text = "Använd Silpaket";
             Menu_Equipment_UseSilpaket.Click += Menu_Protocol_UseSilpaket_Click;
             // 
+            // Menu_Settings_AnalyseParameterData
+            // 
+            Menu_Settings_AnalyseParameterData.Name = "Menu_Settings_AnalyseParameterData";
+            Menu_Settings_AnalyseParameterData.Size = new Size(236, 22);
+            Menu_Settings_AnalyseParameterData.Text = "Analysera Parameter Data";
+            Menu_Settings_AnalyseParameterData.Click += Menu_Settings_AnalyseParameterData_Click;
+            // 
             // Main_Menu
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -1076,5 +1084,6 @@ namespace DigitalProductionProgram.MainWindow
         private ToolStripMenuItem Menu_Order_ReadProposedProcesscardChanges;
         private ToolStripMenuItem fixaChangeLogListaToolStripMenuItem;
         private ToolStripMenuItem Menu_Order_OrderLog;
+        private ToolStripMenuItem Menu_Settings_AnalyseParameterData;
     }
 }

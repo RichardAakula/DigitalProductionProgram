@@ -121,6 +121,9 @@
     <Compile Update="Protocols\Protocol\Machine.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Update="Statistics\ParameterDataSearch.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="Statistics\Statistics_DPP.cs">
       <SubType>UserControl</SubType>
     </Compile>

@@ -2267,6 +2267,13 @@ Contact Admin if necessary.</value>
   <data name="changeMeasureProtocol_Info_3" xml:space="preserve">
     <value>You cannot change the Measurement Protocol template on an order that has a Process Card attached.</value>
   </data>
+  <data name="changeMeasureProtocol_Info_IsMeasurementsDone" xml:space="preserve">
+    <value>Note! There are measurements on this order. If you change the template, all measurements will be completely or partially lost.
+Are you sure you want to continue?</value>
+  </data>
+  <data name="ParameterData" xml:space="preserve">
+    <value>F10...ParameterData</value>
+  </data>
   <data name="BrowseOldMeasureprotocol" xml:space="preserve">
     <value>F3-Historical Measurements &amp;&amp; SPC</value>
   </data>
@@ -2530,8 +2537,7 @@ Contact Admin if necessary.</value>
   <data name="btnZumbach" xml:space="preserve">
     <value>F6-Zumbach-measurement</value>
   </data>
-  <data name="changeMeasureProtocol_Info_IsMeasurementsDone" xml:space="preserve">
-    <value>Note! There are measurements on this order. If you change the template, all measurements will be completely or partially lost.
-Are you sure you want to continue?</value>
+  <data name="Menu_Settings_AnalyseParameterData" xml:space="preserve">
+    <value>Analyse Parameter Data</value>
   </data>
 </root>

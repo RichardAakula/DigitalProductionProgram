@@ -195,7 +195,7 @@ namespace DigitalProductionProgram.MainWindow
             Frequency_Marking.Margin = new Padding(2, 2, 0, 0);
             Frequency_Marking.Name = "Frequency_Marking";
             Frequency_Marking.Size = new Size(141, 42);
-            Frequency_Marking.TabIndex = 886;
+            Frequency_Marking.TabIndex = 887;
             Frequency_Marking.Text = "F9-Frekvens-markering";
             Frequency_Marking.UseVisualStyleBackColor = true;
             Frequency_Marking.Click += F9_FrequencyMarking_Click;

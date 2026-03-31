@@ -4019,7 +4019,25 @@ namespace DigitalProductionProgram.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to Tools.
+        /// </summary>
+        public static string Menu_Settings {
+            get {
+                return ResourceManager.GetString("Menu_Settings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Analyse Parameter Data.
+        /// </summary>
+        public static string Menu_Settings_AnalyseParameterData {
+            get {
+                return ResourceManager.GetString("Menu_Settings_AnalyseParameterData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Calculate Material.
         /// </summary>
         public static string Menu_Settings_CalculateMaterial {
             get {
@@ -4028,7 +4046,7 @@ namespace DigitalProductionProgram.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to Change color HS-Machine.
         /// </summary>
         public static string Menu_Settings_ChangeColorHS_Machine {
             get {
@@ -4037,7 +4055,16 @@ namespace DigitalProductionProgram.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to Settings.
+        /// </summary>
+        public static string Menu_Settings_Settings {
+            get {
+                return ResourceManager.GetString("Menu_Settings_Settings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tool Calculator.
         /// </summary>
         public static string Menu_Settings_ToolsCalculator {
             get {
@@ -4431,6 +4458,15 @@ namespace DigitalProductionProgram.Properties {
         public static string page {
             get {
                 return ResourceManager.GetString("page", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string ParameterData {
+            get {
+                return ResourceManager.GetString("ParameterData", resourceCulture);
             }
         }
         

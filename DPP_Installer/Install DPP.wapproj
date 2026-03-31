@@ -65,7 +65,7 @@
     <AppxBundlePlatforms>x86</AppxBundlePlatforms>
     <AppInstallerUri>\\optifil\DPP\</AppInstallerUri>
     <HoursBetweenUpdateChecks>240</HoursBetweenUpdateChecks>
-    <AppxPackageDir>\\optifil\DPP\OTH\</AppxPackageDir>
+    <AppxPackageDir>\\optifil\DPP\</AppxPackageDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <AppxBundle>Auto</AppxBundle>

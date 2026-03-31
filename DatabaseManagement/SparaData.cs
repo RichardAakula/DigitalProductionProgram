@@ -281,15 +281,15 @@ namespace DigitalProductionProgram.DatabaseManagement
         }
         public static void Set_Processcard_Open()
         {
-            using (var con = new SqlConnection(Database.cs_Protocol))
+            Database.ExecuteSafe(con =>
             {
-                var cmd = new SqlCommand(Queries.UPDATE_Set_Processcard_Open, con);
-                cmd.Parameters.AddWithValue("@id", Order.OrderID);
+                const string query = $"UPDATE [Order].MainData SET Processcard_Open = 'True', Processcard_Open_By_User = @användare, Processcard_Open_By_Computer = @computer WHERE OrderID = @orderid";
+                var cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                 cmd.Parameters.AddWithValue("@användare", Person.Name);
                 cmd.Parameters.AddWithValue("@computer", Environment.MachineName);
-                con.Open();
                 cmd.ExecuteScalar();
-            }
+            });
         }
 
     }

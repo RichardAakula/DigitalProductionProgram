@@ -605,12 +605,13 @@ namespace DigitalProductionProgram.Measure
             {
                 var colIndex = numeric.ColumnIndex;
                 var increment = numeric.Increment;
-
                 var maxValue = mp.dgv_Measurements.Rows.Cast<DataGridViewRow>()
                     .Where(row => row.Cells[colIndex].Value != null)
                     .Select(row => Convert.ToInt32(row.Cells[colIndex].Value))
-                    .DefaultIfEmpty(0)  // Prevents "Sequence contains no elements"
+                    .Where(v => v <= 10000)   // ✅ Ta bara med värden <= 10000
+                    .DefaultIfEmpty(0)
                     .Max();
+
 
                 if (Part.IsPartNrSpecial)
                 {
@@ -782,7 +783,7 @@ namespace DigitalProductionProgram.Measure
                     dgv.Columns[name].Visible = false;
             }
 
-            public static void Add_Header(Control flp_Headers, string? text, bool isMandatory, int columnIndex, int width)
+            private static void Add_Header(Control flp_Headers, string? text, bool isMandatory, int columnIndex, int width)
             {
                 var lbl_Header = new HeaderLabel
                 {
@@ -801,7 +802,7 @@ namespace DigitalProductionProgram.Measure
 
                 flp_Headers.Controls.Add(lbl_Header);
             }
-            public static void Add_Label(Control flp_InputControls, string text, int columnIndex, int width)
+            private static void Add_Label(Control flp_InputControls, string text, int columnIndex, int width)
             {
                 var lbl_Header = new Label
                 {
@@ -816,8 +817,7 @@ namespace DigitalProductionProgram.Measure
                 };
                 flp_InputControls.Controls.Add(lbl_Header);
             }
-
-            public static void Add_Input_NumUpDown(FlowLayoutPanel flp_InputControls, int dataType, int columnIndex, int increment, int width, int descriptionID, string monitorName, bool isMandatory,  bool isOkEdit)
+            private static void Add_Input_NumUpDown(FlowLayoutPanel flp_InputControls, int dataType, int columnIndex, int increment, int width, int descriptionID, string monitorName, bool isMandatory,  bool isOkEdit)
             {
                 var num = new InputNumericUpDown
                 {
@@ -831,7 +831,7 @@ namespace DigitalProductionProgram.Measure
                     InterceptArrowKeys = true,
                     Margin = new Padding(1, 0, 0, 0),
                     Monitor_Name = monitorName,
-                    Maximum = 100000,
+                    Maximum = 10000,
                     Minimum = 1,
                     Name = monitorName,
                     Value = 1,
@@ -841,7 +841,7 @@ namespace DigitalProductionProgram.Measure
                 num.ValueChanged += Validate_Value_TextChanged;
                 flp_InputControls.Controls.Add(num);
             }
-            public static void Add_Input_CheckBox(FlowLayoutPanel flp_InputControls, int dataType, int columnIndex, int width, int descriptionID, string name, bool isMandatory)
+            private static void Add_Input_CheckBox(FlowLayoutPanel flp_InputControls, int dataType, int columnIndex, int width, int descriptionID, string name, bool isMandatory)
             {
                 var checkBox = new Measure_ControlManagement.InputCheckBox()
                 {
@@ -861,7 +861,7 @@ namespace DigitalProductionProgram.Measure
                 };
                 flp_InputControls.Controls.Add(checkBox);
             }
-            public static void Add_Input_Numeric(Measurement_Protocol mp, FlowLayoutPanel flp_InputControls, int dataType, int columnIndex, int width, int descriptionID, int maxChars, int Decimals, string formula, string? monitorName, bool isMandatory, bool isOkEdit)
+            private static void Add_Input_Numeric(Measurement_Protocol mp, FlowLayoutPanel flp_InputControls, int dataType, int columnIndex, int width, int descriptionID, int maxChars, int Decimals, string formula, string? monitorName, bool isMandatory, bool isOkEdit)
             {
                 var tb = new InputTextBox
                 {
@@ -916,7 +916,7 @@ namespace DigitalProductionProgram.Measure
                 tb.TextChanged += Validate_Value_TextChanged;
                 flp_InputControls.Controls.Add(tb);
             }
-            public static void Add_Input_Text(Control flp_InputControls, int dataType, int columnIndex, int width, int descriptionID, string monitorName, bool isList, bool isMandatory, bool isOkEdit)
+            private static void Add_Input_Text(Control flp_InputControls, int dataType, int columnIndex, int width, int descriptionID, string monitorName, bool isList, bool isMandatory, bool isOkEdit)
             {
                 var tb = new InputTextBox
                 {
@@ -947,7 +947,8 @@ namespace DigitalProductionProgram.Measure
                 flp_InputControls.Controls.Add(tb);
             }
         }
-        internal static class Formula
+
+        private static class Formula
         {
             public static bool Is_ClearingData;
             private static Dictionary<string, object> Parameters(string formula, FlowLayoutPanel flp, DataGridView[] dgvs)

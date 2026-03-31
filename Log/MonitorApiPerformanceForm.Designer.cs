@@ -83,11 +83,11 @@
             tlp_ControlPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 114F));
             tlp_ControlPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 61F));
             tlp_ControlPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 185F));
-            tlp_ControlPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 90F));
-            tlp_ControlPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 190F));
-            tlp_ControlPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 95F));
-            tlp_ControlPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 77F));
-            tlp_ControlPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 188F));
+            tlp_ControlPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 113F));
+            tlp_ControlPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 186F));
+            tlp_ControlPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 91F));
+            tlp_ControlPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 88F));
+            tlp_ControlPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 162F));
             tlp_ControlPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
             tlp_ControlPanel.Controls.Add(label_TimeRemaining, 7, 1);
             tlp_ControlPanel.Controls.Add(label_Factory, 1, 0);
@@ -116,9 +116,9 @@
             // 
             label_TimeRemaining.Dock = DockStyle.Fill;
             label_TimeRemaining.ForeColor = Color.FromArgb(239, 228, 177);
-            label_TimeRemaining.Location = new Point(827, 40);
+            label_TimeRemaining.Location = new Point(853, 40);
             label_TimeRemaining.Name = "label_TimeRemaining";
-            label_TimeRemaining.Size = new Size(182, 28);
+            label_TimeRemaining.Size = new Size(156, 28);
             label_TimeRemaining.TabIndex = 11;
             label_TimeRemaining.Text = "0";
             label_TimeRemaining.TextAlign = ContentAlignment.MiddleLeft;
@@ -150,7 +150,7 @@
             label_Query.ForeColor = Color.FromArgb(239, 228, 177);
             label_Query.Location = new Point(375, 12);
             label_Query.Name = "label_Query";
-            label_Query.Size = new Size(84, 28);
+            label_Query.Size = new Size(107, 28);
             label_Query.TabIndex = 2;
             label_Query.Text = "API-fråga";
             label_Query.TextAlign = ContentAlignment.MiddleLeft;
@@ -160,18 +160,18 @@
             cb_Query.Dock = DockStyle.Fill;
             cb_Query.DropDownStyle = ComboBoxStyle.DropDownList;
             cb_Query.FormattingEnabled = true;
-            cb_Query.Location = new Point(465, 15);
+            cb_Query.Location = new Point(488, 15);
             cb_Query.Name = "cb_Query";
-            cb_Query.Size = new Size(184, 23);
+            cb_Query.Size = new Size(180, 23);
             cb_Query.TabIndex = 3;
             // 
             // label_Loops
             // 
             label_Loops.Dock = DockStyle.Fill;
             label_Loops.ForeColor = Color.FromArgb(239, 228, 177);
-            label_Loops.Location = new Point(655, 12);
+            label_Loops.Location = new Point(674, 12);
             label_Loops.Name = "label_Loops";
-            label_Loops.Size = new Size(89, 28);
+            label_Loops.Size = new Size(85, 28);
             label_Loops.TabIndex = 4;
             label_Loops.Text = "Loopar";
             label_Loops.TextAlign = ContentAlignment.MiddleLeft;
@@ -179,11 +179,11 @@
             // num_Loops
             // 
             num_Loops.Dock = DockStyle.Fill;
-            num_Loops.Location = new Point(750, 15);
+            num_Loops.Location = new Point(765, 15);
             num_Loops.Maximum = new decimal(new int[] { 5000, 0, 0, 0 });
             num_Loops.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             num_Loops.Name = "num_Loops";
-            num_Loops.Size = new Size(71, 23);
+            num_Loops.Size = new Size(82, 23);
             num_Loops.TabIndex = 5;
             num_Loops.Value = new decimal(new int[] { 25, 0, 0, 0 });
             // 
@@ -215,14 +215,15 @@
             label_TimeMinutes.ForeColor = Color.FromArgb(239, 228, 177);
             label_TimeMinutes.Location = new Point(375, 40);
             label_TimeMinutes.Name = "label_TimeMinutes";
-            label_TimeMinutes.Size = new Size(84, 28);
+            label_TimeMinutes.Size = new Size(107, 28);
             label_TimeMinutes.TabIndex = 9;
-            label_TimeMinutes.Text = "Total tid:";
+            label_TimeMinutes.Text = "Total tid (minuter):";
             label_TimeMinutes.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // num_TimeMinutes
             // 
-            num_TimeMinutes.Location = new Point(465, 43);
+            num_TimeMinutes.Location = new Point(488, 43);
+            num_TimeMinutes.Maximum = new decimal(new int[] { 1000, 0, 0, 0 });
             num_TimeMinutes.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             num_TimeMinutes.Name = "num_TimeMinutes";
             num_TimeMinutes.Size = new Size(63, 23);
@@ -233,9 +234,9 @@
             // 
             label_IntervalSeconds.Dock = DockStyle.Fill;
             label_IntervalSeconds.ForeColor = Color.FromArgb(239, 228, 177);
-            label_IntervalSeconds.Location = new Point(655, 40);
+            label_IntervalSeconds.Location = new Point(674, 40);
             label_IntervalSeconds.Name = "label_IntervalSeconds";
-            label_IntervalSeconds.Size = new Size(89, 28);
+            label_IntervalSeconds.Size = new Size(85, 28);
             label_IntervalSeconds.TabIndex = 9;
             label_IntervalSeconds.Text = "Intervall (sek):";
             label_IntervalSeconds.TextAlign = ContentAlignment.MiddleLeft;
@@ -243,10 +244,10 @@
             // num_IntervalSeconds
             // 
             num_IntervalSeconds.Dock = DockStyle.Fill;
-            num_IntervalSeconds.Location = new Point(750, 43);
+            num_IntervalSeconds.Location = new Point(765, 43);
             num_IntervalSeconds.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             num_IntervalSeconds.Name = "num_IntervalSeconds";
-            num_IntervalSeconds.Size = new Size(71, 23);
+            num_IntervalSeconds.Size = new Size(82, 23);
             num_IntervalSeconds.TabIndex = 10;
             num_IntervalSeconds.Value = new decimal(new int[] { 10, 0, 0, 0 });
             // 

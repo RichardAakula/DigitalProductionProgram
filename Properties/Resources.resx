@@ -1010,7 +1010,7 @@
     <value />
   </data>
   <data name="Menu_Settings_CalculateMaterial" xml:space="preserve">
-    <value />
+    <value>Calculate Material</value>
   </data>
   <data name="btn_AuthoritiesRemoveWorkoperation" xml:space="preserve">
     <value />
@@ -1194,7 +1194,7 @@ Change revision and try to save again. </value>
     <value />
   </data>
   <data name="Menu_Settings_ChangeColorHS_Machine" xml:space="preserve">
-    <value />
+    <value>Change color HS-Machine</value>
   </data>
   <data name="saveSetting_1" xml:space="preserve">
     <value>Error when loading settings.
@@ -1823,7 +1823,7 @@ Pleaste contact Admin if necessary.</value>
     <value />
   </data>
   <data name="Menu_Settings_ToolsCalculator" xml:space="preserve">
-    <value />
+    <value>Tool Calculator</value>
   </data>
   <data name="selectTemplateError" xml:space="preserve">
     <value />
@@ -2193,5 +2193,17 @@ Contact Admin if necessary.</value>
   </data>
   <data name="changeMeasureProtocol_Info_IsMeasurementsDone" xml:space="preserve">
     <value />
+  </data>
+  <data name="ParameterData" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Menu_Settings" xml:space="preserve">
+    <value>Tools</value>
+  </data>
+  <data name="Menu_Settings_Settings" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="Menu_Settings_AnalyseParameterData" xml:space="preserve">
+    <value>Analyse Parameter Data</value>
   </data>
 </root>

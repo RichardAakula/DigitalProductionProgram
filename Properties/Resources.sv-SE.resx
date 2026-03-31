@@ -2271,6 +2271,13 @@ Kontakta Admin vid behov.</value>
   <data name="changeMeasureProtocol_Info_3" xml:space="preserve">
     <value>Du kan INTE byta mall för Mätprotokoll på en order som har ett Processkort kopplat.</value>
   </data>
+  <data name="changeMeasureProtocol_Info_IsMeasurementsDone" xml:space="preserve">
+    <value>OBS! Det finns mätningar på denna order, om du byter mall kommer alla mätningar helt eller delvis försvinna.
+Är du säker på att du vill fortsätta?</value>
+  </data>
+  <data name="ParameterData" xml:space="preserve">
+    <value>F10...ParameterData</value>
+  </data>
   <data name="BrowseOldMeasureprotocol" xml:space="preserve">
     <value>F3-Historiska mätningar &amp;&amp; SPC</value>
   </data>
@@ -2532,8 +2539,7 @@ Kontakta Admin vid behov.</value>
   <data name="btnZumbach" xml:space="preserve">
     <value>F6-Zumbach-mätning</value>
   </data>
-  <data name="changeMeasureProtocol_Info_IsMeasurementsDone" xml:space="preserve">
-    <value>OBS! Det finns mätningar på denna order, om du byter mall kommer alla mätningar helt eller delvis försvinna.
-Är du säker på att du vill fortsätta?</value>
+  <data name="Menu_Settings_AnalyseParameterData" xml:space="preserve">
+    <value>Analysera Parameter Data</value>
   </data>
 </root>

@@ -122,6 +122,7 @@
             label_TimeRemaining.TabIndex = 11;
             label_TimeRemaining.Text = "0";
             label_TimeRemaining.TextAlign = ContentAlignment.MiddleLeft;
+            label_TimeRemaining.Visible = false;
             // 
             // label_Factory
             // 
@@ -219,6 +220,7 @@
             label_TimeMinutes.TabIndex = 9;
             label_TimeMinutes.Text = "Total tid (minuter):";
             label_TimeMinutes.TextAlign = ContentAlignment.MiddleLeft;
+            label_TimeMinutes.Visible = false;
             // 
             // num_TimeMinutes
             // 
@@ -229,6 +231,7 @@
             num_TimeMinutes.Size = new Size(63, 23);
             num_TimeMinutes.TabIndex = 10;
             num_TimeMinutes.Value = new decimal(new int[] { 5, 0, 0, 0 });
+            num_TimeMinutes.Visible = false;
             // 
             // label_IntervalSeconds
             // 
@@ -240,6 +243,7 @@
             label_IntervalSeconds.TabIndex = 9;
             label_IntervalSeconds.Text = "Intervall (sek):";
             label_IntervalSeconds.TextAlign = ContentAlignment.MiddleLeft;
+            label_IntervalSeconds.Visible = false;
             // 
             // num_IntervalSeconds
             // 
@@ -250,6 +254,7 @@
             num_IntervalSeconds.Size = new Size(82, 23);
             num_IntervalSeconds.TabIndex = 10;
             num_IntervalSeconds.Value = new decimal(new int[] { 10, 0, 0, 0 });
+            num_IntervalSeconds.Visible = false;
             // 
             // label_Summary
             // 

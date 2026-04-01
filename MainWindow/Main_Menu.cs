@@ -560,7 +560,8 @@ namespace DigitalProductionProgram.MainWindow
                             'Looping_ThroughMeasurements',
                             'Mätdata_Row_Click',
                             'Load_dt_Korprotokoll_MainDataAsync',
-                            'SaveExtraComment'
+                            'SaveExtraComment',
+                            'BtnFetchData_Click'   
                         )
                         AND Info NOT LIKE '%Felsökning%'
                         AND Info NOT LIKE '%Error%'
@@ -769,10 +770,7 @@ namespace DigitalProductionProgram.MainWindow
         private void Menu_Settings_AnalyseParameterData_Click(object sender, EventArgs e)
         {
             using var parameterData = new ParameterDataSearch();
-            using var black = new BlackBackground("", 70);
-            black.Show();
             parameterData.ShowDialog();
-            black.Close();
         }
 
         //----------TEMAN----------

@@ -94,6 +94,40 @@ namespace DigitalProductionProgram.ControlsManagement
                 Refresh();
         }
 
+        public void ConfigureForInlineHost(int width = 360, int height = 44)
+        {
+            TopLevel = false;
+            FormBorderStyle = FormBorderStyle.None;
+            ShowInTaskbar = false;
+            WindowState = FormWindowState.Normal;
+            Opacity = 1;
+            AutoScroll = false;
+            Margin = new Padding(6, 3, 3, 3);
+            Padding = Padding.Empty;
+            Size = new Size(width, height);
+            MinimumSize = new Size(width, height);
+            MaximumSize = new Size(width, height);
+
+            panel_Main.Dock = DockStyle.Fill;
+            panel_Main.Location = Point.Empty;
+            panel_Main.Size = new Size(width, height);
+
+            pBar_Extra.Visible = false;
+            lbl_Percent_Extra.Visible = false;
+
+            lbl_Info.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            lbl_Info.Location = new Point(8, 4);
+            lbl_Info.Size = new Size(width - 90, 18);
+
+            pBar_Main.Location = new Point(8, 22);
+            pBar_Main.Size = new Size(width - 90, 14);
+
+            lbl_Percent_Main.Font = new Font("Segoe UI", 8F, FontStyle.Bold);
+            lbl_Percent_Main.Location = new Point(width - 72, 16);
+            lbl_Percent_Main.Size = new Size(64, 20);
+            lbl_Percent_Main.TextAlign = ContentAlignment.MiddleRight;
+        }
+
 
         public static void close()
         {

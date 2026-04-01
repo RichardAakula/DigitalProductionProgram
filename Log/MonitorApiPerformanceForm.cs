@@ -130,7 +130,6 @@ namespace DigitalProductionProgram.Log
             chart1.XAxes = new Axis[] { xAxis };
             chart1.YAxes = new Axis[] { yAxis };
         }
-
         private void SetupRadioButtons()
         {
             radioLoopMode.Checked = true;
@@ -173,6 +172,7 @@ namespace DigitalProductionProgram.Log
         {
             _isTestRunning = true; // ✅ SÄTT FLAG
             
+            pbar_ProgressBar.Visible = true;
             if (radioLoopMode.Checked)
                 await RunLoopModeAsync();
             else
@@ -220,6 +220,7 @@ namespace DigitalProductionProgram.Log
 
             var loops = (int)num_Loops.Value;
             await RunTestAsync(factory, query, loops, null, 0);
+            pbar_ProgressBar.Visible = false;
         }
 
         // ✅ DENNA METOD SAKNADES!
@@ -232,6 +233,7 @@ namespace DigitalProductionProgram.Log
             int intervalSeconds = (int)num_IntervalSeconds.Value;
 
             await RunTestAsync(factory, query, -1, durationMinutes, intervalSeconds);
+            pbar_ProgressBar.Visible = false;
         }
 
         private async Task RunTestAsync(FactoryDefinition factory, QueryDefinition query, int loops, int? durationMinutes, int intervalSeconds)
@@ -318,7 +320,6 @@ namespace DigitalProductionProgram.Log
                 SetControlsEnabled(true);
             }
         }
-
         private async Task RunTimeModeLoopsAsync(QueryDefinition query, int durationMinutes, int intervalSeconds, ProgressBar progressBar)
         {
             _timeModeEndTime = DateTime.Now.AddMinutes(durationMinutes);
@@ -389,7 +390,6 @@ namespace DigitalProductionProgram.Log
             label_TimeRemaining.Visible = true;
             _countdownTimer.Start();
         }
-
         private async Task ExecuteAndRecordAsync(QueryDefinition query, int iteration)
         {
             var sw = Stopwatch.StartNew();

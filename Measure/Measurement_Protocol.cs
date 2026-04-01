@@ -22,6 +22,7 @@ namespace DigitalProductionProgram.Measure
     public partial class Measurement_Protocol : Form
     {
 
+        //private static Dictionary<string, int> _codeNameToDescriptionId;
 
         private readonly Measure_ControlManagement controls;
         public static int Max_Bag_Value()
@@ -56,6 +57,7 @@ namespace DigitalProductionProgram.Measure
             });
         }
 
+       // private int bagDescriptionId;
 
         private bool IsSomeValueBad
         {
@@ -86,8 +88,9 @@ namespace DigitalProductionProgram.Measure
                 Control? control = null;
                 foreach (Control? ctrl in flp_InputControls.Controls)
                 {
-                    if (Part.IsPartNrSpecial && (ctrl == InputControl(flp_InputControls, ["ID"]) || ctrl == InputControl(flp_InputControls, ["OD"]) || ctrl == InputControl(flp_InputControls, new[] { "Wall" })))
-                        continue;
+                    //Vet inte vad denna kod gör riktigt och tar bort den tills vidare, "ID", "OD" och "Wall" kan inte användas här längre utan måste isåfall lösas på annat sätt nu när DescriptionId används istället för CodeName
+                    //if (Part.IsPartNrSpecial && (ctrl == InputControl(flp_InputControls, ["ID"]) || ctrl == InputControl(flp_InputControls, ["OD"]) || ctrl == InputControl(flp_InputControls, new[] { "Wall" })))
+                    //    continue;
 
                     if (ctrl is IMandatoryControl isMandatoryControl)
                         if (isMandatoryControl.IsMandatory == false)
@@ -115,16 +118,11 @@ namespace DigitalProductionProgram.Measure
         {
             get
             {
-                if (InputControl(flp_InputControls, new[] { "Position" }).Text == "0")
-                {
-                    InfoText.Show(Properties.Resources.measureprotocol_Info_7, CustomColors.InfoText_Color.Bad, "Warning", this);
-                    ControlValidator.SoftBlink(InputControl(flp_InputControls, new[] { "Position" }), CustomColors.Warning_Back, CustomColors.Warning_Front, 200);
-                    return false;
-                }
-                if (string.IsNullOrEmpty(InputControl(flp_InputControls, new[] { "Length" }).Text) || InputControl(flp_InputControls, new[] { "Length" }).Text == "N/A")
+                var lengthDescriptionId = Load_DescriptionId("Length");
+                if (string.IsNullOrEmpty(InputControl(flp_InputControls, [lengthDescriptionId]).Text) || InputControl(flp_InputControls, [lengthDescriptionId]).Text == "N/A")
                 {
                     InfoText.Show(Properties.Resources.measureprotocol_Info_8, CustomColors.InfoText_Color.Bad, "Warning", this);
-                    ControlValidator.SoftBlink(InputControl(flp_InputControls, new[] { "Length" }), CustomColors.Warning_Back, CustomColors.Warning_Front, 200);
+                    ControlValidator.SoftBlink(InputControl(flp_InputControls, [lengthDescriptionId]), CustomColors.Warning_Back, CustomColors.Warning_Front, 200);
                     return false;
                 }
 
@@ -142,13 +140,25 @@ namespace DigitalProductionProgram.Measure
             }
         }
         private bool IsTransferInEditMode;
+        //public static void LoadDescriptionMap(Func<List<(int DescriptionId, string Description)>> fetcher)
+        //{
+        //    _codeNameToDescriptionId = fetcher()
+        //        .Where(x => !string.IsNullOrWhiteSpace(x.Description))
+        //        .GroupBy(x => x.Description) // skydd mot duplicates
+        //        .ToDictionary(
+        //            g => g.Key,
+        //            g => g.First().DescriptionId
+        //        );
+        //}
+        
 
         public Measurement_Protocol()
         {
             Activity.Start();
             Calculate.Reset_Values();
             Part.SetPartNrSpecial("Spolning Special Mätprotokoll");
-
+            DescriptionMap.LoadDescriptionMap(); 
+            //bagDescriptionId = Load_DescriptionId("Bag");
             SortingOrder = "ASC";
             if (CheckAuthority.IsWorkoperationAuthorized(CheckAuthority.TemplateWorkoperation.SortMeasurementsDESC))
                 SortingOrder = "DESC";
@@ -321,9 +331,8 @@ namespace DigitalProductionProgram.Measure
                 using var reader = cmd.ExecuteReader(CommandBehavior.SequentialAccess);
                 while (reader.Read())
                 {
-                    rowsBuffer.Add(new object[]
-                    {
-                reader["Parameter_UserText"],
+                    rowsBuffer.Add([
+                        reader["Parameter_UserText"],
                 reader["Parameter_Monitor"],
                 reader["Value"],
                 reader["TextValue"],
@@ -338,7 +347,7 @@ namespace DigitalProductionProgram.Measure
                 reader["Decimals"],
                 reader["DataType"],
                 reader["ControlType"]
-                    });
+                    ]);
                 }
             });
 
@@ -396,33 +405,22 @@ namespace DigitalProductionProgram.Measure
                     var date = DateTime.TryParse(rowObj[5]?.ToString(), out var dt) ? dt : DateTime.MinValue;
                     var formattedDate = date.ToString($"{dateTimeFormat.ShortDatePattern} {dateTimeFormat.ShortTimePattern}", CultureInfo.CurrentCulture);
 
-                    var columnsByTag = dgv_Measurements.Columns
+                    // 🔹 Bygg dictionary för systemkolumner EN gång
+                    var columnsByName = dgv_Measurements.Columns
                         .Cast<DataGridViewColumn>()
-                        .Where(c => !string.IsNullOrWhiteSpace(c.Tag?.ToString()))
-                        .ToDictionary(c => c.Tag.ToString(), c => c);
+                        .Where(c => !string.IsNullOrWhiteSpace(c.Name))
+                        .ToDictionary(c => c.Name, c => c);
 
-                    SetCell("Date", formattedDate);
-                    SetCell("ErrorCode", rowObj[7]);
-                    SetCell("AnstNr", rowObj[8]);
-                    SetCell("Sign", rowObj[9]);
-                    SetCell("Discarded", rowObj[6]);
-                    SetCell("TempID", tempId);
-                    //var errorCodeColumn = dgv_Measurements.Columns.Cast<DataGridViewColumn>().First(c => (string)c.Tag == "ErrorCode");
-                    //Add_Text_DatagridCell(currentRowIndex, currentRow.Cells[errorCodeColumn.Index], rowObj[7]?.ToString(), isDiscarded);
-                    //var anstNrColumn = dgv_Measurements.Columns.Cast<DataGridViewColumn>().First(c => (string)c.Tag == "AnstNr");
-                    //Add_Text_DatagridCell(currentRowIndex, currentRow.Cells[anstNrColumn.Index], rowObj[8]?.ToString(), isDiscarded);
-                    //var signColumn = dgv_Measurements.Columns.Cast<DataGridViewColumn>().First(c => (string)c.Tag == "Sign");
-                    //Add_Text_DatagridCell(currentRowIndex, currentRow.Cells[signColumn.Index], rowObj[9]?.ToString(), isDiscarded);
-                    
-                    //var discardedColumn = dgv_Measurements.Columns.Cast<DataGridViewColumn>().First(c => (string)c.Tag == "Discarded");
-                    //Add_Text_DatagridCell(currentRowIndex, currentRow.Cells[discardedColumn.Index], rowObj[6]?.ToString(), isDiscarded);
-                    
-                    //var tempIdColumn = dgv_Measurements.Columns.Cast<DataGridViewColumn>().First(c => (string)c.Tag == "TempID");
-                    //Add_Text_DatagridCell(currentRowIndex, currentRow.Cells[tempIdColumn.Index], tempId.ToString(), isDiscarded);
-                    
-                    void SetCell(string tag, object value)
+                    SetSystemCell("Date", formattedDate);
+                    SetSystemCell("ErrorCode", rowObj[7]);
+                    SetSystemCell("AnstNr", rowObj[8]);
+                    SetSystemCell("Sign", rowObj[9]);
+                    SetSystemCell("Discarded", rowObj[6]);
+                    SetSystemCell("TempID", tempId);
+
+                    void SetSystemCell(string name, object value)
                     {
-                        if (!columnsByTag.TryGetValue(tag, out var col))
+                        if (!columnsByName.TryGetValue(name, out var col))
                             return;
 
                         Add_Text_DatagridCell(
@@ -444,7 +442,23 @@ namespace DigitalProductionProgram.Measure
             dgv_Measurements.Visible = true;
             dgv_Measurements.ResumeLayout();
         }
-       
+
+        private int Load_DescriptionId(string CodeName)
+        {
+            return Database.ExecuteSafe(con =>
+            {
+                using var cmd = new SqlCommand(@"
+                    SELECT TOP 1 ID
+                    FROM MeasureProtocol.Description
+                    WHERE CodeName = @codename", con);
+                cmd.Parameters.AddWithValue("@codename", CodeName);
+                var result = cmd.ExecuteScalar();
+
+                if (result != null && int.TryParse(result.ToString(), out var id))
+                    return id;
+                return 0;
+            });
+        }
 
         private void Count_Measurements()
         {
@@ -457,10 +471,10 @@ namespace DigitalProductionProgram.Measure
                     continue;
 
                 total++;
-                var columnsByTag = dgv_Measurements.Columns.Cast<DataGridViewColumn>().Where(c => !string.IsNullOrWhiteSpace(c.Tag?.ToString())).ToDictionary(c => c.Tag.ToString(), c => c);
-                if (columnsByTag.TryGetValue("Discarded", out var col))
+               // var columnsByTag = dgv_Measurements.Columns.Cast<DataGridViewColumn>().Where(c => !string.IsNullOrWhiteSpace(c.Tag?.ToString())).ToDictionary(c => c.Tag.ToString(), c => c);
+               // if (columnsByTag.TryGetValue("Discarded", out var col))
                 {
-                    var cell = row.Cells[col.Index];
+                    var cell = row.Cells["Discarded"];
 
                     if (cell?.Value != null && cell.Value.ToString().Equals("True", StringComparison.OrdinalIgnoreCase))
                         discarded++;
@@ -614,8 +628,8 @@ namespace DigitalProductionProgram.Measure
             Activity.Start();
             string loginfo;
             var bag = "0";
-            if (InputControl(flp_InputControls, new[] { "Bag" }) != null)
-                bag = InputControl(flp_InputControls, new[] { "Bag" }).Text;
+            if (InputControl(flp_InputControls, [DescriptionMap.GetId("Bag")]) != null)
+                bag = InputControl(flp_InputControls, [DescriptionMap.GetId("Bag")])?.Text;
 
             if (IsOkSaveData == false)
                 return;
@@ -696,9 +710,7 @@ namespace DigitalProductionProgram.Measure
 
                 var errorCode = chooseErrorCode.ErrorCode.Substring(0, 3);
 
-                string tempId = null;
-                if (columnsByTag.TryGetValue("TempID", out var col))
-                    tempId = dgv_Measurements.Rows[row].Cells[col.Index].Value?.ToString();
+                string tempId = dgv_Measurements.Rows[row].Cells["TempID"].Value?.ToString();
                 Database.ExecuteSafe(con =>
                 {
                     const string query = @"
@@ -717,7 +729,9 @@ namespace DigitalProductionProgram.Measure
                 });
 
                 var comment = $"{Properties.Resources.discardedMeasurement_Info_1} {errorCode} - {chooseErrorCode.Comment}";
-                var bagColumn = dgv_Measurements.Columns.Cast<DataGridViewColumn>().First(c => (string)c.Tag == "Bag");
+                var bagColumn = dgv_Measurements.Columns
+                    .Cast<DataGridViewColumn>()
+                    .FirstOrDefault(c => c.Tag is int id && id == DescriptionMap.GetId("Bag"));
 
                 var bag = dgv_Measurements.Rows[row].Cells[bagColumn.Index].Value?.ToString();
                 Extra_Comments.SaveExtraComment(bag, comment, Person.EmployeeNr, true, Extra_Comments.Next_Row_ExtraComments);
@@ -800,13 +814,19 @@ namespace DigitalProductionProgram.Measure
         {
             for (var i = 0; i < dgv_Measurements.Columns.Count - 5; i++)
             {
-                string name = dgv_Measurements.Columns[i].Tag as string;
+                var col = dgv_Measurements.Columns[i];
 
-                if (name == null)
-                    continue; // ingen tag = inget att hämta
-                var ctrl = InputControl(flp_InputControls, [name]);
+                if (col.Tag is not int descriptionId)
+                    continue;
+
+                var ctrl = InputControl(flp_InputControls, [descriptionId]);
+                if (ctrl == null)
+                    continue;
+
+                var value = dgv_Measurements.Rows[row].Cells[i].Value?.ToString();
+
                 if (ctrl is TextBox || ctrl is NumericUpDown)
-                    ctrl.Text = dgv_Measurements.Rows[row].Cells[i].Value.ToString();
+                    ctrl.Text = value;
             }
         }
         private void SortMeasurementSpool(object sender, DataGridViewCellMouseEventArgs e)
@@ -1029,9 +1049,9 @@ namespace DigitalProductionProgram.Measure
             //CodeName "ID", "OD", m.m. måste matcha namnet som finns i Databastabellen MeasureProtocol.Description
             if (CheckAuthority.IsWorkoperationAuthorized(CheckAuthority.TemplateWorkoperation.ManufacturesHeatShrink))
             {
-                InputControl(flp_InputControls, new[] { "Exp ID" }).Text = $"{Calculate.Measurement_1.ID_1Layer:0.000}";
-                InputControl(flp_InputControls, new[] { "Exp OD" }).Text = $"{Calculate.Measurement_1.OD_1Layer:0.000}";
-                InputControl(flp_InputControls, new[] { "Exp Wall" }).Text = $"{Calculate.Measurement_1.Wall_1Layer:0.000}";
+                InputControl(flp_InputControls, [DescriptionMap.GetId("Exp ID")]).Text = $"{Calculate.Measurement_1.ID_1Layer:0.000}";
+                InputControl(flp_InputControls, [DescriptionMap.GetId("Exp OD")]).Text = $"{Calculate.Measurement_1.OD_1Layer:0.000}";
+                InputControl(flp_InputControls, [DescriptionMap.GetId("Exp Wall")]).Text = $"{Calculate.Measurement_1.Wall_1Layer:0.000}";
                 // InputControl(flp_InputControls, "Exp Concentricity").Text = $"{Calculate.Conc:0}";
             }
             else
@@ -1041,23 +1061,23 @@ namespace DigitalProductionProgram.Measure
                     case 0:
                     case 1:
 
-                        InputControl(flp_InputControls, new[] { "ID", "Main Body ID" }).Text = $"{Calculate.Measurement_1.ID_1Layer:0.000}";
-                        InputControl(flp_InputControls, new[] { "OD", "Main Body OD" }).Text = $"{Calculate.Measurement_1.OD_1Layer:0.000}";
-                        InputControl(flp_InputControls, new[] { "Wall" }).Text = $"{Calculate.Measurement_1.Wall_1Layer:0.000}";
-                        InputControl(flp_InputControls, new[] { "Ovality" }).Text = $"{Calculate.Measurement_1.Oval_1Layer:0.000}";
-                        InputControl(flp_InputControls, new[] { "Runout" }).Text = $"{Calculate.Measurement_1.RunOut_1Layer:0.000}";
+                        InputControl(flp_InputControls, [DescriptionMap.GetId("ID"), DescriptionMap.GetId("Main Body ID")]).Text = $"{Calculate.Measurement_1.ID_1Layer:0.000}";
+                        InputControl(flp_InputControls, [DescriptionMap.GetId("OD"), DescriptionMap.GetId("Main Body OD")]).Text = $"{Calculate.Measurement_1.OD_1Layer:0.000}";
+                        InputControl(flp_InputControls, [DescriptionMap.GetId("Wall")]).Text = $"{Calculate.Measurement_1.Wall_1Layer:0.000}";
+                        InputControl(flp_InputControls, [DescriptionMap.GetId("Ovality")]).Text = $"{Calculate.Measurement_1.Oval_1Layer:0.000}";
+                        InputControl(flp_InputControls, [DescriptionMap.GetId("Runout")]).Text = $"{Calculate.Measurement_1.RunOut_1Layer:0.000}";
                         break;
                     case 2:
-                        InputControl(flp_InputControls, new[] { "ID", "Main Body ID" }).Text = $"{Calculate.Measurement_1.ID_2Layer:0.000}";
-                        InputControl(flp_InputControls, new[] { "OD", "Main Body OD" }).Text = $"{Calculate.Measurement_1.OD_2Layer:0.000}";
-                        InputControl(flp_InputControls, new[] { "Layer1OD" }).Text = $"{Calculate.Measurement_1.OD_2Layer_Layer1:0.000}";
-                        InputControl(flp_InputControls, new[] { "Wall" }).Text = $"{Calculate.Measurement_1.Wall_2Layer_Layer1 + Calculate.Measurement_1.Wall_2Layer_Layer2:0.000}";
-                        InputControl(flp_InputControls, new[] { "WallLayer1" }).Text = $"{Calculate.Measurement_1.Wall_2Layer_Layer1:0.000}";
-                        InputControl(flp_InputControls, new[] { "WallLayer2" }).Text = $"{Calculate.Measurement_1.Wall_2Layer_Layer2:0.000}";
-                        InputControl(flp_InputControls, new[] { "Ovality" }).Text = $"{Calculate.Measurement_1.Oval_2Layer:0.000}";
-                        InputControl(flp_InputControls, new[] { "Runout" }).Text = $"{Calculate.Measurement_1.RunOut_2Layer:0.000}";
-                        InputControl(flp_InputControls, new[] { "RunoutLayer1" }).Text = $"{Calculate.Measurement_1.RunOut_2Layer_Layer1:0.000}";
-                        InputControl(flp_InputControls, new[] { "RunoutLayer2" }).Text = $"{Calculate.Measurement_1.RunOut_2Layer_Layer2:0.000}";
+                        InputControl(flp_InputControls, [DescriptionMap.GetId("ID"), DescriptionMap.GetId("Main Body ID")]).Text = $"{Calculate.Measurement_1.ID_2Layer:0.000}";
+                        InputControl(flp_InputControls, [DescriptionMap.GetId("OD"), DescriptionMap.GetId("Main Body OD")]).Text = $"{Calculate.Measurement_1.OD_2Layer:0.000}";
+                        InputControl(flp_InputControls, [DescriptionMap.GetId("Layer1OD")]).Text = $"{Calculate.Measurement_1.OD_2Layer_Layer1:0.000}";
+                        InputControl(flp_InputControls, [DescriptionMap.GetId("Wall")]).Text = $"{Calculate.Measurement_1.Wall_2Layer_Layer1 + Calculate.Measurement_1.Wall_2Layer_Layer2:0.000}";
+                        InputControl(flp_InputControls, [DescriptionMap.GetId("WallLayer1")]).Text = $"{Calculate.Measurement_1.Wall_2Layer_Layer1:0.000}";
+                        InputControl(flp_InputControls, [DescriptionMap.GetId("WallLayer2")]).Text = $"{Calculate.Measurement_1.Wall_2Layer_Layer2:0.000}";
+                        InputControl(flp_InputControls, [DescriptionMap.GetId("Ovality")]).Text = $"{Calculate.Measurement_1.Oval_2Layer:0.000}";
+                        InputControl(flp_InputControls, [DescriptionMap.GetId("Runout")]).Text = $"{Calculate.Measurement_1.RunOut_2Layer:0.000}";
+                        InputControl(flp_InputControls, [DescriptionMap.GetId("RunoutLayer1")]).Text = $"{Calculate.Measurement_1.RunOut_2Layer_Layer1:0.000}";
+                        InputControl(flp_InputControls, [DescriptionMap.GetId("RunoutLayer2")]).Text = $"{Calculate.Measurement_1.RunOut_2Layer_Layer2:0.000}";
                         break;
                 }
             }
@@ -1076,9 +1096,9 @@ namespace DigitalProductionProgram.Measure
             Calculate_xyValues_Measurement_2(dgv, row);
             Calculate_Walls(dgv_RecWalls, typeof(Calculate.Measurement_2));
 
-            InputControl(flp_InputControls, new[] { "Rec ID" }).Text = $"{Calculate.Measurement_2.ID:0.000}";
-            InputControl(flp_InputControls, new[] { "Rec OD" }).Text = $"{Calculate.Measurement_2.OD:0.000}";
-            InputControl(flp_InputControls, new[] { "Rec Wall" }).Text = $"{Calculate.Measurement_2.Wall:0.000}";
+            InputControl(flp_InputControls, [DescriptionMap.GetId("Rec ID")]).Text = $"{Calculate.Measurement_2.ID:0.000}";
+            InputControl(flp_InputControls, [DescriptionMap.GetId("Rec OD")]).Text = $"{Calculate.Measurement_2.OD:0.000}";
+            InputControl(flp_InputControls, [DescriptionMap.GetId("Rec Wall")]).Text = $"{Calculate.Measurement_2.Wall:0.000}";
 
             if (IsOkDrawTube)
                 Task.Factory.StartNew(() => controls.Draw_CrossSectionTube(this));
@@ -1097,7 +1117,7 @@ namespace DigitalProductionProgram.Measure
         }
         public void Exp_ID_MouseUp(object? sender, MouseEventArgs e)
         {
-            var ctrl = InputControl(flp_InputControls, new[] { "Exp ID" });
+            var ctrl = InputControl(flp_InputControls, [DescriptionMap.GetId("Exp ID")]);
             if (e.Button == MouseButtons.Right)
             {
                 menu_Beräkna.Show(ctrl, e.X, e.Y);
@@ -1183,39 +1203,39 @@ namespace DigitalProductionProgram.Measure
         {
             var item = e.ClickedItem;
             _ = Activity.Stop(item.Text);
-            double.TryParse(InputControl(flp_InputControls, new[] { "Exp ID" }).Text, out var ExpID);
-            double.TryParse(InputControl(flp_InputControls, new[] { "Exp OD" }).Text, out var ExpOD);
-            double.TryParse(InputControl(flp_InputControls, new[] { "Exp Wall" }).Text, out var ExpWall);
-            double.TryParse(InputControl(flp_InputControls, new[] { "Rec ID" }).Text, out var RecID);
-            double.TryParse(InputControl(flp_InputControls, new[] { "Rec OD" }).Text, out var RecOD);
-            double.TryParse(InputControl(flp_InputControls, new[] { "Rec Wall" }).Text, out var RecWall);
+            double.TryParse(InputControl(flp_InputControls, [DescriptionMap.GetId("Exp ID")])?.Text, out var ExpID);
+            double.TryParse(InputControl(flp_InputControls, [DescriptionMap.GetId("Exp OD")])?.Text, out var ExpOD);
+            double.TryParse(InputControl(flp_InputControls, [DescriptionMap.GetId("Exp Wall")])?.Text, out var ExpWall);
+            double.TryParse(InputControl(flp_InputControls, [DescriptionMap.GetId("Rec ID")])?.Text, out var RecID);
+            double.TryParse(InputControl(flp_InputControls, [DescriptionMap.GetId("Rec OD")])?.Text, out var RecOD);
+            double.TryParse(InputControl(flp_InputControls, [DescriptionMap.GetId("Rec Wall")])?.Text, out var RecWall);
 
 
             switch (item.Text)
             {
                 case "Calculate Exp. ID with Wall and OD":
                     if (ExpOD > 0 && ExpWall > 0)
-                        InputControl(flp_InputControls, new[] { "Exp ID" }).Text = $"{ExpOD - (ExpWall + ExpWall)}";
+                        InputControl(flp_InputControls, [DescriptionMap.GetId("Exp ID")]).Text = $"{ExpOD - (ExpWall + ExpWall)}";
                     return;
                 case "Calculate Exp. OD with Wall and ID":
                     if (ExpID > 0 && ExpWall > 0)
-                        InputControl(flp_InputControls, new[] { "Exp OD" }).Text = $"{ExpID + ExpWall + ExpWall}";
+                        InputControl(flp_InputControls, [DescriptionMap.GetId("Exp OD")]).Text = $"{ExpID + ExpWall + ExpWall}";
                     return;
                 case "Calculate Exp. Wall with ID and OD":
                     if (ExpOD > 0 && ExpID > 0)
-                        InputControl(flp_InputControls, new[] { "Exp Wall" }).Text = $"{(ExpOD - ExpID) / 2}";
+                        InputControl(flp_InputControls, [DescriptionMap.GetId("Exp Wall")]).Text = $"{(ExpOD - ExpID) / 2}";
                     return;
                 case "Calculate Rec. ID with Wall and OD":
                     if (RecOD > 0 && RecWall > 0)
-                        InputControl(flp_InputControls, new[] { "Rec ID" }).Text = $"{RecOD - (RecWall + RecWall)}";
+                        InputControl(flp_InputControls, [DescriptionMap.GetId("Rec ID")]).Text = $"{RecOD - (RecWall + RecWall)}";
                     return;
                 case "Calculate Rec. OD with Wall and ID":
                     if (RecID > 0 && RecWall > 0)
-                        InputControl(flp_InputControls, new[] { "Rec OD" }).Text = $"{RecID + RecWall + RecWall}";
+                        InputControl(flp_InputControls, [DescriptionMap.GetId("Rec OD")]).Text = $"{RecID + RecWall + RecWall}";
                     return;
                 case "Calculate Rec. Wall with ID and OD":
                     if (RecOD > 0 && RecID > 0)
-                        InputControl(flp_InputControls, new[] { "Rec Wall" }).Text = $"{(RecOD - RecID) / 2}";
+                        InputControl(flp_InputControls, [DescriptionMap.GetId("Rec Wall")]).Text = $"{(RecOD - RecID) / 2}";
                     return;
             }
 
@@ -1349,6 +1369,49 @@ namespace DigitalProductionProgram.Measure
         }
     }
 
+    public static class DescriptionMap
+    {
+        private static Dictionary<string, int> _map;
 
+        public static void LoadDescriptionMap()
+        {
+           // _map.Clear();
+           _map = new Dictionary<string, int>();
+            Database.ExecuteSafe(con =>
+            {
+                const string query = "SELECT Id, CodeName FROM MeasureProtocol.Description";
+                using var cmd = new SqlCommand(query, con);
+                {
+                    using var reader = cmd.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        int.TryParse(reader["Id"].ToString(), out  int id);
+                        string codeName = reader.GetString(1);
+
+                        if (!string.IsNullOrWhiteSpace(codeName))
+                            _map[codeName] = id;
+                    }
+                }
+            });
+        }
+        public static bool TryGetId(string codeName, out int id)
+        {
+            if (_map == null)
+            {
+                id = 0;
+                return false;
+            }
+
+            return _map.TryGetValue(codeName, out id);
+        }
+        public static int GetId(string codeName)
+            => _map[codeName];
+    }
+
+    public static class ParameterMaps
+    {
+        public static Dictionary<int, string> IdToName = new();
+        public static Dictionary<string, int> NameToId = new();
+    }
 
 }

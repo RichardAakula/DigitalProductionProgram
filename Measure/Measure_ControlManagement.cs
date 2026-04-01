@@ -182,7 +182,7 @@ namespace DigitalProductionProgram.Measure
         }
         public static double? GetValue(Measurement_Protocol mp, string CodeName)
         {
-            var ctrl = InputControl(mp.flp_InputControls, new[] { CodeName });
+            var ctrl = InputControl(mp.flp_InputControls, new[] { DescriptionMap.GetId(CodeName) });
             if (ctrl is null)
                 return null;
             if (double.TryParse(ctrl.Text, out var value))
@@ -275,16 +275,16 @@ namespace DigitalProductionProgram.Measure
         //    return bag;
         //}
 
-        public static Control? InputControl(FlowLayoutPanel flp, string[] CodeName)
+        public static Control? InputControl(FlowLayoutPanel flp, int[] descriptionIds)
         {
-            foreach (var code in CodeName)
+            foreach (var id in descriptionIds)
             {
                 foreach (Control ctrl in flp.Controls)
                 {
-                    if (ctrl is InputTextBox tb && tb.Monitor_Name == code)
+                    if (ctrl is InputTextBox tb && tb.DescriptionID == id)
                         return tb;
 
-                    if (ctrl is InputNumericUpDown nu && nu.Monitor_Name == code)
+                    if (ctrl is InputNumericUpDown nu && nu.DescriptionID == id)
                         return nu;
                 }
             }
@@ -714,36 +714,36 @@ namespace DigitalProductionProgram.Measure
                         int.TryParse(reader["Decimals"].ToString(), out var decimals);
                         int.TryParse(reader["MaxChars"].ToString(), out var maxChars);
                         var userText = reader["Parameter_UserText"].ToString();
-                        var name = reader["Parameter_Monitor"].ToString();
+                        var parameterMonitor = reader["Parameter_Monitor"].ToString();
                         var controlType = reader["ControlType"].ToString();
                         int.TryParse(reader["DataType"].ToString(), out int dataType);
-                        var columnName = string.IsNullOrEmpty(name) ? userText : name;
+                        var columnName = string.IsNullOrEmpty(parameterMonitor) ? userText : parameterMonitor;
                         var dataTypeName = Database.datatype.FirstOrDefault(d => d.ID == dataType)?.Name ?? "Unknown";
                         //columnName += columnIndex; // Ensure unique column names by appending the column index
-                        var tag = name;     //Tag is only used to know which controls that correspond to "Bag"
+                       // var tag = parameterMonitor;     //Tag is only used to know which controls that correspond to "Bag"
                         //name += columnIndex;
-                        Add_Column_DatagridView(mp.dgv_Measurements, columnName, tag, userText, columnIndex, width);
+                        Add_Column_DatagridView(mp.dgv_Measurements, name:userText, tag:descriptionID, userText, columnIndex, width);
                         Add_Header(mp.flp_Headers, reader["Parameter_UserText"].ToString(), isMandatory, columnIndex, width);
 
                         switch (controlType)
                         {
                             case "NumericUpDown":
-                                Add_Input_NumUpDown(mp.flp_InputControls, dataType, columnIndex, increment, width, descriptionID, name, isMandatory, isOkEdit);
+                                Add_Input_NumUpDown(mp.flp_InputControls, dataType, columnIndex, increment, width, descriptionID, parameterMonitor, isMandatory, isOkEdit);
                                 break;
                             case "TextBox":
                                 switch (dataTypeName)
                                 {
                                     case "Numeric":
-                                        Add_Input_Numeric(mp, mp.flp_InputControls, dataType, columnIndex, width, descriptionID, maxChars, decimals, formula, name, isMandatory, isOkEdit);
+                                        Add_Input_Numeric(mp, mp.flp_InputControls, dataType, columnIndex, width, descriptionID, maxChars, decimals, formula, parameterMonitor, isMandatory, isOkEdit);
                                         break;
                                     case "Text":
-                                        Add_Input_Text(mp.flp_InputControls, dataType, columnIndex, width, descriptionID, name, isList, isMandatory, isOkEdit);
+                                        Add_Input_Text(mp.flp_InputControls, dataType, columnIndex, width, descriptionID, parameterMonitor, isList, isMandatory, isOkEdit);
                                         break;
                                 }
 
                                 break;
                             case "CheckBox":
-                                Add_Input_CheckBox(mp.flp_InputControls, dataType, columnIndex, width, descriptionID, name, isMandatory);
+                                Add_Input_CheckBox(mp.flp_InputControls, dataType, columnIndex, width, descriptionID, parameterMonitor, isMandatory);
                                 break;
                         }
 
@@ -756,27 +756,27 @@ namespace DigitalProductionProgram.Measure
                     Add_Header(mp.flp_Headers, "Sign", true, columnIndex + 4, 40);
                     Add_Label(mp.flp_InputControls, Person.Sign, columnIndex + 4, 40);
 
-                    Add_Column_DatagridView(mp.dgv_Measurements, "Date", "Date",Properties.Resources.dateTime, columnIndex + 1, 160);
+                    Add_Column_DatagridView(mp.dgv_Measurements, "Date", tag:null,Properties.Resources.dateTime, columnIndex + 1, 160);
                     TotalWidth += 161;
-                    Add_Column_DatagridView(mp.dgv_Measurements, "ErrorCode", "ErrorCode", Properties.Resources.errorCode, columnIndex + 2, 55);
+                    Add_Column_DatagridView(mp.dgv_Measurements, "ErrorCode", tag:null, Properties.Resources.errorCode, columnIndex + 2, 55);
                     TotalWidth += 55;
-                    Add_Column_DatagridView(mp.dgv_Measurements, "AnstNr", "AnstNr", Properties.Resources.empNr, columnIndex + 3, 70);
+                    Add_Column_DatagridView(mp.dgv_Measurements, "AnstNr", tag:null, Properties.Resources.empNr, columnIndex + 3, 70);
                     TotalWidth += 70;
-                    Add_Column_DatagridView(mp.dgv_Measurements, "Sign", "Sign","Sign", columnIndex + 4, 50);
+                    Add_Column_DatagridView(mp.dgv_Measurements, "Sign", tag:null,"Sign", columnIndex + 4, 50);
                     TotalWidth += 51;
-                    Add_Column_DatagridView(mp.dgv_Measurements, "Discarded", "Discarded","Discarded", columnIndex + 5, 0);
-                    Add_Column_DatagridView(mp.dgv_Measurements, "TempID", "TempID","TempID", columnIndex + 6, 0);
+                    Add_Column_DatagridView(mp.dgv_Measurements, "Discarded", tag:null,"Discarded", columnIndex + 5, 0);
+                    Add_Column_DatagridView(mp.dgv_Measurements, "TempID", tag:null,"TempID", columnIndex + 6, 0);
                 });
                 //22pixlar är extra space som behövs till Scrollbar
                 mp.Width = TotalWidth + 22;
                 mp.pb_CrossSectionTube.Left = mp.tlp_Help_InputData_1.Right;
             }
 
-            private static void Add_Column_DatagridView(DataGridView dgv, string name, string? tag, string? headerText, int columnIndex, int width)
+            private static void Add_Column_DatagridView(DataGridView dgv, string name, int? tag, string? headerText, int columnIndex, int width)
             {
-                name += columnIndex; // Ensure unique column names by appending the column index
                 dgv.Columns.Add(name, headerText);
-                dgv.Columns[name].Tag = tag; //columnIndex var det tidigare
+                if (tag != null)
+                    dgv.Columns[name].Tag = tag; //columnIndex var det tidigare
                 dgv.Columns[name].Width = width;
                 dgv.Columns[name].SortMode = DataGridViewColumnSortMode.NotSortable;
                 if (width == 0)
@@ -872,6 +872,7 @@ namespace DigitalProductionProgram.Measure
                     Font = new Font("Courier New", 10),
                     Formula = formula,
                     Height = 22,
+                    
                     IsMandatory = isMandatory,
                     IsOkEdit = isOkEdit,
                     Margin = new Padding(1, 1, 0, 0),
@@ -951,50 +952,97 @@ namespace DigitalProductionProgram.Measure
         private static class Formula
         {
             public static bool Is_ClearingData;
-            private static Dictionary<string, object> Parameters(string formula, FlowLayoutPanel flp, DataGridView[] dgvs)
+            //private static Dictionary<string, object> Parameters(string formula, FlowLayoutPanel flp, DataGridView[] dgvs)
+            //{
+            //    var parameters = new Dictionary<string, object>();
+
+            //    var matches = Regex.Matches(formula, @"\b[A-Za-z_][A-Za-z0-9_]*\b");
+
+            //    var paramIds = matches
+            //        .Select(m => m.Value)
+            //        .Select(v => new { Name = v, HasId = DescriptionMap.TryGetId(v, out var id), Id = id })
+            //        .Where(x => x.HasId)
+            //        .Select(x => x.Id)
+            //        .Distinct()
+            //        .ToList();
+
+            //    // TextBoxes
+            //    foreach (var id in paramIds)
+            //    {
+            //        var textBox = flp.Controls
+            //            .OfType<Measure_ControlManagement.InputTextBox>()
+            //            .FirstOrDefault(tb => tb.DescriptionID == id);
+
+            //        if (textBox != null && double.TryParse(textBox.Text, out var value))
+            //        {
+            //            if (value > 0)
+            //                parameters[id.ToString()] = value;
+            //        }
+            //    }
+
+            //    // DataGridViews
+            //    foreach (var dgv in dgvs)
+            //    {
+            //        foreach (DataGridViewRow row in dgv.Rows)
+            //        {
+            //            if (row.Cells[0].Value == null)
+            //                continue;
+
+            //            if (!int.TryParse(row.Cells[0].Value.ToString(), out var id))
+            //                continue;
+
+            //            if (!paramIds.Contains(id))
+            //                continue;
+
+            //            var valueStr = row.Cells[1].Value?.ToString();
+
+            //            if (double.TryParse(valueStr, out var value))
+            //            {
+            //                parameters[id.ToString()] = value;
+            //            }
+            //        }
+            //    }
+
+            //    return parameters;
+            //}
+            private static Dictionary<int, object> Parameters(FlowLayoutPanel flp, DataGridView[] dgvs)
             {
-                var parameters = new Dictionary<string, object>();
-                var matches = Regex.Matches(formula, @"\b[A-Za-z_][A-Za-z0-9_]*\b");
+                var parameters = new Dictionary<int, object>();
 
-                // Fetch values from textboxes
-                foreach (Match match in matches)
+                // TEXTBOXES
+                foreach (var tb in flp.Controls.OfType<InputTextBox>())
                 {
-                    var paramName = match.Value;
-                    var textBox = flp.Controls.OfType<Measure_ControlManagement.InputTextBox>().FirstOrDefault(tb => tb.Monitor_Name == paramName);
-
-                    if (textBox != null && double.TryParse(textBox.Text, out var value))
+                    if (tb.DescriptionID is int id && double.TryParse(tb.Text, out var value))
                     {
-
-                        if (value > 0)
-                            parameters[paramName] = value;
+                        parameters[id] = value;
                     }
                 }
 
-                // Fetch values from DataGridView
-                foreach (Match match in matches)
+                // DATA GRIDS
+                foreach (var dgv in dgvs)
                 {
-                    var paramName = match.Value;
-                    foreach (var dgv in dgvs)
+                    foreach (DataGridViewRow row in dgv.Rows)
                     {
-                        foreach (DataGridViewRow row in dgv.Rows)
+                        if (row.Tag is int id && row.Cells[1].Value != null)
                         {
-                            if (paramName == row.Cells[0].Value?.ToString() && row.Cells[1].Value != null && !string.IsNullOrEmpty(row.Cells[1].Value?.ToString()))
+                            if (double.TryParse(row.Cells[1].Value.ToString(), out var value))
                             {
-                                if (double.TryParse(row.Cells[1].Value?.ToString(), out var value))
-                                {
-                                    parameters[paramName] = value;
-                                }
+                                parameters[id] = value;
                             }
-
                         }
                     }
                 }
+
                 return parameters;
             }
             public static void CalculateFormula(FlowLayoutPanel flp, int decimals, DataGridView[] dgv_Walls)
             {
                 if (Is_ClearingData)
                     return;
+
+                // 1. Hämta alla parametrar EN gång (ID-baserat internt)
+                var parameters = Parameters(flp, dgv_Walls);
+
                 foreach (var input_tb in flp.Controls.OfType<InputTextBox>())
                 {
                     var formula = input_tb.Formula?.Trim();
@@ -1005,31 +1053,85 @@ namespace DigitalProductionProgram.Measure
                     // Remove leading '=' if present
                     formula = Regex.Replace(formula, @"^=+", "");
 
-                    // Extract variable names from formula
-                    var parameters = Parameters(formula, flp, dgv_Walls);
-                    if (parameters.Count == 0)
-                        return;
-                    // Evaluate formula using NCalc
                     try
                     {
                         var expression = new NCalc.Expression(formula);
+
+                        // 2. Bind parameters (ID -> Name conversion happens here)
                         foreach (var param in parameters)
                         {
-                            expression.Parameters[param.Key] = param.Value;
+                            // param.Key = DescriptionId (int)
+                            // param.Value = numeric value
+
+                            if (!ParameterMaps.IdToName.TryGetValue(param.Key, out var name))
+                                continue;
+
+                            expression.Parameters[name] = param.Value;
                         }
 
+                        if (parameters.Count == 0)
+                            return;
+                        // 3. Evaluate
                         var result = expression.Evaluate();
 
-                        input_tb.Text = double.TryParse(result.ToString(), out var numericResult)
-                            ? Math.Round(numericResult, decimals).ToString(CultureInfo.CurrentCulture)
-                            : "N/A";
+                        if (double.TryParse(result?.ToString(), out var numericResult))
+                        {
+                            input_tb.Text =
+                                Math.Round(numericResult, decimals)
+                                    .ToString(CultureInfo.CurrentCulture);
+                        }
+                        else
+                        {
+                            input_tb.Text = "N/A";
+                        }
                     }
-                    catch (Exception)
+                    catch
                     {
-                        //input_tb.Text = "NaN";
+                        // Fail silently per-field (inte döda hela UI-loop)
+                        input_tb.Text = "N/A";
                     }
                 }
             }
+            //public static void CalculateFormula(FlowLayoutPanel flp, int decimals, DataGridView[] dgv_Walls)
+            //{
+            //    if (Is_ClearingData)
+            //        return;
+            //    foreach (var input_tb in flp.Controls.OfType<InputTextBox>())
+            //    {
+            //        var formula = input_tb.Formula?.Trim();
+
+            //        if (string.IsNullOrWhiteSpace(formula))
+            //            continue;
+
+            //        // Remove leading '=' if present
+            //        formula = Regex.Replace(formula, @"^=+", "");
+
+            //        // Extract variable names from formula
+            //        //var parameters = Parameters(formula, flp, dgv_Walls);
+            //        var parameters = Parameters(flp, dgv_Walls);
+            //        if (parameters.Count == 0)
+            //            return;
+            //        // Evaluate formula using NCalc
+            //        try
+            //        {
+            //            var expression = new NCalc.Expression(formula);
+            //            foreach (var param in parameters)
+            //            {
+            //                expression.Parameters[param.Key] = param.Value;
+            //            }
+
+            //            var result = expression.Evaluate();
+
+            //            input_tb.Text = double.TryParse(result.ToString(), out var numericResult)
+            //                ? Math.Round(numericResult, decimals).ToString(CultureInfo.CurrentCulture)
+            //                : "N/A";
+            //        }
+            //        catch (Exception)
+            //        {
+            //            //input_tb.Text = "NaN";
+            //        }
+            //    }
+            //}
         }
     }
 }

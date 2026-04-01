@@ -56,10 +56,10 @@ namespace DigitalProductionProgram.Protocols.ExtraProtocols
                     const string query = @"
                         SELECT ISNULL(MAX(Row), 0) + 1 
                         FROM [Order].ExtraComments
-                        WHERE OrderID = @id";
+                        WHERE OrderID = @orderid";
 
                     using var cmd = new SqlCommand(query, con);
-                    ServerStatus.Add_Sql_Counter();
+                    cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                     var result = cmd.ExecuteScalar();
                     return Convert.ToInt32(result);
                 });

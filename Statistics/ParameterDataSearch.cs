@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Data;
 using System.Text;
+using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Övrigt;
 using Microsoft.Data.SqlClient;
@@ -9,6 +10,10 @@ namespace DigitalProductionProgram.Statistics
 {
     public sealed partial class ParameterDataSearch : Form
     {
+        private const int QueryTimeoutSeconds = 300;
+        private const int CountProgressPercent = 15;
+        private const int LoadStartProgressPercent = 25;
+        private const int LoadEndProgressPercent = 95;
         private List<string> allPartNumbers = [];
         private List<ParameterDefinition> allMeasureParameters = [];
         private List<ParameterDefinition> allProtocolParameters = [];
@@ -23,12 +28,15 @@ namespace DigitalProductionProgram.Statistics
         private readonly List<ParameterDefinition> selectedOrderParameters = [];
         private readonly List<string> selectedPrefabArticleNumbers = [];
         private readonly List<string> selectedPrefabNames = [];
+        private readonly CustomProgressBar loadingProgressBar = new();
+        private CancellationTokenSource? currentLoadCancellation;
 
         public ParameterDataSearch()
         {
             Log.Activity.Start();
             InitializeComponent();
             ConfigureGrid();
+            ConfigureInlineProgressBar();
             WireEvents();
             _ =Log.Activity.Stop("User open Analysis of Parameter Data");
         }
@@ -56,6 +64,7 @@ namespace DigitalProductionProgram.Statistics
             btn_RemovePrefabDescription.Click += (_, _) => RemoveSelectedTextValue(selectedPrefabNames, lb_SelectedPrefabDescription);
             btnFetchData.Click += BtnFetchData_Click;
             btn_ExportToCsv.Click += Btn_ExportToCsv_Click;
+            btn_StopSearch.Click += Btn_StopSearch_Click;
 
             cb_WorkOperation.SelectedIndexChanged += (_, _) => ApplyPartNumberFilter();
             tb_FilterPartNr.TextChanged += (_, _) => ApplyPartNumberFilter();
@@ -72,7 +81,6 @@ namespace DigitalProductionProgram.Statistics
             ConfigureSelectedListReordering(lb_SelectedPrefabPartNr, selectedPrefabArticleNumbers);
             ConfigureSelectedListReordering(lb_SelectedPrefabDescription, selectedPrefabNames);
         }
-
         private void ConfigureGrid()
         {
             dgv_Result.EnableHeadersVisualStyles = false;
@@ -83,8 +91,27 @@ namespace DigitalProductionProgram.Statistics
             dgv_Result.DefaultCellStyle.SelectionBackColor = Color.DarkSlateBlue;
             dgv_Result.DefaultCellStyle.SelectionForeColor = Color.White;
             dgv_Result.GridColor = Color.FromArgb(55, 55, 55);
+            btn_ExportToCsv.Enabled = false;
+            btn_StopSearch.Enabled = false;
         }
-
+        private void ConfigureInlineProgressBar()
+        {
+            loadingProgressBar.ConfigureForInlineHost();
+            loadingProgressBar.Visible = false;
+            flpActions.Controls.Add(loadingProgressBar);
+            loadingProgressBar.Show();
+        }
+        private void ShowLoadingProgress(double value, string info)
+        {
+            loadingProgressBar.Visible = true;
+            loadingProgressBar.Set_ValueProgressBar(value, info, isOkRefresh: true);
+            flpActions.Refresh();
+        }
+        private void HideLoadingProgress()
+        {
+            loadingProgressBar.Visible = false;
+            flpActions.Refresh();
+        }
         private void ParameterDataSearch_Load(object? sender, EventArgs e)
         {
             LoadWorkOperations();
@@ -122,7 +149,6 @@ namespace DigitalProductionProgram.Statistics
 
             ApplyPartNumberFilter();
         }
-
         private void LoadWorkOperations()
         {
             allWorkOperations = Database.ExecuteSafe(con =>
@@ -160,7 +186,6 @@ namespace DigitalProductionProgram.Statistics
             cb_WorkOperation.DataSource = allWorkOperations;
             cb_WorkOperation.SelectedIndex = 0;
         }
-
         private void LoadMeasureTemplates()
         {
             allMeasureTemplates = Database.ExecuteSafe(con =>
@@ -208,7 +233,6 @@ namespace DigitalProductionProgram.Statistics
             cb_MeasureTemplate.DataSource = allMeasureTemplates;
             cb_MeasureTemplate.SelectedIndex = 0;
         }
-
         private void LoadProtocolTemplates()
         {
             allProtocolTemplates = Database.ExecuteSafe(con =>
@@ -289,7 +313,6 @@ namespace DigitalProductionProgram.Statistics
 
             ApplyMeasureParameterFilter();
         }
-
         private void LoadProtocolParameters()
         {
             allProtocolParameters = Database.ExecuteSafe(con =>
@@ -320,7 +343,6 @@ namespace DigitalProductionProgram.Statistics
 
             ApplyProtocolParameterFilter();
         }
-
         private void LoadPrefabPartNumbers()
         {
             allPrefabPartNumbers = Database.ExecuteSafe(con =>
@@ -345,7 +367,6 @@ namespace DigitalProductionProgram.Statistics
 
             ApplyTextFilter(lb_PrefabPartNr, allPrefabPartNumbers, tb_FilterPrefabPartNr.Text);
         }
-
         private void LoadPrefabDescription()
         {
             allPrefabDescriptions = Database.ExecuteSafe(con =>
@@ -370,7 +391,7 @@ namespace DigitalProductionProgram.Statistics
 
             ApplyTextFilter(lb_PrefabDescription, allPrefabDescriptions, tb_FilterPrefabDescription.Text);
         }
-
+        
         private void AddDefaultSelections()
         {
             selectedPartNumbers.Clear();
@@ -385,7 +406,6 @@ namespace DigitalProductionProgram.Statistics
             lb_SelectedPrefabPartNr.Items.Clear();
             lb_SelectedPrefabDescription.Items.Clear();
         }
-
         private static void AddSelectedParameter(ListBox sourceListBox, List<ParameterDefinition> selectedParameters, ListBox listBox)
         {
             if (sourceListBox.SelectedItems.Count == 0)
@@ -405,7 +425,6 @@ namespace DigitalProductionProgram.Statistics
                 listBox.Items.Add(parameter.Name);
             }
         }
-
         private static void AddSelectedTextValue(ListBox sourceListBox, List<string> selectedValues, ListBox listBox)
         {
             if (sourceListBox.SelectedItems.Count == 0)
@@ -428,51 +447,94 @@ namespace DigitalProductionProgram.Statistics
 
         private static void RemoveSelectedParameter(List<ParameterDefinition> selectedParameters, ListBox listBox)
         {
-            if (listBox.SelectedIndex < 0 || listBox.SelectedIndex >= selectedParameters.Count)
+            if (listBox.SelectedIndices.Count == 0)
                 return;
 
-            selectedParameters.RemoveAt(listBox.SelectedIndex);
-            listBox.Items.RemoveAt(listBox.SelectedIndex);
-        }
+            var indicesToRemove = listBox.SelectedIndices
+                .Cast<int>()
+                .Where(index => index >= 0 && index < selectedParameters.Count)
+                .OrderByDescending(index => index)
+                .ToList();
 
+            foreach (var index in indicesToRemove)
+            {
+                selectedParameters.RemoveAt(index);
+                listBox.Items.RemoveAt(index);
+            }
+        }
         private static void RemoveSelectedTextValue(List<string> selectedValues, ListBox listBox)
         {
-            if (listBox.SelectedIndex < 0 || listBox.SelectedIndex >= selectedValues.Count)
+            if (listBox.SelectedIndices.Count == 0)
                 return;
 
-            selectedValues.RemoveAt(listBox.SelectedIndex);
-            listBox.Items.RemoveAt(listBox.SelectedIndex);
+            var indicesToRemove = listBox.SelectedIndices
+                .Cast<int>()
+                .Where(index => index >= 0 && index < selectedValues.Count)
+                .OrderByDescending(index => index)
+                .ToList();
+
+            foreach (var index in indicesToRemove)
+            {
+                selectedValues.RemoveAt(index);
+                listBox.Items.RemoveAt(index);
+            }
         }
 
         private static void ConfigureSelectedListReordering(ListBox listBox, IList backingList)
         {
             listBox.AllowDrop = true;
-            listBox.MouseDown += (_, e) => BeginSelectedListDrag(listBox, backingList, e);
+            listBox.MouseDown += (_, e) => PrepareSelectedListDrag(listBox, backingList, e);
+            listBox.MouseMove += (_, e) => BeginSelectedListDrag(listBox, e);
+            listBox.MouseUp += (_, _) => listBox.Tag = null;
             listBox.DragOver += (_, e) => HandleSelectedListDragOver(e);
             listBox.DragDrop += (_, e) => HandleSelectedListDragDrop(listBox, backingList, e);
         }
-
-        private static void BeginSelectedListDrag(ListBox listBox, IList backingList, MouseEventArgs e)
+        private static void PrepareSelectedListDrag(ListBox listBox, IList backingList, MouseEventArgs e)
         {
             if (e.Button != MouseButtons.Left)
+                return;
+
+            var modifiers = Control.ModifierKeys;
+            if ((modifiers & Keys.Control) == Keys.Control || (modifiers & Keys.Shift) == Keys.Shift)
                 return;
 
             var dragIndex = listBox.IndexFromPoint(e.Location);
             if (dragIndex < 0 || dragIndex >= listBox.Items.Count)
                 return;
 
-            listBox.SelectedIndex = dragIndex;
-            var dragItem = new ListBoxDragItem(listBox, backingList, dragIndex);
+            if (!listBox.SelectedIndices.Contains(dragIndex))
+                return;
+
+            listBox.Tag = new PendingListBoxDrag(listBox, backingList, dragIndex, e.Location);
+        }
+        private static void BeginSelectedListDrag(ListBox listBox, MouseEventArgs e)
+        {
+            if (e.Button != MouseButtons.Left)
+                return;
+
+            if (listBox.Tag is not PendingListBoxDrag pendingDrag)
+                return;
+
+            var dragSize = SystemInformation.DragSize;
+            var dragRectangle = new Rectangle(
+                pendingDrag.StartPoint.X - (dragSize.Width / 2),
+                pendingDrag.StartPoint.Y - (dragSize.Height / 2),
+                dragSize.Width,
+                dragSize.Height);
+
+            if (dragRectangle.Contains(e.Location))
+                return;
+
+            listBox.Tag = null;
+            var dragItem = new ListBoxDragItem(pendingDrag.ListBox, pendingDrag.BackingList, pendingDrag.Index);
             listBox.DoDragDrop(dragItem, DragDropEffects.Move);
         }
-
         private static void HandleSelectedListDragOver(DragEventArgs e)
         {
             e.Effect = e.Data?.GetData(typeof(ListBoxDragItem)) is ListBoxDragItem
                 ? DragDropEffects.Move
                 : DragDropEffects.None;
         }
-
         private static void HandleSelectedListDragDrop(ListBox targetListBox, IList targetBackingList, DragEventArgs e)
         {
             if (e.Data?.GetData(typeof(ListBoxDragItem)) is not ListBoxDragItem dragItem)
@@ -503,7 +565,6 @@ namespace DigitalProductionProgram.Statistics
             RebindSelectedListBox(targetListBox, targetBackingList);
             targetListBox.SelectedIndex = targetIndex;
         }
-
         private static int GetDropIndex(ListBox listBox, Point targetPoint)
         {
             var hoverIndex = listBox.IndexFromPoint(targetPoint);
@@ -514,7 +575,6 @@ namespace DigitalProductionProgram.Statistics
             var insertAfter = targetPoint.Y > itemRectangle.Top + (itemRectangle.Height / 2);
             return insertAfter ? hoverIndex + 1 : hoverIndex;
         }
-
         private static void RebindSelectedListBox(ListBox listBox, IList source)
         {
             listBox.BeginUpdate();
@@ -531,7 +591,6 @@ namespace DigitalProductionProgram.Statistics
                 listBox.EndUpdate();
             }
         }
-
         private static void ApplyTextFilter(ListBox listBox, IEnumerable<string> source, string filterText)
         {
             var filtered = source
@@ -541,7 +600,6 @@ namespace DigitalProductionProgram.Statistics
             listBox.DataSource = null;
             listBox.DataSource = filtered;
         }
-
         private void ApplyPartNumberFilter()
         {
             var selectedWorkOperation = cb_WorkOperation.SelectedItem as WorkOperationDefinition;
@@ -574,7 +632,6 @@ namespace DigitalProductionProgram.Statistics
 
             ApplyTextFilter(lb_PartNr, source, tb_FilterPartNr.Text);
         }
-
         private static void ApplyParameterFilter(ListBox listBox, IEnumerable<ParameterDefinition> source, string filterText)
         {
             var filtered = source
@@ -586,7 +643,6 @@ namespace DigitalProductionProgram.Statistics
             listBox.DataSource = filtered;
             listBox.DisplayMember = nameof(ParameterDefinition.Name);
         }
-
         private void ApplyMeasureParameterFilter()
         {
             var selectedTemplate = cb_MeasureTemplate.SelectedItem as TemplateFilterDefinition;
@@ -602,7 +658,6 @@ namespace DigitalProductionProgram.Statistics
             lb_MeasureProtocolParameters.DataSource = filtered;
             lb_MeasureProtocolParameters.DisplayMember = nameof(ParameterDefinition.Name);
         }
-
         private void ApplyProtocolParameterFilter()
         {
             var selectedTemplate = cb_ProtocolTemplate.SelectedItem as TemplateFilterDefinition;
@@ -634,38 +689,67 @@ namespace DigitalProductionProgram.Statistics
             return value.StartsWith(filterText, StringComparison.OrdinalIgnoreCase);
         }
 
-        private void BtnFetchData_Click(object? sender, EventArgs e)
+        private async void BtnFetchData_Click(object? sender, EventArgs e)
         {
             Log.Activity.Start();
             if (selectedMeasureParameters.Count == 0 && selectedOrderParameters.Count == 0)
             {
-                MessageBox.Show("Valj minst en parameter innan du hamtar data.", "Parameterdata", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(@"Valj minst en parameter innan du hämtar data.", @"Parameterdata", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             btnFetchData.Enabled = false;
-            lbl_Status.Text = "Hämtar data...";
+            btn_ExportToCsv.Enabled = false;
+            btn_StopSearch.Enabled = true;
+            currentLoadCancellation?.Dispose();
+            currentLoadCancellation = new CancellationTokenSource();
+            ShowLoadingProgress(5, "Bygger SQL-fråga...");
+            lbl_Status.Text = @"Hämtar data...";
 
             try
             {
                 var sql = BuildQuery();
-                var dt = Database.ExecuteSafe(con =>
+                var countSql = BuildCountQuery();
+
+                ShowLoadingProgress(CountProgressPercent, "Räknar antal rader...");
+                var totalRows = await CountRowsAsync(countSql, currentLoadCancellation.Token);
+                if (totalRows == null)
                 {
-                    using var cmd = new SqlCommand(sql, con);
-                    using var adapter = new SqlDataAdapter(cmd);
-                    var table = new DataTable();
-                    adapter.Fill(table);
-                    return table;
-                });
+                    lbl_Status.Text = "Hämtning avbruten.";
+                    return;
+                }
+
+                ShowLoadingProgress(LoadStartProgressPercent, $"Hämtar {totalRows.Value} rader...");
+                var dt = await ExecuteQueryToDataTableAsync(sql, totalRows.Value, currentLoadCancellation.Token);
+                if (dt == null)
+                {
+                    lbl_Status.Text = "Hämtning avbruten.";
+                    return;
+                }
 
                 dgv_Result.DataSource = dt;
-                lbl_Status.Text = dt == null ? "Ingen data hamtades." : $"{dt.Rows.Count} rader hamtade.";
+                lbl_Status.Text = $"{dt.Rows.Count} rader hämtade.";
+                ShowLoadingProgress(100, "Klart");
+            }
+            catch (SqlException) when (currentLoadCancellation?.IsCancellationRequested == true)
+            {
+                lbl_Status.Text = "Hämtning avbruten.";
             }
             finally
             {
+                await Task.Delay(200);
+                HideLoadingProgress();
                 btnFetchData.Enabled = true;
-                _= Log.Activity.Stop($"User fetched parameter data. MeasureProtocolTemplate = {cb_MeasureTemplate.Text}, ProtocolTemplate = {cb_ProtocolTemplate.Text}, Workoperation = {cb_WorkOperation.Text}. Total Rows = {dgv_Result.Rows.Count}");
+                btn_StopSearch.Enabled = false;
+                btn_ExportToCsv.Enabled = dgv_Result.DataSource is DataTable dt && dt.Rows.Count > 0;
+                currentLoadCancellation?.Dispose();
+                currentLoadCancellation = null;
+                _ = Log.Activity.Stop($"User fetched parameter data. MeasureProtocolTemplate = {cb_MeasureTemplate.Text}, ProtocolTemplate = {cb_ProtocolTemplate.Text}, Workoperation = {cb_WorkOperation.Text}. Total Rows = {dgv_Result.Rows.Count}");
             }
+        }
+        private void Btn_StopSearch_Click(object? sender, EventArgs e)
+        {
+            currentLoadCancellation?.Cancel();
         }
         private void Btn_ExportToCsv_Click(object? sender, EventArgs e)
         {
@@ -690,9 +774,162 @@ namespace DigitalProductionProgram.Statistics
             Get_Protocol_Data.Save_csvFile(sb, fileName);
         }
 
+        private async Task<int?> CountRowsAsync(string countSql, CancellationToken cancellationToken)
+        {
+            try
+            {
+                await using var con = new SqlConnection(Database.cs_Protocol);
+                await con.OpenAsync(cancellationToken);
+
+                await using var cmd = new SqlCommand(countSql, con)
+                {
+                    CommandTimeout = QueryTimeoutSeconds
+                };
+
+                using var registration = cancellationToken.Register(() => cmd.Cancel());
+                var result = await cmd.ExecuteScalarAsync(cancellationToken);
+                return result == null || result is DBNull ? 0 : Convert.ToInt32(result);
+            }
+            catch (TaskCanceledException) when (cancellationToken.IsCancellationRequested)
+            {
+                return null;
+            }
+            catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+            {
+                return null;
+            }
+        }
+
+        private async Task<DataTable?> ExecuteQueryToDataTableAsync(string sql, int totalRows, CancellationToken cancellationToken)
+        {
+            try
+            {
+                await using var con = new SqlConnection(Database.cs_Protocol);
+                await con.OpenAsync(cancellationToken);
+
+                await using var cmd = new SqlCommand(sql, con)
+                {
+                    CommandTimeout = QueryTimeoutSeconds
+                };
+
+                using var registration = cancellationToken.Register(() => cmd.Cancel());
+                await using var reader = await cmd.ExecuteReaderAsync(cancellationToken);
+
+                var table = CreateDataTableSchema(reader);
+                var fieldCount = reader.FieldCount;
+                var values = new object[fieldCount];
+                var loadedRows = 0;
+
+                while (await reader.ReadAsync(cancellationToken))
+                {
+                    reader.GetValues(values);
+                    table.Rows.Add((object[])values.Clone());
+                    loadedRows++;
+
+                    if (loadedRows == 1 || loadedRows % 50 == 0 || loadedRows == totalRows)
+                        UpdateLoadProgress(loadedRows, totalRows);
+                }
+
+                UpdateLoadProgress(loadedRows, totalRows);
+                return table;
+            }
+            catch (TaskCanceledException) when (cancellationToken.IsCancellationRequested)
+            {
+                return null;
+            }
+            catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+            {
+                return null;
+            }
+        }
+
+        private DataTable CreateDataTableSchema(SqlDataReader reader)
+        {
+            var table = new DataTable();
+            for (var i = 0; i < reader.FieldCount; i++)
+                table.Columns.Add(reader.GetName(i), typeof(object));
+
+            return table;
+        }
+
+        private void UpdateLoadProgress(int loadedRows, int totalRows)
+        {
+            var percent = totalRows <= 0
+                ? LoadEndProgressPercent
+                : LoadStartProgressPercent + ((double)loadedRows / totalRows * (LoadEndProgressPercent - LoadStartProgressPercent));
+
+            ShowLoadingProgress(percent, $"Laddar rad {loadedRows} av {totalRows}");
+        }
+
+        private string BuildCountQuery()
+        {
+            var ctes = new List<string>
+            {
+                BuildFilteredMainCte()
+            };
+            var joins = new List<string>();
+
+            if (selectedMeasureParameters.Count > 0)
+            {
+                ctes.Add(BuildMeasurementParametersCte());
+                joins.Add("""
+                          LEFT JOIN mp
+                              ON mp.OrderID = main.OrderID
+                          """);
+            }
+
+            if (selectedOrderParameters.Count > 0)
+            {
+                ctes.Add(BuildProtocolParametersCte());
+                joins.Add("""
+                          LEFT JOIN ord_single AS ord
+                              ON ord.OrderID = main.OrderID
+                          """);
+            }
+
+            ctes.Add("""
+                     prefab AS (
+                         SELECT
+                             prefab_data.OrderID,
+                             MAX(prefab_data.Halvfabrikat_ArtikelNr) AS Halvfabrikat_ArtikelNr,
+                             MAX(prefab_data.Halvfabrikat_Benämning) AS Halvfabrikat_Benämning,
+                             MAX(prefab_data.Halvfabrikat_ID) AS Halvfabrikat_ID,
+                             MAX(prefab_data.Halvfabrikat_OD) AS Halvfabrikat_OD,
+                             MAX(prefab_data.Halvfabrikat_W) AS Halvfabrikat_W,
+                             MAX(prefab_data.Halvfabrikat_OrderNr) AS Halvfabrikat_OrderNr
+                         FROM [Order].Prefab AS prefab_data
+                         INNER JOIN filtered_main AS main
+                             ON main.OrderID = prefab_data.OrderID
+                         GROUP BY prefab_data.OrderID
+                     )
+                     """);
+
+            joins.Add("""
+                      LEFT JOIN prefab
+                          ON prefab.OrderID = main.OrderID
+                      LEFT JOIN [Order].MainData AS next_main
+                          ON next_main.OrderNr = prefab.Halvfabrikat_OrderNr
+                      LEFT JOIN [Order].Prefab AS next_prefab
+                          ON next_prefab.OrderID = next_main.OrderID
+                      """);
+
+            var builder = new StringBuilder();
+            builder.AppendLine("WITH");
+            builder.AppendLine(string.Join("," + Environment.NewLine, ctes));
+            builder.AppendLine();
+            builder.AppendLine("SELECT COUNT(*)");
+            builder.AppendLine("FROM filtered_main AS main");
+            builder.AppendLine(string.Join(Environment.NewLine, joins));
+            builder.AppendLine(BuildWhereClause());
+
+            return builder.ToString();
+        }
         private string BuildQuery()
         {
-            var ctes = new List<string>();
+            var ctes = new List<string>
+            {
+                BuildFilteredMainCte()
+            };
             var selectColumns = new List<string>
             {
                 "main.PartNr",
@@ -726,15 +963,17 @@ namespace DigitalProductionProgram.Statistics
             ctes.Add("""
                      prefab AS (
                          SELECT
-                             OrderID,
-                             MAX(Halvfabrikat_ArtikelNr) AS Halvfabrikat_ArtikelNr,
-                             MAX(Halvfabrikat_Benämning) AS Halvfabrikat_Benämning,
-                             MAX(Halvfabrikat_ID) AS Halvfabrikat_ID,
-                             MAX(Halvfabrikat_OD) AS Halvfabrikat_OD,
-                             MAX(Halvfabrikat_W) AS Halvfabrikat_W,
-                             MAX(Halvfabrikat_OrderNr) AS Halvfabrikat_OrderNr
-                         FROM [Order].Prefab
-                         GROUP BY OrderID
+                             prefab_data.OrderID,
+                             MAX(prefab_data.Halvfabrikat_ArtikelNr) AS Halvfabrikat_ArtikelNr,
+                             MAX(prefab_data.Halvfabrikat_Benämning) AS Halvfabrikat_Benämning,
+                             MAX(prefab_data.Halvfabrikat_ID) AS Halvfabrikat_ID,
+                             MAX(prefab_data.Halvfabrikat_OD) AS Halvfabrikat_OD,
+                             MAX(prefab_data.Halvfabrikat_W) AS Halvfabrikat_W,
+                             MAX(prefab_data.Halvfabrikat_OrderNr) AS Halvfabrikat_OrderNr
+                         FROM [Order].Prefab AS prefab_data
+                         INNER JOIN filtered_main AS main
+                             ON main.OrderID = prefab_data.OrderID
+                         GROUP BY prefab_data.OrderID
                      )
                      """);
 
@@ -767,23 +1006,16 @@ namespace DigitalProductionProgram.Statistics
             builder.AppendLine();
             builder.AppendLine("SELECT");
             builder.AppendLine("    " + string.Join("," + Environment.NewLine + "    ", selectColumns));
-            builder.AppendLine("FROM [Order].MainData AS main");
+            builder.AppendLine("FROM filtered_main AS main");
             builder.AppendLine(string.Join(Environment.NewLine, joins));
             builder.AppendLine(BuildWhereClause());
             builder.AppendLine(orderBy);
 
             return builder.ToString();
         }
-
         private string BuildWhereClause()
         {
             var filters = new List<string>();
-
-            if (selectedPartNumbers.Count > 0)
-            {
-                filters.Add(
-                    $"({string.Join(" OR ", selectedPartNumbers.Select(p => $"main.PartNr = {ToSqlStringLiteral(p)}"))})");
-            }
 
             var prefabFilters = new List<string>();
 
@@ -807,7 +1039,28 @@ namespace DigitalProductionProgram.Statistics
 
             return "WHERE" + Environment.NewLine + "    " + string.Join(Environment.NewLine + "    AND ", filters);
         }
+        private string BuildFilteredMainCte()
+        {
+            var filters = new List<string>();
 
+            if (selectedPartNumbers.Count > 0)
+                filters.Add($"main.PartNr IN ({string.Join(", ", selectedPartNumbers.Select(ToSqlStringLiteral))})");
+
+            var whereClause = filters.Count == 0
+                ? string.Empty
+                : "WHERE" + Environment.NewLine + "        " + string.Join(Environment.NewLine + "        AND ", filters);
+
+            return $"""
+                    filtered_main AS (
+                        SELECT
+                            main.OrderID,
+                            main.PartNr,
+                            main.OrderNr
+                        FROM [Order].MainData AS main
+                        {whereClause}
+                    )
+                    """;
+        }
         private string BuildMeasurementParametersCte()
         {
             var columns = selectedMeasureParameters.Select(p =>
@@ -816,15 +1069,16 @@ namespace DigitalProductionProgram.Statistics
             return $"""
                     mp AS (
                         SELECT
-                            OrderID,
-                            RowIndex,
+                            data.OrderID,
+                            data.RowIndex,
                             {string.Join("," + Environment.NewLine + "            ", columns)}
-                        FROM MeasureProtocol.Data
-                        GROUP BY OrderID, RowIndex
+                        FROM MeasureProtocol.Data AS data
+                        INNER JOIN filtered_main AS main
+                            ON main.OrderID = data.OrderID
+                        GROUP BY data.OrderID, data.RowIndex
                     )
                     """;
         }
-
         private string BuildProtocolParametersCte()
         {
             var columns = selectedOrderParameters.Select(p =>
@@ -833,10 +1087,12 @@ namespace DigitalProductionProgram.Statistics
             return $"""
                     ord_single AS (
                         SELECT
-                            OrderID,
+                            data.OrderID,
                             {string.Join("," + Environment.NewLine + "            ", columns)}
-                        FROM [Order].Data
-                        GROUP BY OrderID
+                        FROM [Order].Data AS data
+                        INNER JOIN filtered_main AS main
+                            ON main.OrderID = data.OrderID
+                        GROUP BY data.OrderID
                     )
                     """;
         }
@@ -856,12 +1112,10 @@ namespace DigitalProductionProgram.Statistics
                    )
                    """;
         }
-
         private static string BuildSqlIdentifier(ParameterDefinition parameter)
         {
             return $"[{parameter.Type}_{parameter.Id}]";
         }
-
         private static string EscapeSqlAlias(string value)
         {
             return value.Replace("]", "]]");
@@ -879,35 +1133,17 @@ namespace DigitalProductionProgram.Statistics
 
             return $"{name} Rev {revision}";
         }
-
         private static string GetMeasureDisplayName(int id, string fallbackName)
         {
             return id switch
             {
-                14 => "Exp.ID",
-                16 => "Exp.OD",
-                22 => "Exp.Wall",
-                15 => "Rec.ID",
-                17 => "Rec.OD",
-                23 => "Rec.Wall",
                 _ => fallbackName
             };
         }
-
         private static string GetOrderDisplayName(int id, string fallbackName)
         {
             return id switch
             {
-                75 => "Pipe 1",
-                160 => "Pipe 2",
-                161 => "Pipe 3",
-                60 => "Speed",
-                348 => "Pressure",
-                62 => "Temp Pos 1",
-                64 => "Temp Pos 2",
-                65 => "Temp Pos 3",
-                68 => "Bromsad?",
-                70 => "Bromsad Vikt",
                 _ => fallbackName
             };
         }
@@ -939,6 +1175,14 @@ namespace DigitalProductionProgram.Statistics
             public ListBox ListBox { get; } = listBox;
             public IList BackingList { get; } = backingList;
             public int Index { get; } = index;
+        }
+
+        private sealed class PendingListBoxDrag(ListBox listBox, IList backingList, int index, Point startPoint)
+        {
+            public ListBox ListBox { get; } = listBox;
+            public IList BackingList { get; } = backingList;
+            public int Index { get; } = index;
+            public Point StartPoint { get; } = startPoint;
         }
 
         private enum ParameterType

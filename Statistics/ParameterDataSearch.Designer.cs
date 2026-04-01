@@ -49,6 +49,7 @@ namespace DigitalProductionProgram.Statistics
         private Button btn_RemovePrefabPartNr;
         private Button btn_RemovePrefabDescription;
         private Button btnFetchData;
+        private Button btn_StopSearch;
         private DataGridView dgv_Result;
 
         protected override void Dispose(bool disposing)
@@ -105,6 +106,7 @@ namespace DigitalProductionProgram.Statistics
             btnFetchData = new Button();
             lbl_Status = new Label();
             btn_ExportToCsv = new Button();
+            btn_StopSearch = new Button();
             dgv_Result = new DataGridView();
             tlpMain.SuspendLayout();
             gb_Parameters.SuspendLayout();
@@ -289,6 +291,7 @@ namespace DigitalProductionProgram.Statistics
             lb_SelectedMeasureParameters.ItemHeight = 15;
             lb_SelectedMeasureParameters.Location = new Point(153, 79);
             lb_SelectedMeasureParameters.Name = "lb_SelectedMeasureParameters";
+            lb_SelectedMeasureParameters.SelectionMode = SelectionMode.MultiExtended;
             lb_SelectedMeasureParameters.Size = new Size(144, 173);
             lb_SelectedMeasureParameters.TabIndex = 6;
             // 
@@ -323,6 +326,7 @@ namespace DigitalProductionProgram.Statistics
             lb_SelectedProtocolParameters.ItemHeight = 15;
             lb_SelectedProtocolParameters.Location = new Point(618, 79);
             lb_SelectedProtocolParameters.Name = "lb_SelectedProtocolParameters";
+            lb_SelectedProtocolParameters.SelectionMode = SelectionMode.MultiExtended;
             lb_SelectedProtocolParameters.Size = new Size(194, 173);
             lb_SelectedProtocolParameters.TabIndex = 9;
             // 
@@ -543,6 +547,7 @@ namespace DigitalProductionProgram.Statistics
             lb_SelectedPartNr.ItemHeight = 15;
             lb_SelectedPartNr.Location = new Point(153, 79);
             lb_SelectedPartNr.Name = "lb_SelectedPartNr";
+            lb_SelectedPartNr.SelectionMode = SelectionMode.MultiExtended;
             lb_SelectedPartNr.Size = new Size(144, 167);
             lb_SelectedPartNr.TabIndex = 8;
             // 
@@ -577,6 +582,7 @@ namespace DigitalProductionProgram.Statistics
             lb_SelectedPrefabPartNr.ItemHeight = 15;
             lb_SelectedPrefabPartNr.Location = new Point(568, 79);
             lb_SelectedPrefabPartNr.Name = "lb_SelectedPrefabPartNr";
+            lb_SelectedPrefabPartNr.SelectionMode = SelectionMode.MultiExtended;
             lb_SelectedPrefabPartNr.Size = new Size(144, 167);
             lb_SelectedPrefabPartNr.TabIndex = 11;
             // 
@@ -600,6 +606,7 @@ namespace DigitalProductionProgram.Statistics
             lb_SelectedPrefabDescription.ItemHeight = 15;
             lb_SelectedPrefabDescription.Location = new Point(1033, 79);
             lb_SelectedPrefabDescription.Name = "lb_SelectedPrefabDescription";
+            lb_SelectedPrefabDescription.SelectionMode = SelectionMode.MultiExtended;
             lb_SelectedPrefabDescription.Size = new Size(194, 167);
             lb_SelectedPrefabDescription.TabIndex = 13;
             // 
@@ -702,6 +709,7 @@ namespace DigitalProductionProgram.Statistics
             flpActions.Controls.Add(btnFetchData);
             flpActions.Controls.Add(lbl_Status);
             flpActions.Controls.Add(btn_ExportToCsv);
+            flpActions.Controls.Add(btn_StopSearch);
             flpActions.Dock = DockStyle.Top;
             flpActions.Location = new Point(3, 672);
             flpActions.Name = "flpActions";
@@ -745,6 +753,20 @@ namespace DigitalProductionProgram.Statistics
             btn_ExportToCsv.TabIndex = 2;
             btn_ExportToCsv.Text = "Exportera till CSV";
             btn_ExportToCsv.UseVisualStyleBackColor = false;
+            // 
+            // btn_StopSearch
+            // 
+            btn_StopSearch.AutoSize = true;
+            btn_StopSearch.BackColor = Color.FromArgb(255, 199, 206);
+            btn_StopSearch.FlatStyle = FlatStyle.Flat;
+            btn_StopSearch.ForeColor = Color.FromArgb(156, 0, 6);
+            btn_StopSearch.Location = new Point(259, 3);
+            btn_StopSearch.Name = "btn_StopSearch";
+            btn_StopSearch.Padding = new Padding(12, 6, 12, 6);
+            btn_StopSearch.Size = new Size(90, 39);
+            btn_StopSearch.TabIndex = 3;
+            btn_StopSearch.Text = "Stoppa";
+            btn_StopSearch.UseVisualStyleBackColor = false;
             // 
             // dgv_Result
             // 
@@ -826,7 +848,6 @@ namespace DigitalProductionProgram.Statistics
             button.Text = text;
             button.UseVisualStyleBackColor = false;
         }
-
         private Button btn_ExportToCsv;
     }
 }

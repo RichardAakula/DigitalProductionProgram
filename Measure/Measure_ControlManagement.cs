@@ -955,81 +955,70 @@ namespace DigitalProductionProgram.Measure
             private static Dictionary<string, object> Parameters(string formula, FlowLayoutPanel flp, DataGridView[] dgvs)
             {
                 var parameters = new Dictionary<string, object>();
-
                 var matches = Regex.Matches(formula, @"\b[A-Za-z_][A-Za-z0-9_]*\b");
 
-                var paramIds = matches
-                    .Select(m => m.Value)
-                    .Select(v => new { Name = v, HasId = DescriptionMap.TryGetId(v, out var id), Id = id })
-                    .Where(x => x.HasId)
-                    .Select(x => x.Id)
-                    .Distinct()
-                    .ToList();
-
-                // TextBoxes
-                foreach (var id in paramIds)
+                // Fetch values from textboxes
+                foreach (Match match in matches)
                 {
-                    var textBox = flp.Controls
-                        .OfType<Measure_ControlManagement.InputTextBox>()
-                        .FirstOrDefault(tb => tb.DescriptionID == id);
+                    var paramName = match.Value;
+                    var textBox = flp.Controls.OfType<InputTextBox>().FirstOrDefault(tb => tb.Monitor_Name == paramName);
 
                     if (textBox != null && double.TryParse(textBox.Text, out var value))
                     {
+
                         if (value > 0)
-                            parameters[id.ToString()] = value;
+                            parameters[paramName] = value;
                     }
                 }
 
-                // DataGridViews
-                foreach (var dgv in dgvs)
+                // Fetch values from DataGridView
+                foreach (Match match in matches)
                 {
-                    foreach (DataGridViewRow row in dgv.Rows)
+                    var paramName = match.Value;
+                    foreach (var dgv in dgvs)
                     {
-                        if (row.Cells[0].Value == null)
-                            continue;
-
-                        if (!int.TryParse(row.Cells[0].Value.ToString(), out var id))
-                            continue;
-
-                        if (!paramIds.Contains(id))
-                            continue;
-
-                        var valueStr = row.Cells[1].Value?.ToString();
-
-                        if (double.TryParse(valueStr, out var value))
+                        foreach (DataGridViewRow row in dgv.Rows)
                         {
-                            parameters[id.ToString()] = value;
+                            if (paramName == row.Cells[0].Value?.ToString() && row.Cells[1].Value != null && !string.IsNullOrEmpty(row.Cells[1].Value?.ToString()))
+                            {
+                                if (double.TryParse(row.Cells[1].Value?.ToString(), out var value))
+                                {
+                                    parameters[paramName] = value;
+                                }
+                            }
+
                         }
                     }
                 }
-
                 return parameters;
             }
+
 
 
             public static void CalculateFormula(FlowLayoutPanel flp, int decimals, DataGridView[] dgv_Walls)
             {
                 if (Is_ClearingData)
                     return;
+
                 foreach (var input_tb in flp.Controls.OfType<InputTextBox>())
                 {
-                    var formula = input_tb.Formula?.Trim();
-
-                    if (string.IsNullOrWhiteSpace(formula))
-                        continue;
-
-                    // Remove leading '=' if present
-                    formula = Regex.Replace(formula, @"^=+", "");
-
-                    // Extract variable names from formula
-                    //var parameters = Parameters(formula, flp, dgv_Walls);
-                    var parameters = Parameters(flp, dgv_Walls);
-                    if (parameters.Count == 0)
-                        return;
-                    // Evaluate formula using NCalc
                     try
                     {
+                        var formula = input_tb.Formula?.Trim();
+
+                        if (string.IsNullOrWhiteSpace(formula))
+                            continue;
+
+                        // Remove leading '=' if present
+                        formula = Regex.Replace(formula, @"^=+", "");
+
+                        var parameters = Parameters(formula, flp, dgv_Walls);
+
+                        if (parameters.Count == 0)
+                            continue;
+
                         var expression = new NCalc.Expression(formula);
+
                         foreach (var param in parameters)
                         {
                             expression.Parameters[param.Key] = param.Value;
@@ -1037,13 +1026,21 @@ namespace DigitalProductionProgram.Measure
 
                         var result = expression.Evaluate();
 
-                        input_tb.Text = double.TryParse(result.ToString(), out var numericResult)
-                            ? Math.Round(numericResult, decimals).ToString(CultureInfo.CurrentCulture)
-                            : "N/A";
+                        if (double.TryParse(result?.ToString(), out var numericResult))
+                        {
+                            input_tb.Text = Math.Round(numericResult, decimals).ToString(CultureInfo.CurrentCulture);
+                        }
+                        else
+                        {
+                            input_tb.Text = "N/A";
+                        }
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
-                        //input_tb.Text = "NaN";
+                        // Logga gärna istället för att tysta felet
+                        Console.WriteLine($"Formula error in textbox: {ex.Message}");
+
+                        input_tb.Text = "ERR";
                     }
                 }
             }

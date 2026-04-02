@@ -1019,10 +1019,17 @@ namespace DigitalProductionProgram.Measure
 
                         var expression = new NCalc.Expression(formula);
 
-                        foreach (var param in parameters)
+                        expression.EvaluateParameter += (name, args) =>
                         {
-                            expression.Parameters[param.Key] = param.Value;
-                        }
+                            if (parameters.TryGetValue(name, out var value))
+                            {
+                                args.Result = value;
+                            }
+                            else
+                            {
+                                args.Result = 0; // 🔥 viktigt: fallback istället för crash
+                            }
+                        };
 
                         var result = expression.Evaluate();
 

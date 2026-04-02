@@ -880,7 +880,8 @@ namespace DigitalProductionProgram.Protocols.Protocol
                         case 291:   //TRYCKREGLERING
                         case 292:   //OD REGLERING
                         case 326:   //RENGJORT UTRUSTNING
-                        case 313:
+                        case 313:   //FILTERHUS
+                        case 436:   //EXTRA GRIPPER
                             items.Add(Properties.Resources.yes ?? string.Empty);
                             items.Add(Properties.Resources.no ?? string.Empty);
                             break;

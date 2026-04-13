@@ -2,10 +2,6 @@
 //Date      : 14-02-2013
 //Projekt   : Digitala mät&kör Protokoll
 
-using System;
-using System.CodeDom.Compiler;
-using System.Diagnostics;
-using Microsoft.Data.SqlClient;
 using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.EasterEggs;
@@ -15,7 +11,6 @@ using DigitalProductionProgram.Help;
 using DigitalProductionProgram.Log;
 using DigitalProductionProgram.Measure;
 using DigitalProductionProgram.Monitor;
-
 using DigitalProductionProgram.OrderManagement;
 using DigitalProductionProgram.Övrigt;
 using DigitalProductionProgram.PrintingServices;
@@ -23,9 +18,13 @@ using DigitalProductionProgram.PrintingServices.Workoperation_Printouts;
 using DigitalProductionProgram.Protocols;
 using DigitalProductionProgram.QC;
 using DigitalProductionProgram.User;
+using Microsoft.Data.SqlClient;
+using System.Diagnostics;
+using System.Reflection;
 using Activity = DigitalProductionProgram.Log.Activity;
-using Pictures = DigitalProductionProgram.OrderHantering.Pictures;
 using CustomProgressBar = DigitalProductionProgram.ControlsManagement.CustomProgressBar;
+using MethodInvoker = System.Windows.Forms.MethodInvoker;
+using Pictures = DigitalProductionProgram.OrderHantering.Pictures;
 using Timer = System.Windows.Forms.Timer;
 
 namespace DigitalProductionProgram.MainWindow
@@ -142,6 +141,10 @@ namespace DigitalProductionProgram.MainWindow
 
             print = new Manage_PrintOuts();
            
+            typeof(DataGridView)
+                .GetProperty("DoubleBuffered", BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)
+                .SetValue(dgv_QuickOpen, true, null);
+
         }
         protected override async void OnShown(EventArgs e)
         {

@@ -22,8 +22,6 @@ namespace DigitalProductionProgram.Measure
     public partial class Measurement_Protocol : Form
     {
 
-        //private static Dictionary<string, int> _codeNameToDescriptionId;
-
         private readonly Measure_ControlManagement controls;
         public static int Max_Bag_Value()
         {
@@ -57,7 +55,6 @@ namespace DigitalProductionProgram.Measure
             });
         }
 
-       // private int bagDescriptionId;
 
         private bool IsSomeValueBad
         {
@@ -69,8 +66,6 @@ namespace DigitalProductionProgram.Measure
                 return false;
             }
         }
-
-
         private string SortingOrder;
 
         private bool IsOkSaveData
@@ -118,7 +113,7 @@ namespace DigitalProductionProgram.Measure
         {
             get
             {
-                var lengthDescriptionId = Load_DescriptionId("Length");
+                var lengthDescriptionId = DescriptionMap.GetId("Length");
                 if (string.IsNullOrEmpty(InputControl(flp_InputControls, [lengthDescriptionId]).Text) || InputControl(flp_InputControls, [lengthDescriptionId]).Text == "N/A")
                 {
                     InfoText.Show(Properties.Resources.measureprotocol_Info_8, CustomColors.InfoText_Color.Bad, "Warning", this);
@@ -140,16 +135,6 @@ namespace DigitalProductionProgram.Measure
             }
         }
         private bool IsTransferInEditMode;
-        //public static void LoadDescriptionMap(Func<List<(int DescriptionId, string Description)>> fetcher)
-        //{
-        //    _codeNameToDescriptionId = fetcher()
-        //        .Where(x => !string.IsNullOrWhiteSpace(x.Description))
-        //        .GroupBy(x => x.Description) // skydd mot duplicates
-        //        .ToDictionary(
-        //            g => g.Key,
-        //            g => g.First().DescriptionId
-        //        );
-        //}
         
 
         public Measurement_Protocol()
@@ -443,23 +428,6 @@ namespace DigitalProductionProgram.Measure
             dgv_Measurements.ResumeLayout();
         }
 
-        private int Load_DescriptionId(string CodeName)
-        {
-            return Database.ExecuteSafe(con =>
-            {
-                using var cmd = new SqlCommand(@"
-                    SELECT TOP 1 ID
-                    FROM MeasureProtocol.Description
-                    WHERE CodeName = @codename", con);
-                cmd.Parameters.AddWithValue("@codename", CodeName);
-                var result = cmd.ExecuteScalar();
-
-                if (result != null && int.TryParse(result.ToString(), out var id))
-                    return id;
-                return 0;
-            });
-        }
-
         private void Count_Measurements()
         {
             var total = 0;
@@ -471,8 +439,6 @@ namespace DigitalProductionProgram.Measure
                     continue;
 
                 total++;
-               // var columnsByTag = dgv_Measurements.Columns.Cast<DataGridViewColumn>().Where(c => !string.IsNullOrWhiteSpace(c.Tag?.ToString())).ToDictionary(c => c.Tag.ToString(), c => c);
-               // if (columnsByTag.TryGetValue("Discarded", out var col))
                 {
                     var cell = row.Cells["Discarded"];
 

@@ -3,12 +3,14 @@ using DigitalProductionProgram.Help;
 using DigitalProductionProgram.PrintingServices;
 using Microsoft.Data.SqlClient;
 using System.Data;
+using System.Reflection;
 using DigitalProductionProgram.ControlsManagement;
 
 namespace DigitalProductionProgram.MainWindow
 {
     public partial class Main_FilterQuickOpen : Form
     {
+
         private static DataTable? DataTable_SnabbÖppna { get; set; }
         private readonly DataGridView dgv_QuickOpen;
         private static bool IsNoWorkoperationChecked = true;
@@ -56,6 +58,8 @@ namespace DigitalProductionProgram.MainWindow
         {
             InitializeComponent();
             dgv_QuickOpen = dgv;
+
+            
         }
 
         private string WorkOperation = string.Empty;
@@ -265,13 +269,14 @@ namespace DigitalProductionProgram.MainWindow
             });
         }
 
-        private void WorkOperation_CheckBoxChanged(object? sender, EventArgs e)
+        private async void WorkOperation_CheckBoxChanged(object? sender, EventArgs e)
         {
             var chb = (CheckBox)sender;
             WorkOperation = chb.Name;
 
             Settings.Settings.SaveData.Quickstart_WorkOperation(WorkOperation);
-            var task = Load_ListAsync(dgv_QuickOpen);
+            await Load_ListAsync(dgv_QuickOpen);
+            //var task = Load_ListAsync(dgv_QuickOpen);
             //Checkar ur "Tio senaste startade orders" om någon workoperation är ikryssad
             if (!string.IsNullOrEmpty(chb.Name))
             {

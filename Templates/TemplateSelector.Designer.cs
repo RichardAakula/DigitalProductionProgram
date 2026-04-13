@@ -31,6 +31,7 @@ namespace DigitalProductionProgram.Templates
         private void InitializeComponent()
         {
             label_Header = new Label();
+            label_TemplateColumnHeader = new Label();
             flp_Buttons = new FlowLayoutPanel();
             label_Green = new Label();
             label_Orange = new Label();
@@ -54,17 +55,34 @@ namespace DigitalProductionProgram.Templates
             label_Header.TabIndex = 2;
             label_Header.Text = "Header:";
             // 
+            // label_TemplateColumnHeader
+            // 
+            label_TemplateColumnHeader.AutoSize = true;
+            label_TemplateColumnHeader.BackColor = Color.Transparent;
+            label_TemplateColumnHeader.Dock = DockStyle.Top;
+            label_TemplateColumnHeader.Font = new Font("Palatino Linotype", 12.25F, FontStyle.Bold);
+            label_TemplateColumnHeader.ForeColor = Color.FromArgb(171, 150, 85);
+            label_TemplateColumnHeader.Location = new Point(0, 162);
+            label_TemplateColumnHeader.Margin = new Padding(4, 0, 4, 0);
+            label_TemplateColumnHeader.Name = "label_TemplateColumnHeader";
+            label_TemplateColumnHeader.Padding = new Padding(0, 4, 0, 6);
+            label_TemplateColumnHeader.Size = new Size(168, 33);
+            label_TemplateColumnHeader.TabIndex = 17;
+            label_TemplateColumnHeader.Text = "MainTemplateName";
+            label_TemplateColumnHeader.Visible = false;
+            // 
             // flp_Buttons
             // 
             flp_Buttons.BackColor = Color.FromArgb(45, 113, 122);
             flp_Buttons.Dock = DockStyle.Fill;
             flp_Buttons.FlowDirection = FlowDirection.TopDown;
-            flp_Buttons.Location = new Point(0, 162);
+            flp_Buttons.Location = new Point(0, 195);
             flp_Buttons.Margin = new Padding(4, 3, 4, 3);
             flp_Buttons.Name = "flp_Buttons";
             flp_Buttons.Padding = new Padding(0, 6, 0, 0);
-            flp_Buttons.Size = new Size(784, 139);
+            flp_Buttons.Size = new Size(784, 106);
             flp_Buttons.TabIndex = 16;
+            flp_Buttons.WrapContents = false;
             // 
             // label_Green
             // 
@@ -158,7 +176,7 @@ namespace DigitalProductionProgram.Templates
             label_InactiveProcesscard.TabIndex = 15;
             label_InactiveProcesscard.Text = "Processkortet är inaktivt";
             // 
-            // ProcesscardTemplateSelector
+            // TemplateSelector
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
@@ -166,11 +184,12 @@ namespace DigitalProductionProgram.Templates
             BackColor = Color.FromArgb(45, 113, 122);
             ClientSize = new Size(784, 301);
             Controls.Add(flp_Buttons);
+            Controls.Add(label_TemplateColumnHeader);
             Controls.Add(tlp_InfoLabels);
             Controls.Add(label_Header);
             FormBorderStyle = FormBorderStyle.SizableToolWindow;
             Margin = new Padding(4, 3, 4, 3);
-            Name = "ProcesscardTemplateSelector";
+            Name = "TemplateSelector";
             StartPosition = FormStartPosition.CenterScreen;
             FormClosing += ChooseProcesscard_FormClosing;
             Load += TemplateSelector_Load;
@@ -178,11 +197,13 @@ namespace DigitalProductionProgram.Templates
             tlp_InfoLabels.ResumeLayout(false);
             tlp_InfoLabels.PerformLayout();
             ResumeLayout(false);
+            PerformLayout();
 
         }
 
         #endregion
         private Label label_Header;
+        private Label label_TemplateColumnHeader;
         private FlowLayoutPanel flp_Buttons;
         private Label label_Green;
         private Label label_Orange;

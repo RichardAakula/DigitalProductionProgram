@@ -1034,12 +1034,6 @@ Protocol.Revision       = " + Templates_Protocol.MainTemplate.Revision + @"\line
         {
             Mail.AutoTestJira();
         }
-        private void Menu_Developer_TestMonitorAPI_Click(object sender, EventArgs e)
-        {
-            using var monitorApiPerformance = new MonitorApiPerformanceForm();
-            monitorApiPerformance.ShowDialog(mainForm);
-        }
-
 
 
 

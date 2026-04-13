@@ -271,7 +271,7 @@ namespace DigitalProductionProgram.OrderManagement
                     }
                 }
             }
-
+            
             if (isLatestRevision == false)
                 Mail.NotifyQAPartNumberNeedApproval(latestRevNr, startedRevNr);
         }

@@ -9,6 +9,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text;
+using DigitalProductionProgram.ControlsManagement;
 
 
 namespace DigitalProductionProgram.DatabaseManagement
@@ -78,7 +79,7 @@ namespace DigitalProductionProgram.DatabaseManagement
 
         public static string? cs_Protocol;// = csDPP_OGO;
         public static string? cs_ToolRegister;// = csToolRegisterGodby;
-        public static string? MonitorHost = "optig5";
+        public static string? MonitorHost = "optig5.optinova.fi";
 
         public static string? MonitorCompany = "001.1";
         
@@ -178,7 +179,7 @@ namespace DigitalProductionProgram.DatabaseManagement
             }, callerMember);
         }
         [DebuggerStepThrough]
-        public static T ExecuteSafe<T>(Func<SqlConnection, T> action, [CallerMemberName] string callerMember = "")
+        public static T? ExecuteSafe<T>(Func<SqlConnection, T> action, [CallerMemberName] string callerMember = "")
         {
             if (string.IsNullOrEmpty(cs_Protocol))
                 return default;
@@ -198,8 +199,10 @@ namespace DigitalProductionProgram.DatabaseManagement
             }
             catch (Exception exc)
             {
-                InfoText.Show($"An error occurred while connecting to the database.\n" +
-                              $"Please contact Admin if the issue persists.\n\n{exc}\n\n{callerMember}", CustomColors.InfoText_Color.Bad, "Error!");
+                InfoText.Question($"An error occurred while connecting to the database.\n" +
+                              $"Please contact Admin if the issue persists.\n\n{exc}\n\n{callerMember}", CustomColors.InfoText_Color.Bad, "Error!", buttonStrings: ["Ok", "Exit Application"]);
+                if (InfoText.answer == InfoText.Answer.No)
+                    Application.Exit();
                 return default!;
             }
             finally
@@ -213,7 +216,7 @@ namespace DigitalProductionProgram.DatabaseManagement
                     });
             }
         }
-        public static async Task<T> ExecuteSafeAsync<T>(Func<SqlConnection, Task<T>> action, [CallerMemberName] string callerMember = "")
+        public static async Task<T?> ExecuteSafeAsync<T>(Func<SqlConnection, Task<T>> action, [CallerMemberName] string callerMember = "")
         {
             if (string.IsNullOrEmpty(cs_Protocol))
                 return default;
@@ -275,10 +278,10 @@ namespace DigitalProductionProgram.DatabaseManagement
             var jObject = JObject.Parse(json);
 
             //"Data Source=GOD-S1-SQL01;Initial Catalog=Korprotokoll;Persist Security Info=True;User ID=korprotokoll;Password=GOD-Stout4-Gladiator-Gazing-Retail-Pegboard;Connect Timeout=5;Encrypt=True;TrustServerCertificate=True;";
-            cs_Protocol = jObject["ConnectionStrings"]["csProtocol"]?.ToString();
-            cs_ToolRegister = jObject["ConnectionStrings"]["csToolregister"]?.ToString();
-            MonitorHost = jObject["ConnectionStrings"]["MonitorHost"]?.ToString();
-            MonitorCompany = jObject["ConnectionStrings"]["MonitorCompany"]?.ToString();
+            cs_Protocol = jObject["ConnectionStrings"]?["csProtocol"]?.ToString();
+            cs_ToolRegister = jObject["ConnectionStrings"]?["csToolregister"]?.ToString();
+            MonitorHost = jObject["ConnectionStrings"]?["MonitorHost"]?.ToString();
+            MonitorCompany = jObject["ConnectionStrings"]?["MonitorCompany"]?.ToString();
 
             switch (MonitorCompany)
             {
@@ -444,7 +447,7 @@ namespace DigitalProductionProgram.DatabaseManagement
         }
         private void MonitorHost_Enter(object sender, EventArgs e)
         {
-            label_Info.Text = $"optig5 - Monitor\n" +
+            label_Info.Text = $"optig5.optinova.fi - Monitor\n" +
                               $"stage-optig5.optinova.fi - Monitor Testbolag";
         }
 
@@ -480,7 +483,7 @@ namespace DigitalProductionProgram.DatabaseManagement
                 "DigitalProductionProgram",
                 "DataBaseSettings.json");
 
-            Directory.CreateDirectory(Path.GetDirectoryName(settingsPath));
+            Directory.CreateDirectory(Path.GetDirectoryName(settingsPath) ?? string.Empty);
 
             if (!File.Exists(settingsPath))
             {
@@ -493,9 +496,9 @@ namespace DigitalProductionProgram.DatabaseManagement
                 if (resourceName == null)
                 {
                     MessageBox.Show(
-                        "Embedded resource 'DatabaseSettings.json' kunde inte hittas.\n" +
-                        "Kontrollera Build Action = Embedded Resource.",
-                        "Fel",
+                        @"Embedded resource 'DatabaseSettings.json' kunde inte hittas.\n" +
+                        @"Kontrollera Build Action = Embedded Resource.",
+                        @"Fel",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Error);
                     return;

@@ -307,60 +307,64 @@ namespace DigitalProductionProgram.Templates
         }
         private void Add_Workoperations()
         {
-            using var con = new SqlConnection(Database.cs_Protocol);
-            const string query = @"
+            Database.ExecuteSafe(con =>
+            {
+                const string query = @"
                     SELECT WorkoperationID, Name
                     FROM Workoperation.ProductionLines as prodlines
                     JOIN Workoperation.Names as names
 	                    ON prodlines.WorkoperationID = names.ID
                     WHERE ProductionLine = @prodline";
-            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-            SQL_Parameter.String(cmd.Parameters, "@prodline", Order.ProdLine);
-            con.Open();
-            var reader = cmd.ExecuteReader();
-            while (reader.Read())
-            {
-                var workoperation = reader["Name"].ToString();
-                int.TryParse(reader["WorkoperationID"].ToString(), out var workoperationID);
-                Add_Button_Workoperations(workoperation, workoperationID);
-            }
+                var cmd = new SqlCommand(query, con);
+                SQL_Parameter.String(cmd.Parameters, "@prodline", Order.ProdLine);
+                var reader = cmd.ExecuteReader();
+                Set_TemplateColumnHeader("Workoperation");
+                while (reader.Read())
+                {
+                    var workoperation = reader["Name"].ToString();
+                    int.TryParse(reader["WorkoperationID"].ToString(), out var workoperationID);
+                    Add_Button_Workoperations(workoperation, workoperationID);
+                }
+            });
         }
         private void Add_ProtocolTemplates()
         {
-            using var con = new SqlConnection(Database.cs_Protocol);
-            const string query = """
-                                 WITH RankedRevisions AS 
-                                 (
-                                    SELECT 
-                                        Name, 
-                                        Revision, 
-                                        ID,
-                                        ROW_NUMBER() OVER (PARTITION BY Name ORDER BY Revision DESC) AS RevisionRank
-                                            FROM Protocol.MainTemplate
-                                            WHERE WorkoperationID = @workoperationid
-                                 )
-                                 SELECT Name, Revision, ID
-                                 FROM RankedRevisions
-                                 WHERE RevisionRank = 1
-                                 ORDER BY Name;
-                                 """;
-
-            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-            cmd.Parameters.AddWithValue("@workoperationid", Order.WorkoperationID);
-            con.Open();
-            var reader = cmd.ExecuteReader();
-
-            while (reader.Read())
+            Database.ExecuteSafe(con =>
             {
-                var templatename = reader["Name"].ToString();
-                int.TryParse(reader["ID"].ToString(), out var id);
-                Add_Button_ProtocolTemplate(templatename, templatename, id);
-            }
+                const string query = """
+                                     WITH RankedRevisions AS 
+                                     (
+                                        SELECT 
+                                            Name, 
+                                            Revision, 
+                                            ID,
+                                            ROW_NUMBER() OVER (PARTITION BY Name ORDER BY Revision DESC) AS RevisionRank
+                                                FROM Protocol.MainTemplate
+                                                WHERE WorkoperationID = @workoperationid
+                                     )
+                                     SELECT Name, Revision, ID
+                                     FROM RankedRevisions
+                                     WHERE RevisionRank = 1
+                                     ORDER BY Name;
+                                     """;
+
+                var cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@workoperationid", Order.WorkoperationID);
+                var reader = cmd.ExecuteReader();
+                Set_TemplateColumnHeader("ProtocolTemplateName");
+                while (reader.Read())
+                {
+                    var templatename = reader["Name"].ToString();
+                    int.TryParse(reader["ID"].ToString(), out var id);
+                    Add_Button_ProtocolTemplate(templatename, templatename, id);
+                }
+            });
         }
         private void Add_MeasureProtocolTemplates(bool isUsingWorkoperationFilter = true)
         {
-            using var con = new SqlConnection(Database.cs_Protocol);
-            var query = @"
+            Database.ExecuteSafe(con =>
+            {
+                var query = @"
                     WITH RankedTemplates AS 
                         (
                             SELECT 
@@ -379,63 +383,83 @@ namespace DigitalProductionProgram.Templates
                     FROM RankedTemplates
                     WHERE rn = 1";
 
-            if (isUsingWorkoperationFilter)
-                query += " AND WorkoperationID = @workoperationid";
+                if (isUsingWorkoperationFilter)
+                    query += " AND WorkoperationID = @workoperationid";
 
-            query += " ORDER BY Name";
+                query += " ORDER BY Name";
 
-            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-            if (isUsingWorkoperationFilter)
-                cmd.Parameters.AddWithValue("@workoperationid", Order.WorkoperationID);
+                var cmd = new SqlCommand(query, con);
+                if (isUsingWorkoperationFilter)
+                    cmd.Parameters.AddWithValue("@workoperationid", Order.WorkoperationID);
+                var reader = cmd.ExecuteReader();
+                Set_TemplateColumnHeader("MeasureProtocolTemplateName");
 
-            con.Open();
-            var reader = cmd.ExecuteReader();
-
-            while (reader.Read())
-            {
-                var templatename = reader["Name"].ToString();
-                int.TryParse(reader["MeasureProtocolMainTemplateID"].ToString(), out var id);
-                var revision = reader["Revision"].ToString();
-                Add_Button_MeasureprotocolTemplate(templatename, revision, id);
-            }
+                while (reader.Read())
+                {
+                    var templatename = reader["Name"].ToString();
+                    int.TryParse(reader["MeasureProtocolMainTemplateID"].ToString(), out var id);
+                    var revision = reader["Revision"].ToString();
+                    Add_Button_MeasureprotocolTemplate(templatename, revision, id);
+                }
+            });
         }
         private void Add_TemplateName()
         {
-            // var org_Arbetsoperation = Order.WorkOperation;
-            using var con = new SqlConnection(Database.cs_Protocol);
-            var query = @"
-                    SELECT DISTINCT maintemplate.Name, workoperation.Name, maintemplate.ID
-                    FROM Processcard.MainData AS processcard
-                        LEFT JOIN Protocol.MainTemplate AS maintemplate
-                            ON processcard.ProtocolMainTemplateID = maintemplate.ID
-                        LEFT JOIN Workoperation.Names AS workoperation
-                            ON maintemplate.WorkoperationID = workoperation.ID
-                    WHERE processcard.PartNr = @partnumber ";
-            if (IsOnlyProcesscard == false)
-                query +=
-                    @"UNION
-                    SELECT DISTINCT maintemplate.Name, workoperation.Name, maintemplate.ID
+            Database.ExecuteSafe(con =>
+            {
+                var query = @"
+                    WITH TemplateSource AS
+                    (
+                        SELECT DISTINCT maintemplate.Name, workoperation.Name AS WorkoperationName, maintemplate.Revision, maintemplate.ID
+                        FROM Processcard.MainData AS processcard
+                            LEFT JOIN Protocol.MainTemplate AS maintemplate
+                                ON processcard.ProtocolMainTemplateID = maintemplate.ID
+                            LEFT JOIN Workoperation.Names AS workoperation
+                                ON maintemplate.WorkoperationID = workoperation.ID
+                        WHERE processcard.PartNr = @partnumber ";
+                if (IsOnlyProcesscard == false)
+                    query +=
+                        @"
+                        UNION
+                        SELECT DISTINCT maintemplate.Name, workoperation.Name AS WorkoperationName, maintemplate.Revision, maintemplate.ID
                     FROM [Order].MainData AS protocol
                         LEFT JOIN Protocol.MainTemplate AS maintemplate
                             ON protocol.ProtocolMainTemplateID = maintemplate.ID
                         LEFT JOIN Workoperation.Names AS workoperation
                             ON maintemplate.WorkoperationID = workoperation.ID
-                    WHERE protocol.PartNr = @partnumber
-                    ORDER BY maintemplate.Name";
-            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-            cmd.Parameters.AddWithValue("@partnumber", Order.PartNumber);
-            con.Open();
-            var reader = cmd.ExecuteReader();
-            while (reader.Read())
-            {
-                var templatename = reader[0].ToString();
-                var workoperation = reader[1].ToString();
-                int.TryParse(reader[2].ToString(), out var mainTemplateID);
-
-                if (workoperation != null) Add_Button_ProtocolTemplate(templatename, templatename, mainTemplateID, workoperation, null, null, Order.PartID, Order.PartGroupID, true);
-            }
+                    WHERE protocol.PartNr = @partnumber";
+                query +=
+                    @"
+                    ),
+                    RankedTemplates AS
+                    (
+                        SELECT Name, WorkoperationName, Revision, ID,
+                               ROW_NUMBER() OVER (PARTITION BY Name ORDER BY Revision DESC, ID DESC) AS RevisionRank
+                        FROM TemplateSource
+                        WHERE Name IS NOT NULL
+                    )
+                    SELECT Name, WorkoperationName, Revision, ID
+                    FROM RankedTemplates
+                    WHERE RevisionRank = 1
+                    ORDER BY Name";
+                var cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@partnumber", Order.PartNumber);
+                var reader = cmd.ExecuteReader();
+                flp_Buttons.FlowDirection = FlowDirection.TopDown;
+                flp_Buttons.WrapContents = false;
+                Set_TemplateColumnHeader("MainTemplateName");
+                while (reader.Read())
+                {
+                    var templatename = reader[0].ToString();
+                    var workoperation = reader[1].ToString();
+                    var revision = reader[2].ToString();
+                    int.TryParse(reader[3].ToString(), out var mainTemplateID);
+                    if (string.IsNullOrEmpty(workoperation))
+                        continue;
+                    Add_Button_ProtocolTemplate(templatename, templatename, mainTemplateID, workoperation, revision, null, null, Order.PartID, Order.PartGroupID, true);
+                }
+            });
         }
-
         private void Add_Button_Processcard(string? text, string workoperation, string? prodtype, string? prodline, string? revNr, int? partid, int? partGroupID, bool isProcesscardOkToStart, bool isOkCheckPartNumber, string? latestRevNr, bool isLatestRevNrSelected, bool isActive)
         {
             totalLabels++;
@@ -446,13 +470,17 @@ namespace DigitalProductionProgram.Templates
             if (isOkCheckPartNumber)// && IsOperatorStartingOrder)
                 SetForeColor_Label(btn, partid, isActive);
         }
-        private void Add_Button_ProtocolTemplate(string? templatename, string? text, int id, string? workoperation = null, string? prodtype = null, string? prodline = null, int? partid = null, int? partGroupID = null, bool isProcesscardOkToStart = false, bool isOkCheckPartNumber = false)
+        private void Set_TemplateColumnHeader(string text)
+        {
+            label_TemplateColumnHeader.Text = text;
+            label_TemplateColumnHeader.Visible = true;
+        }
+        private void Add_Button_ProtocolTemplate(string? templatename, string? text, int id, string? workoperation = null, string? revision = null, string? prodtype = null, string? prodline = null, int? partid = null, int? partGroupID = null, bool isProcesscardOkToStart = false, bool isOkCheckPartNumber = false)
         {
             totalLabels++;
             var btn = CreateButton(templatename, Button_ProtocolTemplate_MouseClick, id, workoperation, null, prodtype, prodline, partid, partGroupID, isProcesscardOkToStart);
-
+            btn.TemplateRevision = revision;
             flp_Buttons.Controls.Add(btn);
-            Height += btn.Height + 3;
         }
         private void Add_Button_Workoperations(string? workoperation, int workoperationID)
         {
@@ -522,15 +550,21 @@ namespace DigitalProductionProgram.Templates
         private void SetFormHeight()
         {
             var totalHeight = 0;
+            var maxWidth = 0;
             foreach (Control control in flp_Buttons.Controls)
             {
                 totalHeight += control.Height;
                 totalHeight += control.Margin.Bottom;
+                maxWidth = Math.Max(maxWidth, control.Width + control.Margin.Horizontal);
             }
-
+            if (label_TemplateColumnHeader.Visible)
+            {
+                totalHeight += label_TemplateColumnHeader.Height;
+                maxWidth = Math.Max(maxWidth, label_TemplateColumnHeader.Width + label_TemplateColumnHeader.Margin.Horizontal);
+            }
             totalHeight += label_Header.Height + (tlp_InfoLabels.Visible ? tlp_InfoLabels.Height : 0) + flp_Buttons.Padding.Top + 41;
-
             this.Height = totalHeight;
+            Width = Math.Max(Width, maxWidth + 40);
         }
 
         private void Button_Processcard_MouseClick(object? sender, EventArgs e)
@@ -579,6 +613,7 @@ namespace DigitalProductionProgram.Templates
             if (lbl != null)
             {
                 Templates_Protocol.MainTemplate.ID = lbl.TemplateID;
+                Templates_Protocol.MainTemplate.Revision = lbl.TemplateRevision;
                 if (Enum.TryParse(lbl.Workoperation, out Manage_WorkOperation.WorkOperations workOperation))
                     Order.WorkOperation = workOperation;
 

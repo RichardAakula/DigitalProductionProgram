@@ -874,13 +874,6 @@ namespace DigitalProductionProgram.MainWindow
             menu_Developer_AutotestJira.Text = "Testa Autotest funktionen till Jira";
             menu_Developer_AutotestJira.Click += menu_Developer_AutotestJira_Click;
             // 
-            // Menu_Developer_TestMonitorAPI
-            // 
-            Menu_Developer_TestMonitorAPI.Name = "Menu_Developer_TestMonitorAPI";
-            Menu_Developer_TestMonitorAPI.Size = new Size(271, 22);
-            Menu_Developer_TestMonitorAPI.Text = "Test Monitor API";
-            Menu_Developer_TestMonitorAPI.Click += Menu_Developer_TestMonitorAPI_Click;
-            // 
             // tvåToolStripMenuItem
             // 
             tvåToolStripMenuItem.Name = "tvåToolStripMenuItem";

@@ -20,14 +20,21 @@ namespace DigitalProductionProgram.Statistics
         private List<TemplateFilterDefinition> allMeasureTemplates = [];
         private List<TemplateFilterDefinition> allProtocolTemplates = [];
         private List<WorkOperationDefinition> allWorkOperations = [];
+        
+        private List<string> allRawMaterialPartNumbers = [];
+        private List<string> allRawMaterialDescription = [];
         private List<string> allPrefabPartNumbers = [];
         private List<string> allPrefabDescriptions = [];
 
         private readonly List<string> selectedPartNumbers = [];
         private readonly List<ParameterDefinition> selectedMeasureParameters = [];
         private readonly List<ParameterDefinition> selectedOrderParameters = [];
-        private readonly List<string> selectedPrefabArticleNumbers = [];
-        private readonly List<string> selectedPrefabNames = [];
+
+        private readonly List<string> selectedRawMaterialPartNumbers = [];
+        private readonly List<string> selectedRawMaterialDescription = [];
+
+        private readonly List<string> selectedPrefabPartNumbers = [];
+        private readonly List<string> selectedPrefabDescription = [];
         private readonly CustomProgressBar loadingProgressBar = new();
         private CancellationTokenSource? currentLoadCancellation;
 
@@ -48,20 +55,27 @@ namespace DigitalProductionProgram.Statistics
             lb_PartNr.Click += (_, _) => AddSelectedTextValue(lb_PartNr, selectedPartNumbers, lb_SelectedPartNr);
             lb_MeasureProtocolParameters.Click += (_, _) => AddSelectedParameter(lb_MeasureProtocolParameters, selectedMeasureParameters, lb_SelectedMeasureParameters);
             lb_ProtocolParameters.Click += (_, _) => AddSelectedParameter(lb_ProtocolParameters, selectedOrderParameters, lb_SelectedProtocolParameters);
-            lb_PrefabPartNr.Click += (_, _) => AddSelectedTextValue(lb_PrefabPartNr, selectedPrefabArticleNumbers, lb_SelectedPrefabPartNr);
-            lb_PrefabDescription.Click += (_, _) => AddSelectedTextValue(lb_PrefabDescription, selectedPrefabNames, lb_SelectedPrefabDescription);
+            lb_RawMaterialPartNr.Click += (_, _) => AddSelectedTextValue(lb_PrefabPartNr, selectedRawMaterialPartNumbers, lb_SelectedPrefabPartNr);
+            lb_RawMaterialDescription.Click += (_, _) => AddSelectedTextValue(lb_RawMaterialDescription, selectedRawMaterialDescription, lb_SelectedRawMaterialDescription);
 
             btn_AddPartNr.Click += (_, _) => AddSelectedTextValue(lb_PartNr, selectedPartNumbers, lb_SelectedPartNr);
             btn_AddMeasureParameter.Click += (_, _) => AddSelectedParameter(lb_MeasureProtocolParameters, selectedMeasureParameters, lb_SelectedMeasureParameters);
             btn_AddOrder.Click += (_, _) => AddSelectedParameter(lb_ProtocolParameters, selectedOrderParameters, lb_SelectedProtocolParameters);
-            btn_AddPrefabPartNr.Click += (_, _) => AddSelectedTextValue(lb_PrefabPartNr, selectedPrefabArticleNumbers, lb_SelectedPrefabPartNr);
-            btn_AddPrefabDescription.Click += (_, _) => AddSelectedTextValue(lb_PrefabDescription, selectedPrefabNames, lb_SelectedPrefabDescription);
+
+            btn_AddPrefabPartNr.Click += (_, _) => AddSelectedTextValue(lb_PrefabPartNr, selectedPrefabPartNumbers, lb_SelectedPrefabPartNr);
+           // btn_AddPrefabDescription.Click += (_, _) => AddSelectedTextValue(lb_PrefabDescription, selectedPrefabDescription, lb_SelectedPrefabDescription);
+            btn_AddRawMaterialPartNr.Click += (_, _) => AddSelectedTextValue(lb_RawMaterialPartNr, selectedRawMaterialPartNumbers, lb_SelectedRawMaterialPartNr);
+            btn_AddRawMaterialDescription.Click += (_, _) => AddSelectedTextValue(lb_RawMaterialDescription, selectedRawMaterialDescription, lb_SelectedRawMaterialDescription);
 
             btn_RemovePartNr.Click += (_, _) => RemoveSelectedTextValue(selectedPartNumbers, lb_SelectedPartNr);
             btn_RemoveMeasure.Click += (_, _) => RemoveSelectedParameter(selectedMeasureParameters, lb_SelectedMeasureParameters);
             btn_RemoveOrder.Click += (_, _) => RemoveSelectedParameter(selectedOrderParameters, lb_SelectedProtocolParameters);
-            btn_RemovePrefabPartNr.Click += (_, _) => RemoveSelectedTextValue(selectedPrefabArticleNumbers, lb_SelectedPrefabPartNr);
-            btn_RemovePrefabDescription.Click += (_, _) => RemoveSelectedTextValue(selectedPrefabNames, lb_SelectedPrefabDescription);
+
+            btn_RemoveRawMaterialPartNr.Click += (_, _) => RemoveSelectedTextValue(selectedRawMaterialPartNumbers, lb_SelectedRawMaterialPartNr);
+            btn_RemoveRawMaterialDescription.Click += (_, _) => RemoveSelectedTextValue(selectedRawMaterialDescription, lb_SelectedRawMaterialDescription);
+            btn_RemovePrefabPartNr.Click += (_, _) => RemoveSelectedTextValue(selectedPrefabPartNumbers, lb_SelectedPrefabPartNr);
+           // btn_RemovePrefabDescription.Click += (_, _) => RemoveSelectedTextValue(selectedPrefabDescription, lb_SelectedPrefabDescription);
+            
             btnFetchData.Click += BtnFetchData_Click;
             btn_ExportToCsv.Click += Btn_ExportToCsv_Click;
             btn_StopSearch.Click += Btn_StopSearch_Click;
@@ -72,14 +86,20 @@ namespace DigitalProductionProgram.Statistics
             tb_FilterMeasurementParameters.TextChanged += (_, _) => ApplyMeasureParameterFilter();
             cb_ProtocolTemplate.SelectedIndexChanged += (_, _) => ApplyProtocolParameterFilter();
             tb_FilterProtocolParameters.TextChanged += (_, _) => ApplyProtocolParameterFilter();
+
+
+            tb_FilterRawMaterialPartNr.TextChanged += (_, _) => ApplyTextFilter(lb_RawMaterialPartNr, allRawMaterialPartNumbers, tb_FilterRawMaterialPartNr.Text);
+            tb_FilterRawMaterialDescription.TextChanged += (_, _) => ApplyTextFilter(lb_RawMaterialDescription, allRawMaterialDescription, tb_FilterRawMaterialDescription.Text);
             tb_FilterPrefabPartNr.TextChanged += (_, _) => ApplyTextFilter(lb_PrefabPartNr, allPrefabPartNumbers, tb_FilterPrefabPartNr.Text);
-            tb_FilterPrefabDescription.TextChanged += (_, _) => ApplyTextFilter(lb_PrefabDescription, allPrefabDescriptions, tb_FilterPrefabDescription.Text);
+            //tb_FilterPrefabDescription.TextChanged += (_, _) => ApplyTextFilter(lb_PrefabDescription, allPrefabDescriptions, tb_FilterPrefabDescription.Text);
 
             ConfigureSelectedListReordering(lb_SelectedPartNr, selectedPartNumbers);
             ConfigureSelectedListReordering(lb_SelectedMeasureParameters, selectedMeasureParameters);
             ConfigureSelectedListReordering(lb_SelectedProtocolParameters, selectedOrderParameters);
-            ConfigureSelectedListReordering(lb_SelectedPrefabPartNr, selectedPrefabArticleNumbers);
-            ConfigureSelectedListReordering(lb_SelectedPrefabDescription, selectedPrefabNames);
+            ConfigureSelectedListReordering(lb_SelectedRawMaterialPartNr, selectedRawMaterialPartNumbers);
+            ConfigureSelectedListReordering(lb_SelectedRawMaterialDescription, selectedRawMaterialDescription);
+            ConfigureSelectedListReordering(lb_SelectedPrefabPartNr, selectedPrefabPartNumbers);
+           // ConfigureSelectedListReordering(lb_SelectedPrefabDescription, selectedPrefabDescription);
         }
         private void ConfigureGrid()
         {
@@ -120,8 +140,10 @@ namespace DigitalProductionProgram.Statistics
             LoadMeasureParameters();
             LoadProtocolTemplates();
             LoadProtocolParameters();
+            LoadRawMaterialPartNumbers();
+            LoadRawMaterialDescription();
             LoadPrefabPartNumbers();
-            LoadPrefabDescription();
+            //LoadPrefabDescription();
             AddDefaultSelections();
         }
 
@@ -343,15 +365,21 @@ namespace DigitalProductionProgram.Statistics
 
             ApplyProtocolParameterFilter();
         }
-        private void LoadPrefabPartNumbers()
+        private void LoadRawMaterialPartNumbers()
         {
-            allPrefabPartNumbers = Database.ExecuteSafe(con =>
+            allRawMaterialPartNumbers = Database.ExecuteSafe(con =>
             {
                 const string query = """
                                      SELECT DISTINCT Halvfabrikat_ArtikelNr
                                      FROM [Order].Prefab
                                      WHERE Halvfabrikat_ArtikelNr IS NOT NULL
                                          AND Halvfabrikat_ArtikelNr <> ''
+                                         AND 
+                                         (
+                                            Halvfabrikat_ID IS NULL
+                                            AND Halvfabrikat_OD IS NULL
+                                            AND Halvfabrikat_W IS NULL
+                                        )
                                      ORDER BY Halvfabrikat_ArtikelNr
                                      """;
 
@@ -365,11 +393,11 @@ namespace DigitalProductionProgram.Statistics
                 return result;
             }) ?? [];
 
-            ApplyTextFilter(lb_PrefabPartNr, allPrefabPartNumbers, tb_FilterPrefabPartNr.Text);
+            ApplyTextFilter(lb_RawMaterialPartNr, allRawMaterialPartNumbers, tb_FilterRawMaterialPartNr.Text);
         }
-        private void LoadPrefabDescription()
+        private void LoadRawMaterialDescription()
         {
-            allPrefabDescriptions = Database.ExecuteSafe(con =>
+            allRawMaterialDescription = Database.ExecuteSafe(con =>
             {
                 const string query = """
                                      SELECT DISTINCT Halvfabrikat_Benämning
@@ -389,22 +417,78 @@ namespace DigitalProductionProgram.Statistics
                 return result;
             }) ?? [];
 
-            ApplyTextFilter(lb_PrefabDescription, allPrefabDescriptions, tb_FilterPrefabDescription.Text);
+            ApplyTextFilter(lb_RawMaterialDescription, allRawMaterialDescription, tb_FilterRawMaterialDescription.Text);
         }
+        private void LoadPrefabPartNumbers()
+        {
+            allPrefabPartNumbers = Database.ExecuteSafe(con =>
+            {
+                const string query = """
+                                     SELECT DISTINCT Halvfabrikat_ArtikelNr
+                                     FROM [Order].Prefab
+                                     WHERE Halvfabrikat_ArtikelNr IS NOT NULL
+                                         AND Halvfabrikat_ArtikelNr <> ''
+                                         AND 
+                                         (
+                                            Halvfabrikat_ID IS NOT NULL
+                                            OR Halvfabrikat_OD IS NOT NULL
+                                            OR Halvfabrikat_W IS NOT NULL
+                                        )
+                                     ORDER BY Halvfabrikat_ArtikelNr
+                                     """;
+
+                using var cmd = new SqlCommand(query, con);
+                using var reader = cmd.ExecuteReader();
+
+                var result = new List<string>();
+                while (reader.Read())
+                    result.Add(reader.GetString(0));
+
+                return result;
+            }) ?? [];
+
+            ApplyTextFilter(lb_PrefabPartNr, allPrefabPartNumbers, tb_FilterPrefabPartNr.Text);
+        }
+        //private void LoadPrefabDescription()
+        //{
+        //    allPrefabDescriptions = Database.ExecuteSafe(con =>
+        //    {
+        //        const string query = """
+        //                             SELECT DISTINCT Halvfabrikat_Benämning
+        //                             FROM [Order].Prefab
+        //                             WHERE Halvfabrikat_Benämning IS NOT NULL
+        //                                 AND Halvfabrikat_Benämning <> ''
+        //                             ORDER BY Halvfabrikat_Benämning
+        //                             """;
+
+        //        using var cmd = new SqlCommand(query, con);
+        //        using var reader = cmd.ExecuteReader();
+
+        //        var result = new List<string>();
+        //        while (reader.Read())
+        //            result.Add(reader.GetString(0));
+
+        //        return result;
+        //    }) ?? [];
+
+        //    ApplyTextFilter(lb_PrefabDescription, allPrefabDescriptions, tb_FilterPrefabDescription.Text);
+        //}
         
         private void AddDefaultSelections()
         {
             selectedPartNumbers.Clear();
             selectedMeasureParameters.Clear();
             selectedOrderParameters.Clear();
-            selectedPrefabArticleNumbers.Clear();
-            selectedPrefabNames.Clear();
+            selectedRawMaterialPartNumbers.Clear();
+            selectedRawMaterialDescription.Clear();
+            selectedPrefabPartNumbers.Clear();
+            selectedPrefabDescription.Clear();
 
             lb_SelectedPartNr.Items.Clear();
             lb_SelectedMeasureParameters.Items.Clear();
             lb_SelectedProtocolParameters.Items.Clear();
             lb_SelectedPrefabPartNr.Items.Clear();
-            lb_SelectedPrefabDescription.Items.Clear();
+            //lb_SelectedPrefabDescription.Items.Clear();
         }
         private static void AddSelectedParameter(ListBox sourceListBox, List<ParameterDefinition> selectedParameters, ListBox listBox)
         {
@@ -1019,16 +1103,16 @@ namespace DigitalProductionProgram.Statistics
 
             var prefabFilters = new List<string>();
 
-            if (selectedPrefabArticleNumbers.Count > 0)
+            if (selectedRawMaterialPartNumbers.Count > 0)
             {
                 prefabFilters.Add(
-                    $"next_prefab.Halvfabrikat_ArtikelNr IN ({string.Join(", ", selectedPrefabArticleNumbers.Select(ToSqlStringLiteral))})");
+                    $"next_prefab.Halvfabrikat_ArtikelNr IN ({string.Join(", ", selectedRawMaterialPartNumbers.Select(ToSqlStringLiteral))})");
             }
 
-            if (selectedPrefabNames.Count > 0)
+            if (selectedRawMaterialDescription.Count > 0)
             {
                 prefabFilters.Add(
-                    $"next_prefab.Halvfabrikat_Benämning IN ({string.Join(", ", selectedPrefabNames.Select(ToSqlStringLiteral))})");
+                    $"next_prefab.Halvfabrikat_Benämning IN ({string.Join(", ", selectedRawMaterialDescription.Select(ToSqlStringLiteral))})");
             }
 
             if (prefabFilters.Count > 0)

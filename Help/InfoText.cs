@@ -100,7 +100,7 @@ namespace DigitalProductionProgram.Help
             infoText.ShowDialog();
         }
 
-        public static void Question(string? Question, CustomColors.InfoText_Color color, string? header, Control? Form = null, bool IsSpecialText = false)
+        public static void Question(string? Question, CustomColors.InfoText_Color color, string? header, Control? Form = null, bool IsSpecialText = false, string[] buttonStrings = null)
         {
             Change_GUI_BackColor(color);
             // form = Form;
@@ -122,7 +122,7 @@ namespace DigitalProductionProgram.Help
             Translate_Form();
             Change_GUI_Header(header);
             Change_GUI_Question(true);
-            Change_GUI_QuestionText(null);
+            Change_GUI_QuestionText(buttonStrings);
             Change_GUI_Size();
             infoText.ShowDialog();
         }

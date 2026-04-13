@@ -69,12 +69,7 @@ namespace DigitalProductionProgram.Processcards
             IsAutoSelectTemplate = isAutoSelectTemplate;
             
             label_ChoosePC_Header.Text = headerText;
-
-            //cb_Workoperation.Text = Person.UserPreferredWorkOperation;
-            //if (!string.IsNullOrEmpty(cb_Workoperation.Text) && cb_Workoperation.Text != "Ingenting" && cb_Workoperation.Text != "Nothing")
-            //    chb_ChoosePC_AutoChoose.Checked = true;
             
-            //Fill_cb_Workoperation();
             Fill_flp_Arbetsoperationer();
             //Order.Save_TempOrderInfo();
 
@@ -90,7 +85,7 @@ namespace DigitalProductionProgram.Processcards
 
         private void Translate_Form()
         {
-            LanguageManager.TranslationHelper.TranslateControls(new Control[]{ label_ChoosePC_Header, label_ChoosePC_Info_1, label_Info});
+            LanguageManager.TranslationHelper.TranslateControls([label_ChoosePC_Header, label_ChoosePC_Info_1, label_Info]);
         }
        
        

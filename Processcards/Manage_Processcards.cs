@@ -606,7 +606,6 @@ namespace DigitalProductionProgram.Processcards
                 Load_Processcard_Info();
             }
 
-
             Change_UI_Active_ArtikelNr();
             IsData_Loading = true;
 
@@ -1253,7 +1252,7 @@ namespace DigitalProductionProgram.Processcards
 
             ProcesscardBasedOn.Reset_ProcesscardStatus();
             IsUpdateProcesscard = false;
-            if (Order.PartID > 0 && IsData_Loading == false)
+            if (Order.PartID > 0 && !IsData_Loading && Order.PartID != null)
                 InfoText.Show(Properties.Resources.processcard_ChangeProdType, CustomColors.InfoText_Color.Warning , "Warning", this);
         }
         private void ArtikelNr_TextChanged(object sender, EventArgs e)
@@ -1592,6 +1591,14 @@ HS-Machine = {Equipment.Equipment.HS_Machine}", CustomColors.InfoText_Color.Info
         //------------------------- CLOSE -------------------------
         private void Lägg_till_nytt_Processkort_FormClosed(object sender, FormClosedEventArgs e)
         {
+            Order.PartNumber = null;
+            Order.RevNr = null;
+
+            Order.PartID = null;
+            Order.PartGroupID = null;
+            Order.ProdType = null;
+            Order.ProdLine = null;
+
             // Order.ProdLinje = org_ProdLinje;
             // Main_Form.Timer_UpdateChart.Start();
         }

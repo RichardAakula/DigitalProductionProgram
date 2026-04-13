@@ -15,9 +15,6 @@ namespace DigitalProductionProgram.Statistics
         private Label lbl_Status;
         private Label label_MeasurementParameters;
         private Label label_ProtocolParameters;
-        private Label label_FilterInfo_PartNumber;
-        private Label label_FilterInfo_PreFab_PartNumber;
-        private Label label_FilterInfo_PreFab_Description;
         private ComboBox cb_WorkOperation;
         private ComboBox cb_MeasureTemplate;
         private ComboBox cb_ProtocolTemplate;
@@ -25,7 +22,6 @@ namespace DigitalProductionProgram.Statistics
         private TextBox tb_FilterProtocolParameters;
         private TextBox tb_FilterPartNr;
         private TextBox tb_FilterPrefabPartNr;
-        private TextBox tb_FilterPrefabDescription;
         private ListBox lb_MeasureProtocolParameters;
         private ListBox lb_SelectedMeasureParameters;
         private ListBox lb_ProtocolParameters;
@@ -34,20 +30,16 @@ namespace DigitalProductionProgram.Statistics
         private ListBox lb_SelectedPartNr;
         private ListBox lb_PrefabPartNr;
         private ListBox lb_SelectedPrefabPartNr;
-        private ListBox lb_PrefabDescription;
-        private ListBox lb_SelectedPrefabDescription;
         private FlowLayoutPanel flpParameterAddActions;
         private FlowLayoutPanel flpFilterAddActions;
         private Button btn_AddMeasureParameter;
         private Button btn_AddOrder;
         private Button btn_AddPartNr;
         private Button btn_AddPrefabPartNr;
-        private Button btn_AddPrefabDescription;
         private Button btn_RemoveMeasure;
         private Button btn_RemoveOrder;
         private Button btn_RemovePartNr;
         private Button btn_RemovePrefabPartNr;
-        private Button btn_RemovePrefabDescription;
         private Button btnFetchData;
         private Button btn_StopSearch;
         private DataGridView dgv_Result;
@@ -82,26 +74,28 @@ namespace DigitalProductionProgram.Statistics
             btn_RemoveOrder = new Button();
             gb_Filter = new GroupBox();
             tlpPartNr = new TableLayoutPanel();
-            label_FilterInfo_PartNumber = new Label();
-            label_FilterInfo_PreFab_PartNumber = new Label();
-            label_FilterInfo_PreFab_Description = new Label();
             cb_WorkOperation = new ComboBox();
             tb_FilterPartNr = new TextBox();
             tb_FilterPrefabPartNr = new TextBox();
-            tb_FilterPrefabDescription = new TextBox();
             lb_PartNr = new ListBox();
             lb_SelectedPartNr = new ListBox();
             flpFilterAddActions = new FlowLayoutPanel();
             lb_PrefabPartNr = new ListBox();
             lb_SelectedPrefabPartNr = new ListBox();
-            lb_PrefabDescription = new ListBox();
-            lb_SelectedPrefabDescription = new ListBox();
             btn_AddPartNr = new Button();
             btn_RemovePartNr = new Button();
             btn_AddPrefabPartNr = new Button();
             btn_RemovePrefabPartNr = new Button();
-            btn_AddPrefabDescription = new Button();
-            btn_RemovePrefabDescription = new Button();
+            tb_FilterRawMaterialPartNr = new TextBox();
+            lb_RawMaterialPartNr = new ListBox();
+            lb_SelectedRawMaterialPartNr = new ListBox();
+            btn_AddRawMaterialPartNr = new Button();
+            tb_FilterRawMaterialDescription = new TextBox();
+            btn_RemoveRawMaterialDescription = new Button();
+            lb_RawMaterialDescription = new ListBox();
+            lb_SelectedRawMaterialDescription = new ListBox();
+            btn_AddRawMaterialDescription = new Button();
+            btn_RemoveRawMaterialPartNr = new Button();
             flpActions = new FlowLayoutPanel();
             btnFetchData = new Button();
             lbl_Status = new Label();
@@ -136,7 +130,7 @@ namespace DigitalProductionProgram.Statistics
             tlpMain.RowStyles.Add(new RowStyle(SizeType.Absolute, 308F));
             tlpMain.RowStyles.Add(new RowStyle(SizeType.Absolute, 54F));
             tlpMain.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            tlpMain.Size = new Size(1756, 961);
+            tlpMain.Size = new Size(1900, 961);
             tlpMain.TabIndex = 0;
             // 
             // lbl_Description
@@ -147,7 +141,7 @@ namespace DigitalProductionProgram.Statistics
             lbl_Description.ForeColor = Color.FromArgb(239, 228, 177);
             lbl_Description.Location = new Point(3, 0);
             lbl_Description.Name = "lbl_Description";
-            lbl_Description.Size = new Size(1750, 45);
+            lbl_Description.Size = new Size(1894, 45);
             lbl_Description.TabIndex = 0;
             lbl_Description.Text = "Välj parametrar och filter. \r\nTips: filtrera text genom att skriva i textrutan, eller *text for att visa poster som innehaller texten.";
             // 
@@ -159,7 +153,7 @@ namespace DigitalProductionProgram.Statistics
             gb_Parameters.Location = new Point(3, 48);
             gb_Parameters.Name = "gb_Parameters";
             gb_Parameters.Padding = new Padding(5);
-            gb_Parameters.Size = new Size(1750, 310);
+            gb_Parameters.Size = new Size(1894, 310);
             gb_Parameters.TabIndex = 1;
             gb_Parameters.TabStop = false;
             gb_Parameters.Text = "Parametrar";
@@ -169,7 +163,7 @@ namespace DigitalProductionProgram.Statistics
             tlpFilter.ColumnCount = 7;
             tlpFilter.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 150F));
             tlpFilter.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 150F));
-            tlpFilter.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 115F));
+            tlpFilter.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 50F));
             tlpFilter.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 200F));
             tlpFilter.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 200F));
             tlpFilter.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 115F));
@@ -198,7 +192,7 @@ namespace DigitalProductionProgram.Statistics
             tlpFilter.RowStyles.Add(new RowStyle(SizeType.Absolute, 28F));
             tlpFilter.RowStyles.Add(new RowStyle(SizeType.Absolute, 179F));
             tlpFilter.RowStyles.Add(new RowStyle(SizeType.Absolute, 15F));
-            tlpFilter.Size = new Size(1740, 284);
+            tlpFilter.Size = new Size(1884, 284);
             tlpFilter.TabIndex = 0;
             // 
             // label_MeasurementParameters
@@ -222,7 +216,7 @@ namespace DigitalProductionProgram.Statistics
             label_ProtocolParameters.Dock = DockStyle.Fill;
             label_ProtocolParameters.Font = new Font("Lucida Sans", 12F);
             label_ProtocolParameters.ForeColor = Color.FromArgb(187, 215, 228);
-            label_ProtocolParameters.Location = new Point(418, 0);
+            label_ProtocolParameters.Location = new Point(353, 0);
             label_ProtocolParameters.Name = "label_ProtocolParameters";
             label_ProtocolParameters.Size = new Size(394, 20);
             label_ProtocolParameters.TabIndex = 1;
@@ -246,7 +240,7 @@ namespace DigitalProductionProgram.Statistics
             cb_ProtocolTemplate.Dock = DockStyle.Fill;
             cb_ProtocolTemplate.DropDownStyle = ComboBoxStyle.DropDownList;
             cb_ProtocolTemplate.FormattingEnabled = true;
-            cb_ProtocolTemplate.Location = new Point(418, 23);
+            cb_ProtocolTemplate.Location = new Point(353, 23);
             cb_ProtocolTemplate.Name = "cb_ProtocolTemplate";
             cb_ProtocolTemplate.Size = new Size(394, 23);
             cb_ProtocolTemplate.TabIndex = 3;
@@ -265,7 +259,7 @@ namespace DigitalProductionProgram.Statistics
             // 
             tlpFilter.SetColumnSpan(tb_FilterProtocolParameters, 2);
             tb_FilterProtocolParameters.Dock = DockStyle.Fill;
-            tb_FilterProtocolParameters.Location = new Point(418, 51);
+            tb_FilterProtocolParameters.Location = new Point(353, 51);
             tb_FilterProtocolParameters.Name = "tb_FilterProtocolParameters";
             tb_FilterProtocolParameters.PlaceholderText = "Lägg till protokoll parametrar...";
             tb_FilterProtocolParameters.Size = new Size(394, 23);
@@ -300,9 +294,9 @@ namespace DigitalProductionProgram.Statistics
             flpParameterAddActions.AutoSize = true;
             flpParameterAddActions.Dock = DockStyle.Top;
             flpParameterAddActions.FlowDirection = FlowDirection.TopDown;
-            flpParameterAddActions.Location = new Point(933, 79);
+            flpParameterAddActions.Location = new Point(868, 79);
             flpParameterAddActions.Name = "flpParameterAddActions";
-            flpParameterAddActions.Size = new Size(804, 0);
+            flpParameterAddActions.Size = new Size(1013, 0);
             flpParameterAddActions.TabIndex = 11;
             flpParameterAddActions.WrapContents = false;
             // 
@@ -312,7 +306,7 @@ namespace DigitalProductionProgram.Statistics
             lb_ProtocolParameters.Dock = DockStyle.Fill;
             lb_ProtocolParameters.ForeColor = Color.FromArgb(255, 235, 156);
             lb_ProtocolParameters.ItemHeight = 15;
-            lb_ProtocolParameters.Location = new Point(418, 79);
+            lb_ProtocolParameters.Location = new Point(353, 79);
             lb_ProtocolParameters.Name = "lb_ProtocolParameters";
             lb_ProtocolParameters.SelectionMode = SelectionMode.MultiExtended;
             lb_ProtocolParameters.Size = new Size(194, 173);
@@ -324,7 +318,7 @@ namespace DigitalProductionProgram.Statistics
             lb_SelectedProtocolParameters.Dock = DockStyle.Fill;
             lb_SelectedProtocolParameters.ForeColor = Color.FromArgb(198, 239, 206);
             lb_SelectedProtocolParameters.ItemHeight = 15;
-            lb_SelectedProtocolParameters.Location = new Point(618, 79);
+            lb_SelectedProtocolParameters.Location = new Point(553, 79);
             lb_SelectedProtocolParameters.Name = "lb_SelectedProtocolParameters";
             lb_SelectedProtocolParameters.SelectionMode = SelectionMode.MultiExtended;
             lb_SelectedProtocolParameters.Size = new Size(194, 173);
@@ -369,7 +363,7 @@ namespace DigitalProductionProgram.Statistics
             btn_AddOrder.FlatStyle = FlatStyle.Flat;
             btn_AddOrder.Font = new Font("Segoe UI", 12F);
             btn_AddOrder.ForeColor = Color.FromArgb(0, 97, 0);
-            btn_AddOrder.Location = new Point(418, 258);
+            btn_AddOrder.Location = new Point(353, 258);
             btn_AddOrder.Name = "btn_AddOrder";
             btn_AddOrder.Size = new Size(30, 23);
             btn_AddOrder.TabIndex = 1;
@@ -384,7 +378,7 @@ namespace DigitalProductionProgram.Statistics
             btn_RemoveOrder.FlatStyle = FlatStyle.Flat;
             btn_RemoveOrder.Font = new Font("Segoe UI", 12F);
             btn_RemoveOrder.ForeColor = Color.FromArgb(156, 0, 6);
-            btn_RemoveOrder.Location = new Point(618, 258);
+            btn_RemoveOrder.Location = new Point(553, 258);
             btn_RemoveOrder.Name = "btn_RemoveOrder";
             btn_RemoveOrder.Size = new Size(30, 23);
             btn_RemoveOrder.TabIndex = 9;
@@ -400,44 +394,52 @@ namespace DigitalProductionProgram.Statistics
             gb_Filter.Location = new Point(3, 364);
             gb_Filter.Name = "gb_Filter";
             gb_Filter.Padding = new Padding(5);
-            gb_Filter.Size = new Size(1750, 302);
+            gb_Filter.Size = new Size(1894, 302);
             gb_Filter.TabIndex = 2;
             gb_Filter.TabStop = false;
             gb_Filter.Text = "Filter (valfritt)";
             // 
             // tlpPartNr
             // 
-            tlpPartNr.ColumnCount = 10;
+            tlpPartNr.ColumnCount = 16;
             tlpPartNr.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 150F));
             tlpPartNr.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 150F));
-            tlpPartNr.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 115F));
+            tlpPartNr.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 50F));
             tlpPartNr.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 150F));
             tlpPartNr.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 150F));
-            tlpPartNr.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 115F));
+            tlpPartNr.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 50F));
+            tlpPartNr.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 220F));
             tlpPartNr.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 200F));
+            tlpPartNr.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 50F));
+            tlpPartNr.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 150F));
             tlpPartNr.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 200F));
-            tlpPartNr.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 115F));
+            tlpPartNr.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 50F));
+            tlpPartNr.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 220F));
+            tlpPartNr.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 200F));
+            tlpPartNr.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 50F));
             tlpPartNr.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
-            tlpPartNr.Controls.Add(label_FilterInfo_PartNumber, 0, 0);
-            tlpPartNr.Controls.Add(label_FilterInfo_PreFab_PartNumber, 3, 0);
-            tlpPartNr.Controls.Add(label_FilterInfo_PreFab_Description, 6, 0);
             tlpPartNr.Controls.Add(cb_WorkOperation, 0, 1);
             tlpPartNr.Controls.Add(tb_FilterPartNr, 0, 2);
-            tlpPartNr.Controls.Add(tb_FilterPrefabPartNr, 3, 2);
-            tlpPartNr.Controls.Add(tb_FilterPrefabDescription, 6, 2);
+            tlpPartNr.Controls.Add(tb_FilterPrefabPartNr, 9, 2);
             tlpPartNr.Controls.Add(lb_PartNr, 0, 3);
             tlpPartNr.Controls.Add(lb_SelectedPartNr, 1, 3);
-            tlpPartNr.Controls.Add(flpFilterAddActions, 9, 3);
-            tlpPartNr.Controls.Add(lb_PrefabPartNr, 3, 3);
-            tlpPartNr.Controls.Add(lb_SelectedPrefabPartNr, 4, 3);
-            tlpPartNr.Controls.Add(lb_PrefabDescription, 6, 3);
-            tlpPartNr.Controls.Add(lb_SelectedPrefabDescription, 7, 3);
+            tlpPartNr.Controls.Add(flpFilterAddActions, 15, 3);
+            tlpPartNr.Controls.Add(lb_PrefabPartNr, 9, 3);
+            tlpPartNr.Controls.Add(lb_SelectedPrefabPartNr, 10, 3);
             tlpPartNr.Controls.Add(btn_AddPartNr, 0, 4);
             tlpPartNr.Controls.Add(btn_RemovePartNr, 1, 4);
-            tlpPartNr.Controls.Add(btn_AddPrefabPartNr, 3, 4);
-            tlpPartNr.Controls.Add(btn_RemovePrefabPartNr, 4, 4);
-            tlpPartNr.Controls.Add(btn_AddPrefabDescription, 6, 4);
-            tlpPartNr.Controls.Add(btn_RemovePrefabDescription, 7, 4);
+            tlpPartNr.Controls.Add(btn_AddPrefabPartNr, 9, 4);
+            tlpPartNr.Controls.Add(btn_RemovePrefabPartNr, 10, 4);
+            tlpPartNr.Controls.Add(tb_FilterRawMaterialPartNr, 3, 2);
+            tlpPartNr.Controls.Add(lb_RawMaterialPartNr, 3, 3);
+            tlpPartNr.Controls.Add(lb_SelectedRawMaterialPartNr, 4, 3);
+            tlpPartNr.Controls.Add(btn_AddRawMaterialPartNr, 3, 4);
+            tlpPartNr.Controls.Add(tb_FilterRawMaterialDescription, 6, 2);
+            tlpPartNr.Controls.Add(btn_RemoveRawMaterialDescription, 7, 4);
+            tlpPartNr.Controls.Add(lb_RawMaterialDescription, 6, 3);
+            tlpPartNr.Controls.Add(lb_SelectedRawMaterialDescription, 7, 3);
+            tlpPartNr.Controls.Add(btn_AddRawMaterialDescription, 6, 4);
+            tlpPartNr.Controls.Add(btn_RemoveRawMaterialPartNr, 4, 4);
             tlpPartNr.Dock = DockStyle.Fill;
             tlpPartNr.Location = new Point(5, 21);
             tlpPartNr.Name = "tlpPartNr";
@@ -447,44 +449,8 @@ namespace DigitalProductionProgram.Statistics
             tlpPartNr.RowStyles.Add(new RowStyle(SizeType.Absolute, 28F));
             tlpPartNr.RowStyles.Add(new RowStyle(SizeType.Absolute, 173F));
             tlpPartNr.RowStyles.Add(new RowStyle(SizeType.Absolute, 8F));
-            tlpPartNr.Size = new Size(1740, 276);
+            tlpPartNr.Size = new Size(1884, 276);
             tlpPartNr.TabIndex = 0;
-            // 
-            // label_FilterInfo_PartNumber
-            // 
-            tlpPartNr.SetColumnSpan(label_FilterInfo_PartNumber, 2);
-            label_FilterInfo_PartNumber.Dock = DockStyle.Fill;
-            label_FilterInfo_PartNumber.Font = new Font("Lucida Sans", 12F);
-            label_FilterInfo_PartNumber.ForeColor = Color.FromArgb(187, 215, 228);
-            label_FilterInfo_PartNumber.Location = new Point(3, 0);
-            label_FilterInfo_PartNumber.Name = "label_FilterInfo_PartNumber";
-            label_FilterInfo_PartNumber.Size = new Size(294, 20);
-            label_FilterInfo_PartNumber.TabIndex = 0;
-            label_FilterInfo_PartNumber.Text = "Filtrera ArtikelNummer";
-            // 
-            // label_FilterInfo_PreFab_PartNumber
-            // 
-            tlpPartNr.SetColumnSpan(label_FilterInfo_PreFab_PartNumber, 2);
-            label_FilterInfo_PreFab_PartNumber.Dock = DockStyle.Fill;
-            label_FilterInfo_PreFab_PartNumber.Font = new Font("Lucida Sans", 12F);
-            label_FilterInfo_PreFab_PartNumber.ForeColor = Color.FromArgb(187, 215, 228);
-            label_FilterInfo_PreFab_PartNumber.Location = new Point(418, 0);
-            label_FilterInfo_PreFab_PartNumber.Name = "label_FilterInfo_PreFab_PartNumber";
-            label_FilterInfo_PreFab_PartNumber.Size = new Size(294, 20);
-            label_FilterInfo_PreFab_PartNumber.TabIndex = 1;
-            label_FilterInfo_PreFab_PartNumber.Text = "Filtrera Halvfabrikat ArtikelNummer";
-            // 
-            // label_FilterInfo_PreFab_Description
-            // 
-            tlpPartNr.SetColumnSpan(label_FilterInfo_PreFab_Description, 2);
-            label_FilterInfo_PreFab_Description.Dock = DockStyle.Fill;
-            label_FilterInfo_PreFab_Description.Font = new Font("Lucida Sans", 12F);
-            label_FilterInfo_PreFab_Description.ForeColor = Color.FromArgb(187, 215, 228);
-            label_FilterInfo_PreFab_Description.Location = new Point(833, 0);
-            label_FilterInfo_PreFab_Description.Name = "label_FilterInfo_PreFab_Description";
-            label_FilterInfo_PreFab_Description.Size = new Size(394, 20);
-            label_FilterInfo_PreFab_Description.TabIndex = 2;
-            label_FilterInfo_PreFab_Description.Text = "Filtrera Halvfabrikat Benämning";
             // 
             // cb_WorkOperation
             // 
@@ -511,21 +477,11 @@ namespace DigitalProductionProgram.Statistics
             // 
             tlpPartNr.SetColumnSpan(tb_FilterPrefabPartNr, 2);
             tb_FilterPrefabPartNr.Dock = DockStyle.Fill;
-            tb_FilterPrefabPartNr.Location = new Point(418, 51);
+            tb_FilterPrefabPartNr.Location = new Point(1173, 51);
             tb_FilterPrefabPartNr.Name = "tb_FilterPrefabPartNr";
-            tb_FilterPrefabPartNr.PlaceholderText = "Filtrerar Halvfabrikatets artikelnummer...";
-            tb_FilterPrefabPartNr.Size = new Size(294, 23);
+            tb_FilterPrefabPartNr.PlaceholderText = "Filtrerar på Halvfabrikatets Artikelnummer...";
+            tb_FilterPrefabPartNr.Size = new Size(344, 23);
             tb_FilterPrefabPartNr.TabIndex = 5;
-            // 
-            // tb_FilterPrefabDescription
-            // 
-            tlpPartNr.SetColumnSpan(tb_FilterPrefabDescription, 2);
-            tb_FilterPrefabDescription.Dock = DockStyle.Fill;
-            tb_FilterPrefabDescription.Location = new Point(833, 51);
-            tb_FilterPrefabDescription.Name = "tb_FilterPrefabDescription";
-            tb_FilterPrefabDescription.PlaceholderText = "Filtrerar Halvfabrikatets benämning...";
-            tb_FilterPrefabDescription.Size = new Size(394, 23);
-            tb_FilterPrefabDescription.TabIndex = 6;
             // 
             // lb_PartNr
             // 
@@ -556,9 +512,9 @@ namespace DigitalProductionProgram.Statistics
             flpFilterAddActions.AutoSize = true;
             flpFilterAddActions.Dock = DockStyle.Top;
             flpFilterAddActions.FlowDirection = FlowDirection.TopDown;
-            flpFilterAddActions.Location = new Point(1348, 79);
+            flpFilterAddActions.Location = new Point(2043, 79);
             flpFilterAddActions.Name = "flpFilterAddActions";
-            flpFilterAddActions.Size = new Size(389, 0);
+            flpFilterAddActions.Size = new Size(1, 0);
             flpFilterAddActions.TabIndex = 15;
             flpFilterAddActions.WrapContents = false;
             // 
@@ -568,7 +524,7 @@ namespace DigitalProductionProgram.Statistics
             lb_PrefabPartNr.Dock = DockStyle.Fill;
             lb_PrefabPartNr.ForeColor = Color.FromArgb(255, 235, 156);
             lb_PrefabPartNr.ItemHeight = 15;
-            lb_PrefabPartNr.Location = new Point(418, 79);
+            lb_PrefabPartNr.Location = new Point(1173, 79);
             lb_PrefabPartNr.Name = "lb_PrefabPartNr";
             lb_PrefabPartNr.SelectionMode = SelectionMode.MultiExtended;
             lb_PrefabPartNr.Size = new Size(144, 167);
@@ -580,35 +536,11 @@ namespace DigitalProductionProgram.Statistics
             lb_SelectedPrefabPartNr.Dock = DockStyle.Fill;
             lb_SelectedPrefabPartNr.ForeColor = Color.FromArgb(198, 239, 206);
             lb_SelectedPrefabPartNr.ItemHeight = 15;
-            lb_SelectedPrefabPartNr.Location = new Point(568, 79);
+            lb_SelectedPrefabPartNr.Location = new Point(1323, 79);
             lb_SelectedPrefabPartNr.Name = "lb_SelectedPrefabPartNr";
             lb_SelectedPrefabPartNr.SelectionMode = SelectionMode.MultiExtended;
-            lb_SelectedPrefabPartNr.Size = new Size(144, 167);
+            lb_SelectedPrefabPartNr.Size = new Size(194, 167);
             lb_SelectedPrefabPartNr.TabIndex = 11;
-            // 
-            // lb_PrefabDescription
-            // 
-            lb_PrefabDescription.BackColor = Color.FromArgb(25, 25, 25);
-            lb_PrefabDescription.Dock = DockStyle.Fill;
-            lb_PrefabDescription.ForeColor = Color.FromArgb(255, 235, 156);
-            lb_PrefabDescription.ItemHeight = 15;
-            lb_PrefabDescription.Location = new Point(833, 79);
-            lb_PrefabDescription.Name = "lb_PrefabDescription";
-            lb_PrefabDescription.SelectionMode = SelectionMode.MultiExtended;
-            lb_PrefabDescription.Size = new Size(194, 167);
-            lb_PrefabDescription.TabIndex = 12;
-            // 
-            // lb_SelectedPrefabDescription
-            // 
-            lb_SelectedPrefabDescription.BackColor = Color.FromArgb(25, 25, 25);
-            lb_SelectedPrefabDescription.Dock = DockStyle.Fill;
-            lb_SelectedPrefabDescription.ForeColor = Color.FromArgb(198, 239, 206);
-            lb_SelectedPrefabDescription.ItemHeight = 15;
-            lb_SelectedPrefabDescription.Location = new Point(1033, 79);
-            lb_SelectedPrefabDescription.Name = "lb_SelectedPrefabDescription";
-            lb_SelectedPrefabDescription.SelectionMode = SelectionMode.MultiExtended;
-            lb_SelectedPrefabDescription.Size = new Size(194, 167);
-            lb_SelectedPrefabDescription.TabIndex = 13;
             // 
             // btn_AddPartNr
             // 
@@ -649,7 +581,7 @@ namespace DigitalProductionProgram.Statistics
             btn_AddPrefabPartNr.FlatStyle = FlatStyle.Flat;
             btn_AddPrefabPartNr.Font = new Font("Segoe UI", 12F);
             btn_AddPrefabPartNr.ForeColor = Color.FromArgb(0, 97, 0);
-            btn_AddPrefabPartNr.Location = new Point(418, 252);
+            btn_AddPrefabPartNr.Location = new Point(1173, 252);
             btn_AddPrefabPartNr.Name = "btn_AddPrefabPartNr";
             btn_AddPrefabPartNr.Size = new Size(30, 21);
             btn_AddPrefabPartNr.TabIndex = 1;
@@ -664,7 +596,7 @@ namespace DigitalProductionProgram.Statistics
             btn_RemovePrefabPartNr.FlatStyle = FlatStyle.Flat;
             btn_RemovePrefabPartNr.Font = new Font("Segoe UI", 12F);
             btn_RemovePrefabPartNr.ForeColor = Color.FromArgb(156, 0, 6);
-            btn_RemovePrefabPartNr.Location = new Point(568, 252);
+            btn_RemovePrefabPartNr.Location = new Point(1323, 252);
             btn_RemovePrefabPartNr.Name = "btn_RemovePrefabPartNr";
             btn_RemovePrefabPartNr.Size = new Size(30, 21);
             btn_RemovePrefabPartNr.TabIndex = 11;
@@ -672,36 +604,135 @@ namespace DigitalProductionProgram.Statistics
             btn_RemovePrefabPartNr.UseCompatibleTextRendering = true;
             btn_RemovePrefabPartNr.UseVisualStyleBackColor = false;
             // 
-            // btn_AddPrefabDescription
+            // tb_FilterRawMaterialPartNr
             // 
-            btn_AddPrefabDescription.AutoSize = true;
-            btn_AddPrefabDescription.BackColor = Color.FromArgb(198, 239, 206);
-            btn_AddPrefabDescription.Dock = DockStyle.Left;
-            btn_AddPrefabDescription.FlatStyle = FlatStyle.Flat;
-            btn_AddPrefabDescription.Font = new Font("Segoe UI", 12F);
-            btn_AddPrefabDescription.ForeColor = Color.FromArgb(0, 97, 0);
-            btn_AddPrefabDescription.Location = new Point(833, 252);
-            btn_AddPrefabDescription.Name = "btn_AddPrefabDescription";
-            btn_AddPrefabDescription.Size = new Size(30, 21);
-            btn_AddPrefabDescription.TabIndex = 2;
-            btn_AddPrefabDescription.Text = "+";
-            btn_AddPrefabDescription.UseCompatibleTextRendering = true;
-            btn_AddPrefabDescription.UseVisualStyleBackColor = false;
+            tlpPartNr.SetColumnSpan(tb_FilterRawMaterialPartNr, 2);
+            tb_FilterRawMaterialPartNr.Dock = DockStyle.Fill;
+            tb_FilterRawMaterialPartNr.Location = new Point(353, 51);
+            tb_FilterRawMaterialPartNr.Name = "tb_FilterRawMaterialPartNr";
+            tb_FilterRawMaterialPartNr.PlaceholderText = "Filtrerar Råmaterialets Artikelnummer...";
+            tb_FilterRawMaterialPartNr.Size = new Size(294, 23);
+            tb_FilterRawMaterialPartNr.TabIndex = 17;
             // 
-            // btn_RemovePrefabDescription
+            // lb_RawMaterialPartNr
             // 
-            btn_RemovePrefabDescription.BackColor = Color.FromArgb(255, 199, 206);
-            btn_RemovePrefabDescription.Dock = DockStyle.Left;
-            btn_RemovePrefabDescription.FlatStyle = FlatStyle.Flat;
-            btn_RemovePrefabDescription.Font = new Font("Segoe UI", 12F);
-            btn_RemovePrefabDescription.ForeColor = Color.FromArgb(156, 0, 6);
-            btn_RemovePrefabDescription.Location = new Point(1033, 252);
-            btn_RemovePrefabDescription.Name = "btn_RemovePrefabDescription";
-            btn_RemovePrefabDescription.Size = new Size(30, 21);
-            btn_RemovePrefabDescription.TabIndex = 14;
-            btn_RemovePrefabDescription.Text = "-";
-            btn_RemovePrefabDescription.UseCompatibleTextRendering = true;
-            btn_RemovePrefabDescription.UseVisualStyleBackColor = false;
+            lb_RawMaterialPartNr.BackColor = Color.FromArgb(25, 25, 25);
+            lb_RawMaterialPartNr.Dock = DockStyle.Fill;
+            lb_RawMaterialPartNr.ForeColor = Color.FromArgb(255, 235, 156);
+            lb_RawMaterialPartNr.ItemHeight = 15;
+            lb_RawMaterialPartNr.Location = new Point(353, 79);
+            lb_RawMaterialPartNr.Name = "lb_RawMaterialPartNr";
+            lb_RawMaterialPartNr.SelectionMode = SelectionMode.MultiExtended;
+            lb_RawMaterialPartNr.Size = new Size(144, 167);
+            lb_RawMaterialPartNr.TabIndex = 18;
+            // 
+            // lb_SelectedRawMaterialPartNr
+            // 
+            lb_SelectedRawMaterialPartNr.BackColor = Color.FromArgb(25, 25, 25);
+            lb_SelectedRawMaterialPartNr.Dock = DockStyle.Fill;
+            lb_SelectedRawMaterialPartNr.ForeColor = Color.FromArgb(198, 239, 206);
+            lb_SelectedRawMaterialPartNr.ItemHeight = 15;
+            lb_SelectedRawMaterialPartNr.Location = new Point(503, 79);
+            lb_SelectedRawMaterialPartNr.Name = "lb_SelectedRawMaterialPartNr";
+            lb_SelectedRawMaterialPartNr.SelectionMode = SelectionMode.MultiExtended;
+            lb_SelectedRawMaterialPartNr.Size = new Size(144, 167);
+            lb_SelectedRawMaterialPartNr.TabIndex = 19;
+            // 
+            // btn_AddRawMaterialPartNr
+            // 
+            btn_AddRawMaterialPartNr.AutoSize = true;
+            btn_AddRawMaterialPartNr.BackColor = Color.FromArgb(198, 239, 206);
+            btn_AddRawMaterialPartNr.Dock = DockStyle.Left;
+            btn_AddRawMaterialPartNr.FlatStyle = FlatStyle.Flat;
+            btn_AddRawMaterialPartNr.Font = new Font("Segoe UI", 12F);
+            btn_AddRawMaterialPartNr.ForeColor = Color.FromArgb(0, 97, 0);
+            btn_AddRawMaterialPartNr.Location = new Point(353, 252);
+            btn_AddRawMaterialPartNr.Name = "btn_AddRawMaterialPartNr";
+            btn_AddRawMaterialPartNr.Size = new Size(30, 21);
+            btn_AddRawMaterialPartNr.TabIndex = 20;
+            btn_AddRawMaterialPartNr.Text = "+";
+            btn_AddRawMaterialPartNr.UseCompatibleTextRendering = true;
+            btn_AddRawMaterialPartNr.UseVisualStyleBackColor = false;
+            // 
+            // tb_FilterRawMaterialDescription
+            // 
+            tlpPartNr.SetColumnSpan(tb_FilterRawMaterialDescription, 2);
+            tb_FilterRawMaterialDescription.Dock = DockStyle.Fill;
+            tb_FilterRawMaterialDescription.Location = new Point(703, 51);
+            tb_FilterRawMaterialDescription.Name = "tb_FilterRawMaterialDescription";
+            tb_FilterRawMaterialDescription.PlaceholderText = "Filtrerar på Råmaterialets Benämning...";
+            tb_FilterRawMaterialDescription.Size = new Size(414, 23);
+            tb_FilterRawMaterialDescription.TabIndex = 5;
+            // 
+            // btn_RemoveRawMaterialDescription
+            // 
+            btn_RemoveRawMaterialDescription.BackColor = Color.FromArgb(255, 199, 206);
+            btn_RemoveRawMaterialDescription.Dock = DockStyle.Left;
+            btn_RemoveRawMaterialDescription.FlatStyle = FlatStyle.Flat;
+            btn_RemoveRawMaterialDescription.Font = new Font("Segoe UI", 12F);
+            btn_RemoveRawMaterialDescription.ForeColor = Color.FromArgb(156, 0, 6);
+            btn_RemoveRawMaterialDescription.Location = new Point(923, 252);
+            btn_RemoveRawMaterialDescription.Name = "btn_RemoveRawMaterialDescription";
+            btn_RemoveRawMaterialDescription.Size = new Size(30, 21);
+            btn_RemoveRawMaterialDescription.TabIndex = 11;
+            btn_RemoveRawMaterialDescription.Text = "-";
+            btn_RemoveRawMaterialDescription.UseCompatibleTextRendering = true;
+            btn_RemoveRawMaterialDescription.UseVisualStyleBackColor = false;
+            // 
+            // lb_RawMaterialDescription
+            // 
+            lb_RawMaterialDescription.BackColor = Color.FromArgb(25, 25, 25);
+            lb_RawMaterialDescription.Dock = DockStyle.Fill;
+            lb_RawMaterialDescription.ForeColor = Color.FromArgb(255, 235, 156);
+            lb_RawMaterialDescription.ItemHeight = 15;
+            lb_RawMaterialDescription.Location = new Point(703, 79);
+            lb_RawMaterialDescription.Name = "lb_RawMaterialDescription";
+            lb_RawMaterialDescription.SelectionMode = SelectionMode.MultiExtended;
+            lb_RawMaterialDescription.Size = new Size(214, 167);
+            lb_RawMaterialDescription.TabIndex = 12;
+            // 
+            // lb_SelectedRawMaterialDescription
+            // 
+            lb_SelectedRawMaterialDescription.BackColor = Color.FromArgb(25, 25, 25);
+            lb_SelectedRawMaterialDescription.Dock = DockStyle.Fill;
+            lb_SelectedRawMaterialDescription.ForeColor = Color.FromArgb(198, 239, 206);
+            lb_SelectedRawMaterialDescription.ItemHeight = 15;
+            lb_SelectedRawMaterialDescription.Location = new Point(923, 79);
+            lb_SelectedRawMaterialDescription.Name = "lb_SelectedRawMaterialDescription";
+            lb_SelectedRawMaterialDescription.SelectionMode = SelectionMode.MultiExtended;
+            lb_SelectedRawMaterialDescription.Size = new Size(194, 167);
+            lb_SelectedRawMaterialDescription.TabIndex = 13;
+            // 
+            // btn_AddRawMaterialDescription
+            // 
+            btn_AddRawMaterialDescription.AutoSize = true;
+            btn_AddRawMaterialDescription.BackColor = Color.FromArgb(198, 239, 206);
+            btn_AddRawMaterialDescription.Dock = DockStyle.Left;
+            btn_AddRawMaterialDescription.FlatStyle = FlatStyle.Flat;
+            btn_AddRawMaterialDescription.Font = new Font("Segoe UI", 12F);
+            btn_AddRawMaterialDescription.ForeColor = Color.FromArgb(0, 97, 0);
+            btn_AddRawMaterialDescription.Location = new Point(703, 252);
+            btn_AddRawMaterialDescription.Name = "btn_AddRawMaterialDescription";
+            btn_AddRawMaterialDescription.Size = new Size(30, 21);
+            btn_AddRawMaterialDescription.TabIndex = 23;
+            btn_AddRawMaterialDescription.Text = "+";
+            btn_AddRawMaterialDescription.UseCompatibleTextRendering = true;
+            btn_AddRawMaterialDescription.UseVisualStyleBackColor = false;
+            // 
+            // btn_RemoveRawMaterialPartNr
+            // 
+            btn_RemoveRawMaterialPartNr.BackColor = Color.FromArgb(255, 199, 206);
+            btn_RemoveRawMaterialPartNr.Dock = DockStyle.Left;
+            btn_RemoveRawMaterialPartNr.FlatStyle = FlatStyle.Flat;
+            btn_RemoveRawMaterialPartNr.Font = new Font("Segoe UI", 12F);
+            btn_RemoveRawMaterialPartNr.ForeColor = Color.FromArgb(156, 0, 6);
+            btn_RemoveRawMaterialPartNr.Location = new Point(503, 252);
+            btn_RemoveRawMaterialPartNr.Name = "btn_RemoveRawMaterialPartNr";
+            btn_RemoveRawMaterialPartNr.Size = new Size(30, 21);
+            btn_RemoveRawMaterialPartNr.TabIndex = 11;
+            btn_RemoveRawMaterialPartNr.Text = "-";
+            btn_RemoveRawMaterialPartNr.UseCompatibleTextRendering = true;
+            btn_RemoveRawMaterialPartNr.UseVisualStyleBackColor = false;
             // 
             // flpActions
             // 
@@ -713,7 +744,7 @@ namespace DigitalProductionProgram.Statistics
             flpActions.Dock = DockStyle.Top;
             flpActions.Location = new Point(3, 672);
             flpActions.Name = "flpActions";
-            flpActions.Size = new Size(1750, 45);
+            flpActions.Size = new Size(1894, 45);
             flpActions.TabIndex = 3;
             // 
             // btnFetchData
@@ -774,15 +805,16 @@ namespace DigitalProductionProgram.Statistics
             dgv_Result.Dock = DockStyle.Fill;
             dgv_Result.Location = new Point(3, 726);
             dgv_Result.Name = "dgv_Result";
-            dgv_Result.Size = new Size(1750, 232);
+            dgv_Result.Size = new Size(1894, 232);
             dgv_Result.TabIndex = 4;
+            dgv_Result.VirtualMode = true;
             // 
             // ParameterDataSearch
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(6, 81, 87);
-            ClientSize = new Size(1780, 985);
+            ClientSize = new Size(1924, 985);
             Controls.Add(tlpMain);
             ForeColor = Color.Gainsboro;
             MinimumSize = new Size(1200, 700);
@@ -849,6 +881,17 @@ namespace DigitalProductionProgram.Statistics
             button.UseVisualStyleBackColor = false;
         }
         private Button btn_ExportToCsv;
+        private TextBox tb_FilterRawMaterialPartNr;
+        private ListBox lb_RawMaterialPartNr;
+        private ListBox lb_SelectedRawMaterialPartNr;
+        private TextBox tb_FilterRawMaterialDescription;
+       
+        private Button btn_RemoveRawMaterialDescription;
+        private ListBox lb_RawMaterialDescription;
+        private ListBox lb_SelectedRawMaterialDescription;
+        private Button btn_AddRawMaterialPartNr;
+        private Button btn_AddRawMaterialDescription;
+        private Button btn_RemoveRawMaterialPartNr;
     }
 }
 

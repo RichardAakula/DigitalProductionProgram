@@ -392,240 +392,279 @@ namespace DigitalProductionProgram.Övrigt
         public static class Get_QuoteData
         {
             public static void TransferData()
+    {
+        var sb = new StringBuilder();
+
+        // ⚡ Byt till rätt progressbar
+        var pbar = new CustomProgressBar(2);
+        pbar.Show();
+        Application.DoEvents();
+
+        var dt = new DataTable();
+        string[] ColumnNames =
+        {
+            "WorkOperation", "PartID", "PartNr", "Kund", "Extruder", "Benämning", "Produkttyp", "Draghastighet",
+            "Antal Avg", "Antal StdDev", "Enhet", "Munstycke", "Kärna",
+            "ID AVG", "ID STDDEV", "OD AVG", "OD STDDEV", "WALL AVG", "WALL STDDEV", "LENGTH AVG", "LENTH STDDEV",
+            "Krage OD AVG", "Krage OD STDDEV", "MainBody ID AVG", "MainBody ID STDDEV", "Tapered ID AVG", "Tapered ID STDDEV",
+            "Gap Overtube AVG", "Gap Overtube STDDEV", "Tapered Flared OD AVG", "Tapered Flared OD STDDEV", "Length Overtube AVG", "Length Overtube STDDEV",
+            "MainBody Flared OD AVG", "MainBody Flared OD STDDEV", "Tapered OD AVG", "Tapered OD STDDEV",
+            "MainBody OD AVG", "MainBody OD STDDEV", "ExpID AVG", "ExpID STDDEV", "ExpOD AVG", "ExpOD STDDEV",
+            "ExpWall AVG", "ExpWall STDDEV", "RecID AVG", "RecID STDDEV", "RecOD AVG", "RecOD STDDEV", "RecWall AVG", "RecWall STDDEV"
+        };
+        foreach (var ColumnName in ColumnNames)
+            dt.Columns.Add(ColumnName);
+
+        using (var con = new SqlConnection(Database.cs_Protocol))
+        {
+            var query = @"
+            SELECT Name, PartID, PartNr, Customer, ProdLine, main.Description, ProdType, Amount, Unit
+            FROM [Order].MainData as main
+            JOIN WorkOperation.Names as names
+                ON main.WorkoperationID = names.ID
+            ORDER BY Date_Start, PartNr, RevNr DESC";
+
+            var cmd = new SqlCommand(query, con); 
+            ServerStatus.Add_Sql_Counter();
+
+            con.Open();
+            var reader = cmd.ExecuteReader();
+
+            while (reader.Read())
             {
-                var sb = new StringBuilder();
-
-                var pbar = new ProgressBar();
-                pbar.Show();
-                var dt = new DataTable();
-                string[] ColumnNames =
+                var partnr = reader["PartNr"].ToString();
+                var IsOk = dt.AsEnumerable().Any(row => partnr == row.Field<string>("PartNr"));
+                if (!IsOk)
                 {
-                    "WorkOperation", "PartID", "PartNr", "Kund", "Extruder", "Benämning", "Produkttyp", "Draghastighet", "Antal Avg", "Antal StdDev", "Enhet", "Munstycke", "Kärna",
-                    "ID AVG", "ID STDDEV", "OD AVG", "OD STDDEV", "WALL AVG", "WALL STDDEV", "LENGTH AVG", "LENTH STDDEV", "Krage OD AVG", "Krage OD STDDEV", "MainBody ID AVG", "MainBody ID STDDEV", "Tapered ID AVG", "Tapered ID STDDEV",
-                    "Gap Overtube AVG", "Gap Overtube STDDEV", "Tapered Flared OD AVG", "Tapered Flared OD STDDEV", "Length Overtube AVG", "Length Overtube STDDEV", "MainBody Flared OD AVG", "MainBody Flared OD STDDEV", "Tapered OD AVG", "Tapered OD STDDEV",
-                    "MainBody OD AVG", "MainBody OD STDDEV", "ExpID AVG", "ExpID STDDEV", "ExpOD AVG", "ExpOD STDDEV", "ExpWall AVG", "ExpWall STDDEV", "RecID AVG", "RecID STDDEV", "RecOD AVG", "RecOD STDDEV", "RecWall AVG", "RecWall STDDEV"
-                };
-                foreach (var ColumnName in ColumnNames)
-                    dt.Columns.Add(ColumnName);
+                    dt.Rows.Add();
+                    dt.Rows[^1][0] = reader["Name"].ToString();
 
+                    if (int.TryParse(reader["PartID"].ToString(), out var partid))
+                        dt.Rows[^1][1] = partid;
 
-
-
-                using (var con = new SqlConnection(Database.cs_Protocol))
-                {
-                    var query = @"
-                    SELECT Name, PartID, PartNr, Customer, ProdLine, main.Description, ProdType, Amount, Unit
-                    FROM [Order].MainData as main
-                    JOIN WorkOperation.Names as names
-                        ON main.WorkoperationID = names.ID
-                   
-                    ORDER BY Date_Start, PartNr, RevNr DESC";
-                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-
-                    con.Open();
-                    var reader = cmd.ExecuteReader();
-                    while (reader.Read())
-                    {
-                        var partnr = reader["PartNr"].ToString();
-                        var IsOk = dt.AsEnumerable().Any(row => partnr == row.Field<string>("PartNr"));
-                        if (IsOk == false)
-                        {
-                            dt.Rows.Add();
-                            dt.Rows[dt.Rows.Count - 1][0] = reader["Name"].ToString();
-
-                            if (int.TryParse(reader["PartID"].ToString(), out var partid))
-                                dt.Rows[dt.Rows.Count - 1][1] = partid;
-                            dt.Rows[dt.Rows.Count - 1][2] = partnr;
-                            dt.Rows[dt.Rows.Count - 1][3] = reader["Customer"].ToString();
-                            dt.Rows[dt.Rows.Count - 1][4] = reader["ProdLine"].ToString();
-                            dt.Rows[dt.Rows.Count - 1][5] = reader["Description"].ToString();
-                            dt.Rows[dt.Rows.Count - 1][6] = reader["ProdType"].ToString();
-
-                            dt.Rows[dt.Rows.Count - 1][10] = reader["Unit"].ToString();
-                        }
-                    }
+                    dt.Rows[^1][2] = partnr;
+                    dt.Rows[^1][3] = reader["Customer"].ToString();
+                    dt.Rows[^1][4] = reader["ProdLine"].ToString();
+                    dt.Rows[^1][5] = reader["Description"].ToString();
+                    dt.Rows[^1][6] = reader["ProdType"].ToString();
+                    dt.Rows[^1][10] = reader["Unit"].ToString();
                 }
-
-                pbar.Set_ValueProgressBar(0, "Laddar Draghastighet, Verktyg...");
-                //Antal
-                foreach (DataRow row in dt.Rows)
-                {
-                    if (int.TryParse(row[1].ToString(), out var partid))
-                    {
-                        row[8] = Math.Round(Avg_Value(partid, null), 2);
-                        row[9] = Math.Round(STDDEV_Value(partid), 2);
-                    }
-                    else
-                    {
-                        row[8] = Math.Round(Avg_Value(0, row[2].ToString()), 2);
-                        row[9] = Math.Round(STDDEV_Value(0, row[2].ToString()), 2);
-                    }
-
-
-                }
-
-                //Draghastighet
-                foreach (DataRow row in dt.Rows)
-                {
-                    var protocoldescriptionid = 0;
-                    switch (row[0])
-                    {
-                        case "Extrudering_Termo":
-                        case "Extrudering_Tryck":
-                        case "Extrudering_FEP":
-                        case "Extrudering_Grov_PTFE":
-                        case "Extrudering_PTFE":
-                            protocoldescriptionid = 99;
-                            break;
-                        case "Hackning_PTFE":
-                            protocoldescriptionid = 5;
-                            break;
-                        case "Krympslangsblåsning":
-                            protocoldescriptionid = 60;
-                            break;
-                        case "Hackning_TEF":
-                            protocoldescriptionid = 126;
-                            break;
-
-                    }
-
-                    if (protocoldescriptionid > 0)
-                    {
-                        if (int.TryParse(row[1].ToString(), out var partid))
-                            row[7] = Math.Round(Avg_Value(protocoldescriptionid, partid), 2);
-                        else
-                            row[7] = Math.Round(Avg_Value(protocoldescriptionid, 0, row[2].ToString()), 2);
-                    }
-                }
-
-                //Munstycke
-                foreach (DataRow row in dt.Rows)
-                {
-                    var protocoldescriptionid = 83;
-
-                    if (int.TryParse(row[1].ToString(), out var partid))
-                        row[11] = LastValue(protocoldescriptionid, partid);
-                    else
-                        row[11] = LastValue(protocoldescriptionid, 0, row[2].ToString());
-                }
-
-                //Kärna
-                foreach (DataRow row in dt.Rows)
-                {
-                    var protocoldescriptionid = 0;
-                    switch (row[0])
-                    {
-                        case "Extrudering_Termo":
-                        case "Extrudering_Tryck":
-                        case "Extrudering_FEP":
-
-                            protocoldescriptionid = 209;
-                            break;
-                        case "Extrudering_Grov_PTFE":
-                        case "Extrudering_PTFE":
-                            protocoldescriptionid = 84;
-                            break;
-                    }
-
-                    if (protocoldescriptionid > 0)
-                    {
-                        if (int.TryParse(row[1].ToString(), out var partid))
-                            row[12] = LastValue(protocoldescriptionid, partid);
-                        else
-                            row[12] = LastValue(protocoldescriptionid, 0, row[2].ToString());
-                    }
-                }
-
-                //Halvfabrikat
-                double percent = 0;
-                double step_Value = 100f / dt.Rows.Count;
-                foreach (DataRow row in dt.Rows)
-                {
-                    using (var con = new SqlConnection(Database.cs_Protocol))
-                    {
-                        int.TryParse(row[1].ToString(), out var partid);
-                        string query;
-                        var column = 51;
-
-                        if (partid == 0)
-                            query = "SELECT Halvfabrikat_ArtikelNr, Halvfabrikat_Benämning FROM [Order].PreFab WHERE OrderID IN (SELECT TOP(1) OrderID FROM [Order].MainData WHERE PartNr = @partnr ORDER BY Date_Start DESC)";
-                        else
-                            query = "SELECT Halvfabrikat_ArtikelNr, Halvfabrikat_Benämning FROM [Order].PreFab WHERE OrderID IN (SELECT TOP(1) OrderID FROM [Order].MainData WHERE PartID = @partid ORDER BY Date_Start DESC)";
-                        var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-
-                        con.Open();
-                        cmd.Parameters.AddWithValue("@partid", partid);
-                        SQL_Parameter.String(cmd.Parameters, "@partnr", row[2].ToString());
-                        var reader = cmd.ExecuteReader();
-
-                        while (reader.Read())
-                        {
-                            if (column >= dt.Columns.Count - 1)
-                            {
-                                dt.Columns.Add($"Halvfabrikat PartNr {column - 51}", typeof(string));
-                                dt.Columns.Add($"Halvfabrikat Benämning {column - 51}", typeof(string));
-                            }
-
-                            row[column] = reader[0].ToString();
-                            row[column + 1] = reader[1].ToString();
-                            column += 2;
-                        }
-
-                        percent += step_Value;
-                        pbar.Set_ValueProgressBar(percent, "Laddar Halvfabrikat...");
-                    }
-
-                    percent = 0;
-                }
-
-                //Mått                          ID OD   Wall Length
-                int[] protocoldescriptionids = { 1, 11, 18, 34, 8, 2, 3, 5, 6, 7, 8, 9, 10, 14, 16, 22, 15, 17, 23 };
-
-                foreach (DataRow row in dt.Rows)
-                {
-                    var colIndex = 13;
-                    percent += step_Value;
-                    pbar.Set_ValueProgressBar(percent, "Laddar Måtten...");
-
-                    foreach (var descriptionID in protocoldescriptionids)
-                    {
-                        if (int.TryParse(row[1].ToString(), out var partid))
-                        {
-                            if (descriptionID == 34 && row[9].ToString() == "m")
-                                row[colIndex] = row[colIndex + 1] = 1;
-                            else
-                            {
-                                row[colIndex] = Math.Round(AVG_MeasureValue(descriptionID, partid), 3);
-                                row[colIndex + 1] = Math.Round(STDDEV_MeasureValue(descriptionID, partid), 3);
-                            }
-                        }
-
-                        else
-                        {
-                            if (descriptionID == 34 && row[9].ToString() == "m")
-                                row[colIndex] = row[colIndex + 1] = 1;
-                            else
-                            {
-                                row[colIndex] = Math.Round(AVG_MeasureValue(descriptionID, 0, row[2].ToString()), 3);
-                                row[colIndex + 1] = Math.Round(STDDEV_MeasureValue(descriptionID, 0, row[2].ToString()), 3);
-                            }
-                        }
-
-                        colIndex += 2;
-                    }
-                }
-
-
-
-                //Gör om datatable till csv
-                pbar.Set_ValueProgressBar(80, "Gör om datatable till csv-fil...");
-                ConvertDataTableTo_csv(dt, sb);
-
-                // Write the CSV data to the file
-                pbar.Set_ValueProgressBar(90, "Sparar csv-filen...");
-                Save_csvFile(sb, "Quote");
-                pbar.Close();
             }
+        }
+
+        // -------------------------
+        // 🟦 ANTAL
+        // -------------------------
+        pbar.Set_ValueProgressBar(0, "Laddar Draghastighet, Verktyg...", 0, true);
+        Application.DoEvents();
+
+        
+        double percent = 0;
+        double step = 10.0 / dt.Rows.Count; // ex: "Antal" tar 10% av totalen
+
+        foreach (DataRow row in dt.Rows)
+        {
+            if (int.TryParse(row[1].ToString(), out var partid))
+            {
+                row[8] = Math.Round(Avg_Value(partid, null), 2);
+                row[9] = Math.Round(STDDEV_Value(partid), 2);
+            }
+            else
+            {
+                row[8] = Math.Round(Avg_Value(0, row[2].ToString()), 2);
+                row[9] = Math.Round(STDDEV_Value(0, row[2].ToString()), 2);
+            }
+
+            // 🔥 Uppdatera progress i denna loop
+            percent += step;
+            pbar.Set_ValueProgressBar(percent, "Laddar Antal...", 0, true);
+            Application.DoEvents();
+        }
+
+
+        // -------------------------
+        // 🟩 DRAGHASTIGHET
+        // -------------------------
+        foreach (DataRow row in dt.Rows)
+        {
+            var protocoldescriptionid = 0;
+            switch (row[0])
+            {
+                case "Extrudering_Termo":
+                case "Extrudering_Tryck":
+                case "Extrudering_FEP":
+                case "Extrudering_Grov_PTFE":
+                case "Extrudering_PTFE":
+                    protocoldescriptionid = 99;
+                    break;
+
+                case "Hackning_PTFE": protocoldescriptionid = 5; break;
+                case "Krympslangsblåsning": protocoldescriptionid = 60; break;
+                case "Hackning_TEF": protocoldescriptionid = 126; break;
+            }
+
+            if (protocoldescriptionid > 0)
+            {
+                if (int.TryParse(row[1].ToString(), out var partid))
+                    row[7] = Math.Round(Avg_Value(protocoldescriptionid, partid), 2);
+                else
+                    row[7] = Math.Round(Avg_Value(protocoldescriptionid, 0, row[2].ToString()), 2);
+            }
+
+            pbar.Set_ValueProgressBar(10, "Laddar Draghastighet...", 0, true);
+            Application.DoEvents();
+        }
+
+        // -------------------------
+        // 🟧 MUNSTYCKE
+        // -------------------------
+        foreach (DataRow row in dt.Rows)
+        {
+            var id = 83;
+
+            if (int.TryParse(row[1].ToString(), out var partid))
+                row[11] = LastValue(id, partid);
+            else
+                row[11] = LastValue(id, 0, row[2].ToString());
+
+            pbar.Set_ValueProgressBar(20, "Laddar Munstycke...", 0, true);
+            Application.DoEvents();
+        }
+
+        // -------------------------
+        // 🟪 KÄRNA
+        // -------------------------
+        foreach (DataRow row in dt.Rows)
+        {
+            var id = 0;
+            switch (row[0])
+            {
+                case "Extrudering_Termo":
+                case "Extrudering_Tryck":
+                case "Extrudering_FEP": id = 209; break;
+
+                case "Extrudering_Grov_PTFE":
+                case "Extrudering_PTFE": id = 84; break;
+            }
+
+            if (id > 0)
+            {
+                if (int.TryParse(row[1].ToString(), out var partid))
+                    row[12] = LastValue(id, partid);
+                else
+                    row[12] = LastValue(id, 0, row[2].ToString());
+            }
+
+            pbar.Set_ValueProgressBar(30, "Laddar Kärna...", 0, true);
+            Application.DoEvents();
+        }
+
+        // -------------------------
+        // 🟥 HALVFABRIKAT
+        // -------------------------
+        percent = 30;
+        step = 40f / dt.Rows.Count;
+
+        foreach (DataRow row in dt.Rows)
+        {
+            using (var con = new SqlConnection(Database.cs_Protocol))
+            {
+                int.TryParse(row[1].ToString(), out var partid);
+                string query;
+                var column = 51;
+
+                if (partid == 0)
+                    query = "SELECT Halvfabrikat_ArtikelNr, Halvfabrikat_Benämning FROM [Order].PreFab WHERE OrderID IN (SELECT TOP(1) OrderID FROM [Order].MainData WHERE PartNr = @partnr ORDER BY Date_Start DESC)";
+                else
+                    query = "SELECT Halvfabrikat_ArtikelNr, Halvfabrikat_Benämning FROM [Order].PreFab WHERE OrderID IN (SELECT TOP(1) OrderID FROM [Order].MainData WHERE PartID = @partid ORDER BY Date_Start DESC)";
+
+                var cmd = new SqlCommand(query, con);
+                ServerStatus.Add_Sql_Counter();
+                con.Open();
+
+                cmd.Parameters.AddWithValue("@partid", partid);
+                SQL_Parameter.String(cmd.Parameters, "@partnr", row[2].ToString());
+
+                var reader = cmd.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    if (column >= dt.Columns.Count - 1)
+                    {
+                        dt.Columns.Add($"Halvfabrikat PartNr {column - 51}");
+                        dt.Columns.Add($"Halvfabrikat Benämning {column - 51}");
+                    }
+
+                    row[column] = reader[0].ToString();
+                    row[column + 1] = reader[1].ToString();
+                    column += 2;
+                }
+
+                percent += step;
+                pbar.Set_ValueProgressBar(percent, "Laddar Halvfabrikat...", 0, true);
+                Application.DoEvents();
+            }
+        }
+
+        // -------------------------
+        // 🟦 MÅTT
+        // -------------------------
+        int[] ids = { 1, 11, 18, 34, 8, 2, 3, 5, 6, 7, 8, 9, 10, 14, 16, 22, 15, 17, 23 };
+
+        foreach (DataRow row in dt.Rows)
+        {
+            var colIndex = 13;
+
+            foreach (var id in ids)
+            {
+                if (int.TryParse(row[1].ToString(), out var partid))
+                {
+                    if (id == 34 && row[9].ToString() == "m")
+                    {
+                        row[colIndex] = row[colIndex + 1] = 1;
+                    }
+                    else
+                    {
+                        row[colIndex] = Math.Round(AVG_MeasureValue(id, partid), 3);
+                        row[colIndex + 1] = Math.Round(STDDEV_MeasureValue(id, partid), 3);
+                    }
+                }
+                else
+                {
+                    if (id == 34 && row[9].ToString() == "m")
+                    {
+                        row[colIndex] = row[colIndex + 1] = 1;
+                    }
+                    else
+                    {
+                        row[colIndex] = Math.Round(AVG_MeasureValue(id, 0, row[2].ToString()), 3);
+                        row[colIndex + 1] = Math.Round(STDDEV_MeasureValue(id, 0, row[2].ToString()), 3);
+                    }
+                }
+
+                colIndex += 2;
+            }
+
+            percent += step;
+            pbar.Set_ValueProgressBar(percent, "Laddar Måtten...", 0, true);
+            Application.DoEvents();
+        }
+
+        // -------------------------
+        // 📝 CSV
+        // -------------------------
+        pbar.Set_ValueProgressBar(85, "Gör om datatable till csv-fil...", 0, true);
+        Application.DoEvents();
+
+        ConvertDataTableTo_csv(dt, sb);
+
+        pbar.Set_ValueProgressBar(95, "Sparar csv-filen...", 0, true);
+        Application.DoEvents();
+
+        Save_csvFile(sb, "Quote");
+
+        pbar.Close();
+    }
             private static string LastValue(int protocoldescriptionid, int partid = 0, string? partnr = null)
             {
                 using (var con = new SqlConnection(Database.cs_Protocol))

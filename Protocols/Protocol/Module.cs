@@ -21,6 +21,25 @@ namespace DigitalProductionProgram.Protocols.Protocol
 {
     public partial class Module : UserControl
     {
+        public event EventHandler ModuleActivated;
+        private bool _isModuleActivating = false;
+        private void OnModuleActivated()
+        {
+            if (_isModuleActivating) return;
+            if (dgv_Module.CurrentRow == null) return;
+
+            _isModuleActivating = true;
+            try
+            {
+                ModuleActivated?.Invoke(this, EventArgs.Empty);
+            }
+            finally
+            {
+                _isModuleActivating = false;
+            }
+        }
+        public event Action<ParameterInfo> OnParameterSelected;
+
         public string? LeftHeader { get; set; }
         public int FormTemplateID { get; set; }
         public int RunprotocolWidth { get; set; }
@@ -83,7 +102,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
             }
 
             if (int.TryParse(headertext, out var startup) == false)
-                _ = Activity.Stop($"Error Save Data: Wrong Startup: {headertext} - Method: {method}"); 
+                _ = Activity.Stop($"Error Save Data: Wrong Startup: {headertext} - Method: {method}");
             return startup;
 
         }
@@ -175,7 +194,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
             MainProtocol.Module_dataGridViews?.Add(dgv_Module);
 
             dgv_Module.ScrollBars = ScrollBars.None;
-
+            dgv_Module.Enter += (s, e) => OnModuleActivated();
 
             equipment = new Equipment(this);
             save_processcard = new Processcard.Save(this);
@@ -226,8 +245,8 @@ namespace DigitalProductionProgram.Protocols.Protocol
             float y = (availableHeight / 2f) - (textLength / 2f);
 
             // Rita texten
-            Print_LeftLabel(e, LeftHeader,  (int)availableHeight, (int)y, font);
-            
+            Print_LeftLabel(e, LeftHeader, (int)availableHeight, (int)y, font);
+
             dgv_Module.ClearSelection();
         }
         private static void Print_LeftLabel(PaintEventArgs e, string? text, int top, int y, Font? font = null)
@@ -237,7 +256,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
 
             g.DrawString(text, font, Brushes.Black, 0, y, new StringFormat(StringFormatFlags.DirectionVertical));
             using var pen = new Pen(Color.Black, 3);
-            g.DrawLine(pen, 0,top, 20, top);
+            g.DrawLine(pen, 0, top, 20, top);
         }
 
         private static bool IsCodeTextExistInModule(DataGridView dgv, string codeText)
@@ -420,7 +439,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                             AND Uppstart > 0
                        ORDER BY Uppstart, Ugn, template.RowIndex";
                 var cmd = new SqlCommand(query, con);
-                
+
                 SQL_Parameter.NullableINT(cmd.Parameters, "@orderid", Order.OrderID);
                 cmd.Parameters.AddWithValue("@formtemplateid", formTemplateID);
                 cmd.Parameters.AddWithValue("@machineindex", MachineIndex);
@@ -629,6 +648,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
         [DebuggerStepThrough]
         private void Module_CellEnter(object sender, DataGridViewCellEventArgs e)
         {
+            return;
             if (dgv_Module == null || !IsOkToSave || e.RowIndex < 0)
                 return;
             var cell = dgv_Module.Rows[e.RowIndex].Cells["col_CodeText"];
@@ -637,6 +657,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
         }
         private void Module_CellMouseEnter(object sender, DataGridViewCellEventArgs e)
         {
+            return;
             if (e.RowIndex < 0 || e.ColumnIndex < 0)
                 return;
 
@@ -656,6 +677,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
         [DebuggerStepThrough]
         private void Module_CellLeave(object sender, DataGridViewCellEventArgs e)
         {
+            return;
             if (dgv_Module == null || !IsOkToSave || e.RowIndex < 0)
                 return;
 
@@ -814,9 +836,9 @@ namespace DigitalProductionProgram.Protocols.Protocol
                 return;
             }
 
-            if (IsOkShowList == false) 
+            if (IsOkShowList == false)
             {
-                _ =Activity.Stop($"Felsökning: ModuleRightMouseDown - IsOkShowList = false:  Row= {e.RowIndex}, Col = {e.ColumnIndex}, Button = {e.Button}");
+                _ = Activity.Stop($"Felsökning: ModuleRightMouseDown - IsOkShowList = false:  Row= {e.RowIndex}, Col = {e.ColumnIndex}, Button = {e.Button}");
                 return;
             }
 
@@ -990,7 +1012,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                             items = Monitor.Monitor.List_CandleFilter_PartNr("Candle");
                             break;
                         case 316: //KALIBRERINGSTYP
-                            
+
                             items = DigitalProductionProgram.Equipment.Equipment.List_Register(true, NOM_Value(dgv_Row), "Register_Kalibreringar");
                             //  IsItemsMultipleColumns = false;
                             break;
@@ -1067,6 +1089,28 @@ namespace DigitalProductionProgram.Protocols.Protocol
             }
             if (IsOkToSave || isProcesscardUnderManagement)
                 SpecialItems(row, col, protocolDescriptionID, isProcesscardUnderManagement);
+        }
+        private bool _isHandlingParameter = false;
+        private void Module_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            var parameter = GetSelectedParameter();
+            if (parameter == null)
+                return;
+
+            // Skjut upp eventet till slutet av message-loop
+            this.BeginInvoke(new Action(() =>
+            {
+                try
+                {
+                    if (parameter != null)
+                        OnParameterSelected?.Invoke(parameter);
+                }
+                catch (Exception ex)
+                {
+                    // Här kan vi logga exceptionen, den kommer inte krascha UI
+                    Debug.WriteLine(ex);
+                }
+            }));
         }
         private void Module_RowEnter(object sender, DataGridViewCellEventArgs e)
         {
@@ -1159,13 +1203,13 @@ namespace DigitalProductionProgram.Protocols.Protocol
                             AND Uppstart = @uppstart
                             AND Ugn = @oven";
                     var cmd = new SqlCommand(query, con);
-                    
+
                     cmd.Parameters.AddWithValue("@uppstart", startup);
                     cmd.Parameters.AddWithValue("@oven", oven);
                     cmd.ExecuteNonQuery();
                 });
             }
-            
+
             public static void Save_Data(DataGridView dgv, int row, int formtemplateid, int OvenIndex = 0, int machineindex = 0)
             {
                 if (Module.IsOkToSave == false)
@@ -1433,7 +1477,7 @@ namespace DigitalProductionProgram.Protocols.Protocol
                     }
                     return 1;
                 });
-                
+
             }
             public static bool IsOkAddOven(int startUp, int oven)
             {
@@ -1828,6 +1872,53 @@ namespace DigitalProductionProgram.Protocols.Protocol
             }
         }
 
-       
+
+        private ParameterInfo GetSelectedParameter()
+        {
+            var row = dgv_Module.CurrentRow;
+            if (row == null)
+                return null; // skydd
+
+            var protocolObj = row.Cells["col_ProtocolDescriptionID"].Value;
+            if (protocolObj == null || !short.TryParse(protocolObj.ToString(), out short protocolId))
+                return null;
+
+            string name = row.Cells["col_CodeText"].Value?.ToString();
+            double? lsl = TryGetNullableDouble(row, "col_Min");
+            double? nom = TryGetNullableDouble(row, "col_nom");
+            double? usl = TryGetNullableDouble(row, "col_Max");
+
+            return new ParameterInfo
+            {
+                ProtocolDescriptionId = protocolId,
+                Name = name,
+                LSL = lsl,
+                Nom = nom,
+                USL = usl
+            };
+        }
+
+        private double? TryGetNullableDouble(DataGridViewRow row, string columnName)
+        {
+            var value = row.Cells[columnName].Value;
+
+            if (value == null)
+                return null;
+
+            if (double.TryParse(value.ToString(), out double result))
+                return result;
+
+            return null;
+        }
+        public class ParameterInfo
+        {
+            public int? ProtocolDescriptionId { get; set; }     // rekommenderas starkt
+            public string Name { get; set; }
+            public double? LSL { get; set; }
+            public double? Nom { get; set; }
+            public double? USL { get; set; }
+        }
+
+           
     }
 }

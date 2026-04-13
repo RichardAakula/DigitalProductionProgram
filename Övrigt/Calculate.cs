@@ -148,7 +148,6 @@ namespace DigitalProductionProgram.Övrigt
 
             return sigma > 0.0 ? sigma : null;
         }
-
         public static double? Median(IList<double?> values)
         {
             if (values == null || values.Count == 0) 
@@ -159,7 +158,6 @@ namespace DigitalProductionProgram.Övrigt
             if (n % 2 == 1) return arr[n / 2];
             return 0.5 * (arr[n / 2 - 1] + arr[n / 2]);
         }
-        
         public static double? Pp(List<double?> values, double? USL, double? LSL)
         {
             if (values == null || !USL.HasValue || !LSL.HasValue)
@@ -192,18 +190,20 @@ namespace DigitalProductionProgram.Övrigt
 
             return Math.Min(cpu, cpl);
         }
-
         public static double? PerformanceRatio(List<double?> values, double? USL, double? LSL)
         {
             var sigma = StandardDeviation(values);
-            if (!USL.HasValue || !LSL.HasValue || sigma <= 0) return null;
+            if (!USL.HasValue || !LSL.HasValue || sigma <= 0)
+                return null;
+
             var spec = USL.Value - LSL.Value;
-            if (spec <= 0) return null;
+            if (spec <= 0)
+                return null;
 
-            var pr = (6.0 * sigma / spec) * 100.0;
-            return pr;
-
+            // QC-style PR: Higher is better
+            return (spec / (6.0 * sigma)) * 100.0;
         }
+
        
         public static double? UCL(double? avg, double? st_dev)
         {

@@ -252,7 +252,7 @@ namespace DigitalProductionProgram.Measure
             panel_TopRight.Controls.Add(label_Info);
             panel_TopRight.Controls.Add(panelInfo);
             panel_TopRight.Dock = DockStyle.Right;
-            panel_TopRight.Location = new Point(860, 0);
+            panel_TopRight.Location = new Point(1079, 0);
             panel_TopRight.Margin = new Padding(4, 3, 4, 3);
             panel_TopRight.Name = "panel_TopRight";
             panel_TopRight.Size = new Size(874, 647);
@@ -370,7 +370,7 @@ namespace DigitalProductionProgram.Measure
             tlp_Main.RowCount = 2;
             tlp_Main.RowStyles.Add(new RowStyle(SizeType.Absolute, 653F));
             tlp_Main.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            tlp_Main.Size = new Size(1742, 1059);
+            tlp_Main.Size = new Size(1961, 1059);
             tlp_Main.TabIndex = 47;
             // 
             // panel_Top
@@ -383,7 +383,7 @@ namespace DigitalProductionProgram.Measure
             panel_Top.Location = new Point(4, 3);
             panel_Top.Margin = new Padding(4, 3, 4, 3);
             panel_Top.Name = "panel_Top";
-            panel_Top.Size = new Size(1734, 647);
+            panel_Top.Size = new Size(1953, 647);
             panel_Top.TabIndex = 46;
             // 
             // panel_Filter
@@ -615,7 +615,7 @@ namespace DigitalProductionProgram.Measure
             tlp_Bottom.Name = "tlp_Bottom";
             tlp_Bottom.RowCount = 1;
             tlp_Bottom.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            tlp_Bottom.Size = new Size(1736, 400);
+            tlp_Bottom.Size = new Size(1955, 400);
             tlp_Bottom.TabIndex = 47;
             // 
             // panel_SPC
@@ -1158,7 +1158,7 @@ namespace DigitalProductionProgram.Measure
             AutoScroll = true;
             AutoSize = true;
             BackColor = Color.FromArgb(45, 45, 45);
-            ClientSize = new Size(1742, 1059);
+            ClientSize = new Size(1961, 1059);
             Controls.Add(tlp_Main);
             FormBorderStyle = FormBorderStyle.SizableToolWindow;
             Margin = new Padding(4, 3, 4, 3);

@@ -26,6 +26,7 @@ namespace DigitalProductionProgram.Browse_Protocols
         private MainProtocol_Skärmning_TEF? skärmning_TEF;
         private MainProtocol_Slipning_TEF? slipning_TEF;
         private MainProtocol_Spolning_PTFE? spolning_PTFE;
+        private SpcOrderAnalysis _spcForm;
 
 
         public static bool Is_BrowsingProtocols;
@@ -41,7 +42,7 @@ namespace DigitalProductionProgram.Browse_Protocols
             this.Shown += async (s, e) => await Load_OrderList(extra_query);
 
             Initialize_GUI();
-           
+            
             Translate_Form();
             Prefab.Translate_Form();
             Processcard_BasedOn.Translate_Form();
@@ -51,8 +52,12 @@ namespace DigitalProductionProgram.Browse_Protocols
             mainInfo_A.lbl_PartNumber.Cursor = mainInfo_A.lbl_Customer.Cursor = Cursors.Hand;
             mainInfo_A.lbl_PartNumber.MouseClick += PartNr_Click;
             mainInfo_A.lbl_Customer.MouseClick += Customer_Click;
+            mainInfo_A.lbl_OrderNr.MouseClick += Order_Click;
+            mainInfo_A.lbl_ProdType.MouseClick += ProdType_Click;
         }
+
        
+
         private void Translate_Form()
         {
             LanguageManager.TranslationHelper.TranslateControls([chb_SelectOrders]);
@@ -168,7 +173,7 @@ namespace DigitalProductionProgram.Browse_Protocols
             spolning_PTFE.MainInfo.lbl_Customer.Click += Customer_Click;
             spolning_PTFE.MainInfo.lbl_OrderNr.Click += Order_Click;
         }
-      
+
         private void Initialize_GUI_Protocol()
         {
             AddMachine(1);
@@ -180,14 +185,16 @@ namespace DigitalProductionProgram.Browse_Protocols
 
             var machine = new Machine(machineIndex, ref isUsingEquipment, ref height, false)
             {
-                Name = machineIndex.ToString(),
+                Name = machineIndex.ToString()
+                
             };
+            machine.ModuleActivated += Machine_ModuleActivated;
+            
             var width = machine.TotalWidth;
             if (machine.HorizontalScroll.Visible)
                 height += SystemInformation.HorizontalScrollBarHeight;
             machine.Size = new Size(width, height);
             flp_Machines.Controls.Add(machine);
-
         }
 
         private async Task Load_OrderList(string extraQuery = null)
@@ -195,8 +202,6 @@ namespace DigitalProductionProgram.Browse_Protocols
             dgv_OrderList.Rows.Clear();
             CustomProgressBar pbar = new CustomProgressBar();
             pbar.Show();
-
-
             var orderRows = new List<DataGridViewRow>();
 
             await Task.Run(() =>
@@ -209,8 +214,10 @@ namespace DigitalProductionProgram.Browse_Protocols
                 PartNr, 
                 orders.OrderID, 
                 orders.OrderNr, 
-                RevNr, 
-                Date_Start,
+                orders.RevNr, 
+                orders.ProdLine,
+                orders.ProdType, 
+                orders.Date_Start,
                 CASE 
                     WHEN discard.OrderID IS NULL THEN 'False' 
                     ELSE 'True' 
@@ -243,7 +250,8 @@ namespace DigitalProductionProgram.Browse_Protocols
                     row.Cells[3].Value = reader["OrderNr"].ToString();
                     row.Cells[4].Value = reader["OrderID"].ToString();
                     row.Cells[5].Value = reader["RevNr"].ToString();
-
+                    row.Cells[12].Value = reader["ProdLine"].ToString();
+                    row.Cells[13].Value = reader["ProdType"].ToString();
                     var date = DateTime.Parse(reader["Date_Start"].ToString());
                     var dateTimeFormat = CultureInfo.CurrentCulture.DateTimeFormat;
                     var formattedDate = date.ToString($"{dateTimeFormat.ShortDatePattern} {dateTimeFormat.ShortTimePattern}", CultureInfo.CurrentCulture);
@@ -309,7 +317,29 @@ namespace DigitalProductionProgram.Browse_Protocols
                 dgv_OrderList.Rows[e.RowIndex].Selected = true;
             }
 
-            cm_Orderlist.Show(dgv_OrderList.PointToScreen(dgv_OrderList.GetCellDisplayRectangle(e.ColumnIndex, e.RowIndex, false).Location));
+            
+            Rectangle cellRect = dgv_OrderList.GetCellDisplayRectangle(e.ColumnIndex, e.RowIndex, false);
+
+            // Skärmpunkt där cellen ligger (övre vänster)
+            Point cellScreenPoint = dgv_OrderList.PointToScreen(cellRect.Location);
+
+            // Hitta rätt skärm
+            Screen scr = Screen.FromPoint(cellScreenPoint);
+            Rectangle wa = scr.WorkingArea;
+
+            // Meny-storlek (viktig!)
+            Size menuSize = cm_Orderlist.GetPreferredSize(Size.Empty);
+
+            // Önskad position
+            int x = cellScreenPoint.X;
+            int y = cellScreenPoint.Y + cellRect.Height;
+
+            // Clamp inom skärmen
+            x = Math.Min(Math.Max(x, wa.Left), wa.Right - menuSize.Width);
+            y = Math.Min(Math.Max(y, wa.Top),  wa.Bottom - menuSize.Height);
+
+            // Visa menyn
+            cm_Orderlist.Show(new Point(x, y));
         }
         private void OrderList_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
         {
@@ -536,7 +566,7 @@ namespace DigitalProductionProgram.Browse_Protocols
                     partnumbers?.Add($"{reader[0]}|{reader[1]}|{reader[2]}");
             });
 
-            var partnr = new Choose_Item(partnumbers, [ctrl], totalColumns:3, headers:["PartNumber", "Date", "Total Orders"] );
+            var partnr = new Choose_Item(partnumbers, [ctrl], totalColumns: 3, headers: ["PartNumber", "Date", "Total Orders"], clampRightToAnchorRight:true);
             partnr.ShowDialog();
             await Load_OrderList($" AND PartNr = '{ctrl.Text}'");
         }
@@ -568,23 +598,48 @@ namespace DigitalProductionProgram.Browse_Protocols
                     customers?.Add($"{reader[0]}|{reader[1]}|{reader[2]}");
             });
 
-            var partnr = new Choose_Item(customers, [ctrl], totalColumns:3, headers:["PartNumber", "Date", "Total Orders"] );
-            partnr.ShowDialog();
+            var chooseItem = new Choose_Item(customers, [ctrl], totalColumns: 3, headers: ["PartNumber", "Date", "Total Orders"]);
+            chooseItem.ShowDialog();
 
             await Load_OrderList($" AND Customer = '{ctrl.Text}'");
         }
         private async void Order_Click(object? sender, EventArgs e)
         {
             var ctrl = (Control)sender;
-            using var choose_Item = new Choose_Item(Order.List_Orders, [ctrl]);
+            using var choose_Item = new Choose_Item(Order.List_Orders, [ctrl], clampRightToAnchorRight:true);
             choose_Item.ShowDialog();
             await Load_OrderList($" AND OrderNr = '{ctrl.Text}'");
         }
         private async void ProdType_Click(object sender, EventArgs e)
         {
             var ctrl = (Control)sender;
-            using var choose_Item = new Choose_Item(Order.List_ProdType, [ctrl]);
-            choose_Item.ShowDialog();
+            List<string> prodtype = new List<string>();
+            Database.ExecuteSafe(con =>
+            {
+                const string query = $"""
+                                        SELECT
+                                            m.ProdType,
+                                            MAX(m.Date_Start) AS LatestDateStart,
+                                            COUNT(*) AS TotalOrders
+                                        FROM [Order].MainData AS m
+                                        WHERE m.WorkoperationID = 
+                                            (
+                                                SELECT ID FROM Workoperation.Names WHERE Name = @workoperation
+                                            )
+                                            AND IsOrderDone = 'True'
+                                        GROUP BY m.ProdType
+                                        ORDER BY LatestDateStart DESC
+                                      """;
+
+                using var cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@workoperation", Order.WorkOperation.ToString());
+                var reader = cmd.ExecuteReader();
+                while (reader.Read())
+                    prodtype?.Add($"{reader[0]}|{reader[1]}|{reader[2]}");
+            });
+
+            var chooseItem = new Choose_Item(prodtype, [ctrl], totalColumns: 3, headers: ["PartNumber", "Date", "Total Orders"]);
+            chooseItem.ShowDialog();
             await Load_OrderList($" AND ProdType = '{ctrl.Text}'");
         }
         private async void Halvfabrikat_Click(object sender, EventArgs e)
@@ -607,7 +662,7 @@ namespace DigitalProductionProgram.Browse_Protocols
                     return;
             }
 
-            using var choose_Items = new Choose_Item(items, cells:cells);
+            using var choose_Items = new Choose_Item(items, cells: cells);
             choose_Items.ShowDialog();
             await Load_OrderList($" AND OrderID IN (SELECT OrderID FROM [Order].PreFab WHERE {codetext} = '{cells[0].Value}')");
         }
@@ -640,7 +695,7 @@ namespace DigitalProductionProgram.Browse_Protocols
                 InfoText.Show("Denna funktion fungerar endast om det finns data i Processkortet", CustomColors.InfoText_Color.Warning, "Warning", this);
                 return;
             }
-            using var choose_Items = new Choose_Item(items, cells:cells);
+            using var choose_Items = new Choose_Item(items, cells: cells);
             choose_Items.ShowDialog();
             await Load_OrderList($" AND OrderID IN (SELECT DISTINCT OrderID FROM [Order].Data WHERE TextValue = '{cells[0].Value}')");
         }
@@ -671,6 +726,102 @@ namespace DigitalProductionProgram.Browse_Protocols
         {
             Main_Form.Preview_PrintOut();
         }
+        private Module _activeModule;
+
+        private void Machine_ModuleActivated(object sender, Module module)
+        {
+            if (module == null) 
+                return; 
+            if (_activeModule != null)
+                _activeModule.OnParameterSelected -= ActiveModule_OnParameterSelected;
+
+            _activeModule = module;
+
+            _activeModule.OnParameterSelected += ActiveModule_OnParameterSelected;
+        }
+        private void label_ViewSPC_Click(object sender, EventArgs e)
+        {
+            InfoText.Show("Klicka i någon rad i parametrarna för att öppna SPC-fönstret.", 
+                CustomColors.InfoText_Color.Info, "SPC");
+        }
+        private bool _isHandlingParameter = false;
+       
+        private void ActiveModule_OnParameterSelected(Module.ParameterInfo parameter)
+        {
+            if (parameter == null)
+                return;
+
+            var orders = GetVisibleOrdersFromGrid() ?? new List<OrderInfo>();
+            if (orders.Count == 0)
+                return;
+
+            // Om formuläret är null eller disposed, skapa nytt
+            if (_spcForm == null || _spcForm.IsDisposed)
+            {
+                var request = new OrderSpcRequest(
+                    protocolDescriptionId: parameter.ProtocolDescriptionId,
+                    parameterName: parameter.Name,
+                    lsl: parameter.LSL,
+                    nom: parameter.Nom,
+                    usl: parameter.USL,
+                    orders: orders);
+
+                _spcForm = new SpcOrderAnalysis(request);
+
+                // Ta bort handler direkt när formuläret stängs
+                _spcForm.FormClosed += (s, e) =>
+                {
+                    if (_activeModule != null)
+                    {
+                       // _activeModule.OnParameterSelected -= ActiveModule_OnParameterSelected;
+                    }
+                    _spcForm = null;
+                };
+
+                _spcForm.AddParameter(parameter, orders);
+                _spcForm.Show();
+            }
+            else
+            {
+                // Om formuläret redan finns, säkerställ att det inte är disposed
+                if (!_spcForm.IsDisposed && _spcForm.IsHandleCreated)
+                {
+                    _spcForm.AddParameter(parameter, orders);
+                    _spcForm.Activate();
+                }
+                else
+                {
+                    // Om det blev disposed, skapa nytt formulär
+                    _spcForm = null;
+                    ActiveModule_OnParameterSelected(parameter);
+                }
+            }
+        }
+        private List<OrderInfo> GetVisibleOrdersFromGrid()
+        {
+            var list = new List<OrderInfo>();
+
+            foreach (DataGridViewRow row in dgv_OrderList.Rows)
+            {
+                if (row.IsNewRow)
+                    continue;
+
+                // Hämta OrderID
+                if (!int.TryParse(row.Cells["orderlist_OrderID"].Value?.ToString(), out var orderId))
+                    continue;
+
+                // Hämta OrderNumber och RevNr, fallback till tom sträng om null
+                var orderNumber = row.Cells["orderlist_OrderNr"].Value?.ToString() ?? "";
+                var revNr = row.Cells["orderlist_RevNr"].Value?.ToString() ?? "";
+                var prodline = row.Cells["orderlist_ProdLine"].Value?.ToString() ?? "";
+                var prodtype = row.Cells["orderlist_ProdType"].Value?.ToString() ?? "";
+                DateTime.TryParse(row.Cells["orderlist_Datum"].Value?.ToString(), out var date);
+
+                list.Add(new OrderInfo(orderId, orderNumber, revNr, prodline, prodtype, date));
+            }
+
+            return list;
+        }
         private void Info_Click(object sender, EventArgs e)
         {
             InfoText.Show(Properties.Resources.browseProtocols_2, CustomColors.InfoText_Color.Info, "Info", this);
@@ -682,6 +833,5 @@ namespace DigitalProductionProgram.Browse_Protocols
             Order.Restore_TempOrderInfo();
         }
 
-       
     }
 }

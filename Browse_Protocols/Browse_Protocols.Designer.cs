@@ -41,6 +41,7 @@ namespace DigitalProductionProgram.Browse_Protocols
             flp_Left = new FlowLayoutPanel();
             lbl_Export_Excel = new Label();
             lbl_PrintOrder = new Label();
+            label_ViewSPC = new Label();
             tlp_Main = new TableLayoutPanel();
             flp_Machines = new FlowLayoutPanel();
             Processcard_BasedOn = new ProcesscardBasedOn();
@@ -56,6 +57,12 @@ namespace DigitalProductionProgram.Browse_Protocols
             lbl_TotalOrders = new Label();
             label_Orderlista = new Label();
             dgv_OrderList = new DataGridView();
+            pb_Info = new PictureBox();
+            panel_DiscardedOrder_Info = new Panel();
+            panel_EmptySpace = new Panel();
+            lbl_DiscardedComment = new Label();
+            lbl_DiscardedDate = new Label();
+            lbl_DiscardedBy = new Label();
             orderlist_PartNr = new DataGridViewTextBoxColumn();
             orderList_MainTemplateID = new DataGridViewTextBoxColumn();
             orderlist_PartID = new DataGridViewTextBoxColumn();
@@ -68,12 +75,8 @@ namespace DigitalProductionProgram.Browse_Protocols
             orderlist_InactivatedBy = new DataGridViewTextBoxColumn();
             orderlist_InactivatedDate = new DataGridViewTextBoxColumn();
             orderlist_InactivatedComment = new DataGridViewTextBoxColumn();
-            pb_Info = new PictureBox();
-            panel_DiscardedOrder_Info = new Panel();
-            panel_EmptySpace = new Panel();
-            lbl_DiscardedComment = new Label();
-            lbl_DiscardedDate = new Label();
-            lbl_DiscardedBy = new Label();
+            orderlist_ProdLine = new DataGridViewTextBoxColumn();
+            orderlist_ProdType = new DataGridViewTextBoxColumn();
             flp_Left.SuspendLayout();
             tlp_Main.SuspendLayout();
             panel_Top.SuspendLayout();
@@ -89,6 +92,7 @@ namespace DigitalProductionProgram.Browse_Protocols
             flp_Left.BackColor = Color.FromArgb(45, 45, 45);
             flp_Left.Controls.Add(lbl_Export_Excel);
             flp_Left.Controls.Add(lbl_PrintOrder);
+            flp_Left.Controls.Add(label_ViewSPC);
             flp_Left.Dock = DockStyle.Left;
             flp_Left.FlowDirection = FlowDirection.TopDown;
             flp_Left.Location = new Point(0, 63);
@@ -128,6 +132,22 @@ namespace DigitalProductionProgram.Browse_Protocols
             lbl_PrintOrder.Text = "Print Order";
             lbl_PrintOrder.TextAlign = ContentAlignment.MiddleCenter;
             lbl_PrintOrder.Click += PrintOrder_Click;
+            // 
+            // label_ViewSPC
+            // 
+            label_ViewSPC.AutoSize = true;
+            label_ViewSPC.BackColor = Color.Transparent;
+            label_ViewSPC.Cursor = Cursors.Hand;
+            label_ViewSPC.Font = new Font("Palatino Linotype", 10.25F);
+            label_ViewSPC.ForeColor = Color.Wheat;
+            label_ViewSPC.Location = new Point(12, 126);
+            label_ViewSPC.Margin = new Padding(12, 23, 4, 0);
+            label_ViewSPC.Name = "label_ViewSPC";
+            label_ViewSPC.Size = new Size(71, 19);
+            label_ViewSPC.TabIndex = 882;
+            label_ViewSPC.Text = "View SPC";
+            label_ViewSPC.TextAlign = ContentAlignment.MiddleCenter;
+            label_ViewSPC.Click += label_ViewSPC_Click;
             // 
             // tlp_Main
             // 
@@ -189,6 +209,7 @@ namespace DigitalProductionProgram.Browse_Protocols
             Prefab.Location = new Point(1382, 872);
             Prefab.Margin = new Padding(5, 3, 5, 3);
             Prefab.Name = "Prefab";
+            Prefab.ParentProtocol = null;
             Prefab.Size = new Size(472, 192);
             Prefab.TabIndex = 4;
             // 
@@ -333,7 +354,7 @@ namespace DigitalProductionProgram.Browse_Protocols
             dgv_OrderList.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             dgv_OrderList.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgv_OrderList.ColumnHeadersVisible = false;
-            dgv_OrderList.Columns.AddRange(new DataGridViewColumn[] { orderlist_PartNr, orderList_MainTemplateID, orderlist_PartID, orderlist_OrderNr, orderlist_OrderID, orderlist_RevNr, orderlist_PC_BasedOn, orderlist_Datum, orderlist_Inactive, orderlist_InactivatedBy, orderlist_InactivatedDate, orderlist_InactivatedComment });
+            dgv_OrderList.Columns.AddRange(new DataGridViewColumn[] { orderlist_PartNr, orderList_MainTemplateID, orderlist_PartID, orderlist_OrderNr, orderlist_OrderID, orderlist_RevNr, orderlist_PC_BasedOn, orderlist_Datum, orderlist_Inactive, orderlist_InactivatedBy, orderlist_InactivatedDate, orderlist_InactivatedComment, orderlist_ProdLine, orderlist_ProdType });
             tlp_Right.SetColumnSpan(dgv_OrderList, 2);
             dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle2.BackColor = Color.FromArgb(25, 25, 25);
@@ -369,6 +390,85 @@ namespace DigitalProductionProgram.Browse_Protocols
             dgv_OrderList.RowEnter += OrderList_RowEnter;
             dgv_OrderList.RowsAdded += OrderList_RowsAdded;
             dgv_OrderList.RowsRemoved += OrderList_RowsRemoved;
+            // 
+            // pb_Info
+            // 
+            pb_Info.BackColor = Color.FromArgb(45, 45, 45);
+            pb_Info.BackgroundImage = Properties.Resources.info;
+            pb_Info.BackgroundImageLayout = ImageLayout.Stretch;
+            pb_Info.Cursor = Cursors.Hand;
+            pb_Info.Dock = DockStyle.Left;
+            pb_Info.Location = new Point(323, 53);
+            pb_Info.Margin = new Padding(4, 3, 4, 3);
+            pb_Info.Name = "pb_Info";
+            pb_Info.Size = new Size(41, 41);
+            pb_Info.TabIndex = 875;
+            pb_Info.TabStop = false;
+            pb_Info.Click += Info_Click;
+            // 
+            // panel_DiscardedOrder_Info
+            // 
+            panel_DiscardedOrder_Info.AutoScroll = true;
+            panel_DiscardedOrder_Info.AutoSize = true;
+            panel_DiscardedOrder_Info.BackColor = Color.FromArgb(40, 40, 40);
+            tlp_Right.SetColumnSpan(panel_DiscardedOrder_Info, 2);
+            panel_DiscardedOrder_Info.Controls.Add(panel_EmptySpace);
+            panel_DiscardedOrder_Info.Controls.Add(lbl_DiscardedComment);
+            panel_DiscardedOrder_Info.Controls.Add(lbl_DiscardedDate);
+            panel_DiscardedOrder_Info.Controls.Add(lbl_DiscardedBy);
+            panel_DiscardedOrder_Info.Dock = DockStyle.Fill;
+            panel_DiscardedOrder_Info.Location = new Point(0, 97);
+            panel_DiscardedOrder_Info.Margin = new Padding(0, 0, 0, 2);
+            panel_DiscardedOrder_Info.Name = "panel_DiscardedOrder_Info";
+            panel_DiscardedOrder_Info.Size = new Size(414, 97);
+            panel_DiscardedOrder_Info.TabIndex = 876;
+            panel_DiscardedOrder_Info.Visible = false;
+            // 
+            // panel_EmptySpace
+            // 
+            panel_EmptySpace.Dock = DockStyle.Top;
+            panel_EmptySpace.Location = new Point(0, 32);
+            panel_EmptySpace.Margin = new Padding(4, 3, 4, 3);
+            panel_EmptySpace.Name = "panel_EmptySpace";
+            panel_EmptySpace.Size = new Size(414, 2);
+            panel_EmptySpace.TabIndex = 3;
+            // 
+            // lbl_DiscardedComment
+            // 
+            lbl_DiscardedComment.BackColor = Color.White;
+            lbl_DiscardedComment.Dock = DockStyle.Fill;
+            lbl_DiscardedComment.Font = new Font("Courier New", 8.25F);
+            lbl_DiscardedComment.Location = new Point(0, 32);
+            lbl_DiscardedComment.Margin = new Padding(0, 2, 23, 0);
+            lbl_DiscardedComment.Name = "lbl_DiscardedComment";
+            lbl_DiscardedComment.Padding = new Padding(0, 2, 0, 0);
+            lbl_DiscardedComment.Size = new Size(414, 65);
+            lbl_DiscardedComment.TabIndex = 2;
+            lbl_DiscardedComment.Text = "Comment";
+            // 
+            // lbl_DiscardedDate
+            // 
+            lbl_DiscardedDate.BackColor = Color.White;
+            lbl_DiscardedDate.Dock = DockStyle.Top;
+            lbl_DiscardedDate.Font = new Font("Lucida Sans", 10.25F);
+            lbl_DiscardedDate.Location = new Point(0, 16);
+            lbl_DiscardedDate.Margin = new Padding(4, 0, 4, 0);
+            lbl_DiscardedDate.Name = "lbl_DiscardedDate";
+            lbl_DiscardedDate.Size = new Size(414, 16);
+            lbl_DiscardedDate.TabIndex = 1;
+            lbl_DiscardedDate.Text = "Date";
+            // 
+            // lbl_DiscardedBy
+            // 
+            lbl_DiscardedBy.BackColor = Color.White;
+            lbl_DiscardedBy.Dock = DockStyle.Top;
+            lbl_DiscardedBy.Font = new Font("Lucida Sans", 10.25F);
+            lbl_DiscardedBy.Location = new Point(0, 0);
+            lbl_DiscardedBy.Margin = new Padding(4, 0, 4, 0);
+            lbl_DiscardedBy.Name = "lbl_DiscardedBy";
+            lbl_DiscardedBy.Size = new Size(414, 16);
+            lbl_DiscardedBy.TabIndex = 0;
+            lbl_DiscardedBy.Text = "Name";
             // 
             // orderlist_PartNr
             // 
@@ -462,84 +562,19 @@ namespace DigitalProductionProgram.Browse_Protocols
             orderlist_InactivatedComment.ReadOnly = true;
             orderlist_InactivatedComment.Visible = false;
             // 
-            // pb_Info
+            // orderlist_ProdLine
             // 
-            pb_Info.BackColor = Color.FromArgb(45, 45, 45);
-            pb_Info.BackgroundImage = Properties.Resources.info;
-            pb_Info.BackgroundImageLayout = ImageLayout.Stretch;
-            pb_Info.Cursor = Cursors.Hand;
-            pb_Info.Dock = DockStyle.Left;
-            pb_Info.Location = new Point(323, 53);
-            pb_Info.Margin = new Padding(4, 3, 4, 3);
-            pb_Info.Name = "pb_Info";
-            pb_Info.Size = new Size(41, 41);
-            pb_Info.TabIndex = 875;
-            pb_Info.TabStop = false;
-            pb_Info.Click += Info_Click;
+            orderlist_ProdLine.HeaderText = "ProdLine";
+            orderlist_ProdLine.Name = "orderlist_ProdLine";
+            orderlist_ProdLine.ReadOnly = true;
+            orderlist_ProdLine.Visible = false;
             // 
-            // panel_DiscardedOrder_Info
+            // orderlist_ProdType
             // 
-            panel_DiscardedOrder_Info.AutoScroll = true;
-            panel_DiscardedOrder_Info.AutoSize = true;
-            panel_DiscardedOrder_Info.BackColor = Color.FromArgb(40, 40, 40);
-            tlp_Right.SetColumnSpan(panel_DiscardedOrder_Info, 2);
-            panel_DiscardedOrder_Info.Controls.Add(panel_EmptySpace);
-            panel_DiscardedOrder_Info.Controls.Add(lbl_DiscardedComment);
-            panel_DiscardedOrder_Info.Controls.Add(lbl_DiscardedDate);
-            panel_DiscardedOrder_Info.Controls.Add(lbl_DiscardedBy);
-            panel_DiscardedOrder_Info.Dock = DockStyle.Fill;
-            panel_DiscardedOrder_Info.Location = new Point(0, 97);
-            panel_DiscardedOrder_Info.Margin = new Padding(0, 0, 0, 2);
-            panel_DiscardedOrder_Info.Name = "panel_DiscardedOrder_Info";
-            panel_DiscardedOrder_Info.Size = new Size(414, 97);
-            panel_DiscardedOrder_Info.TabIndex = 876;
-            panel_DiscardedOrder_Info.Visible = false;
-            // 
-            // panel_EmptySpace
-            // 
-            panel_EmptySpace.Dock = DockStyle.Top;
-            panel_EmptySpace.Location = new Point(0, 32);
-            panel_EmptySpace.Margin = new Padding(4, 3, 4, 3);
-            panel_EmptySpace.Name = "panel_EmptySpace";
-            panel_EmptySpace.Size = new Size(414, 2);
-            panel_EmptySpace.TabIndex = 3;
-            // 
-            // lbl_DiscardedComment
-            // 
-            lbl_DiscardedComment.BackColor = Color.White;
-            lbl_DiscardedComment.Dock = DockStyle.Fill;
-            lbl_DiscardedComment.Font = new Font("Courier New", 8.25F);
-            lbl_DiscardedComment.Location = new Point(0, 32);
-            lbl_DiscardedComment.Margin = new Padding(0, 2, 23, 0);
-            lbl_DiscardedComment.Name = "lbl_DiscardedComment";
-            lbl_DiscardedComment.Padding = new Padding(0, 2, 0, 0);
-            lbl_DiscardedComment.Size = new Size(414, 65);
-            lbl_DiscardedComment.TabIndex = 2;
-            lbl_DiscardedComment.Text = "Comment";
-            // 
-            // lbl_DiscardedDate
-            // 
-            lbl_DiscardedDate.BackColor = Color.White;
-            lbl_DiscardedDate.Dock = DockStyle.Top;
-            lbl_DiscardedDate.Font = new Font("Lucida Sans", 10.25F);
-            lbl_DiscardedDate.Location = new Point(0, 16);
-            lbl_DiscardedDate.Margin = new Padding(4, 0, 4, 0);
-            lbl_DiscardedDate.Name = "lbl_DiscardedDate";
-            lbl_DiscardedDate.Size = new Size(414, 16);
-            lbl_DiscardedDate.TabIndex = 1;
-            lbl_DiscardedDate.Text = "Date";
-            // 
-            // lbl_DiscardedBy
-            // 
-            lbl_DiscardedBy.BackColor = Color.White;
-            lbl_DiscardedBy.Dock = DockStyle.Top;
-            lbl_DiscardedBy.Font = new Font("Lucida Sans", 10.25F);
-            lbl_DiscardedBy.Location = new Point(0, 0);
-            lbl_DiscardedBy.Margin = new Padding(4, 0, 4, 0);
-            lbl_DiscardedBy.Name = "lbl_DiscardedBy";
-            lbl_DiscardedBy.Size = new Size(414, 16);
-            lbl_DiscardedBy.TabIndex = 0;
-            lbl_DiscardedBy.Text = "Name";
+            orderlist_ProdType.HeaderText = "ProdType";
+            orderlist_ProdType.Name = "orderlist_ProdType";
+            orderlist_ProdType.ReadOnly = true;
+            orderlist_ProdType.Visible = false;
             // 
             // Browse_Protocols
             // 
@@ -596,6 +631,8 @@ namespace DigitalProductionProgram.Browse_Protocols
         private Label lbl_DiscardedBy;
         private Panel panel_EmptySpace;
         private CheckBox chb_SelectOrders;
+        private FlowLayoutPanel flp_Machines;
+        private Label label_ViewSPC;
         private DataGridViewTextBoxColumn orderlist_PartNr;
         private DataGridViewTextBoxColumn orderList_MainTemplateID;
         private DataGridViewTextBoxColumn orderlist_PartID;
@@ -608,6 +645,7 @@ namespace DigitalProductionProgram.Browse_Protocols
         private DataGridViewTextBoxColumn orderlist_InactivatedBy;
         private DataGridViewTextBoxColumn orderlist_InactivatedDate;
         private DataGridViewTextBoxColumn orderlist_InactivatedComment;
-        private FlowLayoutPanel flp_Machines;
+        private DataGridViewTextBoxColumn orderlist_ProdLine;
+        private DataGridViewTextBoxColumn orderlist_ProdType;
     }
 }

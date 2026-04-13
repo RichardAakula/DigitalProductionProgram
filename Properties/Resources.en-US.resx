@@ -2537,7 +2537,7 @@ Are you sure you want to continue?</value>
   <data name="btnZumbach" xml:space="preserve">
     <value>F6-Zumbach-measurement</value>
   </data>
-  <data name="Menu_Settings_AnalyseParameterData" xml:space="preserve">
-    <value>Analyse Parameter Data</value>
+  <data name="warningMessage" xml:space="preserve">
+    <value>Warning!</value>
   </data>
 </root>

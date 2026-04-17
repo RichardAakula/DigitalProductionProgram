@@ -1796,6 +1796,14 @@ Denna order kommer därefter inte att inkluderas i statistiken över hur många 
   <data name="browseProtocols_4" xml:space="preserve">
     <value>Aktivera markerad Order.</value>
   </data>
+  <data name="browseProtocols_OpenSpcManyOrders" xml:space="preserve">
+    <value>Det finns {0} ordrar i urvalet och det kan ta en stund att öppna SPC-analysen.
+
+Vill du fortsätta?</value>
+  </data>
+  <data name="browseProtocols_OpenSpcManyOrders_Header" xml:space="preserve">
+    <value>Öppna SPC?</value>
+  </data>
   <data name="preFab_BestBefore" xml:space="preserve">
     <value>Bäst Före:</value>
   </data>

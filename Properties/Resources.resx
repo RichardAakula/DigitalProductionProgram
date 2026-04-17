@@ -1759,6 +1759,12 @@ Pleaste contact Admin if necessary.</value>
   <data name="browseProtocols_4" xml:space="preserve">
     <value />
   </data>
+  <data name="browseProtocols_OpenSpcManyOrders" xml:space="preserve">
+    <value />
+  </data>
+  <data name="browseProtocols_OpenSpcManyOrders_Header" xml:space="preserve">
+    <value />
+  </data>
   <data name="preFab_BestBefore" xml:space="preserve">
     <value />
   </data>

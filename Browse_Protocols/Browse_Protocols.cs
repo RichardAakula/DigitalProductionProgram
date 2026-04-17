@@ -1,5 +1,4 @@
-﻿using Microsoft.Data.SqlClient;
-using System.Globalization;
+﻿using Azure.Core;
 using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.DatabaseManagement;
 using DigitalProductionProgram.Equipment;
@@ -17,6 +16,8 @@ using DigitalProductionProgram.Protocols.Slipning_TEF;
 using DigitalProductionProgram.Protocols.Spolning_PTFE;
 using DigitalProductionProgram.Templates;
 using DigitalProductionProgram.User;
+using Microsoft.Data.SqlClient;
+using System.Globalization;
 
 namespace DigitalProductionProgram.Browse_Protocols
 {
@@ -27,6 +28,7 @@ namespace DigitalProductionProgram.Browse_Protocols
         private MainProtocol_Slipning_TEF? slipning_TEF;
         private MainProtocol_Spolning_PTFE? spolning_PTFE;
         private SpcOrderAnalysis _spcForm;
+        private const int SpcOrderQuestionLimit = 1000;
 
 
         public static bool Is_BrowsingProtocols;
@@ -748,12 +750,24 @@ namespace DigitalProductionProgram.Browse_Protocols
        
         private void ActiveModule_OnParameterSelected(Module.ParameterInfo parameter)
         {
+            Log.Activity.Start();
+
             if (parameter == null)
                 return;
 
             var orders = GetVisibleOrdersFromGrid() ?? new List<OrderInfo>();
             if (orders.Count == 0)
                 return;
+            if ((_spcForm == null || _spcForm.IsDisposed) && orders.Count > SpcOrderQuestionLimit)
+            {
+                InfoText.Question(string.Format(Properties.Resources.browseProtocols_OpenSpcManyOrders, orders.Count),
+                    CustomColors.InfoText_Color.Warning, Properties.Resources.browseProtocols_OpenSpcManyOrders_Header, this);
+                if (InfoText.answer == InfoText.Answer.No)
+                {
+                    Log.Activity.Stop($"User cancelled opening SPC Order Analysis for parameter {parameter.Name} Total Orders: {orders.Count}");
+                    return;
+                }
+            }
 
             // Om formuläret är null eller disposed, skapa nytt
             if (_spcForm == null || _spcForm.IsDisposed)
@@ -765,7 +779,7 @@ namespace DigitalProductionProgram.Browse_Protocols
                     nom: parameter.Nom,
                     usl: parameter.USL,
                     orders: orders);
-
+                
                 _spcForm = new SpcOrderAnalysis(request);
 
                 // Ta bort handler direkt när formuläret stängs
@@ -773,13 +787,13 @@ namespace DigitalProductionProgram.Browse_Protocols
                 {
                     if (_activeModule != null)
                     {
-                       // _activeModule.OnParameterSelected -= ActiveModule_OnParameterSelected;
                     }
                     _spcForm = null;
                 };
 
                 _spcForm.AddParameter(parameter, orders);
                 _spcForm.Show();
+                Log.Activity.Stop($"User opened SPC Order Analysis for parameter {request.ParameterName} Total Orders: {request.Orders.Count}");
             }
             else
             {
@@ -795,7 +809,9 @@ namespace DigitalProductionProgram.Browse_Protocols
                     _spcForm = null;
                     ActiveModule_OnParameterSelected(parameter);
                 }
+                Log.Activity.Stop($"User opened SPC Order Analysis for parameter {parameter.Name} Total Orders: {orders.Count}");
             }
+            
         }
         private List<OrderInfo> GetVisibleOrdersFromGrid()
         {

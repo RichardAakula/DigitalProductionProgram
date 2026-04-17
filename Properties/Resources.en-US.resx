@@ -1800,6 +1800,14 @@ This order will then not be included in the statistics for how many times a part
   <data name="browseProtocols_4" xml:space="preserve">
     <value>Activate selected Order.</value>
   </data>
+  <data name="browseProtocols_OpenSpcManyOrders" xml:space="preserve">
+    <value>There are {0} orders in the selection, and opening the SPC analysis may take some time.
+
+Do you want to continue?</value>
+  </data>
+  <data name="browseProtocols_OpenSpcManyOrders_Header" xml:space="preserve">
+    <value>Open SPC?</value>
+  </data>
   <data name="preFab_BestBefore" xml:space="preserve">
     <value>Best Before:</value>
   </data>

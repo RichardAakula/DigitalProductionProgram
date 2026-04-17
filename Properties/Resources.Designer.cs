@@ -478,6 +478,24 @@ namespace DigitalProductionProgram.Properties {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        public static string browseProtocols_OpenSpcManyOrders {
+            get {
+                return ResourceManager.GetString("browseProtocols_OpenSpcManyOrders", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string browseProtocols_OpenSpcManyOrders_Header {
+            get {
+                return ResourceManager.GetString("browseProtocols_OpenSpcManyOrders_Header", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         public static string btn_Add_Extruder {
             get {
                 return ResourceManager.GetString("btn_Add_Extruder", resourceCulture);

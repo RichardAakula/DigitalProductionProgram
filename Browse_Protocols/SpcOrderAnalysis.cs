@@ -85,11 +85,11 @@ namespace DigitalProductionProgram.Browse_Protocols
 
         public SpcOrderAnalysis(OrderSpcRequest request)
         {
+            
             if (request == null)
                 throw new ArgumentNullException(nameof(request));
             InitializeComponent();
             chkList_Parameters.CheckOnClick = true; // gör det smidigt att klicka
-            //chkList_Orders.ItemCheck += chkList_Orders_ItemCheck;
 
             tb_FilterProdLine.TextChanged += (s, e) =>
                 ApplyOrderFilters(tb_FilterRevNr.Text, tb_FilterProdLine.Text, tb_ProdType.Text);
@@ -109,9 +109,7 @@ namespace DigitalProductionProgram.Browse_Protocols
                     }
                 }
             };
-
-
-
+           
         }
 
 

@@ -561,7 +561,8 @@ namespace DigitalProductionProgram.MainWindow
                             'Mätdata_Row_Click',
                             'Load_dt_Korprotokoll_MainDataAsync',
                             'SaveExtraComment',
-                            'BtnFetchData_Click'   
+                            'BtnFetchData_Click',
+                            'ActiveModule_OnParameterSelected', 
                         )
                         AND Info NOT LIKE '%Felsökning%'
                         AND Info NOT LIKE '%Error%'

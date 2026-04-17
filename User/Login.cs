@@ -236,7 +236,7 @@ namespace DigitalProductionProgram.User
             if (lastReadVersion == null || lastReadVersion == new Version(0, 0, 0, 0))
             {
                 using var changeLog = new ChangeLog(new Version(1, 0, 0, 0));
-                changeLog.ShowDialog();
+                changeLog.ShowDialog(this);
                 return;
             }
 
@@ -255,7 +255,7 @@ namespace DigitalProductionProgram.User
                     watch.Start();
 
                     using var changeLog = new ChangeLog(lastReadVersion);
-                    changeLog.ShowDialog();
+                    changeLog.ShowDialog(this);
 
                     watch.Stop();
                     var time = watch.Elapsed.TotalSeconds;
@@ -382,7 +382,7 @@ namespace DigitalProductionProgram.User
         {
             var ctrl = (Control)sender;
             using var choose_Item = new Choose_Item(Person.List_Users(false), ctrls: [ ctrl ]);
-            choose_Item.ShowDialog();
+            choose_Item.ShowDialog(this);
         }
         private void AnstNr_KeyPress(object sender, KeyPressEventArgs e)
         {
@@ -617,7 +617,7 @@ namespace DigitalProductionProgram.User
         private void btn_ResetPassword_Click(object sender, EventArgs e)
         {
             using var resetPassword = new ResetPassword();
-            resetPassword.ShowDialog();
+            resetPassword.ShowDialog(this);
         }
     }
 }

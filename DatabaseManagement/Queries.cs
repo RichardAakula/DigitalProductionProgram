@@ -2,18 +2,7 @@
 {
     internal static class Queries
     {
-       
-       
 
-
-        
-        public static string UPDATE_Order_StoppTid => "UPDATE [Order].MainData SET Date_Stop = @stop WHERE OrderID = @orderid AND Date_Stop IS NULL";
-
-        public static string UPDATE_Reset_Processcard_Open => $"UPDATE [Order].MainData SET Processcard_Open = 'False', Processcard_Open_By_User = '', Processcard_Open_By_Computer = '' {WHERE_OrderID}";
-        public static string UPDATE_Set_Processcard_Open => $"";
-
-
-        public static string SELECT_is_Processcard_Open => "SELECT Processcard_Open FROM [Order].MainData WHERE OrderID = @orderid";
         public static string SELECT_Processcard_Open_By => $"SELECT Processcard_Open_By_User FROM [Order].MainData {WHERE_OrderID}";
         public static string SELECT_Processcard_Open_By_Computer => $"SELECT Processcard_Open_By_Computer FROM [Order].MainData {WHERE_OrderID}";
 

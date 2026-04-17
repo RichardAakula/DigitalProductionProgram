@@ -318,9 +318,25 @@ namespace DigitalProductionProgram.MainWindow
 
             using var stats = new Statistik_Övrigt();
             using var black = new BlackBackground("", 70);
-            black.Show();
-            stats.ShowDialog();
-            black.Close();
+            var owner = FindForm();
+            try
+            {
+                if (owner != null)
+                {
+                    black.Show(owner);
+                    stats.ShowDialog(owner);
+                    owner.BringToFront();
+                    owner.Activate();
+                    return;
+                }
+                black.Show();
+                stats.ShowDialog();
+            }
+            finally
+            {
+                if (!black.IsDisposed)
+                    black.Close();
+            }
         }
         public void F9_FrequencyMarking_Click(object sender, EventArgs? e)
         {
@@ -386,9 +402,25 @@ namespace DigitalProductionProgram.MainWindow
             {
                 Size = new Size(Program.ScreenWidth, Height)
             };
-            backGround.Show();
-            frmPic.ShowDialog();
-            backGround.Close();
+            var owner = FindForm();
+            try
+            {
+                if (owner != null)
+                {
+                    backGround.Show(owner);
+                    frmPic.ShowDialog(owner);
+                    owner.BringToFront();
+                    owner.Activate();
+                    return;
+                }
+                backGround.Show();
+                frmPic.ShowDialog();
+            }
+            finally
+            {
+                if (!backGround.IsDisposed)
+                    backGround.Close();
+            }
         }
 
         private void Buttons_MouseEnter(object sender, EventArgs e)

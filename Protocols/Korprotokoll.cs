@@ -18,6 +18,28 @@ namespace DigitalProductionProgram.Protocols
 {
     internal static class Korprotokoll
     {
+        private static bool IsProtocolOpen
+        {
+            get
+            {
+                var isProcesscardOpen = Database.ExecuteSafe<bool?>(con =>
+                {
+                    const string query = "SELECT Processcard_Open FROM [Order].MainData WHERE OrderID = @orderid";
+                    using var cmd = new SqlCommand(query, con);
+                    cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
+                    var result = cmd.ExecuteScalar();
+                    if (result == DBNull.Value || result == null)
+                        return false;
+                    return (bool)result;
+                });
+                if (isProcesscardOpen.HasValue)
+                    return isProcesscardOpen.Value;
+
+                SaveData.Reset_Processcard_Open(true);
+                return false;
+            }
+        }
+
         public static bool IsProtocol_Open_By_AnotherUser(Form form)
         {
             if (!Order.IsOrderDone)
@@ -26,7 +48,7 @@ namespace DigitalProductionProgram.Protocols
                     Module.IsOkToSave = false;
                 else
                 {
-                    if (Processkort_General.IsProcesscardOpen == false)
+                    if (IsProtocolOpen == false)
                     {
                         SaveData.Set_Processcard_Open();
                         return false;

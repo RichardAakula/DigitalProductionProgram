@@ -697,7 +697,7 @@ namespace DigitalProductionProgram.MainWindow
         {
             Points.Add_Points(1, "Kollar vem som är inloggad.");
             using var inloggad = new WhoIsLoggedIn();
-            inloggad.ShowDialog();
+            inloggad.ShowDialog(mainForm);
         }
         private void Menu_User_Logga_ut_användare_Click(object sender, EventArgs e)
         {
@@ -706,7 +706,7 @@ namespace DigitalProductionProgram.MainWindow
         private void Menu_User_CheckMyAnalysis_Click(object sender, EventArgs e)
         {
             using var my_Analysis = new My_Analysis();
-            my_Analysis.ShowDialog();
+            my_Analysis.ShowDialog(mainForm);
         }
         private void Menu_User_Authorities_Roles_Click(object sender, EventArgs e)
         {

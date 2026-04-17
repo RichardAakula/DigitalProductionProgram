@@ -12,33 +12,8 @@ using DigitalProductionProgram.User;
 
 namespace DigitalProductionProgram.Processcards
 {
-    internal class Processkort_General
+    internal abstract class Processkort_General
     {
-        public static bool IsProcesscardOpen
-        {
-            get
-            {
-                using var con = new SqlConnection(Database.cs_Protocol);
-                var cmd = new SqlCommand(Queries.SELECT_is_Processcard_Open, con);
-                cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
-                con.Open();
-                try
-                {
-                    var result = cmd.ExecuteScalar();
-                    if (result == DBNull.Value || result == null)
-                        return false;
-                    return (bool)result;
-
-
-                }
-                catch
-                {
-                    SaveData.Reset_Processcard_Open(true);
-                    return false;
-                }
-            }
-        }
-
         public static string? LoadRevNr(int? partID = null)
         {
             if (partID == null)

@@ -721,17 +721,36 @@ namespace DigitalProductionProgram.MainWindow
 
         private void Öppna_Gallup()
         {
-            
-            var bg = new BlackBackground("", 80);
-            bg.Show();
+            using var bg = new BlackBackground("", 80);
             using var gallup = new UserPoll();
-            gallup.ShowDialog();
-            bg.Close();
-            bg.Dispose();
+            bg.Show(this);
+            try
+            {
+                gallup.ShowDialog(this);
+            }
+            finally
+            {
+                if (!bg.IsDisposed)
+                    bg.Close();
+                RestoreMainWindowAfterModalDialog();
+            }
         }
-
-
-
+        private void RestoreMainWindowAfterModalDialog()
+        {
+            if (IsDisposed)
+                return;
+            if (InvokeRequired)
+            {
+                Invoke(RestoreMainWindowAfterModalDialog);
+                return;
+            }
+            if (WindowState == FormWindowState.Minimized)
+                WindowState = FormWindowState.Normal;
+            if (!Visible)
+                Show();
+            BringToFront();
+            Activate();
+        }
         //---------------------------------------------MÄTPUNKTER--------------------------------------------------
         public void Load_MeasurePoints()
         {
@@ -871,19 +890,26 @@ namespace DigitalProductionProgram.MainWindow
             using var frmLogin = new Login();
             using var backGround = new BlackBackground(string.Empty, 50)
             {
-                Size = new Size(Program.ScreenWidth, Height),
+                Size = screen.Bounds.Size,
                 StartPosition = FormStartPosition.Manual
             };
             frmLogin.StartPosition = FormStartPosition.Manual;
             backGround.Location = screen.Bounds.Location;
             frmLogin.Left = screen.Bounds.Left + screen.Bounds.Width / 2 - frmLogin.Width / 2;
             frmLogin.Top = screen.Bounds.Top + screen.Bounds.Height / 2 - frmLogin.Height / 2;
-
-            backGround.Show();
-            frmLogin.ShowDialog();
-
-           // backGround.Dispose();
-           // frmLogin.Dispose();
+            backGround.Show(this);
+            try
+            {
+                frmLogin.ShowDialog(this);
+            }
+            finally
+            {
+                if (!backGround.IsDisposed)
+                    backGround.Close();
+            }
+            RestoreMainWindowAfterModalDialog();
+            if (string.IsNullOrEmpty(Person.Name))
+                return;
 
 
             lbl_EmpNr.Text = Person.EmployeeNr;
@@ -911,7 +937,8 @@ namespace DigitalProductionProgram.MainWindow
             if (CheckAuthority.IsOkReadMyAnalysis)
             {
                 using var my_Analysis = new My_Analysis(); 
-                my_Analysis.ShowDialog();
+                my_Analysis.ShowDialog(this);
+                RestoreMainWindowAfterModalDialog();
             }
 
             #region Kontrollerar om Användaren har en gammal order öppen som ej blivit avslutad
@@ -948,6 +975,7 @@ namespace DigitalProductionProgram.MainWindow
 
             Task.Run(() => { cf_ActiveOrdersUser.Load_OrderNr(cf_OrderInformation); });
             _ = EasterEgg_Code.IsGameStarted;
+            RestoreMainWindowAfterModalDialog();
         }
         public void SignOut()
         {

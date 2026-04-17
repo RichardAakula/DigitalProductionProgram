@@ -303,12 +303,14 @@ namespace DigitalProductionProgram.DatabaseManagement
                 await Activity.Stop($"User: {Person.Name} @: {Environment.MachineName} Logging out user: {Korprotokoll.Open_ByUser} from Computer: {Korprotokoll.Open_ByComputer}");
                 await Database.ExecuteSafeAsync(async con =>
                 {
-                    var query = Queries.UPDATE_Reset_Processcard_Open;
-                    using var cmd = new SqlCommand(query, con);
-                    cmd.Parameters.AddWithValue("@id", Order.OrderID);
-                    cmd.CommandTimeout = 3;
-                    await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
-                    return 0;
+                    var query = $"UPDATE [Order].MainData SET Processcard_Open = 'False', Processcard_Open_By_User = '', Processcard_Open_By_Computer = '' WHERE OrderId = @orderid";
+                    await using (var cmd = new SqlCommand(query, con))
+                    {
+                        cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
+                        cmd.CommandTimeout = 3;
+                        await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
+                        return 0;
+                    }
                 });
             }
         }
@@ -316,13 +318,13 @@ namespace DigitalProductionProgram.DatabaseManagement
         {
             Database.ExecuteSafe(con =>
             {
-                var cmd = new SqlCommand(Queries.UPDATE_Set_Processcard_Open, con);
-                cmd.Parameters.AddWithValue("@id", Order.OrderID);
+                const string query = $"UPDATE [Order].MainData SET Processcard_Open = 'True', Processcard_Open_By_User = @användare, Processcard_Open_By_Computer = @computer WHERE OrderID = @orderid";
+                var cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                 cmd.Parameters.AddWithValue("@användare", Person.Name);
                 cmd.Parameters.AddWithValue("@computer", Environment.MachineName);
-                con.Open();
                 cmd.ExecuteScalar();
-            }
+            });
         }
 
     }

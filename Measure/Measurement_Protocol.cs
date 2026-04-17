@@ -610,12 +610,11 @@ namespace DigitalProductionProgram.Measure
             }
             else
             {
-                var IsTransferOk = true;
-                INSERT_MeasureProtocol_Values(ref IsTransferOk);
-                if (IsTransferOk)
-                    INSERT_MeasureProtocol_Main();
-                else
+                if (!INSERT_MeasureProtocol())
+                {
                     _ = Activity.Stop($"Measurement Failed - {bag}");
+                    return;
+                }
                 loginfo = "INSERT";
             }
 
@@ -711,10 +710,8 @@ namespace DigitalProductionProgram.Measure
             //Den är dold tills vidare tills Produktion frågar nåt.
             if (IsOkSaveLengthMeasure == false)
                 return;
-            var IsTransferOk = true;
-            INSERT_MeasureProtocol_Values(ref IsTransferOk);
-            if (IsTransferOk)
-                INSERT_MeasureProtocol_Main();
+            if (!INSERT_MeasureProtocol())
+                return;
         }
         private void EditTotal_Click(object sender, EventArgs e)
         {
@@ -805,167 +802,214 @@ namespace DigitalProductionProgram.Measure
         }
 
 
-        private void INSERT_MeasureProtocol_Main()
+        private bool INSERT_MeasureProtocol()
         {
-            Database.ExecuteSafe(con =>
+            return Database.ExecuteSafe(con =>
             {
-                const string query = @"
-                    INSERT INTO MeasureProtocol.MainData
-                    VALUES 
-                    (
-                        @orderID,
-                        NULL,
-                        @date,
-                        NULL,
-                        @employeenumber,
-                        @sign,
-                        COALESCE
-                        (
-                            (
-                                SELECT MAX(RowIndex) + 1
-                                FROM MeasureProtocol.MainData
-                                WHERE OrderID = @orderID
-                            ),
-                        1
-                        )
-                    )";
-                using var cmd = new SqlCommand(query, con);
-                cmd.Parameters.AddWithValue("@orderID", Order.OrderID);
-                cmd.Parameters.AddWithValue("@date", DateTime.Now);
-                cmd.Parameters.AddWithValue("@employeenumber", Person.EmployeeNr);
-                cmd.Parameters.AddWithValue("@sign", Person.Sign);
-
-                cmd.ExecuteNonQuery();
-            });
+                using var tran = con.BeginTransaction();
+                try
+                {
+                    var rowIndex = NextMeasureProtocolRowIndex(con, tran);
+                    INSERT_MeasureProtocol_Main(con, tran, rowIndex);
+                    INSERT_MeasureProtocol_Values(con, tran, rowIndex);
+                    tran.Commit();
+                    return true;
+                }
+                catch
+                {
+                    tran.Rollback();
+                    throw;
+                }
+            }) == true;
         }
-        private void INSERT_MeasureProtocol_Values(ref bool IsTransferOk)
+        private static int NextMeasureProtocolRowIndex(SqlConnection con, SqlTransaction tran)
         {
+            const string query = @"
+                SELECT COALESCE(MAX(RowIndex), 0) + 1
+                FROM MeasureProtocol.MainData WITH (UPDLOCK, HOLDLOCK)
+                WHERE OrderID = @orderid";
+            using var cmd = new SqlCommand(query, con, tran);
+            cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
+            return Convert.ToInt32(cmd.ExecuteScalar());
+        }
+        private static void INSERT_MeasureProtocol_Main(SqlConnection con, SqlTransaction tran, int rowIndex)
+        {
+            const string query = @"
+                INSERT INTO MeasureProtocol.MainData
+                (
+                    OrderID,
+                    Discarded,
+                    Date,
+                    ErrorCode,
+                    AnstNr,
+                    Sign,
+                    RowIndex
+                )
+                VALUES
+                (
+                    @orderid,
+                    NULL,
+                    @date,
+                    NULL,
+                    @employeenumber,
+                    @sign,
+                    @rowindex
+                )";
+            using var cmd = new SqlCommand(query, con, tran);
+            cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
+            cmd.Parameters.AddWithValue("@date", DateTime.Now);
+            cmd.Parameters.AddWithValue("@employeenumber", Person.EmployeeNr);
+            cmd.Parameters.AddWithValue("@sign", Person.Sign);
+            cmd.Parameters.AddWithValue("@rowindex", rowIndex);
+            cmd.ExecuteNonQuery();
+        }
+        private void INSERT_MeasureProtocol_Values(SqlConnection con, SqlTransaction tran, int rowIndex)
+        {
+            const string query = @"
+                INSERT INTO MeasureProtocol.Data
+                (
+                    OrderID,
+                    DescriptionID,
+                    Value,
+                    TextValue,
+                    BoolValue,
+                    DateValue,
+                    RowIndex
+                )
+                VALUES
+                (
+                    @orderid,
+                    @descriptionid,
+                    @value,
+                    @textvalue,
+                    @boolvalue,
+                    @datevalue,
+                    @rowindex
+                )";
             foreach (Control ctrl in flp_InputControls.Controls)
             {
-                var descriptionID = 10000;
-                var dataType = 0;
-                switch (ctrl)
-                {
-                    case Label _:
-                        continue;
-                    case InputCheckBox checkBox:
-                        descriptionID = checkBox.DescriptionID;
-                        dataType = checkBox.DataType;
-                        break;
-                    case InputNumericUpDown numericUpDown:
-                        descriptionID = numericUpDown.DescriptionID;
-                        dataType = numericUpDown.DataType;
-                        break;
-                    case InputTextBox textBox:
-                        descriptionID = textBox.DescriptionID;
-                        dataType = textBox.DataType;
-                        break;
-                }
-
-                if (descriptionID == 10000)
-                {
-                    IsTransferOk = false;
-                    return;
-                }
-
-                // 🚀 Använd ExecuteSafe istället för att öppna connection direkt
-                Database.ExecuteSafe(_ =>
-                 {
-                     const string query = @"
-                        INSERT INTO MeasureProtocol.Data
-                        VALUES (@orderid, @descriptionid, @value, @textvalue, @boolvalue, @datevalue, 
-                        COALESCE((SELECT MAX(rowindex) + 1 
-                          FROM MeasureProtocol.MainData 
-                          WHERE OrderID = @orderid), 1))";
-
-                     using var cmd = new SqlCommand(query, _);
-
-                     cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
-                     cmd.Parameters.AddWithValue("@descriptionid", descriptionID);
-
-                     switch (dataType)
-                     {
-                         case 0:
-                             SQL_Parameter.Double(cmd.Parameters, "@value", ctrl.Text);
-                             cmd.Parameters.AddWithValue("@textvalue", DBNull.Value);
-                             cmd.Parameters.AddWithValue("@boolvalue", DBNull.Value);
-                             break;
-                         case 1:
-                             SQL_Parameter.String(cmd.Parameters, "@textvalue", ctrl.Text);
-                             cmd.Parameters.AddWithValue("@value", DBNull.Value);
-                             cmd.Parameters.AddWithValue("@boolvalue", DBNull.Value);
-                             break;
-                         case 2:
-                             cmd.Parameters.AddWithValue("@value", DBNull.Value);
-                             cmd.Parameters.AddWithValue("@textvalue", DBNull.Value);
-                             var chb = (CheckBox)ctrl;
-                             SQL_Parameter.Boolean(cmd.Parameters, "@boolvalue", chb.Checked);
-                             break;
-                     }
-
-                     cmd.Parameters.AddWithValue("@datevalue", DBNull.Value);
-                     cmd.ExecuteNonQuery();
-                     return true; // returnvärde krävs för ExecuteSafe<T>
-                 });
+                if (!TryGetMeasureControlData(ctrl, out var descriptionID, out var dataType))
+                    continue;
+                using var cmd = new SqlCommand(query, con, tran);
+                cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
+                cmd.Parameters.AddWithValue("@descriptionid", descriptionID);
+                AddMeasureControlValue(cmd.Parameters, ctrl, dataType);
+                cmd.Parameters.AddWithValue("@datevalue", DBNull.Value);
+                cmd.Parameters.AddWithValue("@rowindex", rowIndex);
+                if (cmd.ExecuteNonQuery() != 1)
+                    throw new InvalidOperationException($"Failed to save measurement data for DescriptionID {descriptionID}.");
             }
         }
-
+        private static bool TryGetMeasureControlData(Control ctrl, out int descriptionID, out int dataType)
+        {
+            switch (ctrl)
+            {
+                case Label _:
+                    descriptionID = 0;
+                    dataType = 0;
+                    return false;
+                case InputCheckBox checkBox:
+                    descriptionID = checkBox.DescriptionID;
+                    dataType = checkBox.DataType;
+                    return true;
+                case InputNumericUpDown numericUpDown:
+                    descriptionID = numericUpDown.DescriptionID;
+                    dataType = numericUpDown.DataType;
+                    return true;
+                case InputTextBox textBox:
+                    descriptionID = textBox.DescriptionID;
+                    dataType = textBox.DataType;
+                    return true;
+                default:
+                    throw new InvalidOperationException($"Unsupported measurement control type: {ctrl.GetType().Name}");
+            }
+        }
+        private static void AddMeasureControlValue(SqlParameterCollection parameters, Control ctrl, int dataType)
+        {
+            switch (dataType)
+            {
+                case 0:
+                    if (ctrl is InputNumericUpDown numericUpDown)
+                        parameters.AddWithValue("@value", Convert.ToDouble(numericUpDown.Value));
+                    else
+                        SQL_Parameter.Double(parameters, "@value", ctrl.Text);
+                    parameters.AddWithValue("@textvalue", DBNull.Value);
+                    parameters.AddWithValue("@boolvalue", DBNull.Value);
+                    break;
+                case 1:
+                    SQL_Parameter.String(parameters, "@textvalue", ctrl.Text);
+                    parameters.AddWithValue("@value", DBNull.Value);
+                    parameters.AddWithValue("@boolvalue", DBNull.Value);
+                    break;
+                case 2:
+                    parameters.AddWithValue("@value", DBNull.Value);
+                    parameters.AddWithValue("@textvalue", DBNull.Value);
+                    SQL_Parameter.Boolean(parameters, "@boolvalue", ((CheckBox)ctrl).Checked);
+                    break;
+                default:
+                    throw new InvalidOperationException($"Unsupported measurement data type: {dataType}");
+            }
+        }
         private void UPDATE_MeasureProtocol_Values()
         {
+            const string query = @"
+                IF EXISTS
+                (
+                    SELECT 1
+                    FROM MeasureProtocol.Data
+                    WHERE OrderID = @orderid
+                      AND DescriptionId = @descriptionid
+                      AND RowIndex = @rowindex
+                )
+                BEGIN
+                    UPDATE MeasureProtocol.Data
+                    SET
+                        Value = COALESCE(@value, Value),
+                        TextValue = COALESCE(@textvalue, TextValue),
+                        BoolValue = COALESCE(@boolvalue, BoolValue),
+                        DateValue = COALESCE(@datevalue, DateValue)
+                    WHERE OrderID = @orderid
+                      AND DescriptionId = @descriptionid
+                      AND RowIndex = @rowindex
+                END
+                ELSE
+                BEGIN
+                    INSERT INTO MeasureProtocol.Data
+                    (
+                        OrderID,
+                        DescriptionID,
+                        Value,
+                        TextValue,
+                        BoolValue,
+                        DateValue,
+                        RowIndex
+                    )
+                    VALUES
+                    (
+                        @orderid,
+                        @descriptionid,
+                        @value,
+                        @textvalue,
+                        @boolvalue,
+                        @datevalue,
+                        @rowindex
+                    )
+                END";
             foreach (Control ctrl in flp_InputControls.Controls)
             {
                 if (ctrl is Label || ctrl.Enabled == false)
                     continue;
-
-                var descriptionID = 10000;
-                var dataType = 0;
-                switch (ctrl)
-                {
-                    case InputCheckBox checkBox:
-                        descriptionID = checkBox.DescriptionID;
-                        dataType = checkBox.DataType;
-                        break;
-                    case InputNumericUpDown numericUpDown:
-                        descriptionID = numericUpDown.DescriptionID;
-                        dataType = numericUpDown.DataType;
-                        break;
-                    case InputTextBox textBox:
-                        descriptionID = textBox.DescriptionID;
-                        dataType = textBox.DataType;
-                        break;
-                }
-
+                if (!TryGetMeasureControlData(ctrl, out var descriptionID, out var dataType))
+                    continue;
                 Database.ExecuteSafe(con =>
                 {
-                    const string query = @"
-                UPDATE MeasureProtocol.Data
-                SET 
-                    Value     = ISNULL(@value, Value),
-                    TextValue = ISNULL(@textvalue, TextValue)
-                WHERE OrderID = @orderid
-                  AND DescriptionId = @descriptionid
-                  AND RowIndex = @rowindex";
-
                     using var cmd = new SqlCommand(query, con);
-
                     cmd.Parameters.AddWithValue("@orderid", Order.OrderID);
                     cmd.Parameters.AddWithValue("@descriptionid", descriptionID);
                     SQL_Parameter.Int(cmd.Parameters, "@rowindex", dgv_Measurements.CurrentCell.RowIndex + 1);
-
-                    switch (dataType)
-                    {
-                        case 0:
-                            SQL_Parameter.Double(cmd.Parameters, "@value", ctrl.Text);
-                            cmd.Parameters.AddWithValue("@textvalue", DBNull.Value);
-                            break;
-
-                        case 1:
-                            SQL_Parameter.String(cmd.Parameters, "@textvalue", ctrl.Text);
-                            cmd.Parameters.AddWithValue("@value", DBNull.Value);
-                            break;
-                    }
-
-                    cmd.ExecuteNonQuery(); // korrekt och meningsfullt returvärde
+                    AddMeasureControlValue(cmd.Parameters, ctrl, dataType);
+                    cmd.Parameters.AddWithValue("@datevalue", DBNull.Value);
+                    cmd.ExecuteNonQuery();
                 });
             }
         }

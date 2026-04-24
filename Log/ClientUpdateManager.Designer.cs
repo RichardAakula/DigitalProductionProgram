@@ -28,42 +28,44 @@ namespace DigitalProductionProgram.Log
         /// </summary>
         private void InitializeComponent()
         {
-            lb_AllowedClients = new ListBox();
+            lv_AllowedClients = new DigitalProductionProgram.ControlsManagement.BufferedListView();
             tlp_Main = new TableLayoutPanel();
             label_ProdLines = new Label();
-            lb_AllUsers = new ListBox();
+            lb_AllUsers = new DigitalProductionProgram.ControlsManagement.BufferedListBox();
             label_AllUsers = new Label();
             label_Versions = new Label();
             label_BlockedClients = new Label();
             label_UsersOnClient = new Label();
             label_AllowedClients = new Label();
-            lb_Versions = new ListBox();
-            lb_BlockedClients = new ListBox();
+            lb_Versions = new DigitalProductionProgram.ControlsManagement.BufferedListBox();
+            lv_BlockedClients = new DigitalProductionProgram.ControlsManagement.BufferedListView();
             chk_CheckAllClients = new CheckBox();
             btn_BlockClient = new Button();
             btn_UnBlockClient = new Button();
             chk_CheckAllBlockedClients = new CheckBox();
             tb_FilterAllClients = new TextBox();
-            lv_UsersOnClient = new ListView();
-            lb_ProdLines = new ListBox();
+            lv_UsersOnClient = new DigitalProductionProgram.ControlsManagement.BufferedListView();
+            lb_ProdLines = new DigitalProductionProgram.ControlsManagement.BufferedListBox();
             label_FilterClients = new Label();
             tb_FilterBlockedClients = new TextBox();
+            tb_FilterUsersProdLines = new TextBox();
             tlp_Main.SuspendLayout();
             SuspendLayout();
             // 
-            // lb_AllowedClients
+            // lv_AllowedClients
             // 
-            lb_AllowedClients.BackColor = SystemColors.Window;
-            tlp_Main.SetColumnSpan(lb_AllowedClients, 3);
-            lb_AllowedClients.Dock = DockStyle.Fill;
-            lb_AllowedClients.FormattingEnabled = true;
-            lb_AllowedClients.ItemHeight = 15;
-            lb_AllowedClients.Location = new Point(553, 103);
-            lb_AllowedClients.Name = "lb_AllowedClients";
-            lb_AllowedClients.SelectionMode = SelectionMode.MultiExtended;
-            lb_AllowedClients.Size = new Size(359, 699);
-            lb_AllowedClients.TabIndex = 0;
-            lb_AllowedClients.SelectedIndexChanged += lb_Clients_SelectedIndexChanged;
+            lv_AllowedClients.BackColor = SystemColors.Window;
+            tlp_Main.SetColumnSpan(lv_AllowedClients, 3);
+            lv_AllowedClients.Dock = DockStyle.Fill;
+            lv_AllowedClients.FullRowSelect = true;
+            lv_AllowedClients.HideSelection = false;
+            lv_AllowedClients.Location = new Point(553, 103);
+            lv_AllowedClients.Name = "lv_AllowedClients";
+            lv_AllowedClients.Size = new Size(359, 699);
+            lv_AllowedClients.TabIndex = 0;
+            lv_AllowedClients.UseCompatibleStateImageBehavior = false;
+            lv_AllowedClients.View = View.Details;
+            lv_AllowedClients.SelectedIndexChanged += lb_Clients_SelectedIndexChanged;
             // 
             // tlp_Main
             // 
@@ -87,10 +89,10 @@ namespace DigitalProductionProgram.Log
             tlp_Main.Controls.Add(label_Versions, 9, 1);
             tlp_Main.Controls.Add(label_BlockedClients, 8, 1);
             tlp_Main.Controls.Add(label_UsersOnClient, 2, 1);
-            tlp_Main.Controls.Add(lb_AllowedClients, 4, 3);
+            tlp_Main.Controls.Add(lv_AllowedClients, 4, 3);
             tlp_Main.Controls.Add(label_AllowedClients, 4, 1);
             tlp_Main.Controls.Add(lb_Versions, 9, 3);
-            tlp_Main.Controls.Add(lb_BlockedClients, 8, 3);
+            tlp_Main.Controls.Add(lv_BlockedClients, 8, 3);
             tlp_Main.Controls.Add(chk_CheckAllClients, 4, 2);
             tlp_Main.Controls.Add(btn_BlockClient, 6, 2);
             tlp_Main.Controls.Add(btn_UnBlockClient, 10, 2);
@@ -100,6 +102,7 @@ namespace DigitalProductionProgram.Log
             tlp_Main.Controls.Add(lb_ProdLines, 1, 3);
             tlp_Main.Controls.Add(label_FilterClients, 0, 0);
             tlp_Main.Controls.Add(tb_FilterBlockedClients, 9, 2);
+            tlp_Main.Controls.Add(tb_FilterUsersProdLines, 0, 2);
             tlp_Main.Dock = DockStyle.Fill;
             tlp_Main.Location = new Point(0, 0);
             tlp_Main.Name = "tlp_Main";
@@ -216,18 +219,19 @@ namespace DigitalProductionProgram.Log
             lb_Versions.TabIndex = 4;
             lb_Versions.SelectedIndexChanged += lb_Versions_SelectedIndexChanged;
             // 
-            // lb_BlockedClients
+            // lv_BlockedClients
             // 
-            tlp_Main.SetColumnSpan(lb_BlockedClients, 3);
-            lb_BlockedClients.Dock = DockStyle.Fill;
-            lb_BlockedClients.FormattingEnabled = true;
-            lb_BlockedClients.ItemHeight = 15;
-            lb_BlockedClients.Location = new Point(958, 103);
-            lb_BlockedClients.Name = "lb_BlockedClients";
-            lb_BlockedClients.SelectionMode = SelectionMode.MultiExtended;
-            lb_BlockedClients.Size = new Size(359, 699);
-            lb_BlockedClients.TabIndex = 5;
-            lb_BlockedClients.SelectedIndexChanged += lb_BlockedClients_SelectedIndexChanged;
+            tlp_Main.SetColumnSpan(lv_BlockedClients, 3);
+            lv_BlockedClients.Dock = DockStyle.Fill;
+            lv_BlockedClients.FullRowSelect = true;
+            lv_BlockedClients.HideSelection = false;
+            lv_BlockedClients.Location = new Point(958, 103);
+            lv_BlockedClients.Name = "lv_BlockedClients";
+            lv_BlockedClients.Size = new Size(359, 699);
+            lv_BlockedClients.TabIndex = 5;
+            lv_BlockedClients.UseCompatibleStateImageBehavior = false;
+            lv_BlockedClients.View = View.Details;
+            lv_BlockedClients.SelectedIndexChanged += lb_BlockedClients_SelectedIndexChanged;
             // 
             // chk_CheckAllClients
             // 
@@ -324,7 +328,7 @@ namespace DigitalProductionProgram.Log
             label_FilterClients.Name = "label_FilterClients";
             label_FilterClients.Size = new Size(324, 30);
             label_FilterClients.TabIndex = 18;
-            label_FilterClients.Text = "Filter Clients";
+            label_FilterClients.Text = "Filter Users / Lines";
             label_FilterClients.TextAlign = ContentAlignment.BottomCenter;
             // 
             // tb_FilterBlockedClients
@@ -333,6 +337,16 @@ namespace DigitalProductionProgram.Log
             tb_FilterBlockedClients.Name = "tb_FilterBlockedClients";
             tb_FilterBlockedClients.Size = new Size(99, 23);
             tb_FilterBlockedClients.TabIndex = 19;
+            // 
+            // tb_FilterUsersProdLines
+            // 
+            tlp_Main.SetColumnSpan(tb_FilterUsersProdLines, 2);
+            tb_FilterUsersProdLines.Dock = DockStyle.Fill;
+            tb_FilterUsersProdLines.Location = new Point(3, 73);
+            tb_FilterUsersProdLines.Name = "tb_FilterUsersProdLines";
+            tb_FilterUsersProdLines.PlaceholderText = "Filter user or production line";
+            tb_FilterUsersProdLines.Size = new Size(324, 23);
+            tb_FilterUsersProdLines.TabIndex = 20;
             // 
             // ClientUpdateManager
             // 
@@ -350,12 +364,12 @@ namespace DigitalProductionProgram.Log
 
         #endregion
 
-        private ListBox lb_AllowedClients;
+        private DigitalProductionProgram.ControlsManagement.BufferedListView lv_AllowedClients;
         private TableLayoutPanel tlp_Main;
         private Label label_UsersOnClient;
         private Label label_AllowedClients;
-        private ListBox lb_Versions;
-        private ListBox lb_BlockedClients;
+        private DigitalProductionProgram.ControlsManagement.BufferedListBox lb_Versions;
+        private DigitalProductionProgram.ControlsManagement.BufferedListView lv_BlockedClients;
         private CheckBox chk_CheckAllClients;
         private Button btn_BlockClient;
         private Button btn_UnBlockClient;
@@ -363,12 +377,13 @@ namespace DigitalProductionProgram.Log
         private CheckBox chk_CheckAllBlockedClients;
         private Label label_Versions;
         private TextBox tb_FilterAllClients;
-        private ListBox lb_AllUsers;
+        private DigitalProductionProgram.ControlsManagement.BufferedListBox lb_AllUsers;
         private Label label_AllUsers;
-        private ListView lv_UsersOnClient;
+        private DigitalProductionProgram.ControlsManagement.BufferedListView lv_UsersOnClient;
         private Label label_ProdLines;
-        private ListBox lb_ProdLines;
+        private DigitalProductionProgram.ControlsManagement.BufferedListBox lb_ProdLines;
         private Label label_FilterClients;
         private TextBox tb_FilterBlockedClients;
+        private TextBox tb_FilterUsersProdLines;
     }
 }

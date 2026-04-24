@@ -108,20 +108,17 @@ namespace DigitalProductionProgram.Templates
             {
                 case TemplateType.TemplateProtocol:
                     tlp_InfoLabels.Visible = false;
-                    label_Header.Text = @"Välj mall för Körprotokoll/Processkort:\n" +
-                                        @"Detta Artikelnummer har ingen mall för Protokollet kopplat, det finns flera mallar som passar denna operation.";
+                    label_Header.Text = Properties.Resources.templateSelector_Header_TemplateProtocol;
                     Add_ProtocolTemplates();
                     break;
                 case TemplateType.TemplateMeasureProtocol:
                     tlp_InfoLabels.Visible = false;
-                    label_Header.Text = @"Välj mall för Mätprotokollet:\n" +
-                                        @"Detta Artikelnummer har ingen mall för Mätprotokoll kopplat, det finns flera mallar som passar denna operation.";
+                    label_Header.Text = Properties.Resources.templateSelector_Header_TemplateMeasureProtocol;
                     Add_MeasureProtocolTemplates(useWorkoperationFilter);
                     break;
                 case TemplateType.Workoperations:
                     tlp_InfoLabels.Visible = false;
-                    label_Header.Text = @"Välj Arbetsoperation nedan:\n" +
-                                        @"Detta Artikelnummer tillhör flera Arbetsoperationer.";
+                    label_Header.Text = Properties.Resources.templateSelector_Header_Workoperations;
                     Add_Workoperations();
                     break;
             }

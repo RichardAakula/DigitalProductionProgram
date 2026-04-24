@@ -178,7 +178,7 @@ namespace DigitalProductionProgram.Templates
             btn_SaveNewTemplate.Name = "btn_SaveNewTemplate";
             btn_SaveNewTemplate.Size = new Size(286, 36);
             btn_SaveNewTemplate.TabIndex = 1;
-            btn_SaveNewTemplate.Text = "Spara Mall";
+            btn_SaveNewTemplate.Text = "Spara Ny Mall";
             btn_SaveNewTemplate.UseVisualStyleBackColor = false;
             btn_SaveNewTemplate.Click += Save_Template_Click;
             // 

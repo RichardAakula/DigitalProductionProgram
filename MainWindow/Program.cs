@@ -92,17 +92,25 @@ namespace DigitalProductionProgram.MainWindow
 
         private static void ShowSplash()
         {
-
+            using var splashReady = new ManualResetEventSlim(false);
             Thread t = new Thread(() =>
             {
-                splashScreen = new SplashScreen();
-                Application.Run(splashScreen);
+                try
+                {
+                    splashScreen = new SplashScreen();
+                    _ = splashScreen.Handle;
+                }
+                finally
+                {
+                    splashReady.Set();
+                }
+                if (splashScreen != null)
+                    Application.Run(splashScreen);
             });
-
             t.SetApartmentState(ApartmentState.STA);
             t.IsBackground = true;
             t.Start();
-
+            splashReady.Wait();
         }
         
 

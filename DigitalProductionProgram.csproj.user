@@ -16,6 +16,12 @@
     <Compile Update="ControlsManagement\BetaOverlayForm.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Update="ControlsManagement\BufferedListBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="ControlsManagement\BufferedListView.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Update="ControlsManagement\ProgressBar.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -25,10 +31,28 @@
     <Compile Update="DatabaseManagement\Database.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="EasterEggs\CodeWheel.cs">
+    <Compile Update="EasterEggs\The Cipher Wheel\CipherWheelActionButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="EasterEggs\The Cipher Wheel\CipherWheelChalkboardForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="EasterEggs\The Cipher Wheel\CipherWheelLevel3Overlay.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="EasterEggs\The Cipher Wheel\CipherWheelInfoPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="EasterEggs\The Cipher Wheel\CipherWheelScorePanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="EasterEggs\The Cipher Wheel\CipherWheelVictoryOverlay.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="EasterEggs\The Cipher Wheel\CodeWheel.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Update="EasterEggs\EasterEgg_Code.cs">
+    <Compile Update="EasterEggs\The Cipher Wheel\The Cipher Wheel.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="EasterEggs\EasterEgg_GetPsycho.cs">
@@ -109,7 +133,7 @@
     <Compile Update="Measure\MeasurementChart.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Update="MainWindow\MonitorUsers.cs">
+    <Compile Update="Monitor\MonitorUsers.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Update="MainWindow\ServerStatus.cs">

@@ -782,15 +782,18 @@ namespace DigitalProductionProgram.OrderManagement
                 {
                     main.Load_MeasurePoints();
                     Templates_Protocol.MainTemplate.Set_MainTemplateID(ref IsOkStartOrder);
-                    Templates_MeasureProtocol.MainTemplate.Set_MainTemplateID(ref IsOkStartOrder);
-                    Templates_LineClearance.MainTemplate.Set_MainTemplateID();
                     if (!IsOkStartOrder)
                     {
-                        InfoText.Show(Properties.Resources.selectTemplateError, CustomColors.InfoText_Color.Bad, "Warning", main);
                         ResetOrder(main);
                         return;
                     }
-                   
+                    Templates_MeasureProtocol.MainTemplate.Set_MainTemplateID(ref IsOkStartOrder);
+                    if (!IsOkStartOrder)
+                    {
+                        ResetOrder(main);
+                        return;
+                    }
+                    Templates_LineClearance.MainTemplate.Set_MainTemplateID();
                     Save_MainInfo(); //Hämtar data från Processkorten och lägger till det till ordern
                 }
                 else

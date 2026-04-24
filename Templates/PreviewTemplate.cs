@@ -1,5 +1,6 @@
 ﻿using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.DatabaseManagement;
+using DigitalProductionProgram.Help;
 using DigitalProductionProgram.MainWindow;
 using DigitalProductionProgram.PrintingServices;
 using DigitalProductionProgram.Protocols.MainInfo;
@@ -13,6 +14,7 @@ namespace DigitalProductionProgram.Templates
     public partial class PreviewTemplate : Form
     {
         private readonly bool IsOkToCompare;
+        private readonly HashSet<string> shownPreviewFallbackInfo = new();
         public PreviewTemplate(string lineClearanceTemplate, string mainInfoTemplate)
         {
             InitializeComponent();
@@ -80,15 +82,15 @@ namespace DigitalProductionProgram.Templates
             try
             {
                 pbar.Show();
-                pbar.pBar_Main.Style = ProgressBarStyle.Marquee;
-                pbar.pBar_Main.MarqueeAnimationSpeed = 30;
-                pbar.Set_ValueProgressBar(0, "Laddar längsta möjliga text till protokollet...");
+                pbar.pBar_Main.Style = ProgressBarStyle.Blocks;
+                pbar.Set_ValueProgressBar(0, "Laddar längsta möjliga text till protokollet...", isOkRefresh: true);
 
                 // Give the UI a short chance to render the progressbar
                 await Task.Delay(200);
 
                 if (flp_Main == null)
                     return;
+                var lookupState = CreatePreviewLookupState(Templates_Protocol.CurrentTemplateNameForPreview);
 
                 // 1) Snapshot minimal data from UI quickly (on UI thread)
                 var snapshots = new List<PanelSnapshot>();
@@ -106,17 +108,23 @@ namespace DigitalProductionProgram.Templates
                         snapshots.Add(snapshot);
                     }
                 });
+                var totalRows = snapshots.Sum(snapshot => snapshot.Template?.Rows.Count ?? 0);
+                var processedRows = 0;
 
                 // 2) For each snapshot: do DB / CPU work on background thread, then create the UI on UI thread
                 await Task.Run(() =>
                 {
                     foreach (var snap in snapshots)
                     {
-                        var dto = BuildModuleDtoFromSnapshot(snap);
-                        // Minimal UI update: create and populate Module control
+                        var dto = BuildModuleDtoFromSnapshot(snap, lookupState, codeText =>
+                        {
+                            processedRows++;
+                            UpdatePreviewProgress(pbar, codeText, processedRows, totalRows);
+                        });
                         this.Invoke(() => CreateModuleFromDto(dto));
                     }
                 });
+                ShowPreviewFallbackInfo(lookupState);
             }
             finally
             {
@@ -159,6 +167,15 @@ namespace DigitalProductionProgram.Templates
             public bool ColumnHeadersVisible;
             public List<ModuleRowDto> Rows = new List<ModuleRowDto>();
         }
+        private sealed class PreviewLookupState
+        {
+            public string TemplateName = string.Empty;
+            public bool HasSavedTemplateForName;
+            public bool HasProcesscardsForTemplateName;
+            public bool HasOrdersForTemplateName;
+            public bool UsedProcessFallback;
+            public bool UsedOrderFallback;
+        }
 
         private static DataTable? CopyGridToTable(DataGridView? dgv)
         {
@@ -184,8 +201,7 @@ namespace DigitalProductionProgram.Templates
             }
             return tbl;
         }
-
-        private ModuleDto BuildModuleDtoFromSnapshot(PanelSnapshot snap)
+        private ModuleDto BuildModuleDtoFromSnapshot(PanelSnapshot snap, PreviewLookupState lookupState, Action<string?>? updateProgress = null)
         {
             var dto = new ModuleDto
             {
@@ -227,14 +243,15 @@ namespace DigitalProductionProgram.Templates
 
                     int.TryParse(row.Table.Columns.Contains("col_ProtocolDescriptionID") ? row["col_ProtocolDescriptionID"]?.ToString() : null, out var protocolDescriptionID);
                     int.TryParse(row.Table.Columns.Contains("col_DataType") ? row["col_DataType"]?.ToString() : null, out var dataType);
+                    updateProgress?.Invoke(rowDto.CodeText);
 
                     // call Load_TestData (safe in background) for MIN, NOM, MAX
                     try
                     {
-                        rowDto.MinValue = Load_TestProcessData(protocolDescriptionID, dataType, 0);
-                        rowDto.NomValue = Load_TestProcessData(protocolDescriptionID, dataType, 1);
-                        rowDto.MaxValue = Load_TestProcessData(protocolDescriptionID, dataType, 2);
-                        rowDto.RpValue = Load_TestData(protocolDescriptionID, dataType);
+                        rowDto.MinValue = Load_TestProcessData(protocolDescriptionID, dataType, 0, lookupState);
+                        rowDto.NomValue = Load_TestProcessData(protocolDescriptionID, dataType, 1, lookupState);
+                        rowDto.MaxValue = Load_TestProcessData(protocolDescriptionID, dataType, 2, lookupState);
+                        rowDto.RpValue = Load_TestData(protocolDescriptionID, dataType, lookupState);
 
                     }
                     catch
@@ -272,7 +289,26 @@ namespace DigitalProductionProgram.Templates
 
             return dto;
         }
-
+        private void UpdatePreviewProgress(CustomProgressBar pbar, string? codeText, int currentRow, int totalRows)
+        {
+            var rowText = string.IsNullOrWhiteSpace(codeText) ? "okänd rad" : codeText.Trim();
+            var info = totalRows > 0
+                ? $"Laddar längsta möjliga text till protokollet... ({currentRow}/{totalRows}) {rowText}"
+                : $"Laddar längsta möjliga text till protokollet... {rowText}";
+            var progressValue = totalRows > 0 ? Math.Min(100, currentRow * 100d / totalRows) : 100;
+            try
+            {
+                pbar.Invoke((Action)(() =>
+                {
+                    if (pbar.IsDisposed)
+                        return;
+                    pbar.Set_ValueProgressBar(progressValue, info, isOkRefresh: true);
+                }));
+            }
+            catch
+            {
+            }
+        }
         private void CreateModuleFromDto(ModuleDto dto)
         {
             // Create the Module control and populate it from DTO (runs on UI thread)
@@ -346,7 +382,64 @@ namespace DigitalProductionProgram.Templates
 
 
 
-        private string Load_TestProcessData(int protocolDescriptionID, int dataType, int columnIndex)
+        private PreviewLookupState CreatePreviewLookupState(string? templateName)
+        {
+            var lookupState = new PreviewLookupState
+            {
+                TemplateName = templateName?.Trim() ?? string.Empty
+            };
+            if (string.IsNullOrWhiteSpace(lookupState.TemplateName))
+                return lookupState;
+            using var con = new SqlConnection(Database.cs_Protocol);
+            const string query = @"
+        SELECT
+            CASE WHEN EXISTS (SELECT 1 FROM Protocol.MainTemplate WHERE Name = @name) THEN CAST(1 AS bit) ELSE CAST(0 AS bit) END AS HasSavedTemplateForName,
+            CASE WHEN EXISTS (
+                SELECT 1
+                FROM Processcard.MainData
+                WHERE ProtocolMainTemplateID IN (SELECT ID FROM Protocol.MainTemplate WHERE Name = @name)
+            ) THEN CAST(1 AS bit) ELSE CAST(0 AS bit) END AS HasProcesscardsForTemplateName,
+            CASE WHEN EXISTS (
+                SELECT 1
+                FROM [Order].MainData
+                WHERE ProtocolMainTemplateID IN (SELECT ID FROM Protocol.MainTemplate WHERE Name = @name)
+            ) THEN CAST(1 AS bit) ELSE CAST(0 AS bit) END AS HasOrdersForTemplateName;";
+            using var cmd = new SqlCommand(query, con);
+            ServerStatus.Add_Sql_Counter();
+            cmd.Parameters.AddWithValue("@name", lookupState.TemplateName);
+            con.Open();
+            using var reader = cmd.ExecuteReader();
+            if (!reader.Read())
+                return lookupState;
+            lookupState.HasSavedTemplateForName = reader["HasSavedTemplateForName"] != DBNull.Value && Convert.ToBoolean(reader["HasSavedTemplateForName"]);
+            lookupState.HasProcesscardsForTemplateName = reader["HasProcesscardsForTemplateName"] != DBNull.Value && Convert.ToBoolean(reader["HasProcesscardsForTemplateName"]);
+            lookupState.HasOrdersForTemplateName = reader["HasOrdersForTemplateName"] != DBNull.Value && Convert.ToBoolean(reader["HasOrdersForTemplateName"]);
+            return lookupState;
+        }
+        private void ShowPreviewFallbackInfo(PreviewLookupState lookupState)
+        {
+            if (string.IsNullOrWhiteSpace(lookupState.TemplateName))
+                return;
+            if (!lookupState.UsedProcessFallback && !lookupState.UsedOrderFallback)
+                return;
+            if (!shownPreviewFallbackInfo.Add(lookupState.TemplateName))
+                return;
+            if (!lookupState.HasSavedTemplateForName)
+            {
+                InfoText.Show($"Det finns ingen sparad mall med namn '{lookupState.TemplateName}'. " +
+                              $"Previewn använder därför historik från andra mallar med samma parameternamn när sådan data finns.", CustomColors.InfoText_Color.Info, "Info", this);
+                return;
+            }
+            var sources = new List<string>();
+            if (lookupState.UsedProcessFallback)
+                sources.Add("processkort");
+            if (lookupState.UsedOrderFallback)
+                sources.Add("ordrar");
+            var sourceText = sources.Count == 2 ? "processkort eller ordrar" : sources[0];
+            InfoText.Show($"Det finns ingen sparad historik i {sourceText} kopplad till mallnamnet '{lookupState.TemplateName}'. " +
+                          $"Previewn använder därför historik från andra mallar med samma parameternamn när sådan data finns.", CustomColors.InfoText_Color.Info, "Info", this);
+        }
+        private string Load_TestProcessData(int protocolDescriptionID, int dataType, int columnIndex, PreviewLookupState lookupState)
         {
             // Välj rätt kolumn
             var column = dataType switch
@@ -357,10 +450,11 @@ namespace DigitalProductionProgram.Templates
             };
             if (column == null)
                 return "N/A";
-
+            if (!lookupState.HasProcesscardsForTemplateName)
+                lookupState.UsedProcessFallback = true;
             var result = string.Empty;
-
-            var query = $@"
+            var query = lookupState.HasProcesscardsForTemplateName
+                ? $@"
         SELECT TOP(1) {column}
         FROM Processcard.[Data]
         WHERE TemplateID IN
@@ -369,18 +463,34 @@ namespace DigitalProductionProgram.Templates
             FROM Protocol.Template
             WHERE ProtocolDescriptionID = @protocolDescriptionID
               AND ColumnIndex = @columnIndex
-              AND {column} IS NOT NULL
         )
-        AND PartID IN (SELECT PartID FROM Processcard.MainData WHERE ProtocolMainTemplateID IN (SELECT ID FROM Protocol.MainTemplate WHERE Name = @name))
-
+          AND {column} IS NOT NULL
+          AND PartID IN
+          (
+              SELECT PartID
+              FROM Processcard.MainData
+              WHERE ProtocolMainTemplateID IN (SELECT ID FROM Protocol.MainTemplate WHERE Name = @name)
+          )
+        ORDER BY LEN({column}) DESC;"
+                : $@"
+        SELECT TOP(1) {column}
+        FROM Processcard.[Data]
+        WHERE TemplateID IN
+        (
+            SELECT ID 
+            FROM Protocol.Template
+            WHERE ProtocolDescriptionID = @protocolDescriptionID
+              AND ColumnIndex = @columnIndex
+        )
+          AND {column} IS NOT NULL
         ORDER BY LEN({column}) DESC;";
-
             using var con = new SqlConnection(Database.cs_Protocol);
             using var cmd = new SqlCommand(query, con);
             ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@protocolDescriptionID", protocolDescriptionID);
             cmd.Parameters.AddWithValue("@columnIndex", columnIndex);
-            cmd.Parameters.AddWithValue("@name", Templates_Protocol.MainTemplate.Name);
+            if (lookupState.HasProcesscardsForTemplateName)
+                cmd.Parameters.AddWithValue("@name", lookupState.TemplateName);
 
             con.Open();
             var value = cmd.ExecuteScalar();
@@ -390,7 +500,7 @@ namespace DigitalProductionProgram.Templates
 
             return result;
         }
-        private string Load_TestData(int protocolDescriptionID, int dataType)
+        private string Load_TestData(int protocolDescriptionID, int dataType, PreviewLookupState lookupState)
         {
             // Välj rätt kolumn
             var column = dataType switch
@@ -401,22 +511,30 @@ namespace DigitalProductionProgram.Templates
             };
             if (column == null)
                 return "N/A";
-
+            if (!lookupState.HasOrdersForTemplateName)
+                lookupState.UsedOrderFallback = true;
             var result = string.Empty;
-
-            var query = $@"
+            var query = lookupState.HasOrdersForTemplateName
+                ? $@"
         SELECT TOP(1) {column}
         FROM [Order].[Data]
         WHERE ProtocolDescriptionID = @protocolDescriptionID
               AND {column} IS NOT NULL
               AND OrderID IN (SELECT OrderID FROM [Order].MainData WHERE ProtocolMainTemplateID IN (SELECT ID FROM Protocol.MainTemplate WHERE Name = @name))
+        ORDER BY LEN({column}) DESC;"
+                : $@"
+        SELECT TOP(1) {column}
+        FROM [Order].[Data]
+        WHERE ProtocolDescriptionID = @protocolDescriptionID
+              AND {column} IS NOT NULL
         ORDER BY LEN({column}) DESC;";
 
             using var con = new SqlConnection(Database.cs_Protocol);
             using var cmd = new SqlCommand(query, con);
             ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@protocolDescriptionID", protocolDescriptionID);
-            cmd.Parameters.AddWithValue("@name", Templates_Protocol.MainTemplate.Name);
+            if (lookupState.HasOrdersForTemplateName)
+                cmd.Parameters.AddWithValue("@name", lookupState.TemplateName);
 
             con.Open();
             var value = cmd.ExecuteScalar();

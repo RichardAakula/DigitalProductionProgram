@@ -3864,6 +3864,15 @@ namespace DigitalProductionProgram.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The Cipher Wheel.
+        /// </summary>
+        public static string Menu_Help_CipherWheel {
+            get {
+                return ResourceManager.GetString("Menu_Help_CipherWheel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
         public static string Menu_Help_InstructionVideos {
@@ -5524,6 +5533,36 @@ namespace DigitalProductionProgram.Properties {
         public static string template {
             get {
                 return ResourceManager.GetString("template", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Choose template for the Measurement Protocol:
+        ///This part number has no template linked to the measurement protocol. There are several templates that match this operation..
+        /// </summary>
+        public static string templateSelector_Header_TemplateMeasureProtocol {
+            get {
+                return ResourceManager.GetString("templateSelector_Header_TemplateMeasureProtocol", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Choose template for Run protocol/Process card:
+        ///This part number has no template linked to the protocol. There are several templates that match this operation..
+        /// </summary>
+        public static string templateSelector_Header_TemplateProtocol {
+            get {
+                return ResourceManager.GetString("templateSelector_Header_TemplateProtocol", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Choose Workoperation below:
+        ///This part number belongs to several Workoperations..
+        /// </summary>
+        public static string templateSelector_Header_Workoperations {
+            get {
+                return ResourceManager.GetString("templateSelector_Header_Workoperations", resourceCulture);
             }
         }
         

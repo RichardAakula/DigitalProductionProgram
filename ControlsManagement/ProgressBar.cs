@@ -71,7 +71,6 @@ namespace DigitalProductionProgram.ControlsManagement
             int b = (int)(from.B + (to.B - from.B) * t);
             return Color.FromArgb(r, g, b);
         }
-
         public void Set_ValueProgressBar(double value, string? info, double extraValue = 0, bool isOkRefresh = false)
         {
             value = Math.Max(0, Math.Min(100, value));
@@ -93,7 +92,6 @@ namespace DigitalProductionProgram.ControlsManagement
             if (isOkRefresh)
                 Refresh();
         }
-
         public void ConfigureForInlineHost(int width = 360, int height = 44)
         {
             TopLevel = false;

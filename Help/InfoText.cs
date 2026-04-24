@@ -30,6 +30,7 @@ namespace DigitalProductionProgram.Help
         public static string? return_Text;
         public static int return_Value;
         private static bool IsQuestion;
+        private static bool IsRtfMessage;
         private static List<string>? InputTextList;
         // public static Control? form { get; set; } = null!;
 
@@ -52,6 +53,7 @@ namespace DigitalProductionProgram.Help
         {
             Change_GUI_BackColor(färg);
             IsQuestion = false;
+            IsRtfMessage = false;
             // form = Form;
             IsQuestion = false;
             infoText = new InfoText
@@ -74,15 +76,20 @@ namespace DigitalProductionProgram.Help
             //Change_GUI_Size();
 
             if (IsSpecialText)
+            {
+                infoText.rtb_Message.Text = message ?? string.Empty;
+                Change_GUI_Size();
                 SpecialText(infoText.rtb_Message, message);
+            }
             else
             {
-                if (message.TrimStart().StartsWith(@"{\rtf", StringComparison.OrdinalIgnoreCase))
+                IsRtfMessage = !string.IsNullOrWhiteSpace(message) && message.TrimStart().StartsWith(@"{\rtf", StringComparison.OrdinalIgnoreCase);
+                if (IsRtfMessage)
                     infoText.rtb_Message.Rtf = message;
                 else
                     infoText.rtb_Message.Text = message;
+                Change_GUI_Size(message);
             }
-            Change_GUI_Size();
             //infoText.lbl_Message.MaximumSize = new Size(infoText.panel_Message.ClientSize.Width - 20, 0); // radbryt
 
             //Size needed = TextRenderer.MeasureText(
@@ -103,14 +110,16 @@ namespace DigitalProductionProgram.Help
         public static void Question(string? Question, CustomColors.InfoText_Color color, string? header, Control? Form = null, bool IsSpecialText = false, string[] buttonStrings = null)
         {
             Change_GUI_BackColor(color);
+            IsRtfMessage = false;
             // form = Form;
             infoText = new InfoText();
             infoText.TopMost = true;
             if (IsSpecialText)
-                SpecialText(infoText.rtb_Message, Question);
+                infoText.rtb_Message.Text = Question ?? string.Empty;
             else
             {
-                if (Question.TrimStart().StartsWith(@"{\rtf", StringComparison.OrdinalIgnoreCase))
+                IsRtfMessage = !string.IsNullOrWhiteSpace(Question) && Question.TrimStart().StartsWith(@"{\rtf", StringComparison.OrdinalIgnoreCase);
+                if (IsRtfMessage)
                     infoText.rtb_Message.Rtf = Question;
                 else
                     infoText.rtb_Message.Text = Question;
@@ -123,13 +132,20 @@ namespace DigitalProductionProgram.Help
             Change_GUI_Header(header);
             Change_GUI_Question(true);
             Change_GUI_QuestionText(buttonStrings);
-            Change_GUI_Size();
+            if (IsSpecialText)
+            {
+                Change_GUI_Size();
+                SpecialText(infoText.rtb_Message, Question);
+            }
+            else
+                Change_GUI_Size(Question);
             infoText.ShowDialog();
         }
 
 
         private static void SpecialText(Control ctrl, string? text)
         {
+            text ??= string.Empty;
             int i = 0;
             ctrl.Text = string.Empty;
 
@@ -164,7 +180,7 @@ namespace DigitalProductionProgram.Help
             Translate_Form();
             Change_GUI_Header(header);
             Change_GUI_Return_Text();
-            Change_GUI_Size();
+            Change_GUI_Size(Question);
             infoText.ShowDialog();
         }
         public static void PromptForValue(string Question, CustomColors.InfoText_Color color, string? header, Control? Form, Image img)
@@ -187,7 +203,7 @@ namespace DigitalProductionProgram.Help
             }
 
             Change_GUI_Return_Value();
-            Change_GUI_Size();
+            Change_GUI_Size(Question);
             infoText.ShowDialog();
         }
 
@@ -348,7 +364,7 @@ namespace DigitalProductionProgram.Help
         //    Screen screen = Screen.FromPoint(Cursor.Position);
         //    infoText.Width = screen.Bounds.Width;
         //}
-        private static void Change_GUI_Size()
+        private static void Change_GUI_Size(string? previewText = null)
         {
             if (infoText.rtb_Message == null)
                 return;
@@ -358,7 +374,7 @@ namespace DigitalProductionProgram.Help
 
             int textHeight = 0;
 
-            if (!string.IsNullOrEmpty(infoText.rtb_Message.Rtf) && infoText.rtb_Message.Rtf.StartsWith(@"{\rtf"))
+            if (IsRtfMessage)
             {
                 // RTF-text: mät höjd med GetPositionFromCharIndex
                 infoText.rtb_Message.Update(); // säkerställ layout
@@ -371,13 +387,13 @@ namespace DigitalProductionProgram.Help
             else
             {
                 // Vanlig text: mät med TextRenderer
-                string text = infoText.rtb_Message.Text ?? string.Empty;
+                string text = previewText ?? infoText.rtb_Message.Text ?? string.Empty;
 
                 var size = TextRenderer.MeasureText(
                     text,
                     infoText.rtb_Message.Font,
-                    new Size(maxWidth, 0),
-                    TextFormatFlags.WordBreak
+                    new Size(maxWidth, int.MaxValue),
+                    TextFormatFlags.WordBreak | TextFormatFlags.TextBoxControl
                 );
 
                 textHeight = size.Height;

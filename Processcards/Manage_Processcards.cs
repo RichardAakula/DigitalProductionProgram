@@ -10,6 +10,7 @@ using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.DatabaseManagement;
+using DigitalProductionProgram.EasterEggs.The_Cipher_Wheel;
 using DigitalProductionProgram.eMail;
 using DigitalProductionProgram.Equipment;
 using DigitalProductionProgram.Help;
@@ -29,6 +30,7 @@ namespace DigitalProductionProgram.Processcards
     {
         private int ActiveMainTemplateID;
         private string? ActiveTemplateRevision;
+        private CipherWheelLaunchEgg? cipherWheelLaunchEgg;
 
 
         public static string INSERT_INTO_Processkort_Main =>
@@ -299,6 +301,12 @@ namespace DigitalProductionProgram.Processcards
         public Manage_Processcards(string partnr = null)
         {
             InitializeComponent();
+            if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime)
+                return;
+            DoubleBuffered = true;
+            SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.AllPaintingInWmPaint | ControlStyles.ResizeRedraw, true);
+            UpdateStyles();
+            InitializeBufferedControls();
             Translate_Form();
             tb_NewPartNr.TextChanged -= ArtikelNr_TextChanged;
             LoadFormTemplateID();
@@ -349,6 +357,74 @@ namespace DigitalProductionProgram.Processcards
             if (Person.Role != "SuperAdmin")
                 btn_UpdateTemplate.Enabled = false;
 
+        }
+        private void InitializeBufferedControls()
+        {
+            DrawingControl.EnableDoubleBuffer(dgv_Revision);
+            DrawingControl.EnableDoubleBuffer(flp_Machines);
+            DrawingControl.EnableDoubleBuffer(flp_Left);
+            DrawingControl.EnableDoubleBuffer(flp_ExtraInfo);
+            DrawingControl.EnableDoubleBuffer(panel_Buttons);
+            DrawingControl.EnableDoubleBuffer(tlp_Main);
+            DrawingControl.EnableDoubleBuffer(tlp_Main_Processkort);
+            DrawingControl.EnableDoubleBuffer(tlp_Processkort_Top);
+            DrawingControl.EnableDoubleBuffer(tlp_Bottom);
+            DrawingControl.EnableDoubleBuffer(panel_RevisionInfo);
+            DrawingControl.EnableDoubleBuffer(panel_RevInfo_Kommentarer);
+            DrawingControl.EnableDoubleBuffer(panel_PartNr);
+            DrawingControl.EnableDoubleBuffer(panel_ProductionLine);
+            DrawingControl.EnableDoubleBuffer(panel_Tips);
+            DrawingControl.EnableDoubleBuffer(panel_InfoLayers);
+            DrawingControl.EnableDoubleBuffer(tab_Main);
+            DrawingControl.EnableDoubleBuffer(ProcesscardBasedOn);
+        }
+        private void SuspendProcesscardLayout()
+        {
+            SuspendLayout();
+            tlp_Main.SuspendLayout();
+            tlp_Main_Processkort.SuspendLayout();
+            tlp_Processkort_Top.SuspendLayout();
+            flp_Left.SuspendLayout();
+            flp_ExtraInfo.SuspendLayout();
+            panel_RevisionInfo.SuspendLayout();
+            panel_RevInfo_Kommentarer.SuspendLayout();
+            panel_Buttons.SuspendLayout();
+        }
+        private void ResumeProcesscardLayout()
+        {
+            panel_Buttons.ResumeLayout(true);
+            panel_RevInfo_Kommentarer.ResumeLayout(true);
+            panel_RevisionInfo.ResumeLayout(true);
+            flp_ExtraInfo.ResumeLayout(true);
+            flp_Left.ResumeLayout(true);
+            tlp_Processkort_Top.ResumeLayout(true);
+            tlp_Main_Processkort.ResumeLayout(true);
+            tlp_Main.ResumeLayout(true);
+            ResumeLayout(true);
+        }
+        private void SuspendRevisionDrawing()
+        {
+            DrawingControl.SuspendDrawing(dgv_Revision);
+            DrawingControl.SuspendDrawing(panel_RevisionInfo);
+        }
+        private void ResumeRevisionDrawing()
+        {
+            DrawingControl.ResumeDrawing(dgv_Revision);
+            DrawingControl.ResumeDrawing(panel_RevisionInfo);
+        }
+        private void SuspendMachineDrawing()
+        {
+            flp_Machines.SuspendLayout();
+            DrawingControl.SuspendDrawing(flp_Machines);
+            DrawingControl.SuspendDrawing(tlp_Main);
+            DrawingControl.SuspendDrawing(tlp_Main_Processkort);
+        }
+        private void ResumeMachineDrawing()
+        {
+            flp_Machines.ResumeLayout(true);
+            DrawingControl.ResumeDrawing(flp_Machines);
+            DrawingControl.ResumeDrawing(tlp_Main);
+            DrawingControl.ResumeDrawing(tlp_Main_Processkort);
         }
         private void Manage_Processcards_Load(object sender, EventArgs e)
         {
@@ -600,67 +676,74 @@ namespace DigitalProductionProgram.Processcards
         private void Load_Data_Processcard(bool is_HämtaInfo_dgv_Rev, bool IsOkCopyData, bool IsTemplateAlreadySet = false)
         {
             var org_artikelNr = Order.PartNumber;
-            Order.PartNumber = tb_PartNr.Text;
-            if (is_HämtaInfo_dgv_Rev)
+            SuspendProcesscardLayout();
+            try
             {
-                Load_Processcard_Info();
-            }
+                Order.PartNumber = tb_PartNr.Text;
+                if (is_HämtaInfo_dgv_Rev)
+                {
+                    Load_Processcard_Info();
+                }
 
-            Change_UI_Active_ArtikelNr();
-            IsData_Loading = true;
+                Change_UI_Active_ArtikelNr();
+                IsData_Loading = true;
 
-            if (IsTemplateAlreadySet == false)
-            {
-                Load_ProcessCard_MainData();
-                ProcesscardBasedOn.Load_Data();
-            }
+                if (IsTemplateAlreadySet == false)
+                {
+                    Load_ProcessCard_MainData();
+                    ProcesscardBasedOn.Load_Data();
+                }
 
 
-            switch (Order.WorkOperation)
-            {
-                default:
-                    LoadTemplate(IsOkCopyData);
-                    break;
-                case Manage_WorkOperation.WorkOperations.Kragning_TEF:
-                    Processkort_Kragning.Load_Info();
-                    Processkort_Kragning.Load_Data();
-                    break;
-                case Manage_WorkOperation.WorkOperations.Skärmning:
-                    Processcard_Skärmning.Load_Data();
-                    break;
-                case Manage_WorkOperation.WorkOperations.Slipning:
-                    Processkort_Slipning.Load_Data();
-                    break;
-                case Manage_WorkOperation.WorkOperations.Nothing:
-                    break;
-                case Manage_WorkOperation.WorkOperations.Blandning_PTFE:
-                case Manage_WorkOperation.WorkOperations.Hackning_TEF:
-                case Manage_WorkOperation.WorkOperations.Hackning_PUR_IV:
-                case Manage_WorkOperation.WorkOperations.Spolning_PTFE:
-                case Manage_WorkOperation.WorkOperations.Plockning_PTFE:
-                    {
-                        InfoText.Show("Denna arbetsoperation saknar Processkort. Kontakta Admin vid bekymmer.", CustomColors.InfoText_Color.Bad, "Warning", this);
+                switch (Order.WorkOperation)
+                {
+                    default:
+                        LoadTemplate(IsOkCopyData);
                         break;
-                    }
+                    case Manage_WorkOperation.WorkOperations.Kragning_TEF:
+                        Processkort_Kragning.Load_Info();
+                        Processkort_Kragning.Load_Data();
+                        break;
+                    case Manage_WorkOperation.WorkOperations.Skärmning:
+                        Processcard_Skärmning.Load_Data();
+                        break;
+                    case Manage_WorkOperation.WorkOperations.Slipning:
+                        Processkort_Slipning.Load_Data();
+                        break;
+                    case Manage_WorkOperation.WorkOperations.Nothing:
+                        break;
+                    case Manage_WorkOperation.WorkOperations.Blandning_PTFE:
+                    case Manage_WorkOperation.WorkOperations.Hackning_TEF:
+                    case Manage_WorkOperation.WorkOperations.Hackning_PUR_IV:
+                    case Manage_WorkOperation.WorkOperations.Spolning_PTFE:
+                    case Manage_WorkOperation.WorkOperations.Plockning_PTFE:
+                        {
+                            InfoText.Show("Denna arbetsoperation saknar Processkort. Kontakta Admin vid bekymmer.", CustomColors.InfoText_Color.Bad, "Warning", this);
+                            break;
+                        }
+                }
+
+                tb_NewPartNr.SelectAll();
+                tb_NewPartNr.BackColor = Color.Khaki;
+                if (IsTemplateAlreadySet == false)
+                    cb_TemplateRevision.Text = Templates_Protocol.MainTemplate.Revision;
+
+
+                //if (is_HämtaInfo_dgv_Rev)
+                //{
+                //    dgv_Revision.CellEnter -= DataGridView_Revision_CellClick;
+                //    Load_Processcard_Info();
+                //    dgv_Revision.CellEnter += DataGridView_Revision_CellClick;
+                //}
+
+                IsUpdateProcesscard = true;
             }
-
-            tb_NewPartNr.SelectAll();
-            tb_NewPartNr.BackColor = Color.Khaki;
-            if (IsTemplateAlreadySet == false)
-                cb_TemplateRevision.Text = Templates_Protocol.MainTemplate.Revision;
-
-
-            //if (is_HämtaInfo_dgv_Rev)
-            //{
-            //    dgv_Revision.CellEnter -= DataGridView_Revision_CellClick;
-            //    Load_Processcard_Info();
-            //    dgv_Revision.CellEnter += DataGridView_Revision_CellClick;
-            //}
-
-            IsUpdateProcesscard = true;
-            Order.PartNumber = org_artikelNr;
-
-            IsData_Loading = false;
+            finally
+            {
+                Order.PartNumber = org_artikelNr;
+                IsData_Loading = false;
+                ResumeProcesscardLayout();
+            }
         }
         private void Load_ProcessCard_MainData()
         {
@@ -719,45 +802,52 @@ namespace DigitalProductionProgram.Processcards
             Part.Load_PartGroup_ID(Order.PartID);
             if (Order.PartGroupID is null)
                 return;
-
-            // 🔥 Reset DataGridView before adding new data
-            dgv_Revision.EndEdit();
-            dgv_Revision.ClearSelection();
-            dgv_Revision.Rows.Clear();
-            dgv_Revision.CellEnter -= Revision_CellEnter;
-
-            Database.ExecuteSafe(con =>
+            SuspendRevisionDrawing();
+            try
             {
-                const string query = @"
+                // 🔥 Reset DataGridView before adding new data
+                dgv_Revision.EndEdit();
+                dgv_Revision.ClearSelection();
+                dgv_Revision.Rows.Clear();
+                dgv_Revision.CellEnter -= Revision_CellEnter;
+
+                Database.ExecuteSafe(con =>
+                {
+                    const string query = @"
                     SELECT RevNr, RevInfo, RevÄndratDatum, UpprättatAv_Sign_AnstNr, PartID 
                     FROM Processcard.MainData 
                     WHERE PartGroupID = @partgroupid 
                     ORDER BY RevNr DESC";
 
-                using var cmd = new SqlCommand(query, con);
-                cmd.Parameters.AddWithValue("@partgroupid", Order.PartGroupID);
+                    using var cmd = new SqlCommand(query, con);
+                    cmd.Parameters.AddWithValue("@partgroupid", Order.PartGroupID);
 
-                using var reader = cmd.ExecuteReader();
-                while (reader.Read())
-                {
-                    var partID = reader["PartID"] as int? ?? 0;
-                    var totalOrders = Part.TotalOrders_WithProcesscard(partID); // Get total orders
-                    DateTime.TryParse(reader["RevÄndratDatum"]?.ToString(), out DateTime date);
-                    dgv_Revision.Rows.Add(
-                        reader["RevNr"]?.ToString() ?? string.Empty,
-                        reader["RevInfo"]?.ToString() ?? string.Empty,
-                        date != DateTime.MinValue ? date.ToShortDateString() : string.Empty,
-                        reader["UpprättatAv_Sign_AnstNr"]?.ToString() ?? string.Empty,
-                        partID,
-                        totalOrders
-                    );
-                }
-            });
+                    using var reader = cmd.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        var partID = reader["PartID"] as int? ?? 0;
+                        var totalOrders = Part.TotalOrders_WithProcesscard(partID); // Get total orders
+                        DateTime.TryParse(reader["RevÄndratDatum"]?.ToString(), out DateTime date);
+                        dgv_Revision.Rows.Add(
+                            reader["RevNr"]?.ToString() ?? string.Empty,
+                            reader["RevInfo"]?.ToString() ?? string.Empty,
+                            date != DateTime.MinValue ? date.ToShortDateString() : string.Empty,
+                            reader["UpprättatAv_Sign_AnstNr"]?.ToString() ?? string.Empty,
+                            partID,
+                            totalOrders
+                        );
+                    }
+                });
 
-            if (Person.Role == "QA")
-                dgv_Revision.Columns["col_TotalOrders"].Visible = false;
+                if (Person.Role == "QA")
+                    dgv_Revision.Columns["col_TotalOrders"].Visible = false;
 
-            dgv_Revision.CellEnter += Revision_CellEnter;
+                dgv_Revision.CellEnter += Revision_CellEnter;
+            }
+            finally
+            {
+                ResumeRevisionDrawing();
+            }
         }
 
 
@@ -821,23 +911,29 @@ namespace DigitalProductionProgram.Processcards
                 }
                 return;
             }
-
-            ClearTemplate();
-
-            var width = 0;
-            ActiveMainTemplateID = Templates_Protocol.MainTemplate.ID;
-            ActiveTemplateRevision = Templates_Protocol.MainTemplate.Revision;
-
-            for (int i = 0; i < Machine.TotalMachines; i++)
-                AddMachine(i, i + 1, ref width);
-
-            tlp_Main.ColumnStyles[0].Width = width + 26;
-            if (IsOkCopyDataFromTemplate)
+            SuspendMachineDrawing();
+            try
             {
-                Load_ProcessDataFromOldTemplateRevision();
-                dataTables_ProcessData.Clear();
+                ClearTemplate();
+
+                var width = 0;
+                ActiveMainTemplateID = Templates_Protocol.MainTemplate.ID;
+                ActiveTemplateRevision = Templates_Protocol.MainTemplate.Revision;
+
+                for (int i = 0; i < Machine.TotalMachines; i++)
+                    AddMachine(i, i + 1, ref width);
+
+                tlp_Main.ColumnStyles[0].Width = width + 26;
+                if (IsOkCopyDataFromTemplate)
+                {
+                    Load_ProcessDataFromOldTemplateRevision();
+                    dataTables_ProcessData.Clear();
+                }
             }
-            
+            finally
+            {
+                ResumeMachineDrawing();
+            }
         }
         
 
@@ -853,6 +949,12 @@ namespace DigitalProductionProgram.Processcards
                 Margin = new Padding(3, 0, 0, 0),
             };
             machine.Remove_StartUp();//Uppstarter används inte i Processkortshantering.
+            DrawingControl.EnableDoubleBuffer(machine);
+            foreach (TableLayoutPanel tlp in machine.Controls.OfType<TableLayoutPanel>())
+                DrawingControl.EnableDoubleBuffer(tlp);
+            foreach (TableLayoutPanel tlp in machine.Controls.OfType<TableLayoutPanel>())
+                foreach (var module in tlp.Controls.OfType<Module>())
+                    DrawingControl.EnableDoubleBuffer(module);
 
             var width = machine.TotalWidth;
             machine.Size = new Size(width, height);
@@ -1058,6 +1160,7 @@ namespace DigitalProductionProgram.Processcards
             Log.Activity.Stop($"Save Processcard: PartId {Order.PartID}, PartGroupId: {Order.PartGroupID}, PartNr: {Order.PartNumber}, RevNr: {Order.RevNr}");
             Load_Processcard_Info();
             Order.PartGroupID = null;
+            TriggerCipherWheelLaunchEgg();
 
         }
 
@@ -1591,6 +1694,8 @@ HS-Machine = {Equipment.Equipment.HS_Machine}", CustomColors.InfoText_Color.Info
         //------------------------- CLOSE -------------------------
         private void Lägg_till_nytt_Processkort_FormClosed(object sender, FormClosedEventArgs e)
         {
+            cipherWheelLaunchEgg?.Dispose();
+            cipherWheelLaunchEgg = null;
             Order.PartNumber = null;
             Order.RevNr = null;
 
@@ -1605,6 +1710,20 @@ HS-Machine = {Equipment.Equipment.HS_Machine}", CustomColors.InfoText_Color.Info
         private void Skapa_Uppdatera_Processkort_Activated(object sender, EventArgs e)
         {
             IsProcesscardUnderManagement = true;
+        }
+        private void TriggerCipherWheelLaunchEgg()
+        {
+            if (string.IsNullOrWhiteSpace(Person.Name) || IsDisposed || EasterEgg_Code.HasHandledDiscoveryInDatabase())
+                return;
+            cipherWheelLaunchEgg?.Dispose();
+            cipherWheelLaunchEgg = new CipherWheelLaunchEgg(this, OpenCipherWheelFromProcesscardEgg, () => cipherWheelLaunchEgg = null);
+        }
+        private void OpenCipherWheelFromProcesscardEgg()
+        {
+            if (!EasterEgg_Code.TryUnlockFromFlyingEgg(this))
+                return;
+            var mainForm = Application.OpenForms.OfType<Main_Form>().FirstOrDefault();
+            mainForm?.cf_MainMenu.UpdateCipherWheelMenuVisibility();
         }
 
 

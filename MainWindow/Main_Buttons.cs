@@ -32,6 +32,12 @@ namespace DigitalProductionProgram.MainWindow
         public Main_Buttons()
         {
             InitializeComponent();
+            if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime)
+                return;
+            SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer, true);
+            UpdateStyles();
+            DrawingControl.EnableDoubleBuffer(flp_Buttons);
+            DrawingControl.EnableDoubleBuffer(panel_Pictures);
 
             if (Monitor.Monitor.factory == Monitor.Monitor.Factory.Thailand)
                 Statistics.Visible = BrowseOldMeasureprotocol.Visible = false;
@@ -104,15 +110,18 @@ namespace DigitalProductionProgram.MainWindow
             }
             else
             {
-                Measureprotocol.Visible = false;
-                BrowseOldMeasureprotocol.Visible = false;
-                Protocol.Visible = false;
-                Compound.Visible = false;
-                Zumbach.Visible = false;
-                Statistics.Visible = false;
-                Frequency_Marking.Visible = false;
-
-                Database.ExecuteSafe(con =>
+                SuspendLayout();
+                DrawingControl.SuspendDrawing(this);
+                try
+                {
+                    Measureprotocol.Visible = false;
+                    BrowseOldMeasureprotocol.Visible = false;
+                    Protocol.Visible = false;
+                    Compound.Visible = false;
+                    Zumbach.Visible = false;
+                    Statistics.Visible = false;
+                    Frequency_Marking.Visible = false;
+                    Database.ExecuteSafe(con =>
                     {
                         const string query = @"
                         SELECT Name, ControlText
@@ -150,10 +159,16 @@ namespace DigitalProductionProgram.MainWindow
                             }
                         }
                     });
-                Frequency_Marking.Visible = FrequencyMarking.IsLäcksökning;
-                Part.SetPartNrSpecial("Kompoundering");
-                if (Part.IsPartNrSpecial)
-                    Change_GUI_Show_Compund();
+                    Frequency_Marking.Visible = FrequencyMarking.IsLäcksökning;
+                    Part.SetPartNrSpecial("Kompoundering");
+                    if (Part.IsPartNrSpecial)
+                        Change_GUI_Show_Compund();
+                }
+                finally
+                {
+                    ResumeLayout(true);
+                    DrawingControl.ResumeDrawing(this);
+                }
             }
         }
         

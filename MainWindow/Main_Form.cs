@@ -1,4 +1,4 @@
-﻿//Created by: Richard Aakula
+//Created by: Richard Aakula
 //Date      : 14-02-2013
 //Projekt   : Digitala mät&kör Protokoll
 
@@ -21,6 +21,7 @@ using DigitalProductionProgram.User;
 using Microsoft.Data.SqlClient;
 using System.Diagnostics;
 using System.Reflection;
+using DigitalProductionProgram.EasterEggs.The_Cipher_Wheel;
 using Activity = DigitalProductionProgram.Log.Activity;
 using CustomProgressBar = DigitalProductionProgram.ControlsManagement.CustomProgressBar;
 using MethodInvoker = System.Windows.Forms.MethodInvoker;
@@ -32,10 +33,17 @@ namespace DigitalProductionProgram.MainWindow
 
     public partial class Main_Form : Form
     {
+        private const int WsExComposited = 0x02000000;
+        private const int WmEnterSizeMove = 0x0231;
+        private const int WmExitSizeMove = 0x0232;
         private static readonly Timer Timer_UpdateSQL_Counter = new Timer();
+        private CipherWheelLaunchEgg? cipherWheelLaunchEgg;
+        private bool isMoveRedrawSuspended;
         public ApplicationScheduler _scheduler;
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
+            if (CipherWheelLevels.Level_3.TryShowPressKeyClue(this, keyData))
+                return true;
             Control ctrl;
 
             switch (keyData)
@@ -99,7 +107,8 @@ namespace DigitalProductionProgram.MainWindow
             get
             {
                 var cp = base.CreateParams;
-                cp.ExStyle |= 0x02000000; // Turn on WS_EX_COMPOSITED
+                if (!SystemInformation.TerminalServerSession)
+                    cp.ExStyle |= WsExComposited;
                 return cp;
             }
         }
@@ -125,9 +134,18 @@ namespace DigitalProductionProgram.MainWindow
         public Main_Form()
         {
             startTime = DateTime.Now;
+            InitializeComponent();
+            if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime)
+                return;
             this.Visible = false;
             Activity.Start();
-            InitializeComponent();
+            DoubleBuffered = true;
+            SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.AllPaintingInWmPaint | ControlStyles.ResizeRedraw, true);
+            UpdateStyles();
+            panel_Grade_Percent.Parent = pb_Grade;
+            panel_Grade_Percent.Location = new Point(0, pb_Grade.ClientSize.Height);
+            panel_Grade_Percent.Size = new Size(pb_Grade.ClientSize.Width, 0);
+            panel_Grade_Percent.BringToFront();
 
             if (Database.cs_Protocol.Contains("GOD_DPP_DEV"))
                 IsBetaMode = true;
@@ -136,6 +154,8 @@ namespace DigitalProductionProgram.MainWindow
             cf_Serverstatus.SetMainForm(this);
             cf_PriorityPlanning.dgv_PriorityPlanning.CellClick += PriorityPlanning_OrderNr_CellClick;
             cf_OrderInformation.cb_Operation.SelectedIndexChanged += Operation_SelectedIndexChanged;
+            CipherWheelLevels.Level_4.AttachToProfilePicture(pbOperatör, this);
+            CipherWheelLevels.Level_7.AttachToGradeControls(lbl_Percent, panel_Grade_Percent, this);
             lbl_Company.Text = Monitor.Monitor.factory.ToString();
             cf_OrderInformation.tb_OrderNr.Focus();
 
@@ -144,42 +164,64 @@ namespace DigitalProductionProgram.MainWindow
             typeof(DataGridView)
                 .GetProperty("DoubleBuffered", BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)
                 .SetValue(dgv_QuickOpen, true, null);
+            DrawingControl.EnableDoubleBuffer(tlp_MainWindow);
+            DrawingControl.EnableDoubleBuffer(cf_Buttons);
+            DrawingControl.EnableDoubleBuffer(cf_MeasurePoints);
+            DrawingControl.EnableDoubleBuffer(cf_MeasureStats);
+            DrawingControl.EnableDoubleBuffer(panel_Profile);
+            DrawingControl.EnableDoubleBuffer(pb_Grade);
+            DrawingControl.EnableDoubleBuffer(panel_Grade_Percent);
+            DrawingControl.EnableDoubleBuffer(cf_PriorityPlanning);
 
+        }
+        protected override void WndProc(ref Message m)
+        {
+            if (m.Msg == WmEnterSizeMove && isMoveRedrawSuspended == false)
+            {
+                isMoveRedrawSuspended = true;
+                DrawingControl.SuspendDrawing(this);
+            }
+            else if (m.Msg == WmExitSizeMove && isMoveRedrawSuspended)
+            {
+                isMoveRedrawSuspended = false;
+                DrawingControl.ResumeDrawing(this);
+            }
+            base.WndProc(ref m);
         }
         protected override async void OnShown(EventArgs e)
         {
             base.OnShown(e);
-
-            await Task.Delay(500); // ger UI-tråden tid att börja rendera splash
-
-            await Task.Run(() =>
+            try
             {
-                //Settings.Settings.LoadData.Load_Settings();
-                Activity.Start();
-                Login_Monitor.Login_API();
-                Mail.AutoTestJira();
-                Login_Monitor.GiveUserWarningMonitorOnStageServer();
-               
-                if (!IsAutoOpenOrder)
+                await Task.Delay(500); // ger UI-tråden tid att börja rendera splash
+                await Task.Run(() =>
                 {
-                    Enum.TryParse(Settings.Settings.Tema, out Teman.Theme);
-                    // UI → tillbaka till huvudtråden
-                    this.Invoke(() =>
+                    //Settings.Settings.LoadData.Load_Settings();
+                    Activity.Start();
+                    Login_Monitor.Login_API();
+                    Mail.AutoTestJira();
+                    Login_Monitor.GiveUserWarningMonitorOnStageServer();
+                    if (!IsAutoOpenOrder)
                     {
-                        Teman.Choose_Theme();
-
-                        if (!Program.IsComputerOnlyForMeasurements)
-                            cf_OrderInformation.tb_OrderNr.AutoCompleteCustomSource = Monitor.Monitor.AutoFillOrdernr;
-                        _ = Main_FilterQuickOpen.Load_ListAsync(dgv_QuickOpen);
-                    });
-                }
-
-            });
-            
-            Translate_MainForm();
-            await InitializeUIAsync();
-            Change_Theme();
-            CloseSplash();
+                        Enum.TryParse(Settings.Settings.Tema, out Teman.Theme);
+                        // UI → tillbaka till huvudtråden
+                        this.Invoke(() =>
+                        {
+                            Teman.Choose_Theme();
+                            if (!Program.IsComputerOnlyForMeasurements)
+                                cf_OrderInformation.tb_OrderNr.AutoCompleteCustomSource = Monitor.Monitor.AutoFillOrdernr;
+                            _ = Main_FilterQuickOpen.Load_ListAsync(dgv_QuickOpen);
+                        });
+                    }
+                });
+                Translate_MainForm();
+                await InitializeUIAsync();
+                Change_Theme();
+            }
+            finally
+            {
+                CloseSplash();
+            }
         }
         private async Task InitializeUIAsync()
         {
@@ -216,36 +258,37 @@ namespace DigitalProductionProgram.MainWindow
         }
         private void CloseSplash()
         {
-            
-            if (Program.splashScreen.InvokeRequired)
-                Program.splashScreen.Invoke((Action)(() =>
-                {
-                    Program.splashScreen.ClearAllText();
-                    Program.splashScreen.StartFadeOut();
-                }));
-            else
+            var splash = Program.splashScreen;
+            void ShowMainForm()
             {
-                Program.splashScreen.ClearAllText();
-                Program.splashScreen.StartFadeOut();
+                if (IsDisposed)
+                    return;
+                if (InvokeRequired)
+                {
+                    BeginInvoke((Action)ShowMainForm);
+                    return;
+                }
+                Show();
+                BringToFront();
+                Activate();
             }
-                
-            Thread.Sleep(500);
-            this.Invoke(this.Show);
-            Program.splashScreen.FadeCompleted += () =>
+            if (splash == null || splash.IsDisposed || !splash.IsHandleCreated)
             {
-                // ✨ Detta körs när splash är HELT faded out ✨
-                this.Invoke(() =>
-                {
-                    this.BringToFront();
-                    this.Activate();
-                });
-            };
-
-
+                ShowMainForm();
+                return;
+            }
+            void CloseOnSplashThread()
+            {
+                splash.FadeCompleted -= ShowMainForm;
+                splash.FadeCompleted += ShowMainForm;
+                splash.ClearAllText();
+                splash.StartFadeOut();
+            }
+            if (splash.InvokeRequired)
+                splash.BeginInvoke((Action)CloseOnSplashThread);
+            else
+                CloseOnSplashThread();
         }
-
-
-
         protected override void SetVisibleCore(bool value)
         {
             // Om vi är på fel tråd – flytta arbetet till UI-tråden och avsluta direkt
@@ -348,13 +391,23 @@ namespace DigitalProductionProgram.MainWindow
                 Invoke(new Action(Change_GUI_MainForm));
             else
             {
-                cf_MainMenu.Menu_Order_OrderDone.Enabled = true;
-                Task.Run(cf_Buttons.Change_GUI_Buttons);
-                Task.Run(Change_GUI_Form);
-                cf_OrderInformation.cb_Operation.Enabled = false;
-                cf_AQL.Visible = CheckAuthority.IsWorkoperationAuthorized(CheckAuthority.TemplateWorkoperation.IsUsingAQL_Module);
-                cf_TipsAndTrix.Visible = CheckAuthority.IsWorkoperationAuthorized(CheckAuthority.TemplateWorkoperation.TipsAndTrix);
-                Task.Factory.StartNew(cf_RollingInformation.Load_list_Tips);
+                SuspendLayout();
+                DrawingControl.SuspendDrawing(this);
+                try
+                {
+                    cf_MainMenu.Menu_Order_OrderDone.Enabled = true;
+                    cf_Buttons.Change_GUI_Buttons();
+                    Change_GUI_Form();
+                    cf_OrderInformation.cb_Operation.Enabled = false;
+                    cf_AQL.Visible = CheckAuthority.IsWorkoperationAuthorized(CheckAuthority.TemplateWorkoperation.IsUsingAQL_Module);
+                    cf_TipsAndTrix.Visible = CheckAuthority.IsWorkoperationAuthorized(CheckAuthority.TemplateWorkoperation.TipsAndTrix);
+                }
+                finally
+                {
+                    ResumeLayout(true);
+                    DrawingControl.ResumeDrawing(this);
+                }
+                Task.Run(cf_RollingInformation.Load_list_Tips);
             }
         }
         private void Change_GUI_Form()
@@ -514,31 +567,56 @@ namespace DigitalProductionProgram.MainWindow
         }
         private void Change_GUI_Grade()
         {
+            if (InvokeRequired)
+            {
+                Invoke(Change_GUI_Grade);
+                return;
+            }
+            panel_Profile.SuspendLayout();
+            DrawingControl.SuspendDrawing(panel_Profile);
             if (string.IsNullOrEmpty(Person.EmployeeNr))
             {
-                panel_Grade_Percent.Visible = false;
-                pb_Grade.Visible = false;
-                lbl_Percent.Visible = false;
-                return;
+                try
+                {
+                    panel_Grade_Percent.Visible = false;
+                    pb_Grade.Visible = false;
+                    lbl_Percent.Visible = false;
+                    return;
+                }
+                finally
+                {
+                    panel_Profile.ResumeLayout(true);
+                    DrawingControl.ResumeDrawing(panel_Profile);
+                }
             }
 
-            Points.TotalPoints = Person.User_Points;
-            if (Points.TotalPoints < 0)
-                return;
-            if (Grade.Img_Grade != null)
+            try
             {
-                var _ = pb_Grade.BackgroundImage = Image.FromStream(Grade.Img_Grade);
+                Points.TotalPoints = Person.User_Points;
+                if (Points.TotalPoints < 0)
+                    return;
+                if (Grade.Img_Grade != null)
+                {
+                    pb_Grade.BackgroundImage = null;
+                    pb_Grade.Image?.Dispose();
+                    pb_Grade.Image = Image.FromStream(Grade.Img_Grade);
+                }
+                pb_Grade.Visible = true;
+                panel_Grade_Percent.BackColor = Color.FromArgb(60, Color.LightGreen);
+                panel_Grade_Percent.Visible = true;
+                lbl_Percent.Visible = true;
+                var gradePercent = Math.Clamp(Grade.percent_Grade(Grade.grade), 0F, 1F);
+                var gradeFillHeight = (int)(pb_Grade.ClientSize.Height * gradePercent);
+                panel_Grade_Percent.SetBounds(0, pb_Grade.ClientSize.Height - gradeFillHeight, pb_Grade.ClientSize.Width, gradeFillHeight);
+                panel_Grade_Percent.BringToFront();
+                lbl_Percent.BringToFront();
+                lbl_Percent.Text = $"{Convert.ToInt32(gradePercent * 100)} %";
             }
-
-            pb_Grade.Visible = true;
-            panel_Grade_Percent.BackColor = Color.FromArgb(60, Color.LightGreen);
-            panel_Grade_Percent.Visible = true;
-            lbl_Percent.Visible = true;
-
-            panel_Grade_Percent.Height = (int)(pb_Grade.Height * Grade.percent_Grade(Grade.grade));
-            panel_Grade_Percent.Top = pb_Grade.Bottom - panel_Grade_Percent.Height;
-
-            lbl_Percent.Text = $"{Convert.ToInt32(Grade.percent_Grade(Grade.grade) * 100)} %";
+            finally
+            {
+                panel_Profile.ResumeLayout(true);
+                DrawingControl.ResumeDrawing(panel_Profile);
+            }
         }
         private void ChangeToBetaMode()
         {
@@ -603,6 +681,7 @@ namespace DigitalProductionProgram.MainWindow
             MeasurementChart.ActiveCodeText = string.Empty;
 
             Order.Is_PrintOutCopy = true;
+            var didCreateNewOrder = false;
 
             // Stoppa MainTimer eventuellt om det blir problem
             if (IsOperationOk == false) //Om Ordern har blivit öppnad från Öppna-menyn så skippas detta steg
@@ -626,7 +705,10 @@ namespace DigitalProductionProgram.MainWindow
             if (Order.IsOrderExist(Order.OrderNumber, Order.Operation))
                 Open();
             else
+            {
                 Order.Start.New_Order(this, ref IsOkStartOrder); //Hämtar data från Monitor och sparar i Korprotokoll_Databas PartID laddas här
+                didCreateNewOrder = IsOkStartOrder;
+            }
             if (IsOkStartOrder == false)
                 return;
 
@@ -649,7 +731,7 @@ namespace DigitalProductionProgram.MainWindow
 
             //if (IsAutoOpenOrder == false)
             //    Task.Run(Change_Theme);
-            Task.Run(Change_GUI_MainForm);
+            Change_GUI_MainForm();
 
             Change_GUI_ExtraInfo();
             Order.Set_NumberOfLayers();
@@ -669,6 +751,21 @@ namespace DigitalProductionProgram.MainWindow
                 Change_GUI_StandardColor();
 
             cf_MainMenu.Unlock_Korprotokoll_Menu();
+            if (didCreateNewOrder && !Order.IsOrderDone)
+                TriggerCipherWheelLaunchEgg();
+        }
+        private void TriggerCipherWheelLaunchEgg()
+        {
+            if (string.IsNullOrWhiteSpace(Person.Name) || IsDisposed || EasterEgg_Code.HasHandledDiscoveryInDatabase())
+                return;
+            cipherWheelLaunchEgg?.Dispose();
+            cipherWheelLaunchEgg = new CipherWheelLaunchEgg(this, OpenCipherWheelFromOrderEgg, () => cipherWheelLaunchEgg = null);
+        }
+        private void OpenCipherWheelFromOrderEgg()
+        {
+            if (!EasterEgg_Code.TryUnlockFromFlyingEgg(this))
+                return;
+            cf_MainMenu.UpdateCipherWheelMenuVisibility();
         }
         public async void Operation_SelectedIndexChanged(object? sender, EventArgs e)
         {
@@ -784,6 +881,19 @@ namespace DigitalProductionProgram.MainWindow
             cf_OrderInformation.tb_OrderNr.TextChanged += Operation_SelectedIndexChanged;
             cf_OrderInformation.cb_Operation.SelectedIndexChanged += Operation_SelectedIndexChanged;
         }
+        public void RefreshOrderListsAfterDeleteOrder()
+        {
+            if (IsDisposed)
+                return;
+            if (InvokeRequired)
+            {
+                BeginInvoke(new Action(RefreshOrderListsAfterDeleteOrder));
+                return;
+            }
+            cf_ActiveOrdersUser.Load_OrderNr(cf_OrderInformation);
+            cf_PriorityPlanning.RefreshPriorityPlanning();
+            _ = Main_FilterQuickOpen.Load_ListAsync(dgv_QuickOpen);
+        }
         private static void Close_Open_Forms()
         {
             ControlManager.Close_All_Körprotokoll();
@@ -831,6 +941,7 @@ namespace DigitalProductionProgram.MainWindow
             Order.WorkOperation = Manage_WorkOperation.WorkOperations.Nothing;
             var dgv = (DataGridView)sender;
             cf_OrderInformation.cb_Operation.SelectedIndexChanged -= Operation_SelectedIndexChanged;
+            cf_OrderInformation.tb_OrderNr.TextChanged -= Operation_SelectedIndexChanged;
             cf_OrderInformation.tb_OrderNr.Validated -= cf_OrderInformation.OrderNr_Validated;
 
             if (IsZumbachÖppet)
@@ -857,6 +968,7 @@ namespace DigitalProductionProgram.MainWindow
 
 
             cf_OrderInformation.cb_Operation.SelectedIndexChanged += Operation_SelectedIndexChanged;
+            cf_OrderInformation.tb_OrderNr.TextChanged += Operation_SelectedIndexChanged;
             cf_OrderInformation.tb_OrderNr.Validated += cf_OrderInformation.OrderNr_Validated;
         }
         private void FilterWorkoperations_Click(object sender, EventArgs e)
@@ -975,19 +1087,27 @@ namespace DigitalProductionProgram.MainWindow
 
             Task.Run(() => { cf_ActiveOrdersUser.Load_OrderNr(cf_OrderInformation); });
             _ = EasterEgg_Code.IsGameStarted;
+            cf_MainMenu.UpdateCipherWheelMenuVisibility();
             RestoreMainWindowAfterModalDialog();
         }
         public void SignOut()
         {
             SaveData.UPDATE_User_Online(false, lbl_EmpNr.Text);
+            EasterEgg_Code.ResetGameStateCache();
+            cipherWheelLaunchEgg?.Dispose();
+            cipherWheelLaunchEgg = null;
 
             lbl_Namn.Text = string.Empty;
             lbl_EmpNr.Text = string.Empty;
             lbl_Sign.Text = string.Empty;
             lbl_Role.Text = string.Empty;
+            CipherWheelLevels.Level_4.ResetProfilePulse();
+            CipherWheelLevels.Level_7.Reset();
             pbOperatör.Image = null;
             pbOperatör.BackgroundImage = null;
+            pb_Grade.Image?.Dispose();
             pb_Grade.Image = null;
+            pb_Grade.BackgroundImage = null;
             lbl_Percent.Text = string.Empty;
 
             panel_Profile.Visible = false;
@@ -996,6 +1116,7 @@ namespace DigitalProductionProgram.MainWindow
             Person.Clear();
             ControlManager.Close_All_Körprotokoll();
             cf_MainMenu.Lock_Menu();
+            cf_MainMenu.UpdateCipherWheelMenuVisibility();
         }
         private void SignIn_Click(object sender, EventArgs e)
         {
@@ -1099,6 +1220,8 @@ namespace DigitalProductionProgram.MainWindow
 
             e.Cancel = true;            // Stoppa stängningen temporärt
             _isShuttingDown = true;
+            cipherWheelLaunchEgg?.Dispose();
+            cipherWheelLaunchEgg = null;
 
             Debug.WriteLine("=== Controlled shutdown START ===");
 

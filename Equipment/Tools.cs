@@ -117,6 +117,7 @@ namespace DigitalProductionProgram.Equipment
                     FROM RegularUsed_VerktygsTyp_Användare
                     WHERE Användare = @user
                         AND Typ LIKE '%' + @type + '%'
+                        AND Typ != @type
                     GROUP BY Typ
                     ORDER BY Ctr DESC";
 

@@ -44,13 +44,15 @@ namespace DigitalProductionProgram.Templates
             // 
             // label_Header
             // 
-            label_Header.BackColor = Color.FromArgb(45, 113, 122);
+            label_Header.BackColor = Color.FromArgb(6, 81, 87);
+            label_Header.BorderStyle = BorderStyle.FixedSingle;
             label_Header.Dock = DockStyle.Top;
             label_Header.Font = new Font("Lucida Sans", 11.25F);
             label_Header.ForeColor = Color.FromArgb(239, 228, 177);
             label_Header.Location = new Point(0, 0);
-            label_Header.Margin = new Padding(4, 0, 4, 0);
+            label_Header.Margin = new Padding(5);
             label_Header.Name = "label_Header";
+            label_Header.Padding = new Padding(5);
             label_Header.Size = new Size(784, 60);
             label_Header.TabIndex = 2;
             label_Header.Text = "Header:";
@@ -181,7 +183,7 @@ namespace DigitalProductionProgram.Templates
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             AutoSize = true;
-            BackColor = Color.FromArgb(45, 113, 122);
+            BackColor = Color.FromArgb(6, 81, 87);
             ClientSize = new Size(784, 301);
             Controls.Add(flp_Buttons);
             Controls.Add(label_TemplateColumnHeader);

@@ -95,13 +95,86 @@ namespace DigitalProductionProgram.EasterEggs
             con.Open();
             cmd.ExecuteNonQuery();
         }
-        public static DataTable LoadHighscores(string game)
+        public static int CountEntries(string game, int level)
         {
             using var con = new SqlConnection(Database.cs_Protocol);
-            const string query = @"SELECT Namn, Datum, Level, Points
+            const string query = "SELECT COUNT(*) FROM Easter_Egg_Points WHERE Namn = @namn AND Game = @game AND Level = @level";
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            cmd.Parameters.AddWithValue("@namn", Person.Name);
+            cmd.Parameters.AddWithValue("@game", game);
+            cmd.Parameters.AddWithValue("@level", level);
+            con.Open();
+            var value = cmd.ExecuteScalar();
+            if (value is null)
+                return 0;
+            return Convert.ToInt32(value);
+        }
+        public static void Save_MarkerIfMissing(int level, string game)
+        {
+            if (string.IsNullOrWhiteSpace(Person.Name) || CountEntries(game, level) > 0)
+                return;
+            Save_Score(level, 0, game);
+        }
+        public static void Save_LevelFound(int level, string game)
+        {
+            Save_MarkerIfMissing(level, game);
+        }
+        public static bool HasFoundLevel(string game, int level)
+        {
+            if (string.IsNullOrWhiteSpace(Person.Name))
+                return false;
+            return CountEntries(game, level) > 0;
+        }
+        public static bool HasFoundAllLevels(string game, int lastLevel)
+        {
+            if (string.IsNullOrWhiteSpace(Person.Name) || lastLevel < 1)
+                return false;
+            using var con = new SqlConnection(Database.cs_Protocol);
+            const string query = "SELECT COUNT(DISTINCT Level) FROM Easter_Egg_Points WHERE Namn = @namn AND Game = @game AND Level BETWEEN 1 AND @lastLevel";
+            var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+            cmd.Parameters.AddWithValue("@namn", Person.Name);
+            cmd.Parameters.AddWithValue("@game", game);
+            cmd.Parameters.AddWithValue("@lastLevel", lastLevel);
+            con.Open();
+            var value = cmd.ExecuteScalar();
+            if (value is null)
+                return false;
+            return Convert.ToInt32(value) >= lastLevel;
+        }
+        public static void ReplacePlayerScore(string game, int level, int points)
+        {
+            using var con = new SqlConnection(Database.cs_Protocol);
+            con.Open();
+            using var transaction = con.BeginTransaction();
+            const string deleteQuery = "DELETE FROM Easter_Egg_Points WHERE Namn = @namn AND Game = @game AND (Level <= 0 OR Level = @level)";
+            using (var deleteCmd = new SqlCommand(deleteQuery, con, transaction))
+            {
+                deleteCmd.Parameters.AddWithValue("@namn", Person.Name);
+                deleteCmd.Parameters.AddWithValue("@game", game);
+                deleteCmd.Parameters.AddWithValue("@level", level);
+                deleteCmd.ExecuteNonQuery();
+            }
+            const string insertQuery = "INSERT INTO Easter_Egg_Points VALUES(@game, @namn, @datum, @level, @points)";
+            using (var insertCmd = new SqlCommand(insertQuery, con, transaction))
+            {
+                insertCmd.Parameters.AddWithValue("@namn", Person.Name);
+                insertCmd.Parameters.AddWithValue("@datum", DateTime.Now);
+                insertCmd.Parameters.AddWithValue("@level", level);
+                insertCmd.Parameters.AddWithValue("@points", points);
+                insertCmd.Parameters.AddWithValue("@game", game);
+                insertCmd.ExecuteNonQuery();
+            }
+            transaction.Commit();
+        }
+        public static DataTable LoadHighscores(string game, int topCount = 0, bool excludeZeroPoints = false)
+        {
+            using var con = new SqlConnection(Database.cs_Protocol);
+            var topClause = topCount > 0 ? $"TOP ({topCount}) " : string.Empty;
+            var zeroClause = excludeZeroPoints ? " AND Points > 0" : string.Empty;
+            var query = $@"SELECT {topClause}Namn, Datum, Level, Points
                 FROM Easter_Egg_Points
-            WHERE Game = @game
-            ORDER BY Points DESC";
+            WHERE Game = @game{zeroClause}
+            ORDER BY Points DESC, Datum ASC";
             using var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
             cmd.Parameters.AddWithValue("@game", game);
             var dt = new DataTable();

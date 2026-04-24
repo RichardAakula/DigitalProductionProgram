@@ -45,6 +45,28 @@ namespace DigitalProductionProgram.MainWindow
         public Main_Priorityplanning()
         {
             InitializeComponent();
+            if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime)
+                return;
+            SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer, true);
+            UpdateStyles();
+            DrawingControl.EnableDoubleBuffer(dgv_PriorityPlanning);
+            DrawingControl.EnableDoubleBuffer(tlp_Main);
+            DrawingControl.EnableDoubleBuffer(tlp_InfoLabels);
+        }
+        public void RefreshPriorityPlanning()
+        {
+            if (IsDisposed)
+                return;
+            if (InvokeRequired)
+            {
+                BeginInvoke(new Action(RefreshPriorityPlanning));
+                return;
+            }
+            dictIsOrderExist.Clear();
+            dictOrderID.Clear();
+            dictPartID.Clear();
+            dictPartStatus.Clear();
+            Load_PriorityPlanning();
         }
 
 
@@ -161,25 +183,16 @@ namespace DigitalProductionProgram.MainWindow
         public void Load_PriorityPlanning()
         {
             workOperation = Load_WorkOperationProdLine(false, tb_ProdBenämning.Text);
-
             var dt = dt_PriorityPlan;
-            dgv_PriorityPlanning.Invoke(new Action(() => dgv_PriorityPlanning.DataSource = null));
-
             if (Settings.Settings.MeasuringComputerOnly || Main_Form.IsLoadingPriorityPlan == false)
                 return;
-
             var WorkCenter = Utilities.GetOneFromMonitor<Manufacturing.WorkCenters>($"filter=Number Eq'{tb_ProdGrupp.Text}'");
             if (WorkCenter is null)
                 return;
-
             var orderOperations = Utilities.GetFromMonitor<Manufacturing.ManufacturingOrderOperations>($"filter=WorkCenterId Eq'{WorkCenter.Id}' AND RestQuantity gt'0'", "orderby=Priority");
             var ctr = -1;
-
-
-
             // Fyll cache för order start-status
             var neededChecks = new List<(string OrderNumber, string OperationNumber)>();
-
             foreach (var row in orderOperations)
             {
                 var ordernr = Utilities.GetOneFromMonitor<Manufacturing.ManufacturingOrders>($"filter=Id Eq'{row.ManufacturingOrderId}'");
@@ -199,7 +212,6 @@ namespace DigitalProductionProgram.MainWindow
                 dictIsOrderExist[kvp.Key] = kvp.Value.IsStarted;
                 dictOrderID[kvp.Key] = kvp.Value.OrderID;  // _orderIDCache är en ny Dictionary<string, int?>
             }
-
             // Bygg datatable med data och använd cachen för isStarted
             foreach (var row in orderOperations)
             {
@@ -226,17 +238,34 @@ namespace DigitalProductionProgram.MainWindow
                 dt.Rows[^1]["Planerad Stopp"] = $"{row.PlannedFinishDate:yyyy-MM-dd}";
                 dt.Rows[^1]["Order Startad"] = isStarted;
                 dt.Rows[^1]["Processkort Godkänt"] = Part.IsPartNr_ApprovedQA;
-
-
             }
-
-
-            dgv_PriorityPlanning.Invoke(new Action(() => dgv_PriorityPlanning.DataSource = dt));
-            dgv_PriorityPlanning.Invoke(new Action(() => dgv_PriorityPlanning.Columns["Order Startad"].Visible = false));
-            dgv_PriorityPlanning.Invoke(new Action(() => dgv_PriorityPlanning.Columns["Processkort Godkänt"].Visible = false));
-            dgv_PriorityPlanning.Invoke(new Action(() => dgv_PriorityPlanning.Columns["PartID"].Visible = false));
-            SetProcesscardStatus(dt);
-            SetColorsPriorityPlan();
+            if (dgv_PriorityPlanning.InvokeRequired)
+            {
+                dgv_PriorityPlanning.Invoke(() => ApplyPriorityPlanData(dt));
+                return;
+            }
+            ApplyPriorityPlanData(dt);
+        }
+        private void ApplyPriorityPlanData(DataTable dt)
+        {
+            SuspendLayout();
+            DrawingControl.SuspendDrawing(dgv_PriorityPlanning);
+            try
+            {
+                dgv_PriorityPlanning.DataSource = null;
+                dgv_PriorityPlanning.DataSource = dt;
+                dgv_PriorityPlanning.Columns["Order Startad"].Visible = false;
+                dgv_PriorityPlanning.Columns["Processkort Godkänt"].Visible = false;
+                dgv_PriorityPlanning.Columns["PartID"].Visible = false;
+                SetProcesscardStatus(dt);
+                SetColorsPriorityPlan();
+                dgv_PriorityPlanning.ClearSelection();
+            }
+            finally
+            {
+                ResumeLayout(true);
+                DrawingControl.ResumeDrawing(dgv_PriorityPlanning);
+            }
         }
 
         private void SetProcesscardStatus(DataTable dt)

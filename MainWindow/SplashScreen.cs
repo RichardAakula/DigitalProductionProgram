@@ -30,6 +30,7 @@ namespace DigitalProductionProgram.MainWindow
         private Color _currentActiveColor = CustomColors.LightBlue;
         private readonly System.Windows.Forms.Timer fadeTimer = new();
         public event Action FadeCompleted;
+        private bool _isFadingOut;
 
         private readonly List<Color> _activeColors =
         [
@@ -45,10 +46,10 @@ namespace DigitalProductionProgram.MainWindow
         public SplashScreen()
         {
             InitializeComponent();
+            fadeTimer.Interval = 60; // 50 FPS
+            fadeTimer.Tick += FadeTimer_Tick;
             StartAnimation_Initializing();
         }
-
-
         private void StartAnimation_Initializing()
         {
             _cts = new CancellationTokenSource();
@@ -69,23 +70,22 @@ namespace DigitalProductionProgram.MainWindow
 
             _allTextsWritten = false;
             _isAnimating = false;
-
+            _isFadingOut = false;
             _currentActiveColor = CustomColors.LightBlue;
-
+            Opacity = 1;
             // Tvinga omritning
             Invalidate();
         }
         public void StartFadeOut()
         {
-            fadeTimer.Interval = 60; // 50 FPS
-            fadeTimer.Tick += FadeTimer_Tick;
+            if (_isFadingOut || IsDisposed)
+                return;
+            _isFadingOut = true;
             fadeTimer.Start();
         }
         private void FadeTimer_Tick(object sender, EventArgs e)
         {
-            this.Opacity -= 0.05;  // fade ut på ~400 ms
-
-
+            Opacity = Math.Max(0, Opacity - 0.05);  // fade ut på ~400 ms
             if (this.Opacity <= 0)
             {
                 fadeTimer.Stop();

@@ -11,6 +11,7 @@ using System.Drawing;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
+using DigitalProductionProgram.EasterEggs.The_Cipher_Wheel;
 using static Azure.Core.HttpHeader;
 
 namespace DigitalProductionProgram.MainWindow
@@ -150,7 +151,7 @@ namespace DigitalProductionProgram.MainWindow
 
         private void KnockKnock_EasterEggCode(object sender, MouseEventArgs e)
         {
-            EasterEgg_Code.Level_2.KnockKnock(this, e.Location);
+            CipherWheelLevels.Level_2.KnockKnock(this, e.Location);
         }
 
      

@@ -1,5 +1,4 @@
 ﻿using DigitalProductionProgram.DatabaseManagement;
-using DigitalProductionProgram.Monitor;
 using DigitalProductionProgram.Monitor.GET;
 using DigitalProductionProgram.PrintingServices;
 using LiveChartsCore;
@@ -11,7 +10,7 @@ using SkiaSharp;
 using Action = System.Action;
 using Padding = System.Windows.Forms.Padding;
 
-namespace DigitalProductionProgram.MainWindow
+namespace DigitalProductionProgram.Monitor
 {
     public partial class MonitorUsers : UserControl
     {
@@ -65,10 +64,10 @@ namespace DigitalProductionProgram.MainWindow
 
         public void Fill_OnlineMonitorUsers()
         {
-            if (Monitor.Monitor.List_Users is null)
+            if (DigitalProductionProgram.Monitor.Monitor.List_Users is null)
                 return;
             events.Clear();
-            foreach (var user in Monitor.Monitor.List_Users)
+            foreach (var user in DigitalProductionProgram.Monitor.Monitor.List_Users)
             {
                 var name = $"{user.FirstName} {user.LastName}";
                 if (Is_flp_Exist(name))

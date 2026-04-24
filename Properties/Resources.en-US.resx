@@ -1710,6 +1710,18 @@ In the 'Operator' menu in the main window, you can log out</value>
   <data name="chooseProtocol_3" xml:space="preserve">
     <value>There are several Process cards linked to this Partnumber. Please choose below which one you want to use.</value>
   </data>
+  <data name="templateSelector_Header_TemplateMeasureProtocol" xml:space="preserve">
+    <value>Choose template for the Measurement Protocol:
+This PartNumber has no template linked to the measurement protocol. There are several templates that match this operation.</value>
+  </data>
+  <data name="templateSelector_Header_TemplateProtocol" xml:space="preserve">
+    <value>Choose template for the Protocol/Process card:
+This PartNumber has no template linked to the protocol. There are several templates that match this operation.</value>
+  </data>
+  <data name="templateSelector_Header_Workoperations" xml:space="preserve">
+    <value>Choose Workoperation below:
+This PartNumber belongs to several Workoperations.</value>
+  </data>
   <data name="authority_26" xml:space="preserve">
     <value>Configure Settings for Workoperations</value>
   </data>
@@ -2282,6 +2294,15 @@ Are you sure you want to continue?</value>
   <data name="ParameterData" xml:space="preserve">
     <value>F10...ParameterData</value>
   </data>
+  <data name="Menu_Settings" xml:space="preserve">
+    <value>Tools</value>
+  </data>
+  <data name="Menu_Settings_Settings" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="Menu_Help_CipherWheel" xml:space="preserve">
+    <value>The Cipher Wheel</value>
+  </data>
   <data name="BrowseOldMeasureprotocol" xml:space="preserve">
     <value>F3-Historical Measurements &amp;&amp; SPC</value>
   </data>
@@ -2425,12 +2446,6 @@ Are you sure you want to continue?</value>
   <data name="Menu_Help_ReportBug" xml:space="preserve">
     <value>Report a bug/improvement</value>
   </data>
-  <data name="Menu_Settings" xml:space="preserve">
-    <value>Tools</value>
-  </data>
-  <data name="Menu_Settings_Settings" xml:space="preserve">
-    <value>Settings</value>
-  </data>
   <data name="Menu_Themes" xml:space="preserve">
     <value>Themes</value>
   </data>
@@ -2544,8 +2559,5 @@ Are you sure you want to continue?</value>
   </data>
   <data name="btnZumbach" xml:space="preserve">
     <value>F6-Zumbach-measurement</value>
-  </data>
-  <data name="warningMessage" xml:space="preserve">
-    <value>Warning!</value>
   </data>
 </root>

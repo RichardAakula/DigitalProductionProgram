@@ -198,6 +198,17 @@ namespace DigitalProductionProgram.Measure
         public MeasurePoints()
         {
             InitializeComponent();
+            if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime)
+                return;
+            SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer, true);
+            UpdateStyles();
+            DrawingControl.EnableDoubleBuffer(tlp_Main);
+            DrawingControl.EnableDoubleBuffer(flp_CodeName);
+            DrawingControl.EnableDoubleBuffer(flp_LSL);
+            DrawingControl.EnableDoubleBuffer(flp_LCL);
+            DrawingControl.EnableDoubleBuffer(flp_NOM);
+            DrawingControl.EnableDoubleBuffer(flp_UCL);
+            DrawingControl.EnableDoubleBuffer(flp_USL);
         }
 
 
@@ -208,54 +219,60 @@ namespace DigitalProductionProgram.Measure
         }
         public void AddMeasurePointsMainForm()
         {
-            ClearMeasurePoints();
-            MeasurePointsHeight = 58;
-            var dt = Monitor.Monitor.DataTable_Measurepoints;
-            if (dt is null)
-                return;
-
-            for (var i = 0; i < dt.Rows.Count; i++)
+            SuspendLayout();
+            DrawingControl.SuspendDrawing(this);
+            try
             {
-                var IsConcentricity = dt.Rows[i][0].ToString().Contains("Concentricity");
-                Add_Label(flp_CodeName, $"{dt.Rows[i][0]}:", FontStyle.Bold, ContentAlignment.MiddleRight);
-                var lsl = $"{dt.Rows[i][5]:0.000}";
-                var lcl = $"{dt.Rows[i][4]:0.000}";
-                var nom = $"{dt.Rows[i][3]:0.000}";
-                var ucl = $"{dt.Rows[i][2]:0.000}";
-                var usl = $"{dt.Rows[i][1]:0.000}";
-                if (IsConcentricity && Order.WorkOperation == Manage_WorkOperation.WorkOperations.Krympslangsblåsning)
+                ClearMeasurePoints();
+                MeasurePointsHeight = 58;
+                var dt = Monitor.Monitor.DataTable_Measurepoints;
+                if (dt is null)
+                    return;
+                for (var i = 0; i < dt.Rows.Count; i++)
                 {
-                    if (double.TryParse(lsl, out var LSL))
-                        lsl = $"{LSL * 100:0}";
-                    if (double.TryParse(lcl, out var LCL))
-                        lcl = $"{LCL * 100:0}";
-                    if (double.TryParse(nom, out var NOM))
-                        nom = $"{NOM * 100:0}";
-                    if (double.TryParse(ucl, out var UCL))
-                        ucl = $"{UCL * 100:0}";
-                    if (double.TryParse(usl, out var USL))
-                        usl = $"{USL * 100:0}";
-
-                    if (LSL > 1 || LCL > 1)
+                    var IsConcentricity = dt.Rows[i][0].ToString().Contains("Concentricity");
+                    Add_Label(flp_CodeName, $"{dt.Rows[i][0]}:", FontStyle.Bold, ContentAlignment.MiddleRight);
+                    var lsl = $"{dt.Rows[i][5]:0.000}";
+                    var lcl = $"{dt.Rows[i][4]:0.000}";
+                    var nom = $"{dt.Rows[i][3]:0.000}";
+                    var ucl = $"{dt.Rows[i][2]:0.000}";
+                    var usl = $"{dt.Rows[i][1]:0.000}";
+                    if (IsConcentricity && Order.WorkOperation == Manage_WorkOperation.WorkOperations.Krympslangsblåsning)
                     {
-                        if (Person.Name == "Richard Aakula") continue;
-                        Mail.NotifyFannyHanssonWrongMeasurePoints($"ArtikelNr: {Order.PartNumber} har fel på dessa mått:<br />" +
-                                                                   $"LSL = {LSL}<br />" +
-                                                                   $"LCL = {LCL}<br />" +
-                                                                   $"NOM = {NOM}<br />" +
-                                                                   $"UCL = {UCL}<br />" +
-                                                                   $"USL = {USL}");
+                        if (double.TryParse(lsl, out var LSL))
+                            lsl = $"{LSL * 100:0}";
+                        if (double.TryParse(lcl, out var LCL))
+                            lcl = $"{LCL * 100:0}";
+                        if (double.TryParse(nom, out var NOM))
+                            nom = $"{NOM * 100:0}";
+                        if (double.TryParse(ucl, out var UCL))
+                            ucl = $"{UCL * 100:0}";
+                        if (double.TryParse(usl, out var USL))
+                            usl = $"{USL * 100:0}";
+                        if (LSL > 1 || LCL > 1)
+                        {
+                            if (Person.Name == "Richard Aakula") continue;
+                            Mail.NotifyFannyHanssonWrongMeasurePoints($"ArtikelNr: {Order.PartNumber} har fel på dessa mått:<br />" +
+                                                                       $"LSL = {LSL}<br />" +
+                                                                       $"LCL = {LCL}<br />" +
+                                                                       $"NOM = {NOM}<br />" +
+                                                                       $"UCL = {UCL}<br />" +
+                                                                       $"USL = {USL}");
+                        }
                     }
+                    Add_Label(flp_LSL, $"{lsl}", FontStyle.Regular, ContentAlignment.MiddleCenter);
+                    Add_Label(flp_LCL, $"{lcl}", FontStyle.Regular, ContentAlignment.MiddleCenter);
+                    Add_Label(flp_NOM, $"{nom}", FontStyle.Regular, ContentAlignment.MiddleCenter);
+                    Add_Label(flp_UCL, $"{ucl}", FontStyle.Regular, ContentAlignment.MiddleCenter);
+                    Add_Label(flp_USL, $"{usl}", FontStyle.Regular, ContentAlignment.MiddleCenter);
+                    MeasurePointsHeight += 20;
                 }
-                Add_Label(flp_LSL, $"{lsl}", FontStyle.Regular, ContentAlignment.MiddleCenter);
-                Add_Label(flp_LCL, $"{lcl}", FontStyle.Regular, ContentAlignment.MiddleCenter);
-                Add_Label(flp_NOM, $"{nom}", FontStyle.Regular, ContentAlignment.MiddleCenter);
-                Add_Label(flp_UCL, $"{ucl}", FontStyle.Regular, ContentAlignment.MiddleCenter);
-                Add_Label(flp_USL, $"{usl}", FontStyle.Regular, ContentAlignment.MiddleCenter);
-
-                MeasurePointsHeight += 20;
             }
-            //MeasurePointsHeight += flp_CodeName.Height;
+            finally
+            {
+                ResumeLayout(true);
+                DrawingControl.ResumeDrawing(this);
+            }
         }
         public void ClearMeasurePoints()
         {

@@ -1702,6 +1702,18 @@ Pleaste contact Admin if necessary.</value>
   <data name="chooseProtocol_3" xml:space="preserve">
     <value />
   </data>
+  <data name="templateSelector_Header_TemplateMeasureProtocol" xml:space="preserve">
+    <value>Choose template for the Measurement Protocol:
+This part number has no template linked to the measurement protocol. There are several templates that match this operation.</value>
+  </data>
+  <data name="templateSelector_Header_TemplateProtocol" xml:space="preserve">
+    <value>Choose template for Run protocol/Process card:
+This part number has no template linked to the protocol. There are several templates that match this operation.</value>
+  </data>
+  <data name="templateSelector_Header_Workoperations" xml:space="preserve">
+    <value>Choose Workoperation below:
+This part number belongs to several Workoperations.</value>
+  </data>
   <data name="authority_26" xml:space="preserve">
     <value />
   </data>
@@ -2208,5 +2220,8 @@ Contact Admin if necessary.</value>
   </data>
   <data name="Menu_Settings_AnalyseParameterData" xml:space="preserve">
     <value>Analyse Parameter Data</value>
+  </data>
+  <data name="Menu_Help_CipherWheel" xml:space="preserve">
+    <value>The Cipher Wheel</value>
   </data>
 </root>

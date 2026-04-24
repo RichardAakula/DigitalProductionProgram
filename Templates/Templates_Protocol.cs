@@ -59,6 +59,13 @@ namespace DigitalProductionProgram.Templates
         public static Panel panel_Active;
         public static Label label_Active_ModuleName;
         public PreviewTemplate preview;
+        private int loadedTemplateID;
+        private string loadedTemplateName = string.Empty;
+        private string loadedTemplateRevision = string.Empty;
+        private bool suppressTemplateSelectionHandlers;
+        private static bool hasUnsavedTemplateChanges;
+        private static bool isLoadingTemplateData;
+        internal static string CurrentTemplateNameForPreview { get; private set; } = string.Empty;
 
 
         public static List<string> List_TemplateNames = new List<string>();
@@ -76,10 +83,7 @@ namespace DigitalProductionProgram.Templates
                 {
                     if (isOkUpdateTemplate != value)
                     {
-                        if (totalConnectedProcesscardsToTemplate == 0 && totalConnectedOrdersToTemplate == 0)
-                            isOkUpdateTemplate = true;
-                        else
-                            isOkUpdateTemplate = value;
+                        isOkUpdateTemplate = value;
                         OnIsOkUpdateTemplateChanged(EventArgs.Empty);
                     }
                 }
@@ -115,36 +119,35 @@ namespace DigitalProductionProgram.Templates
         {
             get
             {
-                var list_ProtocolDescriptionID = new List<int>();
-
+                var machineProtocolKeys = new HashSet<string>();
                 foreach (Panel panel in flp_Main.Controls)
                 {
                     var label_Name = new Label();
                     foreach (var lbl in panel.Controls.OfType<Label>())
                         label_Name = lbl;
-
+                    DataGridView dgv_FormTemplate = null;
                     DataGridView dgv_Template = null;
                     foreach (var dgv in panel.Controls.OfType<DataGridView>())
                     {
-                        if (dgv.Name != "dgv_FormTemplate")
+                        if (dgv.Name == "dgv_FormTemplate")
+                            dgv_FormTemplate = dgv;
+                        else
                             dgv_Template = dgv;
-
                     }
+                    int.TryParse(dgv_FormTemplate?.Rows[0].Cells["col_MachineIndex"].Value?.ToString(), out var machineIndex);
                     foreach (DataGridViewRow row in dgv_Template.Rows)
                     {
                         var codeText = row.Cells["col_CodeText"].Value == null ? "" : row.Cells["col_CodeText"].Value.ToString();
                         var protocolDescriptionID = row.Cells["col_ProtocolDescriptionID"].Value == null ? 0 : int.Parse(row.Cells["col_ProtocolDescriptionID"].Value.ToString() ?? "0");
-
-                        if (list_ProtocolDescriptionID.Contains(protocolDescriptionID))
+                        var machineProtocolKey = $"{machineIndex}:{protocolDescriptionID}";
+                        if (machineProtocolKeys.Contains(machineProtocolKey))
                         {
-                            InfoText.Show($"Parametern '{codeText}' finns redan i modulen \n'{label_Name.Text}', du kan inte ha samma parameter flera gånger i samma mall.", CustomColors.InfoText_Color.Bad, "Warning!", this);
+                            InfoText.Show($"Parametern '{codeText}' finns redan för Maskin Index {machineIndex}.\nDu kan inte ha samma parameter flera gånger för samma Maskin Index i samma mall.\nKontrollera modulen '{label_Name.Text}'.", CustomColors.InfoText_Color.Bad, "Warning!", this);
                             return false;
                         }
-                        list_ProtocolDescriptionID.Add(protocolDescriptionID);
+                        machineProtocolKeys.Add(machineProtocolKey);
                     }
                 }
-                
-
                 if (string.IsNullOrEmpty(cb_TemplateRevision.Text))
                 {
                     InfoText.Show("Fyll i mallens revisionsnr före du sparar mallen.", CustomColors.InfoText_Color.Bad, "Warning!", this);
@@ -170,20 +173,28 @@ namespace DigitalProductionProgram.Templates
         {
             Order.Save_TempOrderInfo();
             InitializeComponent();
+            FormClosing += Manage_Templates_FormClosing;
             CodeText.LoadData(dgv_CodeText);
             Fill_MainTemplate_Names();
             Fill_LineClearance_Templates();
             InitializeButtons();
+            UpdateCurrentTemplateNameForPreview();
         }
         private void Manage_Templates_Load(object sender, EventArgs e)
         {
             Load_PDF();
+            ResetTemplateDirtyState();
             TemplateButtons.IsOkSaveTemplate = false;
             TemplateButtons.IsOkUpdateTemplate = false;
         }
 
         private void InitializeButtons()
         {
+            cb_TemplateRevision.TextChanged += TemplateRevision_TextChanged;
+            chb_IsUsingPreFab.CheckedChanged += TemplateContentChanged;
+            chb_IsProductionLineNeeded.CheckedChanged += TemplateContentChanged;
+            cb_MainInfo_Template.TextChanged += TemplateContentChanged;
+            tb_Workoperation.TextChanged += TemplateContentChanged;
             TemplateButtons.IsOkUpdateTemplateChanged += (sender, e) =>
             {
                 Update_UpdateButton();
@@ -194,11 +205,53 @@ namespace DigitalProductionProgram.Templates
                 Update_SaveButton();
             };
         }
+        private void UpdateCurrentTemplateNameForPreview()
+        {
+            CurrentTemplateNameForPreview = cb_TemplateName.Text?.Trim() ?? string.Empty;
+        }
+        private static void MarkTemplateAsDirty()
+        {
+            if (isLoadingTemplateData)
+                return;
+            hasUnsavedTemplateChanges = true;
+        }
+        private static void ResetTemplateDirtyState()
+        {
+            hasUnsavedTemplateChanges = false;
+        }
+        private void TemplateContentChanged(object? sender, EventArgs e)
+        {
+            MarkTemplateAsDirty();
+        }
+        private bool ConfirmReloadTemplate()
+        {
+            if (!hasUnsavedTemplateChanges)
+                return true;
+            InfoText.Question("Är du säker på att du vill ladda om mallen? Dina aktiva ändringar kommer att försvinna.", CustomColors.InfoText_Color.Warning, "Warning!", this);
+            return InfoText.answer != InfoText.Answer.No;
+        }
+        private void RestoreLoadedTemplateSelection()
+        {
+            if (loadedTemplateID == 0)
+                return;
+            suppressTemplateSelectionHandlers = true;
+            cb_TemplateName.SelectedIndexChanged -= Template_Name_SelectedIndexChanged;
+            cb_TemplateRevision.SelectedIndexChanged -= Template_RevisionNr_SelectedIndexChanged;
+            cb_TemplateName.Text = loadedTemplateName;
+            Fill_Template_RevisionNr();
+            cb_TemplateRevision.Text = loadedTemplateRevision;
+            cb_TemplateName.SelectedIndexChanged += Template_Name_SelectedIndexChanged;
+            cb_TemplateRevision.SelectedIndexChanged += Template_RevisionNr_SelectedIndexChanged;
+            suppressTemplateSelectionHandlers = false;
+            UpdateCurrentTemplateNameForPreview();
+            UpdateTemplateIdentityUi();
+        }
 
 
 
         private void Update_SaveButton()
         {
+            btn_SaveNewTemplate.Text = "Spara Ny Mall";
             if (TemplateButtons.IsOkSaveTemplate)
             {
                 btn_SaveNewTemplate.BackColor = CustomColors.Ok_Back;
@@ -276,6 +329,21 @@ namespace DigitalProductionProgram.Templates
             cb_TemplateName.SelectedIndexChanged += Template_Name_SelectedIndexChanged;
             cb_TemplateRevision.SelectedIndex = cb_TemplateRevision.Items.Count - 1;
         }
+        private void RefreshTemplateComboBoxes()
+        {
+            var templateName = cb_TemplateName.Text;
+            var templateRevision = cb_TemplateRevision.Text;
+            cb_TemplateName.SelectedIndexChanged -= Template_Name_SelectedIndexChanged;
+            cb_TemplateRevision.SelectedIndexChanged -= Template_RevisionNr_SelectedIndexChanged;
+            Fill_MainTemplate_Names();
+            cb_TemplateName.Text = templateName;
+            Fill_Template_RevisionNr();
+            cb_TemplateRevision.Text = templateRevision;
+            cb_TemplateName.SelectedIndexChanged -= Template_Name_SelectedIndexChanged;
+            cb_TemplateRevision.SelectedIndexChanged -= Template_RevisionNr_SelectedIndexChanged;
+            cb_TemplateName.SelectedIndexChanged += Template_Name_SelectedIndexChanged;
+            cb_TemplateRevision.SelectedIndexChanged += Template_RevisionNr_SelectedIndexChanged;
+        }
         private void Fill_LineClearance_Templates()
         {
             var dataTable = new DataTable();
@@ -319,7 +387,7 @@ namespace DigitalProductionProgram.Templates
         }
         private void NewRevision_MouseDown(object sender, MouseEventArgs e)
         {
-            TemplateButtons.IsOkUpdateTemplate = false;
+            MarkTemplateAsDirty();
             if (e.Button == MouseButtons.Left)
                 cb_TemplateRevision.Text = ControlValidator.Next_Letter(cb_TemplateRevision.Text, true);
             else
@@ -342,9 +410,15 @@ namespace DigitalProductionProgram.Templates
             }
             if (IsOkSaveTemplate == false)
                 return;
-           
+            
 
             MainTemplate.Save_NewTemplate(cb_TemplateName.Text, cb_TemplateRevision.Text, chb_IsUsingPreFab.Checked, chb_IsProductionLineNeeded.Checked, cb_LineClearance_Revision.Text, cb_MainInfo_Template.Text, tb_Workoperation.Text, flp_Main);
+            MainTemplate.Load_MainTemplateID(cb_TemplateName.Text, cb_TemplateRevision.Text);
+            SetLoadedTemplateIdentity();
+            ResetTemplateDirtyState();
+            UpdateTemplateIdentityUi();
+            TemplateButtons.IsOkUpdateTemplate = true;
+            RefreshTemplateComboBoxes();
 
             InfoText.Question("" +
                           $"Den nya mallen {cb_TemplateName.Text} är nu sparad och är nu klar att börja skapa nya processkort för.\n" +
@@ -353,83 +427,58 @@ namespace DigitalProductionProgram.Templates
                 CustomColors.InfoText_Color.Info, null, this);
             if (InfoText.answer == InfoText.Answer.No)
                 return;
-            MainTemplate.Load_MainTemplateID(cb_TemplateName.Text, cb_TemplateRevision.Text);
             var partsManager = new Connect_Templates(cb_TemplateName.Text, cb_TemplateRevision.Text, false, Connect_Templates.SourceType.Type_Protocols);
             partsManager.ShowDialog();
-
-            Fill_MainTemplate_Names();
         }
-        private async void Update_Template_Click(object sender, EventArgs e)
+        private void Update_Template_Click(object sender, EventArgs e)
         {
+            if (!IsLoadedTemplateIdentity)
+            {
+                InfoText.Show("Du har ändrat mallens namn eller revision. Använd 'Spara Ny Mall' för att spara den som en ny mall.", CustomColors.InfoText_Color.Warning, "Warning!", this);
+                return;
+            }
             if (!IsOkSaveTemplate)
                 return;
-            PerformUpdate();
-            //await Task.Run(PerformUpdate); // Run in background
+            if (!PerformUpdate())
+                return;
             InfoText.Show("Mallen har nu blivit uppdaterad.", CustomColors.InfoText_Color.Ok, null, this);
         }
-        private void PerformUpdate()
+        private bool PerformUpdate()
         {
-            //if (TemplateButtons.IsOkUpdateTemplate)   //Testar ta bort denna för jag förstår inte i nuläget 2026-03-18 vad koden nedanför för för nytta
             var total = 0;
             if (MainTemplate.IsTemplateConnectedToProcesscard(ref total))
             {
                 ShowWarning($"Denna mall har {total} processkort kopplat till sig och kan inte längre uppdateras.");
-                return;
+                return false;
             }
 
             if (MainTemplate.IsTemplateConnectedToOrderNr(ref total))
             {
                 ShowWarning($"Denna mall har {total} ordrar kopplade till sig och kan inte längre uppdateras.");
-                return;
+                return false;
             }
+            MainTemplate.Update_Data(chb_IsUsingPreFab.Checked, chb_IsProductionLineNeeded.Checked, cb_LineClearance_Revision.Text, cb_MainInfo_Template.Text, tb_Workoperation.Text);
+            MainTemplate.Delete_ChildData();
+            Save_TemplateData(cb_TemplateName.Text, cb_TemplateRevision.Text, flp_Main);
+            ResetTemplateDirtyState();
+            TemplateButtons.IsOkUpdateTemplate = true;
+            return true;
+        }
+        private static void Save_TemplateData(string templateName, string revision, FlowLayoutPanel flp)
+        {
+            var templateOrder = 0;
+            foreach (Panel panel in flp.Controls.OfType<Panel>())
             {
-                MainTemplate.Update_Data(chb_IsUsingPreFab.Checked, cb_LineClearance_Revision.Text);
-
-                int templateOrder = 0;
-
-                foreach (Panel panel in flp_Main.Controls)
-                {
-                    var lbl_ModuleName = panel.Controls.OfType<Label>().FirstOrDefault();
-                    int.TryParse(panel.Name, out var formtemplateID);
-
-                    DataGridView dgv_FormTemplate = null;
-                    DataGridView dgv_Template = null;
-                    foreach (var dgv in panel.Controls.OfType<DataGridView>())
-                    {
-                        if (dgv.Name == "dgv_FormTemplate")
-                            dgv_FormTemplate = dgv;
-                        else
-                            dgv_Template = dgv;
-                    }
-
-                    int.TryParse(dgv_FormTemplate.Rows[0].Cells["col_MachineIndex"].Value.ToString(), out var machineIndex);
-
-                    
-                    FormTemplate.Save_Data(cb_TemplateName.Text, cb_TemplateRevision.Text, dgv_FormTemplate, lbl_ModuleName.Text, templateOrder);
-                    Template.Save_Data(cb_TemplateName.Text, dgv_Template, cb_TemplateRevision.Text, templateOrder, machineIndex, formtemplateID);
-                    Template.Update_Data(cb_TemplateName.Text, dgv_Template, cb_TemplateRevision.Text, templateOrder, machineIndex, formtemplateID);
-                    templateOrder++;
-
-                }
-            }
-            //else
-            {
-                //Förstår inte riktigt hur denna funkar och vad nedanstående gör för nytta
-               // var total = 0;
-                //if (MainTemplate.IsTemplateConnectedToProcesscard(ref total))
-                //{
-                //    ShowWarning($"Denna mall har {total} processkort kopplat till sig och kan inte längre uppdateras.");
-                //    return;
-                //}
-
-                //if (MainTemplate.IsTemplateConnectedToOrderNr(ref total))
-                //{
-                //    ShowWarning($"Denna mall har {total} ordrar kopplade till sig och kan inte längre uppdateras.");
-                //    return;
-                //}
-
-              //  MainTemplate.Delete_Template(cb_TemplateName.Text, cb_TemplateRevision.Text, false);
-               // MainTemplate.Save_NewTemplate(cb_TemplateName.Text, cb_TemplateRevision.Text, chb_IsUsingPreFab.Checked, chb_IsProductionLineNeeded.Checked, cb_LineClearance_Revision.Text, cb_MainInfo_Template.Text, tb_Workoperation.Text, flp_Main);
+                var label_Name = panel.Controls.OfType<Label>().FirstOrDefault();
+                var dgv_FormTemplate = panel.Controls.OfType<DataGridView>().FirstOrDefault(dgv => dgv.Name == "dgv_FormTemplate");
+                var dgv_Template = panel.Controls.OfType<DataGridView>().FirstOrDefault(dgv => dgv.Name != "dgv_FormTemplate");
+                if (label_Name is null || dgv_FormTemplate is null || dgv_Template is null || dgv_FormTemplate.Rows.Count == 0)
+                    continue;
+                int.TryParse(dgv_FormTemplate.Rows[0].Cells["col_MachineIndex"].Value?.ToString(), out var machineIndex);
+                var currentTemplateOrder = machineIndex > 1 && templateOrder > 0 ? templateOrder - 1 : templateOrder;
+                FormTemplate.Save_Data(templateName, revision, dgv_FormTemplate, label_Name.Text, currentTemplateOrder);
+                Template.Save_Data(templateName, dgv_Template, revision, currentTemplateOrder, machineIndex, 0);
+                templateOrder++;
             }
         }
 
@@ -478,7 +527,7 @@ namespace DigitalProductionProgram.Templates
         }
         private void LineClearance_Revision_SelectedIndexChanged(object sender, EventArgs e)
         {
-            TemplateButtons.IsOkUpdateTemplate = false;
+            MarkTemplateAsDirty();
         }
 
         private static void AddVerticalTextModuleHeader(Label label, string text)
@@ -533,7 +582,7 @@ namespace DigitalProductionProgram.Templates
                 Template.Load_Data(cb_TemplateRevision.Text, formTemplateID);
                 FormTemplate.Load_Data(formTemplateID, cb_TemplateName.Text, cb_TemplateRevision.Text, machineIndex);
             }
-            TemplateButtons.IsOkUpdateTemplate = false;
+            MarkTemplateAsDirty();
             tb_ModuleName.Text = string.Empty;
         }
         private void AddNewCodeText_Unit_Click(object sender, EventArgs e)
@@ -572,16 +621,18 @@ namespace DigitalProductionProgram.Templates
         {
             if (e.RowIndex < 0)
                 return;
-            var codetext = dgv_CodeText.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString();
-            if (TemplateControls.IsCodeTextExistInModule(dgv_ProtocolsActive_Main, codetext))
+            var codeText = dgv_CodeText.Rows[e.RowIndex].Cells["CodeText"].Value?.ToString() ?? string.Empty;
+            if (string.IsNullOrEmpty(codeText))
+                return;
+            if (TemplateControls.IsCodeTextExistInModule(dgv_ProtocolsActive_Main, codeText))
                 return;
             dgv_ProtocolsActive_Main.Rows.Add();
-            dgv_ProtocolsActive_Main.Rows[^1].Cells["col_CodeText"].Value = codetext;
-            dgv_ProtocolsActive_Main.Rows[^1].Cells["col_ProtocolDescriptionID"].Value = int.Parse(dgv_CodeText.Rows[e.RowIndex].Cells[0].Value.ToString());
-            dgv_ProtocolsActive_Main.Rows[^1].Cells["col_Unit"].Value = dgv_CodeText.Rows[e.RowIndex].Cells[2].Value.ToString();
+            dgv_ProtocolsActive_Main.Rows[^1].Cells["col_CodeText"].Value = codeText;
+            dgv_ProtocolsActive_Main.Rows[^1].Cells["col_ProtocolDescriptionID"].Value = int.Parse(dgv_CodeText.Rows[e.RowIndex].Cells["ID"].Value.ToString());
+            dgv_ProtocolsActive_Main.Rows[^1].Cells["col_Unit"].Value = dgv_CodeText.Rows[e.RowIndex].Cells["Unit"].Value?.ToString();
 
-            TemplateButtons.IsOkUpdateTemplate = false;
-            TemplateButtons.IsOkSaveTemplate = true;
+            MarkTemplateAsDirty();
+            UpdateTemplateIdentityUi();
         }
         private void CodeText_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
@@ -615,12 +666,12 @@ namespace DigitalProductionProgram.Templates
                 return;
             }
             label_Active_ModuleName.Text = tb_ModuleName.Text;
-            TemplateButtons.IsOkUpdateTemplate = false;
+            MarkTemplateAsDirty();
         }
         private void DeleteModule_Click(object sender, EventArgs e)
         {
             panel_Active.Dispose();
-            TemplateButtons.IsOkUpdateTemplate = false;
+            MarkTemplateAsDirty();
         }
         private void ModuleUp_Click(object sender, EventArgs e)
         {
@@ -628,7 +679,7 @@ namespace DigitalProductionProgram.Templates
             if (index > 0)
             {
                 flp_Main.Controls.SetChildIndex(panel_Active, index - 1);
-                TemplateButtons.IsOkUpdateTemplate = false;
+                MarkTemplateAsDirty();
             }
 
         }
@@ -638,7 +689,7 @@ namespace DigitalProductionProgram.Templates
             if (index < flp_Main.Controls.Count)
             {
                 flp_Main.Controls.SetChildIndex(panel_Active, index + 1);
-                TemplateButtons.IsOkUpdateTemplate = false;
+                MarkTemplateAsDirty();
             }
 
         }
@@ -647,7 +698,7 @@ namespace DigitalProductionProgram.Templates
             dgv_ProtocolsActive_Main.Rows.RemoveAt(dgv_ProtocolsActive_Main.CurrentCell.RowIndex);
 
             //_ = preview.Update_TemplateAsync(flp_Main);
-            TemplateButtons.IsOkUpdateTemplate = false;
+            MarkTemplateAsDirty();
         }
         private void CodeTextUp_Click(object sender, EventArgs e)
         {
@@ -658,7 +709,7 @@ namespace DigitalProductionProgram.Templates
                 dgv_ProtocolsActive_Main.Rows.RemoveAt(row);
                 dgv_ProtocolsActive_Main.Rows.Insert(row - 1, rowToMove);
                 dgv_ProtocolsActive_Main.CurrentCell = dgv_ProtocolsActive_Main.Rows[row - 1].Cells[1];
-                TemplateButtons.IsOkUpdateTemplate = false;
+                MarkTemplateAsDirty();
             }
         }
         private void CodeTextDown_Click(object sender, EventArgs e)
@@ -670,7 +721,7 @@ namespace DigitalProductionProgram.Templates
                 dgv_ProtocolsActive_Main.Rows.RemoveAt(row);
                 dgv_ProtocolsActive_Main.Rows.Insert(row + 1, rowToMove);
                 dgv_ProtocolsActive_Main.CurrentCell = dgv_ProtocolsActive_Main.Rows[row + 1].Cells[1];
-                TemplateButtons.IsOkUpdateTemplate = false;
+                MarkTemplateAsDirty();
             }
         }
         private void NewCodeText_Enter(object sender, EventArgs e)
@@ -704,6 +755,13 @@ namespace DigitalProductionProgram.Templates
 
         private void Template_Name_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (suppressTemplateSelectionHandlers)
+                return;
+            if (!ConfirmReloadTemplate())
+            {
+                RestoreLoadedTemplateSelection();
+                return;
+            }
             cb_TemplateRevision.SelectedIndexChanged -= Template_RevisionNr_SelectedIndexChanged;
 
             preview?.Dispose();
@@ -715,21 +773,26 @@ namespace DigitalProductionProgram.Templates
         }
         private void Template_RevisionNr_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (suppressTemplateSelectionHandlers)
+                return;
             btn_ConnectPartNr_NewRevision.Visible = cb_TemplateRevision.Text != "A";
-
-            if (TemplateButtons.IsOkUpdateTemplate == false)
+            if (!ConfirmReloadTemplate())
             {
-                InfoText.Question("Är du säker på att du vill ladda om mallen? Dina aktiva ändringar kommer att försvinna.", CustomColors.InfoText_Color.Warning, "Warning!", this);
-                if (InfoText.answer == InfoText.Answer.No)
-                    return;
+                RestoreLoadedTemplateSelection();
+                return;
             }
-
             LoadData(false);
-
         }
         private void TemplateName_TextChanged(object sender, EventArgs e)
         {
-            TemplateButtons.isOkUpdateTemplate = false;
+            UpdateCurrentTemplateNameForPreview();
+            if (!isLoadingTemplateData && cb_TemplateName.SelectedIndex < 0 && flp_Main.Controls.Count > 0)
+                MarkTemplateAsDirty();
+            UpdateTemplateIdentityUi();
+        }
+        private void TemplateRevision_TextChanged(object? sender, EventArgs e)
+        {
+            UpdateTemplateIdentityUi();
         }
         private void FilterCodeText_TextChanged(object sender, EventArgs e)
         {
@@ -744,11 +807,14 @@ namespace DigitalProductionProgram.Templates
         }
         private void LoadData(bool isOkLoadRevision)
         {
-            ClearTemplates();
-            var lineClearance_Revision = string.Empty;
-            using (var con = new SqlConnection(Database.cs_Protocol))
+            isLoadingTemplateData = true;
+            try
             {
-                const string query = @"
+                ClearTemplates();
+                var lineClearance_Revision = string.Empty;
+                using (var con = new SqlConnection(Database.cs_Protocol))
+                {
+                    const string query = @"
                     SELECT FormTemplateID, ModuleName, maintemplate.ID, maintemplate.Name as TemplateName, LineClearance_Template, MachineIndex, workoperation.Name as Workoperation, maintemplate.CreatedBy, maintemplate.CreatedDate
                     FROM Protocol.MainTemplate as maintemplate
                         LEFT JOIN Protocol.FormTemplate as formtemplate
@@ -760,40 +826,77 @@ namespace DigitalProductionProgram.Templates
                                 AND lc.LineClearance_Revision = maintemplate.LineClearance_Template
                     WHERE maintemplate.Name = @templatename AND Revision = @revision
                     ORDER BY TemplateOrder, MachineIndex";
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                cmd.Parameters.AddWithValue("@templateName", cb_TemplateName.Text);
-                cmd.Parameters.AddWithValue("@revision", cb_TemplateRevision.Text);
-                con.Open();
-                var reader = cmd.ExecuteReader();
-                while (reader.Read())
-                {
-                    tb_Workoperation.Text = reader["Workoperation"].ToString();
-                    lbl_CreatedBy.Text = $"{reader["CreatedBy"]}";
-                    DateTime.TryParse(reader["CreatedDate"].ToString(), out DateTime dateTime);
-                    lbl_CreatedDate.Text = dateTime.ToString("yyyy-MM-dd HH:mm");
-                    lineClearance_Revision = reader["LineClearance_Template"].ToString();
-                    var codetext = reader["ModuleName"].ToString();
-                    int.TryParse(reader["FormTemplateID"].ToString(), out var formTemplateID);
-                    MainTemplate.ID = int.Parse(reader["ID"].ToString());
-                    MainTemplate.Name = reader["TemplateName"].ToString();
-                    int.TryParse(reader["MachineIndex"].ToString(), out var machindeIndex);
+                    var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
+                    cmd.Parameters.AddWithValue("@templateName", cb_TemplateName.Text);
+                    cmd.Parameters.AddWithValue("@revision", cb_TemplateRevision.Text);
+                    con.Open();
+                    var reader = cmd.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        tb_Workoperation.Text = reader["Workoperation"].ToString();
+                        lbl_CreatedBy.Text = $"{reader["CreatedBy"]}";
+                        DateTime.TryParse(reader["CreatedDate"].ToString(), out DateTime dateTime);
+                        lbl_CreatedDate.Text = dateTime.ToString("yyyy-MM-dd HH:mm");
+                        lineClearance_Revision = reader["LineClearance_Template"].ToString();
+                        var codetext = reader["ModuleName"].ToString();
+                        int.TryParse(reader["FormTemplateID"].ToString(), out var formTemplateID);
+                        MainTemplate.ID = int.Parse(reader["ID"].ToString());
+                        MainTemplate.Name = reader["TemplateName"].ToString();
+                        int.TryParse(reader["MachineIndex"].ToString(), out var machindeIndex);
 
-                    int? formtemplateID = formTemplateID;
+                        int? formtemplateID = formTemplateID;
 
-                    tb_ModuleName.Text = codetext.Replace("\n", "").Replace("\r", "");
-                    if (isOkLoadRevision)
-                        LoadRevisions();
-                    AddModule(machindeIndex, formtemplateID);
+                        tb_ModuleName.Text = codetext.Replace("\n", "").Replace("\r", "");
+                        if (isOkLoadRevision)
+                            LoadRevisions();
+                        AddModule(machindeIndex, formtemplateID);
+                    }
                 }
-            }
-            MainTemplate.Load_Data(cb_TemplateName.Text, cb_TemplateRevision.Text, chb_IsUsingPreFab, chb_IsProductionLineNeeded, cb_LineClearance_Revision, cb_MainInfo_Template);
+                MainTemplate.Load_Data(cb_TemplateName.Text, cb_TemplateRevision.Text, chb_IsUsingPreFab, chb_IsProductionLineNeeded, cb_LineClearance_Revision, cb_MainInfo_Template);
 
-            label_TotalConnectedProcesscards.Text = $"Antal Processkort kopplade till mallen: {TotalConnectedProcesscardsToTemplate}";
-            label_TotalConnectedOrders.Text = $"Antal Ordrar kopplade till mallen: {TotalConnectedOrdersToTemplate}";
-            MainTemplate.Revision = cb_TemplateRevision.Text;
-            Fill_LineClearance_Templates();
-            cb_LineClearance_Revision.SelectedValue = lineClearance_Revision;
-            TemplateButtons.IsOkUpdateTemplate = true;
+                MainTemplate.Revision = cb_TemplateRevision.Text;
+                UpdateCurrentTemplateNameForPreview();
+                SetLoadedTemplateIdentity();
+                Fill_LineClearance_Templates();
+                cb_LineClearance_Revision.SelectedValue = lineClearance_Revision;
+                ResetTemplateDirtyState();
+                UpdateTemplateIdentityUi();
+                TemplateButtons.IsOkUpdateTemplate = true;
+            }
+            finally
+            {
+                isLoadingTemplateData = false;
+            }
+        }
+        private bool IsLoadedTemplateIdentity =>
+            loadedTemplateID != 0 &&
+            string.Equals(cb_TemplateName.Text, loadedTemplateName, StringComparison.CurrentCulture) &&
+            string.Equals(cb_TemplateRevision.Text, loadedTemplateRevision, StringComparison.CurrentCulture);
+        private bool HasUnsavedData =>
+            flp_Main.Controls.Count > 0 &&
+            hasUnsavedTemplateChanges;
+        private void SetLoadedTemplateIdentity()
+        {
+            loadedTemplateID = MainTemplate.ID;
+            loadedTemplateName = cb_TemplateName.Text;
+            loadedTemplateRevision = cb_TemplateRevision.Text;
+        }
+        private void UpdateTemplateIdentityUi()
+        {
+            btn_SaveNewTemplate.Text = "Spara Ny Mall";
+            if (IsLoadedTemplateIdentity)
+            {
+                label_TotalConnectedProcesscards.Text = $"Antal Processkort kopplade till mallen: {TotalConnectedProcesscardsToTemplate}";
+                label_TotalConnectedOrders.Text = $"Antal Ordrar kopplade till mallen: {TotalConnectedOrdersToTemplate}";
+                TemplateButtons.IsOkSaveTemplate = false;
+                return;
+            }
+            label_TotalConnectedProcesscards.Text = "Antal Processkort kopplade till mallen: 0";
+            label_TotalConnectedOrders.Text = "Antal Ordrar kopplade till mallen: 0";
+            TemplateButtons.IsOkSaveTemplate = !string.IsNullOrWhiteSpace(cb_TemplateName.Text)
+                                               && !string.IsNullOrWhiteSpace(cb_TemplateRevision.Text)
+                                               && !MainTemplate.IsTemplateExist(cb_TemplateName.Text, cb_TemplateRevision.Text);
+            TemplateButtons.IsOkUpdateTemplate = false;
         }
         private void ClearTemplates()
         {
@@ -814,6 +917,14 @@ namespace DigitalProductionProgram.Templates
         private void Manage_Templates_FormClosed(object sender, FormClosedEventArgs e)
         {
             Order.Restore_TempOrderInfo();
+        }
+        private void Manage_Templates_FormClosing(object? sender, FormClosingEventArgs e)
+        {
+            if (!HasUnsavedData)
+                return;
+            InfoText.Question("Det finns osparade ändringar i mallen.\nÄr du säker på att du vill stänga fönstret?", CustomColors.InfoText_Color.Warning, "Warning!", this);
+            if (InfoText.answer == InfoText.Answer.No)
+                e.Cancel = true;
         }
         private void Manage_Templates_Resize(object sender, EventArgs e)
         {
@@ -955,6 +1066,7 @@ namespace DigitalProductionProgram.Templates
                 if (isUsingEvents)
                 {
                     dgv.Enter += Enter_dgv;
+                    dgv.Leave += Leave_dgv;
                     dgv.RowsAdded += RowsAdded_dgv;
                     dgv.RowsRemoved += RowsRemoved_dgv;
                     dgv.CurrentCellDirtyStateChanged += CurrentCellDirtyStateChanged;
@@ -989,17 +1101,15 @@ namespace DigitalProductionProgram.Templates
             }
             private static void CellClick_dgv(object? sender, DataGridViewCellEventArgs e)
             {
-                if (e.ColumnIndex > dgv_ProtocolsActive_Main.Columns.Count - 4)
-                    TemplateButtons.IsOkUpdateTemplate = false;
             }
 
             private static void RowsAdded_dgv(object? sender, DataGridViewRowsAddedEventArgs e)
             {
                 var dgv = (DataGridView)sender;
                 ChangePanelHeight(dgv);
-                if (flp is null || previewTemplate.IsDisposed)
+                if (flp is null || previewTemplate is null || previewTemplate.IsDisposed)
                     return;
-                previewTemplate.Update_TemplateAsync(flp);
+                _ = previewTemplate.Update_TemplateAsync(flp);
             }
             private static void RowsRemoved_dgv(object? sender, DataGridViewRowsRemovedEventArgs e)
             {
@@ -1018,6 +1128,13 @@ namespace DigitalProductionProgram.Templates
                     panel_Active = panel;
                 label_Active_ModuleName = panel_Active.Controls.OfType<Label>().FirstOrDefault();
 
+            }
+            private static void Leave_dgv(object? sender, EventArgs e)
+            {
+                if (sender is not DataGridView dgv)
+                    return;
+                dgv.ClearSelection();
+                dgv.CurrentCell = null;
             }
             private static void RowEnter_dgv(object? sender, DataGridViewCellEventArgs e)
             {
@@ -1039,9 +1156,9 @@ namespace DigitalProductionProgram.Templates
             }
             public static void Update_PreviewTemplate(object? sender, DataGridViewCellEventArgs e)
             {
-                if (flp is null || previewTemplate.IsDisposed)
+                if (flp is null || previewTemplate is null || previewTemplate.IsDisposed)
                     return;
-                using var _ = previewTemplate.Update_TemplateAsync(flp);
+                _ = previewTemplate.Update_TemplateAsync(flp);
             }
             private static void CurrentCellDirtyStateChanged(object? sender, EventArgs e)
             {
@@ -1056,6 +1173,7 @@ namespace DigitalProductionProgram.Templates
                 var dgv = (DataGridView)sender;
                 if (e.RowIndex < 0 || e.ColumnIndex < 0)
                     return;
+                MarkTemplateAsDirty();
 
                 switch (dgv.Columns[e.ColumnIndex].Name)
                 {
@@ -1094,7 +1212,6 @@ namespace DigitalProductionProgram.Templates
             // Handles checkbox column changes
             private static void HandleCheckboxColumn()
             {
-                TemplateButtons.isOkUpdateTemplate = false; // Assuming you have this variable defined
             }
             private static void ChangePanelHeight(DataGridView dgv)
             {
@@ -1293,33 +1410,7 @@ namespace DigitalProductionProgram.Templates
             public static void Save_NewTemplate(string templateName, string revision, bool isUsingPrefab, bool isUsingProdLine, string? lineClearanceTemplate, string mainInfoTemplate, string workoperation, FlowLayoutPanel flp)
             {
                 Save_Data(templateName, revision, isUsingPrefab, isUsingProdLine, lineClearanceTemplate, mainInfoTemplate, workoperation);
-
-                var templateOrder = 0;
-                foreach (Panel panel in flp.Controls)
-                {
-                    var label_Name = new Label();
-                    foreach (var lbl in panel.Controls.OfType<Label>())
-                        label_Name = lbl;
-                    int.TryParse(panel.Name, out var formtemplateID);
-
-                    DataGridView dgv_FormTemplate = null;
-                    DataGridView dgv_Template = null;
-                    foreach (var dgv in panel.Controls.OfType<DataGridView>())
-                    {
-                        if (dgv.Name == "dgv_FormTemplate")
-                            dgv_FormTemplate = dgv;
-                        else
-                            dgv_Template = dgv;
-
-                    }
-
-                    int.TryParse(dgv_FormTemplate.Rows[0].Cells["col_MachineIndex"].Value.ToString(), out var machineIndex);
-                    if (machineIndex > 1)
-                        templateOrder--;
-                    FormTemplate.Save_Data(templateName, revision, dgv_FormTemplate, label_Name.Text, templateOrder);
-                    Template.Save_Data(templateName, dgv_Template, revision, templateOrder, machineIndex, 0);
-                    templateOrder++;
-                }
+                Save_TemplateData(templateName, revision, flp);
             }
             private static void Save_Data(string name, string revision, bool isUsingPreFab, bool isUsingProdLine, string? lineClearanceTemplate, string mainInfoTemplate, string workoperation)
             {
@@ -1369,10 +1460,8 @@ namespace DigitalProductionProgram.Templates
                     cmd.ExecuteNonQuery();
                 });
             }
-            public static void Update_Data(bool isUsingPreFab, string lineClearanceTemplate)
+            public static void Update_Data(bool isUsingPreFab, bool isUsingProdLine, string lineClearanceTemplate, string mainInfoTemplate, string workoperation)
             {
-               // if (string.IsNullOrEmpty(lineClearanceTemplate))
-               //     lineClearanceTemplate = null;
                 Database.ExecuteSafe(con =>
                 {
                     const string query =
@@ -1380,14 +1469,33 @@ namespace DigitalProductionProgram.Templates
                             UPDATE Protocol.MainTemplate 
                             SET 
                                 IsUsingPreFab = @isusingprefab, 
-                                LineClearance_Template = @lineclearancetemplate
+                                IsProdLineUsedInProcesscard = @isusingprodline,
+                                LineClearance_Template = @lineclearancetemplate,
+                                MainInfo_Template = @maininfotemplate,
+                                WorkoperationID = (SELECT TOP(1) ID FROM Workoperation.Names WHERE Name = @workoperation AND ID IS NOT NULL)
                             WHERE ID = @protocolmaintemplateid";
                     var cmd = new SqlCommand(query, con);
                     cmd.Parameters.AddWithValue("@protocolmaintemplateid", ID);
                     cmd.Parameters.AddWithValue("@isusingprefab", isUsingPreFab);
-                    cmd.Parameters.AddWithValue("@lineclearancetemplate", string.IsNullOrEmpty(lineClearanceTemplate) ? (object)DBNull.Value : lineClearanceTemplate
-                    );
+                    cmd.Parameters.AddWithValue("@isusingprodline", isUsingProdLine);
+                    cmd.Parameters.AddWithValue("@lineclearancetemplate", string.IsNullOrEmpty(lineClearanceTemplate) ? (object)DBNull.Value : lineClearanceTemplate);
+                    SQL_Parameter.String(cmd.Parameters, "@maininfotemplate", mainInfoTemplate);
+                    SQL_Parameter.String(cmd.Parameters, "@workoperation", workoperation);
 
+                    cmd.ExecuteNonQuery();
+                });
+            }
+            public static void Delete_ChildData()
+            {
+                if (ID == 0)
+                    return;
+                Database.ExecuteSafe(con =>
+                {
+                    const string query = @"
+                        DELETE FROM Protocol.Template WHERE FormTemplateID IN (SELECT FormTemplateID FROM Protocol.FormTemplate WHERE MainTemplateID = @maintemplateid)
+                        DELETE FROM Protocol.FormTemplate WHERE MainTemplateID = @maintemplateid";
+                    var cmd = new SqlCommand(query, con);
+                    cmd.Parameters.AddWithValue("@maintemplateid", ID);
                     cmd.ExecuteNonQuery();
                 });
             }
@@ -1493,6 +1601,7 @@ namespace DigitalProductionProgram.Templates
                  AND target.MainTemplateID = source.MainTemplateID
              WHEN MATCHED THEN
              UPDATE SET 
+                 target.TemplateOrder = @templateorder,
                  target.ModuleName = @modulename, 
                  target.IsHeaderVisible = @isheadervisible, 
                  target.MachineIndex = @machineIndex, 

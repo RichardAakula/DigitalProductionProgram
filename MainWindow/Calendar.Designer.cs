@@ -1,4 +1,6 @@
-﻿namespace DigitalProductionProgram.MainWindow
+﻿using DigitalProductionProgram.Monitor;
+
+namespace DigitalProductionProgram.MainWindow
 {
     partial class LoggedInUsers
     {

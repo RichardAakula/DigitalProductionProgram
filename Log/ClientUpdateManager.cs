@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -14,27 +15,44 @@ namespace DigitalProductionProgram.Log
 {
     public partial class ClientUpdateManager : Form
     {
+        private const int GwlExstyle = -20;
+        private const int WsExLayered = 0x00080000;
         private List<HostItem> _allClients = new();
         private List<HostItem> _allBlockedClients = new();
         private readonly List<string> _allProdLines = new();
-
+        private readonly List<KeyValuePair<int, string>> _allUsers = new();
+        private readonly Dictionary<ListView, (int Column, System.Windows.Forms.SortOrder Order)> _listViewSortStates = new();
         private bool _suppressSelectionChanged;
         private CancellationTokenSource _usersOnClientCts;
-
+        [DllImport("user32.dll", EntryPoint = "GetWindowLong")]
+        private static extern int GetWindowLong(IntPtr hWnd,int nIndex);
+        [DllImport("user32.dll", EntryPoint = "SetWindowLong")]
+        private static extern int SetWindowLong(IntPtr hWnd,int nIndex,int dwNewLong);
         public ClientUpdateManager()
         {
             InitializeComponent();
             InitializeUsersOnClientListView();
+            InitializeClientListViews();
             Opacity = 0;
             ShowInTaskbar = false;
-
+            DoubleBuffered = true;
+            SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.AllPaintingInWmPaint | ControlStyles.ResizeRedraw,true);
+            UpdateStyles();
+            DigitalProductionProgram.ControlsManagement.DrawingControl.EnableDoubleBuffer(tlp_Main);
+            DigitalProductionProgram.ControlsManagement.DrawingControl.EnableDoubleBuffer(lb_AllUsers);
+            DigitalProductionProgram.ControlsManagement.DrawingControl.EnableDoubleBuffer(lb_ProdLines);
+            DigitalProductionProgram.ControlsManagement.DrawingControl.EnableDoubleBuffer(lv_AllowedClients);
+            DigitalProductionProgram.ControlsManagement.DrawingControl.EnableDoubleBuffer(lv_BlockedClients);
+            DigitalProductionProgram.ControlsManagement.DrawingControl.EnableDoubleBuffer(lb_Versions);
+            DigitalProductionProgram.ControlsManagement.DrawingControl.EnableDoubleBuffer(lv_UsersOnClient);
             Load += async (_, __) => await InitializeDataAsync();
-
-            // Koppla filtertextbox
+            lv_AllowedClients.ColumnClick += ListView_ColumnClick;
+            lv_BlockedClients.ColumnClick += ListView_ColumnClick;
+            lv_UsersOnClient.ColumnClick += ListView_ColumnClick;
+            tb_FilterUsersProdLines.TextChanged += tb_FilterUsersProdLines_TextChanged;
             tb_FilterAllClients.TextChanged += tb_Filter_TextChanged;
             tb_FilterBlockedClients.TextChanged += tb_FilterBlockedClients_TextChanged;
         }
-
         private async Task InitializeDataAsync()
         {
             SetLoadingState(true);
@@ -78,6 +96,7 @@ namespace DigitalProductionProgram.Log
                 SetLoadingState(false);
                 ShowInTaskbar = true;
                 Opacity = 1;
+                RemoveLayeredWindowStyle();
                 Activate();
             }
         }
@@ -85,83 +104,297 @@ namespace DigitalProductionProgram.Log
         private void SetLoadingState(bool isLoading)
         {
             Cursor = isLoading ? Cursors.WaitCursor : Cursors.Default;
-            lb_AllowedClients.Enabled = !isLoading;
+            lv_AllowedClients.Enabled = !isLoading;
             lb_ProdLines.Enabled = !isLoading;
             lb_Versions.Enabled = !isLoading;
             lb_AllUsers.Enabled = !isLoading;
-            lb_BlockedClients.Enabled = !isLoading;
+            lv_BlockedClients.Enabled = !isLoading;
+            tb_FilterUsersProdLines.Enabled = !isLoading;
+            tb_FilterAllClients.Enabled = !isLoading;
+            tb_FilterBlockedClients.Enabled = !isLoading;
             btn_BlockClient.Enabled = !isLoading;
             btn_UnBlockClient.Enabled = !isLoading;
         }
-
-
-
-        private void RefreshClientList()
+        private void RemoveLayeredWindowStyle()
         {
-            lb_AllowedClients.BeginUpdate();
+            if (!IsHandleCreated)
+                return;
+            int exStyle = GetWindowLong(Handle,GwlExstyle);
+            if ((exStyle & WsExLayered) != 0)
+                SetWindowLong(Handle,GwlExstyle,exStyle & ~WsExLayered);
+        }
+        private void RefreshUsersAndProdLines()
+        {
+            var userFilter = tb_FilterUsersProdLines.Text.Trim();
+            var selectedUserIds = lb_AllUsers.SelectedItems.Cast<KeyValuePair<int, string>>().Select(x => x.Key).ToHashSet();
+            var selectedProdLines = lb_ProdLines.SelectedItems.Cast<string>().ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+            _suppressSelectionChanged = true;
+            lb_AllUsers.BeginUpdate();
+            lb_ProdLines.BeginUpdate();
+            try
+            {
+                lb_AllUsers.Items.Clear();
+                lb_ProdLines.Items.Clear();
+
+                IEnumerable<KeyValuePair<int, string>> filteredUsers = _allUsers;
+                IEnumerable<string> filteredProdLines = _allProdLines;
+
+                if (!string.IsNullOrWhiteSpace(userFilter))
+                {
+                    filteredUsers = filteredUsers.Where(user =>
+                        user.Value.Contains(userFilter, StringComparison.OrdinalIgnoreCase) ||
+                        user.Key.ToString().Contains(userFilter, StringComparison.OrdinalIgnoreCase));
+                    filteredProdLines = filteredProdLines.Where(prodLine =>
+                        prodLine.Contains(userFilter, StringComparison.OrdinalIgnoreCase));
+                }
+
+                foreach (var user in filteredUsers)
+                {
+                    int index = lb_AllUsers.Items.Add(user);
+                    if (selectedUserIds.Contains(user.Key))
+                        lb_AllUsers.SelectedIndices.Add(index);
+                }
+
+                foreach (var prodLine in filteredProdLines)
+                {
+                    int index = lb_ProdLines.Items.Add(prodLine);
+                    if (selectedProdLines.Contains(prodLine))
+                        lb_ProdLines.SelectedIndices.Add(index);
+                }
+            }
+            finally
+            {
+                lb_ProdLines.EndUpdate();
+                lb_AllUsers.EndUpdate();
+                _suppressSelectionChanged = false;
+            }
+
+            RefreshClientListsFromSelections();
+        }
+        private void RefreshClientListsFromSelections()
+        {
+            var selectedUsers = lb_AllUsers.SelectedItems.Cast<KeyValuePair<int, string>>().ToList();
+            var selectedProdLines = lb_ProdLines.SelectedItems.Cast<string>().ToList();
+            var hostUsageCountsForUsers = GetHostUsageCountsForSelectedUsers(selectedUsers.Select(x => x.Key));
+            var hostIdsForSelectedUsers = hostUsageCountsForUsers.Keys.ToHashSet();
+            var hostIdsForProdLines = GetHostIdsForSelectedProdLines(selectedProdLines);
+            lv_AllowedClients.BeginUpdate();
+            lv_BlockedClients.BeginUpdate();
             _suppressSelectionChanged = true;
             try
             {
-                lb_AllowedClients.Items.Clear();
-
-                IEnumerable<HostItem> filtered = _allClients;
-
-                string filter = tb_FilterAllClients.Text.Trim();
-                if (!string.IsNullOrWhiteSpace(filter))
+                IEnumerable<HostItem> filteredAllowed = _allClients;
+                IEnumerable<HostItem> filteredBlocked = _allBlockedClients;
+                if (selectedUsers.Count > 0)
                 {
-                    filtered = filtered.Where(c =>
-                        c.HostName.Contains(filter, StringComparison.OrdinalIgnoreCase));
+                    filteredAllowed = filteredAllowed.Where(c => hostIdsForSelectedUsers.Contains(c.HostID));
+                    filteredBlocked = filteredBlocked.Where(c => hostIdsForSelectedUsers.Contains(c.HostID));
                 }
-
-                foreach (var client in filtered)
-                    lb_AllowedClients.Items.Add(client);
-
-                if (chk_CheckAllClients.Checked)
+                if (selectedProdLines.Count > 0)
                 {
-                    lb_AllowedClients.SelectedIndices.Clear();
-                    for (int i = 0; i < lb_AllowedClients.Items.Count; i++)
-                        lb_AllowedClients.SelectedIndices.Add(i);
+                    filteredAllowed = filteredAllowed.Where(c => hostIdsForProdLines.Contains(c.HostID));
+                    filteredBlocked = filteredBlocked.Where(c => hostIdsForProdLines.Contains(c.HostID));
                 }
+                string allowedFilter = tb_FilterAllClients.Text.Trim();
+                if (!string.IsNullOrWhiteSpace(allowedFilter))
+                {
+                    filteredAllowed = filteredAllowed.Where(c =>
+                        c.HostName.Contains(allowedFilter, StringComparison.OrdinalIgnoreCase) ||
+                        c.HostID.ToString().Contains(allowedFilter));
+                }
+                string blockedFilter = tb_FilterBlockedClients.Text.Trim();
+                if (!string.IsNullOrWhiteSpace(blockedFilter))
+                {
+                    filteredBlocked = filteredBlocked.Where(c =>
+                        c.HostName.Contains(blockedFilter, StringComparison.OrdinalIgnoreCase) ||
+                        c.HostID.ToString().Contains(blockedFilter));
+                }
+                if (hostUsageCountsForUsers.Count > 0)
+                {
+                    filteredAllowed = OrderClientsByUsage(filteredAllowed, hostUsageCountsForUsers);
+                    filteredBlocked = OrderClientsByUsage(filteredBlocked, hostUsageCountsForUsers);
+                }
+                PopulateClientListView(lv_AllowedClients,filteredAllowed,chk_CheckAllClients.Checked);
+                PopulateClientListView(lv_BlockedClients,filteredBlocked,chk_CheckAllBlockedClients.Checked);
+                ApplyStoredSort(lv_AllowedClients);
+                ApplyStoredSort(lv_BlockedClients);
             }
             finally
             {
                 _suppressSelectionChanged = false;
-                lb_AllowedClients.EndUpdate();
+                lv_BlockedClients.EndUpdate();
+                lv_AllowedClients.EndUpdate();
             }
         }
-        private void RefreshBlockedClientList()
+        private Dictionary<int, int> GetHostUsageCountsForSelectedUsers(IEnumerable<int> selectedUserIds)
         {
-            lb_BlockedClients.BeginUpdate();
-            try
+            var result = new Dictionary<int, int>();
+
+            foreach (var userId in selectedUserIds)
             {
-                lb_BlockedClients.Items.Clear();
-
-                IEnumerable<HostItem> filtered = _allBlockedClients;
-
-                string filter = tb_FilterBlockedClients.Text.Trim();
-
-                if (!string.IsNullOrWhiteSpace(filter))
+                var usageRows = Database.ExecuteSafe(con =>
                 {
-                    filtered = filtered.Where(c =>
-                        c.HostName.Contains(filter, StringComparison.OrdinalIgnoreCase) ||
-                        c.HostID.ToString().Contains(filter));
-                }
+                    var list = new List<(int HostID, int WorkCount)>();
+                    const string query = @"
+                        SELECT TOP(50) HostID, COUNT(*) AS WorkCount
+                        FROM Log.ActivityLog
+                        WHERE UserID = @userid
+                            AND Date >= DATEADD(YEAR, -1, GETDATE())
+                            AND HostID IS NOT NULL
+                        GROUP BY HostID
+                        ORDER BY WorkCount DESC";
 
-                lb_BlockedClients.Items.AddRange(filtered.ToArray());
+                    using var cmd = new SqlCommand(query, con);
+                    cmd.Parameters.AddWithValue("@userid", userId);
+                    using var reader = cmd.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        list.Add((
+                            reader.GetInt32(reader.GetOrdinal("HostID")),
+                            reader.GetInt32(reader.GetOrdinal("WorkCount"))
+                        ));
+                    }
+                    return list;
+                });
+
+                if (usageRows == null)
+                    continue;
+
+                foreach (var usageRow in usageRows)
+                {
+                    if (result.TryGetValue(usageRow.HostID, out int currentCount))
+                        result[usageRow.HostID] = currentCount + usageRow.WorkCount;
+                    else
+                        result[usageRow.HostID] = usageRow.WorkCount;
+                }
             }
-            finally
+
+            return result;
+        }
+        private HashSet<int> GetHostIdsForSelectedProdLines(IEnumerable<string> selectedProdLines)
+        {
+            var result = new HashSet<int>();
+
+            foreach (var prodLine in selectedProdLines)
             {
-                lb_BlockedClients.EndUpdate();
+                var hostIds = Database.ExecuteSafe(con =>
+                {
+                    var list = new List<int>();
+                    const string query = @"
+                        SELECT TOP(50) al.HostID, COUNT(*) AS WorkCount
+                        FROM Log.ActivityLog al
+                        INNER JOIN [Order].MainData o ON al.OrderID = o.OrderID
+                        WHERE o.ProdLine = @prodline
+                            AND al.Date >= DATEADD(MONTH, -2, GETDATE())
+                            AND al.HostID IS NOT NULL
+                        GROUP BY al.HostID
+                        ORDER BY WorkCount DESC";
+
+                    using var cmd = new SqlCommand(query, con);
+                    cmd.Parameters.AddWithValue("@prodline", prodLine);
+                    using var reader = cmd.ExecuteReader();
+                    while (reader.Read())
+                        list.Add(reader.GetInt32(reader.GetOrdinal("HostID")));
+                    return list;
+                });
+
+                if (hostIds == null)
+                    continue;
+
+                foreach (var hostId in hostIds)
+                    result.Add(hostId);
+            }
+
+            return result;
+        }
+        private static IEnumerable<HostItem> OrderClientsByUsage(IEnumerable<HostItem> clients, IReadOnlyDictionary<int, int> hostUsageCounts)
+        {
+            return clients
+                .OrderByDescending(client => hostUsageCounts.TryGetValue(client.HostID, out int workCount) ? workCount : 0)
+                .ThenBy(client => client.HostName);
+        }
+        private void InitializeClientListViews()
+        {
+            ConfigureClientListView(lv_AllowedClients);
+            ConfigureClientListView(lv_BlockedClients);
+        }
+        private static void ConfigureClientListView(ListView listView)
+        {
+            listView.View = View.Details;
+            listView.FullRowSelect = true;
+            listView.MultiSelect = true;
+            listView.HideSelection = false;
+            listView.Columns.Clear();
+            listView.Columns.Add("Client",245,HorizontalAlignment.Left);
+            listView.Columns.Add("Senast aktiv",110,HorizontalAlignment.Left);
+        }
+        private static void PopulateClientListView(ListView listView,IEnumerable<HostItem> clients,bool selectAll)
+        {
+            listView.Items.Clear();
+            foreach (var client in clients)
+                listView.Items.Add(CreateClientListViewItem(client));
+            if (selectAll)
+            {
+                listView.SelectedIndices.Clear();
+                for (int i = 0; i < listView.Items.Count; i++)
+                    listView.SelectedIndices.Add(i);
             }
         }
-
+        private static ListViewItem CreateClientListViewItem(HostItem client)
+        {
+            var item = new ListViewItem(client.ToString());
+            item.SubItems.Add(GetLastActiveText(client.LastActivity));
+            item.Tag = client;
+            return item;
+        }
+        private void ListView_ColumnClick(object sender, ColumnClickEventArgs e)
+        {
+            if (sender is not ListView listView)
+                return;
+            System.Windows.Forms.SortOrder nextOrder = System.Windows.Forms.SortOrder.Ascending;
+            if (_listViewSortStates.TryGetValue(listView, out var currentSort) && currentSort.Column == e.Column)
+                nextOrder = currentSort.Order == System.Windows.Forms.SortOrder.Ascending ? System.Windows.Forms.SortOrder.Descending : System.Windows.Forms.SortOrder.Ascending;
+            _listViewSortStates[listView] = (e.Column, nextOrder);
+            ApplyStoredSort(listView);
+        }
+        private void ApplyStoredSort(ListView listView)
+        {
+            if (!_listViewSortStates.TryGetValue(listView, out var sortState))
+                return;
+            listView.ListViewItemSorter = new ListViewItemComparer(sortState.Column, sortState.Order);
+            listView.Sort();
+        }
+        private static List<HostItem> GetSelectedHosts(ListView listView)
+        {
+            return listView.SelectedItems
+                .Cast<ListViewItem>()
+                .Select(item => item.Tag as HostItem)
+                .Where(item => item != null)
+                .Cast<HostItem>()
+                .ToList();
+        }
+        private static string GetLastActiveText(DateTime? lastActivity)
+        {
+            if (lastActivity == null)
+                return "Ingen aktivitet";
+            var span = DateTime.Now - lastActivity.Value;
+            if (span.TotalMinutes < 1)
+                return "Nyss";
+            if (span.TotalHours < 1)
+                return $"{Math.Max(1,(int)span.TotalMinutes)} min sedan";
+            if (span.TotalDays < 1)
+                return $"{Math.Max(1,(int)span.TotalHours)} h sedan";
+            if (span.TotalDays < 14)
+                return $"{Math.Max(1,(int)span.TotalDays)} dagar sedan";
+            return lastActivity.Value.ToString("yyyy-MM-dd");
+        }
         private void InitializeUsersOnClientListView()
         {
             lv_UsersOnClient.View = View.Details;
             lv_UsersOnClient.FullRowSelect = true;
             lv_UsersOnClient.MultiSelect = false;
             lv_UsersOnClient.HideSelection = false;
-
             lv_UsersOnClient.Columns.Clear();
             lv_UsersOnClient.Columns.Add("UserID", 50, HorizontalAlignment.Left);
             lv_UsersOnClient.Columns.Add("Name", 150, HorizontalAlignment.Left);
@@ -175,15 +408,11 @@ namespace DigitalProductionProgram.Log
             {
                 var list = new List<HostItem>();
                 const string query = @"
-                    SELECT g.HostID, g.HostName
+                    SELECT g.HostID, g.HostName, MAX(al.Date) AS LastActivity
                     FROM [Settings].General g
-                    WHERE EXISTS
-                    (
-                        SELECT 1
-                        FROM Log.ActivityLog     al
-                        WHERE al.HostID = g.HostID
-                        AND al.Date >= DATEADD(YEAR, -1, GETDATE())
-                    )
+                    JOIN Log.ActivityLog al ON al.HostID = g.HostID
+                    WHERE al.Date >= DATEADD(YEAR, -1, GETDATE())
+                    GROUP BY g.HostID, g.HostName
                     ORDER BY g.HostName";
                 using var cmd = new SqlCommand(query, con);
                 using var reader = cmd.ExecuteReader();
@@ -191,7 +420,8 @@ namespace DigitalProductionProgram.Log
                 {
                     list.Add(new HostItem(
                         reader.GetInt32(reader.GetOrdinal("HostID")),
-                        reader.GetString(reader.GetOrdinal("HostName"))
+                        reader.GetString(reader.GetOrdinal("HostName")),
+                        reader.GetDateTime(reader.GetOrdinal("LastActivity"))
                     ));
                 }
                 return list;
@@ -201,57 +431,42 @@ namespace DigitalProductionProgram.Log
                 return;
 
             _allClients.AddRange(clients);
-
-            RefreshClientList();
+            RefreshClientListsFromSelections();
         }
         private void LoadProdLines()
         {
             _allProdLines.Clear();
-
-            lb_ProdLines.BeginUpdate();
-            try
+            var prodLines = Database.ExecuteSafe(con =>
             {
-                lb_ProdLines.Items.Clear();
+                var list = new List<string>();
+                const string query = @"
+                    SELECT DISTINCT o.ProdLine
+                    FROM [Order].MainData o
+                    WHERE o.ProdLine IS NOT NULL
+                        AND EXISTS
+                        (
+                            SELECT 1
+                            FROM Log.ActivityLog al
+                            WHERE al.OrderID = o.OrderID
+                                AND al.HostID IS NOT NULL
+                                AND al.Date >= DATEADD(MONTH, -2, GETDATE())
+                        )
+                    ORDER BY o.ProdLine";
 
-                var prodLines = Database.ExecuteSafe(con =>
+                using var cmd = new SqlCommand(query, con);
+                using var reader = cmd.ExecuteReader();
+                while (reader.Read())
                 {
-                    var list = new List<string>();
-                    const string query = @"
-                        SELECT DISTINCT o.ProdLine
-                        FROM [Order].MainData o
-                        WHERE o.ProdLine IS NOT NULL
-                            AND EXISTS
-                            (
-                                SELECT 1
-                                FROM Log.ActivityLog al
-                                WHERE al.OrderID = o.OrderID
-                                    AND al.HostID IS NOT NULL
-                                    AND al.Date >= DATEADD(MONTH, -2, GETDATE())
-                            )
-                        ORDER BY o.ProdLine";
+                    list.Add(reader.GetString(reader.GetOrdinal("ProdLine")));
+                }
+                return list;
+            });
 
-                    using var cmd = new SqlCommand(query, con);
-                    using var reader = cmd.ExecuteReader();
-                    while (reader.Read())
-                    {
-                        list.Add(reader.GetString(reader.GetOrdinal("ProdLine")));
-                    }
-                    return list;
-                });
+            if (prodLines != null)
+                _allProdLines.AddRange(prodLines);
 
-                if (prodLines != null)
-                    _allProdLines.AddRange(prodLines);
-
-                foreach (var pl in _allProdLines)
-                    lb_ProdLines.Items.Add(pl);
-            }
-            finally
-            {
-                lb_ProdLines.EndUpdate();
-            }
+            RefreshUsersAndProdLines();
         }
-
-
 
         private void LoadVersions()
         {
@@ -277,7 +492,7 @@ namespace DigitalProductionProgram.Log
 
         private void LoadAllUsers()
         {
-            lb_AllUsers.Items.Clear();
+            _allUsers.Clear();
 
             var users = Database.ExecuteSafe(con =>
             {
@@ -302,58 +517,51 @@ namespace DigitalProductionProgram.Log
             if (users != null)
             {
                 foreach (var user in users)
-                    lb_AllUsers.Items.Add(user);
+                    _allUsers.Add(user);
             }
 
             // Om du vill kan du visa endast namn i ListBox
             lb_AllUsers.DisplayMember = "Value";
             lb_AllUsers.ValueMember = "Key";
+            RefreshUsersAndProdLines();
         }
 
         private async void lb_Clients_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_suppressSelectionChanged)
                 return;
-
             _suppressSelectionChanged = true;
             try
             {
-                if (lb_BlockedClients.SelectedItems.Count > 0)
-                    lb_BlockedClients.ClearSelected();
+                if (lv_BlockedClients.SelectedItems.Count > 0)
+                    lv_BlockedClients.SelectedIndices.Clear();
             }
             finally
             {
                 _suppressSelectionChanged = false;
             }
-
-            var selectedHosts = lb_AllowedClients.SelectedItems
-                .Cast<HostItem>()
+            var selectedHosts = GetSelectedHosts(lv_AllowedClients)
                 .Select(h => h.HostID)
                 .ToList();
-
             await LoadUsersForSelectedHostsAsync(selectedHosts);
         }
         private async void lb_BlockedClients_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_suppressSelectionChanged)
                 return;
-
             _suppressSelectionChanged = true;
             try
             {
-                if (lb_AllowedClients.SelectedItems.Count > 0)
-                    lb_AllowedClients.ClearSelected();
+                if (lv_AllowedClients.SelectedItems.Count > 0)
+                    lv_AllowedClients.SelectedIndices.Clear();
             }
             finally
             {
                 _suppressSelectionChanged = false;
             }
-
-            var selectedHosts = lb_BlockedClients.SelectedItems
-                .Cast<HostItem>()
+            var selectedHosts = GetSelectedHosts(lv_BlockedClients)
                 .Select(h => h.HostID)
                 .ToList();
-
             await LoadUsersForSelectedHostsAsync(selectedHosts);
         }
 
@@ -390,8 +598,10 @@ namespace DigitalProductionProgram.Log
                     var item = new ListViewItem(user.UserID.ToString());
                     item.SubItems.Add(user.Name);
                     item.SubItems.Add(user.LastActivity.ToString("yyyy-MM-dd HH:mm"));
+                    item.Tag = new UserActivityItem(user.UserID, user.Name, user.LastActivity);
                     lv_UsersOnClient.Items.Add(item);
                 }
+                ApplyStoredSort(lv_UsersOnClient);
             }
             finally
             {
@@ -403,93 +613,7 @@ namespace DigitalProductionProgram.Log
         {
             if (_suppressSelectionChanged)
                 return;
-
-            _suppressSelectionChanged = true;
-            lb_AllowedClients.BeginUpdate();
-            lb_BlockedClients.BeginUpdate();  // ✅ NYT
-            try
-            {
-                lb_AllowedClients.Items.Clear();
-                lb_BlockedClients.Items.Clear();  // ✅ NYT
-
-                IEnumerable<HostItem> filteredAllowed = _allClients;  // ✅ ÄNDRAD
-                IEnumerable<HostItem> filteredBlocked = _allBlockedClients;  // ✅ NYT
-
-                var selectedProdLines = lb_ProdLines.SelectedItems.Cast<string>().ToList();
-
-                if (selectedProdLines.Any())
-                {
-                    var hostIdsForProdLines = new HashSet<int>();
-
-                    foreach (var prodLine in selectedProdLines)
-                    {
-                        var hostIds = Database.ExecuteSafe(con =>
-                        {
-                            var list = new List<int>();
-                            const string query = @"
-                        SELECT TOP(50) al.HostID, COUNT(*) AS WorkCount
-                        FROM Log.ActivityLog al
-                        INNER JOIN [Order].MainData o ON al.OrderID = o.OrderID
-                        WHERE o.ProdLine = @prodline
-                            AND al.Date >= DATEADD(MONTH, -2, GETDATE())
-                            AND al.HostID IS NOT NULL
-                        GROUP BY al.HostID
-                        ORDER BY WorkCount DESC";
-
-                            using var cmd = new SqlCommand(query, con);
-                            cmd.Parameters.AddWithValue("@prodline", prodLine);
-                            using var reader = cmd.ExecuteReader();
-                            while (reader.Read())
-                                list.Add(reader.GetInt32(reader.GetOrdinal("HostID")));
-                            return list;
-                        });
-
-                        foreach (var h in hostIds)
-                            hostIdsForProdLines.Add(h);
-                    }
-
-                    // ✅ FILTRERA BÅDA
-                    filteredAllowed = filteredAllowed.Where(c => hostIdsForProdLines.Contains(c.HostID));
-                    filteredBlocked = filteredBlocked.Where(c => hostIdsForProdLines.Contains(c.HostID));
-                }
-
-                // ✅ TEXTFILTER ALLOWED
-                string textFilter = tb_FilterAllClients.Text.Trim();
-                if (!string.IsNullOrWhiteSpace(textFilter))
-                {
-                    filteredAllowed = filteredAllowed.Where(c =>
-                        c.HostName.Contains(textFilter, StringComparison.OrdinalIgnoreCase));
-                }
-
-                // ✅ TEXTFILTER BLOCKED
-                string blockedTextFilter = tb_FilterBlockedClients.Text.Trim();
-                if (!string.IsNullOrWhiteSpace(blockedTextFilter))
-                {
-                    filteredBlocked = filteredBlocked.Where(c =>
-                        c.HostName.Contains(blockedTextFilter, StringComparison.OrdinalIgnoreCase) ||
-                        c.HostID.ToString().Contains(blockedTextFilter));
-                }
-
-                // ✅ FYLL BÅDA LISTORNA
-                foreach (var client in filteredAllowed)
-                    lb_AllowedClients.Items.Add(client);
-
-                foreach (var client in filteredBlocked)
-                    lb_BlockedClients.Items.Add(client);
-
-                if (chk_CheckAllClients.Checked)
-                {
-                    lb_AllowedClients.SelectedIndices.Clear();
-                    for (int i = 0; i < lb_AllowedClients.Items.Count; i++)
-                        lb_AllowedClients.SelectedIndices.Add(i);
-                }
-            }
-            finally
-            {
-                _suppressSelectionChanged = false;
-                lb_AllowedClients.EndUpdate();
-                lb_BlockedClients.EndUpdate();  // ✅ NYT
-            }
+            RefreshClientListsFromSelections();
         }
 
         private void lb_Versions_SelectedIndexChanged(object sender, EventArgs e)
@@ -506,15 +630,11 @@ namespace DigitalProductionProgram.Log
             // ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â¥ 3. Uppdatera masterlistan fÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¶r blockerade klienter
             _allBlockedClients = blockedClients.ToList();
 
-            lb_BlockedClients.BeginUpdate();
-            lb_AllowedClients.BeginUpdate();
+            lv_BlockedClients.BeginUpdate();
+            lv_AllowedClients.BeginUpdate();
             try
             {
                 // ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â¥ 4. Fyll Blocked-listan frÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¥n masterlistan
-                lb_BlockedClients.Items.Clear();
-                lb_BlockedClients.Items.AddRange(_allBlockedClients.ToArray());
-
-                // ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â¥ 5. Ta bort blockerade frÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¥n _allClients
                 if (_allBlockedClients.Count > 0)
                 {
                     var blockedIds = new HashSet<int>(_allBlockedClients.Select(x => x.HostID));
@@ -525,102 +645,22 @@ namespace DigitalProductionProgram.Log
             }
             finally
             {
-                lb_AllowedClients.EndUpdate();
-                lb_BlockedClients.EndUpdate();
+                lv_AllowedClients.EndUpdate();
+                lv_BlockedClients.EndUpdate();
             }
 
-            // ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â¥ 6. Refreshar klientlistan med aktuella filter (tb_Filter)
-            RefreshClientList();
-
-            // ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â¥ 7. Refreshar Blocked-listan med aktuellt filter (tb_FilterBlockedClients)
-            RefreshBlockedClientList();
+            RefreshClientListsFromSelections();
         }
         private void lb_AllUsers_SelectedIndexChanged(object sender, EventArgs e)
         {
             _suppressSelectionChanged = true;
-            lb_AllowedClients.BeginUpdate();
-            lb_BlockedClients.BeginUpdate();  // ✅ NYT
             try
             {
-                lb_AllowedClients.Items.Clear();
-                lb_BlockedClients.Items.Clear();  // ✅ NYT
-
-                IEnumerable<HostItem> filteredAllowed = _allClients;  // ✅ ÄNDRAD
-                IEnumerable<HostItem> filteredBlocked = _allBlockedClients;  // ✅ NYT
-
-                var selectedUsers = lb_AllUsers.SelectedItems.Cast<KeyValuePair<int, string>>().ToList();
-
-                if (selectedUsers.Any())
-                {
-                    var hostIdsForUsers = new HashSet<int>();
-
-                    foreach (var user in selectedUsers)
-                    {
-                        var userHostIds = Database.ExecuteSafe(con =>
-                        {
-                            var list = new List<int>();
-                            const string query = @"
-                                SELECT TOP(50) HostID, COUNT(*) AS WorkCount
-                                FROM Log.ActivityLog
-                                WHERE UserID = @userid
-                                    AND Date >= DATEADD(YEAR, -1, GETDATE())
-                                    AND HostID IS NOT NULL
-                                GROUP BY HostID
-                                ORDER BY WorkCount DESC";
-
-                            using var cmd = new SqlCommand(query, con);
-                            cmd.Parameters.AddWithValue("@userid", user.Key);
-                            using var reader = cmd.ExecuteReader();
-                            while (reader.Read())
-                                list.Add(reader.GetInt32(reader.GetOrdinal("HostID")));
-                            return list;
-                        });
-
-                        foreach (var h in userHostIds)
-                            hostIdsForUsers.Add(h);
-                    }
-
-                    // ✅ FILTRERA BÅDA
-                    filteredAllowed = filteredAllowed.Where(c => hostIdsForUsers.Contains(c.HostID));
-                    filteredBlocked = filteredBlocked.Where(c => hostIdsForUsers.Contains(c.HostID));
-                }
-
-                // ✅ TEXTFILTER ALLOWED
-                string textFilter = tb_FilterAllClients.Text.Trim();
-                if (!string.IsNullOrWhiteSpace(textFilter))
-                {
-                    filteredAllowed = filteredAllowed.Where(c =>
-                        c.HostName.Contains(textFilter, StringComparison.OrdinalIgnoreCase));
-                }
-
-                // ✅ TEXTFILTER BLOCKED
-                string blockedTextFilter = tb_FilterBlockedClients.Text.Trim();
-                if (!string.IsNullOrWhiteSpace(blockedTextFilter))
-                {
-                    filteredBlocked = filteredBlocked.Where(c =>
-                        c.HostName.Contains(blockedTextFilter, StringComparison.OrdinalIgnoreCase) ||
-                        c.HostID.ToString().Contains(blockedTextFilter));
-                }
-
-                // ✅ FYLL BÅDA LISTORNA
-                foreach (var client in filteredAllowed)
-                    lb_AllowedClients.Items.Add(client);
-
-                foreach (var client in filteredBlocked)
-                    lb_BlockedClients.Items.Add(client);
-
-                if (chk_CheckAllClients.Checked)
-                {
-                    lb_AllowedClients.SelectedIndices.Clear();
-                    for (int i = 0; i < lb_AllowedClients.Items.Count; i++)
-                        lb_AllowedClients.SelectedIndices.Add(i);
-                }
+                RefreshClientListsFromSelections();
             }
             finally
             {
                 _suppressSelectionChanged = false;
-                lb_AllowedClients.EndUpdate();
-                lb_BlockedClients.EndUpdate();  // ✅ NYT
             }
         }
 
@@ -628,52 +668,52 @@ namespace DigitalProductionProgram.Log
         {
             _suppressSelectionChanged = true;
 
-            lb_AllowedClients.BeginUpdate();
+            lv_AllowedClients.BeginUpdate();
             try
             {
-                lb_AllowedClients.ClearSelected();
+                lv_AllowedClients.SelectedIndices.Clear();
 
                 if (chk_CheckAllClients.Checked)
                 {
-                    for (int i = 0; i < lb_AllowedClients.Items.Count; i++)
-                        lb_AllowedClients.SelectedIndices.Add(i);
+                    for (int i = 0; i < lv_AllowedClients.Items.Count; i++)
+                        lv_AllowedClients.SelectedIndices.Add(i);
                 }
             }
             finally
             {
-                lb_AllowedClients.EndUpdate();
+                lv_AllowedClients.EndUpdate();
                 _suppressSelectionChanged = false;
             }
 
             // ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â¥ TRIGGA EN ENDA uppdatering manuellt
-            lb_Clients_SelectedIndexChanged(lb_AllowedClients, EventArgs.Empty);
+            lb_Clients_SelectedIndexChanged(lv_AllowedClients, EventArgs.Empty);
         }
         private void chk_CheckAllBlockedClients_CheckedChanged(object sender, EventArgs e)
         {
-            lb_BlockedClients.BeginUpdate();
+            lv_BlockedClients.BeginUpdate();
             try
             {
-                lb_BlockedClients.ClearSelected();
+                lv_BlockedClients.SelectedIndices.Clear();
 
                 if (chk_CheckAllBlockedClients.Checked)
                 {
-                    for (int i = 0; i < lb_BlockedClients.Items.Count; i++)
-                        lb_BlockedClients.SelectedIndices.Add(i);
+                    for (int i = 0; i < lv_BlockedClients.Items.Count; i++)
+                        lv_BlockedClients.SelectedIndices.Add(i);
                 }
             }
             finally
             {
-                lb_BlockedClients.EndUpdate();
+                lv_BlockedClients.EndUpdate();
             }
         }
         private void btn_BlockClient_Click(object sender, EventArgs e)
         {
             var version = lb_Versions.SelectedItem?.ToString();
-            if (lb_AllowedClients.SelectedItems.Count == 0 || string.IsNullOrEmpty(version))
+            if (lv_AllowedClients.SelectedItems.Count == 0 || string.IsNullOrEmpty(version))
                 return;
 
             // HÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¤mta valda klienter
-            var toBlock = lb_AllowedClients.SelectedItems.Cast<HostItem>().ToList();
+            var toBlock = GetSelectedHosts(lv_AllowedClients);
             if (toBlock.Count == 0)
                 return;
 
@@ -721,32 +761,25 @@ namespace DigitalProductionProgram.Log
             }
 
             // --- 3. UI UPPDATERING ---
-            lb_BlockedClients.BeginUpdate();
-            lb_AllowedClients.BeginUpdate();
+            lv_BlockedClients.BeginUpdate();
+            lv_AllowedClients.BeginUpdate();
             try
             {
-                // fyll blocked-listan
-                lb_BlockedClients.Items.Clear();
-                lb_BlockedClients.Items.AddRange(_allBlockedClients.ToArray());
-
-                // fyll client-listan (filtrerat)
-                RefreshClientList();
+                RefreshClientListsFromSelections();
             }
             finally
             {
-                lb_AllowedClients.EndUpdate();
-                lb_BlockedClients.EndUpdate();
+                lv_AllowedClients.EndUpdate();
+                lv_BlockedClients.EndUpdate();
             }
 
-            // --- 4. Filtrera blocked-list efter ev. textfilter ---
-            RefreshBlockedClientList();
         }
         private void btn_UnBlockClient_Click(object sender, EventArgs e)
         {
-            if (lb_BlockedClients.SelectedItems.Count == 0)
+            if (lv_BlockedClients.SelectedItems.Count == 0)
                 return;
 
-            var selected = lb_BlockedClients.SelectedItems.Cast<HostItem>().ToList();
+            var selected = GetSelectedHosts(lv_BlockedClients);
             string version = lb_Versions.SelectedItem?.ToString() ?? "";
 
             // --- 1. DB DELETE ---
@@ -777,36 +810,32 @@ namespace DigitalProductionProgram.Log
             }
 
             // --- 3. UI UPDATE ---
-            lb_BlockedClients.BeginUpdate();
-            lb_AllowedClients.BeginUpdate();
+            lv_BlockedClients.BeginUpdate();
+            lv_AllowedClients.BeginUpdate();
             try
             {
-                // fyll blocked-listan
-                lb_BlockedClients.Items.Clear();
-                lb_BlockedClients.Items.AddRange(_allBlockedClients.ToArray());
-
-                // fyll client list (med filter)
-                RefreshClientList();
+                RefreshClientListsFromSelections();
             }
             finally
             {
-                lb_BlockedClients.EndUpdate();
-                lb_AllowedClients.EndUpdate();
+                lv_BlockedClients.EndUpdate();
+                lv_AllowedClients.EndUpdate();
             }
 
-            // --- 4. Sökfilter på blocked-list ---
-            RefreshBlockedClientList();
             tb_FilterBlockedClients.Text = string.Empty;
+            RefreshClientListsFromSelections();
         }
-
-
+        private void tb_FilterUsersProdLines_TextChanged(object sender, EventArgs e)
+        {
+            RefreshUsersAndProdLines();
+        }
         private void tb_Filter_TextChanged(object sender, EventArgs e)
         {
-            RefreshClientList();
+            RefreshClientListsFromSelections();
         }
         private void tb_FilterBlockedClients_TextChanged(object sender, EventArgs e)
         {
-            RefreshBlockedClientList();
+            RefreshClientListsFromSelections();
         }
 
         private List<KeyValuePair<int, string>> GetUsersForHost(int hostId)
@@ -910,10 +939,12 @@ namespace DigitalProductionProgram.Log
             {
                 var result = new List<HostItem>();
                 const string query = @"
-                    SELECT g.HostID, g.HostName
+                    SELECT g.HostID, g.HostName, MAX(al.Date) AS LastActivity
                     FROM [Settings].General g
                     JOIN Log.ClientPolicy cp ON cp.HostID = g.HostID
+                    LEFT JOIN Log.ActivityLog al ON al.HostID = g.HostID
                     WHERE cp.Version = @version
+                    GROUP BY g.HostID, g.HostName
                     ORDER BY g.HostName";
 
                 using var cmd = new SqlCommand(query, con);
@@ -923,24 +954,82 @@ namespace DigitalProductionProgram.Log
                 {
                     result.Add(new HostItem(
                         reader.GetInt32(reader.GetOrdinal("HostID")),
-                        reader.GetString(reader.GetOrdinal("HostName"))
+                        reader.GetString(reader.GetOrdinal("HostName")),
+                        reader.IsDBNull(reader.GetOrdinal("LastActivity")) ? null : reader.GetDateTime(reader.GetOrdinal("LastActivity"))
                     ));
                 }
                 return result;
             });
         }
-        public class HostItem(int hostId, string hostName)
+        public class HostItem(int hostId, string hostName, DateTime? lastActivity = null)
         {
             public int HostID { get; } = hostId;
             public string HostName { get; } = hostName;
-
+            public DateTime? LastActivity { get; } = lastActivity;
             public override string ToString()
             {
                 return $"{HostName} (ID: {HostID})";
             }
-
         }
-
+        private sealed class UserActivityItem(int userId, string name, DateTime lastActivity)
+        {
+            public int UserID { get; } = userId;
+            public string Name { get; } = name;
+            public DateTime LastActivity { get; } = lastActivity;
+        }
+        private sealed class ListViewItemComparer(int column, System.Windows.Forms.SortOrder sortOrder) : System.Collections.IComparer
+        {
+            public int Compare(object? x, object? y)
+            {
+                if (x is not ListViewItem leftItem || y is not ListViewItem rightItem)
+                    return 0;
+                int result = CompareValues(GetSortValue(leftItem, column), GetSortValue(rightItem, column));
+                if (result == 0)
+                    result = StringComparer.CurrentCultureIgnoreCase.Compare(leftItem.Text, rightItem.Text);
+                return sortOrder == System.Windows.Forms.SortOrder.Descending ? -result : result;
+            }
+            private static object GetSortValue(ListViewItem item, int columnIndex)
+            {
+                if (item.Tag is HostItem host)
+                {
+                    return columnIndex switch
+                    {
+                        0 => host.HostName,
+                        1 => host.LastActivity,
+                        _ => GetSubItemText(item, columnIndex)
+                    };
+                }
+                if (item.Tag is UserActivityItem user)
+                {
+                    return columnIndex switch
+                    {
+                        0 => user.UserID,
+                        1 => user.Name,
+                        2 => user.LastActivity,
+                        _ => GetSubItemText(item, columnIndex)
+                    };
+                }
+                return GetSubItemText(item, columnIndex);
+            }
+            private static string GetSubItemText(ListViewItem item, int columnIndex)
+            {
+                return item.SubItems.Count > columnIndex ? item.SubItems[columnIndex].Text : item.Text;
+            }
+            private static int CompareValues(object leftValue, object rightValue)
+            {
+                if (leftValue == null && rightValue == null)
+                    return 0;
+                if (leftValue == null)
+                    return 1;
+                if (rightValue == null)
+                    return -1;
+                if (leftValue is int leftInt && rightValue is int rightInt)
+                    return leftInt.CompareTo(rightInt);
+                if (leftValue is DateTime leftDate && rightValue is DateTime rightDate)
+                    return leftDate.CompareTo(rightDate);
+                return StringComparer.CurrentCultureIgnoreCase.Compare(leftValue.ToString(), rightValue.ToString());
+            }
+        }
         private void label_AllUsers_Click(object sender, EventArgs e)
         {
             lb_AllUsers.ClearSelected();

@@ -19,6 +19,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.Windows.Forms;
+using DigitalProductionProgram.EasterEggs.The_Cipher_Wheel;
 using static System.Int32;
 
 namespace DigitalProductionProgram.MainWindow
@@ -351,7 +352,7 @@ namespace DigitalProductionProgram.MainWindow
         private void label_PartNumber_Click(object sender, EventArgs e)
         {
             if (EasterEgg_Code.IsGameStarted)
-                InfoText.Show(EasterEgg_Code.Level_1.Riddle_1, CustomColors.InfoText_Color.Info, "The Cipher Wheel", this);
+            CipherWheelLevels.Level_1.ShowRiddle(this);
         }
 
         

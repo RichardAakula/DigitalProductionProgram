@@ -78,6 +78,7 @@ namespace DigitalProductionProgram.MainWindow
             Menu_Settings_CalculateMaterial = new ToolStripMenuItem();
             Menu_Settings_ChangeColorHS_Machine = new ToolStripMenuItem();
             Menu_Settings_ToolsCalculator = new ToolStripMenuItem();
+            Menu_Settings_AnalyseParameterData = new ToolStripMenuItem();
             Menu_Themes = new ToolStripMenuItem();
             Menu_Theme_Beach = new ToolStripMenuItem();
             Menu_Theme_Forest = new ToolStripMenuItem();
@@ -105,6 +106,7 @@ namespace DigitalProductionProgram.MainWindow
             Menu_Help_InstructionVideos_RecentlyOpenedOrders = new ToolStripMenuItem();
             Menu_Help_InstructionVideos_ManageAuthorities = new ToolStripMenuItem();
             Menu_Help_InstructionVideos_SaveProcessCard = new ToolStripMenuItem();
+            Menu_Help_CipherWheel = new ToolStripMenuItem();
             Menu_Developer = new ToolStripMenuItem();
             Menu_Developer_GetOrderInfo = new ToolStripMenuItem();
             Menu_Developer_SendMailToAllUsers = new ToolStripMenuItem();
@@ -138,7 +140,6 @@ namespace DigitalProductionProgram.MainWindow
             Menu_Equipment = new ToolStripMenuItem();
             Menu_Equipment_UseFilter = new ToolStripMenuItem();
             Menu_Equipment_UseSilpaket = new ToolStripMenuItem();
-            Menu_Settings_AnalyseParameterData = new ToolStripMenuItem();
             menuStrip.SuspendLayout();
             SuspendLayout();
             // 
@@ -492,6 +493,13 @@ namespace DigitalProductionProgram.MainWindow
             Menu_Settings_ToolsCalculator.Text = "Verktygsberäkning";
             Menu_Settings_ToolsCalculator.Click += Menu_Settings_ToolsCalculator_Click;
             // 
+            // Menu_Settings_AnalyseParameterData
+            // 
+            Menu_Settings_AnalyseParameterData.Name = "Menu_Settings_AnalyseParameterData";
+            Menu_Settings_AnalyseParameterData.Size = new Size(236, 22);
+            Menu_Settings_AnalyseParameterData.Text = "Analysera Parameter Data";
+            Menu_Settings_AnalyseParameterData.Click += Menu_Settings_AnalyseParameterData_Click;
+            // 
             // Menu_Themes
             // 
             Menu_Themes.DropDownItems.AddRange(new ToolStripItem[] { Menu_Theme_Beach, Menu_Theme_Forest, Menu_Theme_Sky, Menu_Theme_Sun, Menu_Theme_Water, Menu_Theme_Black, Menu_Theme_Winter, Menu_Theme_Light, Menu_Theme_Pink, Menu_Theme_Cars, Menu_Theme_Animals, Menu_Theme_Music, Menu_Theme_Houses, Menu_Theme_Nature, Menu_Theme_Dark, Menu_Theme_Discography, Menu_Theme_Optinova });
@@ -638,7 +646,7 @@ namespace DigitalProductionProgram.MainWindow
             // 
             // Menu_Help
             // 
-            Menu_Help.DropDownItems.AddRange(new ToolStripItem[] { Menu_Help_ChangeLog, Menu_Help_ReportBug, Menu_Help_InstructionVideos });
+            Menu_Help.DropDownItems.AddRange(new ToolStripItem[] { Menu_Help_ChangeLog, Menu_Help_ReportBug, Menu_Help_InstructionVideos, Menu_Help_CipherWheel });
             Menu_Help.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
             Menu_Help.ForeColor = Color.DeepSkyBlue;
             Menu_Help.Name = "Menu_Help";
@@ -701,6 +709,14 @@ namespace DigitalProductionProgram.MainWindow
             Menu_Help_InstructionVideos_SaveProcessCard.Size = new Size(216, 22);
             Menu_Help_InstructionVideos_SaveProcessCard.Text = "Spara Nytt Processkort";
             Menu_Help_InstructionVideos_SaveProcessCard.Click += Menu_Help_InstructionVideos_OpenVideo_Click;
+            // 
+            // Menu_Help_CipherWheel
+            // 
+            Menu_Help_CipherWheel.Name = "Menu_Help_CipherWheel";
+            Menu_Help_CipherWheel.Size = new Size(201, 22);
+            Menu_Help_CipherWheel.Text = "The Cipher Wheel";
+            Menu_Help_CipherWheel.Visible = false;
+            Menu_Help_CipherWheel.Click += Menu_Help_CipherWheel_Click;
             // 
             // Menu_Developer
             // 
@@ -874,6 +890,11 @@ namespace DigitalProductionProgram.MainWindow
             menu_Developer_AutotestJira.Text = "Testa Autotest funktionen till Jira";
             menu_Developer_AutotestJira.Click += menu_Developer_AutotestJira_Click;
             // 
+            // Menu_Developer_TestMonitorAPI
+            // 
+            Menu_Developer_TestMonitorAPI.Name = "Menu_Developer_TestMonitorAPI";
+            Menu_Developer_TestMonitorAPI.Size = new Size(271, 22);
+            // 
             // tvåToolStripMenuItem
             // 
             tvåToolStripMenuItem.Name = "tvåToolStripMenuItem";
@@ -944,13 +965,6 @@ namespace DigitalProductionProgram.MainWindow
             Menu_Equipment_UseSilpaket.Size = new Size(181, 22);
             Menu_Equipment_UseSilpaket.Text = "Använd Silpaket";
             Menu_Equipment_UseSilpaket.Click += Menu_Protocol_UseSilpaket_Click;
-            // 
-            // Menu_Settings_AnalyseParameterData
-            // 
-            Menu_Settings_AnalyseParameterData.Name = "Menu_Settings_AnalyseParameterData";
-            Menu_Settings_AnalyseParameterData.Size = new Size(236, 22);
-            Menu_Settings_AnalyseParameterData.Text = "Analysera Parameter Data";
-            Menu_Settings_AnalyseParameterData.Click += Menu_Settings_AnalyseParameterData_Click;
             // 
             // Main_Menu
             // 
@@ -1078,5 +1092,6 @@ namespace DigitalProductionProgram.MainWindow
         private ToolStripMenuItem fixaChangeLogListaToolStripMenuItem;
         private ToolStripMenuItem Menu_Order_OrderLog;
         private ToolStripMenuItem Menu_Settings_AnalyseParameterData;
+        private ToolStripMenuItem Menu_Help_CipherWheel;
     }
 }

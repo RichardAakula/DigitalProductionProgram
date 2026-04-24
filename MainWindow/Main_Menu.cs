@@ -20,6 +20,7 @@ using System.Data;
 using System.Diagnostics;
 using System.Text;
 using System.Text.RegularExpressions;
+using DigitalProductionProgram.EasterEggs.The_Cipher_Wheel;
 using DigitalProductionProgram.Statistics;
 using Activity = DigitalProductionProgram.Log.Activity;
 using Color = System.Drawing.Color;
@@ -30,10 +31,10 @@ namespace DigitalProductionProgram.MainWindow
     public partial class Main_Menu : UserControl
     {
 
-        private const string RtfColor_Date = @"\red255\green255\blue255;";   // Vit
-        private const string RtfColor_Header = @"\red100\green200\blue255;";   // Ljusblå
-        private const string RtfColor_Name = @"\red150\green255\blue150;";   // Ljusgrön
-        private const string RtfColor_Message = @"\red200\green200\blue200;";  // Grå
+        private const string RtfColor_Date = @"\red255\green255\blue255;";      // Vit
+        private const string RtfColor_Header = @"\red100\green200\blue255;";    // Ljusblå
+        private const string RtfColor_Name = @"\red150\green255\blue150;";      // Ljusgrön
+        private const string RtfColor_Message = @"\red187\green215\blue228;";    // Blue_Font
 
 
         public Main_Form mainForm;
@@ -57,6 +58,7 @@ namespace DigitalProductionProgram.MainWindow
             Menu_User_CheckMyAnalysis.Visible = CheckAuthority.IsFactoryAuthorized(CheckAuthority.TemplateFactory.MyAnalysis);
             Menu_Protocol_ManageTemplates.Visible = CheckAuthority.IsRoleAuthorized(CheckAuthority.TemplateAuthorities.ManageTemplates, false);
             Menu_Arkiv_ManageDatabase.Visible = CheckAuthority.IsRoleAuthorized(CheckAuthority.TemplateAuthorities.ChangeDatabaseSettings, false);
+            UpdateCipherWheelMenuVisibility();
         }
         public void Lock_Menu()
         {
@@ -66,7 +68,14 @@ namespace DigitalProductionProgram.MainWindow
             // Menu_Arkiv_ManageDatabase.Enabled = false;
             Menu_Order_DeleteOrder.Enabled = false;
             Menu_Protocol_Unlock_ValidatedProcesscard.Enabled = false;
+            UpdateCipherWheelMenuVisibility();
         }
+        public void UpdateCipherWheelMenuVisibility()
+        {
+            Menu_Help_CipherWheel.Visible = !string.IsNullOrWhiteSpace(Person.Name) && EasterEgg_Code.HasBeenDiscoveredInDatabase();
+        }
+        
+       
         public void Unlock_Korprotokoll_Menu()
         {
             if (CheckAuthority.IsWorkoperationAuthorized(CheckAuthority.TemplateWorkoperation.UsingCandleFilter_Screenpackage))
@@ -255,14 +264,10 @@ namespace DigitalProductionProgram.MainWindow
                     QC_Feedback.IncreaseRemainingViewsForOperation();
 
                 mainForm.Clear_Mainform();
-
+                mainForm.RefreshOrderListsAfterDeleteOrder();
             }
             else
                 InfoText.Show(Properties.Resources.deleteOrder_Info_1, CustomColors.InfoText_Color.Bad, "Warning", this);
-
-            _ = Main_FilterQuickOpen.Load_ListAsync(mainForm.dgv_QuickOpen);
-            mainForm.cf_PriorityPlanning.Load_PriorityPlanning();
-
         }
         private void Menu_Order_ReportToJira_Click(object sender, EventArgs e)
         {
@@ -563,6 +568,7 @@ namespace DigitalProductionProgram.MainWindow
                             'SaveExtraComment',
                             'BtnFetchData_Click',
                             'ActiveModule_OnParameterSelected', 
+                            'btn_TestCode_Click'
                         )
                         AND Info NOT LIKE '%Felsökning%'
                         AND Info NOT LIKE '%Error%'
@@ -832,6 +838,14 @@ namespace DigitalProductionProgram.MainWindow
                     FileName = videoUrl, // or use the local file path if applicable
                     UseShellExecute = true
                 });
+        }
+        private void Menu_Help_CipherWheel_Click(object? sender, EventArgs e)
+        {
+            using var easterEgg = new EasterEgg_Code();
+            if (mainForm != null)
+                easterEgg.ShowDialog(mainForm);
+            else
+                easterEgg.ShowDialog();
         }
 
         //----------UVECKLING----------
@@ -1374,8 +1388,13 @@ Protocol.Revision       = " + Templates_Protocol.MainTemplate.Revision + @"\line
 
         private void påskäggToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            using var easterEgg = new EasterEgg_Code();
-            easterEgg.ShowDialog();
+            if (!EasterEgg_Code.EnsureStarted(mainForm))
+            {
+                UpdateCipherWheelMenuVisibility();
+                return;
+            }
+            UpdateCipherWheelMenuVisibility();
+            Menu_Help_CipherWheel_Click(sender, e);
         }
 
         private void fixaChangeLogListaToolStripMenuItem_Click(object sender, EventArgs e)

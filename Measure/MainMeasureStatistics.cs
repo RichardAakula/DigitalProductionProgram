@@ -65,6 +65,15 @@ namespace DigitalProductionProgram.Measure
         public MainMeasureStatistics()
         {
             InitializeComponent();
+            if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime)
+                return;
+            SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer, true);
+            UpdateStyles();
+            DrawingControl.EnableDoubleBuffer(tlp_Main);
+            DrawingControl.EnableDoubleBuffer(flp_Codenames);
+            DrawingControl.EnableDoubleBuffer(flp_Average);
+            DrawingControl.EnableDoubleBuffer(flp_Min);
+            DrawingControl.EnableDoubleBuffer(flp_Max);
         }
         public static void Close_All_MeasureProtocols()
         {

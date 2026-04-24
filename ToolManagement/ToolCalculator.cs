@@ -23,9 +23,13 @@ namespace DigitalProductionProgram.ToolManagement
 {
     public partial class ToolCalculator : Form
     {
-        private readonly List<string?> List_DieType;
-        private readonly List<string?> List_PinType;
+        private readonly AutoCompleteStringCollection _orderNumberCollection;
+        private readonly List<string?> List_DieType = new();
+        private readonly List<string?> List_PinType = new();
         private bool IsOpening = true;
+        private bool _isInitialized;
+        private bool _suppressToolTypeChanged;
+        private bool _suppressRecalculation;
         private bool IsToManyCalculations(int totalSteps, bool isOkToOverrideCalculation)
         {
             if (totalSteps > 10000 && !isOkToOverrideCalculation)
@@ -39,28 +43,65 @@ namespace DigitalProductionProgram.ToolManagement
 
             return false;
         }
-
-
-
-
         public ToolCalculator(AutoCompleteStringCollection collection)
         {
             Activity.Start();
+            _orderNumberCollection = collection;
             InitializeComponent();
             tb_OrderNr.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
             tb_OrderNr.AutoCompleteSource = AutoCompleteSource.CustomSource;
-            tb_OrderNr.AutoCompleteCustomSource = collection;
-            Fill_MainOrderInformation();
-            Load_RegularSettings();
-            List_DieType = Equipment.Equipment.List_Tool_Type("Munstycke");
-            List_PinType = Equipment.Equipment.List_Tool_Type("Kanyl");
-            IsOpening = false;
+            tb_OrderNr.AutoCompleteCustomSource = _orderNumberCollection;
+            Shown += ToolCalculator_Shown;
+        }
+        private async void ToolCalculator_Shown(object? sender, EventArgs e)
+        {
+            if (_isInitialized)
+                return;
+            await InitializeFormAsync();
+        }
+        private async Task InitializeFormAsync()
+        {
+            try
+            {
+                Cursor = Cursors.WaitCursor;
+                btn_StartCalculation.Enabled = false;
+                Fill_MainOrderInformation();
+                var regularSettingsTask = Task.Run(LoadRegularSettingsData);
+                var dieTypesTask = Task.Run(() => Equipment.Equipment.List_Tool_Type("Munstycke"));
+                var pinTypesTask = Task.Run(() => Equipment.Equipment.List_Tool_Type("Kanyl"));
+                var regularDieTypeTask = Task.Run(() => Tools.RegularUsedToolType("Munstycke"));
+                var regularPinTypeTask = Task.Run(() => Tools.RegularUsedToolType("Kanyler"));
+                await Task.WhenAll(regularSettingsTask, dieTypesTask, pinTypesTask, regularDieTypeTask, regularPinTypeTask);
+                ApplyRegularSettings(regularSettingsTask.Result);
+                List_DieType.Clear();
+                List_DieType.AddRange(dieTypesTask.Result);
+                List_PinType.Clear();
+                List_PinType.AddRange(pinTypesTask.Result);
+                _suppressToolTypeChanged = true;
+                tb_DieType.Text = regularDieTypeTask.Result;
+                tb_PinType.Text = regularPinTypeTask.Result;
+                _suppressToolTypeChanged = false;
+                await Task.WhenAll(RefreshDieToolsAsync(), RefreshPinToolsAsync());
+                IsOpening = false;
+                _isInitialized = true;
+                await CalculateTools(true, false);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Kunde inte ladda ToolCalculator.\n\n{ex.Message}", "Fel", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                if (!IsDisposed)
+                {
+                    btn_StartCalculation.Enabled = true;
+                    Cursor = Cursors.Default;
+                }
+            }
         }
         private void ToolCalculator_Load(object sender, EventArgs e)
         {
-            CalculateTools(true, false);
         }
-
         private void Fill_MainOrderInformation()
         {
             if (string.IsNullOrEmpty(Person.Name))
@@ -75,13 +116,8 @@ namespace DigitalProductionProgram.ToolManagement
             tb_OD.Text = $"{MeasurePoints.Value(MeasurePoints.CodeTextMonitor.OD, "NOM"):F3}";
             tb_Wall.Text = $"{MeasurePoints.Value(MeasurePoints.CodeTextMonitor.Wall, "NOM"):F3}";
             tb_Length.Text = $"{MeasurePoints.Value(MeasurePoints.CodeTextMonitor.Length, "NOM"):F3}";
-
-            tb_DieType.Text = Tools.RegularUsedToolType("Munstycke");
-            tb_PinType.Text = Tools.RegularUsedToolType("Kanyler");
-           
-           
         }
-        private void Load_RegularSettings()
+        private Dictionary<string, decimal> LoadRegularSettingsData()
         {
             using var con = new SqlConnection(Database.cs_ToolRegister);
             const string query = @"
@@ -121,7 +157,10 @@ namespace DigitalProductionProgram.ToolManagement
                 decimal value = reader.IsDBNull(1) ? 0 : reader.GetDecimal(1);
                 values[columnName] = value;
             }
-
+            return values;
+        }
+        private void ApplyRegularSettings(Dictionary<string, decimal> values)
+        {
             num_DDR_min.Value = values.TryGetValue("Most_Common_DDR_min", out var value1) ? value1 : 1;
             num_DDR_max.Value = values.TryGetValue("Most_Common_DDR_max", out var value2) ? value2 : 10;
             num_Balance_min.Value = values.TryGetValue("Most_Common_Balance_min", out var value3) ? value3 : 0.950m;
@@ -141,7 +180,6 @@ namespace DigitalProductionProgram.ToolManagement
         private void OrderNr_Leave(object sender, EventArgs e)
         {
             Monitor.Monitor.Load_Order(tb_OrderNr.Text);
-           
         }
         private void Operation_MouseClick(object sender, MouseEventArgs e)
         {
@@ -150,12 +188,10 @@ namespace DigitalProductionProgram.ToolManagement
             IEnumerable<string?> opsStrings = ops.Select(op => $"{op.Operation} - {op.Description}");
             var chooseOperation = new Choose_Item(opsStrings, ctrls: controls);
             chooseOperation.ShowDialog();
-
         }
-
-        private void Calculate_Click(object sender, EventArgs e)
+        private async void Calculate_Click(object sender, EventArgs e)
         {
-            CalculateTools(true, true);
+            await CalculateTools(true, true);
         }
         private void Abort_Click(object sender, EventArgs e)
         {
@@ -172,131 +208,81 @@ namespace DigitalProductionProgram.ToolManagement
             var chooseDieType = new Choose_Item(List_PinType, ctrls: [tb_PinType]);
             chooseDieType.ShowDialog();
         }
-        private void ID_OD_TextChanged(object sender, EventArgs e)
+        private async void ID_OD_TextChanged(object sender, EventArgs e)
         {
+            if (_suppressRecalculation)
+                return;
             var ID = Calculation.ParseValue(tb_ID.Text);
             var OD = Calculation.ParseValue(tb_OD.Text);
 
             var Wall = (OD - ID) / 2;
             tb_Wall.Text = $"{Wall:F3}";
-            CalculateTools(false, false);
+            await CalculateTools(false, false);
         }
-        private void Calculate_ControlChanged(object sender, EventArgs e)
+        private async void Calculate_ControlChanged(object sender, EventArgs e)
         {
-            CalculateTools(false, true);
+            if (_suppressRecalculation)
+                return;
+            await CalculateTools(false, true);
         }
-        private void DieType_TextChanged(object sender, EventArgs e)
+        private async void DieType_TextChanged(object sender, EventArgs e)
         {
-            var tools = new List<Die>();
-
-            using (var con = new SqlConnection(Database.cs_ToolRegister))
-            {
-                var query = "SELECT DISTINCT Dimension_nom, LandLängd_nom FROM Register_Verktyg WHERE Typ = @typ AND Sort = 'Munstycke' ";
-
-                if (chb_DöljKasseradeVerktyg.Checked)
-                    query += " AND (Kasserad IS NULL OR Kasserad = '') ";
-
-                query += " ORDER BY Dimension_nom";
-
-                con.Open();
-                using (var cmd = new SqlCommand(query, con))
-                {
-                    cmd.Parameters.AddWithValue("@typ", tb_DieType.Text);
-
-                    using (var reader = cmd.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            var dimension = reader["Dimension_nom"].ToString();
-                            var landLength = reader["LandLängd_nom"].ToString();
-                            tools.Add(new Die(dimension, landLength));
-                        }
-                    }
-                }
-            }
-
-            cb_Die.DataSource = null;  //Reset before binding
-            cb_Die.DataSource = tools;
-            cb_Die.DisplayMember = "Dimension";  //Matches property in `Die`
-            cb_Die.ValueMember = "LandLength";   //Matches property in `Die`
-            lbl_AntalMunstycken.Text = cb_Die.Items.Count.ToString();
-            cb_Die.SelectedIndex = -1;
+            if (_suppressToolTypeChanged)
+                return;
+            await RefreshDieToolsAsync();
             if(IsOpening == false)
-                Tools.AddRegularUsedToolTypeForUser("Munstycke");
-
-        }
-        private void PinType_TextChanged(object sender, EventArgs e)
-        {
-            var tools = new List<Pin>();
-            using (var con = new SqlConnection(Database.cs_ToolRegister))
             {
-                var query = "SELECT DISTINCT Dimension_nom, LandLängd_nom FROM Register_Verktyg WHERE Typ = @typ AND Sort = 'Kanyl' ";
-
-                if (chb_DöljKasseradeVerktyg.Checked)
-                    query += " AND (Kasserad IS NULL OR Kasserad = '') ";
-
-                query += " ORDER BY Dimension_nom";
-
-                con.Open();
-                using (var cmd = new SqlCommand(query, con))
-                {
-                    cmd.Parameters.AddWithValue("@typ", tb_PinType.Text);
-
-                    using (var reader = cmd.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            var dimension = reader["Dimension_nom"].ToString();
-                            var landLength = reader["LandLängd_nom"].ToString();
-                            tools.Add(new Pin(dimension, landLength));
-                        }
-                    }
-                }
+                Tools.AddRegularUsedToolTypeForUser("Munstycke");
+                await CalculateTools(false, true);
             }
-
-            cb_Pin.DataSource = null;  //Reset before binding
-            cb_Pin.DataSource = tools;
-            cb_Pin.DisplayMember = "Dimension";  //Matches property in `Die`
-            cb_Pin.ValueMember = "LandLength";   //Matches property in `Die`
-            lbl_AntalKanyl.Text = cb_Pin.Items.Count.ToString();
-            cb_Pin.SelectedIndex = -1;
-            if (IsOpening == false)
-                Tools.AddRegularUsedToolTypeForUser("Kanyl");
         }
-
+        private async void PinType_TextChanged(object sender, EventArgs e)
+        {
+            if (_suppressToolTypeChanged)
+                return;
+            await RefreshPinToolsAsync();
+            if (IsOpening == false)
+            {
+                Tools.AddRegularUsedToolTypeForUser("Kanyl");
+                await CalculateTools(false, true);
+            }
+        }
         private CancellationTokenSource _cancellationTokenSource = null!;
-        private async void CalculateTools(bool isOkToOverrideCalculation, bool isOkStoreCalculation)
+        private async Task CalculateTools(bool isOkToOverrideCalculation, bool isOkStoreCalculation)
         {
             if (IsOpening)
                 return;
-            this.Cursor = Cursors.WaitCursor;
-
-            // Disable the button and show the progress bar on the main thread
-            btn_StartCalculation.Invoke((MethodInvoker)(() => btn_StartCalculation.Enabled = false));
-            //pbar_Calculate.Invoke((MethodInvoker)(() => pbar_Calculate.Visible = true));
-           // pbar_Calculate
-
-            dgv_Combinations.Invoke((MethodInvoker)(() => dgv_Combinations.Rows.Clear()));
-
-            _cancellationTokenSource = new CancellationTokenSource();
-            var cancellationToken = _cancellationTokenSource.Token;
-
-            // Run the calculation in a background task with cancellation support
-            await Task.Run(() => CalculateWithTools(!rb_Register.Checked, isOkToOverrideCalculation, cancellationToken), cancellationToken);
-
-            // Update UI elements after the calculation is done (on the main thread)
-            lbl_TotalCombinations.Invoke((MethodInvoker)(() => lbl_TotalCombinations.Text = $"{dgv_Combinations.Rows.Count} verktygskombinationer."));
-
-            // Update DataGridView color on the main thread
-            if (dgv_Combinations.InvokeRequired)
-                dgv_Combinations.Invoke((MethodInvoker)SetColor_Combinations);
-            else
-                SetColor_Combinations();
-
-            btn_StartCalculation.Invoke((MethodInvoker)(() => btn_StartCalculation.Enabled = true));
-            if (isOkStoreCalculation)
-                SaveCalculation();
-            this.Cursor = Cursors.Default;
+            try
+            {
+                Cursor = Cursors.WaitCursor;
+                btn_StartCalculation.Invoke((MethodInvoker)(() => btn_StartCalculation.Enabled = false));
+                dgv_Combinations.Invoke((MethodInvoker)(() => dgv_Combinations.Rows.Clear()));
+                _cancellationTokenSource?.Cancel();
+                _cancellationTokenSource?.Dispose();
+                _cancellationTokenSource = new CancellationTokenSource();
+                var cancellationToken = _cancellationTokenSource.Token;
+                await CalculateWithToolsAsync(!rb_Register.Checked, isOkToOverrideCalculation, cancellationToken);
+                if (cancellationToken.IsCancellationRequested)
+                    return;
+                lbl_TotalCombinations.Invoke((MethodInvoker)(() => lbl_TotalCombinations.Text = $"{dgv_Combinations.Rows.Count} verktygskombinationer."));
+                if (dgv_Combinations.InvokeRequired)
+                    dgv_Combinations.Invoke((MethodInvoker)SetColor_Combinations);
+                else
+                    SetColor_Combinations();
+                if (isOkStoreCalculation)
+                    SaveCalculation();
+            }
+            catch (OperationCanceledException)
+            {
+            }
+            finally
+            {
+                if (!IsDisposed)
+                {
+                    btn_StartCalculation.Invoke((MethodInvoker)(() => btn_StartCalculation.Enabled = true));
+                    Cursor = Cursors.Default;
+                }
+            }
         }
         private void SaveCalculation()
         {
@@ -325,27 +311,21 @@ namespace DigitalProductionProgram.ToolManagement
             cmd.Parameters.AddWithValue("@createddate", DateTime.Now);
             cmd.ExecuteNonQuery();
         }
-        private async void CalculateWithTools(bool useTheoretical, bool isOkToOverrideCalculation, CancellationToken cancellationToken)
+        private async Task CalculateWithToolsAsync(bool useTheoretical, bool isOkToOverrideCalculation, CancellationToken cancellationToken)
         {
             InitializeCalculation();
-
             var calc = new Calculation(tb_ID.Text, tb_OD.Text, tb_Wall.Text,
                 num_DDR_min.Text, num_DDR_max.Text,
                 num_Balance_min.Text, num_Balance_max.Text,
                 tb_PullerSpeed.Text, tb_Density.Text);
-
             var (dieValues, pinValues) = GetDieAndPinValues(useTheoretical);
-
             var totalSteps = dieValues.Count * pinValues.Count;
             pbar_Calculate.Invoke((MethodInvoker)(() => pbar_Calculate.Maximum = totalSteps));
-
             lbl_TotalCalculations.Invoke((MethodInvoker)(() => lbl_TotalCalculations.Text = $"{totalSteps}"));
             if (IsToManyCalculations(totalSteps, isOkToOverrideCalculation)) 
                 return;
             pbar_Calculate.Invoke((MethodInvoker)(() => pbar_Calculate.Visible = true));
-
             await PerformCalculationAsync(calc, dieValues, pinValues, useTheoretical, cancellationToken);
-
             FinalizeCalculation();
         }
         private void InitializeCalculation()
@@ -384,7 +364,7 @@ namespace DigitalProductionProgram.ToolManagement
             }
             else
             {
-                var dieItems = isDieSelected ? new List<object> { cb_Die.SelectedItem } : cb_Die.Items.Cast<object>().ToList();
+                    var dieItems = isDieSelected ? new List<object> { cb_Die.SelectedItem } : cb_Die.Items.Cast<object>().ToList();
                 var pinItems = isPinSelected ? new List<object> { cb_Pin.SelectedItem } : cb_Pin.Items.Cast<object>().ToList();
 
                 dieValues = dieItems.Select(d => ((d as Die)?.Dimension ?? 0.00, (d as Die)?.LandLength ?? 0.0)).ToList();
@@ -393,52 +373,30 @@ namespace DigitalProductionProgram.ToolManagement
 
             return (dieValues, pinValues);
         }
-
-        
-
         private async Task PerformCalculationAsync(Calculation calc, List<(double Dimension, double LandLength)> dieValues, List<(double Dimension, double LandLength)> pinValues, bool useTheoretical, CancellationToken cancellationToken)
         {
             if (dgv_Combinations.IsDisposed)
                 return;
             int progress = 0;
-            var newRows = new List<DataGridViewRow>();
-
-            await Task.Run(async () =>
+            var newRows = new List<object[]>();
+            await Task.Run(() =>
             {
+                var isCancelled = false;
                 foreach (var (pin_Dimension, pin_LL) in pinValues)
                 {
                     foreach (var (die_Dimension, die_LL) in dieValues)
                     {
                         if (cancellationToken.IsCancellationRequested)
+                        {
+                            isCancelled = true;
                             break;
-
-                        bool exists = false;
-
-                        if (dgv_Combinations.IsHandleCreated)
-                        {
-                            dgv_Combinations.Invoke((MethodInvoker)(() =>
-                            {
-                                exists = dgv_Combinations.Rows.Cast<DataGridViewRow>().Any(row =>
-                                    row.Cells[0].Value != null && row.Cells[2].Value != null &&
-                                    double.TryParse(row.Cells[0].Value.ToString(), out var existingDie) &&
-                                    double.TryParse(row.Cells[2].Value.ToString(), out var existingPin) &&
-                                    existingDie == die_Dimension && existingPin == pin_Dimension);
-                            }));
                         }
-
-                        if (exists)
-                        {
-                            progress++;
-                            continue;
-                        }
-
                         calc.Pin = pin_Dimension;
                         calc.Die = die_Dimension;
-
                         if (calc.IsCombinationOk)
                         {
-                            var row = new DataGridViewRow();
-                            row.CreateCells(dgv_Combinations,
+                            newRows.Add(
+                            [
                                 $"{die_Dimension:0.00}",
                                 useTheoretical ? "N/A" : $"{die_LL:0.0}",
                                 $"{pin_Dimension:0.00}",
@@ -446,49 +404,46 @@ namespace DigitalProductionProgram.ToolManagement
                                 $"{calc.ToolGap:0.000}",
                                 $"{calc.DDR:0.00}",
                                 $"{calc.Balance:0.000}",
-                                $"{calc.ShearRate:0}");
-                            newRows.Add(row);
+                                $"{calc.ShearRate:0}"
+                            ]);
                         }
-
                         progress++;
-
-                        if (pbar_Calculate.IsHandleCreated)
+                        if (pbar_Calculate.IsHandleCreated && (progress % 100 == 0 || progress == dieValues.Count * pinValues.Count))
                         {
                             pbar_Calculate.Invoke((MethodInvoker)(() =>
                             {
                                 pbar_Calculate.Value = Math.Min(progress, pbar_Calculate.Maximum);
                             }));
                         }
-
-                        if (progress % 500 == 0)
-                            await Task.Delay(1, cancellationToken);
                     }
+                    if (isCancelled)
+                        break;
                 }
             }, cancellationToken);
-
+            if (cancellationToken.IsCancellationRequested)
+                return;
             if (dgv_Combinations.IsHandleCreated)
-                dgv_Combinations.Invoke((MethodInvoker)(() => dgv_Combinations.Rows.AddRange(newRows.ToArray())));
+            {
+                dgv_Combinations.Invoke((MethodInvoker)(() =>
+                {
+                    var rows = newRows.Select(values =>
+                    {
+                        var row = new DataGridViewRow();
+                        row.CreateCells(dgv_Combinations, values);
+                        return row;
+                    }).ToArray();
+                    dgv_Combinations.Rows.AddRange(rows);
+                }));
+            }
         }
-
         private void FinalizeCalculation()
         {
-            lbl_TotalCombinations.Invoke((MethodInvoker)(() =>
-                lbl_TotalCombinations.Text = $"{dgv_Combinations.Rows.Count} verktygskombinationer."));
-
             pbar_Calculate.Invoke((MethodInvoker)(() => pbar_Calculate.Visible = false));
-            btn_StartCalculation.Invoke((MethodInvoker)(() => btn_StartCalculation.Enabled = true));
-
-            Task.Run(async () =>
-            {
-                await Task.Delay(500); // Fördröjning för att undvika konflikt
-                SetColor_Combinations();
-            });
         }
         private void SetColor_Combinations()
         {
             if (!dgv_Combinations.IsHandleCreated)
                 return;
-
             Task.Run(() =>
             {
                 dgv_Combinations.Invoke((MethodInvoker)(() =>
@@ -521,10 +476,94 @@ namespace DigitalProductionProgram.ToolManagement
                 }));
             });
         }
-
-
-
-
+        private async Task RefreshDieToolsAsync()
+        {
+            var dieType = tb_DieType.Text;
+            var hideDiscarded = chb_DöljKasseradeVerktyg.Checked;
+            var tools = await Task.Run(() => LoadDieTools(dieType, hideDiscarded));
+            if (cb_Die.IsDisposed)
+                return;
+            _suppressRecalculation = true;
+            try
+            {
+                cb_Die.DataSource = null;
+                cb_Die.DataSource = tools;
+                cb_Die.DisplayMember = "Dimension";
+                cb_Die.ValueMember = "LandLength";
+                lbl_AntalMunstycken.Text = cb_Die.Items.Count.ToString();
+                cb_Die.SelectedIndex = -1;
+            }
+            finally
+            {
+                _suppressRecalculation = false;
+            }
+        }
+        private List<Die> LoadDieTools(string dieType, bool hideDiscarded)
+        {
+            var tools = new List<Die>();
+            if (string.IsNullOrWhiteSpace(dieType))
+                return tools;
+            using var con = new SqlConnection(Database.cs_ToolRegister);
+            var query = "SELECT DISTINCT Dimension_nom, LandLängd_nom FROM Register_Verktyg WHERE Typ = @typ AND Sort = 'Munstycke' ";
+            if (hideDiscarded)
+                query += " AND (Kasserad IS NULL OR Kasserad = '') ";
+            query += " ORDER BY Dimension_nom";
+            con.Open();
+            using var cmd = new SqlCommand(query, con);
+            cmd.Parameters.AddWithValue("@typ", dieType);
+            using var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                var dimension = reader["Dimension_nom"].ToString();
+                var landLength = reader["LandLängd_nom"].ToString();
+                tools.Add(new Die(dimension, landLength));
+            }
+            return tools;
+        }
+        private async Task RefreshPinToolsAsync()
+        {
+            var pinType = tb_PinType.Text;
+            var hideDiscarded = chb_DöljKasseradeVerktyg.Checked;
+            var tools = await Task.Run(() => LoadPinTools(pinType, hideDiscarded));
+            if (cb_Pin.IsDisposed)
+                return;
+            _suppressRecalculation = true;
+            try
+            {
+                cb_Pin.DataSource = null;
+                cb_Pin.DataSource = tools;
+                cb_Pin.DisplayMember = "Dimension";
+                cb_Pin.ValueMember = "LandLength";
+                lbl_AntalKanyl.Text = cb_Pin.Items.Count.ToString();
+                cb_Pin.SelectedIndex = -1;
+            }
+            finally
+            {
+                _suppressRecalculation = false;
+            }
+        }
+        private List<Pin> LoadPinTools(string pinType, bool hideDiscarded)
+        {
+            var tools = new List<Pin>();
+            if (string.IsNullOrWhiteSpace(pinType))
+                return tools;
+            using var con = new SqlConnection(Database.cs_ToolRegister);
+            var query = "SELECT DISTINCT Dimension_nom, LandLängd_nom FROM Register_Verktyg WHERE Typ = @typ AND Sort = 'Kanyl' ";
+            if (hideDiscarded)
+                query += " AND (Kasserad IS NULL OR Kasserad = '') ";
+            query += " ORDER BY Dimension_nom";
+            con.Open();
+            using var cmd = new SqlCommand(query, con);
+            cmd.Parameters.AddWithValue("@typ", pinType);
+            using var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                var dimension = reader["Dimension_nom"].ToString();
+                var landLength = reader["LandLängd_nom"].ToString();
+                tools.Add(new Pin(dimension, landLength));
+            }
+            return tools;
+        }
         public class Calculation
         {
             private double ID { get; set; }
@@ -569,8 +608,6 @@ namespace DigitalProductionProgram.ToolManagement
                     return Math.Round(shearRate, 0);
                 }
             }
-
-
             public Calculation(string id, string od, string wall, string ddr_min, string ddr_max,  string balance_min, string balance_max, string pullerspeed, string density)
             {
                 ID = ParseValue(id);
@@ -587,9 +624,7 @@ namespace DigitalProductionProgram.ToolManagement
             {
                 return double.TryParse(value, out double result) ? result : 0.0;
             }
-
         }
-
         public class Die
         {
             public double Dimension { get; set; }
@@ -622,7 +657,6 @@ namespace DigitalProductionProgram.ToolManagement
                 return Dimension.ToString("F2"); // Show this in the ComboBox
             }
         }
-
         private void ToolCalculator_FormClosed(object sender, FormClosedEventArgs e)
         {
             _ = Activity.Stop($"Calculated Tools");

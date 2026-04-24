@@ -1705,6 +1705,18 @@ I Menyn "Operatör" i huvudfönstret kan du logga ut</value>
   <data name="chooseProtocol_3" xml:space="preserve">
     <value>Det finns flera processkort kopplat till denna Artikel. Välj nedan vilket du vill använda.</value>
   </data>
+  <data name="templateSelector_Header_TemplateMeasureProtocol" xml:space="preserve">
+    <value>Välj mall för Mätprotokollet:
+Detta artikelnummer har ingen mall för mätprotokollet kopplat, det finns flera mallar som passar denna operation.</value>
+  </data>
+  <data name="templateSelector_Header_TemplateProtocol" xml:space="preserve">
+    <value>Välj mall för Körprotokoll/Processkort:
+Detta artikelnummer har ingen mall för protokollet kopplat, det finns flera mallar som passar denna operation.</value>
+  </data>
+  <data name="templateSelector_Header_Workoperations" xml:space="preserve">
+    <value>Välj Arbetsoperation nedan:
+Detta artikelnummer tillhör flera arbetsoperationer.</value>
+  </data>
   <data name="authority_26" xml:space="preserve">
     <value>Hantera inställningar för Arbetsoperationer</value>
   </data>
@@ -2286,6 +2298,18 @@ Kontakta Admin vid behov.</value>
   <data name="ParameterData" xml:space="preserve">
     <value>F10...ParameterData</value>
   </data>
+  <data name="Menu_Settings" xml:space="preserve">
+    <value>Verktyg</value>
+  </data>
+  <data name="Menu_Settings_Settings" xml:space="preserve">
+    <value>Inställningar</value>
+  </data>
+  <data name="Menu_Settings_AnalyseParameterData" xml:space="preserve">
+    <value>Analysera Parameter Data</value>
+  </data>
+  <data name="Menu_Help_CipherWheel" xml:space="preserve">
+    <value>The Cipher Wheel</value>
+  </data>
   <data name="BrowseOldMeasureprotocol" xml:space="preserve">
     <value>F3-Historiska mätningar &amp;&amp; SPC</value>
   </data>
@@ -2427,12 +2451,6 @@ Kontakta Admin vid behov.</value>
   <data name="Menu_Help_ReportBug" xml:space="preserve">
     <value>Rapportera in en bugg/förbättring</value>
   </data>
-  <data name="Menu_Settings" xml:space="preserve">
-    <value>Verktyg</value>
-  </data>
-  <data name="Menu_Settings_Settings" xml:space="preserve">
-    <value>Inställningar</value>
-  </data>
   <data name="Menu_Themes" xml:space="preserve">
     <value>Teman</value>
   </data>
@@ -2546,8 +2564,5 @@ Kontakta Admin vid behov.</value>
   </data>
   <data name="btnZumbach" xml:space="preserve">
     <value>F6-Zumbach-mätning</value>
-  </data>
-  <data name="Menu_Settings_AnalyseParameterData" xml:space="preserve">
-    <value>Analysera Parameter Data</value>
   </data>
 </root>

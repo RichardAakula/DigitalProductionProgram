@@ -1,4 +1,4 @@
-﻿namespace DigitalProductionProgram.EasterEggs
+﻿namespace DigitalProductionProgram.EasterEggs.The_Cipher_Wheel
 {
     partial class CodeWheel
     {

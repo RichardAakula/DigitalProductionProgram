@@ -1,8 +1,6 @@
-﻿
-using System.ComponentModel;
-using System.Windows.Forms;
+﻿using System.ComponentModel;
 
-namespace DigitalProductionProgram.MainWindow
+namespace DigitalProductionProgram.Monitor
 {
     partial class MonitorUsers
     {
@@ -32,26 +30,11 @@ namespace DigitalProductionProgram.MainWindow
         /// </summary>
         private void InitializeComponent()
         {
-            flp_List = new DoubleBufferedFlowLayoutPanel();
             chart = new LiveChartsCore.SkiaSharpView.WinForms.CartesianChart();
             cb_Monitor = new ComboBox();
             tlp_Main = new TableLayoutPanel();
             tlp_Main.SuspendLayout();
             SuspendLayout();
-            // 
-            // flp_List
-            // 
-            flp_List.AutoScroll = true;
-            flp_List.BackColor = Color.FromArgb(25, 25, 25);
-            flp_List.Dock = DockStyle.Fill;
-            flp_List.FlowDirection = FlowDirection.TopDown;
-            flp_List.Location = new Point(0, 30);
-            flp_List.Margin = new Padding(0);
-            flp_List.Name = "flp_List";
-            flp_List.Size = new Size(622, 979);
-            flp_List.TabIndex = 0;
-            flp_List.WrapContents = false;
-            flp_List.SizeChanged += flp_List_SizeChanged;
             // 
             // chart
             // 
@@ -81,7 +64,6 @@ namespace DigitalProductionProgram.MainWindow
             tlp_Main.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
             tlp_Main.Controls.Add(cb_Monitor, 0, 0);
             tlp_Main.Controls.Add(chart, 1, 0);
-            tlp_Main.Controls.Add(flp_List, 0, 1);
             tlp_Main.Dock = DockStyle.Fill;
             tlp_Main.Location = new Point(0, 0);
             tlp_Main.Name = "tlp_Main";

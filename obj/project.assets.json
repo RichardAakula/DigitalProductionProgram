@@ -3754,6 +3754,17 @@
             "related": ".pdb;.Utilities.pdb;.Utilities.xml;.xml"
           }
         }
+      },
+      "WMPLib/1.0.0": {
+        "type": "package",
+        "compile": {
+          "lib/AxInterop.WMPLib.dll": {},
+          "lib/Interop.WMPLib.dll": {}
+        },
+        "runtime": {
+          "lib/AxInterop.WMPLib.dll": {},
+          "lib/Interop.WMPLib.dll": {}
+        }
       }
     }
   },
@@ -8261,6 +8272,20 @@
         "winforms.datavisualization.1.10.0.nupkg.sha512",
         "winforms.datavisualization.nuspec"
       ]
+    },
+    "WMPLib/1.0.0": {
+      "sha512": "hhTCfENN7xrSfUG7hrd/A9YiXVMVGHAc3Hv0USe6SvpacIDxVwiBb1X3nVzELpLtewjqqFy5dsWHwImpUy3vyw==",
+      "type": "package",
+      "path": "wmplib/1.0.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "License/license.txt",
+        "lib/AxInterop.WMPLib.dll",
+        "lib/Interop.WMPLib.dll",
+        "wmplib.1.0.0.nupkg.sha512",
+        "wmplib.nuspec"
+      ]
     }
   },
   "projectFileDependencyGroups": {
@@ -8278,6 +8303,7 @@
       "NAudio >= 2.2.1",
       "Newtonsoft.Json >= 13.0.3",
       "TradeWright.TabControlExtra >= 2.0.1",
+      "WMPLib >= 1.0.0",
       "WinForms.DataVisualization >= 1.10.0",
       "ncalc >= 1.3.8"
     ]
@@ -8287,7 +8313,7 @@
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
-    "version": "4.3.18.5",
+    "version": "4.3.19",
     "restore": {
       "projectUniqueName": "C:\\Users\\RICHARDA\\Documents\\Visual Studio 2022\\Projects\\DigitalProductionProgram 4.3.14.xx\\DigitalProductionProgram.csproj",
       "projectName": "DigitalProductionProgram",
@@ -8313,6 +8339,7 @@
       },
       "frameworks": {
         "net8.0-windows7.0": {
+          "framework": "net8.0-windows7.0",
           "targetAlias": "net8.0-windows",
           "projectReferences": {}
         }
@@ -8331,6 +8358,7 @@
     },
     "frameworks": {
       "net8.0-windows7.0": {
+        "framework": "net8.0-windows7.0",
         "targetAlias": "net8.0-windows",
         "dependencies": {
           "EPPlus": {
@@ -8385,6 +8413,10 @@
             "target": "Package",
             "version": "[2.0.1, )"
           },
+          "WMPLib": {
+            "target": "Package",
+            "version": "[1.0.0, )"
+          },
           "WinForms.DataVisualization": {
             "target": "Package",
             "version": "[1.10.0, )"
@@ -8413,7 +8445,7 @@
             "privateAssets": "none"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.201/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.202/PortableRuntimeIdentifierGraph.json"
       }
     }
   },
@@ -8425,7 +8457,7 @@
       "message": "DigitalProductionProgram depends on LiveChartsCore (>= 2.0.0-rc10) but LiveChartsCore 2.0.0-rc10 was not found. LiveChartsCore 2.0.0-rc2 was resolved instead.",
       "libraryId": "LiveChartsCore",
       "targetGraphs": [
-        "net8.0-windows7.0"
+        "net8.0-windows"
       ]
     },
     {
@@ -8435,7 +8467,7 @@
       "message": "DigitalProductionProgram depends on LiveChartsCore.SkiaSharpView (>= 2.0.0-rc10) but LiveChartsCore.SkiaSharpView 2.0.0-rc10 was not found. LiveChartsCore.SkiaSharpView 2.0.0-rc2 was resolved instead.",
       "libraryId": "LiveChartsCore.SkiaSharpView",
       "targetGraphs": [
-        "net8.0-windows7.0"
+        "net8.0-windows"
       ]
     },
     {
@@ -8445,7 +8477,7 @@
       "message": "DigitalProductionProgram depends on LiveChartsCore.SkiaSharpView.WinForms (>= 2.0.0-rc10) but LiveChartsCore.SkiaSharpView.WinForms 2.0.0-rc10 was not found. LiveChartsCore.SkiaSharpView.WinForms 2.0.0-rc2 was resolved instead.",
       "libraryId": "LiveChartsCore.SkiaSharpView.WinForms",
       "targetGraphs": [
-        "net8.0-windows7.0"
+        "net8.0-windows"
       ]
     },
     {
@@ -8455,7 +8487,7 @@
       "message": "Package 'ncalc 1.3.8' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' instead of the project target framework 'net8.0-windows7.0'. This package may not be fully compatible with your project.",
       "libraryId": "ncalc",
       "targetGraphs": [
-        "net8.0-windows7.0"
+        "net8.0-windows"
       ]
     },
     {
@@ -8465,7 +8497,7 @@
       "message": "Package 'OpenTK 3.1.0' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' instead of the project target framework 'net8.0-windows7.0'. This package may not be fully compatible with your project.",
       "libraryId": "OpenTK",
       "targetGraphs": [
-        "net8.0-windows7.0"
+        "net8.0-windows"
       ]
     },
     {
@@ -8475,7 +8507,7 @@
       "message": "Package 'OpenTK.GLControl 3.1.0' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' instead of the project target framework 'net8.0-windows7.0'. This package may not be fully compatible with your project.",
       "libraryId": "OpenTK.GLControl",
       "targetGraphs": [
-        "net8.0-windows7.0"
+        "net8.0-windows"
       ]
     },
     {
@@ -8485,7 +8517,17 @@
       "message": "Package 'TradeWright.TabControlExtra 2.0.1' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' instead of the project target framework 'net8.0-windows7.0'. This package may not be fully compatible with your project.",
       "libraryId": "TradeWright.TabControlExtra",
       "targetGraphs": [
-        "net8.0-windows7.0"
+        "net8.0-windows"
+      ]
+    },
+    {
+      "code": "NU1701",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Package 'WMPLib 1.0.0' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' instead of the project target framework 'net8.0-windows7.0'. This package may not be fully compatible with your project.",
+      "libraryId": "WMPLib",
+      "targetGraphs": [
+        "net8.0-windows"
       ]
     }
   ]

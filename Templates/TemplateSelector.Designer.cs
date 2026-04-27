@@ -53,7 +53,7 @@ namespace DigitalProductionProgram.Templates
             label_Header.Margin = new Padding(5);
             label_Header.Name = "label_Header";
             label_Header.Padding = new Padding(5);
-            label_Header.Size = new Size(784, 60);
+            label_Header.Size = new Size(786, 60);
             label_Header.TabIndex = 2;
             label_Header.Text = "Header:";
             // 
@@ -82,7 +82,7 @@ namespace DigitalProductionProgram.Templates
             flp_Buttons.Margin = new Padding(4, 3, 4, 3);
             flp_Buttons.Name = "flp_Buttons";
             flp_Buttons.Padding = new Padding(0, 6, 0, 0);
-            flp_Buttons.Size = new Size(784, 106);
+            flp_Buttons.Size = new Size(786, 516);
             flp_Buttons.TabIndex = 16;
             flp_Buttons.WrapContents = false;
             // 
@@ -96,7 +96,7 @@ namespace DigitalProductionProgram.Templates
             label_Green.Location = new Point(4, 0);
             label_Green.Margin = new Padding(4, 0, 4, 0);
             label_Green.Name = "label_Green";
-            label_Green.Size = new Size(776, 20);
+            label_Green.Size = new Size(778, 20);
             label_Green.TabIndex = 2;
             label_Green.Text = "Order Ok att starta";
             // 
@@ -110,7 +110,7 @@ namespace DigitalProductionProgram.Templates
             label_Orange.Location = new Point(4, 20);
             label_Orange.Margin = new Padding(4, 0, 4, 0);
             label_Orange.Name = "label_Orange";
-            label_Orange.Size = new Size(776, 20);
+            label_Orange.Size = new Size(778, 20);
             label_Orange.TabIndex = 14;
             label_Orange.Text = "ArtikelNr utan processkort körd fler än 3 ggr - Processkort behövs - Kontakta arbetsledare";
             // 
@@ -124,7 +124,7 @@ namespace DigitalProductionProgram.Templates
             label_Brown.Location = new Point(4, 40);
             label_Brown.Margin = new Padding(4, 0, 4, 0);
             label_Brown.Name = "label_Brown";
-            label_Brown.Size = new Size(776, 20);
+            label_Brown.Size = new Size(778, 20);
             label_Brown.TabIndex = 13;
             label_Brown.Text = "Processkort under framarbetning och körd fler än 3 gånger - Kontakta arbetsledare";
             // 
@@ -138,7 +138,7 @@ namespace DigitalProductionProgram.Templates
             label_Red.Location = new Point(4, 60);
             label_Red.Margin = new Padding(4, 0, 4, 0);
             label_Red.Name = "label_Red";
-            label_Red.Size = new Size(776, 20);
+            label_Red.Size = new Size(778, 20);
             label_Red.TabIndex = 2;
             label_Red.Text = "Ej godkänd av QA";
             // 
@@ -161,7 +161,7 @@ namespace DigitalProductionProgram.Templates
             tlp_InfoLabels.RowStyles.Add(new RowStyle(SizeType.Percent, 20F));
             tlp_InfoLabels.RowStyles.Add(new RowStyle(SizeType.Percent, 20F));
             tlp_InfoLabels.RowStyles.Add(new RowStyle(SizeType.Percent, 20F));
-            tlp_InfoLabels.Size = new Size(784, 102);
+            tlp_InfoLabels.Size = new Size(786, 102);
             tlp_InfoLabels.TabIndex = 0;
             // 
             // label_InactiveProcesscard
@@ -174,7 +174,7 @@ namespace DigitalProductionProgram.Templates
             label_InactiveProcesscard.Location = new Point(4, 80);
             label_InactiveProcesscard.Margin = new Padding(4, 0, 4, 0);
             label_InactiveProcesscard.Name = "label_InactiveProcesscard";
-            label_InactiveProcesscard.Size = new Size(776, 22);
+            label_InactiveProcesscard.Size = new Size(778, 22);
             label_InactiveProcesscard.TabIndex = 15;
             label_InactiveProcesscard.Text = "Processkortet är inaktivt";
             // 
@@ -184,13 +184,14 @@ namespace DigitalProductionProgram.Templates
             AutoScaleMode = AutoScaleMode.Font;
             AutoSize = true;
             BackColor = Color.FromArgb(6, 81, 87);
-            ClientSize = new Size(784, 301);
+            ClientSize = new Size(786, 711);
             Controls.Add(flp_Buttons);
             Controls.Add(label_TemplateColumnHeader);
             Controls.Add(tlp_InfoLabels);
             Controls.Add(label_Header);
             FormBorderStyle = FormBorderStyle.SizableToolWindow;
             Margin = new Padding(4, 3, 4, 3);
+            MaximumSize = new Size(1200, 750);
             Name = "TemplateSelector";
             StartPosition = FormStartPosition.CenterScreen;
             FormClosing += ChooseProcesscard_FormClosing;

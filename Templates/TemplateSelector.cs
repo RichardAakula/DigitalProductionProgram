@@ -563,24 +563,55 @@ namespace DigitalProductionProgram.Templates
         }
         private void SetFormHeight()
         {
+            var buttonHeight = GetButtonHeight();
+            var fixedHeight = label_Header.Height + (tlp_InfoLabels.Visible ? tlp_InfoLabels.Height : 0) + (label_TemplateColumnHeader.Visible ? label_TemplateColumnHeader.Height : 0) + 41;
+            var maxFormHeight = MaximumSize.Height > 0 ? MaximumSize.Height : int.MaxValue;
+            var maxButtonHeight = Math.Max(flp_Buttons.Padding.Top + 1, maxFormHeight - fixedHeight);
+            var columnWidths = GetButtonColumnWidths(maxButtonHeight);
+            var isWrappingNeeded = columnWidths.Count > 1;
+            flp_Buttons.WrapContents = isWrappingNeeded;
+            SetButtonColumnSpacing(isWrappingNeeded);
+            columnWidths = GetButtonColumnWidths(maxButtonHeight);
+            var desiredHeight = Math.Min(buttonHeight + flp_Buttons.Padding.Top + fixedHeight, maxFormHeight);
+            var desiredWidth = Math.Max(Width, columnWidths.Sum() + flp_Buttons.Padding.Horizontal + 40);
+            if (label_TemplateColumnHeader.Visible)
+                desiredWidth = Math.Max(desiredWidth, label_TemplateColumnHeader.Width + label_TemplateColumnHeader.Margin.Horizontal + 40);
+            Height = desiredHeight;
+            Width = MaximumSize.Width > 0 ? Math.Min(desiredWidth, MaximumSize.Width) : desiredWidth;
+        }
+        private int GetButtonHeight()
+        {
             var totalHeight = 0;
-            var maxWidth = 0;
+            foreach (Control control in flp_Buttons.Controls)
+                totalHeight += control.Height + control.Margin.Vertical;
+            return totalHeight;
+        }
+        private List<int> GetButtonColumnWidths(int maxColumnHeight)
+        {
+            var columnWidths = new List<int>();
+            var currentHeight = flp_Buttons.Padding.Top;
+            var currentWidth = 0;
             foreach (Control control in flp_Buttons.Controls)
             {
-                totalHeight += control.Height;
-                totalHeight += control.Margin.Bottom;
-                maxWidth = Math.Max(maxWidth, control.Width + control.Margin.Horizontal);
+                var controlHeight = control.Height + control.Margin.Vertical;
+                if (currentHeight > flp_Buttons.Padding.Top && currentHeight + controlHeight > maxColumnHeight)
+                {
+                    columnWidths.Add(currentWidth);
+                    currentHeight = flp_Buttons.Padding.Top;
+                    currentWidth = 0;
+                }
+                currentHeight += controlHeight;
+                currentWidth = Math.Max(currentWidth, control.Width + control.Margin.Horizontal);
             }
-            if (label_TemplateColumnHeader.Visible)
-            {
-                totalHeight += label_TemplateColumnHeader.Height;
-                maxWidth = Math.Max(maxWidth, label_TemplateColumnHeader.Width + label_TemplateColumnHeader.Margin.Horizontal);
-            }
-            totalHeight += label_Header.Height + (tlp_InfoLabels.Visible ? tlp_InfoLabels.Height : 0) + flp_Buttons.Padding.Top + 41;
-            this.Height = totalHeight;
-            Width = Math.Max(Width, maxWidth + 40);
+            if (currentWidth > 0 || columnWidths.Count == 0)
+                columnWidths.Add(currentWidth);
+            return columnWidths;
         }
-
+        private void SetButtonColumnSpacing(bool isWrappingNeeded)
+        {
+            foreach (Control control in flp_Buttons.Controls)
+                control.Margin = new Padding(control.Margin.Left, control.Margin.Top, isWrappingNeeded ? 25 : 0, control.Margin.Bottom);
+        }
         private void Button_Processcard_MouseClick(object? sender, EventArgs e)
         {
             var lbl = sender as HeaderButton;

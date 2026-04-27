@@ -641,11 +641,19 @@ namespace DigitalProductionProgram.MainWindow
                 Order.Restore_TempOrderInfo();
                 return;
             }
+            if (!Manage_Processcards.IsWorkoperationUsingProcesscards())
+            {
+                Manage_Processcards.ShowWorkoperationNotUsingProcesscardWarning(this);
+                Order.Restore_TempOrderInfo();
+                return;
+            }
             try
             {
                 Manage_Processcards.IsProcesscardUnderManagement = true;
                 using var manageProcesscards = new Manage_Processcards()
                 { Location = Location };
+                if (manageProcesscards.IsAborted)
+                    return;
                 manageProcesscards.ShowDialog();
             }
             finally

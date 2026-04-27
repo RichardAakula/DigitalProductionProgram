@@ -83,17 +83,13 @@ namespace DigitalProductionProgram.Measure
                 Control? control = null;
                 foreach (Control? ctrl in flp_InputControls.Controls)
                 {
-                    //Vet inte vad denna kod gör riktigt och tar bort den tills vidare, "ID", "OD" och "Wall" kan inte användas här längre utan måste isåfall lösas på annat sätt nu när DescriptionId används istället för CodeName
-                    //if (Part.IsPartNrSpecial && (ctrl == InputControl(flp_InputControls, ["ID"]) || ctrl == InputControl(flp_InputControls, ["OD"]) || ctrl == InputControl(flp_InputControls, new[] { "Wall" })))
-                    //    continue;
-
                     if (ctrl is IMandatoryControl isMandatoryControl)
                         if (isMandatoryControl.IsMandatory == false)
                             continue;
                     if (ctrl is InputCheckBox checkBox)
                         if (checkBox.Checked)
                             continue;
-                    if (!string.IsNullOrEmpty(ctrl.Text))
+                    if (!string.IsNullOrEmpty(ctrl.Text) && !ControlValidator.IsStringNA(ctrl.Text))
                         continue;
 
                     control = ctrl;

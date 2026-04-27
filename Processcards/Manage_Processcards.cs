@@ -34,6 +34,7 @@ namespace DigitalProductionProgram.Processcards
         private const int WmEnterSizeMove = 0x0231;
         private const int WmExitSizeMove = 0x0232;
         private bool isMoveRedrawSuspended;
+        public bool IsAborted { get; private set; }
 
         public static string INSERT_INTO_Processkort_Main =>
             @"
@@ -48,7 +49,23 @@ namespace DigitalProductionProgram.Processcards
                 UPDATE Processcard.MainData 
                     SET ProdType = @prodtype, Extra_Info = @extraInfo, RevÄndratDatum = @revÄndratDatum, RevInfo = @revInfo, Historiska_Data = @histData, Validerat = @validerat, Framtagning_Processfönster = @framtagning_Processfönster, Validerade_Loter = @validerade_Loter 
                     WHERE PartID = @partID";
-
+        public static bool IsWorkoperationUsingProcesscards()
+        {
+            if (Order.WorkOperation == Manage_WorkOperation.WorkOperations.Spolning_PTFE)
+                return false;
+            var templateCount = Database.ExecuteSafe(con =>
+            {
+                const string query = "SELECT COUNT(*) FROM Protocol.MainTemplate WHERE WorkoperationID = @workoperationid";
+                using var cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@workoperationid", Order.WorkoperationID);
+                return Convert.ToInt32(cmd.ExecuteScalar());
+            });
+            return templateCount > 0;
+        }
+        public static void ShowWorkoperationNotUsingProcesscardWarning(Control? owner)
+        {
+            InfoText.Show("Denna arbetsoperation använder inte Processkort.", CustomColors.InfoText_Color.Bad, "Warning", owner);
+        }
         private List<SqlParameter> Parameters_Main
         {
             get
@@ -305,11 +322,18 @@ namespace DigitalProductionProgram.Processcards
             InitializeComponent();
             if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime)
                 return;
+            IncomingPartNr = partnr;
             DoubleBuffered = true;
             SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.AllPaintingInWmPaint | ControlStyles.ResizeRedraw, true);
             UpdateStyles();
             InitializeBufferedControls();
             Translate_Form();
+            if (!IsWorkoperationUsingProcesscards())
+            {
+                ShowWorkoperationNotUsingProcesscardWarning(this);
+                IsAborted = true;
+                return;
+            }
             tb_NewPartNr.TextChanged -= ArtikelNr_TextChanged;
             LoadFormTemplateID();
             Initialize_GUI();
@@ -332,8 +356,6 @@ namespace DigitalProductionProgram.Processcards
             ProcesscardBasedOn.lbl_RevNr.Text = "A";
             ProcesscardBasedOn.lbl_UpprättatAv_Sign_AnstNr.Enabled = true;
             ProcesscardBasedOn.lbl_QA_Sign.Enabled = true;
-
-            IncomingPartNr = partnr;
 
             tb_NewPartNr.TextChanged += ArtikelNr_TextChanged;
 
@@ -465,6 +487,8 @@ namespace DigitalProductionProgram.Processcards
         }
         private void Manage_Processcards_Load(object sender, EventArgs e)
         {
+            if (IsAborted)
+                return;
             if (!string.IsNullOrEmpty(IncomingPartNr))
                 tb_PartNr.Text = IncomingPartNr;
 
@@ -602,8 +626,8 @@ namespace DigitalProductionProgram.Processcards
             switch (Order.WorkOperation)
             {
                 case Manage_WorkOperation.WorkOperations.Spolning_PTFE:
-                    InfoText.Show("Denna arbetsoperation använder inte Processkort.", CustomColors.InfoText_Color.Bad, "Warning", this);
-                    Close();
+                    ShowWorkoperationNotUsingProcesscardWarning(this);
+                    IsAborted = true;
                     break;
                 case Manage_WorkOperation.WorkOperations.Kragning_TEF:
                     Change_UI_Kragning();

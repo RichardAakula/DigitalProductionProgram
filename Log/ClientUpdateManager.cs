@@ -17,6 +17,8 @@ namespace DigitalProductionProgram.Log
     {
         private const int GwlExstyle = -20;
         private const int WsExLayered = 0x00080000;
+        private readonly List<HostItem> _allKnownClients = new();
+        private readonly Dictionary<string, List<HostItem>> _blockedClientsByVersion = new(StringComparer.OrdinalIgnoreCase);
         private List<HostItem> _allClients = new();
         private List<HostItem> _allBlockedClients = new();
         private readonly List<string> _allProdLines = new();
@@ -24,6 +26,7 @@ namespace DigitalProductionProgram.Log
         private readonly Dictionary<ListView, (int Column, System.Windows.Forms.SortOrder Order)> _listViewSortStates = new();
         private bool _suppressSelectionChanged;
         private CancellationTokenSource _usersOnClientCts;
+        private CancellationTokenSource _prodLinesOnClientCts;
         [DllImport("user32.dll", EntryPoint = "GetWindowLong")]
         private static extern int GetWindowLong(IntPtr hWnd,int nIndex);
         [DllImport("user32.dll", EntryPoint = "SetWindowLong")]
@@ -32,6 +35,7 @@ namespace DigitalProductionProgram.Log
         {
             InitializeComponent();
             InitializeUsersOnClientListView();
+            InitializeProdLinesOnClientListView();
             InitializeClientListViews();
             Opacity = 0;
             ShowInTaskbar = false;
@@ -45,10 +49,12 @@ namespace DigitalProductionProgram.Log
             DigitalProductionProgram.ControlsManagement.DrawingControl.EnableDoubleBuffer(lv_BlockedClients);
             DigitalProductionProgram.ControlsManagement.DrawingControl.EnableDoubleBuffer(lb_Versions);
             DigitalProductionProgram.ControlsManagement.DrawingControl.EnableDoubleBuffer(lv_UsersOnClient);
+            DigitalProductionProgram.ControlsManagement.DrawingControl.EnableDoubleBuffer(lv_ProdLinesOnClient);
             Load += async (_, __) => await InitializeDataAsync();
             lv_AllowedClients.ColumnClick += ListView_ColumnClick;
             lv_BlockedClients.ColumnClick += ListView_ColumnClick;
             lv_UsersOnClient.ColumnClick += ListView_ColumnClick;
+            lv_ProdLinesOnClient.ColumnClick += ListView_ColumnClick;
             tb_FilterUsersProdLines.TextChanged += tb_FilterUsersProdLines_TextChanged;
             tb_FilterAllClients.TextChanged += tb_Filter_TextChanged;
             tb_FilterBlockedClients.TextChanged += tb_FilterBlockedClients_TextChanged;
@@ -109,6 +115,8 @@ namespace DigitalProductionProgram.Log
             lb_Versions.Enabled = !isLoading;
             lb_AllUsers.Enabled = !isLoading;
             lv_BlockedClients.Enabled = !isLoading;
+            lv_UsersOnClient.Enabled = !isLoading;
+            lv_ProdLinesOnClient.Enabled = !isLoading;
             tb_FilterUsersProdLines.Enabled = !isLoading;
             tb_FilterAllClients.Enabled = !isLoading;
             tb_FilterBlockedClients.Enabled = !isLoading;
@@ -201,6 +209,7 @@ namespace DigitalProductionProgram.Log
                 {
                     filteredAllowed = filteredAllowed.Where(c =>
                         c.HostName.Contains(allowedFilter, StringComparison.OrdinalIgnoreCase) ||
+                        c.CurrentVersion.Contains(allowedFilter, StringComparison.OrdinalIgnoreCase) ||
                         c.HostID.ToString().Contains(allowedFilter));
                 }
                 string blockedFilter = tb_FilterBlockedClients.Text.Trim();
@@ -208,6 +217,7 @@ namespace DigitalProductionProgram.Log
                 {
                     filteredBlocked = filteredBlocked.Where(c =>
                         c.HostName.Contains(blockedFilter, StringComparison.OrdinalIgnoreCase) ||
+                        c.CurrentVersion.Contains(blockedFilter, StringComparison.OrdinalIgnoreCase) ||
                         c.HostID.ToString().Contains(blockedFilter));
                 }
                 if (hostUsageCountsForUsers.Count > 0)
@@ -326,7 +336,8 @@ namespace DigitalProductionProgram.Log
             listView.MultiSelect = true;
             listView.HideSelection = false;
             listView.Columns.Clear();
-            listView.Columns.Add("Client",245,HorizontalAlignment.Left);
+            listView.Columns.Add("Client",185,HorizontalAlignment.Left);
+            listView.Columns.Add("Version",70,HorizontalAlignment.Left);
             listView.Columns.Add("Senast aktiv",110,HorizontalAlignment.Left);
         }
         private static void PopulateClientListView(ListView listView,IEnumerable<HostItem> clients,bool selectAll)
@@ -344,6 +355,7 @@ namespace DigitalProductionProgram.Log
         private static ListViewItem CreateClientListViewItem(HostItem client)
         {
             var item = new ListViewItem(client.ToString());
+            item.SubItems.Add(client.CurrentVersion);
             item.SubItems.Add(GetLastActiveText(client.LastActivity));
             item.Tag = client;
             return item;
@@ -399,20 +411,38 @@ namespace DigitalProductionProgram.Log
             lv_UsersOnClient.Columns.Add("UserID", 50, HorizontalAlignment.Left);
             lv_UsersOnClient.Columns.Add("Name", 150, HorizontalAlignment.Left);
         }
-
+        private void InitializeProdLinesOnClientListView()
+        {
+            lv_ProdLinesOnClient.View = View.Details;
+            lv_ProdLinesOnClient.FullRowSelect = true;
+            lv_ProdLinesOnClient.MultiSelect = false;
+            lv_ProdLinesOnClient.HideSelection = false;
+            lv_ProdLinesOnClient.Columns.Clear();
+            lv_ProdLinesOnClient.Columns.Add("Production Line", 120, HorizontalAlignment.Left);
+            lv_ProdLinesOnClient.Columns.Add("Senast aktiv", 95, HorizontalAlignment.Left);
+        }
         private void LoadClients()
         {
             _allClients.Clear();
-
+            _allKnownClients.Clear();
+            _blockedClientsByVersion.Clear();
             var clients = Database.ExecuteSafe(con =>
             {
                 var list = new List<HostItem>();
                 const string query = @"
-                    SELECT g.HostID, g.HostName, MAX(al.Date) AS LastActivity
+                    SELECT g.HostID, g.HostName, MAX(al.Date) AS LastActivity, latest.Version AS CurrentVersion
                     FROM [Settings].General g
                     JOIN Log.ActivityLog al ON al.HostID = g.HostID
+                    OUTER APPLY
+                    (
+                        SELECT TOP(1) Version
+                        FROM Log.ActivityLog latest
+                        WHERE latest.HostID = g.HostID
+                            AND latest.Version IS NOT NULL
+                        ORDER BY latest.Date DESC
+                    ) latest
                     WHERE al.Date >= DATEADD(YEAR, -1, GETDATE())
-                    GROUP BY g.HostID, g.HostName
+                    GROUP BY g.HostID, g.HostName, latest.Version
                     ORDER BY g.HostName";
                 using var cmd = new SqlCommand(query, con);
                 using var reader = cmd.ExecuteReader();
@@ -421,7 +451,8 @@ namespace DigitalProductionProgram.Log
                     list.Add(new HostItem(
                         reader.GetInt32(reader.GetOrdinal("HostID")),
                         reader.GetString(reader.GetOrdinal("HostName")),
-                        reader.GetDateTime(reader.GetOrdinal("LastActivity"))
+                        reader.GetDateTime(reader.GetOrdinal("LastActivity")),
+                        reader["CurrentVersion"]?.ToString() ?? string.Empty
                     ));
                 }
                 return list;
@@ -429,7 +460,7 @@ namespace DigitalProductionProgram.Log
 
             if (clients == null)
                 return;
-
+            _allKnownClients.AddRange(clients);
             _allClients.AddRange(clients);
             RefreshClientListsFromSelections();
         }
@@ -543,7 +574,7 @@ namespace DigitalProductionProgram.Log
             var selectedHosts = GetSelectedHosts(lv_AllowedClients)
                 .Select(h => h.HostID)
                 .ToList();
-            await LoadUsersForSelectedHostsAsync(selectedHosts);
+            await LoadClientDetailsForSelectedHostsAsync(selectedHosts);
         }
         private async void lb_BlockedClients_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -562,9 +593,15 @@ namespace DigitalProductionProgram.Log
             var selectedHosts = GetSelectedHosts(lv_BlockedClients)
                 .Select(h => h.HostID)
                 .ToList();
-            await LoadUsersForSelectedHostsAsync(selectedHosts);
+            await LoadClientDetailsForSelectedHostsAsync(selectedHosts);
         }
-
+        private async Task LoadClientDetailsForSelectedHostsAsync(List<int> selectedHosts)
+        {
+            await Task.WhenAll(
+                LoadUsersForSelectedHostsAsync(selectedHosts),
+                LoadProdLinesForSelectedHostsAsync(selectedHosts)
+            );
+        }
         private async Task LoadUsersForSelectedHostsAsync(List<int> selectedHosts)
         {
             _usersOnClientCts?.Cancel();
@@ -608,7 +645,43 @@ namespace DigitalProductionProgram.Log
                 lv_UsersOnClient.EndUpdate();
             }
         }
-
+        private async Task LoadProdLinesForSelectedHostsAsync(List<int> selectedHosts)
+        {
+            _prodLinesOnClientCts?.Cancel();
+            _prodLinesOnClientCts?.Dispose();
+            _prodLinesOnClientCts = new CancellationTokenSource();
+            var token = _prodLinesOnClientCts.Token;
+            lv_ProdLinesOnClient.BeginUpdate();
+            try
+            {
+                lv_ProdLinesOnClient.Items.Clear();
+                if (selectedHosts.Count == 0)
+                    return;
+                List<(string ProdLine, DateTime LastActivity)> prodLines;
+                try
+                {
+                    prodLines = await GetProdLinesForHostsAsync(selectedHosts, token);
+                }
+                catch (OperationCanceledException)
+                {
+                    return;
+                }
+                if (token.IsCancellationRequested || prodLines == null)
+                    return;
+                foreach (var prodLine in prodLines)
+                {
+                    var item = new ListViewItem(prodLine.ProdLine);
+                    item.SubItems.Add(prodLine.LastActivity.ToString("yyyy-MM-dd HH:mm"));
+                    item.Tag = new ProdLineActivityItem(prodLine.ProdLine, prodLine.LastActivity);
+                    lv_ProdLinesOnClient.Items.Add(item);
+                }
+                ApplyStoredSort(lv_ProdLinesOnClient);
+            }
+            finally
+            {
+                lv_ProdLinesOnClient.EndUpdate();
+            }
+        }
         private void lb_ProdLines_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_suppressSelectionChanged)
@@ -620,35 +693,22 @@ namespace DigitalProductionProgram.Log
         {
             if (lb_Versions.SelectedItem is not string version)
                 return;
-
-            // ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â¥ 1. ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦terstÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¤ll masterlistan fÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¶r Clients helt (inkl. UI)
-            LoadClients();
-
-            // ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â¥ 2. HÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¤mta blockerade klienter fÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¶r vald version
             var blockedClients = GetBlockedClientsForVersion(version);
-
-            // ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â¥ 3. Uppdatera masterlistan fÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¶r blockerade klienter
             _allBlockedClients = blockedClients.ToList();
-
             lv_BlockedClients.BeginUpdate();
             lv_AllowedClients.BeginUpdate();
             try
             {
-                // ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â¥ 4. Fyll Blocked-listan frÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¥n masterlistan
-                if (_allBlockedClients.Count > 0)
-                {
-                    var blockedIds = new HashSet<int>(_allBlockedClients.Select(x => x.HostID));
-                    _allClients = _allClients
-                        .Where(c => !blockedIds.Contains(c.HostID))
-                        .ToList();
-                }
+                var blockedIds = new HashSet<int>(_allBlockedClients.Select(x => x.HostID));
+                _allClients = _allKnownClients
+                    .Where(c => !blockedIds.Contains(c.HostID))
+                    .ToList();
             }
             finally
             {
                 lv_AllowedClients.EndUpdate();
                 lv_BlockedClients.EndUpdate();
             }
-
             RefreshClientListsFromSelections();
         }
         private void lb_AllUsers_SelectedIndexChanged(object sender, EventArgs e)
@@ -755,11 +815,10 @@ namespace DigitalProductionProgram.Log
                 // flytta till blocked masterlist
                 if (_allBlockedClients.All(x => x.HostID != host.HostID))
                     _allBlockedClients.Add(host);
-
                 // ta bort frÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¥n clients masterlist
                 _allClients.RemoveAll(x => x.HostID == host.HostID);
             }
-
+            _blockedClientsByVersion.Remove(version);
             // --- 3. UI UPPDATERING ---
             lv_BlockedClients.BeginUpdate();
             lv_AllowedClients.BeginUpdate();
@@ -803,12 +862,11 @@ namespace DigitalProductionProgram.Log
             {
                 // Ta bort ur blocked masterlist
                 _allBlockedClients.RemoveAll(x => x.HostID == host.HostID);
-
                 // Lägg tillbaka i client‑masterlist om säkert
                 if (_allClients.All(x => x.HostID != host.HostID))
                     _allClients.Add(host);
             }
-
+            _blockedClientsByVersion.Remove(version);
             // --- 3. UI UPDATE ---
             lv_BlockedClients.BeginUpdate();
             lv_AllowedClients.BeginUpdate();
@@ -887,7 +945,6 @@ namespace DigitalProductionProgram.Log
 
             return users;
         }
-
         private List<(int UserID, string Name, DateTime LastActivity)> GetUsersForHosts(IEnumerable<int> hostIds)
         {
             return Database.ExecuteSafe(con =>
@@ -932,40 +989,97 @@ namespace DigitalProductionProgram.Log
                 return result;
             });
         }
-
-        private List<HostItem> GetBlockedClientsForVersion(string version)
+        private async Task<List<(string ProdLine, DateTime LastActivity)>> GetProdLinesForHostsAsync(IEnumerable<int> hostIds, CancellationToken cancellationToken)
+        {
+            if (cancellationToken.IsCancellationRequested)
+                return new List<(string ProdLine, DateTime LastActivity)>();
+            var prodLines = await Task.Run(() =>
+            {
+                if (cancellationToken.IsCancellationRequested)
+                    return new List<(string ProdLine, DateTime LastActivity)>();
+                return GetProdLinesForHosts(hostIds);
+            });
+            if (cancellationToken.IsCancellationRequested)
+                return new List<(string ProdLine, DateTime LastActivity)>();
+            return prodLines;
+        }
+        private List<(string ProdLine, DateTime LastActivity)> GetProdLinesForHosts(IEnumerable<int> hostIds)
         {
             return Database.ExecuteSafe(con =>
             {
-                var result = new List<HostItem>();
-                const string query = @"
-                    SELECT g.HostID, g.HostName, MAX(al.Date) AS LastActivity
-                    FROM [Settings].General g
-                    JOIN Log.ClientPolicy cp ON cp.HostID = g.HostID
-                    LEFT JOIN Log.ActivityLog al ON al.HostID = g.HostID
-                    WHERE cp.Version = @version
-                    GROUP BY g.HostID, g.HostName
-                    ORDER BY g.HostName";
-
+                var result = new List<(string, DateTime)>();
+                var ids = hostIds.ToList();
+                if (ids.Count == 0)
+                    return result;
+                var parameters = ids
+                    .Select((id, i) => $"@h{i}")
+                    .ToArray();
+                var query = $@"
+            SELECT
+                o.ProdLine,
+                MAX(al.Date) AS LastActivity
+            FROM Log.ActivityLog al
+            JOIN [Order].MainData o ON al.OrderID = o.OrderID
+            WHERE al.HostID IN ({string.Join(",", parameters)})
+              AND al.Date >= DATEADD(YEAR, -1, GETDATE())
+              AND o.ProdLine IS NOT NULL
+            GROUP BY o.ProdLine
+            ORDER BY MAX(al.Date) DESC";
                 using var cmd = new SqlCommand(query, con);
-                cmd.Parameters.AddWithValue("@version", version);
+                for (int i = 0; i < ids.Count; i++)
+                    cmd.Parameters.AddWithValue(parameters[i], ids[i]);
                 using var reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
-                    result.Add(new HostItem(
-                        reader.GetInt32(reader.GetOrdinal("HostID")),
-                        reader.GetString(reader.GetOrdinal("HostName")),
-                        reader.IsDBNull(reader.GetOrdinal("LastActivity")) ? null : reader.GetDateTime(reader.GetOrdinal("LastActivity"))
+                    result.Add((
+                        reader.GetString(0),
+                        reader.GetDateTime(1)
                     ));
                 }
                 return result;
             });
         }
-        public class HostItem(int hostId, string hostName, DateTime? lastActivity = null)
+        private List<HostItem> GetBlockedClientsForVersion(string version)
+        {
+            if (_blockedClientsByVersion.TryGetValue(version, out var cachedBlockedClients))
+                return cachedBlockedClients.ToList();
+            return Database.ExecuteSafe(con =>
+            {
+                var result = new List<HostItem>();
+                var clientInfoByHostId = _allKnownClients.Count > 0
+                    ? _allKnownClients.ToDictionary(client => client.HostID)
+                    : _allClients.ToDictionary(client => client.HostID);
+                const string query = @"
+                    SELECT DISTINCT g.HostID, g.HostName
+                    FROM Log.ClientPolicy cp
+                    INNER JOIN [Settings].General g ON g.HostID = cp.HostID
+                    WHERE cp.Version = @version
+                    ORDER BY g.HostName";
+                using var cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@version", version);
+                using var reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    int hostId = reader.GetInt32(reader.GetOrdinal("HostID"));
+                    string hostName = reader.GetString(reader.GetOrdinal("HostName"));
+                    clientInfoByHostId.TryGetValue(hostId, out var clientInfo);
+                    result.Add(new HostItem(
+                        hostId,
+                        hostName,
+                        clientInfo?.LastActivity,
+                        clientInfo?.CurrentVersion ?? string.Empty
+                    ));
+                }
+                _blockedClientsByVersion[version] = result.ToList();
+                return result;
+            });
+        }
+        public class HostItem(int hostId, string hostName, DateTime? lastActivity = null, string currentVersion = "")
         {
             public int HostID { get; } = hostId;
             public string HostName { get; } = hostName;
             public DateTime? LastActivity { get; } = lastActivity;
+            public string CurrentVersion { get; } = currentVersion;
             public override string ToString()
             {
                 return $"{HostName} (ID: {HostID})";
@@ -975,6 +1089,11 @@ namespace DigitalProductionProgram.Log
         {
             public int UserID { get; } = userId;
             public string Name { get; } = name;
+            public DateTime LastActivity { get; } = lastActivity;
+        }
+        private sealed class ProdLineActivityItem(string prodLine, DateTime lastActivity)
+        {
+            public string ProdLine { get; } = prodLine;
             public DateTime LastActivity { get; } = lastActivity;
         }
         private sealed class ListViewItemComparer(int column, System.Windows.Forms.SortOrder sortOrder) : System.Collections.IComparer
@@ -995,7 +1114,8 @@ namespace DigitalProductionProgram.Log
                     return columnIndex switch
                     {
                         0 => host.HostName,
-                        1 => host.LastActivity,
+                        1 => GetVersionSortValue(host.CurrentVersion),
+                        2 => host.LastActivity,
                         _ => GetSubItemText(item, columnIndex)
                     };
                 }
@@ -1009,11 +1129,24 @@ namespace DigitalProductionProgram.Log
                         _ => GetSubItemText(item, columnIndex)
                     };
                 }
+                if (item.Tag is ProdLineActivityItem prodLine)
+                {
+                    return columnIndex switch
+                    {
+                        0 => prodLine.ProdLine,
+                        1 => prodLine.LastActivity,
+                        _ => GetSubItemText(item, columnIndex)
+                    };
+                }
                 return GetSubItemText(item, columnIndex);
             }
             private static string GetSubItemText(ListViewItem item, int columnIndex)
             {
                 return item.SubItems.Count > columnIndex ? item.SubItems[columnIndex].Text : item.Text;
+            }
+            private static object GetVersionSortValue(string version)
+            {
+                return Version.TryParse(version, out var parsedVersion) ? parsedVersion : version;
             }
             private static int CompareValues(object leftValue, object rightValue)
             {
@@ -1027,6 +1160,8 @@ namespace DigitalProductionProgram.Log
                     return leftInt.CompareTo(rightInt);
                 if (leftValue is DateTime leftDate && rightValue is DateTime rightDate)
                     return leftDate.CompareTo(rightDate);
+                if (leftValue is IComparable leftComparable && leftValue.GetType() == rightValue.GetType())
+                    return leftComparable.CompareTo(rightValue);
                 return StringComparer.CurrentCultureIgnoreCase.Compare(leftValue.ToString(), rightValue.ToString());
             }
         }

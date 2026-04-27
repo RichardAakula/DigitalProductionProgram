@@ -628,8 +628,31 @@ namespace DigitalProductionProgram.MainWindow
             }
 
             // Stoppa MainTimer eventuellt om det blir problem
-            using var WorkOperation = new Choose_WorkOperation_BrowseProtocols_ManageProcesscards(true, false, false, Properties.Resources.label_ChoosePC_Header);
-            WorkOperation.ShowDialog();
+            Order.Save_TempOrderInfo();
+            Order.WorkOperation = Manage_WorkOperation.WorkOperations.Nothing;
+            Order.PartID = null;
+            Order.ProdLine = string.Empty;
+            Order.ProdType = string.Empty;
+            Order.RevNr = string.Empty;
+            using var workOperation = new TemplateSelector(TemplateSelector.TemplateType.Workoperations, false);
+            workOperation.ShowDialog();
+            if (workOperation.IsAborted || Order.WorkOperation == Manage_WorkOperation.WorkOperations.Nothing)
+            {
+                Order.Restore_TempOrderInfo();
+                return;
+            }
+            try
+            {
+                Manage_Processcards.IsProcesscardUnderManagement = true;
+                using var manageProcesscards = new Manage_Processcards()
+                { Location = Location };
+                manageProcesscards.ShowDialog();
+            }
+            finally
+            {
+                Manage_Processcards.IsProcesscardUnderManagement = false;
+                Order.Restore_TempOrderInfo();
+            }
         }
         private void Menu_Protocol_ManageTemplates_Protocols_Click(object sender, EventArgs e)
         {

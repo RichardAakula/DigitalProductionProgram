@@ -161,9 +161,7 @@ namespace DigitalProductionProgram.MainWindow
 
             print = new Manage_PrintOuts();
            
-            typeof(DataGridView)
-                .GetProperty("DoubleBuffered", BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)
-                .SetValue(dgv_QuickOpen, true, null);
+            typeof(DataGridView).GetProperty("DoubleBuffered", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(dgv_QuickOpen, true, null);
             DrawingControl.EnableDoubleBuffer(tlp_MainWindow);
             DrawingControl.EnableDoubleBuffer(cf_Buttons);
             DrawingControl.EnableDoubleBuffer(cf_MeasurePoints);

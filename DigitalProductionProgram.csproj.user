@@ -187,9 +187,6 @@
     <Compile Update="PrintingServices\Välj_Processkort.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="Processcards\Choose_WorkOperation_BrowseProtocols_ManageProcesscards.cs">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Update="Processcards\Manage_Processcards.cs">
       <SubType>Form</SubType>
     </Compile>

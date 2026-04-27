@@ -17,10 +17,14 @@ namespace DigitalProductionProgram.ControlsManagement
         private const int LVS_EX_DOUBLEBUFFER = 0x00010000;
         public static void SuspendDrawing(Control parent)
         {
+            if (parent is null || parent.IsDisposed || parent.IsHandleCreated == false)
+                return;
             SendMessage(parent.Handle, WM_SETREDRAW, false, 0);
         }
         public static void ResumeDrawing(Control parent)
         {
+            if (parent is null || parent.IsDisposed || parent.IsHandleCreated == false)
+                return;
             SendMessage(parent.Handle, WM_SETREDRAW, true, 0);
             parent.Refresh();
         }

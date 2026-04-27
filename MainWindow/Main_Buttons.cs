@@ -18,6 +18,7 @@ using DigitalProductionProgram.Protocols;
 using DigitalProductionProgram.Protocols.ExtraProtocols;
 using DigitalProductionProgram.Protocols.LineClearance;
 using DigitalProductionProgram.Statistics;
+using DigitalProductionProgram.Templates;
 using DigitalProductionProgram.User;
 using DigitalProductionProgram.Zumbach;
 using Pictures = DigitalProductionProgram.OrderHantering.Pictures;
@@ -277,11 +278,22 @@ namespace DigitalProductionProgram.MainWindow
                     bp.Dispose();
                     break;
                 case Manage_WorkOperation.WorkOperations.Nothing:
+                {
                     Browse_Protocols.Browse_Protocols.Is_BrowsingProtocols = true;
-                    var välj = new Choose_WorkOperation_BrowseProtocols_ManageProcesscards( false, false, true,Properties.Resources.browseProtocols);
+                    Order.PartID = null;
+                    Order.ProdLine = string.Empty;
+                    Order.ProdType = string.Empty;
+                    Order.RevNr = string.Empty;
+                    using var välj = new TemplateSelector(TemplateSelector.TemplateType.Workoperations, false);
                     välj.ShowDialog();
-                    välj.Dispose();
+                    if (välj.IsAborted || Order.WorkOperation == Manage_WorkOperation.WorkOperations.Nothing)
+                        break;
+                    using var browseProtocols = new Browse_Protocols.Browse_Protocols(Order.PartNumber);
+                    var browseProtocolsScreen = Screen.FromControl(this);
+                    browseProtocols.Location = browseProtocolsScreen.WorkingArea.Location;
+                    browseProtocols.ShowDialog();
                     break;
+                }
             }
 
             Order.Restore_TempOrderInfo();

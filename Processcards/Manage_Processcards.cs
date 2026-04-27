@@ -31,7 +31,9 @@ namespace DigitalProductionProgram.Processcards
         private int ActiveMainTemplateID;
         private string? ActiveTemplateRevision;
         private CipherWheelLaunchEgg? cipherWheelLaunchEgg;
-
+        private const int WmEnterSizeMove = 0x0231;
+        private const int WmExitSizeMove = 0x0232;
+        private bool isMoveRedrawSuspended;
 
         public static string INSERT_INTO_Processkort_Main =>
             @"
@@ -358,23 +360,58 @@ namespace DigitalProductionProgram.Processcards
                 btn_UpdateTemplate.Enabled = false;
 
         }
+        protected override void WndProc(ref Message m)
+        {
+            if (m.Msg == WmEnterSizeMove && isMoveRedrawSuspended == false)
+            {
+                isMoveRedrawSuspended = true;
+                SuspendMoveDrawing();
+            }
+            else if (m.Msg == WmExitSizeMove && isMoveRedrawSuspended)
+            {
+                isMoveRedrawSuspended = false;
+                ResumeMoveDrawing();
+            }
+            base.WndProc(ref m);
+        }
+        private void SuspendMoveDrawing()
+        {
+            SuspendLayout();
+            tlp_Main.SuspendLayout();
+            tlp_Main_Processkort.SuspendLayout();
+            flp_Left.SuspendLayout();
+            flp_Machines.SuspendLayout();
+            DrawingControl.SuspendDrawing(this);
+            DrawingControl.SuspendDrawing(tlp_Main);
+            DrawingControl.SuspendDrawing(tlp_Main_Processkort);
+            DrawingControl.SuspendDrawing(tab_Main);
+            DrawingControl.SuspendDrawing(flp_Left);
+            DrawingControl.SuspendDrawing(flp_Machines);
+            DrawingControl.SuspendDrawing(panel_RevisionInfo);
+            DrawingControl.SuspendDrawing(panel_RevInfo_Kommentarer);
+            DrawingControl.SuspendDrawing(dgv_Revision);
+        }
+        private void ResumeMoveDrawing()
+        {
+            DrawingControl.ResumeDrawing(dgv_Revision);
+            DrawingControl.ResumeDrawing(panel_RevInfo_Kommentarer);
+            DrawingControl.ResumeDrawing(panel_RevisionInfo);
+            DrawingControl.ResumeDrawing(flp_Machines);
+            DrawingControl.ResumeDrawing(flp_Left);
+            DrawingControl.ResumeDrawing(tab_Main);
+            DrawingControl.ResumeDrawing(tlp_Main_Processkort);
+            DrawingControl.ResumeDrawing(tlp_Main);
+            DrawingControl.ResumeDrawing(this);
+            flp_Machines.ResumeLayout(true);
+            flp_Left.ResumeLayout(true);
+            tlp_Main_Processkort.ResumeLayout(true);
+            tlp_Main.ResumeLayout(true);
+            ResumeLayout(true);
+        }
         private void InitializeBufferedControls()
         {
             DrawingControl.EnableDoubleBuffer(dgv_Revision);
             DrawingControl.EnableDoubleBuffer(flp_Machines);
-            DrawingControl.EnableDoubleBuffer(flp_Left);
-            DrawingControl.EnableDoubleBuffer(flp_ExtraInfo);
-            DrawingControl.EnableDoubleBuffer(panel_Buttons);
-            DrawingControl.EnableDoubleBuffer(tlp_Main);
-            DrawingControl.EnableDoubleBuffer(tlp_Main_Processkort);
-            DrawingControl.EnableDoubleBuffer(tlp_Processkort_Top);
-            DrawingControl.EnableDoubleBuffer(tlp_Bottom);
-            DrawingControl.EnableDoubleBuffer(panel_RevisionInfo);
-            DrawingControl.EnableDoubleBuffer(panel_RevInfo_Kommentarer);
-            DrawingControl.EnableDoubleBuffer(panel_PartNr);
-            DrawingControl.EnableDoubleBuffer(panel_ProductionLine);
-            DrawingControl.EnableDoubleBuffer(panel_Tips);
-            DrawingControl.EnableDoubleBuffer(panel_InfoLayers);
             DrawingControl.EnableDoubleBuffer(tab_Main);
             DrawingControl.EnableDoubleBuffer(ProcesscardBasedOn);
         }
@@ -431,6 +468,7 @@ namespace DigitalProductionProgram.Processcards
             if (!string.IsNullOrEmpty(IncomingPartNr))
                 tb_PartNr.Text = IncomingPartNr;
 
+            ProcesscardBasedOn.lbl_RevNr.Click -= RevNrChanged;
             ProcesscardBasedOn.lbl_RevNr.Click += RevNrChanged;
 
             Fill_cb_ProtocolTemplateRevision(cb_ProtocolTemplateName.SelectedItem?.ToString());
@@ -524,6 +562,26 @@ namespace DigitalProductionProgram.Processcards
             };
             // Detach and reattach the event handler.
             FillComboBox(cb_ProtocolTemplateName, query, parameters, TemplateName_SelectedIndexChanged);
+        }
+        private bool TryActivateProtocolTemplateRevision(string? templateName, string? templateRevision, bool isOkCopyData)
+        {
+            if (string.IsNullOrEmpty(templateName) || string.IsNullOrEmpty(templateRevision))
+            {
+                dataTables_ProcessData.Clear();
+                return false;
+            }
+            var currentTemplateID = Templates_Protocol.MainTemplate.ID;
+            var currentTemplateRevision = Templates_Protocol.MainTemplate.Revision;
+            Templates_Protocol.MainTemplate.Load_MainTemplateID(templateName, templateRevision);
+            Templates_Protocol.MainTemplate.Revision = templateRevision;
+            if (Templates_Protocol.MainTemplate.ID == currentTemplateID && Templates_Protocol.MainTemplate.Revision == currentTemplateRevision)
+            {
+                dataTables_ProcessData.Clear();
+                return false;
+            }
+            CopyProcessDataToNewTemplateRevision();
+            LoadTemplate(isOkCopyData);
+            return true;
         }
         private void Fill_cb_MeasureProtocolTemplateNames()
         {
@@ -671,7 +729,7 @@ namespace DigitalProductionProgram.Processcards
                 Part.Load_PartGroup_ID(Order.PartNumber, cb_ProtocolTemplateName.Text, Order.WorkOperation);
             }
 
-            Load_Data_Processcard(true, true);
+            Load_Data_Processcard(true, false);
         }
         private void Load_Data_Processcard(bool is_HämtaInfo_dgv_Rev, bool IsOkCopyData, bool IsTemplateAlreadySet = false)
         {
@@ -900,6 +958,7 @@ namespace DigitalProductionProgram.Processcards
 
             if (Templates_Protocol.MainTemplate.ID == ActiveMainTemplateID && Templates_Protocol.MainTemplate.Revision == ActiveTemplateRevision && IsOkCopyDataFromTemplate == false)
             {
+                dataTables_ProcessData.Clear();
                 foreach (var machine in flp_Machines.Controls.OfType<Machine>())
                 {
                     foreach (TableLayoutPanel tlp in machine.Controls)
@@ -929,6 +988,8 @@ namespace DigitalProductionProgram.Processcards
                     Load_ProcessDataFromOldTemplateRevision();
                     dataTables_ProcessData.Clear();
                 }
+                else
+                    dataTables_ProcessData.Clear();
             }
             finally
             {
@@ -951,8 +1012,6 @@ namespace DigitalProductionProgram.Processcards
             machine.Remove_StartUp();//Uppstarter används inte i Processkortshantering.
             DrawingControl.EnableDoubleBuffer(machine);
             foreach (TableLayoutPanel tlp in machine.Controls.OfType<TableLayoutPanel>())
-                DrawingControl.EnableDoubleBuffer(tlp);
-            foreach (TableLayoutPanel tlp in machine.Controls.OfType<TableLayoutPanel>())
                 foreach (var module in tlp.Controls.OfType<Module>())
                     DrawingControl.EnableDoubleBuffer(module);
 
@@ -966,6 +1025,7 @@ namespace DigitalProductionProgram.Processcards
         private readonly List<DataTable> dataTables_ProcessData = new();
         private void CopyProcessDataToNewTemplateRevision()
         {
+            dataTables_ProcessData.Clear();
             foreach (var machine in flp_Machines.Controls.OfType<Machine>())
             {
                 foreach (TableLayoutPanel tlp in machine.Controls)
@@ -1396,35 +1456,40 @@ namespace DigitalProductionProgram.Processcards
         }
         private void TemplateName_SelectionChangeCommitted(object sender, EventArgs e) 
         {
-            Fill_cb_ProtocolTemplateRevision(cb_ProtocolTemplateName.SelectedItem?.ToString());
-
-            Templates_Protocol.MainTemplate.Load_MainTemplateID(cb_ProtocolTemplateName.SelectedItem?.ToString(), cb_TemplateRevision.SelectedItem?.ToString());
-            Templates_Protocol.MainTemplate.Revision = cb_TemplateRevision.SelectedItem?.ToString();
-            CopyProcessDataToNewTemplateRevision();
-            LoadTemplate(true);
+            if (sender == cb_ProtocolTemplateName)
+                Fill_cb_ProtocolTemplateRevision(cb_ProtocolTemplateName.SelectedItem?.ToString());
+            TryActivateProtocolTemplateRevision(cb_ProtocolTemplateName.Text, cb_TemplateRevision.Text, true);
             ProcesscardBasedOn.Reset_ProcesscardStatus();
             IsUpdateProcesscard = false;
         }
         private bool suppressTemplateRevisionSelectionChanged;
+        private bool isHandlingRevNrChanged;
         private void RevNrChanged(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(ProcesscardBasedOn.lbl_UpprättatAv_Sign_AnstNr.Text) == false && cb_TemplateRevision.Items.Count > 1 && cb_TemplateRevision.SelectedIndex < cb_TemplateRevision.Items.Count - 1)
+            if (isHandlingRevNrChanged)
+                return;
+            isHandlingRevNrChanged = true;
+            try
             {
-                suppressTemplateRevisionSelectionChanged = true; // Prevent event from firing
+                if (string.IsNullOrEmpty(ProcesscardBasedOn.lbl_UpprättatAv_Sign_AnstNr.Text) == false && cb_TemplateRevision.Items.Count > 1 && cb_TemplateRevision.SelectedIndex < cb_TemplateRevision.Items.Count - 1)
+                {
+                    suppressTemplateRevisionSelectionChanged = true; // Prevent event from firing
 
-                cb_TemplateRevision.SelectedIndex = cb_TemplateRevision.Items.Count - 1;
+                    cb_TemplateRevision.SelectedIndex = cb_TemplateRevision.Items.Count - 1;
 
-                InfoText.Show($"Detta processkort är kopplat till en äldre revision av Mallen.\n" +
-                              $"Den senaste Revision av Mallen aktiveras nu.", CustomColors.InfoText_Color.Info, "Warning", this);
-                CopyProcessDataToNewTemplateRevision();
-                Templates_Protocol.MainTemplate.Revision = cb_TemplateRevision.Text;
-                Templates_Protocol.MainTemplate.Set_MainTemplateID(cb_ProtocolTemplateName.Text, cb_TemplateRevision.Text);
-                LoadTemplate(false);
-                suppressTemplateRevisionSelectionChanged = false; // Allow event firing again
+                    InfoText.Show($"Detta processkort är kopplat till en äldre revision av Mallen.\n" +
+                                  $"Den senaste Revision av Mallen aktiveras nu.", CustomColors.InfoText_Color.Info, "Warning", this);
+                    TryActivateProtocolTemplateRevision(cb_ProtocolTemplateName.Text, cb_TemplateRevision.Text, true);
+                    suppressTemplateRevisionSelectionChanged = false; // Allow event firing again
+                }
+
+                IsUpdateProcesscard = false;
+                ProcesscardBasedOn.lbl_UpprättatAv_Sign_AnstNr.Text = string.Empty;
             }
-
-            IsUpdateProcesscard = false;
-            ProcesscardBasedOn.lbl_UpprättatAv_Sign_AnstNr.Text = string.Empty;
+            finally
+            {
+                isHandlingRevNrChanged = false;
+            }
         }
 
         private void NewTemplate_Click(object sender, EventArgs e)

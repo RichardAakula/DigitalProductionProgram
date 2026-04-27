@@ -132,7 +132,7 @@ namespace DigitalProductionProgram.Processcards
             // 
             // dgv_Revision
             // 
-            dgv_Revision.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
+            dgv_Revision.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None;
             dgv_Revision.BackgroundColor = Color.FromArgb(141, 180, 226);
             dgv_Revision.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgv_Revision.Columns.AddRange(new DataGridViewColumn[] { col_RevNr, col_RevInfo, col_RevCreated, col_EstablishedBy, col_PartID, col_TotalOrders });
@@ -331,7 +331,6 @@ namespace DigitalProductionProgram.Processcards
             // 
             // tlp_Main_Processkort
             // 
-            tlp_Main_Processkort.AutoScroll = true;
             tlp_Main_Processkort.ColumnCount = 1;
             tlp_Main_Processkort.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
             tlp_Main_Processkort.Controls.Add(tab_Main, 0, 1);
@@ -1023,8 +1022,8 @@ namespace DigitalProductionProgram.Processcards
             // Manage_Processcards
             // 
             AutoScaleMode = AutoScaleMode.None;
-            AutoScroll = true;
-            AutoSize = true;
+            AutoScroll = false;
+            AutoSize = false;
             BackColor = Color.FromArgb(25, 25, 25);
             ClientSize = new Size(1771, 1061);
             Controls.Add(tlp_Main);

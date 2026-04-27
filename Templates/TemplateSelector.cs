@@ -119,7 +119,7 @@ namespace DigitalProductionProgram.Templates
                 case TemplateType.Workoperations:
                     tlp_InfoLabels.Visible = false;
                     label_Header.Text = Properties.Resources.templateSelector_Header_Workoperations;
-                    Add_Workoperations();
+                    Add_Workoperations(useWorkoperationFilter);
                     break;
             }
             SetFormHeight();
@@ -302,25 +302,41 @@ namespace DigitalProductionProgram.Templates
                 totalLabels--; //"Processkort saknas" ska inte räknas med i totalen, den är bara en fallback-knapp om inget annat finns.
             });
         }
-        private void Add_Workoperations()
+        private void Add_Workoperations(bool useWorkoperationFilter = true)
         {
             Database.ExecuteSafe(con =>
             {
-                const string query = @"
-                    SELECT WorkoperationID, Name
-                    FROM Workoperation.ProductionLines as prodlines
-                    JOIN Workoperation.Names as names
+                var query = @"
+                    SELECT names.ID AS WorkoperationID, names.Name, names.Description
+                    FROM Workoperation.Names AS names";
+                if (useWorkoperationFilter)
+                {
+                    query += @"
+                    JOIN Workoperation.ProductionLines AS prodlines
 	                    ON prodlines.WorkoperationID = names.ID
-                    WHERE ProductionLine = @prodline";
+                    WHERE prodlines.ProductionLine = @prodline";
+                }
+                else
+                {
+                    query += @"
+                    WHERE names.Name <> @nothing";
+                }
+                query += @"
+                    ORDER BY names.Description";
                 var cmd = new SqlCommand(query, con);
-                SQL_Parameter.String(cmd.Parameters, "@prodline", Order.ProdLine);
+                if (useWorkoperationFilter)
+                    SQL_Parameter.String(cmd.Parameters, "@prodline", Order.ProdLine);
+                else
+                    SQL_Parameter.String(cmd.Parameters, "@nothing", Manage_WorkOperation.WorkOperations.Nothing.ToString());
                 var reader = cmd.ExecuteReader();
                 Set_TemplateColumnHeader("Workoperation");
                 while (reader.Read())
                 {
                     var workoperation = reader["Name"].ToString();
+                    var description = reader["Description"].ToString();
+                    var text = useWorkoperationFilter || string.IsNullOrEmpty(description) ? workoperation : description;
                     int.TryParse(reader["WorkoperationID"].ToString(), out var workoperationID);
-                    Add_Button_Workoperations(workoperation, workoperationID);
+                    Add_Button_Workoperations(text, workoperation, workoperationID);
                 }
             });
         }
@@ -479,10 +495,11 @@ namespace DigitalProductionProgram.Templates
             btn.TemplateRevision = revision;
             flp_Buttons.Controls.Add(btn);
         }
-        private void Add_Button_Workoperations(string? workoperation, int workoperationID)
+        private void Add_Button_Workoperations(string? text, string? workoperation, int workoperationID)
         {
             totalLabels++;
-            var btn = CreateButton(workoperation, Button_Workoperation_MouseClick, workoperationID, workoperation);
+            var btn = CreateButton(text, Button_Workoperation_MouseClick, workoperationID, workoperation);
+            btn.WorkoperationID = workoperationID;
 
             flp_Buttons.Controls.Add(btn);
             Height += btn.Height + 3;
@@ -630,6 +647,7 @@ namespace DigitalProductionProgram.Templates
                 Order.WorkOperation = workOperation;
 
             _ = Activity.Stop($"TemplateSelector: Selected WorkOperation {lbl?.Text}");
+            IsAborted = false;
             IsOkClose = true;
             Close();
         }

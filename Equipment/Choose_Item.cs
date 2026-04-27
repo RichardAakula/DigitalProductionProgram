@@ -26,15 +26,18 @@ namespace DigitalProductionProgram.Equipment
         private readonly int Uppstart;                  //Används som Information när Senaste 10 körningar skall visas
         private int TotalColumns;
         private bool[]? VisibleColumns;
-
-
-
-        
+        private const int WmEnterSizeMove = 0x0231;
+        private const int WmExitSizeMove = 0x0232;
+        private bool isMoveRedrawSuspended;
         public Choose_Item(IEnumerable<string?>? items, Control?[]? ctrls = null, DataGridViewCell?[]? cells = null, int totalColumns = 1, bool[]? visibleColumns = null, bool isOkReturnOwnText = false, string? dataBaseColumnName = null, int maskin = 0, int uppstart = 0, bool isReturnMultipleValues = false, bool isListFromMonitor = false, string dividerChar = "/", List<string?>? headers = null, bool clampRightToAnchorRight = false)
         {
             InitializeComponent();
+            DoubleBuffered = true;
+            SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.AllPaintingInWmPaint | ControlStyles.ResizeRedraw, true);
+            UpdateStyles();
+            DrawingControl.EnableDoubleBuffer(dgv_Items);
+            DrawingControl.EnableDoubleBuffer(dgv_AddedItems);
             Location = new Point(MousePosition.X, MousePosition.Y);
-
             IsOkReturnOwnText = isOkReturnOwnText;
             IsReturnMultipleValues = isReturnMultipleValues;
             IsListFromMonitor = isListFromMonitor;
@@ -46,21 +49,15 @@ namespace DigitalProductionProgram.Equipment
             Cells = cells;
             TotalColumns = totalColumns;
             VisibleColumns = visibleColumns;
-
             _anchor = ctrls?.FirstOrDefault(c => c is not null);
-            
             if (_anchor is null && cells?.FirstOrDefault() is DataGridViewCell cell && cell.DataGridView is not null)
                 _anchor = cell.DataGridView; // ankra mot grid:en
-
             _clampRightToAnchorRight = clampRightToAnchorRight;
             if (_clampRightToAnchorRight)
-            {
                 StartPosition = FormStartPosition.Manual;
-            }
             DataTable = new DataTable();
             if (items != null)
                 AddItems(items, headers);
-
             // Remove empty rows
             if (DataTable.Rows.Count > 1)
             {
@@ -70,9 +67,10 @@ namespace DigitalProductionProgram.Equipment
             }
 
             dgv_Items.DataSource = DataTable;
-            dgv_Items.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            dgv_Items.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);
+            dgv_Items.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
+            dgv_Items.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
             dgv_Items.Columns[0].ReadOnly = true;
-            
             if (VisibleColumns != null)
             {
                 for (int i = 0; i < DataTable.Columns.Count; i++)
@@ -84,18 +82,46 @@ namespace DigitalProductionProgram.Equipment
 
             if (headers is not null)
                 dgv_Items.ColumnHeadersVisible = true;
-            
             dgv_Items.CellClick += Items_Generic_CellClick;
-
             if (!isOkReturnOwnText)
                 label_ChooseItemInfo_2.Visible = false;
-
             SetBackgroundColor();
             tb_Filter.Focus();
         }
-
-
-
+        protected override void WndProc(ref Message m)
+        {
+            if (m.Msg == WmEnterSizeMove && isMoveRedrawSuspended == false)
+            {
+                isMoveRedrawSuspended = true;
+                SuspendMoveDrawing();
+            }
+            else if (m.Msg == WmExitSizeMove && isMoveRedrawSuspended)
+            {
+                isMoveRedrawSuspended = false;
+                ResumeMoveDrawing();
+            }
+            base.WndProc(ref m);
+        }
+        private void SuspendMoveDrawing()
+        {
+            SuspendLayout();
+            tlp_Main.SuspendLayout();
+            flp_Left.SuspendLayout();
+            DrawingControl.SuspendDrawing(this);
+            DrawingControl.SuspendDrawing(tlp_Main);
+            DrawingControl.SuspendDrawing(dgv_Items);
+            DrawingControl.SuspendDrawing(dgv_AddedItems);
+        }
+        private void ResumeMoveDrawing()
+        {
+            DrawingControl.ResumeDrawing(dgv_AddedItems);
+            DrawingControl.ResumeDrawing(dgv_Items);
+            DrawingControl.ResumeDrawing(tlp_Main);
+            DrawingControl.ResumeDrawing(this);
+            flp_Left.ResumeLayout(false);
+            tlp_Main.ResumeLayout(true);
+            ResumeLayout(true);
+        }
         private void Choose_Item_Load(object sender, EventArgs e)
         {
             ChangeGUI();

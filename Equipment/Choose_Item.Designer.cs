@@ -64,10 +64,10 @@ namespace DigitalProductionProgram.Equipment
             this.dgv_Items.AllowUserToDeleteRows = false;
             this.dgv_Items.AllowUserToResizeColumns = false;
             this.dgv_Items.AllowUserToResizeRows = false;
-            this.dgv_Items.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+            this.dgv_Items.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.None;
             this.dgv_Items.BackgroundColor = System.Drawing.Color.White;
             this.dgv_Items.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.dgv_Items.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgv_Items.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             this.dgv_Items.ColumnHeadersVisible = false;
             dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle1.BackColor = System.Drawing.Color.White;
@@ -131,10 +131,10 @@ namespace DigitalProductionProgram.Equipment
             this.dgv_AddedItems.AllowUserToDeleteRows = false;
             this.dgv_AddedItems.AllowUserToResizeColumns = false;
             this.dgv_AddedItems.AllowUserToResizeRows = false;
-            this.dgv_AddedItems.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+            this.dgv_AddedItems.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.None;
             this.dgv_AddedItems.BackgroundColor = System.Drawing.Color.White;
             this.dgv_AddedItems.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.dgv_AddedItems.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgv_AddedItems.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             this.dgv_AddedItems.ColumnHeadersVisible = false;
             this.dgv_AddedItems.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Items});
@@ -195,7 +195,7 @@ namespace DigitalProductionProgram.Equipment
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.AutoSize = true;
+            this.AutoSize = false;
             this.BackColor = System.Drawing.Color.Black;
             this.ClientSize = new System.Drawing.Size(499, 176);
             this.Controls.Add(this.tlp_Main);
@@ -203,7 +203,7 @@ namespace DigitalProductionProgram.Equipment
             this.MaximumSize = new System.Drawing.Size(700, 500);
             this.MinimumSize = new System.Drawing.Size(300, 215);
             this.Name = "Choose_Item";
-            this.Opacity = 0.97D;
+            this.Opacity = 1D;
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Choose_Item_FormClosing);
             this.Load += new System.EventHandler(this.Choose_Item_Load);

@@ -1813,6 +1813,7 @@ HS-Machine = {Equipment.Equipment.HS_Machine}", CustomColors.InfoText_Color.Info
                 return;
             var mainForm = Application.OpenForms.OfType<Main_Form>().FirstOrDefault();
             mainForm?.cf_MainMenu.UpdateCipherWheelMenuVisibility();
+            mainForm?.cf_MainMenu.OpenCipherWheel();
         }
 
 

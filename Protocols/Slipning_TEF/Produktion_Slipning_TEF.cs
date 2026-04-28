@@ -20,21 +20,7 @@ namespace DigitalProductionProgram.Protocols.Slipning_TEF
 {
     public partial class Produktion_Slipning_TEF : UserControl
     {
-        public static DataTable DataTable_Parts_Slipning_TEF_Extra
-        {
-            //Dessa artikelnr skall ha lite extra parametrar i körprotokollet
-            get
-            {
-                var dt = new DataTable();
-                using var con = new SqlConnection(Database.cs_Protocol);
-                var query = @"SELECT PartNr FROM Parts.PartNrSpecial WHERE PartNrDescriptionID = (SELECT id FROM Parts.PartNrDescription WHERE description = 'Extra Parametrar Slipning_TEF')";
-
-                con.Open();
-                var cmd = new SqlCommand(query, con); ServerStatus.Add_Sql_Counter();
-                dt.Load(cmd.ExecuteReader());
-                return dt;
-            }
-        }
+       
         private Control[] Control_Produktion_Parametrar
         {
             get

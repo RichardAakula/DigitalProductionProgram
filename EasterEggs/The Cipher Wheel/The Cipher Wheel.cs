@@ -200,6 +200,7 @@ namespace DigitalProductionProgram.EasterEggs.The_Cipher_Wheel
             RefreshScorePanel();
             LoadHighscoreTable();
             RefreshLevel8Seal();
+            Activity.Stop("User opened The Cipher Wheel");
         }
         
         

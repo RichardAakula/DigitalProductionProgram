@@ -370,7 +370,7 @@ namespace DigitalProductionProgram.MainWindow
             WindowState = FormWindowState.Normal;
             Size = new Size(1920, 1080);
             cf_Statistics_DPP.Visible = true;
-            //Calender.Fill_OnlineMonitorUsers();
+            cf_Statistics_DPP.RefreshStatisticsSelectorVisibility();
 
             Task.Run(() => { cf_ActiveOrdersUser.Load_OrderNr(cf_OrderInformation); });
             _ = EasterEgg_Code.IsGameStarted;
@@ -764,6 +764,7 @@ namespace DigitalProductionProgram.MainWindow
             if (!EasterEgg_Code.TryUnlockFromFlyingEgg(this))
                 return;
             cf_MainMenu.UpdateCipherWheelMenuVisibility();
+            cf_MainMenu.OpenCipherWheel();
         }
         public async void Operation_SelectedIndexChanged(object? sender, EventArgs e)
         {
@@ -1026,6 +1027,7 @@ namespace DigitalProductionProgram.MainWindow
             lbl_Sign.Text = Person.Sign;
             lbl_Role.Text = Person.Role;
             lbl_Namn.Text = Person.Name;
+            cf_Statistics_DPP.RefreshStatisticsSelectorVisibility();
 
             panel_Profile.Visible = true;
             cf_ActiveOrdersUser.Visible = true;
@@ -1112,6 +1114,7 @@ namespace DigitalProductionProgram.MainWindow
             cf_ActiveOrdersUser.Visible = false;
 
             Person.Clear();
+            cf_Statistics_DPP.RefreshStatisticsSelectorVisibility();
             ControlManager.Close_All_Körprotokoll();
             cf_MainMenu.Lock_Menu();
             cf_MainMenu.UpdateCipherWheelMenuVisibility();

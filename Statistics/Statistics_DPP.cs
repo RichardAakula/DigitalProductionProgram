@@ -10,6 +10,8 @@ using LiveChartsCore.SkiaSharpView.WinForms;
 using Microsoft.Data.SqlClient;
 using SkiaSharp;
 using SkiaSharp.Views.Desktop;
+using DigitalProductionProgram.User;
+using DigitalProductionProgram.ControlsManagement;
 
 namespace DigitalProductionProgram.Statistics
 {
@@ -412,6 +414,10 @@ ORDER BY [Year];";
             ("Measurements - Last 5 Years", Query_MeasurementsLastYears)
 
         ];
+        private bool suppressSelectorChanged;
+        private bool isSelectorInitialized;
+        private bool isSuperAdminChartLoaded;
+        private int chartLoadVersion;
         private async Task<List<(string Label, int Value)>> LoadChartDataAsync(string query)
         {
             return await Database.ExecuteSafeAsync(async con =>
@@ -433,41 +439,144 @@ ORDER BY [Year];";
         public Statistics_DPP()
         {
             InitializeComponent();
-
+            ConfigureStatisticsSelector();
         }
         private async void Statistics_DPP_Load(object sender, EventArgs e)
         {
             if (DesignMode || Program.IsInDesignMode())
                 return;
-
             await Load_StatisticsAsync();
         }
-
+        protected override void OnVisibleChanged(EventArgs e)
+        {
+            base.OnVisibleChanged(e);
+            if (DesignMode || Program.IsInDesignMode())
+                return;
+            RefreshStatisticsSelectorVisibility();
+        }
         private int index;
         public async Task Load_StatisticsAsync()
         {
+            if (IsStatisticsSelectorReady())
+                RefreshStatisticsSelectorVisibility();
+            if (IsStatisticsSelectorReady() && IsSuperAdminSelectorVisible())
+            {
+                if (isSuperAdminChartLoaded == false)
+                {
+                    isSuperAdminChartLoaded = true;
+                    await LoadSelectedStatisticsAsync();
+                }
+                return;
+            }
+            isSuperAdminChartLoaded = false;
             var selected = chartQueries[index];
-
             index++;
             if (index >= chartQueries.Count)
                 index = 0;
-
             await CreateChartAsync(selected.Title, selected.Query);
         }
-
-
+        private void ConfigureStatisticsSelector()
+        {
+            if (IsStatisticsSelectorReady() == false)
+                return;
+            DrawingControl.EnableDoubleBuffer(this);
+            DrawingControl.EnableDoubleBuffer(selectorPanel);
+            DrawingControl.EnableDoubleBuffer(chartHost);
+            DrawingControl.EnableDoubleBuffer(cbStatistics);
+            chart_Stats.AnimationsSpeed = TimeSpan.Zero;
+            LoadStatisticsSelectorOnce();
+        }
+        private bool IsStatisticsSelectorReady()
+        {
+            return selectorPanel != null && cbStatistics != null && chartHost != null && chart_Stats != null;
+        }
+        private void LoadStatisticsSelectorOnce()
+        {
+            if (isSelectorInitialized || cbStatistics == null)
+                return;
+            suppressSelectorChanged = true;
+            try
+            {
+                cbStatistics.SetItems(chartQueries.Select(x => x.Title));
+                if (cbStatistics.ItemCount > 0)
+                    cbStatistics.SelectedIndex = Math.Clamp(index, 0, chartQueries.Count - 1);
+                isSelectorInitialized = true;
+            }
+            finally
+            {
+                suppressSelectorChanged = false;
+            }
+        }
+        private bool UpdateSelectorVisibility()
+        {
+            var shouldShow = IsSuperAdminSelectorVisible();
+            if (selectorPanel.Visible == shouldShow)
+                return false;
+            selectorPanel.Visible = shouldShow;
+            if (shouldShow == false)
+                isSuperAdminChartLoaded = false;
+            return true;
+        }
+        public void RefreshStatisticsSelectorVisibility()
+        {
+            if (IsStatisticsSelectorReady() == false)
+                return;
+            var visibilityChanged = UpdateSelectorVisibility();
+            if (selectorPanel.Visible && cbStatistics.SelectedIndex < 0)
+                SetSelectedStatisticsIndex(Math.Clamp(index, 0, chartQueries.Count - 1));
+            if (selectorPanel.Visible && visibilityChanged)
+                selectorPanel.BringToFront();
+        }
+        private static bool IsSuperAdminSelectorVisible()
+        {
+            return Person.Role == "SuperAdmin";
+        }
+        private void SetSelectedStatisticsIndex(int selectedIndex)
+        {
+            if (cbStatistics == null)
+                return;
+            if (selectedIndex < 0 || selectedIndex >= chartQueries.Count)
+                return;
+            if (cbStatistics.SelectedIndex == selectedIndex)
+                return;
+            suppressSelectorChanged = true;
+            cbStatistics.SelectedIndex = selectedIndex;
+            suppressSelectorChanged = false;
+        }
+        private async Task LoadSelectedStatisticsAsync()
+        {
+            if (cbStatistics == null)
+            {
+                await CreateChartAsync(chartQueries[0].Title, chartQueries[0].Query);
+                return;
+            }
+            var selectedIndex = cbStatistics.SelectedIndex < 0 ? 0 : cbStatistics.SelectedIndex;
+            if (selectedIndex >= chartQueries.Count)
+                selectedIndex = 0;
+            index = selectedIndex;
+            isSuperAdminChartLoaded = true;
+            var selected = chartQueries[selectedIndex];
+            await CreateChartAsync(selected.Title, selected.Query);
+        }
+        private async Task LoadNextStatisticsAsync()
+        {
+            if (IsStatisticsSelectorReady() && IsSuperAdminSelectorVisible())
+            {
+                var nextIndex = cbStatistics.SelectedIndex + 1;
+                if (nextIndex >= chartQueries.Count)
+                    nextIndex = 0;
+                SetSelectedStatisticsIndex(nextIndex);
+                await LoadSelectedStatisticsAsync();
+                return;
+            }
+            await Load_StatisticsAsync();
+        }
         private async Task CreateChartAsync(string legendText, string query)
         {
-            foreach (Control ctrl in this.Controls)
-            {
-                if (ctrl is CartesianChart chart)
-                {
-                    chart.MouseDown -= chart_Statistics_MouseDown;
-                    chart.Dispose(); // Frigör resurser
-                }
-            }
-            this.Controls.Clear(); // Clear existing controls in the panel
+            var loadVersion = ++chartLoadVersion;
             var data = await LoadChartDataAsync(query);
+            if (loadVersion != chartLoadVersion)
+                return;
             if (data == null || !data.Any())
                 return;
             var values = data.Select(d => (double)d.Value).ToArray();
@@ -481,16 +590,22 @@ ORDER BY [Year];";
             var color = Teman.backColor_ChartStats;
             if (color != Color.FromArgb(35,35,35))
                 color = Color.FromArgb(35, 35,35);
-            var chart_Stats = new CartesianChart
+            if (chartHost.InvokeRequired)
+                chartHost.Invoke(() => ApplyChartData(legendText, color, labels, columnSeries));
+            else
+                ApplyChartData(legendText, color, labels, columnSeries);
+        }
+        private void ApplyChartData(string legendText, Color color, string?[] labels, ColumnSeries<double> columnSeries)
+        {
+            chartHost.SuspendLayout();
+            try
             {
-                Dock = DockStyle.Fill,
-                Name = "chart_Stats",
-                Text = legendText,
-                BackColor = color, //Teman.backColor_ChartStats,
-                LegendPosition = LiveChartsCore.Measure.LegendPosition.Top,
-                LegendTextPaint = new SolidColorPaint(SKColors.White, 1),
-                LegendTextSize = 12,
-                XAxes =
+                chart_Stats.Text = legendText;
+                chart_Stats.BackColor = color;
+                chart_Stats.LegendPosition = LiveChartsCore.Measure.LegendPosition.Top;
+                chart_Stats.LegendTextPaint = new SolidColorPaint(SKColors.White, 1);
+                chart_Stats.LegendTextSize = 12;
+                chart_Stats.XAxes =
                 [
                     new Axis
                     {
@@ -499,31 +614,27 @@ ORDER BY [Year];";
                         LabelsRotation = -45,
                         LabelsPaint = new SolidColorPaint(SKColors.White),
                     }
-                ],
-                Series = [columnSeries],
-            };
-            
-            chart_Stats.MouseDown += chart_Statistics_MouseDown;
-
-            // this.BackColor = Color.Transparent;
-            if (this.InvokeRequired)
-            {
-                this.Invoke(() => this.Controls.Add(chart_Stats));
+                ];
+                chart_Stats.Series = [columnSeries];
             }
-            else
+            finally
             {
-                this.Controls.Add(chart_Stats);
+                chartHost.ResumeLayout(false);
             }
         }
-
         private void panelStatistics_Click(object sender, MouseEventArgs e)
         {
             //EasterEgg_Code.HandleStatisticsClick(this, e.Location);
         }
-
         private async void chart_Statistics_MouseDown(object sender, MouseEventArgs e)
         {
-            await Load_StatisticsAsync();
+            await LoadNextStatisticsAsync();
+        }
+        private async void cbStatistics_SelectedIndexChanged(object? sender, EventArgs e)
+        {
+            if (suppressSelectorChanged || !IsSuperAdminSelectorVisible())
+                return;
+            await LoadSelectedStatisticsAsync();
         }
     }
 }

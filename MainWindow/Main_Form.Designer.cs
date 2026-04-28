@@ -88,8 +88,8 @@ namespace DigitalProductionProgram.MainWindow
             spitContainer_Bottom = new SplitContainer();
             splitContainer_Right = new SplitContainer();
             tlp_MainWindow = new TableLayoutPanel();
-            cf_Statistics_DPP = new Statistics_DPP();
             cf_MeasurementChart = new MeasurementChart();
+            cf_Statistics_DPP = new Statistics_DPP();
             ((ISupportInitialize)pb_Info_UserPoints).BeginInit();
             tlp_ExtraInfo.SuspendLayout();
             panel_Right.SuspendLayout();
@@ -805,8 +805,8 @@ namespace DigitalProductionProgram.MainWindow
             tlp_MainWindow.Controls.Add(cf_OrderInformation, 0, 0);
             tlp_MainWindow.Controls.Add(cf_MeasurePoints, 0, 3);
             tlp_MainWindow.Controls.Add(cf_MeasureStats, 1, 3);
-            tlp_MainWindow.Controls.Add(cf_Statistics_DPP, 3, 4);
             tlp_MainWindow.Controls.Add(cf_MeasurementChart, 0, 4);
+            tlp_MainWindow.Controls.Add(cf_Statistics_DPP, 3, 4);
             tlp_MainWindow.Dock = DockStyle.Fill;
             tlp_MainWindow.Location = new Point(0, 0);
             tlp_MainWindow.Margin = new Padding(4, 3, 3, 3);
@@ -820,17 +820,6 @@ namespace DigitalProductionProgram.MainWindow
             tlp_MainWindow.Size = new Size(1319, 706);
             tlp_MainWindow.TabIndex = 0;
             // 
-            // cf_Statistics_DPP
-            // 
-            cf_Statistics_DPP.BackColor = Color.Transparent;
-            tlp_MainWindow.SetColumnSpan(cf_Statistics_DPP, 2);
-            cf_Statistics_DPP.Dock = DockStyle.Fill;
-            cf_Statistics_DPP.Location = new Point(1000, 362);
-            cf_Statistics_DPP.Margin = new Padding(4, 3, 4, 3);
-            cf_Statistics_DPP.Name = "cf_Statistics_DPP";
-            cf_Statistics_DPP.Size = new Size(315, 341);
-            cf_Statistics_DPP.TabIndex = 920;
-            // 
             // cf_MeasurementChart
             // 
             cf_MeasurementChart.BackColor = Color.Transparent;
@@ -842,6 +831,17 @@ namespace DigitalProductionProgram.MainWindow
             cf_MeasurementChart.Size = new Size(990, 345);
             cf_MeasurementChart.TabIndex = 921;
             cf_MeasurementChart.Visible = false;
+            // 
+            // cf_Statistics_DPP
+            // 
+            cf_Statistics_DPP.BackColor = Color.Transparent;
+            tlp_MainWindow.SetColumnSpan(cf_Statistics_DPP, 2);
+            cf_Statistics_DPP.Dock = DockStyle.Fill;
+            cf_Statistics_DPP.Location = new Point(1000, 362);
+            cf_Statistics_DPP.Margin = new Padding(4, 3, 4, 3);
+            cf_Statistics_DPP.Name = "cf_Statistics_DPP";
+            cf_Statistics_DPP.Size = new Size(315, 341);
+            cf_Statistics_DPP.TabIndex = 920;
             // 
             // Main_Form
             // 

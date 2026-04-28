@@ -1,9 +1,5 @@
 ﻿using DigitalProductionProgram.ControlsManagement;
 using DigitalProductionProgram.DatabaseManagement;
-using DigitalProductionProgram.MainWindow;
-using DigitalProductionProgram.Övrigt;
-using DigitalProductionProgram.Processcards;
-using DigitalProductionProgram.Settings;
 using Microsoft.Data.SqlClient;
 using System;
 using System.Data;

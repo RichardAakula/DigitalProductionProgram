@@ -4,7 +4,6 @@ using DigitalProductionProgram.PrintingServices;
 using Microsoft.Data.SqlClient;
 using System.Diagnostics;
 using System.Reflection;
-using System.Xml.Linq;
 using DigitalProductionProgram.Help;
 
 namespace DigitalProductionProgram.Log
@@ -66,18 +65,6 @@ namespace DigitalProductionProgram.Log
         {
             get
             {
-                var appInstallerPath = Database.InstallationPath;
-
-                // ✅ Kontrollera att filen finns innan vi försöker läsa
-                if (File.Exists(appInstallerPath))
-                {
-                    var doc = XDocument.Load(appInstallerPath);
-                    var versionStr = doc.Root?.Attribute("Version")?.Value;
-                    Version.TryParse(versionStr, out var latestVersion);
-                    if (latestVersion != null)
-                        return latestVersion;
-                }
-
                 try
                 {
                     return Database.ExecuteSafe(con =>

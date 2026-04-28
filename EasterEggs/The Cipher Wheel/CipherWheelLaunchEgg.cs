@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using Timer = System.Windows.Forms.Timer;
@@ -35,12 +34,56 @@ namespace DigitalProductionProgram.EasterEggs.The_Cipher_Wheel
                 }
             }
         }
+        private sealed class ClickBlockerMessageFilter : IMessageFilter
+        {
+            private readonly Form hostForm;
+            private readonly Form eggForm;
+            public ClickBlockerMessageFilter(Form hostForm, Form eggForm)
+            {
+                this.hostForm = hostForm;
+                this.eggForm = eggForm;
+            }
+            public bool PreFilterMessage(ref Message m)
+            {
+                if (!IsBlockedMouseMessage(m.Msg) || hostForm.IsDisposed || eggForm.IsDisposed)
+                    return false;
+                var target = Control.FromHandle(m.HWnd);
+                if (target is not null && IsControlInside(eggForm, target))
+                    return false;
+                if (!hostForm.Bounds.Contains(Cursor.Position))
+                    return false;
+                if (target is null)
+                    return true;
+                return IsControlInside(hostForm, target);
+            }
+            private static bool IsBlockedMouseMessage(int message)
+            {
+                return message is
+                    0x0201 or 0x0202 or 0x0203 or
+                    0x0204 or 0x0205 or 0x0206 or
+                    0x0207 or 0x0208 or 0x0209 or
+                    0x020A or 0x020B or 0x020C or
+                    0x020E or
+                    0x00A1 or 0x00A2 or 0x00A3 or
+                    0x00A4 or 0x00A5 or 0x00A6 or
+                    0x00A7 or 0x00A8 or 0x00A9;
+            }
+            private static bool IsControlInside(Control parent, Control control)
+            {
+                for (var current = control; current is not null; current = current.Parent)
+                {
+                    if (ReferenceEquals(current, parent))
+                        return true;
+                }
+                return false;
+            }
+        }
         private readonly Form hostForm;
         private readonly Action onCaught;
         private readonly Action onFinished;
         private readonly LaunchEggOverlayForm overlayForm;
         private readonly Timer animationTimer;
-        private readonly List<Control> disabledControls = new();
+        private readonly ClickBlockerMessageFilter clickBlocker;
         private readonly Bitmap sourceEggImage;
         private readonly Random random = new();
         private Bitmap? renderedEggImage;
@@ -61,12 +104,13 @@ namespace DigitalProductionProgram.EasterEggs.The_Cipher_Wheel
             overlayForm = new LaunchEggOverlayForm();
             overlayForm.MouseDown += OverlayForm_MouseDown;
             overlayForm.MouseMove += OverlayForm_MouseMove;
+            clickBlocker = new ClickBlockerMessageFilter(hostForm, overlayForm);
             animationTimer = new Timer { Interval = 16 };
             animationTimer.Tick += AnimationTimer_Tick;
             hostForm.Resize += HostForm_BoundsChanged;
             hostForm.Move += HostForm_BoundsChanged;
             hostForm.VisibleChanged += HostForm_VisibleChanged;
-            SuspendHostClicks();
+            Application.AddMessageFilter(clickBlocker);
             StartFlight();
         }
         private static Bitmap LoadEggImage()
@@ -240,34 +284,7 @@ namespace DigitalProductionProgram.EasterEggs.The_Cipher_Wheel
             renderedEggImage = null;
             sourceEggImage.Dispose();
             animationTimer.Dispose();
-            ResumeHostClicks();
-        }
-        private void SuspendHostClicks()
-        {
-            disabledControls.Clear();
-            DisableEnabledDescendants(hostForm);
-        }
-        private void DisableEnabledDescendants(Control parent)
-        {
-            foreach (Control control in parent.Controls)
-            {
-                if (control.Enabled)
-                {
-                    disabledControls.Add(control);
-                    control.Enabled = false;
-                }
-                if (control.HasChildren)
-                    DisableEnabledDescendants(control);
-            }
-        }
-        private void ResumeHostClicks()
-        {
-            foreach (var control in disabledControls)
-            {
-                if (!control.IsDisposed)
-                    control.Enabled = true;
-            }
-            disabledControls.Clear();
+            Application.RemoveMessageFilter(clickBlocker);
         }
         public void Dispose()
         {

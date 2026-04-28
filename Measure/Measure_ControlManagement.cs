@@ -254,26 +254,6 @@ namespace DigitalProductionProgram.Measure
             public double? LCL { get; set; }
         }
 
-        //private static NumericUpDown NumBag(Measurement_Protocol mp)
-        //{
-        //    return (from Control ctrl in mp.flp_InputControls.Controls where ctrl is NumericUpDown && ctrl.Name == "Bag" select (NumericUpDown)ctrl).FirstOrDefault();
-        //}
-       
-        //private static int LastOkNumbag(Measurement_Protocol mp, ref int row)
-        //{
-        //    bool IsDiscarded;
-        //    do
-        //    {
-        //        if (row < 0)
-        //            return 0;
-        //        bool.TryParse(mp.dgv_Measurements.Rows[row].Cells["Discarded"].Value.ToString(), out IsDiscarded);
-        //        if (IsDiscarded)
-        //            row--;
-        //    } while (IsDiscarded);
-
-        //    int.TryParse(mp.dgv_Measurements.Rows[row].Cells["Bag"].Value.ToString(), out var bag);
-        //    return bag;
-        //}
 
         public static Control? InputControl(FlowLayoutPanel flp, int[] descriptionIds)
         {
@@ -612,23 +592,26 @@ namespace DigitalProductionProgram.Measure
                     .DefaultIfEmpty(0)
                     .Max();
 
-
-                if (Part.IsPartNrSpecial)
+                ///Nedanstående kod är till Spolning PTFE där dom mättre först 1 normal mätning, sedan 3 st mätningar med bara exc.
+                //if (Part.IsPartNrSpecial)
+                //{
+                //    if (Is4LastMeasuresSameSpool)
+                //        numeric.Value = maxValue + 1;
+                //    else
+                //    {
+                //        if (maxValue > 0)
+                //            numeric.Value = maxValue;
+                //    }
+                //}
+                //else
                 {
-                    if (Is4LastMeasuresSameSpool)
-                        numeric.Value = maxValue + 1;
-                    else
+                    if (mp.dgv_Measurements.Rows.Count > 0)//Det skall inte öka om det är första mätningen
                     {
-                        if (maxValue > 0)
+                        if (increment > 0)
+                            numeric.Value = maxValue + increment;
+                        else if (maxValue > 0)
                             numeric.Value = maxValue;
                     }
-                }
-                else
-                {
-                    if (increment > 0)
-                        numeric.Value = maxValue + increment;
-                    else if (maxValue > 0)
-                        numeric.Value = maxValue;
                 }
             }
         }

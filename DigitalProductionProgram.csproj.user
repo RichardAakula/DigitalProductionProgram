@@ -22,6 +22,9 @@
     <Compile Update="ControlsManagement\BufferedListView.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Update="ControlsManagement\DropdownSelector.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Update="ControlsManagement\ProgressBar.cs">
       <SubType>Form</SubType>
     </Compile>

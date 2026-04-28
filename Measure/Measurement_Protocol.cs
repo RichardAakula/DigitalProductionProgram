@@ -89,7 +89,7 @@ namespace DigitalProductionProgram.Measure
                     if (ctrl is InputCheckBox checkBox)
                         if (checkBox.Checked)
                             continue;
-                    if (!string.IsNullOrEmpty(ctrl.Text) && !ControlValidator.IsStringNA(ctrl.Text))
+                    if (!string.IsNullOrEmpty(ctrl.Text))
                         continue;
 
                     control = ctrl;
@@ -137,7 +137,7 @@ namespace DigitalProductionProgram.Measure
         {
             Activity.Start();
             Calculate.Reset_Values();
-            Part.SetPartNrSpecial("Spolning Special Mätprotokoll");
+            //Part.SetPartNrSpecial("Spolning Special Mätprotokoll");
             DescriptionMap.LoadDescriptionMap(); 
             //bagDescriptionId = Load_DescriptionId("Bag");
             SortingOrder = "ASC";

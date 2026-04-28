@@ -572,6 +572,7 @@ namespace DigitalProductionProgram.MainWindow
                         )
                         AND Info NOT LIKE '%Felsökning%'
                         AND Info NOT LIKE '%Error%'
+                        AND Info NOT LIKE '%Cipher%'
                     ORDER BY log.Date DESC;";
 
                 using var cmd = new SqlCommand(query, con);
@@ -872,13 +873,16 @@ namespace DigitalProductionProgram.MainWindow
         }
         private void Menu_Help_CipherWheel_Click(object? sender, EventArgs e)
         {
+            OpenCipherWheel();
+        }
+        public void OpenCipherWheel()
+        {
             using var easterEgg = new EasterEgg_Code();
             if (mainForm != null)
                 easterEgg.ShowDialog(mainForm);
             else
                 easterEgg.ShowDialog();
         }
-
         //----------UVECKLING----------
         private void Menu_Utvecklare_GetInfo(object sender, EventArgs e)
         {
